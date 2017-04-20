@@ -143,8 +143,8 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public LibraryInfo getLibraryInfo(final Repository selectedRepository,
                                       final String branch) {
-        final Set<Project> projects = getProjects(selectedRepository,
-                                                  branch);
+        final List<Project> projects = getProjects(selectedRepository,
+                                                   branch);
         return new LibraryInfo(branch,
                                projects);
     }
@@ -152,14 +152,15 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public KieProject createProject(final String projectName,
                                     final Repository selectedRepository,
-                                    final String baseURL) {
+                                    final String baseURL,
+                                    final String projectDescription) {
         final Path selectedRepositoryRootPath = selectedRepository.getRoot();
         final LibraryPreferences preferences = getPreferences();
 
         final GAV gav = createGAV(projectName,
                                   preferences);
         final POM pom = createPOM(projectName,
-                                  preferences,
+                                  projectDescription,
                                   gav);
         final DeploymentMode mode = DeploymentMode.VALIDATED;
 
@@ -271,10 +272,10 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     POM createPOM(final String projectName,
-                  final LibraryPreferences preferences,
+                  final String projectDescription,
                   final GAV gav) {
         return new POM(projectName,
-                       preferences.getProjectPreferences().getDescription(),
+                       projectDescription,
                        gav);
     }
 
@@ -294,10 +295,10 @@ public class LibraryServiceImpl implements LibraryService {
                 .findFirst();
     }
 
-    private Set<Project> getProjects(final Repository repository,
-                                     final String branch) {
-        return kieProjectService.getProjects(repository,
-                                             branch);
+    private List<Project> getProjects(final Repository repository,
+                                      final String branch) {
+        return new ArrayList<>(kieProjectService.getProjects(repository,
+                                                             branch));
     }
 
     private OrganizationalUnit getDefaultOrganizationalUnit() {

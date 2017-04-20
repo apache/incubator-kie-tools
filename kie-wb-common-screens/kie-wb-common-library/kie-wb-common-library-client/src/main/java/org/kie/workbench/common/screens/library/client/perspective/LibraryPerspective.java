@@ -15,6 +15,7 @@
 
 package org.kie.workbench.common.screens.library.client.perspective;
 
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -24,6 +25,9 @@ import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
@@ -35,6 +39,8 @@ public class LibraryPerspective {
     private LibraryPlaces libraryPlaces;
 
     private PerspectiveDefinition perspectiveDefinition;
+
+    private boolean refresh = true;
 
     public LibraryPerspective() {
     }
@@ -52,9 +58,19 @@ public class LibraryPerspective {
         return perspectiveDefinition;
     }
 
+    @OnStartup
+    public void onStartup(final PlaceRequest placeRequest) {
+        final boolean refresh = Boolean.parseBoolean(placeRequest.getParameter("refresh", "true"));
+        this.refresh = refresh;
+    }
+
     @OnOpen
     public void onOpen() {
-        libraryPlaces.refresh();
+        Command callback = null;
+        if (refresh) {
+            callback = () -> libraryPlaces.goToLibrary();
+        }
+        libraryPlaces.refresh(callback);
     }
 
     public PanelDefinition getRootPanel() {

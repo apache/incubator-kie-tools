@@ -18,11 +18,15 @@ package org.kie.workbench.common.screens.library.client.widgets;
 
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.Node;
 import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ui.shared.TemplateUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.mvp.Command;
@@ -48,7 +52,9 @@ public class ResourceHandlerWidget implements IsElement {
         text.setTextContent( title );
 
         if ( iconWidget != null ) {
-            DOMUtil.appendWidgetToElement( icon, iconWidget );
+            HTMLElement assetIconHtml = TemplateUtil.<HTMLElement>nativeCast(iconWidget.asWidget().getElement() );
+            final Node clonedAssetIconHtml = assetIconHtml.cloneNode(true );
+            this.icon.appendChild( clonedAssetIconHtml );
         }
 
         if ( onClick != null ) {

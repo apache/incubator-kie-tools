@@ -191,6 +191,6 @@ public class LibraryView implements LibraryScreen.View,
     @SinkNative(Event.ONKEYUP)
     @EventHandler("filter-text")
     public void filterTextChange(Event e) {
-        presenter.updateProjectsBy(filterText.getValue());
+        presenter.filterProjects(filterText.getValue());
     }
 }

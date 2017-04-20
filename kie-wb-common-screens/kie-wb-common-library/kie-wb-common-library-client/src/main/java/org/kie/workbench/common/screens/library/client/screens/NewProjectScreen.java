@@ -28,6 +28,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.shared.project.KieProject;
@@ -46,9 +47,9 @@ public class NewProjectScreen {
 
     public interface View extends UberElement<NewProjectScreen> {
 
+        void setProjectDescription(String defaultProjectDescription);
     }
 
-    LibraryInfo libraryInfo;
     private Caller<LibraryService> libraryService;
 
     private PlaceManager placeManager;
@@ -67,6 +68,10 @@ public class NewProjectScreen {
 
     private Event<NewProjectEvent> newProjectEvent;
 
+    private LibraryPreferences libraryPreferences;
+
+    LibraryInfo libraryInfo;
+
     @Inject
     public NewProjectScreen(final Caller<LibraryService> libraryService,
                             final PlaceManager placeManager,
@@ -76,7 +81,8 @@ public class NewProjectScreen {
                             final View view,
                             final TranslationService ts,
                             final SessionInfo sessionInfo,
-                            final Event<NewProjectEvent> newProjectEvent) {
+                            final Event<NewProjectEvent> newProjectEvent,
+                            final LibraryPreferences libraryPreferences) {
         this.libraryService = libraryService;
         this.placeManager = placeManager;
         this.busyIndicatorView = busyIndicatorView;
@@ -86,11 +92,11 @@ public class NewProjectScreen {
         this.ts = ts;
         this.sessionInfo = sessionInfo;
         this.newProjectEvent = newProjectEvent;
+        this.libraryPreferences = libraryPreferences;
     }
 
     @OnStartup
     public void load() {
-        view.init(this);
         libraryService.call(new RemoteCallback<LibraryInfo>() {
             @Override
             public void callback(LibraryInfo libraryInfo) {
@@ -98,6 +104,12 @@ public class NewProjectScreen {
             }
         }).getLibraryInfo(libraryPlaces.getSelectedRepository(),
                           libraryPlaces.getSelectedBranch());
+
+        libraryPreferences.load(loadedLibraryPreferences -> {
+            view.init(NewProjectScreen.this);
+            view.setProjectDescription(loadedLibraryPreferences.getProjectPreferences().getDescription());
+        }, error -> {
+        });
     }
 
     public void cancel() {
@@ -105,12 +117,14 @@ public class NewProjectScreen {
         placeManager.closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
     }
 
-    public void createProject(String projectName) {
+    public void createProject(final String projectName,
+                              final String projectDescription) {
         busyIndicatorView.showBusyIndicator(ts.getTranslation(LibraryConstants.NewProjectScreen_Saving));
         libraryService.call(getSuccessCallback(),
                             getErrorCallBack()).createProject(projectName,
                                                               libraryPlaces.getSelectedRepository(),
-                                                              getBaseURL());
+                                                              getBaseURL(),
+                                                              projectDescription);
     }
 
     private RemoteCallback<KieProject> getSuccessCallback() {

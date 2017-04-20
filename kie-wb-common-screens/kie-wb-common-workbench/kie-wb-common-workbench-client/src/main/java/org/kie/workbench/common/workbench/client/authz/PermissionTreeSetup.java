@@ -63,7 +63,7 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.setPerspectiveName(SOCIAL_HOME, i18n.Timeline());
         perspectiveTreeProvider.setPerspectiveName(SOCIAL_USER_HOME, i18n.People());
         perspectiveTreeProvider.setPerspectiveName(SECURITY_MANAGEMENT, i18n.SecurityManagement());
-        perspectiveTreeProvider.setPerspectiveName(AUTHORING, i18n.ProjectAuthoring());
+        perspectiveTreeProvider.setPerspectiveName(LIBRARY, i18n.ProjectAuthoring());
         perspectiveTreeProvider.setPerspectiveName(CONTRIBUTORS, i18n.Contributors());
         perspectiveTreeProvider.setPerspectiveName(GUVNOR_M2REPO, i18n.ArtifactRepository());
         perspectiveTreeProvider.setPerspectiveName(ADMINISTRATION, i18n.Administration());
@@ -83,6 +83,7 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.setPerspectiveName(BUSINESS_DASHBOARDS, i18n.Business_Dashboards());
 
         // Exclude some perspectives
+        perspectiveTreeProvider.excludePerspectiveId(AUTHORING); /* kie-wb-distributions */
         perspectiveTreeProvider.excludePerspectiveId("AuthoringPerspectiveNoContext"); /* kie-wb-distributions */
         perspectiveTreeProvider.excludePerspectiveId("FormDisplayPerspective"); /* jbpm-console-ng */
         perspectiveTreeProvider.excludePerspectiveId("Drools Tasks"); /* jbpm-console-ng */

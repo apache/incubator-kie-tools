@@ -41,6 +41,6 @@ public class LibraryPerspectiveTest {
     public void libraryRefreshesPlacesOnStartupTest() {
         perspective.onOpen();
 
-        verify( libraryPlaces ).refresh();
+        verify( libraryPlaces ).refresh(any());
     }
 }

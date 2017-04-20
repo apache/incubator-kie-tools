@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.screens.library.client.screens;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import javax.enterprise.event.Event;
 
@@ -29,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -72,6 +74,9 @@ public class NewProjectScreenTest {
     @Mock
     private Event<NewProjectEvent> newProjectEvent;
 
+    @Mock
+    private LibraryPreferences libraryPreferences;
+
     private NewProjectScreen newProjectScreen;
 
     private LibraryInfo libraryInfo;
@@ -93,12 +98,13 @@ public class NewProjectScreenTest {
                                                     view,
                                                     ts,
                                                     sessionInfo,
-                                                    newProjectEvent));
+                                                    newProjectEvent,
+                                                    libraryPreferences));
 
         doReturn("baseUrl").when(newProjectScreen).getBaseURL();
 
         libraryInfo = new LibraryInfo("master",
-                                      new HashSet<>());
+                                      new ArrayList<>());
         doReturn(libraryInfo).when(libraryService).getLibraryInfo(any(Repository.class),
                                                                   anyString());
 
@@ -107,7 +113,6 @@ public class NewProjectScreenTest {
 
     @Test
     public void loadTest() {
-        verify(view).init(newProjectScreen);
         assertEquals(libraryInfo,
                      newProjectScreen.libraryInfo);
     }
@@ -125,16 +130,19 @@ public class NewProjectScreenTest {
         final Repository repository = mock(Repository.class);
         when(libraryPlaces.getSelectedRepository()).thenReturn(repository);
 
-        newProjectScreen.createProject("test");
+        newProjectScreen.createProject("test",
+                                       "description");
 
         verify(libraryService).createProject("test",
                                              repository,
-                                             "baseUrl");
+                                             "baseUrl",
+                                             "description");
     }
 
     @Test
     public void createProjectSuccessfullyTest() {
-        newProjectScreen.createProject("projectName");
+        newProjectScreen.createProject("projectName",
+                                       "description");
 
         verify(busyIndicatorView).showBusyIndicator(anyString());
         verify(newProjectEvent).fire(any(NewProjectEvent.class));
@@ -148,9 +156,11 @@ public class NewProjectScreenTest {
     public void createProjectFailedTest() {
         doThrow(new RuntimeException()).when(libraryService).createProject(anyString(),
                                                                            any(Repository.class),
+                                                                           anyString(),
                                                                            anyString());
 
-        newProjectScreen.createProject("projectName");
+        newProjectScreen.createProject("projectName",
+                                       "description");
 
         verify(busyIndicatorView).showBusyIndicator(anyString());
         verify(newProjectEvent,

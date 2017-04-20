@@ -42,6 +42,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
+import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -292,12 +293,19 @@ public class ExamplesServiceImpl implements ExamplesService {
 
     private String readDescription(final Project project) {
         final Path root = project.getRootPath();
+        final POM pom = project.getPom();
         final org.uberfire.java.nio.file.Path nioRoot = Paths.convert(root);
         final org.uberfire.java.nio.file.Path nioDescription = nioRoot.resolve(PROJECT_DESCRIPTON);
         String description = "Example '" + project.getProjectName() + "' project";
+
         if (ioService.exists(nioDescription)) {
             description = ioService.readAllString(nioDescription);
+        } else if (pom != null
+                && pom.getDescription() != null
+                && !pom.getDescription().isEmpty()) {
+            description = pom.getDescription();
         }
+
         return description;
     }
 

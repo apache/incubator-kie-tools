@@ -15,16 +15,12 @@
  */
 package org.kie.workbench.common.screens.library.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -32,45 +28,46 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 public class LibraryInfo {
 
     private String selectedBranch;
-    private Set<Project> projects = new HashSet<>();
+    private List<Project> projects = new ArrayList<>();
 
-    public LibraryInfo( @MapsTo( "selectedBranch" ) final String selectedBranch,
-                        @MapsTo( "projects" ) final Set<Project> projects ) {
-        this.selectedBranch = checkNotNull( "selectedBranch", selectedBranch );
-        this.projects = checkNotNull( "projects", projects );
+    public LibraryInfo(@MapsTo("selectedBranch") final String selectedBranch,
+                       @MapsTo("projects") final List<Project> projects) {
+        this.selectedBranch = checkNotNull("selectedBranch",
+                                           selectedBranch);
+        this.projects = checkNotNull("projects",
+                                     projects);
     }
 
     public String getSelectedBranch() {
         return selectedBranch;
     }
 
-    public Set<Project> getProjects() {
+    public List<Project> getProjects() {
         return projects;
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof LibraryInfo ) ) {
+        if (!(o instanceof LibraryInfo)) {
             return false;
         }
 
         final LibraryInfo that = (LibraryInfo) o;
 
-        if ( getSelectedBranch() != null ? !getSelectedBranch().equals( that.getSelectedBranch() ) : that.getSelectedBranch() != null ) {
+        if (getSelectedBranch() != null ? !getSelectedBranch().equals(that.getSelectedBranch()) : that.getSelectedBranch() != null) {
             return false;
         }
-        return !( getProjects() != null ? !getProjects().equals( that.getProjects() ) : that.getProjects() != null );
-
+        return !(getProjects() != null ? !getProjects().equals(that.getProjects()) : that.getProjects() != null);
     }
 
     @Override
     public int hashCode() {
         int result = getSelectedBranch() != null ? getSelectedBranch().hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( getProjects() != null ? getProjects().hashCode() : 0 );
+        result = 31 * result + (getProjects() != null ? getProjects().hashCode() : 0);
         result = ~~result;
         return result;
     }

@@ -72,8 +72,7 @@ public class DefaultSocialLinkCommandGenerator {
     }
 
     private void onVFSLinkEvent( LinkCommandParams parameters ) {
-        if ( hasAccessToPerspective( PerspectiveIds.AUTHORING ) ) {
-            placeManager.goTo( PerspectiveIds.AUTHORING );
+        if ( hasAccessToPerspective( PerspectiveIds.LIBRARY ) ) {
             socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameters.getEventType(), parameters.getLink() ) );
         } else {
             generateNoRightsPopup();
@@ -100,8 +99,7 @@ public class DefaultSocialLinkCommandGenerator {
     }
 
     private void onProjectEvent( LinkCommandParams parameters ) {
-        if ( hasAccessToPerspective( PerspectiveIds.AUTHORING ) ) {
-            placeManager.goTo( PerspectiveIds.AUTHORING );
+        if ( hasAccessToPerspective( PerspectiveIds.LIBRARY ) ) {
             socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameters.getEventType(), parameters.getLink() ) );
         } else {
             generateNoRightsPopup();

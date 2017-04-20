@@ -15,7 +15,9 @@
  */
 package org.kie.workbench.common.screens.library.client.screens;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.enterprise.event.Event;
 
@@ -109,7 +111,7 @@ public class LibraryScreenTest {
         project3 = mock(Project.class);
         doReturn("project3Name").when(project3).getProjectName();
 
-        final Set<Project> projects = new HashSet<>();
+        final List<Project> projects = new ArrayList<>();
         projects.add(project1);
         projects.add(project2);
         projects.add(project3);
@@ -201,8 +203,8 @@ public class LibraryScreenTest {
 
     @Test
     public void filterProjectsTest() {
-        assertEquals(3,
-                     libraryScreen.libraryInfo.getProjects().size());
+        assertEquals(2,
+                     libraryScreen.projects.size());
         assertEquals(1,
                      libraryScreen.filterProjects("project1").size());
     }

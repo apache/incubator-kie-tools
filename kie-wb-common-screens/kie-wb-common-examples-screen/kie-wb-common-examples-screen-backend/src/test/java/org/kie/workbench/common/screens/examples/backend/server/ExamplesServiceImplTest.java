@@ -26,6 +26,7 @@ import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
+import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
@@ -257,6 +258,37 @@ public class ExamplesServiceImplTest {
         assertTrue(projects.contains(new ExampleProject(projectRoot,
                                                         "project1",
                                                         "custom description",
+                                                        Arrays.asList("tag1",
+                                                                      "tag2"))));
+    }
+
+    @Test
+    public void testGetProjects_PomDescription() {
+        final Path projectRoot = mock(Path.class);
+        final POM pom = mock(POM.class);
+        final KieProject project = mock(KieProject.class);
+        when(pom.getDescription()).thenReturn("pom description");
+        when(project.getRootPath()).thenReturn(projectRoot);
+        when(project.getProjectName()).thenReturn("project1");
+        when(project.getPom()).thenReturn(pom);
+        when(projectRoot.toURI()).thenReturn("default:///project1");
+        when(metadataService.getTags(any(Path.class))).thenReturn(Arrays.asList("tag1",
+                                                                                "tag2"));
+
+        final GitRepository repository = new GitRepository("guvnorng-playground");
+        when(repositoryFactory.newRepository(any(ConfigGroup.class))).thenReturn(repository);
+        when(projectService.getProjects(eq(repository),
+                                        any(String.class))).thenReturn(new HashSet<Project>() {{
+            add(project);
+        }});
+
+        final Set<ExampleProject> projects = service.getProjects(new ExampleRepository("https://github.com/guvnorngtestuser1/guvnorng-playground.git"));
+        assertNotNull(projects);
+        assertEquals(1,
+                     projects.size());
+        assertTrue(projects.contains(new ExampleProject(projectRoot,
+                                                        "project1",
+                                                        "pom description",
                                                         Arrays.asList("tag1",
                                                                       "tag2"))));
     }

@@ -15,6 +15,10 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.builder.model.BuildResults;
@@ -36,11 +40,9 @@ import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explor
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
-import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
-import org.kie.workbench.common.screens.library.api.LibraryContextSwitchEvent;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.popups.copy.CopyPopupWithPackageView;
@@ -60,16 +62,11 @@ import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 
@@ -341,45 +338,6 @@ public class BaseViewPresenterTest {
         RenamePopUpPresenter.View view = presenter.getRenameView();
 
         assertTrue( view instanceof RenamePopUpPresenter.View );
-    }
-
-    @Test
-    public void testOnLibraryContextSwitchEvent() {
-        LibraryContextSwitchEvent event = mock( LibraryContextSwitchEvent.class );
-        BaseViewPresenter baseViewPresenter = spy( presenter );
-        Path path = mock( Path.class );
-        Command command = mock( Command.class );
-        URIStructureExplorerModel uriStructureExplorerModel = mock( URIStructureExplorerModel.class );
-
-        doReturn( mock( Repository.class ) ).when( uriStructureExplorerModel ).getRepository();
-        doReturn( uriStructureExplorerModel ).when( explorerServiceActual ).getURIStructureExplorerModel( any( Path.class ) );
-
-        when( event.isProjectSelected() ).thenReturn( true );
-        when( event.getResourcePath() ).thenReturn( path );
-        when( event.getContextSwitchedCallback() ).thenReturn( command );
-
-        baseViewPresenter.onLibraryContextSwitchEvent( event );
-
-        verify( baseViewPresenter ).setupActiveContextFor( eq( path ), any( Command.class ) );
-        verify( placeManager ).goTo( path );
-        verify( command ).execute();
-    }
-
-    @Test
-    public void testOnLibraryContextSwitchEventWithInvalidType() {
-        LibraryContextSwitchEvent event = mock( LibraryContextSwitchEvent.class );
-        BaseViewPresenter baseViewPresenter = spy( presenter );
-        Path path = mock( Path.class );
-        Command command = mock( Command.class );
-
-        when( event.isProjectFromExample() ).thenReturn( true );
-        when( event.getContextSwitchedCallback() ).thenReturn( command );
-
-        baseViewPresenter.onLibraryContextSwitchEvent( event );
-
-        verify( baseViewPresenter, never() ).setupActiveContextFor( any( Path.class ), any( Command.class ) );
-        verify( placeManager, never() ).goTo( any( Path.class ) );
-        verify( command, never() ).execute();
     }
 
     private void copyPopUpPresenterShowMock() {

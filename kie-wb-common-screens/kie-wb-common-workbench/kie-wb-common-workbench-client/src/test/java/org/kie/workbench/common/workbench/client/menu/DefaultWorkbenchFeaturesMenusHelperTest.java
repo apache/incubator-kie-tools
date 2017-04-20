@@ -126,12 +126,11 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     public void getAuthoringViewsTest() {
         List<? extends MenuItem> authoringMenuItems = menusHelper.getAuthoringViews();
 
-        assertEquals( 5, authoringMenuItems.size() );
+        assertEquals( 4, authoringMenuItems.size() );
         assertEquals( menusHelper.constants.ProjectAuthoring(), authoringMenuItems.get( 0 ).getCaption() );
         assertEquals( menusHelper.constants.Contributors(), authoringMenuItems.get( 1 ).getCaption() );
         assertEquals( menusHelper.constants.ArtifactRepository(), authoringMenuItems.get( 2 ).getCaption() );
         assertEquals( menusHelper.constants.Administration(), authoringMenuItems.get( 3 ).getCaption() );
-        assertEquals( menusHelper.constants.Library(), authoringMenuItems.get( 4 ).getCaption() );
     }
 
     @Test

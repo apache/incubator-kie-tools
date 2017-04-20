@@ -78,6 +78,9 @@ public class DefaultWorkbenchFeaturesMenusHelper {
     protected UtilityMenuBar utilityMenuBar;
     protected LibraryMonitor libraryMonitor;
 
+    public DefaultWorkbenchFeaturesMenusHelper() {
+    }
+
     @Inject
     public DefaultWorkbenchFeaturesMenusHelper(SyncBeanManager iocManager,
                                                ActivityManager activityManager,
@@ -130,16 +133,12 @@ public class DefaultWorkbenchFeaturesMenusHelper {
     }
 
     public List<MenuItem> getAuthoringViews() {
-        final DefaultPlaceRequest libraryPlaceRequest = new DefaultPlaceRequest( LIBRARY );
-        final PlaceRequest authoringPlaceRequest = new ConditionalPlaceRequest( AUTHORING ).when( p -> libraryMonitor.thereIsAtLeastOneProjectAccessible() ).orElse( libraryPlaceRequest );
+        final List<MenuItem> result = new ArrayList<>( 4 );
 
-        final List<MenuItem> result = new ArrayList<>( 5 );
-
-        result.add( MenuFactory.newSimpleItem( constants.ProjectAuthoring() ).place( authoringPlaceRequest ).endMenu().build().getItems().get( 0 ) );
+        result.add( MenuFactory.newSimpleItem( constants.ProjectAuthoring() ).perspective( LIBRARY ).endMenu().build().getItems().get( 0 ) );
         result.add( MenuFactory.newSimpleItem( constants.Contributors() ).perspective( CONTRIBUTORS ).endMenu().build().getItems().get( 0 ) );
         result.add( MenuFactory.newSimpleItem( constants.ArtifactRepository() ).perspective( GUVNOR_M2REPO ).endMenu().build().getItems().get( 0 ) );
         result.add( MenuFactory.newSimpleItem( constants.Administration() ).perspective( ADMINISTRATION ).endMenu().build().getItems().get( 0 ) );
-        result.add( MenuFactory.newSimpleItem( constants.Library() ).perspective( LIBRARY ).endMenu().build().getItems().get( 0 ) );
 
         return result;
     }

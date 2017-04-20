@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
@@ -75,7 +75,7 @@ public class LibraryScreen {
 
     private ProjectController projectController;
 
-    LibraryInfo libraryInfo;
+    List<Project> projects;
 
     @Inject
     public LibraryScreen(final View view,
@@ -98,38 +98,46 @@ public class LibraryScreen {
     public void setup() {
         Repository selectedRepository = libraryPlaces.getSelectedRepository();
         String selectedBranch = libraryPlaces.getSelectedBranch();
-        libraryService.call(new RemoteCallback<LibraryInfo>() {
-            @Override
-            public void callback(LibraryInfo libraryInfo) {
-                updateLibrary(libraryInfo);
-            }
-        }).getLibraryInfo(selectedRepository,
-                          selectedBranch);
+
+        libraryService.call((RemoteCallback<LibraryInfo>) this::updateLibrary)
+                .getLibraryInfo(selectedRepository,
+                                selectedBranch);
+
         placeManager.closePlace(LibraryPlaces.EMPTY_LIBRARY_SCREEN);
     }
 
     private void updateLibrary(final LibraryInfo libraryInfo) {
-        LibraryScreen.this.libraryInfo = libraryInfo;
+        projects = libraryInfo.getProjects();
         view.clearFilterText();
-        setupProjects(libraryInfo.getProjects());
+        setupProjects();
     }
 
-    private void setupProjects(final Set<Project> projects) {
-        view.clearProjects();
-
+    private void setupProjects() {
         if (projectController.canReadProjects()) {
-            projects.stream().filter(p -> projectController.canReadProject(p))
-                    .forEach(p -> view.addProject(p.getProjectName(),
-                                                  detailsCommand(p),
-                                                  selectCommand(p)));
+            projects = projects.stream()
+                    .filter(p -> projectController.canReadProject(p))
+                    .collect(Collectors.toList());
+            projects.sort((p1, p2) -> p1.getProjectName().compareTo(p2.getProjectName()));
+
+            updateView(projects);
         }
     }
 
-    public void updateProjectsBy(final String filter) {
-        if (libraryInfo != null) {
-            Set<Project> filteredProjects = filterProjects(filter);
-            setupProjects(filteredProjects);
-        }
+    public List<Project> filterProjects(final String filter) {
+        List<Project> filteredProjects = projects.stream()
+                .filter(p -> p.getProjectName().toUpperCase().startsWith(filter.toUpperCase()))
+                .collect(Collectors.toList());
+
+        updateView(filteredProjects);
+
+        return filteredProjects;
+    }
+
+    private void updateView(final List<Project> projects) {
+        view.clearProjects();
+        projects.stream().forEach(p -> view.addProject(p.getProjectName(),
+                                                       detailsCommand(p),
+                                                       selectCommand(p)));
     }
 
     public void importProject(final ExampleProject exampleProject) {
@@ -163,14 +171,6 @@ public class LibraryScreen {
             final ProjectInfo projectInfo = getProjectInfo(project);
             projectDetailEvent.fire(new ProjectDetailEvent(projectInfo));
         };
-    }
-
-    Set<Project> filterProjects(final String filter) {
-        return libraryInfo.getProjects().stream()
-                .filter(p -> p.getProjectName() != null)
-                .filter(p -> p.getProjectName().toUpperCase()
-                        .startsWith(filter.toUpperCase()))
-                .collect(Collectors.toSet());
     }
 
     private ProjectInfo getProjectInfo(final Project project) {

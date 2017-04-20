@@ -253,41 +253,12 @@ public class ActiveContextManager {
                 pkg));
     }
 
-    public void onProjectAdded(@Observes final NewProjectEvent event) {
-        if (view.isVisible() && event.getProject() != null && !placeManager.getStatus("LibraryPerspective").equals(PlaceStatus.OPEN)) {
-
-            if (sessionInfo.getId().equals(event.getSessionId())
-                    && isInActiveBranch(event.getProject())) {
-
-                refresh(event.getProject());
-            } else {
-
-                refresh();
-            }
-        }
-    }
-
     public void onProjectRename(@Observes final RenameProjectEvent event) {
         if (isInActiveBranch(event.getOldProject())) {
             if (authorizationManager.authorize(event.getOldProject(),
                                                sessionInfo.getIdentity())) {
                 refresh(event.getNewProject());
             }
-        }
-    }
-
-    public void onProjectDelete(@Observes final DeleteProjectEvent event) {
-        if (isInActiveBranch(event.getProject()) && authorizationManager.authorize(event.getProject(),
-                                                                                   sessionInfo.getIdentity())) {
-            if (activeContextItems.getActiveProject() != null && activeContextItems.getActiveProject().equals(event.getProject())) {
-                activeContextItems.flushActiveProject();
-            }
-
-            view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
-            refresh(new ProjectExplorerContentQuery(
-                    activeContextItems.getActiveOrganizationalUnit(),
-                    activeContextItems.getActiveRepository(),
-                    activeContextItems.getActiveBranch()));
         }
     }
 }

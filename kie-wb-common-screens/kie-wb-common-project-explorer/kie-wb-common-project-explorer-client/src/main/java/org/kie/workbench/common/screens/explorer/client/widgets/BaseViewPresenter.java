@@ -15,32 +15,37 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.Window;
-import org.guvnor.asset.management.social.AssetManagementEventTypes;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.social.ProjectEventType;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.ext.uberfire.social.activities.model.ExtendedTypes;
-import org.ext.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.kie.workbench.common.screens.explorer.client.utils.URLHelper;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchChangeHandler;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagChangedEvent;
-import org.kie.workbench.common.screens.explorer.model.*;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.explorer.model.FolderItemType;
+import org.kie.workbench.common.screens.explorer.model.FolderListing;
+import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
-import org.kie.workbench.common.screens.library.api.LibraryContextSwitchEvent;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
@@ -58,24 +63,17 @@ import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.workbench.events.*;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.events.ResourceAddedEvent;
+import org.uberfire.workbench.events.ResourceCopiedEvent;
+import org.uberfire.workbench.events.ResourceDeletedEvent;
+import org.uberfire.workbench.events.ResourceRenamedEvent;
+import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 public abstract class BaseViewPresenter
         implements BranchChangeHandler {
 
-    public static final String PROJECT_SCREEN = "projectScreen";
-    public static final String REPOSITORY_STRUCTURE_SCREEN = "repositoryStructureScreen";
     @Inject
     protected User identity;
 
@@ -677,72 +675,6 @@ public abstract class BaseViewPresenter
                                    activeOptions.getOptions() );
     }
 
-    public void onSocialFileSelected( @Observes final SocialFileSelectedEvent event ) {
-        vfsService.call( new RemoteCallback<Path>() {
-            @Override
-            public void callback( Path path ) {
-                openBestSuitedScreen( event.getEventType(),
-                                      path );
-                setupActiveContextFor( path );
-            }
-        } ).get( event.getUri() );
-    }
-
-    private void openBestSuitedScreen( final String eventType,
-                                       final Path path ) {
-        if ( isRepositoryEvent( eventType ) ) {
-            //the event is relative to a Repository and not to a file.
-            placeManager.goTo( REPOSITORY_STRUCTURE_SCREEN );
-        } else if ( isProjectEvent( eventType ) ) {
-            placeManager.goTo( PROJECT_SCREEN );
-        } else {
-            placeManager.goTo( path );
-        }
-    }
-
-    private boolean isRepositoryEvent( String eventType ) {
-        if ( eventType == null || eventType.isEmpty() ) {
-            return false;
-        }
-
-        if ( ExtendedTypes.NEW_REPOSITORY_EVENT.name()
-                .equals( eventType ) ||
-                AssetManagementEventTypes.BRANCH_CREATED.name()
-                        .equals( eventType ) ||
-                AssetManagementEventTypes.REPOSITORY_CHANGE.name()
-                        .equals( eventType ) ) {
-
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isProjectEvent( final String eventType ) {
-        return ProjectEventType.NEW_PROJECT.name()
-                .equals( eventType );
-    }
-
-    void setupActiveContextFor( final Path path ) {
-        setupActiveContextFor( path, null );
-    }
-
-    void setupActiveContextFor( final Path path,
-                                final Command activeContextLoadedCallback ) {
-        explorerService.call( new RemoteCallback<URIStructureExplorerModel>() {
-            @Override
-            public void callback( final URIStructureExplorerModel model ) {
-                activeContextManager.initActiveContext( model.getOrganizationalUnit(),
-                                                        model.getRepository(),
-                                                        model.getRepository().getDefaultBranch(),
-                                                        model.getProject() );
-
-                if ( activeContextLoadedCallback != null ) {
-                    activeContextLoadedCallback.execute();
-                }
-            }
-        } ).getURIStructureExplorerModel( path );
-    }
-
     public void initialiseViewForActiveContext( ProjectContext context ) {
         activeContextManager.initActiveContext( context );
     }
@@ -795,15 +727,4 @@ public abstract class BaseViewPresenter
     @Inject
     private UberfireDocks uberfireDocks;
 
-    public void onLibraryContextSwitchEvent( @Observes final LibraryContextSwitchEvent event ) {
-        if ( event.isProjectSelected() || event.isAssetSelected() ) {
-            setupActiveContextFor( event.getResourcePath(), () -> {
-                placeManager.goTo( event.getResourcePath() );
-
-                if ( event.getContextSwitchedCallback() != null ) {
-                    event.getContextSwitchedCallback().execute();
-                }
-            } );
-        }
-    }
 }

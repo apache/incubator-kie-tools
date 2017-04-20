@@ -37,6 +37,10 @@ public class NewProjectView implements NewProjectScreen.View,
     private Input projectName;
 
     @Inject
+    @DataField("project-description")
+    private Input projectDescription;
+
+    @Inject
     @DataField("create")
     private Button create;
 
@@ -45,19 +49,25 @@ public class NewProjectView implements NewProjectScreen.View,
     private Button cancel;
 
     @Override
-    public void init( NewProjectScreen presenter ) {
+    public void init(final NewProjectScreen presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void setProjectDescription(final String defaultProjectDescription) {
+        this.projectDescription.setValue(defaultProjectDescription);
     }
 
     @SinkNative(Event.ONCLICK)
     @EventHandler("cancel")
-    public void cancel( Event e ) {
+    public void cancel(Event e) {
         presenter.cancel();
     }
 
     @SinkNative(Event.ONCLICK)
     @EventHandler("create")
-    public void createProject( Event e ) {
-        presenter.createProject( projectName.getValue() );
+    public void createProject(Event e) {
+        presenter.createProject(projectName.getValue(),
+                                projectDescription.getValue());
     }
 }

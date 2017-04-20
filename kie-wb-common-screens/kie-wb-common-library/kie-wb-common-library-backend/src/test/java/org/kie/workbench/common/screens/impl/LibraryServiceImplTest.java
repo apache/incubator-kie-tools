@@ -33,6 +33,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +52,8 @@ import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferenc
 import org.kie.workbench.common.screens.library.api.preferences.LibraryProjectPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryRepositoryPreferences;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
@@ -112,6 +115,9 @@ public class LibraryServiceImplTest {
 
     @Mock
     private Repository repo2Default;
+
+    @Captor
+    private ArgumentCaptor<POM> pomArgumentCaptor;
 
     private LibraryServiceImpl libraryService;
     private List<OrganizationalUnit> ous;
@@ -226,7 +232,7 @@ public class LibraryServiceImplTest {
 
         assertEquals("master",
                      libraryInfo.getSelectedBranch());
-        assertEquals(projects,
+        assertEquals(new ArrayList<>(projects),
                      libraryInfo.getProjects());
     }
 
@@ -245,12 +251,16 @@ public class LibraryServiceImplTest {
 
         libraryService.createProject("projectName",
                                      repository,
-                                     "baseURL");
+                                     "baseURL",
+                                     "description");
 
         verify(kieProjectService).newProject(eq(projectRootPath),
-                                             any(),
+                                             pomArgumentCaptor.capture(),
                                              eq("baseURL"),
                                              any());
+
+        final POM pom = pomArgumentCaptor.getValue();
+        assertEquals("description", pom.getDescription());
     }
 
     @Test
@@ -424,12 +434,12 @@ public class LibraryServiceImplTest {
         GAV gav = libraryService.createGAV("proj",
                                            preferences);
         POM proj = libraryService.createPOM("proj",
-                                            preferences,
+                                            "description",
                                             gav);
 
         assertEquals("proj",
                      proj.getName());
-        assertEquals(preferences.getProjectPreferences().getDescription(),
+        assertEquals("description",
                      proj.getDescription());
         assertEquals(gav,
                      proj.getGav());

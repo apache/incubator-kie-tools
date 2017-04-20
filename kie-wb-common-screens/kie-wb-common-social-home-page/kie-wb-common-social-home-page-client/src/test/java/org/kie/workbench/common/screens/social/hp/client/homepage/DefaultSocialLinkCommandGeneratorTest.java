@@ -75,7 +75,6 @@ public class DefaultSocialLinkCommandGeneratorTest {
         when( parameter.isVFSLink() ).thenReturn( true );
         command.execute( parameter );
 
-        verify( placeManager ).goTo( PerspectiveIds.AUTHORING );
         verify( eventSourceMock ).fire( any( SocialFileSelectedEvent.class ) );
 
     }
@@ -88,7 +87,7 @@ public class DefaultSocialLinkCommandGeneratorTest {
         when( parameter.isVFSLink() ).thenReturn( true );
         command.execute( parameter );
 
-        verify( placeManager, never() ).goTo( PerspectiveIds.AUTHORING );
+        verify( placeManager, never() ).goTo( PerspectiveIds.LIBRARY );
         verify( eventSourceMock, never() ).fire( any( SocialFileSelectedEvent.class ) );
 
     }
@@ -131,7 +130,6 @@ public class DefaultSocialLinkCommandGeneratorTest {
         when( parameter.getEventType() ).thenReturn( ProjectEventType.NEW_PROJECT.name() );
         command.execute( parameter );
 
-        verify( placeManager ).goTo( PerspectiveIds.AUTHORING );
         verify( eventSourceMock ).fire( any( SocialFileSelectedEvent.class ) );
 
     }
