@@ -30,40 +30,42 @@ public interface DriverProvider {
     /**
      * Used to pass initial configurations to the provider.
      */
-    void loadConfig( Properties properties );
+    void loadConfig(Properties properties);
 
     /**
      * Deploys a driver source in the target system.
      */
-    DriverDeploymentInfo deploy( final DriverDef driverDef ) throws Exception;
+    DriverDeploymentInfo deploy(final DriverDef driverDef) throws Exception;
 
     /**
      * Resyncs an already deployed data source.
      */
-    DriverDeploymentInfo resync( DriverDef driverDef, DriverDeploymentInfo deploymentInfo ) throws Exception;
+    DriverDeploymentInfo resync(DriverDef driverDef,
+                                DriverDeploymentInfo deploymentInfo) throws Exception;
 
     /**
      * Un-deploys a driver from the target system.
      */
-    void undeploy( final DriverDeploymentInfo deploymentInfo ) throws Exception;
+    void undeploy(final DriverDeploymentInfo deploymentInfo) throws Exception;
 
     /**
      * Gets the deployment information form an already deployed driver.
-     *
      * @param uuid the driver identifier.
-     *
      * @return The deployment information or null if the driver wasn't deployed.
-     *
      * @throws Exception in cases e.g. when communication with the target system e.g. the Wildlfy server fails.
      */
-    DriverDeploymentInfo getDeploymentInfo( final String uuid ) throws Exception;
+    DriverDeploymentInfo getDeploymentInfo(final String uuid) throws Exception;
 
     /**
      * Gets the deployment information for all the deployed drivers in the target system.
-     *
      * @return a list with current deployments.
-     *
      * @throws Exception in cases e.g. when communication with the target system e.g. the Wildlfy server fails.
      */
-    List<DriverDeploymentInfo> getDeploymentsInfo() throws Exception;
+    List< DriverDeploymentInfo > getDeploymentsInfo() throws Exception;
+
+    /**
+     * Indicates if the DriverProvider has started properly.
+     * @throws Exception if the DriverProvider has not started throws an exception.
+     */
+    void hasStarted() throws Exception;
 }

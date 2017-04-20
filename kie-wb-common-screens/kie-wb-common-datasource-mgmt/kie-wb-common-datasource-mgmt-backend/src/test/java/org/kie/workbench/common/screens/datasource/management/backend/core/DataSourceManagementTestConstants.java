@@ -71,4 +71,8 @@ public interface DataSourceManagementTestConstants {
     String DRIVER1_CLASS = "java.sql.MyDriver1";
 
     String DRIVER2_CLASS = "java.sql.MyDriver2";
+
+    String METHOD_EXECUTION_OK = "METHOD_EXECUTION_OK";
+
+    String METHOD_EXECUTION_FAILED = "METHOD_EXECUTION_FAILED";
 }

@@ -28,79 +28,68 @@ public interface DataSourceRuntimeManager {
 
     /**
      * Deploys a data source definition in the data sources runtime system.
-     *
      * @param dataSourceDef Data source definition to be deployed.
-     *
      * @param options deployment options to apply.
-     *
      * @return the deployment information if the deployment was successful, an exception is thrown in any other case.
      */
-    DataSourceDeploymentInfo deployDataSource( DataSourceDef dataSourceDef, DeploymentOptions options ) throws Exception;
+    DataSourceDeploymentInfo deployDataSource(DataSourceDef dataSourceDef,
+                                              DeploymentOptions options) throws Exception;
 
     /**
      * Gets the deployment information for given data source.
-     *
      * @param uuid the data source identifier.
-     *
      * @return The deployment information or null if the data source wasn't deployed.
-     *
      * @throws Exception if the deployment information couldn't be retrieved.
      */
-    DataSourceDeploymentInfo getDataSourceDeploymentInfo( String uuid ) throws Exception;
+    DataSourceDeploymentInfo getDataSourceDeploymentInfo(String uuid) throws Exception;
 
     /**
      * Un-deploys a data source from the data sources runtime system.
-     *
      * @param deploymentInfo the deployment information for a previously deployed data source.
-     *
      * @param options un-deployment options to apply.
-     *
      * @throws Exception if the un-deployment failed.
      */
-    void unDeployDataSource( DataSourceDeploymentInfo deploymentInfo, UnDeploymentOptions options ) throws Exception;
+    void unDeployDataSource(DataSourceDeploymentInfo deploymentInfo,
+                            UnDeploymentOptions options) throws Exception;
 
     /**
      * Deploys a driver in the data sources runtime system.
-     *
      * @param driverDef Driver definition to be deployed.
-     *
      * @param options deployment options to appy.
      */
-    DriverDeploymentInfo deployDriver( DriverDef driverDef, DeploymentOptions options ) throws Exception;
+    DriverDeploymentInfo deployDriver(DriverDef driverDef,
+                                      DeploymentOptions options) throws Exception;
 
     /**
      * Gets the deployment information for a given driver.
-     *
      * @param uuid the driver identifier.
-     *
      * @return The deployment information or null if the driver wasn't deployed.
-     *
      * @throws Exception if the deployment information couldn't be retrieved.
      */
-    DriverDeploymentInfo getDriverDeploymentInfo( String uuid ) throws Exception;
+    DriverDeploymentInfo getDriverDeploymentInfo(String uuid) throws Exception;
 
     /**
      * Un-deploys a driver from data sources runtime system.
-     *
      * @param deploymentInfo deployment information about the driver to un-deploy
-     *
      * @param options un-deployment options to apply.
-     *
      * @throws Exception if the un-deployment failed.
      */
-    void unDeployDriver( DriverDeploymentInfo deploymentInfo, UnDeploymentOptions options ) throws Exception;
+    void unDeployDriver(DriverDeploymentInfo deploymentInfo,
+                        UnDeploymentOptions options) throws Exception;
 
     /**
      * Gets a reference to a previously deployed data source.
-     *
      * @param uuid a data source identifier.
-     *
      * @return if the data source is properly deployed a reference to the data source is returned, in any other case
      * an exception is thrown.
-     *
      * @throws Exception if the data source is not deployed or in cases when there are a communication error with the
      * server, etc.
      */
-    DataSource lookupDataSource( String uuid ) throws Exception;
+    DataSource lookupDataSource(String uuid) throws Exception;
 
+    /**
+     * Indicates if the DataSourceRuntimeManager has started properly.
+     * @throws Exception if the DataSourceManagement runtime has not started throws an exception.
+     */
+    void hasStarted() throws Exception;
 }

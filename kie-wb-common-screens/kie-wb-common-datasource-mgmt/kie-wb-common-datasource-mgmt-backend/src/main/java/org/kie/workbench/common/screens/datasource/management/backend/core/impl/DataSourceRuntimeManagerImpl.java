@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 public class DataSourceRuntimeManagerImpl
         implements DataSourceRuntimeManager {
 
-    private static final Logger logger = LoggerFactory.getLogger( DataSourceRuntimeManagerImpl.class );
+    private static final Logger logger = LoggerFactory.getLogger(DataSourceRuntimeManagerImpl.class);
 
     private DataSourceProvider dataSourceProvider;
 
@@ -50,11 +50,11 @@ public class DataSourceRuntimeManagerImpl
 
     private DataSourceProviderFactory providerFactory;
 
-    public DataSourceRuntimeManagerImpl( ) {
+    public DataSourceRuntimeManagerImpl() {
     }
 
     @Inject
-    public DataSourceRuntimeManagerImpl( DataSourceProviderFactory providerFactory ) {
+    public DataSourceRuntimeManagerImpl(DataSourceProviderFactory providerFactory) {
         this.providerFactory = providerFactory;
     }
 
@@ -65,126 +65,144 @@ public class DataSourceRuntimeManagerImpl
     }
 
     @Override
-    public synchronized DataSourceDeploymentInfo deployDataSource( DataSourceDef dataSourceDef, DeploymentOptions options ) throws Exception {
+    public synchronized DataSourceDeploymentInfo deployDataSource(DataSourceDef dataSourceDef,
+                                                                  DeploymentOptions options) throws Exception {
         try {
-            DataSourceDeploymentInfo dataSourceDeploymentInfo = dataSourceProvider.getDeploymentInfo( dataSourceDef.getUuid() );
-            DriverDeploymentInfo driverDeploymentInfo = driverProvider.getDeploymentInfo( dataSourceDef.getDriverUuid() );
+            DataSourceDeploymentInfo dataSourceDeploymentInfo = dataSourceProvider.getDeploymentInfo(dataSourceDef.getUuid());
+            DriverDeploymentInfo driverDeploymentInfo = driverProvider.getDeploymentInfo(dataSourceDef.getDriverUuid());
 
-            if ( dataSourceDeploymentInfo != null ) {
-                if ( options.isCreateOrResyncDeployment() ) {
-                    dataSourceDeploymentInfo = dataSourceProvider.resync( dataSourceDef, dataSourceDeploymentInfo );
+            if (dataSourceDeploymentInfo != null) {
+                if (options.isCreateOrResyncDeployment()) {
+                    dataSourceDeploymentInfo = dataSourceProvider.resync(dataSourceDef,
+                                                                         dataSourceDeploymentInfo);
                 } else {
-                    throw new Exception( "Data source: " + dataSourceDef + " is already deployed" );
+                    throw new Exception("Data source: " + dataSourceDef + " is already deployed");
                 }
-            } else if ( driverDeploymentInfo != null ) {
-                dataSourceDeploymentInfo = dataSourceProvider.deploy( dataSourceDef );
+            } else if (driverDeploymentInfo != null) {
+                dataSourceDeploymentInfo = dataSourceProvider.deploy(dataSourceDef);
             } else {
-                throw new Exception( "Required driver: " + dataSourceDef.getDriverUuid() + " is not deployed." );
+                throw new Exception("Required driver: " + dataSourceDef.getDriverUuid() + " is not deployed.");
             }
 
-            if ( driverDeploymentInfo != null && driverDeploymentCache.get( driverDeploymentInfo ) != null ) {
-                driverDeploymentCache.get( driverDeploymentInfo ).addDependant( dataSourceDeploymentInfo );
+            if (driverDeploymentInfo != null && driverDeploymentCache.get(driverDeploymentInfo) != null) {
+                driverDeploymentCache.get(driverDeploymentInfo).addDependant(dataSourceDeploymentInfo);
             }
 
             return dataSourceDeploymentInfo;
-        } catch ( Exception e ) {
-            logger.error( "Data source deployment failed for dataSourceDef: " + dataSourceDef, e );
+        } catch (Exception e) {
+            logger.error("Data source deployment failed for dataSourceDef: " + dataSourceDef,
+                         e);
             throw e;
         }
     }
 
     @Override
-    public synchronized DataSourceDeploymentInfo getDataSourceDeploymentInfo( String uuid ) throws Exception {
+    public synchronized DataSourceDeploymentInfo getDataSourceDeploymentInfo(String uuid) throws Exception {
         try {
-            return dataSourceProvider.getDeploymentInfo( uuid );
-        } catch ( Exception e ) {
-            logger.error( "It was not possible to read the deploymentInfo for data source: " + uuid );
+            return dataSourceProvider.getDeploymentInfo(uuid);
+        } catch (Exception e) {
+            logger.error("It was not possible to read the deploymentInfo for data source: " + uuid);
             throw e;
         }
     }
 
     @Override
-    public synchronized void unDeployDataSource( DataSourceDeploymentInfo deploymentInfo, UnDeploymentOptions options )
+    public synchronized void unDeployDataSource(DataSourceDeploymentInfo deploymentInfo,
+                                                UnDeploymentOptions options)
             throws Exception {
         try {
-            dataSourceProvider.undeploy( deploymentInfo );
-            deReferFromDrivers( deploymentInfo );
-        } catch ( Exception e ) {
-            logger.error( "Data source un-deployment failed for deploymentInfo: " + deploymentInfo, e );
+            dataSourceProvider.undeploy(deploymentInfo);
+            deReferFromDrivers(deploymentInfo);
+        } catch (Exception e) {
+            logger.error("Data source un-deployment failed for deploymentInfo: " + deploymentInfo,
+                         e);
             throw e;
         }
     }
 
     @Override
-    public synchronized DriverDeploymentInfo deployDriver( DriverDef driverDef, DeploymentOptions options ) throws Exception {
+    public synchronized DriverDeploymentInfo deployDriver(DriverDef driverDef,
+                                                          DeploymentOptions options) throws Exception {
         try {
-            DriverDeploymentInfo deploymentInfo = driverProvider.getDeploymentInfo( driverDef.getUuid() );
-            if ( deploymentInfo != null ) {
-                if ( options.isCreateOrResyncDeployment() ) {
-                    deploymentInfo = driverProvider.resync( driverDef, deploymentInfo );
+            DriverDeploymentInfo deploymentInfo = driverProvider.getDeploymentInfo(driverDef.getUuid());
+            if (deploymentInfo != null) {
+                if (options.isCreateOrResyncDeployment()) {
+                    deploymentInfo = driverProvider.resync(driverDef,
+                                                           deploymentInfo);
                 } else {
-                    throw new Exception( "Driver: " + driverDef + " is already deployed." );
+                    throw new Exception("Driver: " + driverDef + " is already deployed.");
                 }
             } else {
-                deploymentInfo = driverProvider.deploy( driverDef );
+                deploymentInfo = driverProvider.deploy(driverDef);
             }
 
-            driverDeploymentCache.put( deploymentInfo, driverDef );
+            driverDeploymentCache.put(deploymentInfo,
+                                      driverDef);
             return deploymentInfo;
-        } catch ( Exception e ) {
-            logger.error( "Driver deployment failed for driverDef: " + driverDef, e );
+        } catch (Exception e) {
+            logger.error("Driver deployment failed for driverDef: " + driverDef,
+                         e);
             throw e;
         }
     }
 
     @Override
-    public synchronized DriverDeploymentInfo getDriverDeploymentInfo( String uuid ) throws Exception {
+    public synchronized DriverDeploymentInfo getDriverDeploymentInfo(String uuid) throws Exception {
         try {
-            DriverDeploymentInfo deploymentInfo = driverProvider.getDeploymentInfo( uuid );
-            if ( deploymentInfo != null && driverDeploymentCache.get( deploymentInfo ) != null ) {
-                DriverDeploymentInfo updatedInfo = new DriverDeploymentInfo( deploymentInfo.getDeploymentId(),
-                        deploymentInfo.getDriverDeploymentId(), deploymentInfo.isManaged(), deploymentInfo.getUuid(),
-                        deploymentInfo.getDriverClass() );
-                updatedInfo.getDependants().addAll( driverDeploymentCache.get( deploymentInfo ).getDependants() );
+            DriverDeploymentInfo deploymentInfo = driverProvider.getDeploymentInfo(uuid);
+            if (deploymentInfo != null && driverDeploymentCache.get(deploymentInfo) != null) {
+                DriverDeploymentInfo updatedInfo = new DriverDeploymentInfo(deploymentInfo.getDeploymentId(),
+                                                                            deploymentInfo.getDriverDeploymentId(),
+                                                                            deploymentInfo.isManaged(),
+                                                                            deploymentInfo.getUuid(),
+                                                                            deploymentInfo.getDriverClass());
+                updatedInfo.getDependants().addAll(driverDeploymentCache.get(deploymentInfo).getDependants());
                 deploymentInfo = updatedInfo;
             }
             return deploymentInfo;
-        } catch ( Exception e ) {
-            logger.error( "It was not possible to read the deploymentInfo for driver: " + uuid );
+        } catch (Exception e) {
+            logger.error("It was not possible to read the deploymentInfo for driver: " + uuid);
             throw e;
         }
     }
 
     @Override
-    public synchronized void unDeployDriver( DriverDeploymentInfo deploymentInfo, UnDeploymentOptions options ) throws Exception {
+    public synchronized void unDeployDriver(DriverDeploymentInfo deploymentInfo,
+                                            UnDeploymentOptions options) throws Exception {
         try {
-            DriverDeploymentCacheEntry cacheEntry = driverDeploymentCache.get( deploymentInfo );
-            if ( cacheEntry != null && cacheEntry.hasDependants() && options.isSoftUnDeployment() ) {
-                throw new Exception( "Driver: " + deploymentInfo + " can't be un-deployed. " +
-                        "It's currently referenced by : " +  cacheEntry.getDependants().size() + " data sources" );
+            DriverDeploymentCacheEntry cacheEntry = driverDeploymentCache.get(deploymentInfo);
+            if (cacheEntry != null && cacheEntry.hasDependants() && options.isSoftUnDeployment()) {
+                throw new Exception("Driver: " + deploymentInfo + " can't be un-deployed. " +
+                                            "It's currently referenced by : " + cacheEntry.getDependants().size() + " data sources");
             }
-            driverDeploymentCache.remove( deploymentInfo );
-            driverProvider.undeploy( deploymentInfo );
-        } catch ( Exception e ) {
-            logger.error( "Driver un-deployment failed for deploymentInfo: " + deploymentInfo, e );
+            driverDeploymentCache.remove(deploymentInfo);
+            driverProvider.undeploy(deploymentInfo);
+        } catch (Exception e) {
+            logger.error("Driver un-deployment failed for deploymentInfo: " + deploymentInfo,
+                         e);
             throw e;
         }
     }
 
     @Override
-    public synchronized DataSource lookupDataSource( String uuid ) throws Exception {
-        DataSourceDeploymentInfo deploymentInfo = dataSourceProvider.getDeploymentInfo( uuid );
-        if ( deploymentInfo != null ) {
-            return dataSourceProvider.lookupDataSource( deploymentInfo );
+    public synchronized DataSource lookupDataSource(String uuid) throws Exception {
+        DataSourceDeploymentInfo deploymentInfo = dataSourceProvider.getDeploymentInfo(uuid);
+        if (deploymentInfo != null) {
+            return dataSourceProvider.lookupDataSource(deploymentInfo);
         } else {
-            throw new Exception( "Data source: " + uuid + " is not deployed in current system." );
+            throw new Exception("Data source: " + uuid + " is not deployed in current system.");
         }
     }
 
-    private void deReferFromDrivers( DataSourceDeploymentInfo deploymentInfo  ) {
-        for ( DriverDeploymentCacheEntry entry : driverDeploymentCache.findReferencedEntries( deploymentInfo ) ) {
-            entry.removeDependant( deploymentInfo );
-        }
+    @Override
+    public void hasStarted() throws Exception {
+        driverProvider.hasStarted();
+        dataSourceProvider.hasStarted();
     }
 
+    private void deReferFromDrivers(DataSourceDeploymentInfo deploymentInfo) {
+        for (DriverDeploymentCacheEntry entry : driverDeploymentCache.findReferencedEntries(deploymentInfo)) {
+            entry.removeDependant(deploymentInfo);
+        }
+    }
 }

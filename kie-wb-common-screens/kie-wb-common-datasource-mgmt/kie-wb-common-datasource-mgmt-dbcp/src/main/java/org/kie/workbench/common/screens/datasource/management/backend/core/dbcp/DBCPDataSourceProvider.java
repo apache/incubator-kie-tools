@@ -50,162 +50,187 @@ import org.slf4j.LoggerFactory;
  * Multi-platform implementation of a DataSourceProvider.
  */
 @ApplicationScoped
-@Named(value = "DBCPDataSourceProvider" )
+@Named(value = "DBCPDataSourceProvider")
 public class DBCPDataSourceProvider
-    implements DataSourceProvider {
+        implements DataSourceProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger( DBCPDataSourceProvider.class );
+    private static final Logger logger = LoggerFactory.getLogger(DBCPDataSourceProvider.class);
 
     private DBCPDriverProvider driverProvider;
 
     private MavenArtifactResolver artifactResolver;
 
-    private Map<String, DBCPDataSource> deploymentRegistry = new HashMap<>(  );
+    private Map< String, DBCPDataSource > deploymentRegistry = new HashMap<>();
 
-    private Map<String, DataSourceDeploymentInfo> deploymentInfos = new HashMap<>(  );
+    private Map< String, DataSourceDeploymentInfo > deploymentInfos = new HashMap<>();
 
-    private Map<String, DataSourceDef> deployedDataSources = new HashMap<>(  );
+    private Map< String, DataSourceDef > deployedDataSources = new HashMap<>();
 
-    public DBCPDataSourceProvider( ) {
+    public DBCPDataSourceProvider() {
     }
 
     @Inject
-    public DBCPDataSourceProvider( DBCPDriverProvider driverProvider, MavenArtifactResolver artifactResolver ) {
+    public DBCPDataSourceProvider(DBCPDriverProvider driverProvider,
+                                  MavenArtifactResolver artifactResolver) {
         this.driverProvider = driverProvider;
         this.artifactResolver = artifactResolver;
     }
 
     @Override
-    public DataSourceDeploymentInfo deploy( DataSourceDef dataSourceDef ) throws Exception {
+    public DataSourceDeploymentInfo deploy(DataSourceDef dataSourceDef) throws Exception {
 
         DriverDef driverDef = null;
-        for ( DriverDef _driverDef : driverProvider.getDeployments() ) {
-            if ( _driverDef.getUuid().equals( dataSourceDef.getDriverUuid() ) ) {
+        for (DriverDef _driverDef : driverProvider.getDeployments()) {
+            if (_driverDef.getUuid().equals(dataSourceDef.getDriverUuid())) {
                 driverDef = _driverDef;
                 break;
             }
         }
 
-        if ( driverDef == null ) {
-            throw new Exception( "Required driver: " + dataSourceDef.getDriverUuid() + " is not deployed" );
+        if (driverDef == null) {
+            throw new Exception("Required driver: " + dataSourceDef.getDriverUuid() + " is not deployed");
         }
 
-        final URI uri = artifactResolver.resolve( driverDef.getGroupId(),
-                driverDef.getArtifactId(), driverDef.getVersion() );
-        if ( uri == null ) {
-            throw new Exception( "Unable to get driver library artifact for driver: " + driverDef );
+        final URI uri = artifactResolver.resolve(driverDef.getGroupId(),
+                                                 driverDef.getArtifactId(),
+                                                 driverDef.getVersion());
+        if (uri == null) {
+            throw new Exception("Unable to get driver library artifact for driver: " + driverDef);
         }
 
-        final Properties properties = new Properties(  );
-        properties.setProperty( "user", dataSourceDef.getUser() );
-        properties.setProperty( "password", dataSourceDef.getPassword() );
-        final URLConnectionFactory urlConnectionFactory = buildConnectionFactory( uri,
-                driverDef.getDriverClass(), dataSourceDef.getConnectionURL(), properties);
+        final Properties properties = new Properties();
+        properties.setProperty("user",
+                               dataSourceDef.getUser());
+        properties.setProperty("password",
+                               dataSourceDef.getPassword());
+        final URLConnectionFactory urlConnectionFactory = buildConnectionFactory(uri,
+                                                                                 driverDef.getDriverClass(),
+                                                                                 dataSourceDef.getConnectionURL(),
+                                                                                 properties);
 
         //Connection Factory that the pool will use for creating connections.
-        ConnectionFactory connectionFactory = new DBCPConnectionFactory( urlConnectionFactory );
+        ConnectionFactory connectionFactory = new DBCPConnectionFactory(urlConnectionFactory);
 
         //Poolable connection factory
-        PoolableConnectionFactory poolableConnectionFactory = new PoolableConnectionFactory( connectionFactory, null );
+        PoolableConnectionFactory poolableConnectionFactory = new PoolableConnectionFactory(connectionFactory,
+                                                                                            null);
 
         //The pool to be used by the ConnectionFactory
-        ObjectPool<PoolableConnection> connectionPool = new GenericObjectPool<>( poolableConnectionFactory );
+        ObjectPool< PoolableConnection > connectionPool = new GenericObjectPool<>(poolableConnectionFactory);
 
         //Set the factory's pool property to the owning pool
-        poolableConnectionFactory.setPool( connectionPool );
+        poolableConnectionFactory.setPool(connectionPool);
 
         //Finally create DataSource
-        PoolingDataSource<PoolableConnection> dataSource = new PoolingDataSource<>( connectionPool );
+        PoolingDataSource< PoolableConnection > dataSource = new PoolingDataSource<>(connectionPool);
 
-        DataSourceDeploymentInfo deploymentInfo = new DataSourceDeploymentInfo( dataSourceDef.getUuid(),
-                true, dataSourceDef.getUuid(), false );
+        DataSourceDeploymentInfo deploymentInfo = new DataSourceDeploymentInfo(dataSourceDef.getUuid(),
+                                                                               true,
+                                                                               dataSourceDef.getUuid(),
+                                                                               false);
 
-        deploymentRegistry.put( deploymentInfo.getDeploymentId(), new DBCPDataSource( dataSource ) );
-        deploymentInfos.put( deploymentInfo.getDeploymentId(), deploymentInfo );
-        deployedDataSources.put( deploymentInfo.getDeploymentId(), dataSourceDef );
+        deploymentRegistry.put(deploymentInfo.getDeploymentId(),
+                               new DBCPDataSource(dataSource));
+        deploymentInfos.put(deploymentInfo.getDeploymentId(),
+                            deploymentInfo);
+        deployedDataSources.put(deploymentInfo.getDeploymentId(),
+                                dataSourceDef);
 
         return deploymentInfo;
     }
 
     @Override
-    public DataSourceDeploymentInfo resync( final DataSourceDef dataSourceDef,
-            final DataSourceDeploymentInfo deploymentInfo ) throws Exception {
+    public DataSourceDeploymentInfo resync(final DataSourceDef dataSourceDef,
+                                           final DataSourceDeploymentInfo deploymentInfo) throws Exception {
         //no more processing required for this driver.
         return deploymentInfo;
     }
 
     @Override
-    public void undeploy( DataSourceDeploymentInfo deploymentInfo ) throws Exception {
-        DataSourceDeploymentInfo currentDeploymentInfo = deploymentInfos.get( deploymentInfo.getDeploymentId() );
-        if ( currentDeploymentInfo == null ) {
-            throw new Exception( "DataSource: " + deploymentInfo.getUuid() + " is not deployed" );
+    public void undeploy(DataSourceDeploymentInfo deploymentInfo) throws Exception {
+        DataSourceDeploymentInfo currentDeploymentInfo = deploymentInfos.get(deploymentInfo.getDeploymentId());
+        if (currentDeploymentInfo == null) {
+            throw new Exception("DataSource: " + deploymentInfo.getUuid() + " is not deployed");
         }
 
         DBCPDataSource dataSource = deploymentRegistry.remove(
-                currentDeploymentInfo.getDeploymentId() );
-        if ( dataSource != null ) {
+                currentDeploymentInfo.getDeploymentId());
+        if (dataSource != null) {
             try {
                 dataSource.close();
-            } catch ( Exception e ) {
-                logger.warn( "An error was produced during datasource close", e );
+            } catch (Exception e) {
+                logger.warn("An error was produced during datasource close",
+                            e);
             }
         }
-        deploymentRegistry.remove( currentDeploymentInfo.getDeploymentId() );
-        deployedDataSources.remove( currentDeploymentInfo.getDeploymentId() );
-        deploymentInfos.remove( currentDeploymentInfo.getDeploymentId() );
+        deploymentRegistry.remove(currentDeploymentInfo.getDeploymentId());
+        deployedDataSources.remove(currentDeploymentInfo.getDeploymentId());
+        deploymentInfos.remove(currentDeploymentInfo.getDeploymentId());
     }
 
     @Override
-    public DataSourceDeploymentInfo getDeploymentInfo( String uuid ) throws Exception {
-        return deploymentInfos.get( uuid );
+    public DataSourceDeploymentInfo getDeploymentInfo(String uuid) throws Exception {
+        return deploymentInfos.get(uuid);
     }
 
     @Override
-    public List<DataSourceDeploymentInfo> getDeploymentsInfo() throws Exception {
-        List<DataSourceDeploymentInfo> result = new ArrayList<>(  );
-        result.addAll( deploymentInfos.values() );
+    public List< DataSourceDeploymentInfo > getDeploymentsInfo() throws Exception {
+        List< DataSourceDeploymentInfo > result = new ArrayList<>();
+        result.addAll(deploymentInfos.values());
         return result;
     }
 
     @Override
-    public List<DataSourceDef> getDeployments() throws Exception {
-        List<DataSourceDef> result = new ArrayList<>();
-        result.addAll( deployedDataSources.values() );
+    public List< DataSourceDef > getDeployments() throws Exception {
+        List< DataSourceDef > result = new ArrayList<>();
+        result.addAll(deployedDataSources.values());
         return result;
     }
 
     @Override
-    public void loadConfig( Properties properties ) {
+    public void loadConfig(Properties properties) {
     }
 
     @Override
-    public DataSource lookupDataSource( DataSourceDeploymentInfo deploymentInfo ) throws Exception {
-        DBCPDataSource dataSource = deploymentRegistry.get( deploymentInfo.getDeploymentId() );
-        if ( dataSource != null ) {
-            if ( dataSource.isNew() ) {
+    public DataSource lookupDataSource(DataSourceDeploymentInfo deploymentInfo) throws Exception {
+        DBCPDataSource dataSource = deploymentRegistry.get(deploymentInfo.getDeploymentId());
+        if (dataSource != null) {
+            if (dataSource.isNew()) {
                 //first access to the data source
-                dataSource.setStatus( DataSourceStatus.REFERENCED );
+                dataSource.setStatus(DataSourceStatus.REFERENCED);
             }
-            DataSourceDeploymentInfo _deploymentInfo = deploymentInfos.get( deploymentInfo.getDeploymentId() );
-            if ( _deploymentInfo != null ) {
+            DataSourceDeploymentInfo _deploymentInfo = deploymentInfos.get(deploymentInfo.getDeploymentId());
+            if (_deploymentInfo != null) {
                 DataSourceDeploymentInfo updatedDeploymentInfo = new DataSourceDeploymentInfo(
-                        deploymentInfo.getDeploymentId(), true, deploymentInfo.getUuid(), true );
-                deploymentInfos.put( deploymentInfo.getDeploymentId(), updatedDeploymentInfo );
+                        deploymentInfo.getDeploymentId(),
+                        true,
+                        deploymentInfo.getUuid(),
+                        true);
+                deploymentInfos.put(deploymentInfo.getDeploymentId(),
+                                    updatedDeploymentInfo);
             }
             return dataSource;
         } else {
-            throw new Exception( "Data source for: " + deploymentInfo + " is not deployed in current system." );
+            throw new Exception("Data source for: " + deploymentInfo + " is not deployed in current system.");
         }
+    }
+
+    @Override
+    public void hasStarted() throws Exception {
+        //no additional checks are required for this provider.
     }
 
     /**
      * facilitates tests programming.
      */
-    protected URLConnectionFactory buildConnectionFactory( URI uri,
-                                                           String driverClass,
-                                                           String connectionURL,
-                                                           Properties connectionProperties ) throws Exception {
-        return new URLConnectionFactory( uri.toURL(), driverClass, connectionURL, connectionProperties );
+    protected URLConnectionFactory buildConnectionFactory(URI uri,
+                                                          String driverClass,
+                                                          String connectionURL,
+                                                          Properties connectionProperties) throws Exception {
+        return new URLConnectionFactory(uri.toURL(),
+                                        driverClass,
+                                        connectionURL,
+                                        connectionProperties);
     }
 
     private class DBCPConnectionFactory
@@ -213,7 +238,7 @@ public class DBCPDataSourceProvider
 
         URLConnectionFactory urlConnectionFactory;
 
-        public DBCPConnectionFactory( URLConnectionFactory urlConnectionFactory ) {
+        public DBCPConnectionFactory(URLConnectionFactory urlConnectionFactory) {
             this.urlConnectionFactory = urlConnectionFactory;
         }
 
@@ -225,7 +250,7 @@ public class DBCPDataSourceProvider
 
     private class DBCPDataSource extends AbstractDataSource {
 
-        public DBCPDataSource( PoolingDataSource dataSource ) {
+        public DBCPDataSource(PoolingDataSource dataSource) {
             this.dataSource = dataSource;
         }
 
@@ -234,9 +259,9 @@ public class DBCPDataSourceProvider
             return dataSource.getConnection();
         }
 
-        public void setStatus( DataSourceStatus status ) {
+        public void setStatus(DataSourceStatus status) {
             this.status = status;
-            notifyStatusChange( status );
+            notifyStatusChange(status);
         }
 
         public void close() throws Exception {

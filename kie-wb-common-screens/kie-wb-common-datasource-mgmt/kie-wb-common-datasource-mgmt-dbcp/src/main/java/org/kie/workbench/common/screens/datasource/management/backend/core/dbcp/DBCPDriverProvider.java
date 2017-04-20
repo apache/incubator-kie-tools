@@ -37,75 +37,88 @@ import org.uberfire.io.IOService;
  * DBCPDataSourceProvider.
  */
 @ApplicationScoped
-@Named(value = "DBCPDriverProvider" )
+@Named(value = "DBCPDriverProvider")
 public class DBCPDriverProvider
-    implements DriverProvider {
+        implements DriverProvider {
 
     private MavenArtifactResolver artifactResolver;
 
-    private Map<String, URI> deployedUris = new HashMap<>(  );
+    private Map< String, URI > deployedUris = new HashMap<>();
 
-    private Map<String, DriverDeploymentInfo> deploymentInfos = new HashMap<>(  );
+    private Map< String, DriverDeploymentInfo > deploymentInfos = new HashMap<>();
 
-    private Map<String, DriverDef> deployedDrivers = new HashMap<>(  );
+    private Map< String, DriverDef > deployedDrivers = new HashMap<>();
 
-    public DBCPDriverProvider( ) {
+    public DBCPDriverProvider() {
     }
 
     @Inject
-    public DBCPDriverProvider( MavenArtifactResolver artifactResolver ) {
+    public DBCPDriverProvider(MavenArtifactResolver artifactResolver) {
         this.artifactResolver = artifactResolver;
     }
 
     @Override
-    public DriverDeploymentInfo deploy( DriverDef driverDef ) throws Exception {
-        final URI uri = artifactResolver.resolve( driverDef.getGroupId(),
-                driverDef.getArtifactId(), driverDef.getVersion() );
+    public DriverDeploymentInfo deploy(DriverDef driverDef) throws Exception {
+        final URI uri = artifactResolver.resolve(driverDef.getGroupId(),
+                                                 driverDef.getArtifactId(),
+                                                 driverDef.getVersion());
 
-        if ( uri == null ) {
-            throw new Exception( "Unable to get driver library artifact for driver: " + driverDef );
+        if (uri == null) {
+            throw new Exception("Unable to get driver library artifact for driver: " + driverDef);
         }
-        final DriverDeploymentInfo deploymentInfo = new DriverDeploymentInfo( driverDef.getUuid(),
-                driverDef.getUuid(), true, driverDef.getUuid(), driverDef.getDriverClass() );
-        deployedUris.put( driverDef.getUuid(), uri );
-        deploymentInfos.put( driverDef.getUuid(), deploymentInfo );
-        deployedDrivers.put( driverDef.getUuid(), driverDef );
+        final DriverDeploymentInfo deploymentInfo = new DriverDeploymentInfo(driverDef.getUuid(),
+                                                                             driverDef.getUuid(),
+                                                                             true,
+                                                                             driverDef.getUuid(),
+                                                                             driverDef.getDriverClass());
+        deployedUris.put(driverDef.getUuid(),
+                         uri);
+        deploymentInfos.put(driverDef.getUuid(),
+                            deploymentInfo);
+        deployedDrivers.put(driverDef.getUuid(),
+                            driverDef);
         return deploymentInfo;
     }
 
     @Override
-    public DriverDeploymentInfo resync( DriverDef driverDef, DriverDeploymentInfo deploymentInfo ) throws Exception {
+    public DriverDeploymentInfo resync(DriverDef driverDef,
+                                       DriverDeploymentInfo deploymentInfo) throws Exception {
         //no more processing required for this driver.
         return deploymentInfo;
     }
 
     @Override
-    public void undeploy( DriverDeploymentInfo deploymentInfo ) throws Exception {
-        deployedUris.remove( deploymentInfo.getDeploymentId() );
-        deploymentInfos.remove( deploymentInfo.getDeploymentId() );
-        deployedDrivers.remove( deploymentInfo.getDeploymentId() );
+    public void undeploy(DriverDeploymentInfo deploymentInfo) throws Exception {
+        deployedUris.remove(deploymentInfo.getDeploymentId());
+        deploymentInfos.remove(deploymentInfo.getDeploymentId());
+        deployedDrivers.remove(deploymentInfo.getDeploymentId());
     }
 
     @Override
-    public DriverDeploymentInfo getDeploymentInfo( String uuid ) throws Exception {
-        return deploymentInfos.get( uuid );
+    public DriverDeploymentInfo getDeploymentInfo(String uuid) throws Exception {
+        return deploymentInfos.get(uuid);
     }
 
     @Override
-    public List<DriverDeploymentInfo> getDeploymentsInfo() throws Exception {
-        List<DriverDeploymentInfo> result = new ArrayList<>(  );
-        result.addAll( deploymentInfos.values() );
+    public List< DriverDeploymentInfo > getDeploymentsInfo() throws Exception {
+        List< DriverDeploymentInfo > result = new ArrayList<>();
+        result.addAll(deploymentInfos.values());
         return result;
     }
 
-    public List<DriverDef> getDeployments() {
-        List<DriverDef> results = new ArrayList<>(  );
-        results.addAll( deployedDrivers.values() );
+    public List< DriverDef > getDeployments() {
+        List< DriverDef > results = new ArrayList<>();
+        results.addAll(deployedDrivers.values());
         return results;
     }
 
     @Override
-    public void loadConfig( Properties properties ) {
+    public void loadConfig(Properties properties) {
         //no additional configurations for this provider.
+    }
+
+    @Override
+    public void hasStarted() throws Exception {
+        //no additional checks are required for this provider.
     }
 }

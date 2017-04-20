@@ -26,33 +26,45 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DBCPDriverProviderTest
         extends DriverProviderBaseTest {
 
     @Before
-    public void setup( ) throws Exception {
-        super.setup( );
-        driverProvider = new DBCPDriverProvider( artifactResolver );
+    public void setup() throws Exception {
+        super.setup();
+        driverProvider = new DBCPDriverProvider(artifactResolver);
     }
 
     @Test
-    public void testDeployDriver( ) throws Exception {
-        super.testDeployDriver( );
+    public void testDeployDriver() throws Exception {
+        super.testDeployDriver();
         // additional verification
-        DriverDeploymentInfo deploymentInfo = driverProvider.getDeploymentInfo( driverDef1.getUuid( ) );
-        DriverDeploymentInfo expectedDeploymentInfo = new DriverDeploymentInfo( DRIVER1_UUID,
-                DRIVER1_UUID, true, DRIVER1_UUID, DRIVER1_CLASS );
-        assertEquals( expectedDeploymentInfo, deploymentInfo );
+        DriverDeploymentInfo deploymentInfo = driverProvider.getDeploymentInfo(driverDef1.getUuid());
+        DriverDeploymentInfo expectedDeploymentInfo = new DriverDeploymentInfo(DRIVER1_UUID,
+                                                                               DRIVER1_UUID,
+                                                                               true,
+                                                                               DRIVER1_UUID,
+                                                                               DRIVER1_CLASS);
+        assertEquals(expectedDeploymentInfo,
+                     deploymentInfo);
     }
 
     @Override
-    protected void deployDriver( DriverDef driverDef ) throws Exception {
-        driverProvider.deploy( driverDef );
+    protected void deployDriver(DriverDef driverDef) throws Exception {
+        driverProvider.deploy(driverDef);
     }
 
     @Override
-    protected void unDeployDriver( DriverDeploymentInfo deploymentInfo ) throws Exception {
-        driverProvider.undeploy( deploymentInfo );
+    protected void unDeployDriver(DriverDeploymentInfo deploymentInfo) throws Exception {
+        driverProvider.undeploy(deploymentInfo);
+    }
+
+    protected void testHasStarted() {
+        try {
+            driverProvider.hasStarted();
+        } catch (Exception e) {
+            fail("The hasStarted method of the DBCPDriverProvider never throws exceptions by construction");
+        }
     }
 }

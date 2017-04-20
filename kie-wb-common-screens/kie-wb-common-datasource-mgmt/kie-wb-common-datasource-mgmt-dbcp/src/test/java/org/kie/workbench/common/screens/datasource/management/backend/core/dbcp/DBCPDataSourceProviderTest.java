@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceProviderBaseTest;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDef;
@@ -35,7 +36,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DBCPDataSourceProviderTest
         extends DataSourceProviderBaseTest {
 
@@ -55,47 +56,60 @@ public class DBCPDataSourceProviderTest
     private List< DriverDef > dbcpDrivers;
 
     @Before
-    public void setup( ) throws Exception {
-        super.setup( );
+    public void setup() throws Exception {
+        super.setup();
 
-        driverDef1 = new DriverDef( );
-        driverDef1.setUuid( DRIVER1_UUID );
-        driverDef1.setName( DRIVER1_NAME );
-        driverDef1.setDriverClass( DRIVER1_CLASS );
-        driverDef1.setArtifactId( ARTIFACT_ID );
-        driverDef1.setGroupId( GROUP_ID );
-        driverDef1.setVersion( VERSION );
+        driverDef1 = new DriverDef();
+        driverDef1.setUuid(DRIVER1_UUID);
+        driverDef1.setName(DRIVER1_NAME);
+        driverDef1.setDriverClass(DRIVER1_CLASS);
+        driverDef1.setArtifactId(ARTIFACT_ID);
+        driverDef1.setGroupId(GROUP_ID);
+        driverDef1.setVersion(VERSION);
 
-        dbcpDrivers = new ArrayList<>( );
-        dbcpDrivers.add( driverDef1 );
+        dbcpDrivers = new ArrayList<>();
+        dbcpDrivers.add(driverDef1);
 
-        driver1Uri = new URI( "file:///maven_dir/driver1_file.jar" );
-        when( artifactResolver.resolve( driverDef1.getGroupId( ), driverDef1.getArtifactId( ), driverDef1.getVersion( ) ) )
-                .thenReturn( driver1Uri );
+        driver1Uri = new URI("file:///maven_dir/driver1_file.jar");
+        when(artifactResolver.resolve(driverDef1.getGroupId(),
+                                      driverDef1.getArtifactId(),
+                                      driverDef1.getVersion()))
+                .thenReturn(driver1Uri);
 
         driverProvider = dbcpDriverProvider;
-        dataSourceProvider = new DBCPDataSourceProvider( dbcpDriverProvider, artifactResolver ) {
+        dataSourceProvider = new DBCPDataSourceProvider(dbcpDriverProvider,
+                                                        artifactResolver) {
             @Override
-            protected URLConnectionFactory buildConnectionFactory( URI uri, String driverClass,
-                                                                   String connectionURL,
-                                                                   Properties connectionProperties ) throws Exception {
+            protected URLConnectionFactory buildConnectionFactory(URI uri,
+                                                                  String driverClass,
+                                                                  String connectionURL,
+                                                                  Properties connectionProperties) throws Exception {
                 return urlConnectionFactory;
             }
         };
     }
 
     @Override
-    protected void setupDrivers( ) {
-        when( dbcpDriverProvider.getDeployments( ) ).thenReturn( dbcpDrivers );
+    protected void setupDrivers() {
+        when(dbcpDriverProvider.getDeployments()).thenReturn(dbcpDrivers);
     }
 
     @Override
-    protected void deployDataSource( DataSourceDef dataSourceDef ) throws Exception {
-        dataSourceProvider.deploy( dataSourceDef );
+    protected void deployDataSource(DataSourceDef dataSourceDef) throws Exception {
+        dataSourceProvider.deploy(dataSourceDef);
     }
 
     @Override
-    protected void unDeployDataSource( DataSourceDeploymentInfo deploymentInfo ) throws Exception {
-        dataSourceProvider.undeploy( deploymentInfo );
+    protected void unDeployDataSource(DataSourceDeploymentInfo deploymentInfo) throws Exception {
+        dataSourceProvider.undeploy(deploymentInfo);
+    }
+
+    @Test
+    public void testHasStarted() {
+        try {
+            dataSourceProvider.hasStarted();
+        } catch (Exception e) {
+            fail("The hasStarted method of the DBCPDataSourceProviderTest never throws exceptions by construction");
+        }
     }
 }
