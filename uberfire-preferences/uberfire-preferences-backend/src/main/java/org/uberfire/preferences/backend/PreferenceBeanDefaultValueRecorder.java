@@ -22,10 +22,11 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.uberfire.commons.services.cdi.Startup;
+import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.preferences.shared.bean.BasePreferenceBean;
 import org.uberfire.preferences.shared.bean.Preference;
 
-@Startup
+@Startup(StartupType.BOOTSTRAP)
 @ApplicationScoped
 public class PreferenceBeanDefaultValueRecorder {
 
