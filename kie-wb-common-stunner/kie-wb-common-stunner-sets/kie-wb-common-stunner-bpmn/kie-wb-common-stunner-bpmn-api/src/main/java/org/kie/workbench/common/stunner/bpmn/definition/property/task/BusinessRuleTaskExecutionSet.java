@@ -28,6 +28,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.Fiel
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -44,7 +45,7 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
 
     @Property
     @FormField(
-            type = ListBoxFieldType.class
+            type = ComboBoxFieldType.class
     )
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,

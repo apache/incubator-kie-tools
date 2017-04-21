@@ -51,6 +51,7 @@ public class RuleFlowGroupFormProvider implements SelectorDataProvider {
 
     @SuppressWarnings("unchecked")
     private Map<Object, String> getRuleFlowGroupNames() {
+
         List<RefactoringPageRow> results = queryService.query(
                 FindRuleFlowNamesQuery.NAME,
                 new HashSet<ValueIndexTerm>() {{
