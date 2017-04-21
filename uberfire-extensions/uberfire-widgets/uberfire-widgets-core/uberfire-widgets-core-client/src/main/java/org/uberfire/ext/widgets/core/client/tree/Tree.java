@@ -1,11 +1,11 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,6 +17,7 @@
 package org.uberfire.ext.widgets.core.client.tree;
 
 import java.util.Iterator;
+import java.util.function.Supplier;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -32,33 +33,37 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.uberfire.ext.widgets.core.client.resources.TreeNavigatorResources;
 
-public class Tree extends Composite implements HasSelectionHandlers<TreeItem>,
-                                               HasOpenHandlers<TreeItem>,
-                                               HasCloseHandlers<TreeItem> {
+public class Tree<T extends TreeItem> extends Composite implements HasSelectionHandlers<T>,
+                                                                   HasOpenHandlers<T>,
+                                                                   HasCloseHandlers<T> {
 
-    final FlowPanel container = new FlowPanel();
-
-    private TreeItem curSelection = null;
+    private FlowPanel container;
+    private T curSelection = null;
 
     public Tree() {
+        this(FlowPanel::new);
+    }
+
+    Tree(final Supplier<FlowPanel> containerProvider) {
+        container = containerProvider.get();
         initWidget(container);
         container.setStylePrimaryName(TreeNavigatorResources.INSTANCE.css().tree());
     }
 
     @Override
-    public HandlerRegistration addOpenHandler(final OpenHandler<TreeItem> handler) {
+    public HandlerRegistration addOpenHandler(final OpenHandler<T> handler) {
         return addHandler(handler,
                           OpenEvent.getType());
     }
 
     @Override
-    public HandlerRegistration addCloseHandler(final CloseHandler<TreeItem> handler) {
+    public HandlerRegistration addCloseHandler(final CloseHandler<T> handler) {
         return addHandler(handler,
                           CloseEvent.getType());
     }
 
     @Override
-    public HandlerRegistration addSelectionHandler(final SelectionHandler<TreeItem> handler) {
+    public HandlerRegistration addSelectionHandler(final SelectionHandler<T> handler) {
         return addHandler(handler,
                           SelectionEvent.getType());
     }
@@ -67,35 +72,57 @@ public class Tree extends Composite implements HasSelectionHandlers<TreeItem>,
         container.clear();
     }
 
-    void fireStateChanged(final TreeItem item,
-                          final TreeItem.State state) {
-        if (state.equals(TreeItem.State.OPEN)) {
-            OpenEvent.fire(this,
-                           item);
-        } else {
-            CloseEvent.fire(this,
-                            item);
-        }
-        onSelection(item,
-                    true);
-    }
-
-    public void setSelectedItem(final TreeItem item,
+    public void setSelectedItem(final T item,
                                 final boolean fireEvents) {
         onSelection(item,
                     fireEvents);
     }
 
-    public TreeItem getSelectedItem() {
+    public T getSelectedItem() {
         return curSelection;
     }
 
-    public void setSelectedItem(final TreeItem item) {
+    public void setSelectedItem(final T item) {
         onSelection(item,
                     true);
     }
 
-    void onSelection(final TreeItem item,
+    @SuppressWarnings("unchecked")
+    public T addItem(final T item) {
+        container.add(item);
+        item.setTree(this);
+        return item;
+    }
+
+    public T getItem(int index) {
+        T item = null;
+        Iterator<T> itemIter = getItems().iterator();
+
+        int idx = 0;
+        while (itemIter.hasNext()) {
+            T treeItem = itemIter.next();
+            if (idx == index) {
+                item = treeItem;
+                break;
+            }
+            idx++;
+        }
+        return item;
+    }
+
+    public void removeItem(final T item) {
+        container.remove(item);
+    }
+
+    public Iterable<T> getItems() {
+        return () -> new T.TreeItemIterator<T>(container);
+    }
+
+    public boolean isEmpty() {
+        return container.getWidgetCount() == 0;
+    }
+
+    void onSelection(final T item,
                      final boolean fireEvents) {
         if (curSelection != null) {
             curSelection.setSelected(false);
@@ -112,33 +139,16 @@ public class Tree extends Composite implements HasSelectionHandlers<TreeItem>,
         }
     }
 
-    public TreeItem addItem(final TreeItem.Type type,
-                            final String value) {
-        final TreeItem item = new TreeItem(type,
-                                           value);
-        return addItem(item);
-    }
-
-    public TreeItem addItem(final TreeItem item) {
-        container.add(item);
-        item.setTree(this);
-        return item;
-    }
-
-    public void removeItem(final TreeItem treeItem) {
-        container.remove(treeItem);
-    }
-
-    public Iterable<TreeItem> getItems() {
-        return new Iterable<TreeItem>() {
-            @Override
-            public Iterator<TreeItem> iterator() {
-                return new TreeItem.TreeItemIterator(container);
-            }
-        };
-    }
-
-    public boolean isEmpty() {
-        return container.getWidgetCount() == 0;
+    void fireStateChanged(final T item,
+                          final T.State state) {
+        if (state.equals(T.State.OPEN)) {
+            OpenEvent.fire(this,
+                           item);
+        } else {
+            CloseEvent.fire(this,
+                            item);
+        }
+        onSelection(item,
+                    true);
     }
 }
