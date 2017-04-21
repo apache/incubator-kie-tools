@@ -33,7 +33,7 @@ public class CircleDefinitionGenerator
         final double radius = input.getRadius();
         final Map<String, Object> root = new HashMap<String, Object>();
         root.put("radius",
-                 radius);
+                 formatDouble(radius));
         // Generate the code using the given template.
         try {
             return writeTemplate(root);

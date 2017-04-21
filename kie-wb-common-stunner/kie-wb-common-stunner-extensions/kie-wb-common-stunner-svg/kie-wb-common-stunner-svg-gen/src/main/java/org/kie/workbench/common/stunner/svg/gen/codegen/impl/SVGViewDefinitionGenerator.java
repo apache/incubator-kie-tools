@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.svg.gen.codegen.impl;
 
-import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,7 +38,6 @@ public class SVGViewDefinitionGenerator
         implements ViewDefinitionGenerator<ViewDefinition<SVGShapeView>> {
 
     private static final String CHILD_TEMPLATE = "view.addSVGChild(\"%1s\", %1s.this.%1sBasicView());";
-    private static final DecimalFormat DF = new DecimalFormat("#0.00");
 
     @Override
     public StringBuffer generate(final ViewFactory viewFactory,
@@ -91,10 +89,10 @@ public class SVGViewDefinitionGenerator
                 final String viewName = getFactoryName(viewFactory,
                                                        svgName);
                 if (null != viewName) {
-                    final String childRaw = String.format(CHILD_TEMPLATE,
-                                                          parent,
-                                                          factoryName,
-                                                          viewName);
+                    final String childRaw = formatString(CHILD_TEMPLATE,
+                                                         parent,
+                                                         factoryName,
+                                                         viewName);
                     rawChildren.add(childRaw);
                 }
             });
@@ -105,9 +103,9 @@ public class SVGViewDefinitionGenerator
             root.put("main",
                      mainBuffer.toString());
             root.put("width",
-                     format(viewDefinition.getWidth()));
+                     formatDouble(viewDefinition.getWidth()));
             root.put("height",
-                     format(viewDefinition.getHeight()));
+                     formatDouble(viewDefinition.getHeight()));
             root.put("children",
                      shapes);
             root.put("scalableChildren",
@@ -147,10 +145,6 @@ public class SVGViewDefinitionGenerator
                 .filter(generator -> generator.getDefinitionType().equals(main.getClass()))
                 .findFirst()
                 .orElse(null);
-    }
-
-    protected String format(final double value) {
-        return DF.format(value);
     }
 
     @Override

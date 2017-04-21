@@ -76,7 +76,6 @@ public class SVGViewDefinitionGeneratorTest {
         viewDefinition.setPath("svg-view-test.svg");
         final String generated = tested.generate(viewFactory,
                                                  viewDefinition).toString();
-        System.out.println(generated);
         assertTrue(generated.contains("public SVGShapeView svg-view-test(final boolean resizable)"));
         assertTrue(generated.contains("return this.svg-view-test(25.50d, 225.45d, resizable);"));
         assertTrue(generated.contains("public SVGShapeView svg-view-test(final double width, final double height, final boolean resizable) {"));

@@ -27,11 +27,11 @@ public abstract class AbstractPrimitiveDefinitionGenerator<I extends PrimitiveDe
 
     private final static String NON_DRAGGABLE = ".setDraggable(false)";
     private final static String ID = ".setID(\"%1s\")";
-    private final static String X = ".setX(%1$.3f)";
-    private final static String Y = ".setY(%1$.3f)";
-    private final static String ALPHA = ".setAlpha(%1$.3f)";
-    private final static String SCALE = ".setScale(%1$.3f,%2$.3f)";
-    private final static String TRANSLATE = ".setOffset(%1$.3f,%2$.3f)";
+    private final static String X = ".setX(%1s)";
+    private final static String Y = ".setY(%1s)";
+    private final static String ALPHA = ".setAlpha(%1s)";
+    private final static String SCALE = ".setScale(%1s,%2s)";
+    private final static String TRANSLATE = ".setOffset(%1s,%2s)";
 
     protected abstract StringBuffer doGenerate(final I input) throws GeneratorException;
 
@@ -64,35 +64,35 @@ public abstract class AbstractPrimitiveDefinitionGenerator<I extends PrimitiveDe
                             final I input) {
         final String id = input.getId();
         if (null != id && id.trim().length() > 0) {
-            buffer.append(String.format(ID,
-                                        id));
+            buffer.append(formatString(ID,
+                                       id));
         }
     }
 
     protected void appendCoordinates(final StringBuffer buffer,
                                      final I input) {
-        buffer.append(String.format(X,
-                                    input.getX()));
-        buffer.append(String.format(Y,
-                                    input.getY()));
+        buffer.append(formatDouble(X,
+                                   input.getX()));
+        buffer.append(formatDouble(Y,
+                                   input.getY()));
     }
 
     protected void appendOpacity(final StringBuffer buffer,
                                  final I input) {
-        buffer.append(String.format(ALPHA,
-                                    input.getAlpha()));
+        buffer.append(formatDouble(ALPHA,
+                                   input.getAlpha()));
     }
 
     protected void appendTransform(final StringBuffer buffer,
                                    final I input) {
         final TransformDefinition transformDefinition = input.getTransformDefinition();
         if (null != transformDefinition) {
-            buffer.append(String.format(SCALE,
-                                        transformDefinition.getScaleX(),
-                                        transformDefinition.getScaleY()));
-            buffer.append(String.format(TRANSLATE,
-                                        transformDefinition.getTranslateX(),
-                                        transformDefinition.getTranslateY()));
+            buffer.append(formatDouble(SCALE,
+                                       transformDefinition.getScaleX(),
+                                       transformDefinition.getScaleY()));
+            buffer.append(formatDouble(TRANSLATE,
+                                       transformDefinition.getTranslateX(),
+                                       transformDefinition.getTranslateY()));
         }
     }
 }

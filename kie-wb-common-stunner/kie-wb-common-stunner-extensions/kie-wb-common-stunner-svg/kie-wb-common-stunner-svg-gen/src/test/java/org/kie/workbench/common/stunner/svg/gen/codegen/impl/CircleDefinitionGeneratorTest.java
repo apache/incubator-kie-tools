@@ -80,7 +80,7 @@ public class CircleDefinitionGeneratorTest {
                                                                             VBOX_MIN_X,
                                                                             VBOX_MIN_Y));
         final String generated = tested.generate(circleDefinition).toString();
-        assertTrue(generated.contains("new " + Circle.class.getName() + "(" + RADIUS + ")"));
+        assertTrue(generated.contains("new " + Circle.class.getName() + "(" + GeneratorAssertions.formatDouble(RADIUS) + ")"));
         GeneratorAssertions.assertDraggable(generated);
         GeneratorAssertions.assertID(generated,
                                      ID);

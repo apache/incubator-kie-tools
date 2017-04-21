@@ -47,8 +47,8 @@ public class GroupDefinitionGenerator
             wrapper = writeTemplate(new HashMap<>());
             super.appendDraggable(wrapper,
                                   input);
-            wrapper.append(String.format(ADD_WRAPPED,
-                                         wrapped));
+            wrapper.append(formatString(ADD_WRAPPED,
+                                        wrapped.toString()));
         } catch (final GenerationException e) {
             throw new GeneratorException(e);
         }

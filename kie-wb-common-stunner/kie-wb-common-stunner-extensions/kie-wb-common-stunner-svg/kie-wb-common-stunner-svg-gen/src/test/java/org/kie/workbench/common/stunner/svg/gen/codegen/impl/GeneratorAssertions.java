@@ -78,7 +78,7 @@ public class GeneratorAssertions {
     }
 
     public static String formatDouble(final double value) {
-        return new DecimalFormat("#0.000").format(value);
+        return SVGGeneratorFormatUtils.format(value);
     }
 
     public static String formatString(final String value) {

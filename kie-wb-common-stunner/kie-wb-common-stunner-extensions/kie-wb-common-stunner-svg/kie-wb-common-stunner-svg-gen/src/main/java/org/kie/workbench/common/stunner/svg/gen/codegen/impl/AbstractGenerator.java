@@ -79,4 +79,20 @@ public abstract class AbstractGenerator {
         return writeTemplate(ctxt,
                              getTemplatePath());
     }
+
+    protected String formatString(final String pattern,
+                                  final String... values) {
+        return String.format(pattern,
+                             values);
+    }
+
+    protected String formatDouble(final String pattern,
+                                  final double... values) {
+        return SVGGeneratorFormatUtils.format(pattern,
+                                              values);
+    }
+
+    protected String formatDouble(final double value) {
+        return SVGGeneratorFormatUtils.format(value);
+    }
 }

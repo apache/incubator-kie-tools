@@ -35,11 +35,11 @@ public class RectDefinitionGenerator
         final double radius = input.getCornerRadius();
         final Map<String, Object> root = new HashMap<String, Object>();
         root.put("width",
-                 width);
+                 formatDouble(width));
         root.put("height",
-                 height);
+                 formatDouble(height));
         root.put("radius",
-                 radius);
+                 formatDouble(radius));
         // Generate the code using the given template.
         try {
             return writeTemplate(root);

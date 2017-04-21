@@ -26,10 +26,10 @@ public abstract class AbstractShapeDefinitionGenerator<I extends ShapeDefinition
         implements ShapeDefinitionGenerator<I> {
 
     private final static String FILL_COLOR = ".setFillColor(\"%1s\")";
-    private final static String FILL_ALPHA = ".setFillAlpha(%1$.3f)";
+    private final static String FILL_ALPHA = ".setFillAlpha(%1s)";
     private final static String STROKE_COLOR = ".setStrokeColor(\"%1s\")";
-    private final static String STROKE_ALPHA = ".setStrokeAlpha(%1$.3f)";
-    private final static String STROKE_WIDTH = ".setStrokeWidth(%1$.3f)";
+    private final static String STROKE_ALPHA = ".setStrokeAlpha(%1s)";
+    private final static String STROKE_WIDTH = ".setStrokeWidth(%1s)";
 
     @Override
     public StringBuffer generate(final I input) throws GeneratorException {
@@ -38,20 +38,20 @@ public abstract class AbstractShapeDefinitionGenerator<I extends ShapeDefinition
         final StyleDefinition styleDefinition = input.getStyleDefinition();
         if (null != styleDefinition) {
             if (null != styleDefinition.getFillColor()) {
-                shapeRaw.append(String.format(FILL_COLOR,
-                                              styleDefinition.getFillColor()));
+                shapeRaw.append(formatString(FILL_COLOR,
+                                             styleDefinition.getFillColor()));
             }
-            shapeRaw.append(String.format(FILL_ALPHA,
-                                          styleDefinition.getFillAlpha()));
+            shapeRaw.append(formatDouble(FILL_ALPHA,
+                                         styleDefinition.getFillAlpha()));
 
             if (null != styleDefinition.getStrokeColor()) {
-                shapeRaw.append(String.format(STROKE_COLOR,
-                                              styleDefinition.getStrokeColor()));
+                shapeRaw.append(formatString(STROKE_COLOR,
+                                             styleDefinition.getStrokeColor()));
             }
-            shapeRaw.append(String.format(STROKE_ALPHA,
-                                          styleDefinition.getStrokeAlpha()));
-            shapeRaw.append(String.format(STROKE_WIDTH,
-                                          styleDefinition.getStrokeWidth()));
+            shapeRaw.append(formatDouble(STROKE_ALPHA,
+                                         styleDefinition.getStrokeAlpha()));
+            shapeRaw.append(formatDouble(STROKE_WIDTH,
+                                         styleDefinition.getStrokeWidth()));
             return shapeRaw;
         }
         return new StringBuffer();

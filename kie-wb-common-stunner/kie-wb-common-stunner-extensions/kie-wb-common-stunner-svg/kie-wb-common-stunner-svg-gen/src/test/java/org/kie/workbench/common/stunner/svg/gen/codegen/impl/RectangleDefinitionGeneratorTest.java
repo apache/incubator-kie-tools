@@ -84,7 +84,9 @@ public class RectangleDefinitionGeneratorTest {
                                                                       VBOX_MIN_X,
                                                                       VBOX_MIN_Y));
         final String generated = tested.generate(definition).toString();
-        assertTrue(generated.contains("new " + Rectangle.class.getName() + "(" + WIDTH + ", " + HEIGHT + ")"));
+        assertTrue(generated.contains("new " + Rectangle.class.getName() + "(" +
+                                              GeneratorAssertions.formatDouble(WIDTH) + ", " +
+                                              GeneratorAssertions.formatDouble(HEIGHT) + ")"));
         GeneratorAssertions.assertDraggable(generated);
         GeneratorAssertions.assertID(generated,
                                      ID);
