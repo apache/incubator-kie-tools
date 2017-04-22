@@ -483,6 +483,18 @@ public interface MessageConstants extends Constants
     @DefaultStringValue("If a shape's bounding box should be filled for events on the selection layer.")
     public String fillBoundsForSelectionDescription();
 
+    @DefaultStringValue("The pixels that will be used to increase the bounding box size on the selection layer.")
+    public String selectionBoundsOffsetLabel();
+
+    @DefaultStringValue("The pixels that will be used to increase the bounding box size on the selection layer.")
+    public String selectionBoundsOffsetDescription();
+
+    @DefaultStringValue("The pixels that will be used to increase the stroke wdith on the selection layer.")
+    public String selectionStrokeOffsetLabel();
+
+    @DefaultStringValue("The pixels that will be used to increase the bounding box on the selection layer.")
+    public String selectionStrokeOffsetDescription();
+
     @DefaultStringValue("Transformable")
     public String transformableLabel();
 
