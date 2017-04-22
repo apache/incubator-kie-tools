@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingAndContainmen
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.widget.DragContext;
 
 /**
  * The DockingAndContainment snap is applied first and thus takes priority. If DockingAndContainment snap is applied, then AlignAndDistribute snap is only applied if the
@@ -39,7 +40,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
 
     private WiresShape                        m_shape;
 
-    private AlignAndDistributeControl         m_alignAndDistributeHandler;
+    private AlignAndDistributeControl         m_alignAndDistributeControl;
 
     private WiresDockingAndContainmentControl m_dockingAndContainmentControl;
 
@@ -56,7 +57,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
     @Override
     public void setAlignAndDistributeControl(AlignAndDistributeControl alignAndDistributeHandler)
     {
-        m_alignAndDistributeHandler = alignAndDistributeHandler;
+        m_alignAndDistributeControl = alignAndDistributeHandler;
     }
 
     @Override
@@ -66,7 +67,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
     }
 
     @Override
-    public void dragStart(final Context context)
+    public void dragStart(final DragContext context)
     {
 
         final Point2D absShapeLoc = WiresUtils.getLocation(m_shape.getPath());
@@ -78,33 +79,39 @@ public class WiresShapeControlImpl implements WiresShapeControl
             m_dockingAndContainmentControl.dragStart(context);
         }
 
-        if (m_alignAndDistributeHandler != null)
+        if (m_alignAndDistributeControl != null)
         {
-            m_alignAndDistributeHandler.dragStart();
+            m_alignAndDistributeControl.dragStart();
         }
 
     }
 
     @Override
-    public boolean dragEnd(final Context context)
+    public boolean dragEnd(final DragContext context)
     {
-        boolean result = true;
+        boolean allowed = true;
 
         if (m_dockingAndContainmentControl != null)
         {
-           result = m_dockingAndContainmentControl.dragEnd(context);
+            allowed = m_dockingAndContainmentControl.dragEnd(context);
         }
 
-        if (m_alignAndDistributeHandler != null)
+        if (m_alignAndDistributeControl != null)
         {
-            m_alignAndDistributeHandler.dragEnd();
+            m_alignAndDistributeControl.dragEnd();
         }
 
-        return result;
+        // Cancel the drag operation if docking or containment not allowed.
+        if (!allowed) {
+            context.reset();
+            return false;
+        }
+
+        return true;
     }
 
     @Override
-    public void dragMove(final Context context)
+    public void dragMove(final DragContext context)
     {
         // Nothing to do.
     }
@@ -122,9 +129,9 @@ public class WiresShapeControlImpl implements WiresShapeControl
         double dx = dxy.getX();
         double dy = dxy.getY();
         boolean adjusted2 = false;
-        if (m_alignAndDistributeHandler != null && m_alignAndDistributeHandler.isDraggable())
+        if (m_alignAndDistributeControl != null && m_alignAndDistributeControl.isDraggable())
         {
-            adjusted2 = m_alignAndDistributeHandler.dragAdjust(dxy);
+            adjusted2 = m_alignAndDistributeControl.dragAdjust(dxy);
         }
 
         if (adjusted1 && adjusted2 && (dxy.getX() != dx || dxy.getY() != dy))

@@ -10,7 +10,7 @@ package com.ait.lienzo.client.core.shape.wires.handlers;
  * user interaction behaviours rather than defaults.
  *
  */
-public interface WiresConnectorControl extends HasDragControl {
+public interface WiresConnectorControl extends DragControl {
 
     void addControlPoint( double x, double y );
 

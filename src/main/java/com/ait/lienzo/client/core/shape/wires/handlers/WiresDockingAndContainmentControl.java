@@ -18,7 +18,8 @@ package com.ait.lienzo.client.core.shape.wires.handlers;
 
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 
-public interface WiresDockingAndContainmentControl extends HasDragControl, HasMouseFocusControl
+public interface WiresDockingAndContainmentControl extends DragControl,
+                                                           MouseFocusControl
 {
     ColorMapBackedPicker getPicker();
 

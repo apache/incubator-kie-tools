@@ -33,6 +33,7 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.client.core.util.ScratchPad;
+import com.ait.lienzo.client.widget.DragContext;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
 /**
@@ -104,7 +105,7 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
     }
 
     @Override
-    public void dragStart( final Context context ) {
+    public void dragStart( final DragContext context ) {
         Point2D absShapeLoc = WiresUtils.getLocation( m_shape.getPath() );
         BoundingBox box = m_shape.getPath().getBoundingBox();
         m_shapeStartX = absShapeLoc.getX();
@@ -113,8 +114,8 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
         m_shapeStartCenterX = m_shapeStartX + (box.getWidth() / 2);
         m_shapeStartCenterY = m_shapeStartY + (box.getHeight() / 2);
 
-        m_mouseStartX = context.getX();
-        m_mouseStartY = context.getY();
+        m_mouseStartX = context.getDragStartX();
+        m_mouseStartY = context.getDragStartY();
 
         m_startDocked = false;
 
@@ -144,12 +145,12 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
     }
 
     @Override
-    public void dragMove( final Context context ) {
+    public void dragMove( final DragContext context ) {
         // Nothing to do.
     }
 
     @Override
-    public boolean dragEnd( final Context context ) {
+    public boolean dragEnd( final DragContext context ) {
         return addShapeToParent();
     }
 

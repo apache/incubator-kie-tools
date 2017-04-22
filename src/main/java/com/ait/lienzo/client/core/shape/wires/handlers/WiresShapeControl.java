@@ -30,7 +30,8 @@ package com.ait.lienzo.client.core.shape.wires.handlers;
  * user interaction behaviours rather than defaults.
  *
  */
-public interface WiresShapeControl extends HasDragControl, HasMouseFocusControl
+public interface WiresShapeControl extends DragControl,
+                                           MouseFocusControl
 {
 
     void setAlignAndDistributeControl( AlignAndDistributeControl alignAndDistributeHandler);
