@@ -46,9 +46,7 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
 public class MagnetManager
 {
-    private static final int          CONTROL_RADIUS       = 10;
-
-    private static final double       CONTROL_STROKE_WIDTH = 2;
+    private static final int          CONTROL_RADIUS       = 7;
 
     public static final ColorKeyRotor m_c_rotor            = new ColorKeyRotor();
 
@@ -227,7 +225,14 @@ public class MagnetManager
 
     private Circle getControlPrimitive(double x, double y)
     {
-        return new Circle(m_ctrlSize).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(x).setY(y).setDraggable(true).setDragMode(DragMode.SAME_LAYER).setStrokeColor(ColorName.BLACK).setStrokeWidth(CONTROL_STROKE_WIDTH);
+        return new Circle(m_ctrlSize)
+                .setX(x)
+                .setY(y)
+                .setFillColor(ColorName.DARKRED)
+                .setFillAlpha(0.8)
+                .setStrokeAlpha(0)
+                .setDraggable(true)
+                .setDragMode(DragMode.SAME_LAYER);
     }
 
     public static class Magnets implements AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler

@@ -84,7 +84,7 @@ public class Point2DArray implements Iterable<Point2D>
         return points;
     }
 
-    Point2DArray(final Point2DArrayJSO jso)
+    public Point2DArray(final Point2DArrayJSO jso)
     {
         m_jso = jso;
     }

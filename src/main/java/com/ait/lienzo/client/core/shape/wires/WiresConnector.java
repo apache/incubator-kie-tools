@@ -47,7 +47,7 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
 public class WiresConnector
 {
-    interface WiresConnectorHandler extends NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler, NodeMouseClickHandler, NodeMouseDoubleClickHandler
+    interface WiresConnectorHandler extends NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler, NodeMouseClickHandler
     {
 
         WiresConnectorControl getControl();
@@ -283,11 +283,8 @@ public class WiresConnector
             m_connector.m_HandlerRegistrationManager = new HandlerRegistrationManager();
 
             m_connector.m_HandlerRegistrationManager.register(m_connector.getLine().addNodeMouseClickHandler(this));
-            m_connector.m_HandlerRegistrationManager.register(m_connector.getLine().addNodeMouseDoubleClickHandler(this));
             m_connector.m_HandlerRegistrationManager.register(m_connector.getHead().addNodeMouseClickHandler(this));
-            m_connector.m_HandlerRegistrationManager.register(m_connector.getHead().addNodeMouseDoubleClickHandler(this));
             m_connector.m_HandlerRegistrationManager.register(m_connector.getTail().addNodeMouseClickHandler(this));
-            m_connector.m_HandlerRegistrationManager.register(m_connector.getTail().addNodeMouseDoubleClickHandler(this));
         }
 
         @Override
@@ -315,21 +312,18 @@ public class WiresConnector
 
             if (m_connector.getPointHandles().isVisible())
             {
-                this.m_control.hideControlPoints();
+                if (event.isShiftKeyDown())
+                {
+                    this.m_control.addControlPoint(event.getX(), event.getY());
+                }
+                else
+                {
+                    this.m_control.hideControlPoints();
+                }
             }
             else if (((Node<?> ) event.getSource()).getParent() == m_connector.getGroup() )
             {
                 this.m_control.showControlPoints();
-            }
-        }
-
-        @Override
-        public void onNodeMouseDoubleClick(NodeMouseDoubleClickEvent event)
-        {
-
-            if (m_connector.getPointHandles().isVisible())
-            {
-                this.m_control.addControlPoint(event.getX(), event.getY());
             }
         }
 

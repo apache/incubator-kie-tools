@@ -471,10 +471,10 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             return new Circle(size)
                     .setX(x + shape.getX())
                     .setY(y + shape.getY())
-                    .setFillColor(ColorName.RED)
-                    .setFillAlpha(0.4)
+                    .setFillColor(ColorName.DARKRED)
+                    .setFillAlpha(0.8)
                     .setStrokeColor(ColorName.BLACK)
-                    .setStrokeWidth(2)
+                    .setStrokeWidth(0.5)
                     .setDraggable(true)
                     .setDragMode(dragMode);
         }
@@ -642,7 +642,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                 {
                     list.resetBoundingBox();
                 }
-                m_prim.setFillColor(ColorName.RED);
+                m_prim.setFillColor(ColorName.DARKRED);
 
                 m_prim.getLayer().draw();
             }
@@ -1065,7 +1065,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                 {
                     list.resetBoundingBox();
                 }
-                m_prim.setFillColor(ColorName.RED);
+                m_prim.setFillColor(ColorName.DARKRED);
                 m_prim.getLayer().draw();
             }
         }
