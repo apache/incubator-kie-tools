@@ -40,7 +40,6 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
-import com.ait.lienzo.client.core.shape.wires.handlers.HasDragControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.util.ScratchPad;
@@ -154,7 +153,7 @@ public class WiresManagerTest
 
         // Not possible to check used values during drag and drop for now. AlignAndDistributeControls stores calculated primitives (numbers with type double) after registration/re-sizing.
         // But calculations based on AlignAndDistribute#getBoundingBox(group); method  and use plain JSO for calculations, so we will have 0 for any calculations in our's tests.
-        shapeControl.dragStart(mock(HasDragControl.Context.class));
+        shapeControl.dragStart(mock(DragContext.class));
     }
 
     @Test

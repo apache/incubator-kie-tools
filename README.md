@@ -22,12 +22,6 @@ Before setup, please confirm these two pre-requisites:
  Ensure your dependency tree resolves:                         
  
         com.google.gwt.gwtmockito:gwtmockito:1.1.6
-        
-* Your project dependency version resolved for *Lienzo Core* artifact must be at least the same one used in this project. 
-You can check it [here](./pom.xml). If you use older lienzo versions, you can hit with class signature incompatibilities. 
- Ensure your dependency tree resolves:
- 
-        com.ahome-it:lienzo-core:2.0.280-RELEASE
 
 Build
 =====
@@ -279,7 +273,5 @@ Use the testing artifact version supported for a concrete Lienzo-Core release:
         Lienzo-Core            Lienzzo-Tests
         ************************************
         2.0.275-RELEASE          1.0.0-RC2
-        2.0.286-RELEASE (+)      current
-        
-NOTE: Symbol "+" indicates from the given version until latest stable release one.               
+        2.0.286-RELEASE (+)      Using same versions as `lienzo-core`
 
