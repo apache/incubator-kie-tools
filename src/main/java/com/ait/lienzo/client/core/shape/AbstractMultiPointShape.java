@@ -184,12 +184,12 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                 final Circle prim = new Circle(R0)
                         .setX(m_shape.getX() + p.getX())
                         .setY(m_shape.getY() + p.getY())
-                        .setFillColor(ColorName.RED)
-                        .setFillAlpha(0.4)
-                        .setStrokeColor(ColorName.BLACK)
+                        .setFillColor(ColorName.DARKRED)
+                        .setFillAlpha(0.8)
+                        .setStrokeAlpha(0)
                         .setDraggable(true)
-                        .setDragMode(m_dmode)
-                        .setStrokeWidth(2);
+                        .setDragMode(m_dmode);
+
                 prim.setSelectionBoundsOffset(R0 * 0.5);
 
                 chlist.add(new AbstractPointControlHandle()
@@ -365,7 +365,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
 
             if ((m_handle.isActive()) && (m_handleList.isActive()))
             {
-                m_prim.setFillColor(ColorName.RED);
+                m_prim.setFillColor(ColorName.DARKRED);
 
                 m_prim.getLayer().batch();
             }

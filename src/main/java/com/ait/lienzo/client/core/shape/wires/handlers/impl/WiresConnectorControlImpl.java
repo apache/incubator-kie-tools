@@ -348,12 +348,9 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
         // But remember the mouse must be offset for this clipped area.
         int sx = (int) (box.getX() - strokeWidth - offsetX);
         int sy = (int) (box.getY() - strokeWidth - offsetY);
-
         ImageData backing = ctx.getImageData(sx, sy, (int) (box.getWidth() + strokeWidth + strokeWidth), (int) (box.getHeight() + strokeWidth + strokeWidth));
-
         color = BackingColorMapUtils.findColorAtPoint(backing, mouseX - sx, mouseY - sy);
-        pointsIndex = colorMap.get(color);
-        return pointsIndex;
+        return null != color ? colorMap.get(color) : -1;
     }
 
     private void showPointHandles()
@@ -425,7 +422,9 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
         @Override
         public void onNodeMouseDoubleClick(final NodeMouseDoubleClickEvent event)
         {
-            WiresConnectorControlImpl.this.destroyControlPoint(event.getSource());
+            if (m_connector.getPointHandles().isVisible()) {
+                WiresConnectorControlImpl.this.destroyControlPoint(event.getSource());
+            }
         }
 
     }
