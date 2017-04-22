@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.animation.AnimationProperties;
+import com.ait.lienzo.client.core.animation.AnimationProperty;
+import com.ait.lienzo.client.core.animation.AnimationTweener;
 import com.ait.lienzo.client.core.event.AttributesChangedEvent;
 import com.ait.lienzo.client.core.event.AttributesChangedHandler;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
@@ -34,6 +37,10 @@ import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
 import com.ait.lienzo.client.core.event.NodeDragStartEvent;
 import com.ait.lienzo.client.core.event.NodeDragStartHandler;
+import com.ait.lienzo.client.core.event.NodeMouseEnterEvent;
+import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
+import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
+import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.wires.AbstractControlHandle;
@@ -249,6 +256,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
     public static final class DefaultMultiPathShapeHandleFactory implements IControlHandleFactory
     {
+
         private final NFastArrayList<PathPartList> m_listOfPaths;
 
         private final Shape<?>                     m_shape;
@@ -314,9 +322,13 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
                 for (Point2D point : points)
                 {
-                    Circle prim = getControlPrimitive(point.getX(), point.getY(), m_shape, m_dmode);
+                    final Circle prim = getControlPrimitive(5, point.getX(), point.getY(), m_shape, m_dmode);
 
                     PointControlHandle pointHandle = new PointControlHandle(prim, pathIndex, entryIndex++, m_shape, m_listOfPaths, path, chlist);
+
+                    animate(pointHandle,
+                            AnimationProperty.Properties.RADIUS(15),
+                            AnimationProperty.Properties.RADIUS(5));
 
                     chlist.add(pointHandle);
                 }
@@ -325,6 +337,41 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             new OnDragMoveIControlHandleList(m_shape, chlist);
 
             return chlist;
+        }
+
+        private static final double R0 = 5;
+        private static final double R1 = 10;
+        private static final double ANIMATION_DURATION = 150d;
+
+        private static void animate(final AbstractControlHandle handle,
+                                    final AnimationProperty initialProperty,
+                                    final AnimationProperty endProperty) {
+            final Node<?> node = (Node<?>) handle.getControl();
+            handle.getHandlerRegistrationManager().register(
+                    node.addNodeMouseEnterHandler(new NodeMouseEnterHandler() {
+                        @Override
+                        public void onNodeMouseEnter(NodeMouseEnterEvent event) {
+                            animate(node, initialProperty);
+                        }
+                    })
+            );
+            handle.getHandlerRegistrationManager().register(
+                    node.addNodeMouseExitHandler(new NodeMouseExitHandler() {
+
+                        @Override
+                        public void onNodeMouseExit(NodeMouseExitEvent event) {
+                            animate(node, endProperty);
+                        }
+                    })
+            );
+        }
+
+
+        private static void animate(final Node<?> node,
+                                    final AnimationProperty property) {
+            node.animate(AnimationTweener.LINEAR,
+                              AnimationProperties.toPropertyList(property),
+                              ANIMATION_DURATION);
         }
 
         public static IControlHandleList getResizeHandles(Shape<?> shape, NFastArrayList<PathPartList> listOfPaths, DragMode dragMode)
@@ -345,33 +392,49 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
             ArrayList<ResizeControlHandle> orderedChList = new ArrayList<ResizeControlHandle>();
 
-            Circle prim = getControlPrimitive(tl.getX(), tl.getY(), shape, dragMode);
-
-            ResizeControlHandle topLeft = new ResizeControlHandle(prim, chlist, orderedChList, shape, listOfPaths, 0);
+            ResizeControlHandle topLeft = getResizeControlHandle(chlist,
+                                   orderedChList,
+                                   shape,
+                                   listOfPaths,
+                                   tl,
+                                   0,
+                                   dragMode);
 
             chlist.add(topLeft);
 
             orderedChList.add(topLeft);
 
-            prim = getControlPrimitive(tr.getX(), tr.getY(), shape, dragMode);
-
-            ResizeControlHandle topRight = new ResizeControlHandle(prim, chlist, orderedChList, shape, listOfPaths, 1);
+            ResizeControlHandle topRight = getResizeControlHandle(chlist,
+                                                                 orderedChList,
+                                                                 shape,
+                                                                 listOfPaths,
+                                                                 tr,
+                                                                 1,
+                                                                 dragMode);
 
             chlist.add(topRight);
 
             orderedChList.add(topRight);
 
-            prim = getControlPrimitive(br.getX(), br.getY(), shape, dragMode);
-
-            ResizeControlHandle bottomRight = new ResizeControlHandle(prim, chlist, orderedChList, shape, listOfPaths, 2);
+            ResizeControlHandle bottomRight = getResizeControlHandle(chlist,
+                                                                  orderedChList,
+                                                                  shape,
+                                                                  listOfPaths,
+                                                                  br,
+                                                                  2,
+                                                                  dragMode);
 
             chlist.add(bottomRight);
 
             orderedChList.add(bottomRight);
 
-            prim = getControlPrimitive(bl.getX(), bl.getY(), shape, dragMode);
-
-            ResizeControlHandle bottomLeft = new ResizeControlHandle(prim, chlist, orderedChList, shape, listOfPaths, 3);
+            ResizeControlHandle bottomLeft = getResizeControlHandle(chlist,
+                                                                     orderedChList,
+                                                                     shape,
+                                                                     listOfPaths,
+                                                                     bl,
+                                                                     3,
+                                                                     dragMode);
 
             chlist.add(bottomLeft);
 
@@ -382,10 +445,40 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             return chlist;
         }
 
-        private static Circle getControlPrimitive(double x, double y, Shape<?> shape, DragMode dragMode)
-        {
-            return new Circle(9).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(x + shape.getX()).setY(y + shape.getY()).setDraggable(true).setDragMode(dragMode).setStrokeColor(ColorName.BLACK).setStrokeWidth(2);
+        private static ResizeControlHandle getResizeControlHandle(IControlHandleList chlist,
+                                                                  ArrayList<ResizeControlHandle> orderedChList,
+                                                                  Shape<?> shape,
+                                                                  NFastArrayList<PathPartList> listOfPaths,
+                                                                  Point2D point,
+                                                                  int position,
+                                                                  DragMode dragMode) {
+            final Circle prim = getControlPrimitive(R0,
+                                                    point.getX(),
+                                                    point.getY(),
+                                                    shape,
+                                                    dragMode);
+            ResizeControlHandle handle = new ResizeControlHandle(prim,
+                                                                 chlist,
+                                                                 orderedChList, shape, listOfPaths, position);
+            animate(handle,
+                    AnimationProperty.Properties.RADIUS(R1),
+                    AnimationProperty.Properties.RADIUS(R0));
+            return handle;
         }
+
+        private static Circle getControlPrimitive(double size, double x, double y, Shape<?> shape, DragMode dragMode)
+        {
+            return new Circle(size)
+                    .setX(x + shape.getX())
+                    .setY(y + shape.getY())
+                    .setFillColor(ColorName.RED)
+                    .setFillAlpha(0.4)
+                    .setStrokeColor(ColorName.BLACK)
+                    .setStrokeWidth(2)
+                    .setDraggable(true)
+                    .setDragMode(dragMode);
+        }
+
     }
 
     private static class PointControlHandle extends AbstractControlHandle

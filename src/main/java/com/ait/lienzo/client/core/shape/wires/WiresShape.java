@@ -24,7 +24,6 @@ import com.ait.lienzo.client.core.shape.wires.MagnetManager.Magnets;
 import com.ait.lienzo.client.core.shape.wires.event.*;
 import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingAndContainmentControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresDragControlContext;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -310,7 +309,7 @@ public class WiresShape extends WiresContainer
         @Override
         public void startDrag(DragContext dragContext)
         {
-            this.shapeControl.dragStart(new WiresDragControlContext(dragContext.getDragStartX(), dragContext.getDragStartY(), dragContext.getNode()));
+            this.shapeControl.dragStart(dragContext);
         }
 
         @Override
@@ -322,10 +321,7 @@ public class WiresShape extends WiresContainer
         @Override
         public void onNodeDragEnd(NodeDragEndEvent event)
         {
-            final boolean accepts = this.shapeControl.dragEnd(new WiresDragControlContext(event.getX(), event.getY(), event.getSource()));
-            if (!accepts) {
-                event.getDragContext().reset();
-            }
+            this.shapeControl.dragEnd(event.getDragContext());
         }
 
         @Override

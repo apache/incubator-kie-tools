@@ -14,6 +14,7 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectionControl;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.ScratchPad;
+import com.ait.lienzo.client.widget.DragContext;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
 public class WiresConnectionControlImpl implements WiresConnectionControl
@@ -36,6 +37,10 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
 
     private String                            m_colorKey;
 
+    private WiresMagnet                       m_initial_magnet;
+
+    private WiresMagnet                       m_current_magnet;
+
     private final NFastStringMap<WiresShape> m_shape_color_map  = new NFastStringMap<WiresShape>();
 
     private final NFastStringMap<WiresMagnet> m_magnet_color_map = new NFastStringMap<WiresMagnet>();
@@ -44,12 +49,14 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
     {
         m_connector = connector;
         m_manager = wiresManager;
+        m_initial_magnet = null;
+        m_current_magnet = null;
     }
 
     @Override
-    public void dragStart(final Context context)
+    public void dragStart(final DragContext context)
     {
-        final Node<?> node = (Node<?>) context.getSource();
+        final Node<?> node = (Node<?>) context.getNode();
         m_head = node == m_connector.getHeadConnection().getControl();
         Point2D points = WiresUtils.getLocation(node);
         m_startX = points.getX();
@@ -60,24 +67,52 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
         m_connector.getLine().getOverLayer().getContext().createImageData(m_shapesBacking);
 
         WiresConnection connection = getConnection();
-        if (connection.getMagnet() != null)
+        m_initial_magnet = connection.getMagnet();
+        if (null != m_initial_magnet)
         {
             m_magnets = connection.getMagnet().getMagnets();
             m_magnetsBacking = m_manager.getMagnetManager().drawMagnetsToBack(m_magnets, m_shape_color_map, m_magnet_color_map, scratch);
         }
 
         String colorKey = BackingColorMapUtils.findColorAtPoint(m_shapesBacking, (int) m_startX, (int) m_startY);
-        showMagnets(colorKey);
+        checkAllowAndShowMagnets(colorKey);
     }
 
     @Override
-    public void dragMove(final Context context)
+    public void dragMove(final DragContext context)
     {
     }
 
     @Override
-    public boolean dragEnd(final Context context)
+    public boolean dragEnd(final DragContext context)
     {
+        boolean accept = false;
+
+        WiresConnection connection = getConnection();
+
+        if (null != m_current_magnet)
+        {
+
+            if (m_head)
+            {
+                accept = m_connector.getConnectionAcceptor().acceptHead(connection, m_current_magnet);
+            }
+            else
+            {
+                accept = m_connector.getConnectionAcceptor().acceptTail(connection, m_current_magnet);
+            }
+
+            if (accept)
+            {
+                connection.setMagnet(m_current_magnet);
+            }
+
+        }
+
+        if (!accept) {
+            connection.setMagnet(m_initial_magnet);
+        }
+
         if (m_magnets != null)
         {
             m_magnets.hide();
@@ -87,16 +122,16 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
         m_magnetsBacking = null;// uses lots of memory, so let it GC
         m_magnets = null;// if this is not nulled, the Mangets reference could stop Magnets being GC, when not used anywhere else
         m_colorKey = null;
+        m_current_magnet = null;
+        m_initial_magnet = null;
         m_shape_color_map.clear();
         m_magnet_color_map.clear();
-        return true;
+        return accept;
     }
 
     @Override
     public boolean dragAdjust(final Point2D dxy)
     {
-        Shape<?> control = null;
-        WiresMagnet magnet = null;
         int x = (int) (m_startX + dxy.getX());
         int y = (int) (m_startY + dxy.getY());
 
@@ -113,100 +148,93 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
             m_colorKey = null;
         }
 
+        boolean isAllowed = true;
         if (m_magnets == null)
         {
-            showMagnets(colorKey);
+            isAllowed = checkAllowAndShowMagnets(colorKey);
         }
 
-        if (m_magnets != null)
+        if (isAllowed)
         {
-            String magnetColorKey = BackingColorMapUtils.findColorAtPoint(m_magnetsBacking, x, y);
-            if (magnetColorKey == null)
+            if (null != m_magnets)
             {
-                if (null != m_magnets)
+                String magnetColorKey = BackingColorMapUtils.findColorAtPoint(m_magnetsBacking, x, y);
+                if (magnetColorKey == null)
                 {
-                    m_magnets.hide();
+                    if (null != m_magnets)
+                    {
+                        m_magnets.hide();
+                    }
+                    m_magnets = null;
+                    m_colorKey = null;
+                    m_current_magnet = null;
                 }
-                m_magnets = null;
-                m_colorKey = null;
-                magnet = null;
-            }
-            else
-            {
-
-                magnet = m_magnet_color_map.get(magnetColorKey);
-                if (magnet != null) // it can be null, when over the main shape, instead of a magnet
+                else
                 {
-                    control = magnet.getControl().asShape();
+                    // Take into account that it can be null, when over the main shape, instead of a magnet
+                    m_current_magnet = m_magnet_color_map.get(magnetColorKey);
                 }
             }
-        }
 
-        WiresConnection connection = getConnection();
+            if (null != m_current_magnet) {
+                Shape<?> control = m_current_magnet.getControl().asShape();
+                if (control != null)
+                {
+                    // If there is a control, snap to it
+                    Point2D absControl = WiresUtils.getLocation(control);
+                    double targetX = absControl.getX();
+                    double targetY = absControl.getY();
 
-        boolean accept = true;
-        if (m_head)
-        {
-            accept = m_connector.getConnectionAcceptor().acceptHead(connection, magnet);
-        }
-        else
-        {
-            accept = m_connector.getConnectionAcceptor().acceptTail(connection, magnet);
-        }
+                    double dx = targetX - m_startX - dxy.getX();
+                    double dy = targetY - m_startY - dxy.getY();
+                    if (dx != 0 || dy != 0)
+                    {
+                        dxy.setX(dxy.getX() + dx).setY(dxy.getY() + dy);
+                    }
 
-        if (accept)
-        {
-            connection.setMagnet(magnet);
-        }
-        else
-        {
-            control = null;
-        }
-
-        if (control != null)
-        {
-            // If there is a control, snap to it
-            Point2D absControl = WiresUtils.getLocation(control);
-            double targetX = absControl.getX();
-            double targetY = absControl.getY();
-
-            double dx = targetX - m_startX - dxy.getX();
-            double dy = targetY - m_startY - dxy.getY();
-            if (dx != 0 || dy != 0)
-            {
-                dxy.setX(dxy.getX() + dx).setY(dxy.getY() + dy);
+                }
             }
 
+            return true;
         }
 
-        return true;
+        return false;
     }
 
-
-    private void showMagnets(String colorKey)
+    private boolean checkAllowAndShowMagnets(String colorKey)
     {
         final WiresShape prim = null != colorKey ? m_shape_color_map.get(colorKey) : null;
-        boolean accept = true;
+        m_colorKey = colorKey;
+
+        if (isConnectionAllowed(prim)) {
+            showMagnets(prim);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isConnectionAllowed(WiresShape prim)
+    {
+
         if (m_head)
         {
-            accept = m_connector.getConnectionAcceptor().headConnectionAllowed(m_connector.getHeadConnection(), prim);
+            return m_connector.getConnectionAcceptor().headConnectionAllowed(m_connector.getHeadConnection(), prim);
         }
         else
         {
-            accept = m_connector.getConnectionAcceptor().tailConnectionAllowed(m_connector.getTailConnection(), prim);
+            return m_connector.getConnectionAcceptor().tailConnectionAllowed(m_connector.getTailConnection(), prim);
         }
+    }
 
-        if (accept)
+    private void showMagnets(WiresShape prim)
+    {
+        m_magnets = null != prim ? prim.getMagnets() : null;
+        if (m_magnets != null)
         {
-            m_colorKey = colorKey;
-
-            m_magnets = null != prim ? prim.getMagnets() : null;
-            if (m_magnets != null)
-            {
-                m_magnets.show();
-                final ScratchPad scratch = m_manager.getLayer().getLayer().getScratchPad();
-                m_magnetsBacking = m_manager.getMagnetManager().drawMagnetsToBack(m_magnets, m_shape_color_map, m_magnet_color_map, scratch);
-            }
+            m_magnets.show();
+            final ScratchPad scratch = m_manager.getLayer().getLayer().getScratchPad();
+            m_magnetsBacking = m_manager.getMagnetManager().drawMagnetsToBack(m_magnets, m_shape_color_map, m_magnet_color_map, scratch);
         }
     }
 

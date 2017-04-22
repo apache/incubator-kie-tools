@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.ait.lienzo.client.core.Attribute;
+import com.ait.lienzo.client.core.animation.AnimationProperties;
+import com.ait.lienzo.client.core.animation.AnimationProperty;
+import com.ait.lienzo.client.core.animation.AnimationTweener;
 import com.ait.lienzo.client.core.event.AttributesChangedEvent;
 import com.ait.lienzo.client.core.event.AttributesChangedHandler;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
@@ -31,6 +34,10 @@ import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
 import com.ait.lienzo.client.core.event.NodeDragStartEvent;
 import com.ait.lienzo.client.core.event.NodeDragStartHandler;
+import com.ait.lienzo.client.core.event.NodeMouseEnterEvent;
+import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
+import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
+import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.wires.AbstractControlHandle;
@@ -106,6 +113,10 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
 
     private static final class DefaultMultiPointShapeHandleFactory implements IControlHandleFactory
     {
+        private static final double R0 = 5;
+        private static final double R1 = 10;
+        private static final double ANIMATION_DURATION = 150;
+
         private final AbstractMultiPointShape<?> m_shape;
 
         private DragMode                         m_dmode = DragMode.SAME_LAYER;
@@ -170,7 +181,16 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
             {
                 final Point2D p = point;
 
-                final Circle prim = new Circle(9).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(m_shape.getX() + p.getX()).setY(m_shape.getY() + p.getY()).setDraggable(true).setDragMode(m_dmode).setStrokeColor(ColorName.BLACK).setStrokeWidth(2);
+                final Circle prim = new Circle(R0)
+                        .setX(m_shape.getX() + p.getX())
+                        .setY(m_shape.getY() + p.getY())
+                        .setFillColor(ColorName.RED)
+                        .setFillAlpha(0.4)
+                        .setStrokeColor(ColorName.BLACK)
+                        .setDraggable(true)
+                        .setDragMode(m_dmode)
+                        .setStrokeWidth(2);
+                prim.setSelectionBoundsOffset(R0 * 0.5);
 
                 chlist.add(new AbstractPointControlHandle()
                 {
@@ -184,6 +204,20 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                         register(prim.addNodeDragStartHandler(handler));
                         
                         register(prim.addNodeDragEndHandler(handler));
+
+                        register(prim.addNodeMouseEnterHandler(new NodeMouseEnterHandler() {
+                            @Override
+                            public void onNodeMouseEnter(NodeMouseEnterEvent event) {
+                                animate(prim, R1);
+                            }
+                        }));
+
+                        register(prim.addNodeMouseExitHandler(new NodeMouseExitHandler() {
+                            @Override
+                            public void onNodeMouseExit(NodeMouseExitEvent event) {
+                                animate(prim, R0);
+                            }
+                        }));
 
                         setPoint(p);
                         
@@ -204,6 +238,13 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                 }.init());
             }
             return chlist;
+        }
+
+        private static void animate(final Circle circle,
+                                    final double radius) {
+            circle.animate(AnimationTweener.LINEAR,
+                         AnimationProperties.toPropertyList(AnimationProperty.Properties.RADIUS(radius)),
+                         ANIMATION_DURATION);
         }
     }
 
