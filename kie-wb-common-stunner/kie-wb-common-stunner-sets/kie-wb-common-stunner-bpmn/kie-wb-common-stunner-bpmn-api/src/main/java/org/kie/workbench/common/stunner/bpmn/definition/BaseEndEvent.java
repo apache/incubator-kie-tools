@@ -85,8 +85,8 @@ public abstract class BaseEndEvent implements BPMNDefinition,
 
     static abstract class BaseEndEventBuilder<T extends BaseEndEvent> implements Builder<T> {
 
-        public static final String BG_COLOR = "#FFFFFF";
-        public static final Double BORDER_SIZE = 4d;
+        public static final String BG_COLOR = "#ff6347";
+        public static final Double BORDER_SIZE = 25d;
         public static final String BORDER_COLOR = "#000000";
         public static final Double RADIUS = 14d;
     }

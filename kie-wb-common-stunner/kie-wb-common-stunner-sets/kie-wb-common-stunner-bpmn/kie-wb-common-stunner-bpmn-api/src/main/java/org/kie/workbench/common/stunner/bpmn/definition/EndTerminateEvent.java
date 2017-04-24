@@ -46,10 +46,10 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 public class EndTerminateEvent extends BaseEndEvent {
 
     @Title
-    public static final transient String title = "Terminating End Event";
+    public static final transient String title = "End Terminate Event";
 
     @Description
-    public static final transient String description = "Triggering the immediate termination of a process instance. " +
+    public static final transient String description = "Triggers the immediate termination of a process instance. " +
             "All steps still in execution in parallel branches are terminated";
 
     @NonPortable

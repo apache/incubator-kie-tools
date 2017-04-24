@@ -34,6 +34,7 @@ public interface BPMNSVGViewFactory {
     String EVENT_START_SIGNAL = "images/event/event-start-signal.svg";
     String EVENT_START_TIMER = "images/event/event-start-timer.svg";
     String EVENT_END = "images/event/event-end.svg";
+    String EVENT_END_TERMINATE = "images/event/event-end-terminate.svg";
     String EVENT_INTERMEDIATE = "images/event/event-intermediate.svg";
     String LANE = "images/lane/lane.svg";
     String LANE_ICON = "images/lane/lane_icon.svg";
@@ -94,6 +95,11 @@ public interface BPMNSVGViewFactory {
 
     @SVGSource(EVENT_END)
     SVGShapeView eventEnd(final double width,
+                          final double height,
+                          final boolean resizable);
+
+    @SVGSource(EVENT_END_TERMINATE)
+    SVGShapeView eventEndTerminate(final double width,
                           final double height,
                           final boolean resizable);
 

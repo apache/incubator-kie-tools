@@ -58,7 +58,7 @@ public class EndNoneEvent extends BaseEndEvent {
         public EndNoneEvent build() {
             return new EndNoneEvent(new BPMNGeneralSet(""),
                                     new DataIOSet(),
-                                    new BackgroundSet("#000000",
+                                    new BackgroundSet(BG_COLOR,
                                                       BORDER_COLOR,
                                                       BORDER_SIZE),
                                     new FontSet(),

@@ -81,7 +81,7 @@ public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactor
         put(EndNoneEvent.class.getName(),
             new IconResource(BPMNImageResources.INSTANCE.eventEnd()));
         put(EndTerminateEvent.class.getName(),
-            new IconResource(BPMNImageResources.INSTANCE.eventTerminatingEnd()));
+            new IconResource(BPMNImageResources.INSTANCE.eventEndTerminate()));
         put(IntermediateTimerEvent.class.getName(),
             new IconResource(BPMNImageResources.INSTANCE.eventIntermediateTimer()));
         put(Lane.class.getName(),
