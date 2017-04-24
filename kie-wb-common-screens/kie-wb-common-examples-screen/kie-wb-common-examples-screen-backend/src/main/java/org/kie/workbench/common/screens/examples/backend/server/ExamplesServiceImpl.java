@@ -170,7 +170,9 @@ public class ExamplesServiceImpl implements ExamplesService {
                                                  false);
                 git.add().addFilepattern(".").call();
                 git.commit().setMessage("Initial commit").call();
-                playgroundRepository = new ExampleRepository("file://" + playgroundDirectory.getAbsolutePath());
+
+                String repositoryUrl = resolveRepositoryUrl(playgroundDirectory.getAbsolutePath());
+                playgroundRepository = new ExampleRepository(repositoryUrl);
             }
         } catch (java.io.IOException | GitAPIException e) {
             logger.error("Unable to initialize playground git repository. Only custom repository definition will be available in the Workbench.",
@@ -195,6 +197,14 @@ public class ExamplesServiceImpl implements ExamplesService {
                                                  return java.nio.file.FileVisitResult.CONTINUE;
                                              }
                                          });
+    }
+
+    String resolveRepositoryUrl( final String playgroundDirectoryPath ) {
+        if ( "\\".equals(getFileSeparator()) ) {
+            return "file:///" + playgroundDirectoryPath.replaceAll("\\\\", "/");
+        } else {
+            return  "file://" + playgroundDirectoryPath;
+        }
     }
 
     @Override
@@ -269,7 +279,7 @@ public class ExamplesServiceImpl implements ExamplesService {
 
     String getExampleAlias(final String repositoryURL) {
         String alias = repositoryURL;
-        alias = alias.substring(alias.lastIndexOf(getFileSeparator()) + 1);
+        alias = alias.substring(alias.lastIndexOf("/") + 1);
         final int lastDotIndex = alias.lastIndexOf('.');
         if (lastDotIndex > 0) {
             alias = alias.substring(0,

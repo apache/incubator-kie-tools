@@ -516,26 +516,26 @@ public class ExamplesServiceImplTest {
     }
 
     @Test
-    public void testGetExampleAliasOnWindows() {
+    public void resolveRepositoryUrlOnWindows() {
         doReturn("\\").when(service).getFileSeparator();
 
-        final String repositoryURL = "C:\\folder\\repo.git";
+        final String playgroundDirectoryPath = "C:\\folder\\.kie-wb-playground";
 
-        final String alias = service.getExampleAlias(repositoryURL);
+        final String repositoryUrl = service.resolveRepositoryUrl(playgroundDirectoryPath);
 
-        assertEquals("examples-repo",
-                     alias);
+        assertEquals("file:///C:/folder/.kie-wb-playground",
+                     repositoryUrl);
     }
 
     @Test
-    public void testGetExampleAliasOnUnix() {
+    public void resolveRepositoryUrlOnUnix() {
         doReturn("/").when(service).getFileSeparator();
 
-        final String repositoryURL = "/home/user/folder/repo.git";
+        final String playgroundDirectoryPath = "/home/user/folder/.kie-wb-playground";
 
-        final String alias = service.getExampleAlias(repositoryURL);
+        final String repositoryUrl = service.resolveRepositoryUrl(playgroundDirectoryPath);
 
-        assertEquals("examples-repo",
-                     alias);
+        assertEquals("file:///home/user/folder/.kie-wb-playground",
+                     repositoryUrl);
     }
 }
