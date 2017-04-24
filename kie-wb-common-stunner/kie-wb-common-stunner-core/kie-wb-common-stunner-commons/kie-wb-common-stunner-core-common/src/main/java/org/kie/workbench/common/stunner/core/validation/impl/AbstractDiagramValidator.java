@@ -23,8 +23,6 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -39,25 +37,20 @@ import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramValidator;
 import org.kie.workbench.common.stunner.core.validation.ModelValidator;
 
-@ApplicationScoped
-public class DiagramValidatorImpl
+/**
+ * An abstraction of the diagram validator, due to the ModelValidator (based on jsr303)
+ * is not available on server side yet.
+ */
+public abstract class AbstractDiagramValidator
         implements DiagramValidator<Diagram, RuleViolation> {
 
     private final GraphValidatorImpl graphValidator;
     private final ModelValidator modelValidator;
 
-    protected DiagramValidatorImpl() {
-        this(null,
-             null,
-             null,
-             null);
-    }
-
-    @Inject
-    public DiagramValidatorImpl(final DefinitionManager definitionManager,
-                                final RuleManager ruleManager,
-                                final TreeWalkTraverseProcessor treeWalkTraverseProcessor,
-                                final ModelValidator modelValidator) {
+    protected AbstractDiagramValidator(final DefinitionManager definitionManager,
+                                       final RuleManager ruleManager,
+                                       final TreeWalkTraverseProcessor treeWalkTraverseProcessor,
+                                       final ModelValidator modelValidator) {
         this.graphValidator = new GraphValidatorImpl(definitionManager,
                                                      ruleManager,
                                                      treeWalkTraverseProcessor);

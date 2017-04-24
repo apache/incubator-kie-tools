@@ -35,7 +35,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ModelValidatorImplTest {
+public class ModelBeanValidatorTest {
 
     @Mock
     Validator beanValidator;
@@ -46,7 +46,15 @@ public class ModelValidatorImplTest {
     @Mock
     ConstraintViolation violation1;
 
-    private ModelValidatorImpl tested;
+    private TestModelValidator tested;
+
+    private class TestModelValidator extends AbstractModelBeanValidator {
+
+        @Override
+        protected Validator getBeanValidator() {
+            return beanValidator;
+        }
+    }
 
     @Before
     public void setup() {
@@ -54,7 +62,7 @@ public class ModelValidatorImplTest {
         when(violation1.getMessage()).thenReturn("message1");
         when(violation1.getPropertyPath()).thenReturn(propertyPath);
         when(propertyPath.toString()).thenReturn("path1");
-        this.tested = new ModelValidatorImpl(beanValidator);
+        this.tested = new TestModelValidator();
     }
 
     @Test

@@ -21,36 +21,28 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelValidator;
 
-@ApplicationScoped
-public class ModelValidatorImpl implements ModelValidator {
+/**
+ * An abstraction of the model validator.
+ * The ModelValidator (based on jsr303) is not available on server side yet.
+ */
+public abstract class AbstractModelBeanValidator implements ModelValidator {
 
-    private static Logger LOGGER = Logger.getLogger(ModelValidatorImpl.class.getName());
+    private static Logger LOGGER = Logger.getLogger(AbstractModelBeanValidator.class.getName());
 
-    private final Validator beanValidator;
-
-    protected ModelValidatorImpl() {
-        this(null);
-    }
-
-    @Inject
-    public ModelValidatorImpl(final Validator beanValidator) {
-        this.beanValidator = beanValidator;
-    }
+    protected abstract Validator getBeanValidator();
 
     @Override
     public void validate(final Object entity,
                          final Consumer<Collection<ModelBeanViolation>> callback) {
         LOGGER.log(Level.INFO,
                    "Performing model bean validation.");
-        callback.accept(beanValidator
+        callback.accept(getBeanValidator()
                                 .validate(entity)
                                 .stream()
                                 .map(this::buildViolation)

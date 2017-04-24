@@ -42,7 +42,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DiagramValidatorImplTest {
+public class DiagramValidatorlTest {
 
     @Mock
     ModelValidator modelValidator;
@@ -53,18 +53,25 @@ public class DiagramValidatorImplTest {
     @Mock
     Metadata metadata;
 
-    private DiagramValidatorImpl tested;
+    private TestDiagramValidator tested;
     private TestingGraphMockHandler graphTestHandler;
+
+    private class TestDiagramValidator extends AbstractDiagramValidator {
+
+        private TestDiagramValidator() {
+            super(graphTestHandler.definitionManager,
+                  graphTestHandler.ruleManager,
+                  new TreeWalkTraverseProcessorImpl(),
+                  modelValidator);
+        }
+    }
 
     @Before
     public void setup() throws Exception {
         this.graphTestHandler = new TestingGraphMockHandler();
         when(diagram.getName()).thenReturn("Test diagram");
         when(diagram.getMetadata()).thenReturn(metadata);
-        this.tested = new DiagramValidatorImpl(graphTestHandler.definitionManager,
-                                               graphTestHandler.ruleManager,
-                                               new TreeWalkTraverseProcessorImpl(),
-                                               modelValidator);
+        this.tested = new TestDiagramValidator();
     }
 
     @Test
