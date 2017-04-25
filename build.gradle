@@ -22,9 +22,9 @@ buildscript {
         classpath(group: 'org.ajoberstar', name: 'grgit', version: '1.7.0')
         classpath(group: 'commons-codec', name: 'commons-codec', version: '1.10')
         classpath(group: 'commons-logging', name: 'commons-logging', version: '1.2')
-        classpath(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2')
+        classpath(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3')
         classpath(group: 'org.fusesource.jansi', name: 'jansi', version: '1.11')
-        classpath(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.9', classifier: 'indy')
+        classpath(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.10', classifier: 'indy')
     }
 }
 
@@ -39,7 +39,7 @@ sourceCompatibility = 1.7
 
 targetCompatibility = 1.7
 
-version = '2.0.286-RELEASE'
+version = '2.0.287-RELEASE'
 
 group = 'com.ahome-it'
 
@@ -90,7 +90,7 @@ sourceSets {
 }
 
 dependencies {
-    compile(group: 'com.ahome-it', name: 'lienzo-core', version: '2.0.286-RELEASE')
+    compile(group: 'com.ahome-it', name: 'lienzo-core', version: '2.0.287-RELEASE')
     compile(group: 'com.google.gwt', name: 'gwt-dev', version: '2.7.0')
     compile(group: 'com.google.gwt', name: 'gwt-user', version: '2.7.0')
     compile(group: 'junit', name: 'junit', version: '4.11')
