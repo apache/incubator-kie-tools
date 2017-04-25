@@ -19,8 +19,10 @@ package org.kie.workbench.common.screens.examples.backend.server;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.enterprise.event.Event;
 
@@ -29,14 +31,15 @@ import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.MetadataService;
-import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
+import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.config.ConfigGroup;
+import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -70,8 +73,8 @@ public class ExamplesServiceImplTest {
     @Mock
     private IOService ioService;
 
-    //    @Mock
-    private ConfigurationFactory configurationFactory = new ConfigurationFactoryImpl();
+    @Mock
+    private ConfigurationFactory configurationFactory;
 
     @Mock
     private RepositoryFactory repositoryFactory;
@@ -140,14 +143,17 @@ public class ExamplesServiceImplTest {
         when(sessionInfo.getId()).thenReturn("sessionId");
         when(sessionInfo.getIdentity()).thenReturn(user);
         when(user.getIdentifier()).thenReturn("user");
+        when(configurationFactory.newConfigGroup(any(ConfigType.class),
+                                                 anyString(),
+                                                 anyString())).thenReturn(mock(ConfigGroup.class));
     }
 
     @Test
     public void initPlaygroundRepository() {
         //Emulate @PostConstruct mechanism
-        ((ExamplesServiceImpl) service).initPlaygroundRepository();
+        service.initPlaygroundRepository();
 
-        final ExampleRepository exampleRepository = ((ExamplesServiceImpl) service).getPlaygroundRepository();
+        final ExampleRepository exampleRepository = service.getPlaygroundRepository();
 
         assertNotNull(exampleRepository);
     }
@@ -155,7 +161,7 @@ public class ExamplesServiceImplTest {
     @Test
     public void testGetMetaData() {
         //Emulate @PostConstruct mechanism
-        ((ExamplesServiceImpl) service).initPlaygroundRepository();
+        service.initPlaygroundRepository();
 
         final ExamplesMetaData metaData = service.getMetaData();
 
@@ -220,6 +226,8 @@ public class ExamplesServiceImplTest {
                                         any(String.class))).thenReturn(new HashSet<Project>() {{
             add(project);
         }});
+
+        service.setPlaygroundRepository(mock(ExampleRepository.class));
 
         final Set<ExampleProject> projects = service.getProjects(new ExampleRepository("https://github.com/guvnorngtestuser1/guvnorng-playground.git"));
         assertNotNull(projects);
@@ -537,5 +545,49 @@ public class ExamplesServiceImplTest {
 
         assertEquals("file:///home/user/folder/.kie-wb-playground",
                      repositoryUrl);
+    }
+
+    @Test
+    public void resolveGitRepositoryNotClonedBefore() {
+        ExampleRepository playgroundRepository = new ExampleRepository("file:///home/user/folder/.kie-wb-playground");
+        service.setPlaygroundRepository(playgroundRepository);
+
+        ConfigGroup configGroup = mock(ConfigGroup.class);
+        when(configurationFactory.newConfigGroup(any(ConfigType.class),
+                                                 anyString(),
+                                                 anyString())).thenReturn(configGroup);
+
+        Repository repository = mock(Repository.class);
+        when(repositoryFactory.newRepository(configGroup)).thenReturn(repository);
+
+        Repository result = service.resolveGitRepository(playgroundRepository);
+
+        assertEquals(repository,
+                     result);
+
+        verify(repositoryFactory,
+               times(1)).newRepository(configGroup);
+    }
+
+    @Test
+    public void resolveGitRepositoryClonedBefore() {
+        ExampleRepository playgroundRepository = new ExampleRepository("file:///home/user/folder/.kie-wb-playground");
+        service.setPlaygroundRepository(playgroundRepository);
+
+        GitRepository repository = mock(GitRepository.class);
+        Map<String, Object> repositoryEnvironment = new HashMap<>();
+        repositoryEnvironment.put("origin",
+                                  playgroundRepository.getUrl());
+        when(repository.getEnvironment()).thenReturn(repositoryEnvironment);
+
+        service.getClonedRepositories().add(repository);
+
+        Repository result = service.resolveGitRepository(playgroundRepository);
+
+        assertEquals(repository,
+                     result);
+
+        verify(repositoryFactory,
+               never()).newRepository(any(ConfigGroup.class));
     }
 }

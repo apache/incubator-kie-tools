@@ -199,11 +199,12 @@ public class ExamplesServiceImpl implements ExamplesService {
                                          });
     }
 
-    String resolveRepositoryUrl( final String playgroundDirectoryPath ) {
-        if ( "\\".equals(getFileSeparator()) ) {
-            return "file:///" + playgroundDirectoryPath.replaceAll("\\\\", "/");
+    String resolveRepositoryUrl(final String playgroundDirectoryPath) {
+        if ("\\".equals(getFileSeparator())) {
+            return "file:///" + playgroundDirectoryPath.replaceAll("\\\\",
+                                                                   "/");
         } else {
-            return  "file://" + playgroundDirectoryPath;
+            return "file://" + playgroundDirectoryPath;
         }
     }
 
@@ -236,7 +237,10 @@ public class ExamplesServiceImpl implements ExamplesService {
         if (repositoryURL == null || repositoryURL.trim().isEmpty()) {
             return Collections.emptySet();
         }
-        final Repository gitRepository = cloneRepository(repositoryURL);
+
+        // Avoid cloning playground repository multiple times
+        Repository gitRepository = resolveGitRepository(repository);
+
         if (gitRepository == null) {
             return Collections.emptySet();
         }
@@ -244,6 +248,14 @@ public class ExamplesServiceImpl implements ExamplesService {
         final Set<Project> projects = projectService.getProjects(gitRepository,
                                                                  "master");
         return convert(projects);
+    }
+
+    Repository resolveGitRepository(final ExampleRepository exampleRepository) {
+        if (exampleRepository.equals(playgroundRepository)) {
+            return clonedRepositories.stream().filter(r -> exampleRepository.getUrl().equals(r.getEnvironment().get("origin"))).findFirst().orElseGet(() -> cloneRepository(exampleRepository.getUrl()));
+        } else {
+            return cloneRepository(exampleRepository.getUrl());
+        }
     }
 
     private Repository cloneRepository(final String repositoryURL) {
@@ -479,5 +491,14 @@ public class ExamplesServiceImpl implements ExamplesService {
                                                final IOException exc) {
             return FileVisitResult.CONTINUE;
         }
+    }
+
+    // Test getters and setters
+    Set<Repository> getClonedRepositories() {
+        return clonedRepositories;
+    }
+
+    void setPlaygroundRepository(final ExampleRepository playgroundRepository) {
+        this.playgroundRepository = playgroundRepository;
     }
 }
