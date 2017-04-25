@@ -69,6 +69,10 @@
     <!-- WildFly version used together with the GWT's Super Dev Mode -->
     <version.org.wildfly.gwt.sdm>10.1.0.Final</version.org.wildfly.gwt.sdm>
 
+    <!-- Lienzo core upgrade required by Stunner. Can be removed once IP BOM is upgraded.-->
+    <version.com.ahome-it.lienzo-core>2.0.287-RELEASE</version.com.ahome-it.lienzo-core>
+    <version.com.ahome-it.lienzo-tests>2.0.287-RELEASE</version.com.ahome-it.lienzo-tests>
+
     <!-- Make OSGi happy -->
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
     <!-- TODO fix all the modules to have all direct dependencies specified, then remove this property -->
