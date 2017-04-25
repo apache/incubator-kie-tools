@@ -32,11 +32,7 @@ public interface GuidedDecisionTableConstants
     //Decision Table
     String NoPatternBindingsAvailable();
 
-    String AddRow();
-
     String OtherwiseCellLabel();
-
-    String Analyze();
 
     String Description();
 
@@ -46,8 +42,6 @@ public interface GuidedDecisionTableConstants
 
     String Delete();
 
-    String WorkItemAction();
-
     String YouMustEnterAColumnHeaderValueDescription();
 
     String ThatColumnNameIsAlreadyInUsePleasePickAnother();
@@ -55,8 +49,6 @@ public interface GuidedDecisionTableConstants
     String ColumnHeaderDescription();
 
     String HideThisColumn();
-
-    String ApplyChanges();
 
     String DecisionTableBRLFragmentNothingDefined();
 
@@ -93,8 +85,6 @@ public interface GuidedDecisionTableConstants
     String OK();
 
     String ChooseExistingPatternToAddColumnTo();
-
-    String ORwithEmphasis();
 
     String CreateNewFactPattern();
 
@@ -220,41 +210,9 @@ public interface GuidedDecisionTableConstants
 
     String NewColumn();
 
-    String AddNewMetadataOrAttributeColumn();
-
-    String AddNewAttributeColumn();
-
-    String AddNewMetadata();
-
-    String AddNewConditionSimpleColumn();
-
-    String SetTheValueOfAField();
-
-    String SetTheValueOfAFieldOnANewFact();
-
-    String DeleteAnExistingFact();
-
-    String IncludeAdvancedOptions();
-
-    String AddNewConditionBRLFragment();
-
-    String WorkItemActionSetField();
-
-    String WorkItemActionInsertFact();
-
-    String AddNewActionBRLFragment();
-
-    String Config();
-
-    String AddAnOptionToTheRule();
-
-    String AddMetadataToTheRule();
-
     String Metadata1();
 
     String Attribute();
-
-    String TypeOfColumn();
 
     String EditThisColumnsConfiguration();
 
@@ -269,10 +227,6 @@ public interface GuidedDecisionTableConstants
     String UseRowNumber();
 
     String ReverseOrder();
-
-    String DeleteItem();
-
-    String NewItem();
 
     //Audit Log
     String DecisionTableAuditLog();
@@ -318,8 +272,6 @@ public interface GuidedDecisionTableConstants
 
     String DecisionTableAuditLogWorkItemName();
 
-    String DecisionTableAuditLogWorkItemDisplayName();
-
     String DecisionTableAuditLogWorkItemParameterName();
 
     String DecisionTableAuditLogWorkItemParameterValue();
@@ -351,8 +303,6 @@ public interface GuidedDecisionTableConstants
     //Wizard
     String UseWizardToBuildAsset();
 
-    String OpenInExistingEditor();
-
     String DecisionTableWizard();
 
     String DecisionTableWizardSummary();
@@ -360,8 +310,6 @@ public interface GuidedDecisionTableConstants
     String DecisionTableWizardFactPatterns();
 
     String DecisionTableWizardFactPatternConstraints();
-
-    String DecisionTableWizardActions();
 
     String DecisionTableWizardNoAvailablePatterns();
 
@@ -386,8 +334,6 @@ public interface GuidedDecisionTableConstants
     String DecisionTableWizardPredicate();
 
     String DecisionTableWizardPredicateExpression();
-
-    String MandatoryField();
 
     String DecisionTableWizardActionSetFields();
 
@@ -458,53 +404,9 @@ public interface GuidedDecisionTableConstants
 
     String AllTheRulesInherit();
 
-    String GuidedDecisionTableEditorTitle();
-
     String guidedDecisionTableResourceTypeDescription();
 
     String guidedDecisionTableGraphResourceTypeDescription();
-
-    String EditMenuCaption();
-
-    String EditMenuCut();
-
-    String EditMenuCopy();
-
-    String EditMenuPaste();
-
-    String EditMenuDeleteCell();
-
-    String EditMenuDeleteColumn();
-
-    String EditMenuDeleteRow();
-
-    String EditMenuOtherwiseCell();
-
-    String ViewMenuCaption();
-
-    String ViewMenuZoomLevel();
-
-    String ViewMenuZoom125();
-
-    String ViewMenuZoom100();
-
-    String ViewMenuZoom75();
-
-    String ViewMenuZoom50();
-
-    String ViewMenuMerged();
-
-    String ViewMenuAuditLog();
-
-    String InsertMenuCaption();
-
-    String InsertMenuAppendRow();
-
-    String InsertMenuInsertRowAbove();
-
-    String InsertMenuInsertRowBelow();
-
-    String InsertMenuInsertColumn();
 
     String DataCutToClipboardMessage();
 
