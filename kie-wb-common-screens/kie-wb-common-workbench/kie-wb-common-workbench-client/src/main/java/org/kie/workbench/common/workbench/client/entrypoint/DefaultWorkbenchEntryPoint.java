@@ -31,10 +31,10 @@ import org.jboss.errai.ioc.client.api.UncaughtExceptionHandler;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.service.PlaceManagerActivityService;
 import org.kie.workbench.common.widgets.client.resources.RoundedCornersResource;
+import org.kie.workbench.common.workbench.client.error.DefaultWorkbenchErrorCallback;
 import org.kie.workbench.common.workbench.client.library.LibraryMonitor;
 import org.slf4j.Logger;
 import org.uberfire.client.mvp.ActivityBeansCache;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 
 public abstract class DefaultWorkbenchEntryPoint {
 
@@ -50,7 +50,7 @@ public abstract class DefaultWorkbenchEntryPoint {
 
     protected ActivityBeansCache activityBeansCache;
 
-    private DefaultErrorCallback defaultErrorCallback = new DefaultErrorCallback();
+    private DefaultWorkbenchErrorCallback defaultErrorCallback = new DefaultWorkbenchErrorCallback();
 
     @Inject
     public DefaultWorkbenchEntryPoint( Caller<AppConfigService> appConfigService,
