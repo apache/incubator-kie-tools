@@ -46,4 +46,30 @@ public class JBPMVariable {
     public void setType(String type) {
         this.type = type;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        JBPMVariable that = (JBPMVariable) o;
+
+        if (!name.equals(that.name)) {
+            return false;
+        }
+        return type.equals(that.type);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = ~~result;
+        result = 31 * result + type.hashCode();
+        result = ~~result;
+        return result;
+    }
 }

@@ -64,4 +64,30 @@ public class BusinessProcessFormModel extends AbstractJBPMFormModel {
     public String getFormName() {
         return processId + BPMNVariableUtils.TASK_FORM_SUFFIX;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        BusinessProcessFormModel formModel = (BusinessProcessFormModel) o;
+
+        if (!processId.equals(formModel.processId)) {
+            return false;
+        }
+        return processName.equals(formModel.processName);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = processId.hashCode();
+        result = ~~result;
+        result = 31 * result + processName.hashCode();
+        result = ~~result;
+        return result;
+    }
 }

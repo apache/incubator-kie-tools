@@ -224,6 +224,20 @@ public class FormEditorPresenterTest {
     }
 
     @Test
+    public void testMayClose() {
+        testLoad();
+
+        assertTrue(presenter.onMayClose());
+        verify(view,
+               never()).confirmClose();
+
+        testAddAndMoveFields();
+
+        assertFalse(presenter.onMayClose());
+        verify(view).confirmClose();
+    }
+
+    @Test
     public void testDataObjectsFields() {
         loadContent();
 

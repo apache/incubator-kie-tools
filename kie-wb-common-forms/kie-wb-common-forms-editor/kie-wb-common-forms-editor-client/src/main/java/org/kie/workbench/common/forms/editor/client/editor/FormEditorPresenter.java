@@ -51,6 +51,7 @@ import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditor;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -128,7 +129,7 @@ public class FormEditorPresenter extends KieEditor {
     @Override
     protected void save(String commitMessage) {
         synchronizeFormLayout();
-        editorService.call(getSaveSuccessCallback(editorContext.getContent().hashCode()))
+        editorService.call(getSaveSuccessCallback(editorContext.getContent().getDefinition().hashCode()))
                 .save(versionRecordManager.getCurrentPath(),
                       editorContext.getContent(),
                       metadata,
@@ -165,6 +166,8 @@ public class FormEditorPresenter extends KieEditor {
         layoutEditor.loadLayout(content.getDefinition().getLayoutTemplate());
 
         resetEditorPages(content.getOverview());
+
+        setOriginalHash(content.getDefinition().hashCode());
 
         view.init(this);
 
@@ -315,5 +318,10 @@ public class FormEditorPresenter extends KieEditor {
     public FormRenderingContext getRenderingContext() {
         synchronizeFormLayout();
         return editorContext.getRenderingContext();
+    }
+
+    @OnMayClose
+    public Boolean onMayClose() {
+        return mayClose(editorContext.getContent().getDefinition().hashCode());
     }
 }

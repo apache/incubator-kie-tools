@@ -166,4 +166,60 @@ public abstract class AbstractFieldDefinition implements FieldDefinition {
     }
 
     protected abstract void doCopyFrom(FieldDefinition other);
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        AbstractFieldDefinition that = (AbstractFieldDefinition) o;
+
+        if (!id.equals(that.id)) {
+            return false;
+        }
+        if (!name.equals(that.name)) {
+            return false;
+        }
+        if (label != null ? !label.equals(that.label) : that.label != null) {
+            return false;
+        }
+        if (required != null ? !required.equals(that.required) : that.required != null) {
+            return false;
+        }
+        if (readOnly != null ? !readOnly.equals(that.readOnly) : that.readOnly != null) {
+            return false;
+        }
+        if (validateOnChange != null ? !validateOnChange.equals(that.validateOnChange) : that.validateOnChange != null) {
+            return false;
+        }
+        if (binding != null ? !binding.equals(that.binding) : that.binding != null) {
+            return false;
+        }
+        return standaloneClassName != null ? standaloneClassName.equals(that.standaloneClassName) : that.standaloneClassName == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = ~~result;
+        result = 31 * result + name.hashCode();
+        result = ~~result;
+        result = 31 * result + (label != null ? label.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (required != null ? required.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (readOnly != null ? readOnly.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (validateOnChange != null ? validateOnChange.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (binding != null ? binding.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (standaloneClassName != null ? standaloneClassName.hashCode() : 0);
+        result = ~~result;
+        return result;
+    }
 }

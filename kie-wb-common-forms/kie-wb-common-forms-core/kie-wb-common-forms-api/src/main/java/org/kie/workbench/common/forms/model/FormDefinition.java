@@ -129,7 +129,15 @@ public class FormDefinition {
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
+        int result = id.hashCode();
+        result = ~~result;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + model.hashCode();
+        result = ~~result;
+        result = 31 * result + fields.hashCode();
+        result = ~~result;
+        result = 31 * result + layoutTemplate.hashCode();
         result = ~~result;
         return result;
     }

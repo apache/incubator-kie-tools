@@ -84,4 +84,40 @@ public class TaskFormModel extends AbstractJBPMFormModel {
     public void setFormName(String formName) {
         this.formName = formName;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        TaskFormModel that = (TaskFormModel) o;
+
+        if (!processId.equals(that.processId)) {
+            return false;
+        }
+        if (!taskId.equals(that.taskId)) {
+            return false;
+        }
+        if (!taskName.equals(that.taskName)) {
+            return false;
+        }
+        return formName.equals(that.formName);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = processId.hashCode();
+        result = ~~result;
+        result = 31 * result + taskId.hashCode();
+        result = ~~result;
+        result = 31 * result + taskName.hashCode();
+        result = ~~result;
+        result = 31 * result + formName.hashCode();
+        result = ~~result;
+        return result;
+    }
 }
