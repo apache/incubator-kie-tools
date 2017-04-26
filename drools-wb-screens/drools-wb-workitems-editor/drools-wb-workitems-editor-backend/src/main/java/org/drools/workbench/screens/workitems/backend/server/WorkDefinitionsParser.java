@@ -26,14 +26,6 @@ import java.util.Set;
 import org.drools.core.process.core.ParameterDefinition;
 import org.drools.core.process.core.WorkDefinition;
 import org.drools.core.process.core.datatype.DataType;
-import org.drools.core.process.core.datatype.impl.type.BooleanDataType;
-import org.drools.core.process.core.datatype.impl.type.EnumDataType;
-import org.drools.core.process.core.datatype.impl.type.FloatDataType;
-import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
-import org.drools.core.process.core.datatype.impl.type.ListDataType;
-import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.core.process.core.datatype.impl.type.StringDataType;
-import org.drools.core.process.core.datatype.impl.type.UndefinedDataType;
 import org.drools.core.process.core.impl.ParameterDefinitionImpl;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
@@ -57,22 +49,6 @@ public class WorkDefinitionsParser {
 
         //Add Data-type imports, in-case they are missing from definition
         final ParserContext context = new ParserContext();
-        context.addImport( "ObjectDataType",
-                           ObjectDataType.class );
-        context.addImport( "StringDataType",
-                           StringDataType.class );
-        context.addImport( "IntegerDataType",
-                           IntegerDataType.class );
-        context.addImport( "FloatDataType",
-                           FloatDataType.class );
-        context.addImport( "BooleanDataType",
-                           BooleanDataType.class );
-        context.addImport( "ListDataType",
-                           ListDataType.class );
-        context.addImport( "EnumDataType",
-                           EnumDataType.class );
-        context.addImport( "UndefinedDataType",
-                           UndefinedDataType.class );
 
         //Compile expression and convert String
         for ( String workItemDefinition : workItemDefinitions ) {
