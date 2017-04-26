@@ -18,7 +18,6 @@ package org.drools.workbench.screens.dsltext.backend.server.indexing;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -48,7 +47,7 @@ import org.uberfire.java.nio.file.Path;
 @ApplicationScoped
 public class DslFileIndexer extends AbstractDrlFileIndexer {
 
-    private static final Logger logger = LoggerFactory.getLogger( AbstractDrlFileIndexer.class );
+    private static final Logger logger = LoggerFactory.getLogger(AbstractDrlFileIndexer.class);
 
     @Inject
     private DataModelService dataModelService;
@@ -57,39 +56,40 @@ public class DslFileIndexer extends AbstractDrlFileIndexer {
     protected DSLResourceTypeDefinition dslType;
 
     @Override
-    public boolean supportsPath( final Path path ) {
-        return dslType.accept( Paths.convert( path ) );
+    public boolean supportsPath(final Path path) {
+        return dslType.accept(Paths.convert(path));
     }
 
     @Override
-    public DefaultIndexBuilder fillIndexBuilder( final Path path ) throws Exception {
+    public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
 
         final List<String> lhs = new ArrayList<String>();
         final List<String> rhs = new ArrayList<String>();
-        final String dsl = ioService.readAllString( path );
+        final String dsl = ioService.readAllString(path);
 
         //Construct a dummy DRL file to parse index elements
         final DSLTokenizedMappingFile dslLoader = new DSLTokenizedMappingFile();
-        if ( dslLoader.parseAndLoad( new StringReader( dsl ) ) ) {
+        if (dslLoader.parseAndLoad(new StringReader(dsl))) {
             DSLMapping dslMapping = dslLoader.getMapping();
-            for ( DSLMappingEntry e : dslMapping.getEntries() ) {
-                switch ( e.getSection() ) {
-                case CONDITION:
-                    lhs.add( e.getValuePattern() );
-                    break;
-                case CONSEQUENCE:
-                    rhs.add( e.getValuePattern() );
-                    break;
-                default:
-                    // no-op
+            for (DSLMappingEntry e : dslMapping.getEntries()) {
+                switch (e.getSection()) {
+                    case CONDITION:
+                        lhs.add(e.getValuePattern());
+                        break;
+                    case CONSEQUENCE:
+                        rhs.add(e.getValuePattern());
+                        break;
+                    default:
+                        // no-op
                 }
             }
 
-            final String drl = makeDrl( path,
-                    lhs,
-                    rhs );
+            final String drl = makeDrl(path,
+                                       lhs,
+                                       rhs);
 
-            return fillDrlIndexBuilder(path, drl);
+            return fillDrlIndexBuilder(path,
+                                       drl);
         }
 
         return null;
@@ -97,62 +97,64 @@ public class DslFileIndexer extends AbstractDrlFileIndexer {
 
     @Override
     protected DefaultIndexBuilder getIndexBuilder(Path path) {
-        final Project project = projectService.resolveProject( Paths.convert( path ) );
-        if ( project == null ) {
-            logger.error( "Unable to index " + path.toUri().toString() + ": project could not be resolved." );
+        final Project project = projectService.resolveProject(Paths.convert(path));
+        if (project == null) {
+            logger.error("Unable to index " + path.toUri().toString() + ": project could not be resolved.");
             return null;
         }
 
-        final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
-        if ( pkg == null ) {
-            logger.error( "Unable to index " + path.toUri().toString() + ": package could not be resolved." );
+        final Package pkg = projectService.resolvePackage(Paths.convert(path));
+        if (pkg == null) {
+            logger.error("Unable to index " + path.toUri().toString() + ": package could not be resolved.");
             return null;
         }
 
         // responsible for basic index info: project name, branch, etc
-        return new DefaultIndexBuilder( project, pkg ) {
+        return new DefaultIndexBuilder(project,
+                                       pkg) {
             @Override
-            public DefaultIndexBuilder addGenerator( final IndexElementsGenerator generator ) {
+            public DefaultIndexBuilder addGenerator(final IndexElementsGenerator generator) {
                 // Don't include the rule created to parse DSL
-                if ( generator instanceof Resource && ((Resource) generator).getResourceFQN().endsWith(MOCK_RULE_NAME) ) {
+                if (generator instanceof Resource && ((Resource) generator).getResourceFQN().endsWith(MOCK_RULE_NAME)) {
                     return this;
                 }
-                return super.addGenerator( generator );
+                return super.addGenerator(generator);
             }
         };
-     }
+    }
 
     /*
      * (non-Javadoc)
      * @see org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer#getProjectDataModelOracle(org.uberfire.java.nio.file.Path)
      */
     @Override
-    protected ProjectDataModelOracle getProjectDataModelOracle( final Path path ) {
-        return dataModelService.getProjectDataModel( Paths.convert( path ) );
+    protected ProjectDataModelOracle getProjectDataModelOracle(final Path path) {
+        return dataModelService.getProjectDataModel(Paths.convert(path));
     }
 
     public static final String MOCK_RULE_NAME = DslFileIndexer.class.getSimpleName() + "_parsing_dummy_rule";
 
-    private String makeDrl( final Path path,
-                            final List<String> lhs,
-                            final List<String> rhs ) {
+    private String makeDrl(final Path path,
+                           final List<String> lhs,
+                           final List<String> rhs) {
         final StringBuilder sb = new StringBuilder();
-        final String packageName = getPackageName( path );
-
-        sb.append( "package " ).append( packageName ).append( "\n" );
-        sb.append( "rule \"" + MOCK_RULE_NAME + "\"\n" );
-        sb.append( "when\n" );
-        for ( String e : lhs ) {
-            sb.append( e ).append( "\n" );
+        final String packageName = getPackageName(path);
+        if (!(packageName == null || packageName.isEmpty())) {
+            sb.append("package ").append(packageName).append("\n");
         }
-        sb.append( "then\n" );
-        for ( String e : rhs ) {
-            sb.append( e ).append( "\n" );
+        sb.append("rule \"" + MOCK_RULE_NAME + "\"\n");
+        sb.append("when\n");
+        for (String e : lhs) {
+            sb.append(e).append("\n");
         }
-        sb.append( "end\n" );
+        sb.append("then\n");
+        for (String e : rhs) {
+            sb.append(e).append("\n");
+        }
+        sb.append("end\n");
 
         final String drl = sb.toString();
-        return drl.replaceAll( "\\{.*\\}", "0" );
+        return drl.replaceAll("\\{.*\\}",
+                              "0");
     }
-
 }

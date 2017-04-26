@@ -33,8 +33,13 @@ import org.uberfire.java.nio.file.Path;
 /**
  * Test indexer
  */
-@ApplicationScoped
 public class TestDslFileIndexer extends DslFileIndexer implements TestIndexer<DSLResourceTypeDefinition> {
+
+    private final String packageName;
+
+    public TestDslFileIndexer(final String packageName) {
+        this.packageName=packageName;
+    }
 
     @Override
     public void setIOService( final IOService ioService ) {
@@ -53,7 +58,7 @@ public class TestDslFileIndexer extends DslFileIndexer implements TestIndexer<DS
 
     @Override
     protected String getPackageName( final Path path ) {
-        return "org.drools.workbench.screens.dsltext.backend.server.indexing.classes";
+        return packageName;
     }
 
     @Override

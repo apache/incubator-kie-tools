@@ -79,7 +79,7 @@ public class IndexDslInvalidDrlTest extends BaseIndexingTest<DSLResourceTypeDefi
 
     @Override
     protected TestIndexer getIndexer() {
-        return new TestDslFileIndexer();
+        return new TestDslFileIndexer("org.drools.workbench.screens.dsltext.backend.server.indexing.classes");
     }
 
     @Override
