@@ -37,7 +37,7 @@ dependencies {
 ```
 Javadoc URL:
 
-https://lienzo-core.com/documents/javadoc/lienzo-core
+http://docs.themodernway.com/documents/javadoc/lienzo-core/
 
 Documentation
 
@@ -61,7 +61,7 @@ Pull requests are welcome; see the contributor guidelines for details.
 
 License:
 
-Copyright (c) 2017 Ahome Innovation Technologies. All rights reserved.
+Copyright (c) 2017 Ahomé Innovation Technologies. All rights reserved.
 
 Lienzo is released under version 2.0 of the Apache License.
 
@@ -72,4 +72,4 @@ Author(s):
 Dean S. Jones
 deansjones@gmail.com
 
-And many contributors: my buds Enno, Alain, Alfredo and David from Emitrom, and the jBPM team at Red Hat, especially Mark Proctor.
+And many contributors: my buds Enno, Alain from Ahomé, Alfredo and David, and the jBPM team at Red Hat, especially Mark Proctor, Roger Martinez, Michael Anstis, and Kirill Gaevski
