@@ -342,6 +342,20 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+          <groupId>org.commonjava.maven.plugins</groupId>
+          <artifactId>project-sources-maven-plugin</artifactId>
+          <version>1.0</version>
+          <executions>
+            <execution>
+              <id>project-sources-archive</id>
+              <phase>initialize</phase>
+              <goals>
+                <goal>archive</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
 
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -577,6 +591,10 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.commonjava.maven.plugins</groupId>
+            <artifactId>project-sources-maven-plugin</artifactId>
           </plugin>
         </plugins>
       </build>
