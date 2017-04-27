@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.apache.sshd.SshServer;
 import org.eclipse.jgit.transport.CredentialsProvider;
+import org.junit.Assume;
 import org.junit.Test;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.security.FileSystemAuthenticator;
@@ -54,6 +55,7 @@ public class JGitFileSystemProviderSSHTest extends AbstractTestInfra {
 
     @Test
     public void testSSHPostReceiveHook() throws IOException {
+        Assume.assumeFalse( "UF-511", System.getProperty( "java.vendor" ).equals( "IBM Corporation" ) );
         //Setup Authorization/Authentication
         provider.setAuthenticator(new FileSystemAuthenticator() {
             @Override
