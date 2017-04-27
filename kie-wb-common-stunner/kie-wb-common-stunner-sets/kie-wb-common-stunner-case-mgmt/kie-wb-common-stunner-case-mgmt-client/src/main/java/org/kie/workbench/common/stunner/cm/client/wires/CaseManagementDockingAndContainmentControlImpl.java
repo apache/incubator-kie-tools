@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresUtils;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresDockingAndContainmentControlImpl;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.widget.DragContext;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
 public class CaseManagementDockingAndContainmentControlImpl extends WiresDockingAndContainmentControlImpl {
@@ -40,7 +41,7 @@ public class CaseManagementDockingAndContainmentControlImpl extends WiresDocking
     }
 
     @Override
-    public void dragStart(final Context context) {
+    public void dragStart(final DragContext context) {
         super.dragStart(context);
 
         state.setGhost(Optional.empty());

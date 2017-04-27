@@ -21,6 +21,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -42,14 +43,18 @@ public abstract class AbstractCanvasCommandTest {
     protected Graph graph;
     @Mock
     protected Metadata metadata;
+    @Mock
+    protected Index<?, ?> graphIndex;
 
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
         ;
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
+        when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(diagram.getGraph()).thenReturn(graph);
+        when(graphIndex.getGraph()).thenReturn(graph);
         when(metadata.getDefinitionSetId()).thenReturn(DEF_SET_ID);
         when(metadata.getShapeSetId()).thenReturn(SHAPE_SET_ID);
         when(metadata.getCanvasRootUUID()).thenReturn(CANVAS_ROOT_UUID);

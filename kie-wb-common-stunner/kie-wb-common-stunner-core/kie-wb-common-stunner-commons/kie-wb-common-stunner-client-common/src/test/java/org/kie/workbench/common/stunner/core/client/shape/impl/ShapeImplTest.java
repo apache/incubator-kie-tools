@@ -16,11 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.impl;
 
+import java.util.function.Predicate;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeViewExtStub;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
@@ -29,22 +33,46 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ShapeImplTest {
 
+    @Mock
+    private ShapeStateHelper shapeStateHelper;
+
     private ShapeViewExtStub view;
     private ShapeImpl<ShapeView> tested;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
+        when(shapeStateHelper.save(any(Predicate.class))).thenReturn(shapeStateHelper);
         this.view = spy(new ShapeViewExtStub());
-        this.tested = new ShapeImpl<ShapeView>(view);
+        this.tested = new ShapeImpl<ShapeView>(view,
+                                               shapeStateHelper);
+        verify(shapeStateHelper,
+               times(1)).forShape(eq(tested));
     }
 
     @Test
-    public void testState() {
-        tested.setUUID("uuid1");
+    public void testGetters() {
         assertEquals(view,
                      tested.getShapeView());
+        assertEquals(shapeStateHelper,
+                     tested.getShapeStateHelper());
+    }
+
+    @Test
+    public void testUUID() {
+        tested.setUUID("uuid1");
         assertEquals("uuid1",
                      tested.getUUID());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testApplyState() {
+        tested.applyState(ShapeState.NONE);
+        verify(shapeStateHelper,
+               times(1)).save(any(Predicate.class));
+        verify(shapeStateHelper,
+               times(1)).applyState(eq(ShapeState.NONE));
     }
 
     @Test

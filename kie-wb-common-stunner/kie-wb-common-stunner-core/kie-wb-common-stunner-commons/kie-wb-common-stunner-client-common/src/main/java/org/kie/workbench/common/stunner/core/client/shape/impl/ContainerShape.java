@@ -43,6 +43,14 @@ public class ContainerShape<W, D extends MutableShapeDef<W>, V extends ShapeView
               view);
     }
 
+    public ContainerShape(final D shapeDef,
+                          final V view,
+                          final ShapeStateHelper<V, Shape<V>> shapeStateHelper) {
+        super(shapeDef,
+              view,
+              shapeStateHelper);
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public void addChild(final S child,

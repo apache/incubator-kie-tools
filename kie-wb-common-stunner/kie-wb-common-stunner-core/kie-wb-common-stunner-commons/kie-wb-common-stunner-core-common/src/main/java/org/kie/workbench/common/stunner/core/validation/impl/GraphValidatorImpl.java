@@ -45,6 +45,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.violations.EmptyConnectionViolation;
 import org.kie.workbench.common.stunner.core.validation.GraphValidator;
 
 @ApplicationScoped
@@ -143,13 +144,24 @@ public class GraphValidatorImpl
                                   if (content instanceof Child) {
                                       this.currentParents.push(edge.getSourceNode());
                                   } else if (content instanceof View) {
-                                      // Evaluate connection rules for this edge.
+                                      final Optional<Node<? extends View<?>, ? extends Edge>> sourceOpt =
+                                              Optional.of(edge.getSourceNode());
+                                      final Optional<Node<? extends View<?>, ? extends Edge>> targetOpt =
+                                              Optional.ofNullable(edge.getTargetNode());
+                                      // Check not empty connections.
+                                      final Optional<RuleViolation> emptyConnectionViolation =
+                                              evaluateNotEmptyConnections(graph,
+                                                                          edge,
+                                                                          sourceOpt,
+                                                                          targetOpt);
+                                      emptyConnectionViolation.ifPresent(edgeViolations::add);
+                                      // Evaluate connection rules.
                                       edgeViolations.addViolations(
                                               evaluateConnection(ruleSet,
                                                                  graph,
                                                                  edge,
-                                                                 Optional.of(edge.getSourceNode()),
-                                                                 Optional.ofNullable(edge.getTargetNode()))
+                                                                 sourceOpt,
+                                                                 targetOpt)
                                       );
                                       // Evaluate connector cardinality rules for this edge.
                                       if (null != edge.getTargetNode()) {
@@ -266,6 +278,31 @@ public class GraphValidatorImpl
                           RuleContextBuilder.GraphContexts.docking(graph,
                                                                    parent,
                                                                    candidate));
+    }
+
+    /**
+     * Actually the different commands allows removing nodes that have
+     * incoming or outgoing view connectors, as connectors can be re-attached to
+     * a different node, but the graph structure is not considered valid, so the
+     * diagram cannot be updated until fixing that connections.
+     * So there exist no rule for empty connections, actually it's just a common validation.
+     */
+    @SuppressWarnings("unchecked")
+    private Optional<RuleViolation> evaluateNotEmptyConnections(final Graph<?, ? extends Node> graph,
+                                                                final Edge<? extends View<?>, ? extends Node> connector,
+                                                                final Optional<Node<? extends View<?>, ? extends Edge>> sourceNode,
+                                                                final Optional<Node<? extends View<?>, ? extends Edge>> targetNode) {
+
+        log(" NOT_EMPTY_CONNECTIONS " +
+                    "[edge=" + connector +
+                    ",source=" + sourceNode.orElse(null) +
+                    ",target=" + targetNode.orElse(null) + "]");
+        if (!sourceNode.isPresent() || !targetNode.isPresent()) {
+            return Optional.of(EmptyConnectionViolation.Builder.build(connector,
+                                                                      sourceNode,
+                                                                      targetNode));
+        }
+        return Optional.empty();
     }
 
     @SuppressWarnings("unchecked")

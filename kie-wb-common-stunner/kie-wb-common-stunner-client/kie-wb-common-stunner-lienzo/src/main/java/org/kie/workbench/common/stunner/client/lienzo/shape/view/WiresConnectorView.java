@@ -16,32 +16,34 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
-import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
+import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.MagnetManager;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
-import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasDecorators;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.HandlerRegistrationImpl;
 
 public class WiresConnectorView<T> extends WiresConnector
         implements
         ShapeView<T>,
         IsConnector<T>,
-        HasControlPoints<T> {
+        HasControlPoints<T>,
+        HasDecorators<Shape<?>> {
 
     protected String uuid;
     private WiresConnectorControl connectorControl;
-    private final HandlerRegistrationImpl handlerRegistration = new HandlerRegistrationImpl();
 
     public WiresConnectorView(final AbstractDirectionalMultiPointShape<?> line,
                               final MultiPathDecorator headDecorator,
@@ -121,10 +123,6 @@ public class WiresConnectorView<T> extends WiresConnector
         return (T) this;
     }
 
-    private OrthogonalPolyLine createLine(final double... points) {
-        return new OrthogonalPolyLine(Point2DArray.fromArrayOfDouble(points)).setCornerRadius(5).setDraggable(true);
-    }
-
     @Override
     public void removeFromParent() {
         // Remove the main line.
@@ -181,6 +179,12 @@ public class WiresConnectorView<T> extends WiresConnector
     @SuppressWarnings("unchecked")
     public T setFillColor(final String color) {
         getLine().setFillColor(color);
+        if (null != getHead()) {
+            getHead().setFillColor(color);
+        }
+        if (null != getTail()) {
+            getTail().setFillColor(color);
+        }
         return (T) this;
     }
 
@@ -193,6 +197,12 @@ public class WiresConnectorView<T> extends WiresConnector
     @SuppressWarnings("unchecked")
     public T setFillAlpha(final double alpha) {
         getLine().setFillAlpha(alpha);
+        if (null != getHead()) {
+            getHead().setFillAlpha(alpha);
+        }
+        if (null != getTail()) {
+            getTail().setFillAlpha(alpha);
+        }
         return (T) this;
     }
 
@@ -205,6 +215,12 @@ public class WiresConnectorView<T> extends WiresConnector
     @SuppressWarnings("unchecked")
     public T setStrokeColor(final String color) {
         getLine().setStrokeColor(color);
+        if (null != getHead()) {
+            getHead().setStrokeColor(color);
+        }
+        if (null != getTail()) {
+            getTail().setStrokeColor(color);
+        }
         return (T) this;
     }
 
@@ -217,6 +233,12 @@ public class WiresConnectorView<T> extends WiresConnector
     @SuppressWarnings("unchecked")
     public T setStrokeAlpha(final double alpha) {
         getLine().setStrokeAlpha(alpha);
+        if (null != getHead()) {
+            getHead().setStrokeAlpha(alpha);
+        }
+        if (null != getTail()) {
+            getTail().setStrokeAlpha(alpha);
+        }
         return (T) this;
     }
 
@@ -229,34 +251,40 @@ public class WiresConnectorView<T> extends WiresConnector
     @SuppressWarnings("unchecked")
     public T setStrokeWidth(final double width) {
         getLine().setStrokeWidth(width);
+        if (null != getHead()) {
+            getHead().setStrokeWidth(width);
+        }
+        if (null != getTail()) {
+            getTail().setStrokeWidth(width);
+        }
         return (T) this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T moveToTop() {
-        getLine().moveToTop();
+        getGroup().moveToTop();
         return (T) this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T moveToBottom() {
-        getLine().moveToBottom();
+        getGroup().moveToBottom();
         return (T) this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T moveUp() {
-        getLine().moveUp();
+        getGroup().moveUp();
         return (T) this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T moveDown() {
-        getLine().moveDown();
+        getGroup().moveDown();
         return (T) this;
     }
 
@@ -264,7 +292,7 @@ public class WiresConnectorView<T> extends WiresConnector
     @SuppressWarnings("unchecked")
     public T showControlPoints(final ControlPointType type) {
         if (null != getControl()) {
-            if (ControlPointType.MAGNET.equals(type)) {
+            if (ControlPointType.POINTS.equals(type)) {
                 getControl().showControlPoints();
             } else {
                 throw new UnsupportedOperationException("Control point type [" + type + "] not supported yet");
@@ -277,7 +305,7 @@ public class WiresConnectorView<T> extends WiresConnector
     @SuppressWarnings("unchecked")
     public T hideControlPoints() {
         if (null != getControl()) {
-            setStrokeWidth(getStrokeWidth() / 2);
+            getControl().hideControlPoints();
         }
         return (T) this;
     }
@@ -289,32 +317,21 @@ public class WiresConnectorView<T> extends WiresConnector
 
     @Override
     public void destroy() {
-        // Remove any handler registrations present.
-        handlerRegistration.removeHandler();
         // Remove me.
-        this.removeFromParent();
+        super.destroy();
         this.connectorControl = null;
     }
 
-    /**
-     * Try to make easier the connectors selection/updates from a user perspective ( eg: when line widths are small )
-     */
-    protected void enableShowControlsOnMouseEnter() {
-        // Register a mouse enter handler for the connector's line.
-        handlerRegistration.register(
-                getLine().addNodeMouseEnterHandler(nodeMouseEnterEvent -> showControlPoints(ControlPointType.MAGNET))
-        );
-        // Register a mouse enter handler for the connector's head decorator, if exists.
+    @Override
+    public List<Shape<?>> getDecorators() {
+        final List<Shape<?>> decorators = new ArrayList<>(3);
+        decorators.add(getLine());
         if (null != getHead()) {
-            handlerRegistration.register(
-                    getHead().addNodeMouseEnterHandler(nodeMouseEnterEvent -> showControlPoints(ControlPointType.MAGNET))
-            );
+            decorators.add(getHead());
         }
-        // Register a mouse enter handler for the connector's tail decorator, if exists.
         if (null != getTail()) {
-            handlerRegistration.register(
-                    getTail().addNodeMouseEnterHandler(nodeMouseEnterEvent -> showControlPoints(ControlPointType.MAGNET))
-            );
+            decorators.add(getTail());
         }
+        return decorators;
     }
 }

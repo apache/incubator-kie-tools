@@ -16,7 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.client.util;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
+
 import com.google.gwt.core.client.GWT;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
@@ -24,6 +30,12 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.AbstractChildrenTraverseCallback;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 
 public class ShapeUtils {
 
@@ -47,17 +59,29 @@ public class ShapeUtils {
                                    mutationContext);
     }
 
-    public static boolean isStaticMutation(final MutationContext mutationContext) {
-        return mutationContext == null || MutationContext.Type.STATIC.equals(mutationContext.getType());
-    }
-
-    public static boolean isAnimationMutation(final Object view,
-                                              final MutationContext mutationContext) {
-        return mutationContext != null && MutationContext.Type.ANIMATION.equals(mutationContext.getType());
-    }
-
-    public static double[] getContainerXY(final Shape shape) {
-        return new double[]{shape.getShapeView().getShapeX(), shape.getShapeView().getShapeY()};
+    @SuppressWarnings("unchecked")
+    public static void moveViewConnectorsToTop(final AbstractCanvasHandler canvasHandler,
+                                               final Node<?, Edge> node) {
+        final Set<String> connectorIds = new HashSet<>();
+        // Obtain all view connectors for the node and its children.
+        appendViewConnectorIds(connectorIds,
+                               node);
+        new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl())
+                .setRootUUID(node.getUUID())
+                .traverse(canvasHandler.getGraphIndex().getGraph(),
+                          new AbstractChildrenTraverseCallback<Node<View, Edge>, Edge<Child, Node>>() {
+                              @Override
+                              public boolean startNodeTraversal(final List<Node<View, Edge>> parents,
+                                                                final Node<View, Edge> childNode) {
+                                  appendViewConnectorIds(connectorIds,
+                                                         childNode);
+                                  return true;
+                              }
+                          });
+        // Update connector's view.
+        connectorIds.stream()
+                .forEach(id -> moveShapeToTop(canvasHandler,
+                                              id));
     }
 
     /**
@@ -70,5 +94,21 @@ public class ShapeUtils {
         final double dx = Math.abs(x1 - x0);
         final double dy = Math.abs(y1 - y0);
         return (Math.sqrt((dx * dx) + (dy * dy)));
+    }
+
+    private static void appendViewConnectorIds(final Set<String> result,
+                                               final Node<?, Edge> node) {
+        Stream.concat(node.getInEdges().stream(),
+                      node.getOutEdges().stream())
+                .filter(e -> e.getContent() instanceof ViewConnector)
+                .forEach(e -> result.add(e.getUUID()));
+    }
+
+    private static void moveShapeToTop(final AbstractCanvasHandler canvasHandler,
+                                       final String uuid) {
+        final Shape shape = canvasHandler.getCanvas().getShape(uuid);
+        if (null != shape) {
+            shape.getShapeView().moveToTop();
+        }
     }
 }

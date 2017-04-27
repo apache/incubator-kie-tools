@@ -116,7 +116,7 @@ public class NodeShapeImplTest {
         verify(view,
                times(1)).setStrokeColor(eq(ShapeState.INVALID.getColor()));
         verify(view,
-               times(1)).setStrokeWidth(eq(1.5d));
+               times(2)).setStrokeWidth(anyDouble());
         verify(view,
                times(2)).setStrokeAlpha(eq(1d));
     }
@@ -130,12 +130,10 @@ public class NodeShapeImplTest {
         verify(view,
                times(1)).setStrokeColor(eq(ShapeState.INVALID.getColor()));
         verify(view,
-               times(1)).setStrokeWidth(eq(1.5d));
+               times(3)).setStrokeWidth(anyDouble());
         verify(view,
-               times(2)).setStrokeColor(eq(COLOR));
+               times(1)).setStrokeColor(eq(COLOR));
         verify(view,
-               times(2)).setStrokeWidth(eq(2d));
-        verify(view,
-               times(3)).setStrokeAlpha(eq(1d));
+               times(2)).setStrokeAlpha(eq(1d));
     }
 }

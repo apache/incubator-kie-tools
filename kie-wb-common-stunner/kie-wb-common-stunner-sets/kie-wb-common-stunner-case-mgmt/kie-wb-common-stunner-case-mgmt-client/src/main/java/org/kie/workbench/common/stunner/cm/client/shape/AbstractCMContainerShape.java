@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.shapes.client;
+package org.kie.workbench.common.stunner.cm.client.shape;
 
-import org.kie.workbench.common.stunner.client.lienzo.shape.impl.AnimationShapeStateHelper;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.impl.ContainerShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+import org.kie.workbench.common.stunner.shapes.client.BasicContainerShape;
 
-public class BasicContainerShape<W, D extends MutableShapeDef<W>, V extends ShapeView<?>>
-        extends ContainerShape<W, D, V, Shape<?>> {
+public class AbstractCMContainerShape<W, D extends MutableShapeDef<W>, V extends ShapeView<?>>
+        extends BasicContainerShape<W, D, V> {
 
-    public BasicContainerShape(final D shapeDef,
-                               final V view) {
+    private static final double ACTIVE_STROKE_WIDTH = 1d;
+
+    public AbstractCMContainerShape(final D shapeDef,
+                                    final V view) {
         super(shapeDef,
-              view,
-              new AnimationShapeStateHelper<>());
+              view);
+        getShape().getShapeStateHelper().setStrokeWidthForActiveState(ACTIVE_STROKE_WIDTH);
     }
 }

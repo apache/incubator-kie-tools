@@ -18,10 +18,8 @@ package org.kie.workbench.common.stunner.client.lienzo.shape.view.ext;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
-import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
@@ -36,21 +34,15 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler
 /**
  * A helper class for handling the wires shapes' text primitive
  * that is used to display the shape's name.
- * <p/>
+ * <p>
  * It handles common logic for ShapeViews that implement <code>HasText</code>
  * type, can be reused for shapes or connectors.
- * <p/>
- * It also decorates a text instance with a rectangle, which by default
- * is not fill and so not visible, but provides an area to listen for
- * mouse events and it can be updated and displayed as some point
- * as well, if necessary.
+ * <p>
  */
 public class WiresTextDecorator {
 
     private final ViewEventHandlerManager eventHandlerManager;
     private final Group textContainer = new Group();
-    private final Rectangle textDecorator = new Rectangle(1,
-                                                          1);
     private ViewHandler<TextEnterEvent> textOverHandlerViewHandler;
     private ViewHandler<TextExitEvent> textOutEventViewHandler;
     private ViewHandler<TextClickEvent> textClickEventViewHandler;
@@ -87,23 +79,10 @@ public class WiresTextDecorator {
                 .setDraggable(false)
                 .setAlpha(0);
         this.currentTextLayout = LayoutContainer.Layout.CENTER;
-        updateDecorator();
         textContainer.add(text);
-        textContainer.add(textDecorator);
+        // Ensure path bounds are available on the selection context.
+        text.setFillBoundsForSelection(true);
         initializeHandlers();
-    }
-
-    private void updateDecorator() {
-        final BoundingBox tbb = text.getBoundingBox();
-        this.textDecorator
-                .setWidth(tbb.getWidth())
-                .setHeight(tbb.getHeight())
-                .setX(tbb.getX())
-                .setY(tbb.getY())
-                .setStrokeAlpha(0)
-                .setFillAlpha(1)
-                .setRotationDegrees(text.getRotationDegrees())
-                .moveToTop();
     }
 
     private void initializeHandlers() {
@@ -114,7 +93,7 @@ public class WiresTextDecorator {
     }
 
     private void registerClickHandler() {
-        HandlerRegistration registration = textDecorator.addNodeMouseClickHandler(event -> {
+        HandlerRegistration registration = text.addNodeMouseClickHandler(event -> {
             if (null != textClickEventViewHandler) {
                 eventHandlerManager.skipClickHandler();
                 final TextClickEvent e = new TextClickEvent(event.getX(),
@@ -130,7 +109,7 @@ public class WiresTextDecorator {
     }
 
     private void registerDoubleClickHandler() {
-        HandlerRegistration registration = textDecorator.addNodeMouseDoubleClickHandler(event -> {
+        HandlerRegistration registration = text.addNodeMouseDoubleClickHandler(event -> {
             if (null != textDblClickEventViewHandler) {
                 eventHandlerManager.skipClickHandler();
                 final TextDoubleClickEvent e = new TextDoubleClickEvent(event.getX(),
@@ -146,7 +125,7 @@ public class WiresTextDecorator {
     }
 
     private void registerTextEnterHandler() {
-        HandlerRegistration registration = textDecorator.addNodeMouseEnterHandler(event -> {
+        HandlerRegistration registration = text.addNodeMouseEnterHandler(event -> {
             if (null != textOverHandlerViewHandler && hasText()) {
                 final TextEnterEvent textOverEvent = new TextEnterEvent(event.getX(),
                                                                         event.getY(),
@@ -160,7 +139,7 @@ public class WiresTextDecorator {
     }
 
     private void registerTextExitHandler() {
-        HandlerRegistration registration = textDecorator.addNodeMouseExitHandler(event -> {
+        HandlerRegistration registration = text.addNodeMouseExitHandler(event -> {
             if (null != textOutEventViewHandler && hasText()) {
                 final TextExitEvent textOutEvent = new TextExitEvent(event.getX(),
                                                                      event.getY(),
@@ -176,7 +155,6 @@ public class WiresTextDecorator {
     @SuppressWarnings("unchecked")
     public void setTitle(final String title) {
         text.setText(title);
-        updateDecorator();
     }
 
     @SuppressWarnings("unchecked")
@@ -204,7 +182,6 @@ public class WiresTextDecorator {
     @SuppressWarnings("unchecked")
     public void setTitleRotation(final double degrees) {
         text.setRotationDegrees(degrees);
-        updateDecorator();
     }
 
     @SuppressWarnings("unchecked")
@@ -215,19 +192,16 @@ public class WiresTextDecorator {
     @SuppressWarnings("unchecked")
     public void setTitleFontFamily(final String fontFamily) {
         text.setFontFamily(fontFamily);
-        updateDecorator();
     }
 
     @SuppressWarnings("unchecked")
     public void setTitleFontSize(final double fontSize) {
         text.setFontSize(fontSize);
-        updateDecorator();
     }
 
     @SuppressWarnings("unchecked")
     public void setTitleAlpha(final double alpha) {
         text.setAlpha(alpha);
-        updateDecorator();
     }
 
     @SuppressWarnings("unchecked")
@@ -253,11 +227,7 @@ public class WiresTextDecorator {
             text.removeFromParent();
             this.text = null;
         }
-        textDecorator.removeFromParent();
         textContainer.removeFromParent();
-        if (null != textOverHandlerViewHandler) {
-
-        }
         deregisterHandler(textOverHandlerViewHandler);
         deregisterHandler(textOutEventViewHandler);
         deregisterHandler(textClickEventViewHandler);

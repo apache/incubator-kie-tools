@@ -73,7 +73,6 @@ public class WiresConnectorViewExt<T> extends WiresConnectorView<T>
         this.eventHandlerManager = new ViewEventHandlerManager(getLine(),
                                                                getLine(),
                                                                supportedEventTypes);
-        enableShowControlsOnMouseEnter();
     }
 
     @Override

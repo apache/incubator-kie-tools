@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
-import java.util.Set;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -25,6 +24,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.SequenceFlowExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
@@ -56,7 +56,8 @@ import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 // A single outgoing sequence flows for event types that can be docked (boundary) such as Intermediate Timer Event
 @EdgeOccurrences(role = "IntermediateEventOnActivityBoundary", type = EdgeOccurrences.EdgeType.OUTGOING, max = 1)
 @FormDefinition(
-        startElement = "general"
+        startElement = "general",
+        policy = FieldPolicy.ONLY_MARKED
 )
 public class SequenceFlow extends BaseConnector {
 
@@ -97,37 +98,9 @@ public class SequenceFlow extends BaseConnector {
         this.executionSet = executionSet;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
     @Override
     public String getTitle() {
         return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Set<String> getLabels() {
-        return labels;
-    }
-
-    public BPMNGeneralSet getGeneral() {
-        return general;
-    }
-
-    public BackgroundSet getBackgroundSet() {
-        return backgroundSet;
-    }
-
-    public void setGeneral(final BPMNGeneralSet general) {
-        this.general = general;
-    }
-
-    public void setBackgroundSet(final BackgroundSet backgroundSet) {
-        this.backgroundSet = backgroundSet;
     }
 
     public SequenceFlowExecutionSet getExecutionSet() {

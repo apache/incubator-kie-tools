@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.shape.impl;
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.Lifecycle;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -29,9 +30,9 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 /**
  * The default Shape implementation for edges with ViewContent type, so basically connectors.
- * <p/>
+ * <p>
  * It acts as the bridge between the edge and the shape view.
- * <p/>
+ * <p>
  * This implementation relies on ShapeDefinitions. This way provides the bridge between the edge and it's
  * bean definition instance, and delegates the interaction logic between the definition instance and the shape's
  * view to a ShapeDefViewHandler type.
@@ -50,11 +51,12 @@ public class ConnectorShape<W, D extends MutableShapeDef<W>, V extends ShapeView
               view);
     }
 
-    @Override
-    public void applyProperties(final Edge<ViewConnector<W>, Node> element,
-                                final MutationContext mutationContext) {
-        getDefViewHandler().applyProperties(getDefinition(element),
-                                            mutationContext);
+    public ConnectorShape(final D shapeDef,
+                          final V view,
+                          final ShapeStateHelper<V, Shape<V>> shapeStateHelper) {
+        super(shapeDef,
+              view,
+              shapeStateHelper);
     }
 
     @Override
@@ -83,6 +85,6 @@ public class ConnectorShape<W, D extends MutableShapeDef<W>, V extends ShapeView
 
     @Override
     public void applyState(final ShapeState shapeState) {
-        // TODO
+        getShape().applyState(shapeState);
     }
 }

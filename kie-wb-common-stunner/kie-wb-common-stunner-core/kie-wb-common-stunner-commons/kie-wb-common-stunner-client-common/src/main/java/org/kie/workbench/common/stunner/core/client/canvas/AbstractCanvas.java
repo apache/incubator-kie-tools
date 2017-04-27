@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -124,14 +123,13 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     private final CanvasLoadingObserver loadingObserver = new CanvasLoadingObserver();
     private final String uuid;
 
-    @Inject
-    public AbstractCanvas(final Event<CanvasClearEvent> canvasClearEvent,
-                          final Event<CanvasShapeAddedEvent> canvasShapeAddedEvent,
-                          final Event<CanvasShapeRemovedEvent> canvasShapeRemovedEvent,
-                          final Event<CanvasDrawnEvent> canvasDrawnEvent,
-                          final Event<CanvasFocusedEvent> canvasFocusedEvent,
-                          final Layer layer,
-                          final V view) {
+    protected AbstractCanvas(final Event<CanvasClearEvent> canvasClearEvent,
+                             final Event<CanvasShapeAddedEvent> canvasShapeAddedEvent,
+                             final Event<CanvasShapeRemovedEvent> canvasShapeRemovedEvent,
+                             final Event<CanvasDrawnEvent> canvasDrawnEvent,
+                             final Event<CanvasFocusedEvent> canvasFocusedEvent,
+                             final Layer layer,
+                             final V view) {
         this.canvasClearEvent = canvasClearEvent;
         this.canvasShapeAddedEvent = canvasShapeAddedEvent;
         this.canvasShapeRemovedEvent = canvasShapeRemovedEvent;

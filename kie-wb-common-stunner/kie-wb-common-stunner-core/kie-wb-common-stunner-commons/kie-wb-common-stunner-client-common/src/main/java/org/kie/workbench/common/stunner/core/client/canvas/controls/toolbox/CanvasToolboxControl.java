@@ -158,7 +158,7 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
         final List<Toolbox> t = toolboxMap.get(uuid);
         if (null != t && t.isEmpty()) {
             // Lazy loading.
-            load(canvasHandler.getGraphIndex().getNode(uuid));
+            load(canvasHandler.getGraphIndex().get(uuid));
         }
         return toolboxMap.get(uuid);
     }

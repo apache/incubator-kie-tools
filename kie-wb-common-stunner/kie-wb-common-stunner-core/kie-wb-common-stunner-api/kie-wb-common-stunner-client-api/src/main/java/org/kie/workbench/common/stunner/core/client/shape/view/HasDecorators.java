@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.view;
 
-public interface HasControlPoints<T> {
+import java.util.List;
 
-    enum ControlPointType {
-        RESIZE,
-        POINTS
-    }
+public interface HasDecorators<D> {
 
-    T showControlPoints(final ControlPointType type);
-
-    T hideControlPoints();
-
-    boolean areControlsVisible();
+    List<D> getDecorators();
 }

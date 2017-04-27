@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSu
 
 public class ConnectorView extends WiresConnectorViewExt<ConnectorView> {
 
+    private static final double SELECTION_OFFSET = 30;
     private static final double DECORATOR_WIDTH = 10;
     private static final double DECORATOR_HEIGHT = 15;
 
@@ -42,7 +43,6 @@ public class ConnectorView extends WiresConnectorViewExt<ConnectorView> {
 
     private static Object[] createLine(final double... points) {
         // The head decorator must be not visible, as connectors are unidirectional.
-        // TODO: Remove this when decorators can be nullified for WiresConnectors and just nullify this instance.
         final MultiPath head = new MultiPath()
                 .M(1,
                    2)
@@ -64,9 +64,10 @@ public class ConnectorView extends WiresConnectorViewExt<ConnectorView> {
                 .setFillColor(ColorName.BLACK)
                 .setFillAlpha(1);
         final OrthogonalPolyLine line =
-                new OrthogonalPolyLine(Point2DArray.fromArrayOfDouble(points))
-                        .setCornerRadius(5)
-                        .setDraggable(true);
+                new OrthogonalPolyLine(Point2DArray.fromArrayOfDouble(points));
+        line.setCornerRadius(5);
+        line.setDraggable(true);
+        line.setSelectionStrokeOffset(SELECTION_OFFSET);
         line.setHeadOffset(head.getBoundingBox().getHeight());
         line.setTailOffset(tail.getBoundingBox().getHeight());
         final MultiPathDecorator headDecorator = new MultiPathDecorator(head);

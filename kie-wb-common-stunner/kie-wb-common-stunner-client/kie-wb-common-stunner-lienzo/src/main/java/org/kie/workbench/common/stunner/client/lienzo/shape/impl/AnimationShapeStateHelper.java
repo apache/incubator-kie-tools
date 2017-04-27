@@ -16,12 +16,16 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.impl;
 
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.animation.ShapeDecoratorAnimation;
+import org.kie.workbench.common.stunner.client.lienzo.shape.animation.ShapeDecoratorAnimation;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateHelper;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 public class AnimationShapeStateHelper<V extends ShapeView, S extends Shape<V>> extends ShapeStateHelper<V, S> {
+
+    public AnimationShapeStateHelper() {
+        super();
+    }
 
     public AnimationShapeStateHelper(final S shape) {
         super(shape);
@@ -33,7 +37,7 @@ public class AnimationShapeStateHelper<V extends ShapeView, S extends Shape<V>> 
     @Override
     protected void applyActiveState(final String color) {
         runAnimation(color,
-                     ACTIVE_STROKE_WIDTH,
+                     getActiveStrokeWidth(),
                      ACTIVE_STROKE_ALPHA);
     }
 

@@ -18,10 +18,13 @@ package org.kie.workbench.common.stunner.core.client.canvas.command;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
+import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -33,23 +36,37 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class RemoveCanvasChildCommandTest extends AbstractCanvasCommandTest {
 
-    private static final String PARENT_ID = "e1";
-    private static final String CHILD_ID = "s1";
+    @Mock
+    private Shape connectorShape1;
 
     @Mock
-    private Node parent;
+    private Shape connectorShape2;
+
     @Mock
-    private Node child;
+    private ShapeView connectorShapeView1;
+
+    @Mock
+    private ShapeView connectorShapeView2;
 
     private RemoveCanvasChildCommand tested;
+    private TestingGraphMockHandler graphTestHandler;
+    private TestingGraphInstanceBuilder.TestGraph1 graph1Instance;
 
     @Before
     public void setup() throws Exception {
         super.setup();
-        when(parent.getUUID()).thenReturn(PARENT_ID);
-        when(child.getUUID()).thenReturn(CHILD_ID);
-        this.tested = new RemoveCanvasChildCommand(parent,
-                                                   child);
+        this.graphTestHandler = new TestingGraphMockHandler();
+        graph1Instance = TestingGraphInstanceBuilder.newGraph1(graphTestHandler);
+        when(diagram.getGraph()).thenReturn(graph1Instance.graph);
+        when(graphIndex.getGraph()).thenReturn(graph1Instance.graph);
+        final String edge1UUID = graph1Instance.edge1.getUUID();
+        final String edge2UUID = graph1Instance.edge2.getUUID();
+        when(canvas.getShape(edge1UUID)).thenReturn(connectorShape1);
+        when(canvas.getShape(edge2UUID)).thenReturn(connectorShape2);
+        when(connectorShape1.getShapeView()).thenReturn(connectorShapeView1);
+        when(connectorShape2.getShapeView()).thenReturn(connectorShapeView2);
+        this.tested = new RemoveCanvasChildCommand(graph1Instance.startNode,
+                                                   graph1Instance.intermNode);
     }
 
     @Test
@@ -59,13 +76,29 @@ public class RemoveCanvasChildCommandTest extends AbstractCanvasCommandTest {
         assertNotEquals(CommandResult.Type.ERROR,
                         result.getType());
         verify(canvasHandler,
-               times(1)).removeChild(eq(parent),
-                                     eq(child));
+               times(1)).removeChild(eq(graph1Instance.startNode),
+                                     eq(graph1Instance.intermNode));
         verify(canvasHandler,
-               times(1)).applyElementMutation(eq(parent),
+               times(1)).applyElementMutation(eq(graph1Instance.startNode),
                                               any(MutationContext.class));
         verify(canvasHandler,
-               times(1)).applyElementMutation(eq(child),
+               times(1)).applyElementMutation(eq(graph1Instance.intermNode),
                                               any(MutationContext.class));
+        verify(connectorShapeView1,
+               times(1)).moveToTop();
+        verify(connectorShapeView1,
+               never()).moveToBottom();
+        verify(connectorShapeView1,
+               never()).moveUp();
+        verify(connectorShapeView1,
+               never()).moveDown();
+        verify(connectorShapeView2,
+               times(1)).moveToTop();
+        verify(connectorShapeView2,
+               never()).moveToBottom();
+        verify(connectorShapeView2,
+               never()).moveUp();
+        verify(connectorShapeView2,
+               never()).moveDown();
     }
 }

@@ -246,6 +246,13 @@ public class TestingGraphMockHandler {
                                                     0));
     }
 
+    @SuppressWarnings("unchecked")
+    public TestingGraphMockHandler removeTargetConnection(final Edge edge) {
+        return execute(commandFactory.setTargetNode(null,
+                                                    edge,
+                                                    0));
+    }
+
     private TestingGraphMockHandler execute(final
                                             Command<GraphCommandExecutionContext, RuleViolation> command) {
         assertCommandResult(command.execute(graphCommandExecutionContext));

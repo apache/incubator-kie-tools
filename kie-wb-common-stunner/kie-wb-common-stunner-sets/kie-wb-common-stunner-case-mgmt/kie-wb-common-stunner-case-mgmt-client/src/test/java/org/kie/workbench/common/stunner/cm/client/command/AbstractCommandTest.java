@@ -73,6 +73,7 @@ public abstract class AbstractCommandTest {
                      result.getType());
     }
 
+    @SuppressWarnings("unchecked")
     public void setup() {
         MockitoAnnotations.initMocks(this);
         this.graph = new GraphImpl<>("graph",
@@ -85,6 +86,7 @@ public abstract class AbstractCommandTest {
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getGraphExecutionContext()).thenReturn(context);
         when(context.getGraphIndex()).thenReturn(index);
+        when(canvasHandler.getGraphIndex()).thenReturn(index);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(diagram.getGraph()).thenReturn(graph);
         when(metadata.getDefinitionSetId()).thenReturn(DEF_SET_ID);

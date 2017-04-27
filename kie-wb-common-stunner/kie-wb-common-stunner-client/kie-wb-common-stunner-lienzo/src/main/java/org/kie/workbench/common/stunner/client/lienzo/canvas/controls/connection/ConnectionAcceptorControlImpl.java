@@ -281,10 +281,8 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
                            final boolean valid) {
         canvasHighlight.unhighLight();
         if (null != node && valid) {
-            canvasHighlight.highLight(connector);
             canvasHighlight.highLight(node);
         } else if (null != node) {
-            canvasHighlight.invalid(connector);
             canvasHighlight.invalid(node);
         }
     }

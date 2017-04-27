@@ -16,62 +16,35 @@
 
 package org.kie.workbench.common.stunner.shapes.client;
 
+import org.kie.workbench.common.stunner.client.lienzo.shape.impl.AnimationShapeStateHelper;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ext.WiresConnectorViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
 
 public class BasicConnectorShape<W, D extends MutableShapeDef<W>, V extends WiresConnectorViewExt<?>>
         extends ConnectorShape<W, D, V> {
 
-    private ShapeState state = ShapeState.NONE;
-    private double _strokeWidth = 1;
-    private double _strokeAlpha = 0;
-    private String _strokeColor = null;
-
     public BasicConnectorShape(D shapeDef,
                                V view) {
         super(shapeDef,
-              view);
+              view,
+              new AnimationShapeStateHelper<>());
     }
 
     @Override
-    public void applyState(ShapeState shapeState) {
-        if (!this.state.equals(shapeState)) {
-            this.state = shapeState;
-            switch (this.state) {
-                case NONE:
-                    applyNoneState();
-                    break;
-                default:
-                    applyActiveState(shapeState.getColor());
-            }
+    public void applyState(final ShapeState shapeState) {
+        super.applyState(shapeState);
+        if (isSelected()) {
+            getShapeView().showControlPoints(HasControlPoints.ControlPointType.POINTS);
+        } else {
+            getShapeView().hideControlPoints();
         }
     }
 
-    /**
-     * Use the connector's line as decorator for the different states.
-     */
-    protected void applyActiveState(final String color) {
-        if (null == this._strokeColor) {
-            this._strokeColor = getShapeView().getLine().getStrokeColor();
-        }
-        this._strokeWidth = getShapeView().getLine().getStrokeWidth();
-        this._strokeAlpha = getShapeView().getLine().getStrokeAlpha();
-        getShapeView().getLine().setStrokeWidth(5);
-        getShapeView().getLine().setStrokeAlpha(1);
-        getShapeView().getLine().setStrokeColor(color);
+    private boolean isSelected() {
+        return ShapeState.SELECTED.equals(getShape().getShapeStateHelper().getState());
     }
 
-    /**
-     * Use the connector's line as decorator for the different states.
-     */
-    protected void applyNoneState() {
-        if (null != this._strokeColor) {
-            getShapeView().getLine().setStrokeColor(this._strokeColor);
-            this._strokeColor = null;
-        }
-        getShapeView().getLine().setStrokeWidth(this._strokeWidth);
-        getShapeView().getLine().setStrokeAlpha(this._strokeAlpha);
-    }
 }

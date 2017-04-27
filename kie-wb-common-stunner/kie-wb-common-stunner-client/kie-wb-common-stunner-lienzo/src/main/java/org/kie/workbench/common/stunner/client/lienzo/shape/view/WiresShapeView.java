@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
@@ -24,6 +27,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.DragBounds;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasDecorators;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.lienzo.core.shape.wires.WiresDragConstraintEnforcer;
@@ -31,7 +35,8 @@ import org.kie.workbench.common.stunner.lienzo.core.shape.wires.WiresDragConstra
 public class WiresShapeView<T> extends WiresShape
         implements
         ShapeView<T>,
-        HasDragBounds<T> {
+        HasDragBounds<T>,
+        HasDecorators<Shape<?>> {
 
     private String uuid;
     private WiresDragConstraintEnforcer dragEnforcer;
@@ -45,6 +50,8 @@ public class WiresShapeView<T> extends WiresShape
                           final LayoutContainer layoutContainer) {
         super(path,
               null != layoutContainer ? layoutContainer : new WiresLayoutContainer());
+        // Ensure path bounds are available on the selection context.
+        path.setFillBoundsForSelection(true);
     }
 
     public Shape<?> getShape() {
@@ -231,5 +238,10 @@ public class WiresShapeView<T> extends WiresShape
 
     public WiresDragConstraintEnforcer getDragEnforcer() {
         return dragEnforcer;
+    }
+
+    @Override
+    public List<Shape<?>> getDecorators() {
+        return Collections.singletonList(getShape());
     }
 }

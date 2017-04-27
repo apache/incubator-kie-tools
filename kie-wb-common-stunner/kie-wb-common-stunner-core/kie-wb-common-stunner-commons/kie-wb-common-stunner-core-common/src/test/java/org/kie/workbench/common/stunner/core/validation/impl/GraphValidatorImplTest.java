@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext
 import org.kie.workbench.common.stunner.core.rule.context.ElementCardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext;
 import org.kie.workbench.common.stunner.core.rule.context.NodeContainmentContext;
+import org.kie.workbench.common.stunner.core.rule.violations.EmptyConnectionViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -203,6 +204,34 @@ public class GraphValidatorImplTest {
         verifyContainment((NodeContainmentContext) contexts.get(cindex++),
                           testGraph2.parentNode,
                           testGraph2.endNode);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testValidateEmptyViewConnectorNodes() {
+        final RuleSet ruleSet = graphTestHandler.ruleSet;
+        final Graph<DefinitionSet, Node> graph = graphTestHandler.graph;
+        final TestingGraphInstanceBuilder.TestGraph1 testGraph1 = TestingGraphInstanceBuilder.newGraph1(graphTestHandler);
+        // Update the edge2 and remove the connection's target node.
+        // From this point, a validation error is expected.
+        graphTestHandler.removeTargetConnection(testGraph1.edge2);
+        tested.validate(graph,
+                        ruleSet,
+                        ruleViolations -> {
+                            assertEquals(1,
+                                         ruleViolations.size());
+                            final RuleViolation violation = ruleViolations.iterator().next();
+                            assertNotNull(violation);
+                            assertTrue(violation instanceof EmptyConnectionViolation);
+                            EmptyConnectionViolation v = (EmptyConnectionViolation) violation;
+                            final Optional<Object[]> arguments = v.getArguments();
+                            assertTrue(arguments.isPresent());
+                            assertEquals(testGraph1.edge2.getUUID(),
+                                         arguments.get()[0]);
+                            assertEquals(testGraph1.intermNode.getUUID(),
+                                         arguments.get()[1]);
+                            assertNull(arguments.get()[2]);
+                        });
     }
 
     private void assertNoError(final Collection<RuleViolation> violations) {

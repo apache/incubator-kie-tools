@@ -25,6 +25,8 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.glyph.AbstractL
 
 public final class ConnectorGlyph extends AbstractLienzoShapeGlyph {
 
+    private static final double STROKE_SIZE = 2.5;
+
     public ConnectorGlyph(final String color,
                           final double width,
                           final double height) {
@@ -40,16 +42,19 @@ public final class ConnectorGlyph extends AbstractLienzoShapeGlyph {
                        final double height,
                        final String color) {
         group.removeAll();
-        final Arrow arrow = new Arrow(new Point2D(0,
+        final Arrow arrow = new Arrow(new Point2D(STROKE_SIZE,
                                                   height),
                                       new Point2D(width,
-                                                  0),
+                                                  STROKE_SIZE),
                                       5,
                                       10,
                                       45,
                                       45,
                                       ArrowType.AT_END)
-                .setStrokeWidth(5).setStrokeColor(color).setDraggable(true);
+                .setStrokeWidth(STROKE_SIZE)
+                .setFillColor(color)
+                .setStrokeColor(color)
+                .setDraggable(true);
         group.add(arrow);
         scaleTo(group,
                 width - arrow.getStrokeWidth(),

@@ -22,10 +22,9 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.shapes.client.BasicContainerShape;
 import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
 
-public class ActivityShape<W> extends BasicContainerShape<W, RectangleShapeDef<W>, ActivityView> {
+public class ActivityShape<W> extends AbstractCMContainerShape<W, RectangleShapeDef<W>, ActivityView> {
 
     public ActivityShape(final RectangleShapeDef<W> shapeDef,
                          final ActivityView view) {

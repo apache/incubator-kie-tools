@@ -47,6 +47,8 @@ import static com.ait.lienzo.client.core.AttributeOp.any;
 
 public abstract class AbstractToolbox implements GridToolbox {
 
+    private static final double ANIMATION_DURATION = 200;
+
     private static final Flows.BooleanOp XYWH_OP = any(Attribute.X,
                                                        Attribute.Y,
                                                        Attribute.WIDTH,
@@ -149,7 +151,7 @@ public abstract class AbstractToolbox implements GridToolbox {
         for (ToolboxButton button : buttons) {
             button.getShape().getGroup().animate(AnimationTweener.LINEAR,
                                                  AnimationProperties.toPropertyList(AnimationProperty.Properties.ALPHA(1)),
-                                                 500,
+                                                 ANIMATION_DURATION,
                                                  new AnimationCallback());
         }
     }
@@ -170,7 +172,7 @@ public abstract class AbstractToolbox implements GridToolbox {
             button.getShape().getGroup().animate(
                     AnimationTweener.LINEAR,
                     AnimationProperties.toPropertyList(AnimationProperty.Properties.ALPHA(0)),
-                    500,
+                    ANIMATION_DURATION,
                     new AnimationCallback() {
 
                         @Override

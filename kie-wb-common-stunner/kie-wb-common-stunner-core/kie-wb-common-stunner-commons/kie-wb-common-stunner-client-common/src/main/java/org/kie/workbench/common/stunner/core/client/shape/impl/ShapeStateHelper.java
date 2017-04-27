@@ -16,13 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.impl;
 
+import java.util.function.Predicate;
+
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
 
-    public static final double ACTIVE_STROKE_WIDTH = 1.5d;
+    public static final double ACTIVE_STROKE_WIDTH = 5d;
     public static final double ACTIVE_STROKE_ALPHA = 1d;
 
     /*
@@ -41,21 +43,39 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
     private Double strokeWidth;
     private Double strokeAlpha;
     private String strokeColor;
-    private boolean initialized;
-    private ShapeState state = ShapeState.NONE;
-    private final S shape;
+    private ShapeState state;
+    private double activeStrokeWidth;
+    private S shape;
 
-    public ShapeStateHelper(final S shape) {
-        this.shape = shape;
-        this.initialized = false;
+    public ShapeStateHelper() {
+        init();
+        this.activeStrokeWidth = ACTIVE_STROKE_WIDTH;
     }
 
-    public void applyState(final ShapeState shapeState) {
-        if (!this.initialized) {
-            setNoneStateAttributes(getShapeView().getStrokeColor(),
-                                   getShapeView().getStrokeWidth(),
-                                   getShapeView().getStrokeAlpha());
+    public ShapeStateHelper(final S shape) {
+        this();
+        this.shape = shape;
+    }
+
+    public ShapeStateHelper forShape(final S shape) {
+        this.shape = shape;
+        return this;
+    }
+
+    public void setStrokeWidthForActiveState(final double activeStrokeWidth) {
+        this.activeStrokeWidth = activeStrokeWidth;
+    }
+
+    public ShapeStateHelper save(final Predicate<ShapeState> stateFilter) {
+        if (stateFilter.test(this.state)) {
+            this.strokeWidth = getShapeView().getStrokeWidth();
+            this.strokeAlpha = getShapeView().getStrokeAlpha();
+            this.strokeColor = getShapeView().getStrokeColor();
         }
+        return this;
+    }
+
+    public ShapeStateHelper applyState(final ShapeState shapeState) {
         if (!this.state.equals(shapeState)) {
             this.state = shapeState;
             if (ShapeState.SELECTED.equals(shapeState)) {
@@ -70,19 +90,16 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
                                null != this.strokeAlpha ? this.strokeAlpha : 1);
             }
         }
+        return this;
     }
 
     public ShapeState getState() {
         return state;
     }
 
-    public boolean isInitialized() {
-        return initialized;
-    }
-
     protected void applyActiveState(final String color) {
         getShapeView().setStrokeColor(color);
-        getShapeView().setStrokeWidth(ACTIVE_STROKE_WIDTH);
+        getShapeView().setStrokeWidth(activeStrokeWidth);
         getShapeView().setStrokeAlpha(ACTIVE_STROKE_ALPHA);
     }
 
@@ -94,17 +111,16 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
         getShapeView().setStrokeAlpha(alpha);
     }
 
-    protected S getShape() {
-        return shape;
+    protected void init() {
+        this.state = ShapeState.NONE;
     }
 
-    private void setNoneStateAttributes(final String strokeColor,
-                                        final Double strokeWidth,
-                                        final Double strokeAlpha) {
-        this.strokeWidth = strokeWidth;
-        this.strokeAlpha = strokeAlpha;
-        this.strokeColor = strokeColor;
-        this.initialized = true;
+    protected double getActiveStrokeWidth() {
+        return activeStrokeWidth;
+    }
+
+    protected S getShape() {
+        return shape;
     }
 
     private void applySelectedState() {
@@ -122,4 +138,5 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
     private V getShapeView() {
         return shape.getShapeView();
     }
+
 }

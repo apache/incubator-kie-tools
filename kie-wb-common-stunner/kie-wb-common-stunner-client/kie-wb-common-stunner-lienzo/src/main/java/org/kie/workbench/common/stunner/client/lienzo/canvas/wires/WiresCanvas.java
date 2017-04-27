@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
@@ -28,7 +27,6 @@ import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.widget.LienzoPanel;
 import com.google.gwt.logging.client.LogConfiguration;
-import org.kie.workbench.common.stunner.client.lienzo.Lienzo;
 import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoLayerUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -62,14 +60,13 @@ public abstract class WiresCanvas extends AbstractCanvas<WiresCanvas.View> {
         WiresManager getWiresManager();
     }
 
-    @Inject
-    public WiresCanvas(final Event<CanvasClearEvent> canvasClearEvent,
-                       final Event<CanvasShapeAddedEvent> canvasShapeAddedEvent,
-                       final Event<CanvasShapeRemovedEvent> canvasShapeRemovedEvent,
-                       final Event<CanvasDrawnEvent> canvasDrawnEvent,
-                       final Event<CanvasFocusedEvent> canvasFocusedEvent,
-                       final @Lienzo Layer layer,
-                       final View view) {
+    protected WiresCanvas(final Event<CanvasClearEvent> canvasClearEvent,
+                          final Event<CanvasShapeAddedEvent> canvasShapeAddedEvent,
+                          final Event<CanvasShapeRemovedEvent> canvasShapeRemovedEvent,
+                          final Event<CanvasDrawnEvent> canvasDrawnEvent,
+                          final Event<CanvasFocusedEvent> canvasFocusedEvent,
+                          final Layer layer,
+                          final View view) {
         super(canvasClearEvent,
               canvasShapeAddedEvent,
               canvasShapeRemovedEvent,

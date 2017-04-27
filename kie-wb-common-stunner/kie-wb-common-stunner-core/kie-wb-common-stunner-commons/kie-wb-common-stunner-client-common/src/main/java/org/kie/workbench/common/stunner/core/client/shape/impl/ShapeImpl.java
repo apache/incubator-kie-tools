@@ -45,6 +45,7 @@ public class ShapeImpl<V extends ShapeView>
                      final ShapeStateHelper<V, Shape<V>> shapeStateHelper) {
         this.view = view;
         this.shapeStateHelper = shapeStateHelper;
+        this.shapeStateHelper.forShape(this);
     }
 
     public void setUUID(final String uuid) {
@@ -69,7 +70,9 @@ public class ShapeImpl<V extends ShapeView>
 
     @Override
     public void applyState(final ShapeState shapeState) {
-        shapeStateHelper.applyState(shapeState);
+        shapeStateHelper
+                .save(ShapeState.NONE::equals)
+                .applyState(shapeState);
     }
 
     public ShapeStateHelper<V, Shape<V>> getShapeStateHelper() {

@@ -38,7 +38,6 @@ public class BoundsExceededViolation extends AbstractRuleViolation {
                 bounds.getLowerRight().getY()});
     }
 
-    // Diagram bounds exceeded [candidate='{0}',maxX='{1}, maxY='{2}]
     @Override
     public String getMessage() {
         return "Diagram bounds exceeded "

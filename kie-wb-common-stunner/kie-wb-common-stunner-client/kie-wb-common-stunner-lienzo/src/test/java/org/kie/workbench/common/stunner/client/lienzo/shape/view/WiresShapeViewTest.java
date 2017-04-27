@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view;
 
+import java.util.List;
+
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
@@ -160,6 +162,16 @@ public class WiresShapeViewTest {
                times(1)).moveUp();
         verify(group,
                times(1)).moveDown();
+    }
+
+    @Test
+    public void testDecorators() {
+        final List decorators = tested.getDecorators();
+        assertNotNull(decorators);
+        assertEquals(1,
+                     decorators.size());
+        assertEquals(PATH,
+                     decorators.get(0));
     }
 
     @Test

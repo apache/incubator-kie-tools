@@ -42,7 +42,7 @@ public class LaneShapeDef
 
     @Override
     public double getBackgroundAlpha(final Lane element) {
-        return 0.1d;
+        return 0.7d;
     }
 
     @Override

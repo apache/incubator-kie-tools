@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.shape;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.kie.workbench.common.stunner.core.client.shape.view.HasDecorators;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasFillGradient;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
@@ -25,10 +29,13 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 public class ShapeViewExtStub
         extends ShapeViewStub
         implements ShapeView<Object>,
+                   HasDecorators<Object>,
                    HasFillGradient<Object>,
                    HasTitle<Object>,
                    HasSize<Object>,
                    HasRadius<Object> {
+
+    private final List<Object> decorators = new ArrayList<>();
 
     @Override
     public Object setFillGradient(final Type type,
@@ -91,5 +98,10 @@ public class ShapeViewExtStub
     public Object setSize(final double width,
                           final double height) {
         return this;
+    }
+
+    @Override
+    public List<Object> getDecorators() {
+        return decorators;
     }
 }

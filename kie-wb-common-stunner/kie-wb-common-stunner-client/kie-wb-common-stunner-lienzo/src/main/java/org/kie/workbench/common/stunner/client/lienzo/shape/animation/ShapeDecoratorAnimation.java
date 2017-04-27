@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,57 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.shapes.client.view.animatiion;
+package org.kie.workbench.common.stunner.client.lienzo.shape.animation;
 
+import java.util.List;
+
+import com.ait.lienzo.client.core.animation.AnimationProperties;
+import com.ait.lienzo.client.core.animation.AnimationTweener;
 import com.ait.lienzo.client.core.animation.IAnimation;
 import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.animation.AbstractShapeAnimation;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasDecorators;
 
-abstract class AbstractBasicAnimation<S extends Shape>
-        extends AbstractShapeAnimation<S> {
+import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.STROKE_ALPHA;
+import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.STROKE_COLOR;
+import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.STROKE_WIDTH;
+
+public class ShapeDecoratorAnimation extends AbstractShapeAnimation<Shape> {
+
+    private final String color;
+    private final double strokeWidth;
+    private final double strokeAlpha;
+
+    public ShapeDecoratorAnimation(final String color,
+                                   final double strokeWidth,
+                                   final double strokeAlpha) {
+        this.color = color;
+        this.strokeWidth = strokeWidth;
+        this.strokeAlpha = strokeAlpha;
+    }
+
+    @Override
+    public void run() {
+        getDecorators().forEach(this::animate);
+    }
+
+    private IAnimationHandle animate(final com.ait.lienzo.client.core.shape.Shape<?> shape) {
+        return shape.animate(
+                AnimationTweener.LINEAR,
+                AnimationProperties.toPropertyList(STROKE_COLOR(color),
+                                                   STROKE_ALPHA(strokeAlpha),
+                                                   STROKE_WIDTH(strokeWidth)),
+                getDuration(),
+                getAnimationCallback());
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<com.ait.lienzo.client.core.shape.Shape<?>> getDecorators() {
+        final HasDecorators<com.ait.lienzo.client.core.shape.Shape<?>> shapeView =
+                (HasDecorators<com.ait.lienzo.client.core.shape.Shape<?>>) getSource().getShapeView();
+        return shapeView.getDecorators();
+    }
 
     com.ait.lienzo.client.core.animation.AnimationCallback getAnimationCallback() {
         return animationCallback;

@@ -23,14 +23,15 @@ import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresDragControlContext;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.ScratchPad;
+import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -38,12 +39,14 @@ import static org.mockito.Mockito.*;
 @RunWith(LienzoMockitoTestRunner.class)
 public class CaseManagementDockingAndContainmentControlImplTest {
 
+    @Mock
+    private DragContext context;
+
     private Layer layer;
     private MockCaseManagementShape child;
     private MockCaseManagementShape parent;
     private WiresManager wiresManager;
     private CaseManagementContainmentStateHolder state;
-    private WiresDragControlContext context;
     private ScratchPad scratchPad;
     private PickerPart pickerPart;
 
@@ -54,10 +57,8 @@ public class CaseManagementDockingAndContainmentControlImplTest {
         layer = spy(new Layer());
         scratchPad = new ScratchPad(1000,
                                     1000);
-        context = new WiresDragControlContext(0,
-                                              0,
-                                              mock(Object.class));
-
+        when(context.getDragStartX()).thenReturn(0);
+        when(context.getDragStartY()).thenReturn(0);
         child = new MockCaseManagementShape();
         parent = new MockCaseManagementShape();
         parent.add(child);

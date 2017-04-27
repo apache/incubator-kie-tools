@@ -20,6 +20,7 @@ import org.kie.workbench.common.stunner.core.client.shape.ElementShape;
 import org.kie.workbench.common.stunner.core.client.shape.Lifecycle;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -29,14 +30,27 @@ public abstract class AbstractElementShape<W, C extends View<W>, E extends Eleme
         implements ElementShape<W, C, E, V>,
                    Lifecycle {
 
-    private final Shape<V> shape;
+    private final ShapeImpl<V> shape;
     private final ShapeDefViewHandler<W, V, D> defViewHandler;
 
-    public AbstractElementShape(final D shapeDef,
-                                final V view) {
-        this.shape = new ShapeImpl<V>(view);
+    protected AbstractElementShape(final D shapeDef,
+                                   final V view) {
+        this.shape = new ShapeImpl<V>(view,
+                                      new ShapeStateHelper<V, Shape<V>>());
         this.defViewHandler = new ShapeDefViewHandler<W, V, D>(shapeDef,
                                                                view);
+    }
+
+    protected AbstractElementShape(final D shapeDef,
+                                   final V view,
+                                   final ShapeStateHelper<V, Shape<V>> shapeStateHelper) {
+        this.shape = new ShapeImpl<V>(view,
+                                      shapeStateHelper);
+        this.defViewHandler = new ShapeDefViewHandler<W, V, D>(shapeDef,
+                                                               view);
+    }
+
+    private void init() {
     }
 
     @Override
@@ -60,16 +74,20 @@ public abstract class AbstractElementShape<W, C extends View<W>, E extends Eleme
 
     @Override
     public void beforeDraw() {
-        if (shape instanceof Lifecycle) {
-            ((Lifecycle) shape).beforeDraw();
-        }
+        shape.beforeDraw();
     }
 
     @Override
     public void afterDraw() {
-        if (shape instanceof Lifecycle) {
-            ((Lifecycle) shape).afterDraw();
-        }
+        shape.afterDraw();
+    }
+
+    @Override
+    public void applyProperties(final E element,
+                                final MutationContext mutationContext) {
+        getDefViewHandler().applyProperties(getDefinition(element),
+                                            mutationContext);
+        getShape().getShapeStateHelper().save(ShapeState.NONE::equals);
     }
 
     @Override
@@ -86,7 +104,7 @@ public abstract class AbstractElementShape<W, C extends View<W>, E extends Eleme
         return defViewHandler;
     }
 
-    public Shape<V> getShape() {
+    public ShapeImpl<V> getShape() {
         return shape;
     }
 

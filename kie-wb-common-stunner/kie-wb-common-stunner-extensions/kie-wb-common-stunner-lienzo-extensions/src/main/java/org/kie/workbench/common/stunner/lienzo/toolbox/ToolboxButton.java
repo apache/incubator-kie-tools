@@ -38,11 +38,12 @@ public class ToolboxButton {
     private static Logger LOGGER = Logger.getLogger(ToolboxButton.class.getName());
 
     private static final int CLICK_HANDLER_TIMER_DURATION = 100;
-    private static final String DECORATOR_STROKE_COLOR = "#8c8c8c";
+    private static final double STROKE0 = 0;
+    private static final double STROKE1 = 0.8;
+    private static final String DECORATOR_STROKE_COLOR = "#0000FF";
 
     private final WiresShape primitive;
 
-    public static final double ANIMATION_DURATION = 200;
     private final Layer layer;
     private final HandlerRegistrationManager handlerRegistrationManager = new HandlerRegistrationManager();
     private ToolboxButtonEventHandler clickHandler;
@@ -93,25 +94,24 @@ public class ToolboxButton {
                              final int iconSize) {
         final WiresManager manager = WiresManager.get(layer);
         // Create the wires shape multipath that will be used as decorator.
-        final float dPad4 = padding / 4;
-        decorator = LienzoPaths.rectangle(iconSize + padding,
-                                          iconSize + padding,
+        final int size = iconSize * 2;
+        final float pad = padding / 2;
+        decorator = LienzoPaths.rectangle(size + pad,
+                                          size + pad,
                                           0)
-                .setX(0)
-                .setY(0)
-                .setStrokeWidth(1.5)
-                .setStrokeAlpha(0)
+                .setX(-pad / 2)
+                .setY(-pad / 2)
+                .setStrokeWidth(1)
+                .setStrokeAlpha(STROKE0)
                 .setStrokeColor(DECORATOR_STROKE_COLOR)
                 .setDraggable(false)
-                // TODO: This is a workaround to make the mouse over/exit event handlers registered here work - review.
-                .setFillAlpha(0.01);
+                .setFillBoundsForSelection(true);
         // Create and register the wires shape.
         final WiresShape wiresShape = new WiresShape(decorator).setDraggable(false).setResizable(false);
         manager.register(wiresShape,
                          false);
         // Add the primitive shape as child.
         wiresShape.addChild(shape.setDraggable(false));
-        // TODO: Ensure decorator is on top to receive the differnt events - review this.
         decorator.moveToTop();
         registerShapeHandlers(wiresShape,
                               decorator);
@@ -243,11 +243,11 @@ public class ToolboxButton {
     }
 
     private void showDecorator() {
-        decorator.setStrokeAlpha(1);
+        decorator.setStrokeAlpha(STROKE1);
     }
 
     private void hideDecorator() {
-        decorator.setStrokeAlpha(0);
+        decorator.setStrokeAlpha(STROKE0);
     }
 
     private ToolboxButtonEvent buildEvent(final Point2D location,

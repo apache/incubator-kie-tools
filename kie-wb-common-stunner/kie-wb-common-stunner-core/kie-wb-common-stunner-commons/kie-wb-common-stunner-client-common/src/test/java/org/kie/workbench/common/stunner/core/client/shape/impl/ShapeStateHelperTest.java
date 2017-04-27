@@ -50,6 +50,7 @@ public class ShapeStateHelperTest {
         when(shapeView.getStrokeWidth()).thenReturn(STROKE_WIDTH_0);
         when(shape.getShapeView()).thenReturn(shapeView);
         this.tested = new ShapeStateHelper<ShapeView, Shape<ShapeView>>(shape);
+        tested.save(ShapeState.NONE::equals);
     }
 
     @Test

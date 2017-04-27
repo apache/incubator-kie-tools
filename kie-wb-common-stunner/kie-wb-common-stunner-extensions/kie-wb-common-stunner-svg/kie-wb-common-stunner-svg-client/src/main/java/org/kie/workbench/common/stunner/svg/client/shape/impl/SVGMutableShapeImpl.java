@@ -59,11 +59,4 @@ public class SVGMutableShapeImpl<W, D extends SVGMutableShapeDef<W, ?>>
                                                        mutationContext);
     }
 
-    @Override
-    protected void switchState() {
-        final boolean applied = getShapeView().applyState(getState());
-        if (!applied) {
-            super.switchState();
-        }
-    }
 }

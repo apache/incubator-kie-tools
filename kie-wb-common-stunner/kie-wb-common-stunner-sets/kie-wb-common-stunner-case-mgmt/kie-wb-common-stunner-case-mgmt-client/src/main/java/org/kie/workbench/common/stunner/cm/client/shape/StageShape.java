@@ -23,9 +23,8 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.shapes.client.BasicContainerShape;
 
-public class StageShape<W> extends BasicContainerShape<W, StageShapeDef<W>, StageView> {
+public class StageShape<W> extends AbstractCMContainerShape<W, StageShapeDef<W>, StageView> {
 
     public StageShape(final StageShapeDef<W> shapeDef,
                       final StageView view) {
