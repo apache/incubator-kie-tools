@@ -82,16 +82,9 @@ public class DataModellerFieldGenerator {
                                                  ObjectProperty property) {
         String propertyName = holderName + "_" + property.getName();
 
-        FieldDefinition field = null;
-        if (property.getBag() == null) {
-            field = fieldManager.getDefinitionByDataType(new FieldDataType(property.getClassName(),
-                                                                           false,
-                                                                           false));
-        } else {
-            field = fieldManager.getDefinitionByDataType(new FieldDataType(property.getClassName(),
-                                                                           true,
-                                                                           false));
-        }
+        FieldDefinition field = fieldManager.getDefinitionByDataType(new FieldDataType(property.getClassName(),
+                                                                                       property.isMultiple(),
+                                                                                       false));
 
         if (field == null) {
             return null;
