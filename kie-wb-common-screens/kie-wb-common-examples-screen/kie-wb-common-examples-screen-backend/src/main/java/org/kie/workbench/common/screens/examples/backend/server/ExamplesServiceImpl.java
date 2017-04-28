@@ -186,14 +186,14 @@ public class ExamplesServiceImpl implements ExamplesService {
                                              @Override
                                              public java.nio.file.FileVisitResult visitFile(java.nio.file.Path file,
                                                                                             java.nio.file.attribute.BasicFileAttributes attrs) throws java.io.IOException {
-                                                 java.nio.file.Files.delete(file);
+                                                 file.toFile().delete();
                                                  return java.nio.file.FileVisitResult.CONTINUE;
                                              }
 
                                              @Override
                                              public java.nio.file.FileVisitResult postVisitDirectory(java.nio.file.Path dir,
                                                                                                      java.io.IOException exc) throws java.io.IOException {
-                                                 java.nio.file.Files.delete(dir);
+                                                 dir.toFile().delete();
                                                  return java.nio.file.FileVisitResult.CONTINUE;
                                              }
                                          });
