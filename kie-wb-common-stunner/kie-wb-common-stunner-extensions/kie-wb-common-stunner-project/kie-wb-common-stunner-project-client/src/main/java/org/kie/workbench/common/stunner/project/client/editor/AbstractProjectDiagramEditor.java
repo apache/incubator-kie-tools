@@ -52,6 +52,8 @@ import org.kie.workbench.common.stunner.core.client.util.ClientSessionUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
+import org.kie.workbench.common.stunner.core.validation.Violation;
+import org.kie.workbench.common.stunner.core.validation.impl.ValidationUtils;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
@@ -183,8 +185,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         presenter
                 .withToolbar(false)
                 .withPalette(true)
-                .displayNotifications(true)
-                .displayErrors(true)
+                .displayNotifications(type -> true)
                 .open(diagram,
                       session,
                       new SessionPresenter.SessionPresenterCallback<AbstractClientFullSession, Diagram>() {
@@ -225,16 +226,47 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         });
     }
 
+    /**
+     * This method is called just once clicking on save.
+     * Before starting the save process, let's perform a diagram validation
+     * to check all it's valid.
+     * It's allowed to continue with the save process event if warnings found,
+     * but cannot save if any error is present in order to
+     * guarantee the diagram's consistency.
+     */
     @Override
-    protected void save(final String commitMessage) {
-        validate(() -> {
-            onValidationSuccess();
-            doSave(commitMessage);
-        });
+    protected void save() {
+        final Command continueSaveOnceValid = () -> super.save();
+        sessionValidateCommand
+                .execute(new ClientSessionCommand.Callback<Collection<DiagramElementViolation<RuleViolation>>>() {
+                    @Override
+                    public void onSuccess() {
+                        continueSaveOnceValid.execute();
+                    }
+
+                    @Override
+                    public void onError(final Collection<DiagramElementViolation<RuleViolation>> violations) {
+                        final Violation.Type maxSeverity = ValidationUtils.getMaxSeverity(violations);
+                        if (maxSeverity.equals(Violation.Type.ERROR)) {
+                            onValidationFailed(violations);
+                        } else {
+                            // Allow saving when only warnings founds.
+                            continueSaveOnceValid.execute();
+                        }
+                    }
+                });
     }
 
+    /**
+     * Considering the diagram valid at this point ,
+     * it delegates the save operation to the diagram services bean.
+     * @param commitMessage The commit's message.
+     */
+    @Override
     @SuppressWarnings("unchecked")
-    protected void doSave(final String commitMessage) {
+    protected void save(final String commitMessage) {
+        super.save(commitMessage);
+        showLoadingViews();
         // Obtain diagram's image data before saving.
         final String thumbData = sessionUtils.canvasToImageData(getSession());
         // Update diagram's image data as thumbnail.

@@ -145,7 +145,7 @@ public class GraphValidatorImpl
                                       this.currentParents.push(edge.getSourceNode());
                                   } else if (content instanceof View) {
                                       final Optional<Node<? extends View<?>, ? extends Edge>> sourceOpt =
-                                              Optional.of(edge.getSourceNode());
+                                              Optional.ofNullable(edge.getSourceNode());
                                       final Optional<Node<? extends View<?>, ? extends Edge>> targetOpt =
                                               Optional.ofNullable(edge.getTargetNode());
                                       // Check not empty connections.

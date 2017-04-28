@@ -16,7 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session;
 
+import java.util.function.Predicate;
+
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.stunner.client.widgets.notification.Notification;
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
@@ -28,7 +31,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 /**
  * A session's presenter type for generic client session instances.
- * <p/>
+ * <p>
  * A session presenter is a client side component that has same goals as a SessionViewer/Editor, so displaying a diagram
  * and handling the different controls for either viewing or authoring purposes, but it provides some additional
  * features:
@@ -65,9 +68,11 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
 
         View showLoading(final boolean loading);
 
-        View showError(final String error);
-
         View showMessage(final String message);
+
+        View showWarning(final String message);
+
+        View showError(final String message);
 
         void destroy();
     }
@@ -76,9 +81,9 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
 
     SessionPresenter<S, H, D> withPalette(final boolean hasPalette);
 
-    SessionPresenter<S, H, D> displayNotifications(final boolean showNotifications);
+    SessionPresenter<S, H, D> displayNotifications(final Predicate<Notification.Type> typePredicate);
 
-    SessionPresenter<S, H, D> displayErrors(final boolean showErrors);
+    SessionPresenter<S, H, D> hideNotifications();
 
     void open(final D diagram,
               final S session,

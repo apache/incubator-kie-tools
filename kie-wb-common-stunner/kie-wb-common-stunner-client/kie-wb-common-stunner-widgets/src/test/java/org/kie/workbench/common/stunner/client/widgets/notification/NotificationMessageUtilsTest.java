@@ -71,17 +71,18 @@ public class NotificationMessageUtilsTest {
         final ModelBeanViolation violation = ModelBeanViolationImpl.Builder.build(rootViolation);
         final String message = NotificationMessageUtils.getBeanValidationMessage(translationService,
                                                                                  violation);
-        assertEquals(OPEN_COMMENT + "path1" + CLOSE_COMMENT + "message1",
+        assertEquals("(WARNING) " + OPEN_COMMENT + "path1" + CLOSE_COMMENT + "message1",
                      message);
     }
 
     @Test
     public void testRuleValidationMessage() {
         final RuleViolation ruleViolation = mock(RuleViolation.class);
+        when(ruleViolation.getViolationType()).thenReturn(Violation.Type.WARNING);
         when(translationService.getViolationMessage(eq(ruleViolation))).thenReturn("rv1");
         final String message = NotificationMessageUtils.getRuleValidationMessage(translationService,
                                                                                  ruleViolation);
-        assertEquals("rv1",
+        assertEquals("(WARNING) " + "rv1",
                      message);
     }
 
@@ -101,8 +102,8 @@ public class NotificationMessageUtilsTest {
                                                                                          "aKey",
                                                                                          violations);
         assertEquals("aValue." + HTML_NEW_LINE + "R" + COLON + HTML_NEW_LINE +
-                             OPEN_BRA + "1" + CLOSE_BRA + "cv1" + HTML_NEW_LINE
-                ,
+                             OPEN_BRA + "1" + CLOSE_BRA + "(ERROR) "
+                             + "cv1" + HTML_NEW_LINE,
                      message);
     }
 
@@ -120,6 +121,7 @@ public class NotificationMessageUtilsTest {
         when(diagramViolation.getUUID()).thenReturn("uuid1");
         when(diagramViolation.getModelViolations()).thenReturn(Collections.singletonList(beanViolation));
         when(diagramViolation.getGraphViolations()).thenReturn(Collections.singletonList(ruleViolation));
+        when(ruleViolation.getViolationType()).thenReturn(Violation.Type.WARNING);
         when(translationService.getViolationMessage(eq(ruleViolation))).thenReturn("rv1");
         when(translationService.getKeyValue(eq("aKey"))).thenReturn("aValue");
         final String message = NotificationMessageUtils.getDiagramValidationsErrorMessage(translationService,
@@ -127,10 +129,9 @@ public class NotificationMessageUtilsTest {
                                                                                           Collections.singleton(diagramViolation));
         assertEquals("aValue." + HTML_NEW_LINE + "R" + COLON + HTML_NEW_LINE +
                              OPEN_BRA + "E" + COLON + "uuid1" + CLOSE_BRA + HTML_NEW_LINE +
-                             HTML_OPEN_COMMENT + "path1" + HTML_CLOSE_COMMENT +
-                             "message1" + HTML_NEW_LINE
-                             + "rv1" + HTML_NEW_LINE
-                ,
+                             "(WARNING) " + HTML_OPEN_COMMENT + "path1" + HTML_CLOSE_COMMENT +
+                             "message1" + HTML_NEW_LINE +
+                             "(WARNING) rv1" + HTML_NEW_LINE,
                      message);
     }
 }

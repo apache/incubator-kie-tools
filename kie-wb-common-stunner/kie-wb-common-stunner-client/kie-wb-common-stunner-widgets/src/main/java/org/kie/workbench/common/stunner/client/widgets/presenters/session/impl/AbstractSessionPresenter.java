@@ -17,11 +17,14 @@
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.kie.workbench.common.stunner.client.widgets.notification.CommandNotification;
 import org.kie.workbench.common.stunner.client.widgets.notification.Notification;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationContext;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
+import org.kie.workbench.common.stunner.client.widgets.notification.ValidationFailedNotification;
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidgetFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -50,8 +53,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     private PaletteWidget<DefinitionSetPalette> palette;
     private boolean hasToolbar = false;
     private boolean hasPalette = false;
-    private boolean displayNotifications = false;
-    private boolean displayErrors = false;
+    private Optional<Predicate<Notification.Type>> typePredicate;
 
     @SuppressWarnings("unchecked")
     protected AbstractSessionPresenter(final SessionManager sessionManager,
@@ -66,6 +68,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         this.view = view;
         this.hasToolbar = true;
         this.hasPalette = true;
+        this.typePredicate = Optional.empty();
     }
 
     protected abstract E getDisplayer();
@@ -75,9 +78,9 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
                      final S session,
                      final SessionPresenterCallback<S, D> callback) {
         this.diagram = diagram;
-        notificationsObserver.onCommandExecutionFailed(this::showNotificationError);
+        notificationsObserver.onCommandExecutionFailed(this::showCommandError);
         notificationsObserver.onValidationSuccess(this::showNotificationMessage);
-        notificationsObserver.onValidationFailed(this::showNotificationError);
+        notificationsObserver.onValidationFailed(this::showValidationError);
         open(session,
              callback);
     }
@@ -151,14 +154,14 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     }
 
     @Override
-    public SessionPresenter<S, H, D> displayNotifications(final boolean showNotifications) {
-        this.displayNotifications = showNotifications;
+    public SessionPresenter<S, H, D> displayNotifications(final Predicate<Notification.Type> typePredicate) {
+        this.typePredicate = Optional.of(typePredicate);
         return this;
     }
 
     @Override
-    public SessionPresenter<S, H, D> displayErrors(final boolean showErrors) {
-        this.displayErrors = showErrors;
+    public SessionPresenter<S, H, D> hideNotifications() {
+        typePredicate = Optional.empty();
         return this;
     }
 
@@ -231,22 +234,28 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         getView().showLoading(false);
     }
 
-    protected void showError(final ClientRuntimeError error) {
+    private void showMessage(final String message) {
+        if (isDisplayNotifications()) {
+            getView().showMessage(message);
+        }
+    }
+
+    private void showWarning(final String error) {
+        if (isDisplayErrors()) {
+            getView().showWarning(error);
+        }
+    }
+
+    private void showError(final String message) {
+        if (isDisplayErrors()) {
+            getView().showError(message);
+        }
+    }
+
+    private void showError(final ClientRuntimeError error) {
         if (isDisplayErrors()) {
             getView().showLoading(false);
             getView().showError(error.getMessage());
-        }
-    }
-
-    protected void showError(final String error) {
-        if (isDisplayErrors()) {
-            getView().showError(error);
-        }
-    }
-
-    protected void showMessage(final String message) {
-        if (isDisplayNotifications()) {
-            getView().showMessage(message);
         }
     }
 
@@ -263,7 +272,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         }
         final Diagram diagram = session.getCanvasHandler().getDiagram();
         return paletteFactory.get().newPalette(diagram.getMetadata().getShapeSetId(),
-                                         session.getCanvasHandler());
+                                               session.getCanvasHandler());
     }
 
     private void destroyToolbar() {
@@ -286,9 +295,19 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         }
     }
 
-    private void showNotificationError(final Notification notification) {
+    private void showCommandError(final CommandNotification notification) {
         if (isThisContext(notification)) {
             showError(notification.getMessage());
+        }
+    }
+
+    private void showValidationError(final ValidationFailedNotification notification) {
+        if (isThisContext(notification)) {
+            if (Notification.Type.ERROR.equals(notification.getType())) {
+                showError(notification.getMessage());
+            } else {
+                showWarning(notification.getMessage());
+            }
         }
     }
 
@@ -310,10 +329,15 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     }
 
     private boolean isDisplayNotifications() {
-        return displayNotifications;
+        return typePredicate
+                .orElse(t -> false)
+                .test(Notification.Type.INFO);
     }
 
     private boolean isDisplayErrors() {
-        return displayErrors;
+        return typePredicate
+                .orElse(t -> false)
+                .or(Notification.Type.WARNING::equals)
+                .test(Notification.Type.ERROR);
     }
 }

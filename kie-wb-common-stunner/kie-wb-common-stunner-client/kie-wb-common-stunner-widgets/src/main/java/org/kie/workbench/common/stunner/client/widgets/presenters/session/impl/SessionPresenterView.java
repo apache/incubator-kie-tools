@@ -33,6 +33,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 
+// TODO: i18n.
 @Dependent
 @Templated
 public class SessionPresenterView extends Composite
@@ -84,10 +85,19 @@ public class SessionPresenterView extends Composite
     }
 
     @Override
-    public SessionPresenterView showError(final String error) {
+    public SessionPresenterView showError(final String message) {
         settings.setType(NotifyType.DANGER);
         showNotification("Error",
-                         error,
+                         message,
+                         IconType.CLOSE);
+        return this;
+    }
+
+    @Override
+    public SessionPresenter.View showWarning(final String message) {
+        settings.setType(NotifyType.WARNING);
+        showNotification("Warning",
+                         message,
                          IconType.CLOSE);
         return this;
     }

@@ -52,6 +52,8 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
+import org.kie.workbench.common.stunner.core.validation.Violation;
+import org.kie.workbench.common.stunner.core.validation.impl.ValidationUtils;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -176,10 +178,7 @@ public class SessionDiagramEditorScreen {
     }
 
     private void validateAndSave() {
-        validate(this::save);
-    }
-
-    private void validate(final Command callback) {
+        final Command save = this::save;
         final EditorToolbar toolbar = (EditorToolbar) presenter.getToolbar();
         toolbar
                 .getValidateToolbarCommand()
@@ -188,13 +187,18 @@ public class SessionDiagramEditorScreen {
                     public void onSuccess() {
                         log(Level.INFO,
                             "Validation success.");
-                        callback.execute();
+                        save.execute();
                     }
 
                     @Override
                     public void onError(final Collection<DiagramElementViolation<RuleViolation>> violations) {
                         log(Level.WARNING,
                             "Validation failed [violations=" + violations.toString() + "].");
+                        // Allow saving when only warnings founds.
+                        final Violation.Type maxSeverity = ValidationUtils.getMaxSeverity(violations);
+                        if (!maxSeverity.equals(Violation.Type.ERROR)) {
+                            save.execute();
+                        }
                     }
                 });
     }
@@ -239,8 +243,7 @@ public class SessionDiagramEditorScreen {
                                                  presenter
                                                          .withToolbar(true)
                                                          .withPalette(true)
-                                                         .displayNotifications(true)
-                                                         .displayErrors(true)
+                                                         .displayNotifications(type -> true)
                                                          .open(diagram,
                                                                session,
                                                                new ScreenPresenterCallback(callback));
@@ -277,8 +280,7 @@ public class SessionDiagramEditorScreen {
                                           presenter
                                                   .withToolbar(true)
                                                   .withPalette(true)
-                                                  .displayNotifications(true)
-                                                  .displayErrors(true)
+                                                  .displayNotifications(type -> true)
                                                   .open(diagram,
                                                         session,
                                                         new ScreenPresenterCallback(callback));

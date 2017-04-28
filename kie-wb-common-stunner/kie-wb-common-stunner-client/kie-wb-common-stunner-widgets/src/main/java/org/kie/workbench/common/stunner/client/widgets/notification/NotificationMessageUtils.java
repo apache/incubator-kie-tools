@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 
 public class NotificationMessageUtils {
 
@@ -58,13 +59,18 @@ public class NotificationMessageUtils {
 
     public static String getRuleValidationMessage(final ClientTranslationService translationService,
                                                   final RuleViolation violation) {
-        return translationService.getViolationMessage(violation);
+        return getViolationTypeMessage(violation) + translationService.getViolationMessage(violation);
     }
 
     public static String getBeanValidationMessage(final ClientTranslationService translationService,
                                                   final ModelBeanViolation violation) {
-        return OPEN_COMMENT + violation.getPropertyPath().toString() + CLOSE_COMMENT
+        return getViolationTypeMessage(violation) +
+                OPEN_COMMENT + violation.getPropertyPath() + CLOSE_COMMENT
                 + violation.getMessage();
+    }
+
+    private static String getViolationTypeMessage(final Violation violation) {
+        return "(" + violation.getViolationType() + ") ";
     }
 
     private static String getValidationMessages(final ClientTranslationService translationService,

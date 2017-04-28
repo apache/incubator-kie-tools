@@ -168,4 +168,50 @@ public class TreeWalkTraverseProcessorImplTest {
         verify(callback,
                times(1)).endGraphTraversal();
     }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testTraverseGraph1AndPendingEdges() {
+        final TestingGraphInstanceBuilder.TestGraph1 result =
+                TestingGraphInstanceBuilder.newGraph1(graphTestHandler);
+        // Create and add a new incoming view edge into the intermediate node,
+        // in order to check it's being processed as well.
+        final Edge newEdge = graphTestHandler.newEdge("newEdgeUUID",
+                                                      Optional.empty());
+        graphTestHandler.addEdge(newEdge,
+                                 result.intermNode);
+        final TreeTraverseCallback callback = mock(TreeTraverseCallback.class);
+        when(callback.startEdgeTraversal(any(Edge.class))).thenReturn(true);
+        when(callback.startNodeTraversal(any(Node.class))).thenReturn(true);
+        tested.traverse(result.graph,
+                        callback);
+        verify(callback,
+               times(1)).startGraphTraversal(eq(result.graph));
+        verify(callback,
+               times(1)).startNodeTraversal(eq(result.startNode));
+        verify(callback,
+               times(1)).startNodeTraversal(eq(result.intermNode));
+        verify(callback,
+               times(1)).startNodeTraversal(eq(result.endNode));
+        verify(callback,
+               times(1)).endNodeTraversal(eq(result.startNode));
+        verify(callback,
+               times(1)).endNodeTraversal(eq(result.intermNode));
+        verify(callback,
+               times(1)).endNodeTraversal(eq(result.endNode));
+        verify(callback,
+               times(1)).startEdgeTraversal(eq(result.edge1));
+        verify(callback,
+               times(1)).endEdgeTraversal(eq(result.edge1));
+        verify(callback,
+               times(1)).startEdgeTraversal(eq(result.edge2));
+        verify(callback,
+               times(1)).endEdgeTraversal(eq(result.edge2));
+        verify(callback,
+               times(1)).startEdgeTraversal(eq(newEdge));
+        verify(callback,
+               times(1)).endEdgeTraversal(eq(newEdge));
+        verify(callback,
+               times(1)).endGraphTraversal();
+    }
 }

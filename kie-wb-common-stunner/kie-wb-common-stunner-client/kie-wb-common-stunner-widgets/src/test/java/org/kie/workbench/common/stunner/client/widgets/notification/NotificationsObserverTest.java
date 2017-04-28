@@ -194,7 +194,8 @@ public class NotificationsObserverTest {
         final Collection<DiagramElementViolation<RuleViolation>> violations = Collections.singletonList(violation);
         validationFailedNotification = new ValidationFailedNotification(violations,
                                                                         notificationContext,
-                                                                        "message1");
+                                                                        "message1",
+                                                                        Notification.Type.ERROR);
         final CanvasValidationFailEvent validationFailEvent =
                 new CanvasValidationFailEvent(UUID,
                                               NAME,

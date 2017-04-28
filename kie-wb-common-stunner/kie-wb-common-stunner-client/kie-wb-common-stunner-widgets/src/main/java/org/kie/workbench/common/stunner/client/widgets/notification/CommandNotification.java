@@ -50,12 +50,12 @@ public final class CommandNotification
                                                 final NotificationContext context,
                                                 final Command<?, CanvasViolation> command,
                                                 final CommandResult<CanvasViolation> result) {
-            final String message = isError(result) ?
+            final Notification.Type type = getNotificationType(result);
+            final String message = Type.ERROR.equals(type) || Type.WARNING.equals(type) ?
                     getErrorMessage(translationService,
                                     result) :
                     getSuccessMessage(translationService,
                                       result);
-            final Notification.Type type = getNotificationType(result);
             return new CommandNotification(type,
                                            context,
                                            command,
@@ -75,11 +75,13 @@ public final class CommandNotification
         }
 
         private static Notification.Type getNotificationType(final CommandResult<CanvasViolation> result) {
-            return isError(result) ? Notification.Type.ERROR : Notification.Type.INFO;
-        }
-
-        private static boolean isError(final CommandResult<CanvasViolation> result) {
-            return CommandResult.Type.ERROR.equals(result.getType());
+            switch (result.getType()) {
+                case ERROR:
+                    return Type.ERROR;
+                case WARNING:
+                    return Type.WARNING;
+            }
+            return Type.INFO;
         }
     }
 }

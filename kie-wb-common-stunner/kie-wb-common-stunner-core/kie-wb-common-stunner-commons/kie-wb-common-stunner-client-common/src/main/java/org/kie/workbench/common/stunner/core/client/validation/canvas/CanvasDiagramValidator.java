@@ -125,6 +125,7 @@ public class CanvasDiagramValidator<H extends AbstractCanvasHandler> {
     }
 
     private boolean hasViolations(final RuleViolation violation) {
-        return RuleViolation.Type.ERROR.equals(violation.getViolationType());
+        return RuleViolation.Type.ERROR.equals(violation.getViolationType()) ||
+                RuleViolation.Type.WARNING.equals(violation.getViolationType());
     }
 }

@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.ElementCardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.violations.CardinalityMaxRuleViolation;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.mockito.ArgumentCaptor;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -98,7 +99,8 @@ public class DeleteNodeCommandTest extends AbstractGraphCommandTest {
         final RuleViolations FAILED_VIOLATIONS = new DefaultRuleViolations()
                 .addViolation(new CardinalityMaxRuleViolation("candidate",
                                                               1,
-                                                              2));
+                                                              2,
+                                                              Violation.Type.ERROR));
         when(ruleManager.evaluate(any(RuleSet.class),
                                   any(RuleEvaluationContext.class))).thenReturn(FAILED_VIOLATIONS);
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
@@ -149,7 +151,8 @@ public class DeleteNodeCommandTest extends AbstractGraphCommandTest {
         final RuleViolations FAILED_VIOLATIONS = new DefaultRuleViolations()
                 .addViolation(new CardinalityMaxRuleViolation("candidate",
                                                               1,
-                                                              2));
+                                                              2,
+                                                              Violation.Type.ERROR));
         when(ruleManager.evaluate(any(RuleSet.class),
                                   any(RuleEvaluationContext.class))).thenReturn(FAILED_VIOLATIONS);
 

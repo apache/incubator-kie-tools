@@ -56,7 +56,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
         return new Button() {{
             setSize(ButtonSize.SMALL);
             setIcon(IconType.BAN);
-            setTitle("Clear selection");
+            setTitle("Clear shapes state");
             addClickHandler(clickEvent -> command.execute());
         }};
     }

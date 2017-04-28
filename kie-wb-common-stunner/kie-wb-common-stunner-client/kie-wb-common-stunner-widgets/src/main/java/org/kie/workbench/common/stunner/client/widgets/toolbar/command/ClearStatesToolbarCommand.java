@@ -45,7 +45,7 @@ public class ClearStatesToolbarCommand extends AbstractToolbarCommand<ClientRead
     // TODO: I18n.
     @Override
     public String getTooltip() {
-        return "Clear state";
+        return "Clear shape states";
     }
 
     @Override

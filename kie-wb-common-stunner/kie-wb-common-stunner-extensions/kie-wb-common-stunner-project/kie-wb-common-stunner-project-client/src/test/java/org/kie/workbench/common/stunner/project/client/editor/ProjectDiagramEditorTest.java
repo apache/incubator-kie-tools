@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
 import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
+import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
@@ -176,6 +177,14 @@ public class ProjectDiagramEditorTest {
                times(0)).bind(eq(fullSession));
         verify(sessionRefreshCommand,
                times(0)).bind(eq(fullSession));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testValidateBeforeSave() {
+        tested.save();
+        verify(sessionValidateCommand,
+               times(1)).execute(any(ClientSessionCommand.Callback.class));
     }
 
     // TODO: @Test - versionRecordManager is not being set.

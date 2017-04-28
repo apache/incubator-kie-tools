@@ -28,11 +28,14 @@ public final class ModelBeanViolationImpl implements ModelBeanViolation {
 
     private final String path;
     private final String message;
+    private final Type type;
 
     private ModelBeanViolationImpl(final @MapsTo("path") String path,
-                                   final @MapsTo("message") String message) {
+                                   final @MapsTo("message") String message,
+                                   final @MapsTo("type") Type type) {
         this.path = path;
         this.message = message;
+        this.type = type;
     }
 
     public String getPropertyPath() {
@@ -45,7 +48,7 @@ public final class ModelBeanViolationImpl implements ModelBeanViolation {
 
     @Override
     public Type getViolationType() {
-        return Type.ERROR;
+        return type;
     }
 
     @NonPortable
@@ -53,7 +56,8 @@ public final class ModelBeanViolationImpl implements ModelBeanViolation {
 
         public static ModelBeanViolationImpl build(final ConstraintViolation<?> root) {
             return new ModelBeanViolationImpl(root.getPropertyPath().toString(),
-                                              root.getMessage());
+                                              root.getMessage(),
+                                              Type.WARNING);
         }
     }
 }

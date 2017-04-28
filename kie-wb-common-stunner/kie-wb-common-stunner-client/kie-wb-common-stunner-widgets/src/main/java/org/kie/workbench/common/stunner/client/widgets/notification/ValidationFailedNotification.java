@@ -19,10 +19,13 @@ package org.kie.workbench.common.stunner.client.widgets.notification;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
+import org.kie.workbench.common.stunner.core.validation.Violation;
+import org.kie.workbench.common.stunner.core.validation.impl.ValidationUtils;
 
 public final class ValidationFailedNotification extends AbstractNotification<Collection<DiagramElementViolation<RuleViolation>>> {
 
@@ -31,9 +34,10 @@ public final class ValidationFailedNotification extends AbstractNotification<Col
     @SuppressWarnings("unchecked")
     ValidationFailedNotification(final Collection<DiagramElementViolation<RuleViolation>> source,
                                  final NotificationContext context,
-                                 final String message) {
+                                 final String message,
+                                 final Type type) {
         super(context,
-              Type.ERROR,
+              type,
               message);
         this.violations = source;
     }
@@ -48,13 +52,25 @@ public final class ValidationFailedNotification extends AbstractNotification<Col
         public static ValidationFailedNotification build(final ClientTranslationService translationService,
                                                          final NotificationContext context,
                                                          final Collection<DiagramElementViolation<RuleViolation>> errors) {
+            final Violation.Type type = ValidationUtils.getMaxSeverity(errors);
             return new ValidationFailedNotification(errors,
                                                     context,
                                                     NotificationMessageUtils.getDiagramValidationsErrorMessage(
                                                             translationService,
                                                             CoreTranslationMessages.VALIDATION_FAILED,
                                                             errors
-                                                    ));
+                                                    ),
+                                                    getNotificationType(type));
+        }
+
+        public static Notification.Type getNotificationType(final CanvasViolation.Type type) {
+            switch (type) {
+                case ERROR:
+                    return Type.ERROR;
+                case WARNING:
+                    return Type.WARNING;
+            }
+            return Type.INFO;
         }
     }
 }

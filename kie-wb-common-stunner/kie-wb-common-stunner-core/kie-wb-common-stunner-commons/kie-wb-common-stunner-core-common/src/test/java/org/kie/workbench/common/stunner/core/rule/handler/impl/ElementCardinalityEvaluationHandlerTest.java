@@ -144,7 +144,7 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
         final RuleViolations violations = tested.evaluate(RULE_MIN_1,
                                                           context);
         assertNotNull(violations);
-        assertTrue(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
+        assertTrue(violations.violations(RuleViolation.Type.WARNING).iterator().hasNext());
     }
 
     @Test
@@ -197,7 +197,7 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
         final RuleViolations violations = tested.evaluate(RULE_MIN_1,
                                                           context);
         assertNotNull(violations);
-        assertTrue(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
+        assertTrue(violations.violations(RuleViolation.Type.WARNING).iterator().hasNext());
     }
 
     @Test
@@ -286,6 +286,6 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
         final RuleViolations violations = tested.evaluate(RULE_MAX_0,
                                                           context);
         assertNotNull(violations);
-        assertTrue(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
+        assertTrue(violations.violations(RuleViolation.Type.WARNING).iterator().hasNext());
     }
 }

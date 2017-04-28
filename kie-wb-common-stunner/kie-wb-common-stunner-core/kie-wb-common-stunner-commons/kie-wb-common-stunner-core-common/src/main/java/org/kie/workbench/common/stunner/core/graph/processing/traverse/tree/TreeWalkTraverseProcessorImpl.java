@@ -37,6 +37,7 @@ public final class TreeWalkTraverseProcessorImpl implements TreeWalkTraverseProc
     private TreeTraverseCallback<Graph, Node, Edge> callback;
     private final Set<String> processesEdges = new HashSet<String>();
     private final Set<String> processesNodes = new HashSet<String>();
+    private final Set<Edge> pendingEdges = new HashSet<Edge>();
     private Predicate<Node<?, Edge>> startNodePredicate;
 
     public TreeWalkTraverseProcessorImpl() {
@@ -61,45 +62,45 @@ public final class TreeWalkTraverseProcessorImpl implements TreeWalkTraverseProc
     public void traverse(final Graph graph,
                          final Node node,
                          final TreeTraverseCallback<Graph, Node, Edge> callback) {
-        this.doTraverse(graph,
-                        Optional.ofNullable(node),
-                        callback);
+        startTraverse(graph,
+                      Optional.ofNullable(node),
+                      callback);
     }
 
     @Override
     public void traverse(final Graph graph,
                          final TreeTraverseCallback<Graph, Node, Edge> callback) {
-        this.doTraverse(graph,
-                        Optional.empty(),
-                        callback);
+        startTraverse(graph,
+                      Optional.empty(),
+                      callback);
     }
 
-    private void doTraverse(final Graph graph,
-                            final Optional<Node<?, Edge>> node,
-                            final TreeTraverseCallback<Graph, Node, Edge> callback) {
+    private void startTraverse(final Graph graph,
+                               final Optional<Node<?, Edge>> node,
+                               final TreeTraverseCallback<Graph, Node, Edge> callback) {
+        assert graph != null && callback != null;
         this.graph = graph;
         this.callback = callback;
+        // Clear instance's caches state.
         processesNodes.clear();
         processesEdges.clear();
-        startTraverse(node);
-    }
-
-    private void startTraverse(final Optional<Node<?, Edge>> startNode) {
-        startGraphTraversal(startNode);
+        pendingEdges.clear();
+        // Start traversing the graph.
+        startGraphTraversal(node);
+        // Process any remaining edges, if any.
+        processPendingEdges();
+        // End the graph traversal.
         endGraphTraversal();
-    }
-
-    private void endGraphTraversal() {
-        callback.endGraphTraversal();
+        // Clear instance's state.
+        this.processesEdges.clear();
+        this.pendingEdges.clear();
+        this.processesNodes.clear();
         this.graph = null;
         this.callback = null;
-        this.processesEdges.clear();
-        this.processesNodes.clear();
     }
 
     @SuppressWarnings("unchecked")
     private void startGraphTraversal(final Optional<Node<?, Edge>> startNode) {
-        assert graph != null && callback != null;
         callback.startGraphTraversal(graph);
         if (!startNode.isPresent()) {
             final List<Node<?, Edge>> orderedGraphNodes = getStartingNodes();
@@ -112,12 +113,31 @@ public final class TreeWalkTraverseProcessorImpl implements TreeWalkTraverseProc
         }
     }
 
+    private void endGraphTraversal() {
+        callback.endGraphTraversal();
+    }
+
+    private void processPendingEdges() {
+        pendingEdges.forEach(this::processPendingEdge);
+    }
+
+    private void processPendingEdge(final Edge edge) {
+        startEdgeTraversal(edge);
+    }
+
+    private boolean isEdgeProcessed(final Edge edge) {
+        return processesEdges.contains(edge.getUUID());
+    }
+
     @SuppressWarnings("unchecked")
     private void startNodeTraversal(final Node<?, Edge> node) {
         this.processesNodes.add(node.getUUID());
         if (callback.startNodeTraversal(node)) {
+            // Outgoing connections.
             node.getOutEdges().forEach(this::startEdgeTraversal);
             callback.endNodeTraversal(node);
+            // Outgoing connections.
+            pendingEdges.addAll(node.getInEdges());
         }
     }
 
@@ -137,8 +157,12 @@ public final class TreeWalkTraverseProcessorImpl implements TreeWalkTraverseProc
             if (isVisitAfter()) {
                 callback.startEdgeTraversal(edge);
             }
-            callback.endEdgeTraversal(edge);
+            endEdgeTraversal(edge);
         }
+    }
+
+    private void endEdgeTraversal(final Edge edge) {
+        callback.endEdgeTraversal(edge);
     }
 
     private boolean isVisitBefore() {

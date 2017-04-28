@@ -112,7 +112,7 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
     @Override
     protected void open(final ProjectDiagram diagram) {
         super.open(diagram);
-        presenter.displayErrors(false);
+        presenter.displayNotifications(type -> false);
     }
 
     @OnClose

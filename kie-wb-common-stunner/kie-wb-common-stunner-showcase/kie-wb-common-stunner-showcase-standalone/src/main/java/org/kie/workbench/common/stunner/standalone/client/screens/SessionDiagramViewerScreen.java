@@ -167,33 +167,31 @@ public class SessionDiagramViewerScreen {
                                          presenter
                                                  .withToolbar(true)
                                                  .withPalette(false)
-                                                 .displayNotifications(true)
-                                                 .displayErrors(true)
-                                                 .open(diagram,
-                                                       session,
-                                                       new SessionPresenter.SessionPresenterCallback<AbstractClientReadOnlySession, Diagram>() {
-                                                           @Override
-                                                           public void afterSessionOpened() {
+                                                 .displayNotifications(type -> true).open(diagram,
+                                                                                          session,
+                                                                                          new SessionPresenter.SessionPresenterCallback<AbstractClientReadOnlySession, Diagram>() {
+                                                                                              @Override
+                                                                                              public void afterSessionOpened() {
 
-                                                           }
+                                                                                              }
 
-                                                           @Override
-                                                           public void afterCanvasInitialized() {
+                                                                                              @Override
+                                                                                              public void afterCanvasInitialized() {
 
-                                                           }
+                                                                                              }
 
-                                                           @Override
-                                                           public void onSuccess() {
-                                                               BusyPopup.close();
-                                                               callback.execute();
-                                                           }
+                                                                                              @Override
+                                                                                              public void onSuccess() {
+                                                                                                  BusyPopup.close();
+                                                                                                  callback.execute();
+                                                                                              }
 
-                                                           @Override
-                                                           public void onError(final ClientRuntimeError error) {
-                                                               SessionDiagramViewerScreen.this.showError(error);
-                                                               callback.execute();
-                                                           }
-                                                       });
+                                                                                              @Override
+                                                                                              public void onError(final ClientRuntimeError error) {
+                                                                                                  SessionDiagramViewerScreen.this.showError(error);
+                                                                                                  callback.execute();
+                                                                                              }
+                                                                                          });
                                      }
 
                                      @Override

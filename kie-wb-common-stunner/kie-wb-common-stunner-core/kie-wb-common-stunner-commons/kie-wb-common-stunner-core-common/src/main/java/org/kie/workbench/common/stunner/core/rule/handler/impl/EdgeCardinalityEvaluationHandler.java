@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.rule.impl.EdgeOccurrences;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.rule.violations.EdgeCardinalityMaxRuleViolation;
 import org.kie.workbench.common.stunner.core.rule.violations.EdgeCardinalityMinRuleViolation;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 
 @ApplicationScoped
 public class EdgeCardinalityEvaluationHandler implements RuleEvaluationHandler<EdgeOccurrences, EdgeCardinalityContext> {
@@ -59,6 +60,9 @@ public class EdgeCardinalityEvaluationHandler implements RuleEvaluationHandler<E
         final int candidatesCount = context.getCandidateCount();
         final Optional<CardinalityContext.Operation> operation = context.getOperation();
         final EdgeCardinalityContext.Direction direction = rule.getDirection();
+        final Violation.Type type = operation
+                .filter(CardinalityContext.Operation.ADD::equals)
+                .isPresent() ? Violation.Type.ERROR : Violation.Type.WARNING;
         final int _count = !operation.isPresent() ? candidatesCount :
                 (operation.get().equals(CardinalityContext.Operation.ADD) ? candidatesCount + 1 :
                         (candidatesCount > 0 ? candidatesCount - 1 : 0)
@@ -68,13 +72,15 @@ public class EdgeCardinalityEvaluationHandler implements RuleEvaluationHandler<E
                                                                      context.getEdgeRole(),
                                                                      minOccurrences,
                                                                      candidatesCount,
-                                                                     direction));
+                                                                     direction,
+                                                                     type));
         } else if (maxOccurrences > -1 && _count > maxOccurrences) {
             results.addViolation(new EdgeCardinalityMaxRuleViolation(context.getRoles().toString(),
                                                                      context.getEdgeRole(),
                                                                      maxOccurrences,
                                                                      candidatesCount,
-                                                                     direction));
+                                                                     direction,
+                                                                     type));
         }
         return results;
     }

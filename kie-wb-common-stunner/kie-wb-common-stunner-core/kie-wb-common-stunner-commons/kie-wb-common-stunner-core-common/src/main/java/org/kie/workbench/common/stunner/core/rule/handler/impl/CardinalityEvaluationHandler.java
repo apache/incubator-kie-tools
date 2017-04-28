@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.rule.impl.Occurrences;
 import org.kie.workbench.common.stunner.core.rule.violations.CardinalityMaxRuleViolation;
 import org.kie.workbench.common.stunner.core.rule.violations.CardinalityMinRuleViolation;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 
 @ApplicationScoped
 public class CardinalityEvaluationHandler implements RuleEvaluationHandler<Occurrences, CardinalityContext> {
@@ -54,16 +55,21 @@ public class CardinalityEvaluationHandler implements RuleEvaluationHandler<Occur
         final int maxOccurrences = rule.getMaxOccurrences();
         final int candidatesCount = context.getCandidateCount();
         final Optional<CardinalityContext.Operation> operation = context.getOperation();
+        final Violation.Type type = operation
+                .filter(CardinalityContext.Operation.ADD::equals)
+                .isPresent() ? Violation.Type.ERROR : Violation.Type.WARNING;
         final int count = !operation.isPresent() ? candidatesCount :
                 (operation.get().equals(CardinalityContext.Operation.ADD) ? candidatesCount + 1 : candidatesCount - 1);
         if (count < minOccurrences) {
             results.addViolation(new CardinalityMinRuleViolation(context.getRoles().toString(),
                                                                  minOccurrences,
-                                                                 candidatesCount));
+                                                                 candidatesCount,
+                                                                 type));
         } else if (maxOccurrences > -1 && count > maxOccurrences) {
             results.addViolation(new CardinalityMaxRuleViolation(context.getRoles().toString(),
                                                                  maxOccurrences,
-                                                                 candidatesCount));
+                                                                 candidatesCount,
+                                                                 type));
         }
         return results;
     }

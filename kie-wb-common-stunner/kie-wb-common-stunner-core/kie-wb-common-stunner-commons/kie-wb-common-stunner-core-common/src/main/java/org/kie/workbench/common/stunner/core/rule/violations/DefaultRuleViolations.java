@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.rule.violations;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -56,6 +57,16 @@ public class DefaultRuleViolations implements RuleViolations {
 
     @Override
     public Iterable<RuleViolation> violations(final RuleViolation.Type violationType) {
-        return violations;
+        return violations.stream()
+                .filter(v -> v.getViolationType().equals(violationType))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String toString() {
+        return violations.stream()
+                .map(v -> "{'" + v.getViolationType() + "' " + v.toString() + "}")
+                .reduce(String::concat)
+                .orElse("{'No violations found' " + super.toString() + ")");
     }
 }
