@@ -26,16 +26,12 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.Instance;
-
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlFileTypeDefinition;
 import org.kie.workbench.common.services.refactoring.backend.server.drl.TestPackageNameDrlFileIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQueries;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
-import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.RuleNameResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRulesByProjectQuery;
@@ -49,22 +45,22 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.uberfire.java.nio.file.Path;
 import org.uberfire.paging.PageResponse;
 
 public class FindRulesByProjectQueryValidIndexTermsTest
         extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 
     private static final String SOME_OTHER_PROJECT_ROOT = "some/other/projectRoot";
+    private static final String SOME_OTHER_PROJECT_NAME = "other-mock-project";
 
     protected Set<NamedQuery> getQueries() {
         return new HashSet<NamedQuery>() {{
-            add( new FindRulesByProjectQuery() {
+            add(new FindRulesByProjectQuery() {
                 @Override
                 public ResponseBuilder getResponseBuilder() {
                     return new RuleNameResponseBuilder();
                 }
-            } );
+            });
         }};
     }
 
@@ -73,64 +69,58 @@ public class FindRulesByProjectQueryValidIndexTermsTest
 
         final KieProjectService mock = super.getProjectService();
 
-        when( mock.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) )
-                .thenAnswer( new Answer() {
+        when(mock.resolveProject(any(org.uberfire.backend.vfs.Path.class)))
+                .thenAnswer(new Answer() {
                     @Override
-                    public Object answer( InvocationOnMock invocationOnMock ) throws Throwable {
+                    public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                         org.uberfire.backend.vfs.Path resource = (org.uberfire.backend.vfs.Path) invocationOnMock.getArguments()[0];
-                        if ( resource.toURI().contains( TEST_PROJECT_ROOT ) ) {
-                            return getKieProjectMock( TEST_PROJECT_ROOT );
-                        } else if ( resource.toURI().contains( SOME_OTHER_PROJECT_ROOT ) ) {
-                            return getKieProjectMock( SOME_OTHER_PROJECT_ROOT );
+                        if (resource.toURI().contains(TEST_PROJECT_ROOT)) {
+                            return getKieProjectMock(TEST_PROJECT_ROOT,
+                                                     TEST_PROJECT_NAME);
+                        } else if (resource.toURI().contains(SOME_OTHER_PROJECT_ROOT)) {
+                            return getKieProjectMock(SOME_OTHER_PROJECT_ROOT,
+                                                     SOME_OTHER_PROJECT_NAME);
                         } else {
                             return null;
                         }
                     }
-                } );
+                });
 
         return mock;
-    }
-
-    private KieProject getKieProjectMock( String testProjectRoot ) {
-        final org.uberfire.backend.vfs.Path mockRoot = mock( org.uberfire.backend.vfs.Path.class );
-        when( mockRoot.toURI() ).thenReturn( testProjectRoot );
-
-        final KieProject mockProject = mock( KieProject.class );
-        when( mockProject.getRootPath() ).thenReturn( mockRoot );
-        return mockProject;
     }
 
     @Test
     public void testQueryValidIndexTerms() throws IOException, InterruptedException {
         //Add test files
-        addTestDRL( BaseIndexingTest.TEST_PROJECT_ROOT,
-                    "drl1.drl" );
-        addTestDRL( BaseIndexingTest.TEST_PROJECT_ROOT,
-                    "drl2.drl" );
-        addTestDRL( SOME_OTHER_PROJECT_ROOT,
-                    "drl3.drl" );
-        addTestDRL( BaseIndexingTest.TEST_PROJECT_ROOT,
-                    "drl4.drl" );
+        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
+                    "drl1.drl");
+        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
+                    "drl2.drl");
+        addTestFile(SOME_OTHER_PROJECT_ROOT,
+                    "drl3.drl");
+        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
+                    "drl4.drl");
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         {
-            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
-                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                   add( new ValueProjectRootPathIndexTerm( BaseIndexingTest.TEST_PROJECT_ROOT ) );
-                                                                                   add( new ValuePackageNameIndexTerm( "", TermSearchType.WILDCARD ) );
-                                                                               }},
-                                                                               0,
-                                                                               10 );
+            final RefactoringPageRequest request = new RefactoringPageRequest("FindRulesByProjectQuery",
+                                                                              new HashSet<ValueIndexTerm>() {{
+                                                                                  add(new ValueProjectRootPathIndexTerm(BaseIndexingTest.TEST_PROJECT_ROOT,
+                                                                                                                        TermSearchType.WILDCARD));
+                                                                                  add(new ValuePackageNameIndexTerm("",
+                                                                                                                    TermSearchType.WILDCARD));
+                                                                              }},
+                                                                              0,
+                                                                              10);
 
             try {
-                final PageResponse<RefactoringPageRow> response = service.query( request );
-                assertNotNull( response );
-                assertEquals( 1,
-                              response.getPageRowList().size() );
-                assertResponseContains( response.getPageRowList(),
-                                        "noPackage" );
-
+                final PageResponse<RefactoringPageRow> response = service.query(request);
+                assertNotNull(response);
+                assertEquals(1,
+                             response.getPageRowList().size());
+                assertResponseContains(response.getPageRowList(),
+                                       "noPackage");
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
                 fail("Unable to query: " + e.getMessage());
@@ -138,28 +128,29 @@ public class FindRulesByProjectQueryValidIndexTermsTest
         }
 
         {
-            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
-                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                   add( new ValueProjectRootPathIndexTerm( "*", TermSearchType.WILDCARD ) );
-                                                                                   add( new ValuePackageNameIndexTerm( "*", TermSearchType.WILDCARD ) );
-                                                                               }},
-                                                                               0,
-                                                                               10 );
+            final RefactoringPageRequest request = new RefactoringPageRequest("FindRulesByProjectQuery",
+                                                                              new HashSet<ValueIndexTerm>() {{
+                                                                                  add(new ValueProjectRootPathIndexTerm("*",
+                                                                                                                        TermSearchType.WILDCARD));
+                                                                                  add(new ValuePackageNameIndexTerm("*",
+                                                                                                                    TermSearchType.WILDCARD));
+                                                                              }},
+                                                                              0,
+                                                                              10);
 
             try {
-                final PageResponse<RefactoringPageRow> response = service.query( request );
-                assertNotNull( response );
-                assertEquals( 4,
-                              response.getPageRowList().size() );
-                assertResponseContains( response.getPageRowList(),
-                                        TEST_PACKAGE_NAME + ".myRule" );
-                assertResponseContains( response.getPageRowList(),
-                                        TEST_PACKAGE_NAME + ".myRule2" );
-                assertResponseContains( response.getPageRowList(),
-                                        TEST_PACKAGE_NAME + ".myRule3" );
-                assertResponseContains( response.getPageRowList(),
-                                        "noPackage" );
-
+                final PageResponse<RefactoringPageRow> response = service.query(request);
+                assertNotNull(response);
+                assertEquals(4,
+                             response.getPageRowList().size());
+                assertResponseContains(response.getPageRowList(),
+                                       TEST_PACKAGE_NAME + ".myRule");
+                assertResponseContains(response.getPageRowList(),
+                                       TEST_PACKAGE_NAME + ".myRule2");
+                assertResponseContains(response.getPageRowList(),
+                                       TEST_PACKAGE_NAME + ".myRule3");
+                assertResponseContains(response.getPageRowList(),
+                                       "noPackage");
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
                 fail("Unable to query: " + e.getMessage());
@@ -167,47 +158,23 @@ public class FindRulesByProjectQueryValidIndexTermsTest
         }
 
         {
-            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
-                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                   add( new ValueProjectRootPathIndexTerm( BaseIndexingTest.TEST_PROJECT_ROOT ) );
-                                                                                   add( new ValuePackageNameIndexTerm( BaseIndexingTest.TEST_PACKAGE_NAME ) );
-                                                                               }},
-                                                                               0,
-                                                                               10 );
+            final RefactoringPageRequest request = new RefactoringPageRequest("FindRulesByProjectQuery",
+                                                                              new HashSet<ValueIndexTerm>() {{
+                                                                                  add(new ValueProjectRootPathIndexTerm(BaseIndexingTest.TEST_PROJECT_ROOT));
+                                                                                  add(new ValuePackageNameIndexTerm(BaseIndexingTest.TEST_PACKAGE_NAME));
+                                                                              }},
+                                                                              0,
+                                                                              10);
 
             try {
-                final PageResponse<RefactoringPageRow> response = service.query( request );
-                assertNotNull( response );
-                assertEquals( 2,
-                              response.getPageRowList().size() );
-                assertResponseContains( response.getPageRowList(),
-                                        TEST_PACKAGE_NAME + ".myRule" );
-                assertResponseContains( response.getPageRowList(),
-                                        TEST_PACKAGE_NAME + ".myRule2" );
-
-            } catch ( IllegalArgumentException e ) {
-                e.printStackTrace();
-                fail("Unable to query: " + e.getMessage());
-            }
-        }
-
-        {
-            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
-                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                   add( new ValueProjectRootPathIndexTerm( SOME_OTHER_PROJECT_ROOT ) );
-                                                                                   add( new ValuePackageNameIndexTerm( BaseIndexingTest.TEST_PACKAGE_NAME ) );
-                                                                               }},
-                                                                               0,
-                                                                               10 );
-
-            try {
-                final PageResponse<RefactoringPageRow> response = service.query( request );
-                assertNotNull( response );
-                assertEquals( 1,
-                              response.getPageRowList().size() );
-                assertResponseContains( response.getPageRowList(),
-                                        TEST_PACKAGE_NAME + ".myRule3" );
-
+                final PageResponse<RefactoringPageRow> response = service.query(request);
+                assertNotNull(response);
+                assertEquals(2,
+                             response.getPageRowList().size());
+                assertResponseContains(response.getPageRowList(),
+                                       TEST_PACKAGE_NAME + ".myRule");
+                assertResponseContains(response.getPageRowList(),
+                                       TEST_PACKAGE_NAME + ".myRule2");
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
                 fail("Unable to query: " + e.getMessage());
@@ -215,54 +182,65 @@ public class FindRulesByProjectQueryValidIndexTermsTest
         }
 
         {
-            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
-                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                   add( new ValueProjectRootPathIndexTerm( BaseIndexingTest.TEST_PROJECT_ROOT ) );
-                                                                                   add( new ValuePackageNameIndexTerm( "non-existent-package-name" ) );
-                                                                               }},
-                                                                               0,
-                                                                               10 );
+            final RefactoringPageRequest request = new RefactoringPageRequest("FindRulesByProjectQuery",
+                                                                              new HashSet<ValueIndexTerm>() {{
+                                                                                  add(new ValueProjectRootPathIndexTerm(SOME_OTHER_PROJECT_ROOT));
+                                                                                  add(new ValuePackageNameIndexTerm(BaseIndexingTest.TEST_PACKAGE_NAME));
+                                                                              }},
+                                                                              0,
+                                                                              10);
 
             try {
-                final PageResponse<RefactoringPageRow> response = service.query( request );
-                assertNotNull( response );
-                assertEquals( 0,
-                              response.getPageRowList().size() );
-
-            } catch ( IllegalArgumentException e ) {
-                fail("Unable to query: " + e.getMessage());
-            }
-        }
-
-        {
-            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
-                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                   add( new ValueProjectRootPathIndexTerm( "non-existent-project-root" ) );
-                                                                                   add( new ValuePackageNameIndexTerm( BaseIndexingTest.TEST_PACKAGE_NAME ) );
-                                                                               }},
-                                                                               0,
-                                                                               10 );
-
-            try {
-                final PageResponse<RefactoringPageRow> response = service.query( request );
-                assertNotNull( response );
-                assertEquals( 0,
-                              response.getPageRowList().size() );
-
-            } catch ( IllegalArgumentException e ) {
+                final PageResponse<RefactoringPageRow> response = service.query(request);
+                assertNotNull(response);
+                assertEquals(1,
+                             response.getPageRowList().size());
+                assertResponseContains(response.getPageRowList(),
+                                       TEST_PACKAGE_NAME + ".myRule3");
+            } catch (IllegalArgumentException e) {
                 e.printStackTrace();
                 fail("Unable to query: " + e.getMessage());
             }
         }
 
-    }
+        {
+            final RefactoringPageRequest request = new RefactoringPageRequest("FindRulesByProjectQuery",
+                                                                              new HashSet<ValueIndexTerm>() {{
+                                                                                  add(new ValueProjectRootPathIndexTerm(BaseIndexingTest.TEST_PROJECT_ROOT));
+                                                                                  add(new ValuePackageNameIndexTerm("non-existent-package-name"));
+                                                                              }},
+                                                                              0,
+                                                                              10);
 
-    private void addTestDRL( final String projectName,
-                             final String pathToFile ) throws IOException {
-        final Path path = basePath.resolve( projectName + "/" + pathToFile );
-        final String drl = loadText( pathToFile );
-        ioService().write( path,
-                           drl );
+            try {
+                final PageResponse<RefactoringPageRow> response = service.query(request);
+                assertNotNull(response);
+                assertEquals(0,
+                             response.getPageRowList().size());
+            } catch (IllegalArgumentException e) {
+                fail("Unable to query: " + e.getMessage());
+            }
+        }
+
+        {
+            final RefactoringPageRequest request = new RefactoringPageRequest("FindRulesByProjectQuery",
+                                                                              new HashSet<ValueIndexTerm>() {{
+                                                                                  add(new ValueProjectRootPathIndexTerm("non-existent-project-root"));
+                                                                                  add(new ValuePackageNameIndexTerm(BaseIndexingTest.TEST_PACKAGE_NAME));
+                                                                              }},
+                                                                              0,
+                                                                              10);
+
+            try {
+                final PageResponse<RefactoringPageRow> response = service.query(request);
+                assertNotNull(response);
+                assertEquals(0,
+                             response.getPageRowList().size());
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                fail("Unable to query: " + e.getMessage());
+            }
+        }
     }
 
     @Override
@@ -279,5 +257,4 @@ public class FindRulesByProjectQueryValidIndexTermsTest
     protected String getRepositoryName() {
         return this.getClass().getSimpleName();
     }
-
 }

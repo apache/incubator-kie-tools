@@ -124,4 +124,23 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "Teams")
     public static final String OrganizationalUnitDefaultAliasInPlural = "OrganizationalUnitDefaultAliasInPlural";
+
+    @TranslationKey(defaultValue = "Indexing has not finished")
+    public static final String IndexingHasNotFinished = "IndexingHasNotFinished";
+
+    @TranslationKey(defaultValue = "Please wait while the project content is being indexed")
+    public static final String PleaseWaitWhileTheProjectContentIsBeingIndexed = "PleaseWaitWhileTheProjectContentIsBeingIndexed";
+
+    @TranslationKey(defaultValue = "Empty search")
+    public static final String EmptySearch = "EmptySearch";
+
+    @TranslationKey(defaultValue = "No files where found with the given search criteria.")
+    public static final String NoFilesWhereFoundWithTheGivenSearchCriteria = "NoFilesWhereFoundWithTheGivenSearchCriteria";
+
+    @TranslationKey(defaultValue = "End of file list")
+    public static final String EndOfFileList = "EndOfFileList";
+
+    @TranslationKey(defaultValue = "No more files. Please, press previous.")
+    public static final String NoMoreFilesPleasePressPrevious = "NoMoreFilesPleasePressPrevious";
+
 }

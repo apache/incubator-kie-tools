@@ -109,7 +109,7 @@ public abstract class AbstractFileIndexer implements Indexer {
         }
 
         // responsible for basic index info: project name, branch, etc
-        return new DefaultIndexBuilder(project, pkg);
+        return new DefaultIndexBuilder(Paths.convert(path).getFileName(), project, pkg);
     }
 
     /**

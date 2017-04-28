@@ -17,14 +17,13 @@
 package org.kie.workbench.common.screens.library.client.screens;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.ext.uberfire.social.activities.client.widgets.utils.SocialDateFormatter;
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -33,6 +32,7 @@ import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.library.api.AssetInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
@@ -61,14 +61,37 @@ public class ProjectScreen {
 
         void clearAssets();
 
-        void addAsset(String assetName,
-                      String assetPath,
-                      String assetType,
-                      IsWidget assetIcon,
-                      String lastModifiedTime,
-                      String createdTime,
-                      Command details,
-                      Command select);
+        void addAsset(final String assetName,
+                      final String assetPath,
+                      final String assetType,
+                      final IsWidget assetIcon,
+                      final String lastModifiedTime,
+                      final String createdTime,
+                      final Command details,
+                      final Command select);
+
+        String getFilterValue();
+
+        Integer getPageNumber();
+
+        Integer getStep();
+
+        void range(final int from,
+                   final int to);
+
+        void setPageNumber(final int pageNumber);
+
+        void showIndexingIncomplete();
+
+        void hideEmptyState();
+
+        void showSearchHitNothing();
+
+        void showNoMoreAssets();
+
+        void setForwardDisabled(final boolean disabled);
+
+        void setBackwardDisabled(final boolean disabled);
     }
 
     private View view;
@@ -83,13 +106,13 @@ public class ProjectScreen {
 
     private Event<AssetDetailEvent> assetDetailEvent;
 
-    private Event<ProjectContextChangeEvent> projectContextChangeEvent;
-
     private BusyIndicatorView busyIndicatorView;
 
     private ProjectInfo projectInfo;
 
     private List<AssetInfo> assets;
+
+    private Reloader reloader = new Reloader();
 
     @Inject
     public ProjectScreen(final View view,
@@ -98,7 +121,6 @@ public class ProjectScreen {
                          final Caller<LibraryService> libraryService,
                          final Classifier assetClassifier,
                          final Event<AssetDetailEvent> assetDetailEvent,
-                         final Event<ProjectContextChangeEvent> projectContextChangeEvent,
                          final BusyIndicatorView busyIndicatorView) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
@@ -106,7 +128,6 @@ public class ProjectScreen {
         this.libraryService = libraryService;
         this.assetClassifier = assetClassifier;
         this.assetDetailEvent = assetDetailEvent;
-        this.projectContextChangeEvent = projectContextChangeEvent;
         this.busyIndicatorView = busyIndicatorView;
     }
 
@@ -123,12 +144,8 @@ public class ProjectScreen {
         }
     }
 
-    public void updateAssetsBy(final String filter) {
-        if (assets != null) {
-            List<AssetInfo> filteredAssets = filterAssets(assets,
-                                                          filter);
-            setupAssets(filteredAssets);
-        }
+    public void onUpdateAssets() {
+        loadProjectInfo();
     }
 
     public void goToSettings() {
@@ -138,13 +155,6 @@ public class ProjectScreen {
 
     public String getProjectName() {
         return projectInfo.getProject().getProjectName();
-    }
-
-    List<AssetInfo> filterAssets(final List<AssetInfo> assets,
-                                 final String filter) {
-        return assets.stream()
-                .filter(a -> a.getFolderItem().getFileName().toUpperCase().startsWith(filter.toUpperCase()))
-                .collect(Collectors.toList());
     }
 
     String getLastModifiedTime(final AssetInfo asset) {
@@ -166,39 +176,93 @@ public class ProjectScreen {
 
     private void loadProjectInfo() {
         busyIndicatorView.showBusyIndicator(ts.getTranslation(LibraryConstants.LoadingAssets));
+
+        final int firstIndex = getFirstIndex();
+
         libraryService.call(new RemoteCallback<List<AssetInfo>>() {
             @Override
             public void callback(List<AssetInfo> assetsList) {
+
                 assets = assetsList;
-                loadProject(assets);
+
+                view.range(firstIndex + 1,
+                           firstIndex + assetsList.size());
+
+                setupAssets(assets);
+                setupForwardBackwardButtons(firstIndex);
+
                 busyIndicatorView.hideBusyIndicator();
+
+                reloader.check(assetsList);
             }
-        }).getProjectAssets(projectInfo.getProject());
+        }).getProjectAssets(new ProjectAssetsQuery(projectInfo.getProject(),
+                                                   view.getFilterValue(),
+                                                   firstIndex,
+                                                   view.getStep()));
     }
 
-    private void loadProject(List<AssetInfo> assets) {
-        setupAssets(assets);
+    private void setupForwardBackwardButtons(final int firstIndex) {
+        view.setBackwardDisabled(firstIndex == 0);
+        view.setForwardDisabled(isThereRoomOnThisPage());
     }
 
-    private void setupAssets(List<AssetInfo> assets) {
+    private boolean isThereRoomOnThisPage() {
+        Integer step = view.getStep();
+        return step > assets.size();
+    }
+
+    private int getFirstIndex() {
+        final int step = view.getStep();
+        final int result = (view.getPageNumber() * step) - step;
+
+        if (result < 1) {
+            view.setPageNumber(1);
+            return 0;
+        } else {
+            return result;
+        }
+    }
+
+    private void setupAssets(final List<AssetInfo> assets) {
         view.clearAssets();
+        view.hideEmptyState();
 
-        assets.stream().forEach(asset -> {
-            if (!asset.getFolderItem().getType().equals(FolderItemType.FOLDER)) {
-                final ClientResourceType assetResourceType = assetClassifier.findResourceType(asset.getFolderItem());
-                final String assetName = Utils.getBaseFileName(asset.getFolderItem().getFileName(),
-                                                               assetResourceType.getSuffix());
-
-                view.addAsset(assetName,
-                              getAssetPath(asset),
-                              assetResourceType.getDescription(),
-                              assetResourceType.getIcon(),
-                              getLastModifiedTime(asset),
-                              getCreatedTime(asset),
-                              detailsCommand((Path) asset.getFolderItem().getItem()),
-                              selectCommand((Path) asset.getFolderItem().getItem()));
+        if (assets.isEmpty()) {
+            if (isFilterEmpty()) {
+                if (getFirstIndex() == 0) {
+                    view.showIndexingIncomplete();
+                } else {
+                    view.showNoMoreAssets();
+                }
+            } else {
+                if (getFirstIndex() == 0) {
+                    view.showSearchHitNothing();
+                } else {
+                    view.showNoMoreAssets();
+                }
             }
-        });
+        } else {
+            assets.stream().forEach(asset -> {
+                if (!asset.getFolderItem().getType().equals(FolderItemType.FOLDER)) {
+                    final ClientResourceType assetResourceType = assetClassifier.findResourceType(asset.getFolderItem());
+                    final String assetName = Utils.getBaseFileName(asset.getFolderItem().getFileName(),
+                                                                   assetResourceType.getSuffix());
+
+                    view.addAsset(assetName,
+                                  getAssetPath(asset),
+                                  assetResourceType.getDescription(),
+                                  assetResourceType.getIcon(),
+                                  getLastModifiedTime(asset),
+                                  getCreatedTime(asset),
+                                  detailsCommand((Path) asset.getFolderItem().getItem()),
+                                  selectCommand((Path) asset.getFolderItem().getItem()));
+                }
+            });
+        }
+    }
+
+    private boolean isFilterEmpty() {
+        return view.getFilterValue().isEmpty();
     }
 
     private String getAssetPath(final AssetInfo asset) {
@@ -218,5 +282,72 @@ public class ProjectScreen {
     @WorkbenchPartView
     public UberElement<ProjectScreen> getView() {
         return view;
+    }
+
+    public void onToFirstPage() {
+        view.setPageNumber(1);
+        loadProjectInfo();
+    }
+
+    public void onToNextPage() {
+        view.setPageNumber(view.getPageNumber() + 1);
+        loadProjectInfo();
+    }
+
+    public void onToPrevious() {
+        view.setPageNumber(view.getPageNumber() - 1);
+        loadProjectInfo();
+    }
+
+    protected void reload() {
+        Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
+                                               @Override
+                                               public boolean execute() {
+                                                   loadProjectInfo();
+                                                   return false;
+                                               }
+                                           },
+                                           1000);
+    }
+
+    /**
+     * This class is needed in situations where you open the project screen, but the indexing has not yet finished.
+     * <p>
+     * It keeps reloading the file list from the backend server until either the page is full or
+     * when the indexing runs out of files and stops.
+     */
+    private class Reloader {
+
+        private boolean active = false;
+        private int previousAmount = -1;
+
+        public void check(final List<AssetInfo> assetsList) {
+
+            if (assets != null && assetsList.size() <= previousAmount && !assets.isEmpty()) {
+                active = false;
+            }
+
+            if (assetsList.isEmpty() && getFirstIndex() == 0 && filterIsNotSet()) {
+                active = true;
+            }
+
+            if (active && getFirstIndex() != 0) {
+                active = false;
+            }
+
+            if (assetsList.size() == view.getStep()) {
+                active = false;
+            }
+
+            previousAmount = assetsList.size();
+
+            if (active) {
+                reload();
+            }
+        }
+
+        private boolean filterIsNotSet() {
+            return view.getFilterValue() == null || view.getFilterValue().trim().isEmpty();
+        }
     }
 }

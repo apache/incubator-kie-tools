@@ -104,7 +104,8 @@ public class TestPackageNameDrlFileIndexer
             final Package pkg = mock( Package.class );
             when( pkg.getPackageName() ).thenReturn( packageDescr.getName() );
 
-            final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
+            final DefaultIndexBuilder builder = new DefaultIndexBuilder( Paths.convert(path).getFileName(),
+                                                                         project,
                                                                          pkg );
             final PackageDescrIndexVisitor visitor = new PackageDescrIndexVisitor( dmo,
                                                                                    builder,

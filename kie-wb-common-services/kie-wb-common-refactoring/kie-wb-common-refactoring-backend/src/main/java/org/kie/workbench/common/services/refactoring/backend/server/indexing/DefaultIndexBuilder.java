@@ -22,6 +22,7 @@ import java.util.Set;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.services.refactoring.model.index.IndexElementsGenerator;
+import org.kie.workbench.common.services.refactoring.model.index.terms.FullFileNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
@@ -30,63 +31,71 @@ import org.uberfire.commons.validation.PortablePreconditions;
 
 public class DefaultIndexBuilder {
 
+    private final String fileName;
     private Project project;
     private Package pkg;
     private String pkgName;
 
     private Set<IndexElementsGenerator> generators = new HashSet<IndexElementsGenerator>();
 
-    public DefaultIndexBuilder( final Project project,
-                                final Package pkg ) {
-        this.project = PortablePreconditions.checkNotNull( "project",
-                                                           project );
-        this.pkg = PortablePreconditions.checkNotNull( "pkg",
-                                                       pkg );
+    public DefaultIndexBuilder(final String fileName,
+                               final Project project,
+                               final Package pkg) {
+        this.fileName = PortablePreconditions.checkNotNull("fileName",
+                                                           fileName);
+        this.project = PortablePreconditions.checkNotNull("project",
+                                                          project);
+        this.pkg = PortablePreconditions.checkNotNull("pkg",
+                                                      pkg);
     }
 
-    public DefaultIndexBuilder addGenerator( final IndexElementsGenerator generator ) {
-        this.generators.add( PortablePreconditions.checkNotNull( "generator",
-                                                                 generator ) );
+    public DefaultIndexBuilder addGenerator(final IndexElementsGenerator generator) {
+        this.generators.add(PortablePreconditions.checkNotNull("generator",
+                                                               generator));
         return this;
     }
 
     public Set<Pair<String, String>> build() {
         final Set<Pair<String, String>> indexElements = new HashSet<Pair<String, String>>();
-        for ( IndexElementsGenerator generator : generators ) {
-            addIndexElements( indexElements,
-                              generator );
+        for (IndexElementsGenerator generator : generators) {
+            addIndexElements(indexElements,
+                             generator);
         }
-        if ( project != null && project.getRootPath() != null ) {
-            indexElements.add( new Pair<String, String>( ProjectRootPathIndexTerm.TERM,
-                                                         project.getRootPath().toURI() ) );
+
+        indexElements.add(new Pair<>(FullFileNameIndexTerm.TERM,
+                                     fileName));
+
+        if (project != null && project.getRootPath() != null) {
+            String s = project.getRootPath().toURI();
+            indexElements.add(new Pair<>(ProjectRootPathIndexTerm.TERM,
+                                         s));
             String projectName = project.getProjectName();
-            if( projectName != null ) {
-                indexElements.add( new Pair<String, String>( ProjectNameIndexTerm.TERM,
-                                                             projectName ) );
+            if (projectName != null) {
+                indexElements.add(new Pair<>(ProjectNameIndexTerm.TERM,
+                                             projectName));
             }
         }
 
-        if( pkgName == null ) {
+        if (pkgName == null) {
             pkgName = pkg.getPackageName();
         }
-        if ( pkg != null ) {
-            indexElements.add( new Pair<String, String>( PackageNameIndexTerm.TERM,
-                                                         pkgName ) );
+        if (pkg != null) {
+            indexElements.add(new Pair<>(PackageNameIndexTerm.TERM,
+                                         pkgName));
         }
         return indexElements;
     }
 
-    private void addIndexElements( final Set<Pair<String, String>> indexElements,
-                                   final IndexElementsGenerator generator ) {
-        if ( generator == null ) {
+    private void addIndexElements(final Set<Pair<String, String>> indexElements,
+                                  final IndexElementsGenerator generator) {
+        if (generator == null) {
             return;
         }
         final List<Pair<String, String>> generatorsIndexElements = generator.toIndexElements();
-        indexElements.addAll( generatorsIndexElements );
+        indexElements.addAll(generatorsIndexElements);
     }
 
     public void setPackageName(String pkgName) {
         this.pkgName = pkgName;
     }
-
 }

@@ -31,9 +31,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexing
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlFileTypeDefinition;
-import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQueries;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
-import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.RuleNameResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRulesByProjectQuery;
@@ -76,63 +74,6 @@ public class FindRulesByProjectQueryInvalidIndexTermsTest
             }
         }
 
-        {
-            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
-                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                   add( new ValueProjectRootPathIndexTerm( "/my/project/path" ) );
-                                                                               }},
-                                                                               0,
-                                                                               -1 );
-
-            try {
-                service.query( request );
-                fail();
-            } catch ( IllegalArgumentException e ) {
-                assertTrue( "Unexpected exception: " + e.getMessage(),
-                        e.getMessage().startsWith("Expected '" + ValuePackageNameIndexTerm.TERM + "' term was not found"));
-                // and Swallow. Expected
-            }
-        }
-
-        {
-            ValueIndexTerm javaRefTerm = new ValueReferenceIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant", ResourceType.JAVA );
-            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
-                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                   add( javaRefTerm );
-                                                                                   add( new ValueProjectRootPathIndexTerm("/my/project/path") );
-                                                                               }},
-                                                                               0,
-                                                                               -1 );
-
-            try {
-                service.query( request );
-                fail();
-            } catch ( IllegalArgumentException e ) {
-                assertTrue( "Unexpected exception: " + e.getMessage(),
-                        e.getMessage().startsWith("Index term '" + javaRefTerm.getTerm() + "' can not be used with "));
-                // and Swallow. Expected
-            }
-        }
-
-        {
-            ValueIndexTerm ruleRefRule = new ValueReferenceIndexTerm( "myRule", ResourceType.RULE );
-            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
-                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                   add( ruleRefRule );
-                                                                                   add( new ValueReferenceIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant", ResourceType.JAVA ) );
-                                                                               }},
-                                                                               0,
-                                                                               -1 );
-
-            try {
-                service.query( request );
-                fail();
-            } catch ( IllegalArgumentException e ) {
-                assertTrue( "Unexpected exception: " + e.getMessage(),
-                        e.getMessage().contains( " can not be used with the " + FindRulesByProjectQuery.NAME));
-                // and Swallow. Expected
-            }
-        }
 
     }
 

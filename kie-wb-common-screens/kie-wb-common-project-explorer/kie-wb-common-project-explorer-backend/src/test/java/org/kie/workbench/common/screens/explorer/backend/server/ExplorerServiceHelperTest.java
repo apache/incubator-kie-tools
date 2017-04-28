@@ -269,31 +269,6 @@ public class ExplorerServiceHelperTest {
     }
 
     @Test
-    public void getAssetsRecursivelyTest() {
-        final FolderItem folderItem1 = mock( FolderItem.class );
-        doReturn( FolderItemType.FOLDER ).when( folderItem1 ).getType();
-        final FolderItem folderItem2 = mock( FolderItem.class );
-        doReturn( FolderItemType.FILE ).when( folderItem2 ).getType();
-        final FolderItem folderItem3 = mock( FolderItem.class );
-        doReturn( FolderItemType.FILE ).when( folderItem3 ).getType();
-
-        final List<FolderItem> pkgItems = Arrays.asList( folderItem1, folderItem2 );
-        final List<FolderItem> childPkgItems = Arrays.asList( folderItem3 );
-
-        doReturn( "pkg" ).when( pkg ).getRelativeCaption();
-        doReturn( "childPkg" ).when( childPkg ).getRelativeCaption();
-        doReturn( new HashSet<Package>() {{ add( childPkg ); }} ).when( projectService ).resolvePackages( pkg );
-        doReturn( pkgItems ).when( helper ).getItems( eq( pkg ), any( ActiveOptions.class ) );
-        doReturn( childPkgItems ).when( helper ).getItems( eq( childPkg ), any( ActiveOptions.class ) );
-
-        final List<FolderItem> assets = helper.getAssetsRecursively( pkg, new ActiveOptions() );
-
-        assertEquals( 2, assets.size() );
-        assertTrue( assets.contains( folderItem3 ) );
-        assertTrue( assets.contains( folderItem2 ) );
-    }
-
-    @Test
     public void packageHasNoAssetsTest() {
         doReturn( false ).when( helper ).hasAssets( srcPath );
         doReturn( false ).when( helper ).hasAssets( srcResourcesPath );

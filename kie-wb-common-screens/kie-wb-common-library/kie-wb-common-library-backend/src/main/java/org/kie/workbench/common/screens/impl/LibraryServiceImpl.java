@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -48,20 +49,30 @@ import org.kie.workbench.common.screens.examples.model.ExampleTargetRepository;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
-import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
-import org.kie.workbench.common.screens.explorer.service.Option;
+import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.library.api.AssetInfo;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
+import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindAllLibraryAssetsQuery;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFullFileNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
+import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
+import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.attribute.FileTime;
+import org.uberfire.paging.PageResponse;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
@@ -71,26 +82,21 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 @ApplicationScoped
 public class LibraryServiceImpl implements LibraryService {
 
+    private static final Logger log = LoggerFactory.getLogger(LibraryServiceImpl.class);
+
+    private RefactoringQueryService refactoringQueryService;
     private OrganizationalUnitService ouService;
-
     private RepositoryService repositoryService;
-
     private KieProjectService kieProjectService;
-
     private LibraryPreferences preferences;
 
     private LibraryInternalPreferences internalPreferences;
 
     private AuthorizationManager authorizationManager;
-
     private SessionInfo sessionInfo;
-
     private ExplorerServiceHelper explorerServiceHelper;
-
     private KieProjectService projectService;
-
     private ExamplesService examplesService;
-
     private IOService ioService;
 
     public LibraryServiceImpl() {
@@ -100,6 +106,7 @@ public class LibraryServiceImpl implements LibraryService {
     public LibraryServiceImpl(final OrganizationalUnitService ouService,
                               final RepositoryService repositoryService,
                               final KieProjectService kieProjectService,
+                              final RefactoringQueryService refactoringQueryService,
                               final LibraryPreferences preferences,
                               final AuthorizationManager authorizationManager,
                               final SessionInfo sessionInfo,
@@ -111,6 +118,7 @@ public class LibraryServiceImpl implements LibraryService {
         this.ouService = ouService;
         this.repositoryService = repositoryService;
         this.kieProjectService = kieProjectService;
+        this.refactoringQueryService = refactoringQueryService;
         this.preferences = preferences;
         this.authorizationManager = authorizationManager;
         this.sessionInfo = sessionInfo;
@@ -185,19 +193,48 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    public List<AssetInfo> getProjectAssets(final Project project) {
-        checkNotNull("project",
-                     project);
-        final Package defaultPackage = projectService.resolveDefaultPackage(project);
-        final List<FolderItem> assets = explorerServiceHelper.getAssetsRecursively(defaultPackage,
-                                                                                   new ActiveOptions(Option.BUSINESS_CONTENT));
+    public List<AssetInfo> getProjectAssets(final ProjectAssetsQuery query) {
+        checkNotNull("query",
+                     query);
+
+        final HashSet<ValueIndexTerm> queryTerms = new HashSet<>();
+
+        queryTerms.add(new ValueProjectRootPathIndexTerm(query.getProject().getRootPath().toURI()));
+
+        if (query.hasFilter()) {
+            queryTerms.add(new ValueFullFileNameIndexTerm("*" + query.getFilter() + "*",
+                                                          ValueIndexTerm.TermSearchType.WILDCARD));
+        }
+
+        final PageResponse<RefactoringPageRow> findRulesByProjectQuery = refactoringQueryService.query(new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
+                                                                                                                                  queryTerms,
+                                                                                                                                  query.getStartIndex(),
+                                                                                                                                  query.getAmount()));
+        final List<FolderItem> assets = new ArrayList<>();
+
+        for (final RefactoringPageRow<Path> refactoringPageRow : findRulesByProjectQuery.getPageRowList()) {
+
+            final Path path = refactoringPageRow.getValue();
+            assets.add(new FolderItem(path,
+                                      path.getFileName(),
+                                      FolderItemType.FILE,
+                                      false,
+                                      Paths.readLockedBy(path),
+                                      Collections.<String>emptyList(),
+                                      explorerServiceHelper.getRestrictedOperations(path)
+            ));
+
+        }
 
         return assets.stream()
                 .map(asset -> {
-                    final FileTime lastModifiedFileTime = (FileTime) getAttribute(asset,
-                                                                                  LibraryService.LAST_MODIFIED_TIME).get();
-                    final FileTime createdFileTime = (FileTime) getAttribute(asset,
-                                                                             LibraryService.CREATED_TIME).get();
+
+                    final Map<String, Object> attributes = ioService.readAttributes(Paths.convert((Path) asset.getItem()));
+
+                    final FileTime lastModifiedFileTime = (FileTime) getAttribute(LibraryService.LAST_MODIFIED_TIME,
+                                                                                  attributes).get();
+                    final FileTime createdFileTime = (FileTime) getAttribute(LibraryService.CREATED_TIME,
+                                                                             attributes).get();
                     final Date lastModifiedTime = new Date(lastModifiedFileTime.toMillis());
                     final Date createdTime = new Date(createdFileTime.toMillis());
 
@@ -286,9 +323,8 @@ public class LibraryServiceImpl implements LibraryService {
                        preferences.getProjectPreferences().getVersion());
     }
 
-    private Optional<Object> getAttribute(final FolderItem asset,
-                                          final String attribute) {
-        final Map<String, Object> attributes = ioService.readAttributes(Paths.convert((Path) asset.getItem()));
+    private Optional<Object> getAttribute(final String attribute,
+                                          final Map<String, Object> attributes) {
         return attributes.entrySet().stream()
                 .filter(entry -> attribute.equals(entry.getKey()))
                 .map(Map.Entry::getValue)

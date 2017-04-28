@@ -45,6 +45,43 @@
 
                 <div class="list-group list-view-pf list-view-pf-view" id="asset-list">
                 </div>
+                <div id="indexing-info" visible="false" class="blank-slate-pf">
+                </div>
+                <div>
+                    <form class="content-view-pf-pagination table-view-pf-pagination clearfix" id="pagination1">
+                        <div class="form-group">
+                            <select id="howManyOnOnePage" class="form-control pagination-pf-pagesize" style="width: 45px;">
+                                <option value="15">15</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <span data-i18n-key="PerPage"></span>
+                        </div>
+                        <div class="form-group">
+                            <span><span id="fromToRange" class="pagination-pf-items-current">0-0</span></span>
+                            <ul class="pagination pagination-pf-back">
+                                <li class="disabled">
+                                    <button id="toFirstPage">
+                                        <span class="i fa fa-angle-double-left"></span></button>
+                                </li>
+                                <li class="disabled">
+                                    <button id="previousPageLink">
+                                        <span class="i fa fa-angle-left"></span></button>
+                                </li>
+                            </ul>
+                            <label for="pagination1-page" class="sr-only"></label>
+                            <input id="pageNumber" class="pagination-pf-page" type="text" value="1" id="pagination1-page"/>
+                            <ul class="pagination pagination-pf-forward">
+                                <li>
+                                    <button id="nextPageLink">
+                                        <span class="i fa fa-angle-right"></span></button>
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+
             </div>
         </div>
 

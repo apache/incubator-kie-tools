@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -33,8 +34,8 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
@@ -43,14 +44,19 @@ import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ExampleTargetRepository;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper;
-import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
+import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryOrganizationalUnitPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryProjectPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryRepositoryPreferences;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindAllLibraryAssetsQuery;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
+import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
+import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -58,6 +64,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.paging.PageResponse;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
@@ -102,6 +109,9 @@ public class LibraryServiceImplTest {
     private ExamplesService examplesService;
 
     @Mock
+    private RefactoringQueryService refactoringQueryService;
+
+    @Mock
     private IOService ioService;
 
     @Mock
@@ -115,6 +125,9 @@ public class LibraryServiceImplTest {
 
     @Mock
     private Repository repo2Default;
+
+    @Captor
+    private ArgumentCaptor<RefactoringPageRequest> pageRequestArgumentCaptor;
 
     @Captor
     private ArgumentCaptor<POM> pomArgumentCaptor;
@@ -156,6 +169,7 @@ public class LibraryServiceImplTest {
         libraryService = spy(new LibraryServiceImpl(ouService,
                                                     repositoryService,
                                                     kieProjectService,
+                                                    refactoringQueryService,
                                                     preferences,
                                                     authorizationManager,
                                                     sessionInfo,
@@ -260,7 +274,8 @@ public class LibraryServiceImplTest {
                                              any());
 
         final POM pom = pomArgumentCaptor.getValue();
-        assertEquals("description", pom.getDescription());
+        assertEquals("description",
+                     pom.getDescription());
     }
 
     @Test
@@ -300,12 +315,80 @@ public class LibraryServiceImplTest {
     }
 
     @Test
-    public void getProjectAssetsTest() {
-        libraryService.getProjectAssets(mock(Project.class));
+    public void emptyFirstPage() throws Exception {
 
-        verify(projectService).resolveDefaultPackage(any(Project.class));
-        verify(explorerServiceHelper).getAssetsRecursively(any(Package.class),
-                                                           any(ActiveOptions.class));
+        final Project project = mock(Project.class);
+        final Path path = mock(Path.class);
+        when(project.getRootPath()).thenReturn(path);
+        when(path.toURI()).thenReturn("a/b/c");
+
+        final ProjectAssetsQuery query = new ProjectAssetsQuery(project,
+                                                                "",
+                                                                0,
+                                                                10);
+
+        final PageResponse<RefactoringPageRow> pageRowPageResponse = new PageResponse<>();
+        pageRowPageResponse.setPageRowList(new ArrayList<>());
+        when(refactoringQueryService.query(any(RefactoringPageRequest.class))).thenReturn(pageRowPageResponse);
+
+        libraryService.getProjectAssets(query);
+
+        verify(refactoringQueryService).query(pageRequestArgumentCaptor.capture());
+
+        final RefactoringPageRequest pageRequest = pageRequestArgumentCaptor.getValue();
+
+        assertEquals(FindAllLibraryAssetsQuery.NAME,
+                     pageRequest.getQueryName());
+        assertEquals(1,
+                     pageRequest.getQueryTerms().size());
+
+        assertEquals("a/b/c",
+                     pageRequest.getQueryTerms().iterator().next().getValue());
+
+        assertEquals(0,
+                     pageRequest.getStartRowIndex());
+        assertEquals(10,
+                     pageRequest.getPageSize());
+    }
+
+    @Test
+    public void queryWithAFilter() throws Exception {
+
+        final Project project = mock(Project.class);
+        final Path path = mock(Path.class);
+        when(project.getRootPath()).thenReturn(path);
+        when(path.toURI()).thenReturn("the_project");
+
+        final ProjectAssetsQuery query = new ProjectAssetsQuery(project,
+                                                                "helloo",
+                                                                10,
+                                                                20);
+
+        final PageResponse<RefactoringPageRow> pageRowPageResponse = new PageResponse<>();
+        pageRowPageResponse.setPageRowList(new ArrayList<>());
+        when(refactoringQueryService.query(any(RefactoringPageRequest.class))).thenReturn(pageRowPageResponse);
+
+        libraryService.getProjectAssets(query);
+
+        verify(refactoringQueryService).query(pageRequestArgumentCaptor.capture());
+
+        final RefactoringPageRequest pageRequest = pageRequestArgumentCaptor.getValue();
+
+        assertEquals(FindAllLibraryAssetsQuery.NAME,
+                     pageRequest.getQueryName());
+        assertEquals(2,
+                     pageRequest.getQueryTerms().size());
+
+        final Iterator<ValueIndexTerm> iterator = pageRequest.getQueryTerms().iterator();
+        assertEquals("the_project",
+                     iterator.next().getValue());
+        assertEquals("*helloo*",
+                     iterator.next().getValue());
+
+        assertEquals(10,
+                     pageRequest.getStartRowIndex());
+        assertEquals(20,
+                     pageRequest.getPageSize());
     }
 
     @Test
@@ -418,7 +501,8 @@ public class LibraryServiceImplTest {
 
         final Project importedProject = libraryService.importProject(exampleProject);
 
-        assertEquals(project, importedProject);
+        assertEquals(project,
+                     importedProject);
         verify(examplesService).setupExamples(new ExampleOrganizationalUnit(organizationalUnit.getName()),
                                               new ExampleTargetRepository(repository.getAlias()),
                                               "master",

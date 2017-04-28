@@ -15,8 +15,6 @@
  */
 package org.kie.workbench.common.services.refactoring.backend.server.query;
 
-import static org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil.toKObject;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -24,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntFunction;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -39,21 +36,21 @@ import org.drools.workbench.models.datamodel.util.PortablePreconditions;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindAllChangeImpactQuery;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueBranchNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectNameIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueBranchNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
-import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.kie.workbench.common.services.refactoring.service.impact.QueryOperationRequest;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndexManager;
 import org.uberfire.ext.metadata.model.KObject;
-import org.uberfire.ext.metadata.model.KProperty;
 import org.uberfire.ext.metadata.search.ClusterSegment;
 import org.uberfire.paging.PageResponse;
+
+import static org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil.toKObject;
 
 @Service
 @ApplicationScoped
@@ -151,10 +148,10 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
     }
 
     private List<KObject> search(final Query query,
-            final IntFunction<Integer> totalHitsSupplier,
-            final Function<TopScoreDocCollector, ScoreDoc[]> getDocsHitFunction,
-            final IntFunction<Integer> numDocsInResponseFunction,
-            final ClusterSegment... clusterSegments ) {
+                                 final IntFunction<Integer> totalHitsSupplier,
+                                 final Function<TopScoreDocCollector, ScoreDoc[]> getDocsHitFunction,
+                                 final IntFunction<Integer> numDocsInResponseFunction,
+                                 final ClusterSegment... clusterSegments) {
 
         final LuceneIndexManager indexManager = ( (LuceneIndexManager) config.getIndexManager() );
         final IndexSearcher index = indexManager.getIndexSearcher( clusterSegments );

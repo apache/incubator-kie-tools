@@ -101,7 +101,7 @@ public class JavaFileIndexer extends AbstractFileIndexer {
         }
 
         // responsible for basic index info: project name, branch, etc
-        final DefaultIndexBuilder builder = new DefaultIndexBuilder(project, pkg);
+        final DefaultIndexBuilder builder = new DefaultIndexBuilder(Paths.convert(path).getFileName(), project, pkg);
 
         // visit/index java source
         final String javaSource = ioService.readAllString( path );

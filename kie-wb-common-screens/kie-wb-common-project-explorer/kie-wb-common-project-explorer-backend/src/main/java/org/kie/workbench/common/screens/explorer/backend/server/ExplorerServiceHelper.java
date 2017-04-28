@@ -267,18 +267,6 @@ public class ExplorerServiceHelper {
         return false;
     }
 
-    public List<FolderItem> getAssetsRecursively( final Package pkg,
-                                                  final ActiveOptions options ) {
-        return getItems( pkg, options ).stream().flatMap( ( FolderItem item ) -> {
-            if ( item.getType().equals( FolderItemType.FOLDER ) ) {
-                final Set<Package> childPackages = projectService.resolvePackages( pkg );
-                return childPackages.stream().flatMap( childPkg -> getAssetsRecursively( childPkg, options ).stream() );
-            } else {
-                return Stream.of( item );
-            }
-        } ).collect( Collectors.toList() );
-    }
-
     public List<FolderItem> getItems( final Package pkg,
                                       final ActiveOptions options ) {
         final List<FolderItem> folderItems = new ArrayList<FolderItem>();
@@ -486,7 +474,7 @@ public class ExplorerServiceHelper {
         return null;
     }
 
-    List<FolderItemOperation> getRestrictedOperations( final Path path ) {
+    public List<FolderItemOperation> getRestrictedOperations( final Path path ) {
         final List<FolderItemOperation> restrictedOperations = new ArrayList<FolderItemOperation>();
 
         if ( copyService.hasRestriction( path ) ) {

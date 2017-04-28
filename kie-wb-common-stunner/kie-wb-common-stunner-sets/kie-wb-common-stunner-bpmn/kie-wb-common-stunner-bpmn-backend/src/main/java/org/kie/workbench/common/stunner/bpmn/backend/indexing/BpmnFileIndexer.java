@@ -222,7 +222,8 @@ public class BpmnFileIndexer extends AbstractFileIndexer {
         }
 
         // responsible for basic index info: project name, branch, etc
-        return new DefaultIndexBuilder(project,
+        return new DefaultIndexBuilder(Paths.convert(path).getFileName(),
+                                       project,
                                        pkg);
     }
 }

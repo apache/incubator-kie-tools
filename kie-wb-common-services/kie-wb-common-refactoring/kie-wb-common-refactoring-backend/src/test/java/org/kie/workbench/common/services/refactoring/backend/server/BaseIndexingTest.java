@@ -46,7 +46,7 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> extends IndexingTest<T> {
 
-    protected int seed = new Random( 10L ).nextInt();
+    protected int seed = new Random(10L).nextInt();
 
     protected boolean created = false;
     protected Path basePath;
@@ -55,36 +55,43 @@ public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> extends
 
     @Before
     public void setup() throws IOException {
-        if ( !created ) {
+        if (!created) {
             final String repositoryName = getRepositoryName();
             final String path = createTempDirectory().getAbsolutePath();
-            System.setProperty("org.uberfire.nio.git.dir", path);
-            System.setProperty("org.uberfire.nio.git.daemon.enabled", "false");
-            System.setProperty("org.uberfire.nio.git.ssh.enabled", "false");
-            System.setProperty("org.uberfire.sys.repo.monitor.disabled", "true");
+            System.setProperty("org.uberfire.nio.git.dir",
+                               path);
+            System.setProperty("org.uberfire.nio.git.daemon.enabled",
+                               "false");
+            System.setProperty("org.uberfire.nio.git.ssh.enabled",
+                               "false");
+            System.setProperty("org.uberfire.sys.repo.monitor.disabled",
+                               "true");
             System.out.println(".niogit: " + path);
 
-            final URI newRepo = URI.create( "git://" + repositoryName );
+            final URI newRepo = URI.create("git://" + repositoryName);
 
             try {
                 IOService ioService = ioService();
-                ioService.newFileSystem(newRepo, new HashMap<String, Object>());
+                ioService.newFileSystem(newRepo,
+                                        new HashMap<String, Object>());
 
                 // Don't ask, but we need to write a single file first in order for indexing to work
-                basePath = getDirectoryPath().resolveSibling( "someNewOtherPath" );
-                ioService().write( basePath.resolve( "dummy" ), "<none>" );
-
-            } catch( final Exception e ) {
+                basePath = getDirectoryPath().resolveSibling("someNewOtherPath");
+                ioService().write(basePath.resolve("dummy"),
+                                  "<none>");
+            } catch (final Exception e) {
                 e.printStackTrace();
-                logger.warn( "Failed to initialize IOService instance: " + e.getClass().getSimpleName() + ": " + e.getMessage(), e );
+                logger.warn("Failed to initialize IOService instance: " + e.getClass().getSimpleName() + ": " + e.getMessage(),
+                            e);
             } finally {
                 created = true;
             }
 
-            final Instance<NamedQuery> namedQueriesProducer = mock( Instance.class );
-            when( namedQueriesProducer.iterator() ).thenReturn( getQueries().iterator() );
+            final Instance<NamedQuery> namedQueriesProducer = mock(Instance.class);
+            when(namedQueriesProducer.iterator()).thenReturn(getQueries().iterator());
 
-            service = new RefactoringQueryServiceImpl( getConfig(), new NamedQueries( namedQueriesProducer ) );
+            service = new RefactoringQueryServiceImpl(getConfig(),
+                                                      new NamedQueries(namedQueriesProducer));
             service.init();
         }
     }
@@ -112,31 +119,39 @@ public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> extends
     @Override
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
-            put( ProjectRootPathIndexTerm.TERM,
-                 new FilenameAnalyzer( ) );
+            put(ProjectRootPathIndexTerm.TERM,
+                new FilenameAnalyzer());
         }};
     }
 
-    protected void assertResponseContains( final List<RefactoringPageRow> rows, final Path path ) {
-        for ( RefactoringPageRow row : rows ) {
-            final String rowFileName = ( (org.uberfire.backend.vfs.Path) row.getValue() ).getFileName();
+    protected void assertResponseContains(final List<RefactoringPageRow> rows,
+                                          final Path path) {
+        for (RefactoringPageRow row : rows) {
+            final String rowFileName = ((org.uberfire.backend.vfs.Path) row.getValue()).getFileName();
             final String fileName = path.getFileName().toString();
-            if ( rowFileName.endsWith( fileName ) ) {
+            if (rowFileName.endsWith(fileName)) {
                 return;
             }
         }
-        fail( "Response does not contain expected Path '" + path.toUri().toString() + "'." );
+        fail("Response does not contain expected Path '" + path.toUri().toString() + "'.");
     }
 
-    protected void assertResponseContains( final List<RefactoringPageRow> rows,
-            final String ruleName ) {
-        for ( RefactoringPageRow row : rows ) {
-            final String rowRuleName = ( (String) row.getValue() );
-            if ( rowRuleName.equals( ruleName ) ) {
+    protected void assertResponseContains(final List<RefactoringPageRow> rows,
+                                          final String ruleName) {
+        for (RefactoringPageRow row : rows) {
+            final String rowRuleName = ((String) row.getValue());
+            if (rowRuleName.equals(ruleName)) {
                 return;
             }
         }
-        fail( "Response does not contain expected Rule Name '" + ruleName + "'." );
+        fail("Response does not contain expected Rule Name '" + ruleName + "'.");
     }
 
+    protected void addTestFile(final String projectName,
+                               final String pathToFile) throws IOException {
+        final Path path = basePath.resolve(projectName + "/" + pathToFile);
+        final String text = loadText(pathToFile);
+        ioService().write(path,
+                          text);
+    }
 }

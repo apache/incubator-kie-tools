@@ -46,7 +46,7 @@ public interface LibraryService {
 
     Boolean thereIsAProjectInTheWorkbench();
 
-    List<AssetInfo> getProjectAssets(final Project project);
+    List<AssetInfo> getProjectAssets(final ProjectAssetsQuery query);
 
     Boolean hasProjects(final Repository repository,
                         final String branch);
