@@ -31,25 +31,26 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 public class RowNumberColumnConverter extends BaseColumnConverterImpl {
 
     @Override
-    public boolean handles( final BaseColumn column ) {
+    public boolean handles(final BaseColumn column) {
         return column instanceof RowNumberCol52;
     }
 
     @Override
     @SuppressWarnings("unused")
-    public GridColumn<?> convertColumn( final BaseColumn column,
-                                        final GuidedDecisionTablePresenter.Access access,
-                                        final GuidedDecisionTableView gridWidget ) {
-        final GridColumn<?> uiColumn = new RowNumberColumn( makeHeaderMetaData( column ) );
+    public GridColumn<?> convertColumn(final BaseColumn column,
+                                       final GuidedDecisionTablePresenter.Access access,
+                                       final GuidedDecisionTableView gridWidget) {
+        final GridColumn<?> uiColumn = new RowNumberColumn(makeHeaderMetaData(column));
+        uiColumn.setWidth(Math.max(column.getWidth(),
+                                   uiColumn.getWidth()));
         return uiColumn;
     }
 
     @Override
-    public List<GridColumn.HeaderMetaData> makeHeaderMetaData( final BaseColumn column ) {
+    public List<GridColumn.HeaderMetaData> makeHeaderMetaData(final BaseColumn column) {
         return new ArrayList<GridColumn.HeaderMetaData>() {{
-            add( new BaseHeaderMetaData( model.getHitPolicy().getId(),
-                                         RowNumberCol52.class.getName() ) );
+            add(new BaseHeaderMetaData(model.getHitPolicy().getId(),
+                                       RowNumberCol52.class.getName()));
         }};
     }
-
 }

@@ -19,10 +19,13 @@ import java.util.Set;
 import javax.enterprise.event.Event;
 
 import com.ait.lienzo.client.core.event.INodeXYEvent;
+import com.ait.lienzo.client.core.shape.BoundingBoxPathClipper;
 import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IPathClipper;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
@@ -83,7 +86,7 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
     private final EventBus eventBus;
     private final GuidedDecisionTablePresenter.Access access;
 
-    private final Group headerCaption;
+    private Group headerCaption;
 
     public GuidedDecisionTableViewImpl(final GridData uiModel,
                                        final GridRenderer renderer,
@@ -112,9 +115,10 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
 
     private Group makeHeaderCaption() {
         final Group g = new Group();
+        final double captionWidth = getHeaderCaptionWidth();
         final GuidedDecisionTableTheme theme = (GuidedDecisionTableTheme) renderer.getTheme();
         final Rectangle r = theme.getBaseRectangle(GuidedDecisionTableTheme.ModelColumnType.CAPTION)
-                .setWidth(HEADER_CAPTION_WIDTH)
+                .setWidth(captionWidth)
                 .setHeight(HEADER_CAPTION_HEIGHT);
 
         final MultiPath border = theme.getBodyGridLine();
@@ -122,17 +126,26 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
                  HEADER_CAPTION_HEIGHT + 0.5)
                 .L(0.5,
                    0.5)
-                .L(HEADER_CAPTION_WIDTH + 0.5,
+                .L(captionWidth + 0.5,
                    0.5)
-                .L(HEADER_CAPTION_WIDTH + 0.5,
+                .L(captionWidth + 0.5,
                    HEADER_CAPTION_HEIGHT + 0.5)
                 .L(0.5,
                    HEADER_CAPTION_HEIGHT + 0.5);
 
         final Text caption = theme.getHeaderText()
                 .setText(model.getTableName())
-                .setX(HEADER_CAPTION_WIDTH / 2)
+                .setX(captionWidth / 2)
                 .setY(HEADER_CAPTION_HEIGHT / 2);
+
+        //Clip Caption Group
+        final BoundingBox bb = new BoundingBox(0,
+                                               0,
+                                               captionWidth,
+                                               HEADER_CAPTION_HEIGHT);
+        final IPathClipper clipper = new BoundingBoxPathClipper(bb);
+        g.setPathClipper(clipper);
+        clipper.setActive(true);
 
         g.add(r);
         g.add(caption);
@@ -153,6 +166,11 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
         return g;
     }
 
+    private double getHeaderCaptionWidth() {
+        return Math.max(HEADER_CAPTION_WIDTH,
+                        model.getRowNumberCol().getWidth() + model.getDescriptionCol().getWidth());
+    }
+
     @Override
     public boolean onDragHandle(final INodeXYEvent event) {
         return isNodeMouseEventOverCaption(event);
@@ -165,7 +183,7 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
         final double cx = ap.getX();
         final double cy = ap.getY();
 
-        if (cx > headerCaption.getX() && cx < headerCaption.getX() + HEADER_CAPTION_WIDTH) {
+        if (cx > headerCaption.getX() && cx < headerCaption.getX() + getHeaderCaptionWidth()) {
             if (cy > headerCaption.getY() && cy < headerCaption.getY() + HEADER_CAPTION_HEIGHT) {
                 return true;
             }
@@ -186,6 +204,7 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
         super.drawHeader(renderingInformation,
                          isSelectionLayer);
 
+        headerCaption = makeHeaderCaption();
         headerCaption.setY(header == null ? 0.0 : header.getY());
 
         final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = renderingInformation.getFloatingBlockInformation();

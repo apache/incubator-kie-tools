@@ -112,6 +112,12 @@ public class GridWidgetColumnFactoryImplTest extends BaseConverterTest {
                                                              gridWidget);
 
         assertFalse(uiColumn instanceof BaseUiColumn);
+
+        assertEquals((int) uiColumn.getWidth(),
+                     column.getWidth());
+        assertEquals(50.0,
+                     column.getWidth(),
+                     0.0);
     }
 
     @Test
@@ -123,6 +129,11 @@ public class GridWidgetColumnFactoryImplTest extends BaseConverterTest {
                                                              gridWidget);
 
         assertTrue(uiColumn instanceof BaseUiColumn);
+        assertEquals((int) uiColumn.getWidth(),
+                     column.getWidth());
+        assertEquals(150.0,
+                     column.getWidth(),
+                     0.0);
 
         uiColumn.setWidth(200.0);
         assertEquals(200,
@@ -139,6 +150,8 @@ public class GridWidgetColumnFactoryImplTest extends BaseConverterTest {
                                                              gridWidget);
 
         assertTrue(uiColumn instanceof BaseUiColumn);
+        assertEquals((int) uiColumn.getWidth(),
+                     column.getWidth());
 
         uiColumn.setWidth(200.0);
         assertEquals(200,
@@ -155,6 +168,8 @@ public class GridWidgetColumnFactoryImplTest extends BaseConverterTest {
                                                              gridWidget);
 
         assertTrue(uiColumn instanceof BaseUiColumn);
+        assertEquals((int) uiColumn.getWidth(),
+                     column.getWidth());
 
         uiColumn.setWidth(200.0);
         assertEquals(200,
@@ -178,6 +193,8 @@ public class GridWidgetColumnFactoryImplTest extends BaseConverterTest {
                                                              gridWidget);
 
         assertTrue(uiColumn instanceof BaseUiColumn);
+        assertEquals((int) uiColumn.getWidth(),
+                     column.getWidth());
 
         uiColumn.setWidth(200.0);
         assertEquals(200,
@@ -206,6 +223,8 @@ public class GridWidgetColumnFactoryImplTest extends BaseConverterTest {
                                                              gridWidget);
 
         assertTrue(uiColumn instanceof BaseUiColumn);
+        assertEquals((int) uiColumn.getWidth(),
+                     column.getWidth());
 
         uiColumn.setWidth(200.0);
         assertEquals(200,
@@ -227,6 +246,8 @@ public class GridWidgetColumnFactoryImplTest extends BaseConverterTest {
                                                              gridWidget);
 
         assertTrue(uiColumn instanceof BaseUiColumn);
+        assertEquals((int) uiColumn.getWidth(),
+                     column.getWidth());
 
         uiColumn.setWidth(200.0);
         assertEquals(200,

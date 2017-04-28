@@ -31,35 +31,35 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 public class DescriptionColumnConverter extends BaseColumnConverterImpl {
 
     @Override
-    public boolean handles( final BaseColumn column ) {
+    public boolean handles(final BaseColumn column) {
         return column instanceof DescriptionCol52;
     }
 
     @Override
-    public GridColumn<?> convertColumn( final BaseColumn column,
-                                        final GuidedDecisionTablePresenter.Access access,
-                                        final GuidedDecisionTableView gridWidget ) {
-        final GridColumn<?> uiColumn = newStringColumn( makeHeaderMetaData( column ),
-                                                        Math.max( column.getWidth(),
-                                                                  DEFAULT_COLUMN_WIDTH ),
-                                                        true,
-                                                        true,
-                                                        access,
-                                                        gridWidget );
-        uiColumn.setMovable( false );
-        uiColumn.setFloatable( true );
-        uiColumn.setWidth( 150.0 );
-        uiColumn.setMinimumWidth( 150.0 );
+    public GridColumn<?> convertColumn(final BaseColumn column,
+                                       final GuidedDecisionTablePresenter.Access access,
+                                       final GuidedDecisionTableView gridWidget) {
+        final GridColumn<?> uiColumn = newStringColumn(makeHeaderMetaData(column),
+                                                       Math.max(column.getWidth(),
+                                                                DEFAULT_COLUMN_WIDTH),
+                                                       true,
+                                                       true,
+                                                       access,
+                                                       gridWidget);
+        uiColumn.setMovable(false);
+        uiColumn.setFloatable(true);
+        uiColumn.setMinimumWidth(150.0);
+        uiColumn.setWidth(Math.max(column.getWidth(),
+                                   uiColumn.getMinimumWidth()));
 
         return uiColumn;
     }
 
     @Override
-    public List<GridColumn.HeaderMetaData> makeHeaderMetaData( final BaseColumn column ) {
+    public List<GridColumn.HeaderMetaData> makeHeaderMetaData(final BaseColumn column) {
         return new ArrayList<GridColumn.HeaderMetaData>() {{
-            add( new BaseHeaderMetaData( GuidedDecisionTableConstants.INSTANCE.Description(),
-                                         DescriptionCol52.class.getName() ) );
+            add(new BaseHeaderMetaData(GuidedDecisionTableConstants.INSTANCE.Description(),
+                                       DescriptionCol52.class.getName()));
         }};
     }
-
 }

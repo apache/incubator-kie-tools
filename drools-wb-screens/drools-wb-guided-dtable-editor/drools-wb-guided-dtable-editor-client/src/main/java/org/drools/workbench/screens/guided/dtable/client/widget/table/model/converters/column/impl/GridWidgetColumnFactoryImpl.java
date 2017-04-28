@@ -38,48 +38,49 @@ public class GridWidgetColumnFactoryImpl implements GridWidgetColumnFactory {
     private final List<BaseColumnConverter> converters = new ArrayList<BaseColumnConverter>();
 
     @Override
-    public void setConverters( final List<BaseColumnConverter> converters ) {
+    public void setConverters(final List<BaseColumnConverter> converters) {
         this.converters.clear();
-        Collections.sort( converters,
-                          new Comparator<BaseColumnConverter>() {
-                              @Override
-                              public int compare( final BaseColumnConverter o1,
-                                                  final BaseColumnConverter o2 ) {
-                                  return o2.priority() - o1.priority();
-                              }
-                          } );
-        this.converters.addAll( converters );
+        Collections.sort(converters,
+                         new Comparator<BaseColumnConverter>() {
+                             @Override
+                             public int compare(final BaseColumnConverter o1,
+                                                final BaseColumnConverter o2) {
+                                 return o2.priority() - o1.priority();
+                             }
+                         });
+        this.converters.addAll(converters);
     }
 
     @Override
-    public void initialise( final GuidedDecisionTable52 model,
-                            final AsyncPackageDataModelOracle oracle,
-                            final ColumnUtilities columnUtilities,
-                            final GuidedDecisionTableView.Presenter presenter ) {
-        for ( BaseColumnConverter converter : converters ) {
-            converter.initialise( model,
-                                  oracle,
-                                  columnUtilities,
-                                  presenter );
+    public void initialise(final GuidedDecisionTable52 model,
+                           final AsyncPackageDataModelOracle oracle,
+                           final ColumnUtilities columnUtilities,
+                           final GuidedDecisionTableView.Presenter presenter) {
+        for (BaseColumnConverter converter : converters) {
+            converter.initialise(model,
+                                 oracle,
+                                 columnUtilities,
+                                 presenter);
         }
     }
 
     @Override
-    public GridColumn<?> convertColumn( final BaseColumn column,
-                                        final GuidedDecisionTablePresenter.Access access,
-                                        final GuidedDecisionTableView gridWidget ) {
-        for ( BaseColumnConverter converter : converters ) {
-            if ( converter.handles( column ) ) {
-                final GridColumn<?> uiColumn = converter.convertColumn( column,
-                                                                        access,
-                                                                        gridWidget );
-                if ( uiColumn instanceof BaseUiColumn ) {
-                    ( (BaseUiColumn) uiColumn ).setColumnResizeListener( ( double width ) -> column.setWidth( ( (int) width ) ) );
+    public GridColumn<?> convertColumn(final BaseColumn column,
+                                       final GuidedDecisionTablePresenter.Access access,
+                                       final GuidedDecisionTableView gridWidget) {
+        for (BaseColumnConverter converter : converters) {
+            if (converter.handles(column)) {
+                final GridColumn<?> uiColumn = converter.convertColumn(column,
+                                                                       access,
+                                                                       gridWidget);
+                if (uiColumn instanceof BaseUiColumn) {
+                    ((BaseUiColumn) uiColumn).setColumnResizeListener((double width) -> column.setWidth(((int) width)));
                 }
+                //Copy back UI Column width into Model as BaseColumn does not have a width set by default
+                column.setWidth((int) uiColumn.getWidth());
                 return uiColumn;
             }
         }
-        throw new IllegalArgumentException( "Column '" + column.getHeader() + "' was not converted." );
+        throw new IllegalArgumentException("Column '" + column.getHeader() + "' was not converted.");
     }
-
 }

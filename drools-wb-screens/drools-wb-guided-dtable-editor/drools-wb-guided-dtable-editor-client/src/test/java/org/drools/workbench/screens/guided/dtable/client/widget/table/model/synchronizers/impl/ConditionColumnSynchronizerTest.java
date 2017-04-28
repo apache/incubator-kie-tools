@@ -350,6 +350,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         final Pattern52 editedPattern = boundApplicantPattern("$a");
 
         final ConditionCol52 editedCondition = nameEqualsCondition();
+        editedCondition.setWidth(condition.getWidth());
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn(pattern,
                                                                          condition,
@@ -395,6 +396,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         final Pattern52 editedPattern = boundApplicantPattern("$a2");
 
         final ConditionCol52 editedCondition = ageEqualsCondition();
+        editedCondition.setWidth(condition2.getWidth());
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn(pattern,
                                                                          condition1,
@@ -438,6 +440,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         final Pattern52 editedPattern = boundAddressPattern("$d");
 
         final ConditionCol52 editedCondition = new ConditionCol52();
+        editedCondition.setWidth(condition1.getWidth());
         editedCondition.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         editedCondition.setHeader("col1");
         editedCondition.setFactField("country");
@@ -480,6 +483,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         final Pattern52 editedPattern = boundAddressPattern("$d");
 
         final ConditionCol52 editedCondition = new ConditionCol52();
+        editedCondition.setWidth(condition1.getWidth());
         editedCondition.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         editedCondition.setHeader("col1");
         editedCondition.setFactField("country");
@@ -519,6 +523,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         final Pattern52 editedPattern = boundApplicantPattern("$a");
 
         final ConditionCol52 editedCondition = ageEqualsCondition();
+        editedCondition.setWidth(condition1.getWidth());
         editedCondition.setHideColumn(true);
         editedCondition.setHeader("updated");
 
@@ -560,6 +565,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         final Pattern52 editedPattern = boundApplicantPattern("$a");
 
         final ConditionCol52 editedCondition = ageEqualsCondition();
+        editedCondition.setWidth(condition.getWidth());
         editedCondition.setOperator("!=");
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn(pattern,
@@ -636,6 +642,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         final Pattern52 editedPattern = boundApplicantPattern("$a");
 
         final ConditionCol52 editedCondition = nameEqualsCondition();
+        editedCondition.setWidth(condition.getWidth());
         editedCondition.setValueList("A,B,C,D");
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn(pattern,
@@ -692,6 +699,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         final Pattern52 editedPattern = boundApplicantPattern("$a");
 
         final ConditionCol52 editedCondition = nameEqualsCondition();
+        editedCondition.setWidth(condition.getWidth());
         editedCondition.setValueList("A");
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn(pattern,
