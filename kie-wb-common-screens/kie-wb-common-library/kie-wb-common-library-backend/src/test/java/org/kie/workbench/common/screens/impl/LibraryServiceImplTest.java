@@ -263,7 +263,7 @@ public class LibraryServiceImplTest {
         final Path projectRootPath = mock(Path.class);
         when(repository.getRoot()).thenReturn(projectRootPath);
 
-        libraryService.createProject("projectName",
+        libraryService.createProject("Project Name",
                                      repository,
                                      "baseURL",
                                      "description");
@@ -274,6 +274,8 @@ public class LibraryServiceImplTest {
                                              any());
 
         final POM pom = pomArgumentCaptor.getValue();
+        assertEquals("ProjectName",
+                     pom.getGav().getArtifactId());
         assertEquals("description",
                      pom.getDescription());
     }

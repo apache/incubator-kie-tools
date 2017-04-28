@@ -319,7 +319,7 @@ public class LibraryServiceImpl implements LibraryService {
     GAV createGAV(final String projectName,
                   final LibraryPreferences preferences) {
         return new GAV(preferences.getProjectPreferences().getGroupId(),
-                       projectName,
+                       projectName.replace(" ", ""),
                        preferences.getProjectPreferences().getVersion());
     }
 
