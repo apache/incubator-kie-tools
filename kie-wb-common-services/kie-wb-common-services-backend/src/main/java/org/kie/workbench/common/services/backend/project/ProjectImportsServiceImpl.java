@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.datamodel.imports.Imports;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.backend.server.ProjectConfigurationContentHandler;
 import org.guvnor.common.services.project.model.ProjectImports;
@@ -48,74 +49,82 @@ public class ProjectImportsServiceImpl
     }
 
     @Inject
-    public ProjectImportsServiceImpl( final @Named("ioStrategy") IOService ioService,
-                                      final ProjectConfigurationContentHandler projectConfigurationContentHandler ) {
+    public ProjectImportsServiceImpl(final @Named("ioStrategy") IOService ioService,
+                                     final ProjectConfigurationContentHandler projectConfigurationContentHandler) {
 
         this.ioService = ioService;
         this.projectConfigurationContentHandler = projectConfigurationContentHandler;
     }
 
-    public void saveProjectImports( final Path path ) {
-        if ( ioService.exists( Paths.convert( path ) ) ) {
-            throw new FileAlreadyExistsException( path.toString() );
+    public void saveProjectImports(final Path path) {
+        if (ioService.exists(Paths.convert(path))) {
+            throw new FileAlreadyExistsException(path.toString());
         } else {
-            ioService.write( Paths.convert( path ),
-                             projectConfigurationContentHandler.toString( createProjectImports() ) );
+            ioService.write(Paths.convert(path),
+                            projectConfigurationContentHandler.toString(createProjectImports()));
         }
     }
 
     private ProjectImports createProjectImports() {
-        ProjectImports imports = new ProjectImports();
-        imports.getImports().addImport( new Import( "java.lang.Number" ) );
-        return imports;
+        ProjectImports projectImports = new ProjectImports();
+        final Imports imports = projectImports.getImports();
+
+        imports.addImport(new Import(java.lang.Number.class.getName()));
+        imports.addImport(new Import(java.lang.Boolean.class.getName()));
+        imports.addImport(new Import(java.lang.String.class.getName()));
+        imports.addImport(new Import(java.lang.Integer.class.getName()));
+        imports.addImport(new Import(java.lang.Double.class.getName()));
+        imports.addImport(new Import(java.util.List.class.getName()));
+        imports.addImport(new Import(java.util.Collection.class.getName()));
+        imports.addImport(new Import(java.util.ArrayList.class.getName()));
+
+        return projectImports;
     }
 
     @Override
-    public ProjectImportsContent loadContent( Path path ) {
-        return super.loadContent( path );
+    public ProjectImportsContent loadContent(Path path) {
+        return super.loadContent(path);
     }
 
     @Override
-    protected ProjectImportsContent constructContent( Path path,
-                                                      Overview overview ) {
-        return new ProjectImportsContent( load( path ),
-                                          overview );
+    protected ProjectImportsContent constructContent(Path path,
+                                                     Overview overview) {
+        return new ProjectImportsContent(load(path),
+                                         overview);
     }
 
     @Override
-    public ProjectImports load( final Path path ) {
+    public ProjectImports load(final Path path) {
         try {
-            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
-            if ( !ioService.exists( nioPath ) ) {
-                saveProjectImports( path );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert(path);
+            if (!ioService.exists(nioPath)) {
+                saveProjectImports(path);
             }
-            final String content = ioService.readAllString( Paths.convert( path ) );
-            return projectConfigurationContentHandler.toModel( content );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            final String content = ioService.readAllString(Paths.convert(path));
+            return projectConfigurationContentHandler.toModel(content);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path save( final Path resource,
-                      final ProjectImports projectImports,
-                      final Metadata metadata,
-                      final String comment ) {
+    public Path save(final Path resource,
+                     final ProjectImports projectImports,
+                     final Metadata metadata,
+                     final String comment) {
         try {
-            ioService.write( Paths.convert( resource ),
-                             projectConfigurationContentHandler.toString( projectImports ),
-                             metadataService.setUpAttributes( resource,
-                                                              metadata ) );
+            ioService.write(Paths.convert(resource),
+                            projectConfigurationContentHandler.toString(projectImports),
+                            metadataService.setUpAttributes(resource,
+                                                            metadata));
 
             //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
             //We only raise InvalidateDMOProjectCacheEvent and ResourceUpdatedEvent(pom.xml) events once
             //in POMService.save to avoid duplicating events (and re-construction of DMO).
 
             return resource;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 }
