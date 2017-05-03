@@ -32,6 +32,7 @@ import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
+import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.util.ExamplesUtils;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
@@ -207,5 +208,13 @@ public class LibraryScreenTest {
                      libraryScreen.projects.size());
         assertEquals(1,
                      libraryScreen.filterProjects("project1").size());
+    }
+
+    @Test
+    public void filterUpdateTest() {
+        libraryScreen.filterUpdate(new FilterUpdateEvent("name"));
+
+        verify(view).setFilterName("name");
+        verify(libraryScreen).filterProjects("name");
     }
 }

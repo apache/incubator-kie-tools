@@ -243,6 +243,11 @@ public class ProjectView
         return filterText.getValue();
     }
 
+    @Override
+    public void setFilterName(String name) {
+        this.filterText.setValue(name);
+    }
+
     @SinkNative(Event.ONBLUR | Event.ONKEYDOWN)
     @EventHandler("pageNumber")
     public void onPageChange(Event e) {

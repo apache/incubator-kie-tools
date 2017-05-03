@@ -34,6 +34,7 @@ import org.kie.workbench.common.screens.library.api.AssetInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
+import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
@@ -71,6 +72,8 @@ public class ProjectScreen {
                       final Command select);
 
         String getFilterValue();
+
+        void setFilterName(String name);
 
         Integer getPageNumber();
 
@@ -261,6 +264,11 @@ public class ProjectScreen {
         }
     }
 
+    public void filterUpdate(@Observes final FilterUpdateEvent event) {
+        view.setFilterName(event.getName());
+        onUpdateAssets();
+    }
+
     private boolean isFilterEmpty() {
         return view.getFilterValue().isEmpty();
     }
@@ -312,7 +320,7 @@ public class ProjectScreen {
 
     /**
      * This class is needed in situations where you open the project screen, but the indexing has not yet finished.
-     * <p>
+     * <p/>
      * It keeps reloading the file list from the backend server until either the page is full or
      * when the indexing runs out of files and stops.
      */

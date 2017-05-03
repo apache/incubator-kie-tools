@@ -30,6 +30,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.popup.OrganizationalUnitPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
@@ -48,6 +49,8 @@ public class OrganizationalUnitsScreen {
         void clearOrganizationalUnits();
 
         String getFilterName();
+
+        void setFilterName(String name);
 
         void hideCreateOrganizationalUnitAction();
 
@@ -136,6 +139,11 @@ public class OrganizationalUnitsScreen {
                 .collect(Collectors.toList());
         filteredOrganizationalUnits.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
         refreshOrganizationalUnits(filteredOrganizationalUnits);
+    }
+
+    public void filterUpdate(@Observes final FilterUpdateEvent event) {
+        view.setFilterName(event.getName());
+        refresh();
     }
 
     public boolean canCreateOrganizationalUnit() {

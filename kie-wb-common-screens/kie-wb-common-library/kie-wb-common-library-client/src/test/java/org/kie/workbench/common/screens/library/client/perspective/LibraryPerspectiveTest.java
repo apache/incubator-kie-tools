@@ -15,12 +15,17 @@
  */
 package org.kie.workbench.common.screens.library.client.perspective;
 
+import javax.enterprise.event.Event;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.kie.workbench.common.widgets.client.search.ContextualSearch;
 import org.mockito.Mock;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Mockito.*;
 
@@ -30,17 +35,33 @@ public class LibraryPerspectiveTest {
     @Mock
     private LibraryPlaces libraryPlaces;
 
+    @Mock
+    private ContextualSearch contextualSearch;
+
+    @Mock
+    private EventSourceMock<FilterUpdateEvent> filterUpdateEvent;
+
     private LibraryPerspective perspective;
 
     @Before
     public void setup() {
-        perspective = new LibraryPerspective( libraryPlaces );
+        perspective = new LibraryPerspective(libraryPlaces,
+                                             contextualSearch,
+                                             filterUpdateEvent);
     }
 
     @Test
     public void libraryRefreshesPlacesOnStartupTest() {
         perspective.onOpen();
 
-        verify( libraryPlaces ).refresh(any());
+        verify(libraryPlaces).refresh(any());
+    }
+
+    @Test
+    public void libraryRegisterSearchHandlerTest() {
+        perspective.registerSearchHandler();
+
+        verify(contextualSearch).setPerspectiveSearchBehavior(eq(LibraryPlaces.LIBRARY_PERSPECTIVE),
+                                                              any());
     }
 }

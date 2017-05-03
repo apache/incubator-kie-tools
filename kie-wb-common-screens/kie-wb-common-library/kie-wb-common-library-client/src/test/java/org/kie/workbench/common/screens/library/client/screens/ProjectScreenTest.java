@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.AssetInfo;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
+import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
@@ -231,5 +232,13 @@ public class ProjectScreenTest
 
         verify(libraryPlaces).goToAsset(projectInfo,
                                         assetPath);
+    }
+
+    @Test
+    public void filterUpdateTest() {
+        projectScreen.filterUpdate(new FilterUpdateEvent("name"));
+
+        verify(view).setFilterName("name");
+        verify(projectScreen).onUpdateAssets();
     }
 }

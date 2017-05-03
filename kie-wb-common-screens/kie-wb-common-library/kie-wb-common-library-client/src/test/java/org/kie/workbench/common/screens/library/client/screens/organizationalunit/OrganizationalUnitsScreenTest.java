@@ -31,6 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.popup.OrganizationalUnitPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.widgets.organizationalunit.OrganizationalUnitTileWidget;
 import org.mockito.Mock;
@@ -201,9 +202,22 @@ public class OrganizationalUnitsScreenTest {
 
         presenter.refresh();
 
-        verify(view, times(1)).clearOrganizationalUnits();
-        verify(organizationalUnitTileWidget, times(1)).init(any());
+        verify(view,
+               times(1)).clearOrganizationalUnits();
+        verify(organizationalUnitTileWidget,
+               times(1)).init(any());
         verify(organizationalUnitTileWidget).init(organizationalUnit3);
-        verify(view, times(1)).addOrganizationalUnit(any());
+        verify(view,
+               times(1)).addOrganizationalUnit(any());
+    }
+
+    @Test
+    public void filterUpdateTest() {
+        presenter.organizationalUnits = new ArrayList<>();
+
+        presenter.filterUpdate(new FilterUpdateEvent("name"));
+
+        verify(view).setFilterName("name");
+        verify(presenter).refresh();
     }
 }

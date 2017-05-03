@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
+import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.util.ExamplesUtils;
@@ -55,6 +57,8 @@ public class LibraryScreen {
                         Command select);
 
         void clearFilterText();
+
+        void setFilterName(String name);
 
         void addProjectToImport(ExampleProject exampleProject);
 
@@ -153,6 +157,11 @@ public class LibraryScreen {
                 view.addProjectToImport(exampleProject);
             }
         });
+    }
+
+    public void filterUpdate(@Observes final FilterUpdateEvent event) {
+        view.setFilterName(event.getName());
+        filterProjects(event.getName());
     }
 
     public boolean userCanCreateProjects() {

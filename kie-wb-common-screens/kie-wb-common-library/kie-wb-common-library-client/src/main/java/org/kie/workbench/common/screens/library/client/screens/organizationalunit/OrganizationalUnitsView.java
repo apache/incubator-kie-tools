@@ -81,6 +81,11 @@ public class OrganizationalUnitsView implements OrganizationalUnitsScreen.View,
     }
 
     @Override
+    public void setFilterName(final String name) {
+        filterName.setValue(name);
+    }
+
+    @Override
     public void hideCreateOrganizationalUnitAction() {
         createOrganizationalUnit.setHidden(true);
     }

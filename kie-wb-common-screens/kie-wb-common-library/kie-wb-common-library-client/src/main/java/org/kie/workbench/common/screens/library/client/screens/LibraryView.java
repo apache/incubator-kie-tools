@@ -179,6 +179,11 @@ public class LibraryView implements LibraryScreen.View,
         this.filterText.setValue("");
     }
 
+    @Override
+    public void setFilterName(String name) {
+        this.filterText.setValue(name);
+    }
+
     @SinkNative(Event.ONCLICK)
     @EventHandler("import-example")
     public void importExample(Event e) {
