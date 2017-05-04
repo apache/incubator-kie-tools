@@ -19,10 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -61,29 +57,31 @@ import static org.uberfire.plugin.PluginUtil.ensureIterable;
  * specific to GWT. An alternative implementation should be considered for use
  * within Eclipse.
  */
-@ApplicationScoped
 public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
 
-    @Inject
     protected AuthorizationManager authzManager;
-    @Inject
     protected User identity;
     private boolean useExpandedMode = true;
     private boolean expanded = true;
     private List<Menus> addedMenus;
-    @Inject
     private PerspectiveManager perspectiveManager;
-
-    @Inject
     private ActivityManager activityManager;
-    @Inject
     private View view;
 
-    public IsWidget getView() {
-        return this.view;
+    WorkbenchMenuBarPresenter(final AuthorizationManager authzManager,
+                              final PerspectiveManager perspectiveManager,
+                              final ActivityManager activityManager,
+                              final User identity,
+                              final View view) {
+        this.authzManager = authzManager;
+        this.perspectiveManager = perspectiveManager;
+        this.activityManager = activityManager;
+        this.identity = identity;
+        this.view = view;
+
+        setup();
     }
 
-    @PostConstruct
     protected void setup() {
         view.addExpandHandler(new Command() {
             @Override
@@ -97,6 +95,10 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
                 expanded = false;
             }
         });
+    }
+
+    public IsWidget getView() {
+        return this.view;
     }
 
     @Override
@@ -237,7 +239,7 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
         return menuItem.getIdentifier() == null ? menuItem.getCaption() : menuItem.getIdentifier();
     }
 
-    private void addPerspectiveMenus(final PerspectiveActivity perspective) {
+    protected void addPerspectiveMenus(final PerspectiveActivity perspective) {
         final String perspectiveId = perspective.getIdentifier();
         final Menus menus = perspective.getMenus();
         view.clearContextMenu();
@@ -327,7 +329,7 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
         }
     }
 
-    protected void onPerspectiveChange(@Observes final PerspectiveChange perspectiveChange) {
+    protected void onPerspectiveChange(final PerspectiveChange perspectiveChange) {
         final Activity activity = activityManager.getActivity(perspectiveChange.getPlaceRequest());
         if (activity != null && activity.isType(ActivityResourceType.PERSPECTIVE.name())) {
             addPerspectiveMenus((PerspectiveActivity) activity);
@@ -335,13 +337,13 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
         view.selectMenuItem(perspectiveChange.getPlaceRequest().getIdentifier());
     }
 
-    protected void onPlaceMinimized(@Observes final PlaceMinimizedEvent event) {
+    protected void onPlaceMinimized(final PlaceMinimizedEvent event) {
         if (isUseExpandedMode()) {
             view.expand();
         }
     }
 
-    protected void onPlaceMaximized(@Observes final PlaceMaximizedEvent event) {
+    protected void onPlaceMaximized(final PlaceMaximizedEvent event) {
         view.collapse();
     }
 
