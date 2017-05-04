@@ -299,15 +299,15 @@ public class ActionSetFactPluginTest {
 
     @Test
     public void testGetFactType() {
-        final ActionWrapper actionWrapper = mock(ActionWrapper.class);
+        final PatternWrapper patternWrapper = mock(PatternWrapper.class);
         final String expectedFactType = "factType";
 
-        when(actionWrapper.getFactType()).thenReturn(expectedFactType);
-        when(plugin.editingWrapper()).thenReturn(actionWrapper);
+        when(patternWrapper.getFactType()).thenReturn(expectedFactType);
+        when(plugin.patternWrapper()).thenReturn(patternWrapper);
 
         final String actualFactType = plugin.getFactType();
 
-        verify(actionWrapper).getFactType();
+        verify(patternWrapper).getFactType();
         assertEquals(expectedFactType,
                      actualFactType);
     }

@@ -24,8 +24,6 @@ import java.util.Set;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -392,9 +390,9 @@ public class DTCellValueWidgetFactory {
         // Wire up update handler
         lb.setEnabled(!isReadOnly);
         if (!isReadOnly) {
-            lb.addClickHandler(new ClickHandler() {
+            lb.addChangeHandler(new ChangeHandler() {
 
-                public void onClick(ClickEvent event) {
+                public void onChange(ChangeEvent event) {
                     final String txtValue = lb.getValue(lb.getSelectedIndex());
                     Boolean boolValue = (txtValue.equals("") ? null : txtValue.equals("true"));
                     value.setBooleanValue(boolValue);
@@ -473,9 +471,9 @@ public class DTCellValueWidgetFactory {
         // Wire up update handler
         lb.setEnabled(!isReadOnly);
         if (!isReadOnly) {
-            lb.addClickHandler(new ClickHandler() {
+            lb.addChangeHandler(new ChangeHandler() {
 
-                public void onClick(ClickEvent event) {
+                public void onChange(ChangeEvent event) {
                     int index = lb.getSelectedIndex();
                     if (index > -1) {
                         //Set base column value

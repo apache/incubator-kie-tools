@@ -211,7 +211,7 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
 
     @Override
     public String getFactType() {
-        return editingWrapper().getFactType();
+        return patternWrapper().getFactType();
     }
 
     @Override
@@ -242,7 +242,6 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
         editingWrapper.setBoundName(patternWrapper().getBoundName());
         editingWrapper.setType(oracle().getFieldType(editingWrapper.getFactType(),
                                                      editingWrapper.getFactField()));
-
         fireChangeEvent(fieldPage);
     }
 
