@@ -28,6 +28,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
@@ -44,6 +45,9 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
 
     @Inject
     private Event<PerspectiveChange> perspectiveChangeEvent;
+
+    @Inject
+    private ActivityBeansCache activityBeansCache;
 
     private PerspectiveActivity currentPerspective;
 
@@ -136,14 +140,42 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
                                            new ParameterizedCommand<PerspectiveDefinition>() {
                                                @Override
                                                public void execute(final PerspectiveDefinition response) {
-                                                   if (response == null) {
-                                                       doAfterFetch.execute(perspective.getDefaultPerspectiveLayout());
-                                                   } else {
+
+                                                   if (isAValidDefinition(response)) {
                                                        doAfterFetch.execute(response);
+                                                   } else {
+                                                       doAfterFetch.execute(perspective.getDefaultPerspectiveLayout());
                                                    }
                                                }
                                            });
             }
+        }
+
+        boolean isAValidDefinition(PerspectiveDefinition response) {
+            return response != null && allThePartsAreValid(response.getRoot());
+        }
+
+        private boolean allThePartsAreValid(PanelDefinition panel) {
+            if (!checkIfAllPlacesAreValidActivities(panel)) {
+                return false;
+            } else {
+                for (PanelDefinition child : ensureIterable(panel.getChildren())) {
+                    if (!allThePartsAreValid(child)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        private boolean checkIfAllPlacesAreValidActivities(PanelDefinition child) {
+            for (PartDefinition partDefinition : ensureIterable(child.getParts())) {
+                PlaceRequest place = partDefinition.getPlace();
+                if (!activityBeansCache.hasActivity(place.getIdentifier())) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 

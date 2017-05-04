@@ -187,6 +187,9 @@ public class ActivityBeansCache {
 
         validateUniqueness(id);
 
+        activitiesById.put(id,
+                           activityBean);
+
         resourceActivities.add(new ActivityAndMetaInfo(activityBean,
                                                        Integer.valueOf(priority),
                                                        Arrays.asList(resourceTypeName)));
@@ -201,6 +204,10 @@ public class ActivityBeansCache {
         activitiesById.put(id,
                            activityBean);
         splashActivities.add((SplashScreenActivity) activityBean.getInstance());
+    }
+
+    public boolean hasActivity(String id){
+        return activitiesById.containsKey(id);
     }
 
     /**

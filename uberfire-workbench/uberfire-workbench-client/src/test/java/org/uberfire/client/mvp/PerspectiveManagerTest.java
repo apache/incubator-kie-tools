@@ -16,13 +16,13 @@
 
 package org.uberfire.client.mvp;
 
+import java.util.Arrays;
+import java.util.List;
 import javax.enterprise.event.Event;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
@@ -66,6 +66,9 @@ public class PerspectiveManagerTest {
     @Mock
     Event<PerspectiveChange> perspectiveChangeEvent;
 
+    @Mock
+    ActivityBeansCache activityBeansCache;
+
     @InjectMocks
     PerspectiveManagerImpl perspectiveManager;
 
@@ -74,7 +77,13 @@ public class PerspectiveManagerTest {
     private PerspectiveActivity oz;
     private PlaceRequest pr;
     private ParameterizedCommand<PerspectiveDefinition> doWhenFinished;
+    private ParameterizedCommand<PerspectiveDefinition> doAfterFetch;
     private Command doWhenFinishedSave;
+    private PerspectiveManagerImpl.FetchPerspectiveCommand fetchCommand;
+    private List<PartDefinitionImpl> partDefinitionsRoot;
+    private List<PartDefinitionImpl> partDefinitionRootChild1;
+    private List<PartDefinitionImpl> partDefinitionRootChild2;
+    private List<PartDefinitionImpl> partDefinitionRootChild2Child;
 
     @SuppressWarnings("unchecked")
     @Before
@@ -88,7 +97,15 @@ public class PerspectiveManagerTest {
         when(oz.isTransient()).thenReturn(true);
 
         doWhenFinished = mock(ParameterizedCommand.class);
+        doAfterFetch = spy(new ParameterizedCommand<PerspectiveDefinition>() {
+            @Override
+            public void execute(final PerspectiveDefinition parameter) {
+            }
+        });
         doWhenFinishedSave = mock(Command.class);
+
+        fetchCommand = spy(perspectiveManager.new FetchPerspectiveCommand(oz,
+                                                                          doAfterFetch));
 
         // simulate "finished saving" callback on wbServices.save()
         doAnswer(new Answer<Void>() {
@@ -305,45 +322,104 @@ public class PerspectiveManagerTest {
     }
 
     @Test
-    @Ignore // TODO this is PlaceManager's job now
-    public void shouldLaunchPartsFoundInPanels() throws Exception {
-        PartDefinitionImpl rootPart1 = new PartDefinitionImpl(new DefaultPlaceRequest("rootPart1"));
-        PartDefinitionImpl southPart1 = new PartDefinitionImpl(new DefaultPlaceRequest("southPart1"));
-        PartDefinitionImpl southPart2 = new PartDefinitionImpl(new DefaultPlaceRequest("southPart2"));
-        PartDefinitionImpl southWestPart1 = new PartDefinitionImpl(new DefaultPlaceRequest("southWestPart1"));
-        PartDefinitionImpl southWestPart2 = new PartDefinitionImpl(new DefaultPlaceRequest("southWestPart2"));
+    public void fetchPerspectiveCommandForAnInvalidDefinitionShouldLoadedPerspectiveDefinitionTest() throws Exception {
 
-        ozDefinition.getRoot().addPart(rootPart1);
+        when(oz.isTransient()).thenReturn(false);
 
-        PanelDefinition southPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        southPanel.addPart(southPart1);
-        southPanel.addPart(southPart2);
-        ozDefinition.getRoot().appendChild(CompassPosition.SOUTH,
-                                           southPanel);
+        when(fetchCommand.isAValidDefinition(any())).thenReturn(false);
+        fetchCommand.execute();
 
-        PanelDefinition southWestPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        southWestPanel.addPart(southWestPart1);
-        southWestPanel.addPart(southWestPart2);
-        southPanel.appendChild(CompassPosition.WEST,
-                               southWestPanel);
+        assertEquals(oz,
+                     perspectiveManager.getCurrentPerspective());
+        verify(doAfterFetch).execute(eq(ozDefinition));
+    }
 
-        // we assume this will be set correctly (verified elsewhere)
-        when(panelManager.getRoot()).thenReturn(ozDefinition.getRoot());
+    @Test
+    public void fetchPerspectivesForTransientPerspectivesShouldAlwaysLoadDefaultLayoutTest() throws Exception {
 
-        perspectiveManager.switchToPerspective(pr,
-                                               oz,
-                                               doWhenFinished);
+        when(fetchCommand.isAValidDefinition(any())).thenReturn(true);
+        fetchCommand.execute();
 
-        InOrder inOrder = inOrder(placeManager);
-        inOrder.verify(placeManager).goTo(rootPart1,
-                                          ozDefinition.getRoot());
-        inOrder.verify(placeManager).goTo(southPart1,
-                                          southPanel);
-        inOrder.verify(placeManager).goTo(southPart2,
-                                          southPanel);
-        inOrder.verify(placeManager).goTo(southWestPart1,
-                                          southWestPanel);
-        inOrder.verify(placeManager).goTo(southWestPart2,
-                                          southWestPanel);
+        assertEquals(oz,
+                     perspectiveManager.getCurrentPerspective());
+        verify(doAfterFetch).execute(eq(ozDefinition));
+    }
+
+    @Test
+    public void isAValidPerspectiveDefinitionTest() throws Exception {
+        createPartDefinitions();
+
+        when(activityBeansCache.hasActivity(any())).thenReturn(true);
+
+        assertTrue(fetchCommand.isAValidDefinition(createPerspectiveDefinition()));
+        verify(activityBeansCache,
+               times(getTotalOfPartDefinitions())).hasActivity(any());
+    }
+
+    @Test
+    public void isAnInvalidPerspectiveDefinitionTest() throws Exception {
+        when(activityBeansCache.hasActivity(any())).thenReturn(true);
+
+        assertFalse(fetchCommand.isAValidDefinition(null));
+    }
+
+    @Test
+    public void isAnInvalidPerspectiveDefinition2Test() throws Exception {
+        createPartDefinitions();
+        when(activityBeansCache.hasActivity(any())).thenReturn(true);
+        when(activityBeansCache.hasActivity("part3-rootChild2")).thenReturn(false);
+
+        assertFalse(fetchCommand.isAValidDefinition(createPerspectiveDefinition()));
+    }
+
+    private PerspectiveDefinition createPerspectiveDefinition() {
+        PerspectiveDefinitionImpl perspectiveDefinition = new PerspectiveDefinitionImpl();
+        PanelDefinition root = perspectiveDefinition.getRoot();
+        partDefinitionsRoot.forEach(p -> root.addPart(p));
+
+        PanelDefinitionImpl rootChild1 = new PanelDefinitionImpl("org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter");
+        partDefinitionRootChild1.forEach(p -> rootChild1.addPart(p));
+
+        PanelDefinitionImpl rootChild2 = new PanelDefinitionImpl("org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter");
+        partDefinitionRootChild2.forEach(p -> rootChild2.addPart(p));
+
+        PanelDefinitionImpl rootChild2Child = new PanelDefinitionImpl("org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter");
+
+        partDefinitionRootChild2Child.forEach(p -> rootChild2Child.addPart(p));
+
+        root.insertChild(mock(Position.class),
+                         rootChild1);
+        rootChild2.insertChild(mock(Position.class),
+                               rootChild2Child);
+        root.insertChild(mock(Position.class),
+                         rootChild2);
+
+        return perspectiveDefinition;
+    }
+
+    private void createPartDefinitions() {
+        partDefinitionsRoot = Arrays.asList(new PartDefinitionImpl(new DefaultPlaceRequest("part1")),
+                                            new PartDefinitionImpl(new DefaultPlaceRequest("part2")));
+
+        partDefinitionRootChild1 = Arrays.asList(new PartDefinitionImpl(new DefaultPlaceRequest("part1-rootChild1")),
+                                                 new PartDefinitionImpl(new DefaultPlaceRequest("part2-rootChild1")),
+                                                 new PartDefinitionImpl(new DefaultPlaceRequest("part3-rootChild1")));
+
+        partDefinitionRootChild2 = Arrays.asList(new PartDefinitionImpl(new DefaultPlaceRequest("part1-rootChild2")),
+                                                 new PartDefinitionImpl(new DefaultPlaceRequest("part2-rootChild2")),
+                                                 new PartDefinitionImpl(new DefaultPlaceRequest("part3-rootChild2")));
+
+        partDefinitionRootChild2Child = Arrays.asList(new PartDefinitionImpl(new DefaultPlaceRequest("part1-rootChild2Child")),
+                                                      new PartDefinitionImpl(new DefaultPlaceRequest("part2-rootChild2Child")),
+                                                      new PartDefinitionImpl(new DefaultPlaceRequest("part3-rootChild2Child")),
+                                                      new PartDefinitionImpl(new DefaultPlaceRequest("part4-rootChild2Child")));
+    }
+
+    private int getTotalOfPartDefinitions() {
+        int total = partDefinitionsRoot.size() +
+                partDefinitionRootChild1.size() +
+                partDefinitionRootChild2.size() +
+                partDefinitionRootChild2Child.size();
+        return total;
     }
 }

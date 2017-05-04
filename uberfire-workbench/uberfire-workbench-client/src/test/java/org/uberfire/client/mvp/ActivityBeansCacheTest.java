@@ -151,14 +151,32 @@ public class ActivityBeansCacheTest {
         String higherPriority = "20000";
         String lowerPriority = "1";
 
-        cache.addNewEditorActivity(mock(SyncBeanDef.class),
+        SyncBeanDef mock = mock(SyncBeanDef.class);
+        when(mock.getName()).thenReturn("resource1");
+        cache.addNewEditorActivity(mock,
                                    lowerPriority,
                                    "resource");
-        cache.addNewEditorActivity(mock(SyncBeanDef.class),
+        SyncBeanDef mock1 = mock(SyncBeanDef.class);
+        when(mock1.getName()).thenReturn("resource2");
+        cache.addNewEditorActivity(mock1,
                                    higherPriority,
-                                   "resource");
+                                   "resource1");
         List<ActivityBeansCache.ActivityAndMetaInfo> resourceActivities = cache.getResourceActivities();
 
-        assertEquals(resourceActivities.get(0).getPriority(), Integer.valueOf(higherPriority).intValue());
+        assertEquals(resourceActivities.get(0).getPriority(),
+                     Integer.valueOf(higherPriority).intValue());
+    }
+
+    @Test
+    public void addEditorActivityShouldAddToActivitiesByID() {
+        String resource = "resource";
+
+        SyncBeanDef mock = mock(SyncBeanDef.class);
+        when(mock.getName()).thenReturn(resource);
+        cache.addNewEditorActivity(mock,
+                                   "1",
+                                   resource);
+
+        assertTrue(cache.hasActivity(resource));
     }
 }
