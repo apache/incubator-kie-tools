@@ -23,7 +23,7 @@
 
   <ui:with field='res' type='org.uberfire.ext.apps.client.resources.WebAppResource'/>
 
-  <g:FlowPanel ui:field="mainPanel" addStyleNames="{res.CSS.breadCrumbs}">
+  <g:FlowPanel ui:field="mainPanel" addStyleNames="{res.CSS.breadcrumbs}">
     <b:Breadcrumbs ui:field="dirs"/>
     <g:FlowPanel ui:field="dirContent"/>
   </g:FlowPanel>

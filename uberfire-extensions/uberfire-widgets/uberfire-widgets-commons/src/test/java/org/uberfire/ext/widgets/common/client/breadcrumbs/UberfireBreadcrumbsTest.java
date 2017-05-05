@@ -21,8 +21,8 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.Element;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,8 +30,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.client.workbench.docks.UberfireDockContainerReadyEvent;
-import org.uberfire.client.workbench.docks.UberfireDocksContainer;
+import org.uberfire.ext.widgets.common.client.breadcrumbs.header.UberfireBreadcrumbsContainer;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.widget.BreadcrumbsPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -44,7 +43,7 @@ import static org.mockito.Mockito.*;
 public class UberfireBreadcrumbsTest {
 
     @Mock
-    private UberfireDocksContainer uberfireDocksContainer;
+    private UberfireBreadcrumbsContainer uberfireBreadcrumbsContainer;
 
     @Mock
     private ManagedInstance<BreadcrumbsPresenter> breadcrumbsPresenters;
@@ -62,7 +61,7 @@ public class UberfireBreadcrumbsTest {
                 .thenReturn(mock(BreadcrumbsPresenter.class)).thenReturn(mock(BreadcrumbsPresenter.class));
 
         view = mock(UberfireBreadcrumbs.View.class);
-        uberfireBreadcrumbs = spy(new UberfireBreadcrumbs(uberfireDocksContainer,
+        uberfireBreadcrumbs = spy(new UberfireBreadcrumbs(uberfireBreadcrumbsContainer,
                                                           breadcrumbsPresenters,
                                                           placeManager,
                                                           view) {
@@ -70,12 +69,10 @@ public class UberfireBreadcrumbsTest {
     }
 
     @Test
-    public void setupTest() {
-        uberfireBreadcrumbs.setup(new UberfireDockContainerReadyEvent());
+    public void createBreadcrumbsTest() {
+        uberfireBreadcrumbs.createBreadcrumbs();
 
-        assertNotNull(uberfireBreadcrumbs);
-        verify(uberfireDocksContainer).addBreadcrumbs(any(IsElement.class),
-                                                      eq(UberfireBreadcrumbs.SIZE));
+        verify(uberfireBreadcrumbsContainer).init(any(HTMLElement.class));
     }
 
     @Test
@@ -90,7 +87,7 @@ public class UberfireBreadcrumbsTest {
     }
 
     @Test
-    public void addBreadCrumbs() {
+    public void addBreadcrumbs() {
         assertTrue(uberfireBreadcrumbs.breadcrumbsPerPerspective.isEmpty());
 
         uberfireBreadcrumbs.currentPerspective = "myperspective";
@@ -112,7 +109,7 @@ public class UberfireBreadcrumbsTest {
     }
 
     @Test
-    public void clearBreadCrumbsTest() {
+    public void clearBreadcrumbsTest() {
         uberfireBreadcrumbs.currentPerspective = "myperspective";
         uberfireBreadcrumbs.addToolbar("myperspective",
                                        mock(Element.class));
@@ -123,14 +120,14 @@ public class UberfireBreadcrumbsTest {
         assertFalse(uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective").isEmpty());
         assertFalse(uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty());
 
-        uberfireBreadcrumbs.clearBreadCrumbs("myperspective");
+        uberfireBreadcrumbs.clearBreadcrumbs("myperspective");
 
         assertTrue(uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective").isEmpty());
         assertFalse(uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty());
     }
 
     @Test
-    public void clearBreadCrumbsAndToolBarsTest() {
+    public void clearBreadcrumbsAndToolBarsTest() {
         uberfireBreadcrumbs.currentPerspective = "myperspective";
         uberfireBreadcrumbs.addToolbar("myperspective",
                                        mock(Element.class));
@@ -141,7 +138,7 @@ public class UberfireBreadcrumbsTest {
         assertFalse(uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective").isEmpty());
         assertFalse(uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty());
 
-        uberfireBreadcrumbs.clearBreadCrumbsAndToolBars("myperspective");
+        uberfireBreadcrumbs.clearBreadcrumbsAndToolBars("myperspective");
 
         assertTrue(uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective").isEmpty());
         assertTrue(uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty());
@@ -220,7 +217,7 @@ public class UberfireBreadcrumbsTest {
     }
 
     @Test
-    public void getViewShouldAddInnerBreadCrumbsTest() {
+    public void getViewShouldAddInnerBreadcrumbsTest() {
 
         List<BreadcrumbsPresenter> breadcrumbs = Arrays
                 .asList(mock(BreadcrumbsPresenter.class),
@@ -297,5 +294,28 @@ public class UberfireBreadcrumbsTest {
                                                   new DefaultPlaceRequest("screen"),
                                                   null,
                                                   command);
+    }
+
+    @Test
+    public void updateBreadcrumbsContainerTest() {
+        assertTrue(uberfireBreadcrumbs.breadcrumbsPerPerspective.isEmpty());
+
+        uberfireBreadcrumbs.currentPerspective = "myperspective";
+        uberfireBreadcrumbs.addBreadCrumb("myperspective",
+                                          "label",
+                                          new DefaultPlaceRequest("screen"));
+
+        verify(uberfireBreadcrumbsContainer).enable();
+    }
+
+    @Test
+    public void updateBreadcrumbsWithNoBreadcrumbsContainerTest() {
+        assertTrue(uberfireBreadcrumbs.breadcrumbsPerPerspective.isEmpty());
+
+        uberfireBreadcrumbs.currentPerspective = "myperspective";
+
+        uberfireBreadcrumbs.updateBreadcrumbsContainer();
+
+        verify(uberfireBreadcrumbsContainer).disable();
     }
 }

@@ -53,6 +53,6 @@ public interface AppsCss extends CssResource {
     @ClassName("tileName")
     String tileName();
 
-    @ClassName("breadCrumbs")
-    String breadCrumbs();
+    @ClassName("breadcrumbs")
+    String breadcrumbs();
 }

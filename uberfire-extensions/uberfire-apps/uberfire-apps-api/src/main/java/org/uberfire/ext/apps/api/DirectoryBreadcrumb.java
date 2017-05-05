@@ -24,25 +24,25 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class DirectoryBreadCrumb {
+public class DirectoryBreadcrumb {
 
     private String name;
     private String uri;
 
-    private DirectoryBreadCrumb(@MapsTo("name") String name,
+    private DirectoryBreadcrumb(@MapsTo("name") String name,
                                 @MapsTo("uri") String uri) {
 
         this.name = name;
         this.uri = uri;
     }
 
-    public static List<DirectoryBreadCrumb> getBreadCrumbs(Directory directory) {
-        List<DirectoryBreadCrumb> breadcrumbs = new ArrayList<DirectoryBreadCrumb>();
-        breadcrumbs.add(new DirectoryBreadCrumb(directory.getName(),
+    public static List<DirectoryBreadcrumb> getBreadcrumbs(Directory directory) {
+        List<DirectoryBreadcrumb> breadcrumbs = new ArrayList<DirectoryBreadcrumb>();
+        breadcrumbs.add(new DirectoryBreadcrumb(directory.getName(),
                                                 directory.getURI()));
         Directory tempParent = directory.getParent();
         while (tempParent != null) {
-            breadcrumbs.add(new DirectoryBreadCrumb(tempParent.getName(),
+            breadcrumbs.add(new DirectoryBreadcrumb(tempParent.getName(),
                                                     tempParent.getURI()));
             tempParent = tempParent.getParent();
         }

@@ -31,7 +31,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.apps.api.AppsPersistenceAPI;
 import org.uberfire.ext.apps.api.Directory;
-import org.uberfire.ext.apps.api.DirectoryBreadCrumb;
+import org.uberfire.ext.apps.api.DirectoryBreadcrumb;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -143,7 +143,7 @@ public class AppsHomePresenter {
 
     private void setupView() {
         view.clear();
-        view.setupBreadCrumbs(DirectoryBreadCrumb.getBreadCrumbs(currentDirectory),
+        view.setupBreadcrumbs(DirectoryBreadcrumb.getBreadcrumbs(currentDirectory),
                               generateBreadCrumbViewCommand());
         view.setupChildsDirectories(currentDirectory.getChildsDirectories(),
                                     generateDirectoryViewCommand(),
@@ -208,7 +208,7 @@ public class AppsHomePresenter {
 
     public interface View extends UberView<AppsHomePresenter> {
 
-        void setupBreadCrumbs(List<DirectoryBreadCrumb> breadcrumbs,
+        void setupBreadcrumbs(List<DirectoryBreadcrumb> breadcrumbs,
                               ParameterizedCommand<String> breadCrumbAction);
 
         void setupAddDir(final ParameterizedCommand<String> clickCommand,

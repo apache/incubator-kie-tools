@@ -26,13 +26,13 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import org.jboss.errai.common.client.dom.Element;
+import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.client.workbench.docks.UberfireDockContainerReadyEvent;
-import org.uberfire.client.workbench.docks.UberfireDocksContainer;
 import org.uberfire.client.workbench.events.PerspectiveChange;
+import org.uberfire.ext.widgets.common.client.breadcrumbs.header.UberfireBreadcrumbsContainer;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.widget.BreadcrumbsPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -51,22 +51,20 @@ import org.uberfire.mvp.PlaceRequest;
 @EntryPoint
 public class UberfireBreadcrumbs {
 
-    public static final double SIZE = 35.0;
     final Map<String, List<BreadcrumbsPresenter>> breadcrumbsPerPerspective = new HashMap<>();
     final Map<String, Element> breadcrumbsToolBarPerPerspective = new HashMap<>();
-    private final UberfireDocksContainer uberfireDocksContainer;
+    private final UberfireBreadcrumbsContainer uberfireBreadcrumbsContainer;
     private final View view;
     String currentPerspective;
     private ManagedInstance<BreadcrumbsPresenter> breadcrumbsPresenters;
-
     private PlaceManager placeManager;
 
     @Inject
-    public UberfireBreadcrumbs(UberfireDocksContainer uberfireDocksContainer,
+    public UberfireBreadcrumbs(UberfireBreadcrumbsContainer uberfireBreadcrumbsContainer,
                                ManagedInstance<BreadcrumbsPresenter> breadcrumbsPresenters,
                                PlaceManager placeManager,
                                View view) {
-        this.uberfireDocksContainer = uberfireDocksContainer;
+        this.uberfireBreadcrumbsContainer = uberfireBreadcrumbsContainer;
         this.breadcrumbsPresenters = breadcrumbsPresenters;
         this.placeManager = placeManager;
         this.view = view;
@@ -77,20 +75,16 @@ public class UberfireBreadcrumbs {
         updateView();
     }
 
-    void setup(@Observes UberfireDockContainerReadyEvent event) {
-        createBreadCrumbs();
-    }
-
-    private void createBreadCrumbs() {
-        uberfireDocksContainer.addBreadcrumbs(getView(),
-                                              SIZE);
+    @AfterInitialization
+    public void createBreadcrumbs() {
+        uberfireBreadcrumbsContainer.init(getView().getElement());
     }
 
     /**
      * Clears the breadcrumbs associated with a perspective.
      * @param associatedPerspective perspective associated with the breadcrumb
      */
-    public void clearBreadCrumbs(final String associatedPerspective) {
+    public void clearBreadcrumbs(final String associatedPerspective) {
         breadcrumbsPerPerspective.put(associatedPerspective,
                                       new ArrayList<>());
     }
@@ -99,7 +93,7 @@ public class UberfireBreadcrumbs {
      * Clears the breadcrumbs and toolbars associated with a perspective.
      * @param associatedPerspective perspective associated with the breadcrumb
      */
-    public void clearBreadCrumbsAndToolBars(final String associatedPerspective) {
+    public void clearBreadcrumbsAndToolBars(final String associatedPerspective) {
         breadcrumbsPerPerspective.put(associatedPerspective,
                                       new ArrayList<>());
         breadcrumbsToolBarPerPerspective.remove(associatedPerspective);
@@ -190,15 +184,15 @@ public class UberfireBreadcrumbs {
                               final PlaceRequest associatedPlaceRequest,
                               final HasWidgets addTo,
                               final Command command) {
-        List<BreadcrumbsPresenter> breadCrumbs = getBreadcrumbs(associatedPerspective);
-        deactivateLastBreadcrumb(breadCrumbs);
-        breadCrumbs.add(createBreadCrumb(associatedPerspective,
+        List<BreadcrumbsPresenter> breadcrumbs = getBreadcrumbs(associatedPerspective);
+        deactivateLastBreadcrumb(breadcrumbs);
+        breadcrumbs.add(createBreadCrumb(associatedPerspective,
                                          breadCrumbLabel,
                                          associatedPlaceRequest,
                                          addTo,
                                          command));
         breadcrumbsPerPerspective.put(associatedPerspective,
-                                      breadCrumbs);
+                                      breadcrumbs);
         if (currentPerspective == associatedPerspective) {
             updateView();
         }
@@ -220,16 +214,16 @@ public class UberfireBreadcrumbs {
     }
 
     private List<BreadcrumbsPresenter> getBreadcrumbs(final String perspective) {
-        List<BreadcrumbsPresenter> breadCrumbs = breadcrumbsPerPerspective.get(perspective);
-        if (breadCrumbs == null) {
-            breadCrumbs = new ArrayList<>();
+        List<BreadcrumbsPresenter> breadcrumbs = breadcrumbsPerPerspective.get(perspective);
+        if (breadcrumbs == null) {
+            breadcrumbs = new ArrayList<>();
         }
-        return breadCrumbs;
+        return breadcrumbs;
     }
 
-    private void deactivateLastBreadcrumb(final List<BreadcrumbsPresenter> breadCrumbs) {
-        if (!breadCrumbs.isEmpty()) {
-            breadCrumbs.get(breadCrumbs.size() - 1).deactivate();
+    private void deactivateLastBreadcrumb(final List<BreadcrumbsPresenter> breadcrumbs) {
+        if (!breadcrumbs.isEmpty()) {
+            breadcrumbs.get(breadcrumbs.size() - 1).deactivate();
         }
     }
 
@@ -283,11 +277,11 @@ public class UberfireBreadcrumbs {
 
     void removeDeepLevelBreadcrumbs(final String perspective,
                                     final BreadcrumbsPresenter breadCrumb) {
-        List<BreadcrumbsPresenter> breadCrumbs = breadcrumbsPerPerspective.get(perspective);
-        if (breadCrumbs != null) {
+        List<BreadcrumbsPresenter> breadcrumbs = breadcrumbsPerPerspective.get(perspective);
+        if (breadcrumbs != null) {
             Predicate<BreadcrumbsPresenter> toRemovePredicate = current ->
-                    breadCrumbs.indexOf(current) > breadCrumbs.indexOf(breadCrumb);
-            breadCrumbs.removeIf(toRemovePredicate);
+                    breadcrumbs.indexOf(current) > breadcrumbs.indexOf(breadCrumb);
+            breadcrumbs.removeIf(toRemovePredicate);
         }
     }
 
@@ -297,6 +291,12 @@ public class UberfireBreadcrumbs {
 
     View getView() {
         view.clear();
+        updateBreadcrumbsContainer();
+        updateBreadcrumbs();
+        return view;
+    }
+
+    private void updateBreadcrumbs() {
         if (thereIsBreadcrumbsFor(currentPerspective)) {
             breadcrumbsPerPerspective.get(currentPerspective)
                     .stream()
@@ -305,7 +305,18 @@ public class UberfireBreadcrumbs {
         if (thereIsBreadcrumbToolbarFor(currentPerspective)) {
             view.addBreadcrumbToolbar(breadcrumbsToolBarPerPerspective.get(currentPerspective));
         }
-        return view;
+    }
+
+    void updateBreadcrumbsContainer() {
+        if (thereIsContentOnBreadcrumbs()) {
+            uberfireBreadcrumbsContainer.enable();
+        } else {
+            uberfireBreadcrumbsContainer.disable();
+        }
+    }
+
+    private boolean thereIsContentOnBreadcrumbs() {
+        return thereIsBreadcrumbsFor(currentPerspective) || thereIsBreadcrumbToolbarFor(currentPerspective);
     }
 
     private boolean thereIsBreadcrumbsFor(final String perspective) {

@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DirectoryBreadCrumbTest {
+public class DirectoryBreadcrumbTest {
 
     private static final String TOP_DIR_NAME = "top";
     private static final String MIDDLE_DIR_NAME = "middle";
@@ -31,7 +31,7 @@ public class DirectoryBreadCrumbTest {
     private static final String OTHER_DIR_NAME = "other";
 
     @Test
-    public void breadCrumbsOrderTest() {
+    public void breadcrumbsOrderTest() {
         Directory topDir = new Directory(TOP_DIR_NAME,
                                          "",
                                          "",
@@ -49,31 +49,31 @@ public class DirectoryBreadCrumbTest {
                                            "",
                                            topDir);
 
-        assertDirectoryBreadCrumbs(topDir,
+        assertDirectoryBreadcrumbs(topDir,
                                    TOP_DIR_NAME);
-        assertDirectoryBreadCrumbs(middleDir,
+        assertDirectoryBreadcrumbs(middleDir,
                                    TOP_DIR_NAME,
                                    MIDDLE_DIR_NAME);
-        assertDirectoryBreadCrumbs(lowDir,
+        assertDirectoryBreadcrumbs(lowDir,
                                    TOP_DIR_NAME,
                                    MIDDLE_DIR_NAME,
                                    LOW_DIR_NAME);
-        assertDirectoryBreadCrumbs(otherDir,
+        assertDirectoryBreadcrumbs(otherDir,
                                    TOP_DIR_NAME,
                                    OTHER_DIR_NAME);
     }
 
-    private void assertDirectoryBreadCrumbs(Directory workingDir,
+    private void assertDirectoryBreadcrumbs(Directory workingDir,
                                             String... expectedNames) {
-        List<DirectoryBreadCrumb> breadCrumbs = DirectoryBreadCrumb.getBreadCrumbs(workingDir);
-        int breadCrumbsSize = breadCrumbs.size();
+        List<DirectoryBreadcrumb> breadcrumbs = DirectoryBreadcrumb.getBreadcrumbs(workingDir);
+        int breadcrumbsSize = breadcrumbs.size();
 
         assertEquals(expectedNames.length,
-                     breadCrumbsSize);
+                     breadcrumbsSize);
 
-        for (int i = 0; i < breadCrumbsSize; i++) {
+        for (int i = 0; i < breadcrumbsSize; i++) {
             assertEquals(expectedNames[i],
-                         breadCrumbs.get(i).getName());
+                         breadcrumbs.get(i).getName());
         }
     }
 }

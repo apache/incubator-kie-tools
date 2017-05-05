@@ -31,7 +31,7 @@ import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Breadcrumbs;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.uberfire.ext.apps.api.Directory;
-import org.uberfire.ext.apps.api.DirectoryBreadCrumb;
+import org.uberfire.ext.apps.api.DirectoryBreadcrumb;
 import org.uberfire.ext.apps.client.home.components.TilesApp;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -60,15 +60,15 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
     }
 
     @Override
-    public void setupBreadCrumbs(List<DirectoryBreadCrumb> breadCrumbs,
-                                 final ParameterizedCommand<String> breadCrumbAction) {
+    public void setupBreadcrumbs(List<DirectoryBreadcrumb> breadcrumbs,
+                                 final ParameterizedCommand<String> breadcrumbAction) {
         dirs.clear();
-        for (final DirectoryBreadCrumb breadCrumb : breadCrumbs) {
+        for (final DirectoryBreadcrumb breadCrumb : breadcrumbs) {
             final AnchorListItem bread = new AnchorListItem(breadCrumb.getName());
             bread.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    breadCrumbAction.execute(breadCrumb.getUri());
+                    breadcrumbAction.execute(breadCrumb.getUri());
                 }
             });
             dirs.add(bread);
