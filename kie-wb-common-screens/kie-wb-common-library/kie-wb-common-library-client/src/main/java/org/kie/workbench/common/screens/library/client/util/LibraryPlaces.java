@@ -378,13 +378,13 @@ public class LibraryPlaces {
     }
 
     public void setupToolBar() {
-        breadcrumbs.clearBreadCrumbsAndToolBars(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        breadcrumbs.clearBreadcrumbsAndToolBars(LibraryPlaces.LIBRARY_PERSPECTIVE);
         breadcrumbs.addToolbar(LibraryPlaces.LIBRARY_PERSPECTIVE,
                                libraryToolbar.getView().getElement());
     }
 
     public void setupLibraryBreadCrumbsForOrganizationUnits() {
-        breadcrumbs.clearBreadCrumbsAndToolBars(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        breadcrumbs.clearBreadcrumbsAndToolBars(LibraryPlaces.LIBRARY_PERSPECTIVE);
         breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
                                   translationUtils.getOrganizationalUnitAliasInPlural(),
                                   () -> goToOrganizationalUnits());
@@ -401,7 +401,7 @@ public class LibraryPlaces {
     }
 
     public void setupLibraryBreadCrumbsForNewProject() {
-        breadcrumbs.clearBreadCrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        breadcrumbs.clearBreadcrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
         breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
                                   translationUtils.getOrganizationalUnitAliasInPlural(),
                                   () -> goToOrganizationalUnits());
@@ -414,7 +414,7 @@ public class LibraryPlaces {
     }
 
     public void setupLibraryBreadCrumbsForProject(final ProjectInfo projectInfo) {
-        breadcrumbs.clearBreadCrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        breadcrumbs.clearBreadcrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
         breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
                                   translationUtils.getOrganizationalUnitAliasInPlural(),
                                   () -> goToOrganizationalUnits());
@@ -435,7 +435,7 @@ public class LibraryPlaces {
             assetName = ts.format(LibraryConstants.Settings);
         }
 
-        breadcrumbs.clearBreadCrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        breadcrumbs.clearBreadcrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
         breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
                                   translationUtils.getOrganizationalUnitAliasInPlural(),
                                   () -> goToOrganizationalUnits());
