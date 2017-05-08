@@ -82,9 +82,14 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     @Captor
     private ArgumentCaptor<Map<String, String>> callbackValueCaptor;
 
+    private int originalHashCode;
+
     @Before
     public void setup() {
         super.setup();
+
+        //Adding rows affects the HashCode so store the original
+        originalHashCode = model.hashCode();
 
         dtPresenter.onAppendRow();
         dtPresenter.onAppendRow();
@@ -226,8 +231,10 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
                      dtPresenter.getUiModel().getRow(2).getHeight(),
                      0.0);
 
-        assertEquals(dtContent.getModel().hashCode(),
+        assertEquals(originalHashCode,
                      (int) dtPresenter.getOriginalHashCode());
+        assertNotEquals(dtContent.getModel().hashCode(),
+                        (int) dtPresenter.getOriginalHashCode());
     }
 
     @Test
