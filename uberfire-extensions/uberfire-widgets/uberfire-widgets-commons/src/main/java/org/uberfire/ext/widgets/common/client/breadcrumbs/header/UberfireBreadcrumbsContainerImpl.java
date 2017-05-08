@@ -55,10 +55,15 @@ public class UberfireBreadcrumbsContainerImpl implements Header,
     public void enable() {
         DOMUtil.removeCSSClass(breadcrumbsContainer,
                                "breadcrumb-disabled");
+        DOMUtil.addCSSClass(breadcrumbsContainer,
+                            "breadcrumbs-container");
+
     }
 
     @Override
     public void disable() {
+        DOMUtil.removeCSSClass(breadcrumbsContainer,
+                               "breadcrumbs-container");
         DOMUtil.addCSSClass(breadcrumbsContainer,
                             "breadcrumb-disabled");
     }
