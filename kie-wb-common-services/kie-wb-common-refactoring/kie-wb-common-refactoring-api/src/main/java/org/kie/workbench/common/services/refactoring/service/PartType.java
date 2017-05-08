@@ -31,7 +31,7 @@ public enum PartType {
      * Java
      */
 
-    // (there are cases in which it's not clear whether we are refering to a field or getter/setter:
+    // (there are cases in which it's not clear whether we are referring to a field or getter/setter:
     //  TODO: this will require extra logic to deal with these cases)
     /**
      * A Java class method
@@ -118,7 +118,16 @@ public enum PartType {
     /**
      * A form field
      */
-    FORM_FIELD("formfield");
+    FORM_FIELD("formfield"),
+
+    /*
+     * Paths
+     */
+
+    /**
+     * Generic path reference
+     */
+    PATH("path");
 
 
     private final String luceneValue;
