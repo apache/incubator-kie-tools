@@ -19,8 +19,10 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 
+import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.DefaultObjectWrapperBuilder;
+import freemarker.template.Version;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 /**
@@ -28,22 +30,28 @@ import org.uberfire.annotations.processors.exceptions.GenerationException;
  */
 public abstract class AbstractGenerator {
 
+    private static Version FREE_MARKER_VERSION = new Version(Version.intValueFor(2,
+                                                                                 3,
+                                                                                 25));
+
     static boolean FAIL_FOR_TESTING = false;
 
     private static ExceptionInInitializerError INITIALIZER_EXCEPTION = null;
 
-    protected Configuration config;
+    private static MultiTemplateLoader templateLoader = new MultiTemplateLoader();
 
+    protected static Configuration config;
+
+    //per-instance static initializer block
     {
         if (FAIL_FOR_TESTING) {
             throw new NoClassDefFoundError("Failing for testing purposes");
         }
         try {
             synchronized (AbstractGenerator.class) {
-                config = new Configuration();
-                config.setClassForTemplateLoading(getClass(),
-                                                  "templates");
-                config.setObjectWrapper(new DefaultObjectWrapper());
+                final ClassTemplateLoader loader = new ClassTemplateLoader(getClass(),
+                                                                           "templates");
+                templateLoader.addTemplateLoader(loader);
             }
         } catch (NoClassDefFoundError ex) {
             if (ex.getCause() == null) {
@@ -54,6 +62,13 @@ public abstract class AbstractGenerator {
             INITIALIZER_EXCEPTION = ex;
             throw ex;
         }
+    }
+
+    //Class's static initializer block
+    static {
+        config = new Configuration(FREE_MARKER_VERSION);
+        config.setTemplateLoader(templateLoader);
+        config.setObjectWrapper(new DefaultObjectWrapperBuilder(FREE_MARKER_VERSION).build());
     }
 
     public abstract StringBuffer generate(final String packageName,
