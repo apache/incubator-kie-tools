@@ -25,6 +25,7 @@ import java.util.Map;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -70,8 +71,6 @@ import static org.mockito.Mockito.*;
 public class FormEditorPresenterTest {
 
     private List<FieldDefinition> employeeFields;
-    private List<FieldDefinition> addressFields;
-    private List<FieldDefinition> departmentFields;
 
     private FormEditorHelper editorContext;
 
@@ -103,10 +102,7 @@ public class FormEditorPresenterTest {
     private HTMLLayoutDragComponent htmlLayoutDragComponent;
 
     @Mock
-    private SyncBeanManager beanManager;
-
-    @Mock
-    private SyncBeanDef<EditorFieldLayoutComponent> fieldLayoutComponentDef;
+    private ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents;
 
     @Mock
     protected EventSourceMock<FormEditorContextResponse> eventMock;
@@ -128,13 +124,10 @@ public class FormEditorPresenterTest {
         when(formDefinitionResourceType.getSuffix()).thenReturn("form.frm");
         when(formDefinitionResourceType.accept(path)).thenReturn(true);
 
-        when(beanManager.lookupBean(eq(EditorFieldLayoutComponent.class))).thenReturn(fieldLayoutComponentDef);
-
-        when(fieldLayoutComponentDef.newInstance()).thenAnswer(new Answer<EditorFieldLayoutComponent>() {
+        when(editorFieldLayoutComponents.get()).thenAnswer(new Answer<EditorFieldLayoutComponent>() {
             @Override
             public EditorFieldLayoutComponent answer(InvocationOnMock invocationOnMock) throws Throwable {
-                final EditorFieldLayoutComponent mocked = mock(EditorFieldLayoutComponent.class);
-                return mocked;
+                return mock(EditorFieldLayoutComponent.class);
             }
         });
 
@@ -160,7 +153,7 @@ public class FormEditorPresenterTest {
                 content.setOverview(new Overview());
                 content.setPath(path);
                 content.setAvailableFields(availableFields);
-
+                employeeFields.forEach(fieldDefinition -> content.getModelProperties().add(fieldDefinition.getBinding()));
                 return content;
             }
         });
@@ -169,13 +162,13 @@ public class FormEditorPresenterTest {
 
         editorContext = new FormEditorHelper(new TestFieldManager(),
                                              eventMock,
-                                             beanManager);
+                                             editorFieldLayoutComponents);
 
         presenter = new FormEditorPresenter(view,
                                             formDefinitionResourceType,
                                             editorServiceCallerMock,
-                                            beanManager,
-                                            translationService) {
+                                            translationService,
+                                            editorFieldLayoutComponents) {
             {
                 kieView = mock(KieEditorWrapperView.class);
                 versionRecordManager = FormEditorPresenterTest.this.versionRecordManager;
@@ -383,7 +376,7 @@ public class FormEditorPresenterTest {
         checkFieldType(field,
                        TextAreaFieldDefinition.class);
 
-        List<String> compatibleFields = editorContext.getCompatibleFieldCodes(field);
+        List<String> compatibleFields = editorContext.getCompatibleModelFields(field);
 
         assertNotNull("No compatibles fields found!",
                       compatibleFields);
@@ -483,45 +476,5 @@ public class FormEditorPresenterTest {
         employeeFields.add(lastName);
         employeeFields.add(birthday);
         employeeFields.add(married);
-
-        TextBoxFieldDefinition streetName = new TextBoxFieldDefinition();
-        streetName.setId("streetName");
-        streetName.setName("address_street");
-        streetName.setLabel("Street Name");
-        streetName.setPlaceHolder("Street Name");
-        streetName.setBinding("street");
-        streetName.setStandaloneClassName(String.class.getName());
-
-        TextBoxFieldDefinition num = new TextBoxFieldDefinition();
-        num.setId("num");
-        num.setName("address_num");
-        num.setLabel("#");
-        num.setPlaceHolder("#");
-        num.setBinding("num");
-        num.setStandaloneClassName(Integer.class.getName());
-
-        addressFields = new ArrayList<FieldDefinition>();
-        addressFields.add(streetName);
-        addressFields.add(num);
-
-        TextBoxFieldDefinition depName = new TextBoxFieldDefinition();
-        depName.setId("depName");
-        depName.setName("department_name");
-        depName.setLabel("Department Name");
-        depName.setPlaceHolder("Department Name");
-        depName.setBinding("name");
-        depName.setStandaloneClassName(String.class.getName());
-
-        TextBoxFieldDefinition phone = new TextBoxFieldDefinition();
-        phone.setId("phone");
-        phone.setName("department_phone");
-        phone.setLabel("Phone number");
-        phone.setPlaceHolder("Phone number");
-        phone.setBinding("phone");
-        phone.setStandaloneClassName(String.class.getName());
-
-        departmentFields = new ArrayList<FieldDefinition>();
-        departmentFields.add(depName);
-        departmentFields.add(phone);
     }
 }

@@ -23,6 +23,10 @@ public abstract class SliderBaseDefinition<T extends Number> extends AbstractFie
 
     public static final SliderFieldType FIELD_TYPE = new SliderFieldType();
 
+    public SliderBaseDefinition(String className) {
+        super(className);
+    }
+
     @Override
     public SliderFieldType getFieldType() {
         return FIELD_TYPE;

@@ -34,6 +34,10 @@ public abstract class TextBoxBaseDefinition extends AbstractFieldDefinition impl
     )
     protected String placeHolder = "";
 
+    public TextBoxBaseDefinition(String className) {
+        super(className);
+    }
+
     @Override
     public TextBoxFieldType getFieldType() {
         return FIELD_TYPE;

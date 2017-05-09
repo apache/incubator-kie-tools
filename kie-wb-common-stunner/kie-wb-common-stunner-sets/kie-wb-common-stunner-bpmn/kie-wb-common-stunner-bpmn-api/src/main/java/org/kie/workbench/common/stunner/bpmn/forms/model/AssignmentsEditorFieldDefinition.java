@@ -29,6 +29,10 @@ public class AssignmentsEditorFieldDefinition extends AbstractFieldDefinition {
 
     private String defaultValue;
 
+    public AssignmentsEditorFieldDefinition() {
+        super(String.class.getName());
+    }
+
     @Override
     public AssignmentsEditorFieldType getFieldType() {
         return FIELD_TYPE;

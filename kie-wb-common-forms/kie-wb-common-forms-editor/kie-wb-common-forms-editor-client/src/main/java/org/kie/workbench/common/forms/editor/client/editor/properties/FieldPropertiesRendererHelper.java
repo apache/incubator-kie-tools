@@ -29,7 +29,7 @@ public interface FieldPropertiesRendererHelper {
 
     FieldDefinition getCurrentField();
 
-    List<String> getAvailableFields();
+    List<String> getAvailableModelFields();
 
     Collection<String> getCompatibleFieldTypes();
 

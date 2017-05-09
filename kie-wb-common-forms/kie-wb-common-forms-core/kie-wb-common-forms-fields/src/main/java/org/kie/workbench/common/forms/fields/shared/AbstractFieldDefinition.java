@@ -62,8 +62,9 @@ public abstract class AbstractFieldDefinition implements FieldDefinition {
     @SkipFormField
     protected String standaloneClassName;
 
-    protected AbstractFieldDefinition() {
+    public AbstractFieldDefinition(String className) {
         id = ID_PREFFIX + IDGenerator.generateRandomId();
+        standaloneClassName = className;
     }
 
     @Override

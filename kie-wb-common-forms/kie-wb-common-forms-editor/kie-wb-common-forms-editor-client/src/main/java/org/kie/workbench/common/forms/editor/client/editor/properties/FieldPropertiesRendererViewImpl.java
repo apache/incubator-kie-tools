@@ -17,7 +17,6 @@
 package org.kie.workbench.common.forms.editor.client.editor.properties;
 
 import java.util.Collection;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -28,11 +27,13 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.Modal;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
+import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DataBindingEditor;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
@@ -52,7 +53,7 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
 
     @Inject
     @DataField
-    private ListBox fieldBinding;
+    private FlowPanel fieldBinding;
 
     private DynamicFormRenderer formRenderer;
 
@@ -101,12 +102,13 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
 
     @Override
     public void render(FieldPropertiesRendererHelper helper,
-                       FormEditorRenderingContext renderingContext) {
+                       FormEditorRenderingContext renderingContext,
+                       DataBindingEditor bindingEditor) {
         this.helper = helper;
         formRenderer.render(renderingContext);
         initFieldTypeList();
-        initFieldBindings();
-
+        fieldBinding.clear();
+        fieldBinding.add(ElementWrapperWidget.getWidget(bindingEditor.getElement()));
         modal.setTitle(translationService.getTranslation(FormEditorConstants.FieldPropertiesRendererViewImplTitle));
     }
 
@@ -131,23 +133,5 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
     @EventHandler("fieldType")
     public void onTypeChange(ChangeEvent event) {
         helper.onFieldTypeChange(fieldType.getSelectedValue());
-    }
-
-    @EventHandler("fieldBinding")
-    public void onBindingChange(ChangeEvent event) {
-        helper.onFieldBindingChange(fieldBinding.getSelectedValue());
-        initFieldBindings();
-    }
-
-    protected void initFieldBindings() {
-        fieldBinding.clear();
-        List<String> fields = helper.getAvailableFields();
-        for (int i = 0; i < fields.size(); i++) {
-            String field = fields.get(i);
-            fieldBinding.addItem(field);
-            if (field.equals(helper.getCurrentField().getBinding())) {
-                fieldBinding.setSelectedIndex(i);
-            }
-        }
     }
 }

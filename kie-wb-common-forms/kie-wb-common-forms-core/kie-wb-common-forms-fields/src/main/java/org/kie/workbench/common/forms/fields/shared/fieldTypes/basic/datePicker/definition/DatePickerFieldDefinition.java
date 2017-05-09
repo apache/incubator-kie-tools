@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition;
 
+import java.util.Date;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
@@ -47,6 +49,10 @@ public class DatePickerFieldDefinition extends AbstractFieldDefinition implement
             afterElement = "placeHolder"
     )
     protected Boolean showTime = Boolean.TRUE;
+
+    public DatePickerFieldDefinition() {
+        super(Date.class.getName());
+    }
 
     @Override
     public DatePickerFieldType getFieldType() {

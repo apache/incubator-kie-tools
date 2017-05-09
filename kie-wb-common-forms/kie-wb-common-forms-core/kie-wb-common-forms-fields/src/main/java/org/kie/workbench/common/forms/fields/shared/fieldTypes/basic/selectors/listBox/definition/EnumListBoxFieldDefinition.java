@@ -41,6 +41,10 @@ public class EnumListBoxFieldDefinition extends ListBoxBaseDefinition<DefaultSel
     )
     protected List<DefaultSelectorOption> options = new ArrayList<>();
 
+    public EnumListBoxFieldDefinition() {
+        super(Object.class.getName());
+    }
+
     @Override
     public List<DefaultSelectorOption> getOptions() {
         return options;

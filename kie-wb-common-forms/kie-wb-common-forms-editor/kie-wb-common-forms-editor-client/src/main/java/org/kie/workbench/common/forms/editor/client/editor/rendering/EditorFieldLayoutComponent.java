@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -53,32 +55,42 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
 
     public final String[] SETTINGS_KEYS = new String[]{FORM_ID, FIELD_ID};
 
-    @Inject
     protected FieldPropertiesRenderer propertiesRenderer;
 
-    @Inject
     protected LayoutDragComponentHelper layoutDragComponentHelper;
 
-    boolean showProperties = false;
-
-    @Inject
     protected Event<FormEditorContextRequest> fieldRequest;
 
-    @Inject
     protected Event<ComponentDropEvent> fieldDroppedEvent;
 
-    @Inject
     protected Event<ComponentRemovedEvent> fieldRemovedEvent;
 
     protected FormEditorHelper editorHelper;
+
+    boolean showProperties = false;
 
     private FieldPropertiesRendererHelper propertiesRendererHelper;
 
     private ModalConfigurationContext configContext;
 
-    private String fieldId;
+    private Optional<String> fieldId = Optional.empty();
 
-    private String formId;
+    private Optional<String> formId = Optional.empty();
+
+    private boolean disabled = false;
+
+    @Inject
+    public EditorFieldLayoutComponent(FieldPropertiesRenderer propertiesRenderer,
+                                      LayoutDragComponentHelper layoutDragComponentHelper,
+                                      Event<FormEditorContextRequest> fieldRequest,
+                                      Event<ComponentDropEvent> fieldDroppedEvent,
+                                      Event<ComponentRemovedEvent> fieldRemovedEvent) {
+        this.propertiesRenderer = propertiesRenderer;
+        this.layoutDragComponentHelper = layoutDragComponentHelper;
+        this.fieldRequest = fieldRequest;
+        this.fieldDroppedEvent = fieldDroppedEvent;
+        this.fieldRemovedEvent = fieldRemovedEvent;
+    }
 
     @Override
     public void init(FormRenderingContext renderingContext,
@@ -102,8 +114,8 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
             }
 
             @Override
-            public List<String> getAvailableFields() {
-                return editorHelper.getCompatibleFieldCodes(field);
+            public List<String> getAvailableModelFields() {
+                return editorHelper.getCompatibleModelFields(field);
             }
 
             @Override
@@ -116,8 +128,8 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
                 renderContent();
                 showProperties = false;
                 if (configContext != null) {
-                    configContext.getComponentProperties().put(FORM_ID,
-                                                               formId);
+                    formId.ifPresent(formId -> configContext.getComponentProperties().put(FORM_ID,
+                                                                             formId));
                     configContext.getComponentProperties().put(FIELD_ID,
                                                                field.getId());
                     configContext.configurationFinished();
@@ -151,9 +163,9 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
     public void setSettingValue(String key,
                                 String value) {
         if (FORM_ID.equals(key)) {
-            formId = value;
+            formId = Optional.of(value);
         } else if (FIELD_ID.equals(key)) {
-            fieldId = value;
+            fieldId = Optional.of(value);
         }
     }
 
@@ -163,12 +175,17 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
             if (renderingContext != null) {
                 return renderingContext.getRootForm().getId();
             }
-            return formId;
+            if (formId.isPresent()) {
+                return formId.get();
+            }
+            return formId.isPresent() ? formId.get() : "";
         } else if (FIELD_ID.equals(key)) {
             if (field != null) {
                 return field.getId();
             }
-            return fieldId;
+            if (fieldId.isPresent()) {
+                return fieldId.get();
+            }
         }
         return null;
     }
@@ -214,22 +231,24 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
             return;
         }
 
-        if (fieldId == null) {
-            fieldId = properties.get(FIELD_ID);
+        if (!fieldId.isPresent()) {
+            fieldId = Optional.of(properties.get(FIELD_ID));
         }
 
-        if (formId == null) {
-            formId = properties.get(FORM_ID);
+        if (!formId.isPresent()) {
+            formId = Optional.of(properties.get(FORM_ID));
         }
 
-        fieldRequest.fire(new FormEditorContextRequest(formId,
-                                                       fieldId));
+        fieldRequest.fire(new FormEditorContextRequest(formId.get(),
+                                                       fieldId.get()));
     }
 
     public void onFieldResponse(@Observes FormEditorContextResponse response) {
-        if (!response.getFormId().equals(formId)) {
+        if(disabled) {
             return;
-        } else if (field != null && !response.getFieldId().equals(fieldId)) {
+        } else if (!formId.filter(s -> response.getFormId().equals(s)).isPresent()) {
+            return;
+        } else if (field != null && !fieldId.filter(s->response.getFieldId().equals(s)).isPresent()) {
             return;
         }
 
@@ -245,16 +264,8 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
         }
     }
 
-    public List<String> getCompatibleFields() {
-        return editorHelper.getCompatibleFieldCodes(field);
-    }
-
-    public Collection<String> getCompatibleFieldTypes() {
-        return editorHelper.getCompatibleFieldTypes(field);
-    }
-
     public void switchToField(String bindingExpression) {
-        if (field.getBinding().equals(bindingExpression)) {
+        if (bindingExpression.equals(field.getBinding())) {
             return;
         }
 
@@ -269,7 +280,7 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
 
         fieldRemovedEvent.fire(new ComponentRemovedEvent(component));
 
-        fieldId = destField.getId();
+        fieldId = Optional.of(destField.getId());
         field = destField;
 
         component = layoutDragComponentHelper.getLayoutComponent(this);
@@ -300,5 +311,9 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
         }
 
         renderContent();
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 }

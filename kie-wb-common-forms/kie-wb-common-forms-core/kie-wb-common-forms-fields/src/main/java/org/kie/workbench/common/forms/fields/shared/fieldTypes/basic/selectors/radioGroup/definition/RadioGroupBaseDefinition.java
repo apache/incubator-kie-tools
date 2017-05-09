@@ -31,6 +31,10 @@ public abstract class RadioGroupBaseDefinition<OPTIONS extends SelectorOption<?>
     )
     protected Boolean inline = Boolean.FALSE;
 
+    public RadioGroupBaseDefinition(String className) {
+        super(className);
+    }
+
     @Override
     public RadioGroupFieldType getFieldType() {
         return FIELD_TYPE;

@@ -27,8 +27,13 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
+import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DataBindingEditor;
+import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DynamicFormModel;
+import org.kie.workbench.common.forms.editor.client.editor.properties.binding.StaticFormModel;
 import org.kie.workbench.common.forms.editor.service.shared.FieldPropertiesService;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
+import org.kie.workbench.common.forms.model.DynamicModel;
+import org.kie.workbench.common.forms.model.FormModel;
 
 @Dependent
 public class FieldPropertiesRenderer implements IsWidget {
@@ -38,7 +43,8 @@ public class FieldPropertiesRenderer implements IsWidget {
         void setPresenter(FieldPropertiesRenderer presenter);
 
         void render(FieldPropertiesRendererHelper helper,
-                    FormEditorRenderingContext renderingContext);
+                    FormEditorRenderingContext renderingContext,
+                    DataBindingEditor editor);
 
         Modal getPropertiesModal();
     }
@@ -49,13 +55,21 @@ public class FieldPropertiesRenderer implements IsWidget {
 
     private DynamicFormModelGenerator dynamicFormModelGenerator;
 
+    private DataBindingEditor staticDataBindingEditor;
+
+    private DataBindingEditor dynamicDataBindingEditor;
+
     @Inject
     public FieldPropertiesRenderer(FieldPropertiesRendererView view,
                                    Caller<FieldPropertiesService> propertiesService,
-                                   DynamicFormModelGenerator dynamicFormModelGenerator) {
+                                   DynamicFormModelGenerator dynamicFormModelGenerator,
+                                   @StaticFormModel DataBindingEditor staticDataBindingEditor,
+                                   @DynamicFormModel DataBindingEditor dynamicDataBindingEditor) {
         this.view = view;
         this.propertiesService = propertiesService;
         this.dynamicFormModelGenerator = dynamicFormModelGenerator;
+        this.staticDataBindingEditor = staticDataBindingEditor;
+        this.dynamicDataBindingEditor = dynamicDataBindingEditor;
     }
 
     @PostConstruct
@@ -71,20 +85,31 @@ public class FieldPropertiesRenderer implements IsWidget {
             renderingContext.setRootForm(context.getRootForm());
             renderingContext.getAvailableForms().putAll(context.getAvailableForms());
             renderingContext.setModel(helper.getCurrentField());
-            view.render(helper,
-                        renderingContext);
+            doRender(helper,
+                     renderingContext);
         } else {
             propertiesService.call(new RemoteCallback<FormEditorRenderingContext>() {
                 @Override
                 public void callback(FormEditorRenderingContext renderingContext) {
                     renderingContext.setModel(helper.getCurrentField());
                     renderingContext.setParentContext(helper.getCurrentRenderingContext());
-                    view.render(helper,
-                                renderingContext);
+
+                    doRender(helper,
+                             renderingContext);
                 }
             }).getFieldPropertiesRenderingContext(helper.getCurrentField(),
                                                   helper.getPath());
         }
+    }
+
+    protected void doRender(FieldPropertiesRendererHelper helper,
+                            FormEditorRenderingContext context) {
+        FormModel roodFormModel = helper.getCurrentRenderingContext().getRootForm().getModel();
+        DataBindingEditor editor = roodFormModel instanceof DynamicModel ? dynamicDataBindingEditor : staticDataBindingEditor;
+        editor.init(helper);
+        view.render(helper,
+                    context,
+                    editor);
     }
 
     public FieldPropertiesRendererView getView() {

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.editor.client.editor;
 
 import java.util.List;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -25,6 +26,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
@@ -84,8 +86,7 @@ public class FormEditorPresenter extends KieEditor {
     @Inject
     protected FormEditorHelper editorContext;
 
-    @Inject
-    protected SyncBeanManager beanManager;
+    protected ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents;
 
     private FormEditorView view;
     private FormDefinitionResourceType resourceType;
@@ -96,14 +97,14 @@ public class FormEditorPresenter extends KieEditor {
     public FormEditorPresenter(FormEditorView view,
                                FormDefinitionResourceType resourceType,
                                Caller<FormEditorService> editorService,
-                               SyncBeanManager beanManager,
-                               TranslationService translationService) {
+                               TranslationService translationService,
+                               ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents) {
         super(view);
         this.view = view;
         this.resourceType = resourceType;
         this.editorService = editorService;
-        this.beanManager = beanManager;
         this.translationService = translationService;
+        this.editorFieldLayoutComponents = editorFieldLayoutComponents;
     }
 
     @OnStartup
@@ -258,9 +259,9 @@ public class FormEditorPresenter extends KieEditor {
         LayoutDragComponentGroup group = new LayoutDragComponentGroup(model);
 
         for (FieldDefinition field : fields) {
-            EditorFieldLayoutComponent layoutFieldComponent = beanManager.lookupBean(EditorFieldLayoutComponent.class)
-                    .newInstance();
+            EditorFieldLayoutComponent layoutFieldComponent = editorFieldLayoutComponents.get();
             if (layoutFieldComponent != null) {
+                layoutFieldComponent.setDisabled(true);
                 layoutFieldComponent.init(editorContext.getRenderingContext(),
                                           field);
                 group.addLayoutDragComponent(field.getId(),
@@ -282,7 +283,7 @@ public class FormEditorPresenter extends KieEditor {
             String fieldId = event.getComponent().getProperties().get(FieldLayoutComponent.FIELD_ID);
 
             FieldDefinition field = editorContext.getDroppedField(fieldId);
-            if (field != null && field.getBinding() != null) {
+            if (field != null && editorContext.getContent().getModelProperties().contains(field.getBinding())) {
                 layoutEditor.removeDraggableGroupComponent(getFormDefinition().getModel().getName(),
                                                            field.getId());
             }
@@ -300,10 +301,10 @@ public class FormEditorPresenter extends KieEditor {
             String fieldId = event.getLayoutComponent().getProperties().get(FieldLayoutComponent.FIELD_ID);
             FieldDefinition field = editorContext.removeField(fieldId,
                                                               true);
-            if (field != null && (field.getBinding() != null && !field.getBinding().isEmpty())) {
-                EditorFieldLayoutComponent layoutFieldComponent = beanManager
-                        .lookupBean(EditorFieldLayoutComponent.class).newInstance();
+            if (field != null && editorContext.getContent().getModelProperties().contains(field.getBinding())) {
+                EditorFieldLayoutComponent layoutFieldComponent = editorFieldLayoutComponents.get();
                 if (layoutFieldComponent != null) {
+                    layoutFieldComponent.setDisabled(true);
                     layoutFieldComponent.init(editorContext.getRenderingContext(),
                                               field);
                     layoutEditor
@@ -315,13 +316,13 @@ public class FormEditorPresenter extends KieEditor {
         }
     }
 
-    public FormRenderingContext getRenderingContext() {
-        synchronizeFormLayout();
-        return editorContext.getRenderingContext();
-    }
-
     @OnMayClose
     public Boolean onMayClose() {
         return mayClose(editorContext.getContent().getDefinition().hashCode());
+    }
+
+    @PreDestroy
+    public void destroy() {
+        editorFieldLayoutComponents.destroyAll();
     }
 }

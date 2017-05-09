@@ -53,6 +53,10 @@ public class DecimalBoxFieldDefinition extends AbstractFieldDefinition implement
     @Min(1)
     protected Integer maxLength = 100;
 
+    public DecimalBoxFieldDefinition() {
+        super(Double.class.getName());
+    }
+
     @Override
     public DecimalBoxFieldType getFieldType() {
         return FIELD_TYPE;

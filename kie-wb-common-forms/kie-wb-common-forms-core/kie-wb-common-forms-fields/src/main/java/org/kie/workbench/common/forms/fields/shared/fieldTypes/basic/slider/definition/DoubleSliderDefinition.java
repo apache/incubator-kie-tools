@@ -56,6 +56,7 @@ public class DoubleSliderDefinition extends SliderBaseDefinition<Double> {
     protected Double step;
 
     public DoubleSliderDefinition() {
+        super(Double.class.getName());
         min = new Double(0.0);
         max = new Double(50.0);
         precision = new Double(1.0);

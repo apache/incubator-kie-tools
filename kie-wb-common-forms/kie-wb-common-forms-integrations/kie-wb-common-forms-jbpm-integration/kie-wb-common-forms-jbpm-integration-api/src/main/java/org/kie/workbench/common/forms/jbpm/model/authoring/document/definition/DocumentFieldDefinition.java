@@ -34,6 +34,10 @@ public class DocumentFieldDefinition extends AbstractFieldDefinition {
 
     public static final DocumentFieldType FIELD_TYPE = new DocumentFieldType();
 
+    public DocumentFieldDefinition() {
+        super("org.jbpm.document.service.impl.DocumentImpl");
+    }
+
     @Override
     public DocumentFieldType getFieldType() {
         return FIELD_TYPE;

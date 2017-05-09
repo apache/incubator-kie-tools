@@ -27,6 +27,7 @@ import org.kie.workbench.common.forms.common.rendering.client.widgets.util.Defau
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.SelectorFieldRenderer;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.ListBoxBaseDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 
 @Dependent
 public class ListBoxFieldRenderer<F extends ListBoxBaseDefinition, O extends SelectorOption<T>, T>
@@ -38,7 +39,7 @@ public class ListBoxFieldRenderer<F extends ListBoxBaseDefinition, O extends Sel
 
     @Override
     public String getName() {
-        return "ListBoxField";
+        return ListBoxFieldType.NAME;
     }
 
     @Override

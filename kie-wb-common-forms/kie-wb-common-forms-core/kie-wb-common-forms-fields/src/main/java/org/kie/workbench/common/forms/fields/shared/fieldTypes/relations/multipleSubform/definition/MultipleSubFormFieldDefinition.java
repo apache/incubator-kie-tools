@@ -76,6 +76,10 @@ public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition impl
         return FIELD_TYPE;
     }
 
+    public MultipleSubFormFieldDefinition() {
+        super(Object.class.getName());
+    }
+
     @Override
     public List<TableColumnMeta> getColumnMetas() {
         return columnMetas;

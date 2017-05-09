@@ -33,6 +33,10 @@ public class CheckBoxFieldDefinition extends AbstractFieldDefinition {
 
     public static final CheckBoxFieldType FIELD_TYPE = new CheckBoxFieldType();
 
+    public CheckBoxFieldDefinition() {
+        super(Boolean.class.getName());
+    }
+
     @Override
     public CheckBoxFieldType getFieldType() {
         return FIELD_TYPE;

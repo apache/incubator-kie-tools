@@ -53,6 +53,10 @@ public class TextAreaFieldDefinition extends AbstractFieldDefinition implements 
     @Min(1)
     protected Integer rows = 4;
 
+    public TextAreaFieldDefinition() {
+        super(String.class.getName());
+    }
+
     @Override
     public TextAreaFieldType getFieldType() {
         return FIELD_TYPE;

@@ -50,6 +50,7 @@ public class IntegerSliderDefinition extends SliderBaseDefinition<Integer> {
     protected Integer step;
 
     public IntegerSliderDefinition() {
+        super(Integer.class.getName());
         min = new Integer(0);
         max = new Integer(50);
         step = new Integer(1);

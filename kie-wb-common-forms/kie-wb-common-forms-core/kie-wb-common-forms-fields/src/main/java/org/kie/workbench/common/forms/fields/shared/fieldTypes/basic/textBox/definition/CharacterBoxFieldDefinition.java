@@ -38,6 +38,10 @@ public class CharacterBoxFieldDefinition extends TextBoxBaseDefinition {
     @SkipFormField
     protected Integer maxLength = 1;
 
+    public CharacterBoxFieldDefinition() {
+        super(Character.class.getName());
+    }
+
     @Override
     public Integer getMaxLength() {
         return maxLength;

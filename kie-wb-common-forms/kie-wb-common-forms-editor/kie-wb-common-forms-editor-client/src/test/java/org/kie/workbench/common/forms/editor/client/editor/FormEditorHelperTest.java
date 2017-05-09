@@ -26,6 +26,7 @@ import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.apache.deltaspike.core.util.StringUtils;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -59,9 +60,10 @@ import static org.mockito.Mockito.*;
 public class FormEditorHelperTest {
 
     private List<FieldDefinition> employeeFields;
-    private List<FieldDefinition> addressFields;
-    private List<FieldDefinition> departmentFields;
-    private FieldDefinition nameField, marriedField;
+
+    private FieldDefinition nameField;
+
+    private FieldDefinition marriedField;
 
     private FormEditorHelper formEditorHelper;
 
@@ -81,10 +83,7 @@ public class FormEditorHelperTest {
     private HTMLLayoutDragComponent htmlLayoutDragComponent;
 
     @Mock
-    private SyncBeanManager beanManager;
-
-    @Mock
-    private SyncBeanDef<EditorFieldLayoutComponent> fieldLayoutComponentDef;
+    private ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents;
 
     @Mock
     protected EventSourceMock<FormEditorContextResponse> eventMock;
@@ -110,9 +109,7 @@ public class FormEditorHelperTest {
 
     protected void loadContent() {
 
-        when(beanManager.lookupBean(eq(EditorFieldLayoutComponent.class))).thenReturn(fieldLayoutComponentDef);
-
-        when(fieldLayoutComponentDef.newInstance()).thenAnswer(invocationOnMock -> {
+        when(editorFieldLayoutComponents.get()).thenAnswer(invocationOnMock -> {
             final EditorFieldLayoutComponent mocked = mock(EditorFieldLayoutComponent.class);
             return mocked;
         });
@@ -123,6 +120,8 @@ public class FormEditorHelperTest {
             form.setId("_random_id");
 
             content = new FormModelerContent();
+
+            employeeFields.forEach(fieldDefinition -> content.getModelProperties().add(fieldDefinition.getBinding()));
 
             FormModel model = () -> "employee";
 
@@ -154,7 +153,7 @@ public class FormEditorHelperTest {
 
         formEditorHelper = new FormEditorHelper(testFieldManager,
                                                 eventMock,
-                                                beanManager);
+                                                editorFieldLayoutComponents);
 
         formEditorService.loadContent(null);
         formEditorHelper.initHelper(content);
@@ -295,7 +294,7 @@ public class FormEditorHelperTest {
 
     @Test
     public void testGetCompatibleFieldCodes() {
-        List<String> fieldCodes = formEditorHelper.getCompatibleFieldCodes(nameField);
+        List<String> fieldCodes = formEditorHelper.getCompatibleModelFields(nameField);
         assertTrue(fieldCodes.size() > 0);
         assertEquals(fieldCodes.get(0),
                      nameField.getId());
@@ -399,45 +398,5 @@ public class FormEditorHelperTest {
         employeeFields.add(lastName);
         employeeFields.add(birthday);
         employeeFields.add(married);
-
-        TextBoxFieldDefinition streetName = new TextBoxFieldDefinition();
-        streetName.setId("streetName");
-        streetName.setName("address_street");
-        streetName.setLabel("Street Name");
-        streetName.setPlaceHolder("Street Name");
-        streetName.setBinding("street");
-        streetName.setStandaloneClassName(String.class.getName());
-
-        TextBoxFieldDefinition num = new TextBoxFieldDefinition();
-        num.setId("num");
-        num.setName("address_num");
-        num.setLabel("#");
-        num.setPlaceHolder("#");
-        num.setBinding("num");
-        num.setStandaloneClassName(Integer.class.getName());
-
-        addressFields = new ArrayList<FieldDefinition>();
-        addressFields.add(streetName);
-        addressFields.add(num);
-
-        TextBoxFieldDefinition depName = new TextBoxFieldDefinition();
-        depName.setId("depName");
-        depName.setName("department_name");
-        depName.setLabel("Department Name");
-        depName.setPlaceHolder("Department Name");
-        depName.setBinding("name");
-        depName.setStandaloneClassName(String.class.getName());
-
-        TextBoxFieldDefinition phone = new TextBoxFieldDefinition();
-        phone.setId("phone");
-        phone.setName("department_phone");
-        phone.setLabel("Phone number");
-        phone.setPlaceHolder("Phone number");
-        phone.setBinding("phone");
-        phone.setStandaloneClassName(String.class.getName());
-
-        departmentFields = new ArrayList<>();
-        departmentFields.add(depName);
-        departmentFields.add(phone);
     }
 }

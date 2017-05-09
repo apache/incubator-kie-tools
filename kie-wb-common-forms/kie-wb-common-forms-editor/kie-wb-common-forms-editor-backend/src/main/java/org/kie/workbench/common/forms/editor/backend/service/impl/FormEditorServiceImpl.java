@@ -195,6 +195,7 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
                                         availableModelFields);
 
                     modelFields.forEach(fieldDefinition -> {
+                        result.getModelProperties().add(fieldDefinition.getBinding());
                         if (form.getFieldByName(fieldDefinition.getName()) == null) {
                             availableModelFields.add(fieldDefinition);
                         }

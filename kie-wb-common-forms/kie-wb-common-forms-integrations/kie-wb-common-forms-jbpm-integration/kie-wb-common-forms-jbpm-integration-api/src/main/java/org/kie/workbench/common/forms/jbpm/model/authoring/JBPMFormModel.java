@@ -18,9 +18,9 @@ package org.kie.workbench.common.forms.jbpm.model.authoring;
 
 import java.util.List;
 
-import org.kie.workbench.common.forms.model.FormModel;
+import org.kie.workbench.common.forms.model.DynamicModel;
 
-public interface JBPMFormModel extends FormModel {
+public interface JBPMFormModel extends DynamicModel {
 
     String getFormName();
 

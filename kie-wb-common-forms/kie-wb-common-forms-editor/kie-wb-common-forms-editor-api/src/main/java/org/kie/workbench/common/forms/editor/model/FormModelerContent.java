@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.forms.editor.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,7 @@ public class FormModelerContent {
     private Path path;
     private Overview overview;
     private FormDefinition definition;
+    private List<String> modelProperties = new ArrayList<>();
     private Map<String, List<FieldDefinition>> availableFields;
     private FormEditorRenderingContext renderingContext;
 
@@ -72,6 +74,10 @@ public class FormModelerContent {
 
     public Map<String, List<FieldDefinition>> getAvailableFields() {
         return availableFields;
+    }
+
+    public List<String> getModelProperties() {
+        return modelProperties;
     }
 
     @Override

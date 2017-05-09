@@ -48,7 +48,7 @@ public class DefaultFormModelCreationViewManager implements FormModelCreationVie
 
     @Override
     public void init(Path projectPath) {
-        // Nothing to initialize here
+        // Nothing to setUp here
     }
 
     @Override

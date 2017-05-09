@@ -34,6 +34,7 @@ public class AssigneeEditorFieldDefinition extends AbstractFieldDefinition {
     private Integer max;
 
     public AssigneeEditorFieldDefinition() {
+        super(String.class.getName());
         max = new Integer(-1);
     }
 

@@ -49,7 +49,7 @@ public class CheckBoxFieldProvider extends BasicTypeFieldProvider<CheckBoxFieldD
 
     @Override
     public CheckBoxFieldDefinition createFieldByType(FieldDataType typeInfo) {
-        return new CheckBoxFieldDefinition();
+        return getDefaultField();
     }
 
     @Override

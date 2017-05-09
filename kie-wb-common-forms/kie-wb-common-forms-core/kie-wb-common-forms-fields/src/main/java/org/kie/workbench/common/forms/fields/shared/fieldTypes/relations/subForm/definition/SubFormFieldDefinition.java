@@ -52,6 +52,10 @@ public class SubFormFieldDefinition extends AbstractFieldDefinition implements H
     @NotEmpty
     protected String nestedForm = "";
 
+    public SubFormFieldDefinition() {
+        super(Object.class.getName());
+    }
+
     @Override
     public SubFormFieldType getFieldType() {
         return FIELD_TYPE;

@@ -26,6 +26,10 @@ public abstract class SelectorFieldBaseDefinition<OPTION extends SelectorOption>
     @SkipFormField
     protected String dataProvider = "";
 
+    public SelectorFieldBaseDefinition(String className) {
+        super(className);
+    }
+
     public abstract List<OPTION> getOptions();
 
     public abstract void setOptions(List<OPTION> options);

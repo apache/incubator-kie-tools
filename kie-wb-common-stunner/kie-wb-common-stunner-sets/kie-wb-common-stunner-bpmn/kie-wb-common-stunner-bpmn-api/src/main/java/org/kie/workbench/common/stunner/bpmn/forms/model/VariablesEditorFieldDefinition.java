@@ -29,6 +29,10 @@ public class VariablesEditorFieldDefinition extends AbstractFieldDefinition {
 
     private String defaultValue;
 
+    public VariablesEditorFieldDefinition() {
+        super(String.class.getName());
+    }
+
     @Override
     public VariablesEditorFieldType getFieldType() {
         return FIELD_TYPE;

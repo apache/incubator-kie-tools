@@ -48,7 +48,7 @@ public class PictureFieldProvider extends BasicTypeFieldProvider<PictureFieldDef
 
     @Override
     public PictureFieldDefinition createFieldByType(FieldDataType typeInfo) {
-        return new PictureFieldDefinition();
+        return getDefaultField();
     }
 
     @Override

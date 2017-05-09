@@ -35,6 +35,10 @@ public class ComboBoxFieldDefinition<OPTIONS extends SelectorOption> extends Sel
 
     protected List<OPTIONS> options = new ArrayList<>();
 
+    public ComboBoxFieldDefinition() {
+        super(String.class.getName());
+    }
+
     @Override
     public ComboBoxFieldType getFieldType() {
         return FIELD_TYPE;

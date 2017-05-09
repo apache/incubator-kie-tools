@@ -41,6 +41,10 @@ public class PictureFieldDefinition extends AbstractFieldDefinition {
     )
     private PictureSize size = PictureSize.SMALL;
 
+    public PictureFieldDefinition() {
+        super(String.class.getName());
+    }
+
     @Override
     public PictureFieldType getFieldType() {
         return FIELD_TYPE;

@@ -23,19 +23,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorContextRequest;
 import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorContextResponse;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
+import org.kie.workbench.common.forms.model.DynamicModel;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.service.FieldManager;
@@ -49,7 +50,7 @@ public class FormEditorHelper {
 
     private Event<FormEditorContextResponse> responseEvent;
 
-    private SyncBeanManager beanManager;
+    private ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents;
 
     private FormModelerContent content;
 
@@ -60,10 +61,10 @@ public class FormEditorHelper {
     @Inject
     public FormEditorHelper(FieldManager fieldManager,
                             Event<FormEditorContextResponse> responseEvent,
-                            SyncBeanManager beanManager) {
+                            ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents) {
         this.fieldManager = fieldManager;
         this.responseEvent = responseEvent;
-        this.beanManager = beanManager;
+        this.editorFieldLayoutComponents = editorFieldLayoutComponents;
     }
 
     public FormModelerContent getContent() {
@@ -79,13 +80,13 @@ public class FormEditorHelper {
         fieldLayoutComponents = new ArrayList<>();
 
         for (String baseType : fieldManager.getBaseFieldTypes()) {
-            SyncBeanDef<EditorFieldLayoutComponent> beanDef = beanManager.lookupBean(EditorFieldLayoutComponent.class);
-            EditorFieldLayoutComponent layoutComponent = beanDef.newInstance();
+            EditorFieldLayoutComponent layoutComponent = editorFieldLayoutComponents.get();
             if (layoutComponent != null) {
                 FieldDefinition field = fieldManager.getDefinitionByFieldTypeName(baseType);
                 field.setId(baseType);
                 layoutComponent.init(content.getRenderingContext(),
                                      field);
+                layoutComponent.setDisabled(true);
                 fieldLayoutComponents.add(layoutComponent);
             }
         }
@@ -150,7 +151,7 @@ public class FormEditorHelper {
             FieldDefinition field = it.next();
             if (field.getId().equals(fieldId)) {
                 it.remove();
-                if (addToAvailables && field.getBinding() != null) {
+                if (addToAvailables && content.getModelProperties().contains(field.getBinding())) {
                     availableFields.put(field.getId(),
                                         field);
                 }
@@ -171,11 +172,11 @@ public class FormEditorHelper {
         }
     }
 
-    public List<String> getCompatibleFieldCodes(FieldDefinition field) {
+    public List<String> getCompatibleModelFields(FieldDefinition field) {
         Collection<String> compatibles = fieldManager.getCompatibleFields(field);
 
         Set<String> result = new TreeSet<>();
-        if (field.getBinding() != null) {
+        if (field.getBinding() != null && !field.getBinding().isEmpty()) {
             result.add(field.getBinding());
         }
         for (String compatibleType : compatibles) {
@@ -192,39 +193,56 @@ public class FormEditorHelper {
         return fieldManager.getCompatibleFields(field);
     }
 
-    public FieldDefinition switchToField(FieldDefinition field,
+    public FieldDefinition switchToField(FieldDefinition originalField,
                                          String bindingExpression) {
-        FieldDefinition resultDefinition = fieldManager.getDefinitionByFieldTypeName(field.getFieldType().getTypeName());
 
-        // TODO: make settings copy optional
-        resultDefinition.copyFrom(field);
-
-        // Handling the change when the field binding is going to be removed
-        if (bindingExpression == null || bindingExpression.equals("")) {
-            resultDefinition.setName(generateUnbindedFieldName(resultDefinition));
-            content.getDefinition().getFields().add(resultDefinition);
-            return resultDefinition;
+        if (content.getDefinition().getFieldByBinding(bindingExpression) != null) {
+            return null;
         }
 
-        // Handling the binding change
-        for (Iterator<FieldDefinition> it = availableFields.values().iterator(); it.hasNext(); ) {
-            FieldDefinition destField = it.next();
-            if (destField.getBinding().equals(bindingExpression)) {
+        FieldDefinition resultField = fieldManager.getDefinitionByFieldTypeName(originalField.getFieldType().getTypeName());
 
-                resultDefinition.setId(destField.getId());
-                resultDefinition.setName(destField.getName());
+        if (bindingExpression == null || bindingExpression.equals("")) {
+            resultField.setName(generateUnbindedFieldName(resultField));
+        } else {
+            // Search if there's an available field with the specified binding
+            for (Iterator<FieldDefinition> it = availableFields.values().iterator(); it.hasNext(); ) {
+                FieldDefinition availableField = it.next();
+                if (availableField.getBinding().equals(bindingExpression)) {
 
-                resultDefinition.copyFrom(destField);
+                    // Check types if we are binding a fields on dynamicModel && change field type if needed
+                    if (content.getDefinition().getModel() instanceof DynamicModel && !resultField.getFieldType().equals(availableField.getFieldType())) {
+                        resultField = fieldManager.getFieldFromProvider(availableField.getFieldType().getTypeName(), availableField.getFieldTypeInfo());
+                    }
 
-                content.getDefinition().getFields().add(resultDefinition);
+                    resultField.setId(availableField.getId());
+                    resultField.setName(availableField.getName());
 
-                it.remove();
+                    resultField.copyFrom(availableField);
 
-                return resultDefinition;
+                    content.getDefinition().getFields().add(resultField);
+
+                    it.remove();
+
+                    return resultField;
+                }
             }
         }
 
-        return null;
+        // If we arrive here is because we have a dynamic binding or we are unbinding a field
+        resultField.copyFrom(originalField);
+        resultField.setBinding(bindingExpression);
+
+        if(resultField.getName() == null) {
+            String name = bindingExpression;
+            if(name == null || name.isEmpty()) {
+                name = generateUnbindedFieldName(resultField);
+            }
+            resultField.setName(name);
+        }
+        content.getDefinition().getFields().add(resultField);
+
+        return resultField;
     }
 
     public FieldDefinition switchToFieldType(FieldDefinition field,
@@ -258,5 +276,10 @@ public class FormEditorHelper {
 
     public FormEditorRenderingContext getRenderingContext() {
         return content.getRenderingContext();
+    }
+
+    @PreDestroy
+    public void destroy() {
+        editorFieldLayoutComponents.destroyAll();
     }
 }

@@ -34,6 +34,10 @@ public class ColorPickerFieldDefinition extends AbstractFieldDefinition {
     @Pattern(regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message = "Invalid color code")
     private String defaultValue;
 
+    public ColorPickerFieldDefinition() {
+        super(String.class.getName());
+    }
+
     public String getDefaultValue() {
         return defaultValue;
     }

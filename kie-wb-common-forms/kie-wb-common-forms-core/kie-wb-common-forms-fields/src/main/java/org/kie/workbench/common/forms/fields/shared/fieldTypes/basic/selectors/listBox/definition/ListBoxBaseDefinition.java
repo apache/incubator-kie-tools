@@ -24,6 +24,10 @@ public abstract class ListBoxBaseDefinition<OPTIONS extends SelectorOption> exte
 
     public static final ListBoxFieldType FIELD_TYPE = new ListBoxFieldType();
 
+    public ListBoxBaseDefinition(String className) {
+        super(className);
+    }
+
     @Override
     public ListBoxFieldType getFieldType() {
         return FIELD_TYPE;

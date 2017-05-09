@@ -40,6 +40,10 @@ public class TextBoxFieldDefinition extends TextBoxBaseDefinition {
     @Min(1)
     protected Integer maxLength = 100;
 
+    public TextBoxFieldDefinition() {
+        super(String.class.getName());
+    }
+
     @Override
     public Integer getMaxLength() {
         return maxLength;

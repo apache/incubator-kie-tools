@@ -53,6 +53,10 @@ public class IntegerBoxFieldDefinition extends AbstractFieldDefinition implement
     @Min(1)
     protected Integer maxLength = 100;
 
+    public IntegerBoxFieldDefinition() {
+        super(Integer.class.getName());
+    }
+
     @Override
     public IntegerBoxFieldType getFieldType() {
         return FIELD_TYPE;

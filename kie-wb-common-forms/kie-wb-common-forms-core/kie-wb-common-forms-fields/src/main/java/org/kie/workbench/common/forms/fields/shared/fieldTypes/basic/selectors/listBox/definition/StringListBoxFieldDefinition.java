@@ -40,6 +40,10 @@ public class StringListBoxFieldDefinition extends ListBoxBaseDefinition<StringSe
     )
     protected List<StringSelectorOption> options = new ArrayList<>();
 
+    public StringListBoxFieldDefinition() {
+        super(String.class.getName());
+    }
+
     @Override
     public List<StringSelectorOption> getOptions() {
         return options;

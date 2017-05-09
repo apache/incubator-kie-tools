@@ -40,6 +40,10 @@ public class StringRadioGroupFieldDefinition extends RadioGroupBaseDefinition<St
     )
     protected List<StringSelectorOption> options = new ArrayList<>();
 
+    public StringRadioGroupFieldDefinition() {
+        super(String.class.getName());
+    }
+
     @Override
     public List<StringSelectorOption> getOptions() {
         return options;

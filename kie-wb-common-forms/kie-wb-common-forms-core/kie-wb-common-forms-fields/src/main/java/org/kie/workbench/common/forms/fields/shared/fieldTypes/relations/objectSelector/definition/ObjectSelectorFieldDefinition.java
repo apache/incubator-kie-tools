@@ -50,6 +50,10 @@ public class ObjectSelectorFieldDefinition extends AbstractFieldDefinition imple
     )
     protected String mask = "";
 
+    public ObjectSelectorFieldDefinition() {
+        super(Object.class.getName());
+    }
+
     @Override
     public ObjectSelectorFieldType getFieldType() {
         return FIELD_TYPE;

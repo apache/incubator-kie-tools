@@ -54,6 +54,6 @@ public class DatePickerFieldProvider extends BasicTypeFieldProvider<DatePickerFi
 
     @Override
     public DatePickerFieldDefinition createFieldByType(FieldDataType typeInfo) {
-        return new DatePickerFieldDefinition();
+        return getDefaultField();
     }
 }
