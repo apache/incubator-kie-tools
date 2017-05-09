@@ -223,6 +223,11 @@ public class ProjectView
     }
 
     @Override
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber.setValue(Integer.toString(pageNumber));
+    }
+
+    @Override
     public Integer getStep() {
         return Integer.valueOf(howManyOnOnePage.getValue());
     }
@@ -231,11 +236,6 @@ public class ProjectView
     public void range(int from,
                       int to) {
         fromToRange.setInnerHTML(from + " - " + to);
-    }
-
-    @Override
-    public void setPageNumber(int pageNumber) {
-        this.pageNumber.setValue(Integer.toString(pageNumber));
     }
 
     @Override
@@ -280,11 +280,9 @@ public class ProjectView
         presenter.onToPrevious();
     }
 
-    @SinkNative(Event.ONKEYDOWN)
+    @SinkNative(Event.ONKEYUP)
     @EventHandler("filter-text")
     public void onFilterTextChange(Event e) {
-        if (e.getKeyCode() == KeyCodes.KEY_ENTER) {
-            presenter.onUpdateAssets();
-        }
+        presenter.onUpdateAssets();
     }
 }

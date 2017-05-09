@@ -16,25 +16,18 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
-import java.util.Date;
-
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Repository;
+import com.google.gwt.user.client.Timer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.library.api.AssetInfo;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
-import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
+import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.*;
@@ -43,6 +36,9 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectScreenReloadTest
         extends ProjectScreenTestBase {
+
+    @Mock
+    private Timer timer;
 
     private int numberOfCalls;
 
@@ -73,7 +69,17 @@ public class ProjectScreenReloadTest
 
                 onUpdateAssets();
             }
+
+            @Override
+            protected Timer createTimer() {
+                return timer;
+            }
         };
+
+        doAnswer(a -> {
+            projectScreen.loadProjectInfo();
+            return null;
+        }).when(timer).schedule(anyInt());
 
         mockClientResourceType();
         when(libraryService.getProjectAssets(any(ProjectAssetsQuery.class))).thenAnswer(new Answer<Object>() {
@@ -197,7 +203,4 @@ public class ProjectScreenReloadTest
         assertEquals(4,
                      numberOfCalls);
     }
-
-
-
 }

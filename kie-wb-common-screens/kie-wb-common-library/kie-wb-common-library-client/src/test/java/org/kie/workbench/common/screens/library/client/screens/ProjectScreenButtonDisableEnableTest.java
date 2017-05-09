@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
+import com.google.gwt.user.client.Timer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.AssetInfo;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 
@@ -30,6 +32,9 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectScreenButtonDisableEnableTest
         extends ProjectScreenTestBase {
+
+    @Mock
+    private Timer timer;
 
     @Before
     public void setup() {
@@ -45,10 +50,20 @@ public class ProjectScreenButtonDisableEnableTest
             protected void reload() {
                 onUpdateAssets();
             }
+
+            @Override
+            protected Timer createTimer() {
+                return timer;
+            }
         });
 
         doReturn("createdTime").when(projectScreen).getCreatedTime(any(AssetInfo.class));
         doReturn("lastModifiedTime").when(projectScreen).getLastModifiedTime(any(AssetInfo.class));
+
+        doAnswer(a -> {
+            projectScreen.loadProjectInfo();
+            return null;
+        }).when(timer).schedule(anyInt());
 
         mockClientResourceType();
         mockAssets();

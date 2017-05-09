@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
@@ -41,6 +43,9 @@ import static org.mockito.Mockito.*;
 public class ProjectScreenTest
         extends ProjectScreenTestBase {
 
+    @Mock
+    private Timer timer;
+
     @Before
     public void setup() {
 
@@ -55,10 +60,20 @@ public class ProjectScreenTest
             protected void reload() {
                 onUpdateAssets();
             }
+
+            @Override
+            protected Timer createTimer() {
+                return timer;
+            }
         });
 
         doReturn("createdTime").when(projectScreen).getCreatedTime(any(AssetInfo.class));
         doReturn("lastModifiedTime").when(projectScreen).getLastModifiedTime(any(AssetInfo.class));
+
+        doAnswer(a -> {
+            projectScreen.loadProjectInfo();
+            return null;
+        }).when(timer).schedule(anyInt());
 
         mockClientResourceType();
         mockAssets();

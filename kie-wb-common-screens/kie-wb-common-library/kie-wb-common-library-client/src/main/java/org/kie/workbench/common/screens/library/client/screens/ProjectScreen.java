@@ -22,6 +22,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.ext.uberfire.social.activities.client.widgets.utils.SocialDateFormatter;
 import org.jboss.errai.common.client.api.Caller;
@@ -56,67 +57,19 @@ import org.uberfire.util.URIUtil;
         owningPerspective = LibraryPerspective.class)
 public class ProjectScreen {
 
-    public interface View extends UberElement<ProjectScreen> {
-
-        void setProjectName(String projectName);
-
-        void clearAssets();
-
-        void addAsset(final String assetName,
-                      final String assetPath,
-                      final String assetType,
-                      final IsWidget assetIcon,
-                      final String lastModifiedTime,
-                      final String createdTime,
-                      final Command details,
-                      final Command select);
-
-        String getFilterValue();
-
-        void setFilterName(String name);
-
-        Integer getPageNumber();
-
-        Integer getStep();
-
-        void range(final int from,
-                   final int to);
-
-        void setPageNumber(final int pageNumber);
-
-        void showIndexingIncomplete();
-
-        void hideEmptyState();
-
-        void showSearchHitNothing();
-
-        void showNoMoreAssets();
-
-        void setForwardDisabled(final boolean disabled);
-
-        void setBackwardDisabled(final boolean disabled);
-    }
-
     private View view;
-
     private LibraryPlaces libraryPlaces;
-
     private TranslationService ts;
-
     private Caller<LibraryService> libraryService;
-
     private Classifier assetClassifier;
-
     private Event<AssetDetailEvent> assetDetailEvent;
-
     private BusyIndicatorView busyIndicatorView;
-
     private ProjectInfo projectInfo;
-
     private List<AssetInfo> assets;
-
     private Reloader reloader = new Reloader();
-
+    private Timer projectLoadTimer;
+    private boolean isProjectLoadPending = false;
+    private boolean isProjectLoadInProgress = false;
     @Inject
     public ProjectScreen(final View view,
                          final LibraryPlaces libraryPlaces,
@@ -148,7 +101,25 @@ public class ProjectScreen {
     }
 
     public void onUpdateAssets() {
-        loadProjectInfo();
+        cancel();
+        projectLoadTimer = createTimer();
+        projectLoadTimer.schedule(250);
+    }
+
+    protected Timer createTimer() {
+        return new Timer() {
+            @Override
+            public void run() {
+                loadProjectInfo();
+            }
+        };
+    }
+
+    private void cancel() {
+        if (projectLoadTimer != null) {
+            projectLoadTimer.cancel();
+            projectLoadTimer = null;
+        }
     }
 
     public void goToSettings() {
@@ -177,8 +148,14 @@ public class ProjectScreen {
         return selectCommand(assetPath);
     }
 
-    private void loadProjectInfo() {
+    void loadProjectInfo() {
+        if (isProjectLoadInProgress) {
+            isProjectLoadPending = true;
+            return;
+        }
         busyIndicatorView.showBusyIndicator(ts.getTranslation(LibraryConstants.LoadingAssets));
+
+        isProjectLoadInProgress = true;
 
         final int firstIndex = getFirstIndex();
 
@@ -196,7 +173,14 @@ public class ProjectScreen {
 
                 busyIndicatorView.hideBusyIndicator();
 
-                reloader.check(assetsList);
+                isProjectLoadInProgress = false;
+
+                if (isProjectLoadPending) {
+                    isProjectLoadPending = false;
+                    loadProjectInfo();
+                } else {
+                    reloader.check(assetsList);
+                }
             }
         }).getProjectAssets(new ProjectAssetsQuery(projectInfo.getProject(),
                                                    view.getFilterValue(),
@@ -316,6 +300,47 @@ public class ProjectScreen {
                                                }
                                            },
                                            1000);
+    }
+
+    public interface View extends UberElement<ProjectScreen> {
+
+        void setProjectName(String projectName);
+
+        void clearAssets();
+
+        void addAsset(final String assetName,
+                      final String assetPath,
+                      final String assetType,
+                      final IsWidget assetIcon,
+                      final String lastModifiedTime,
+                      final String createdTime,
+                      final Command details,
+                      final Command select);
+
+        String getFilterValue();
+
+        void setFilterName(String name);
+
+        Integer getPageNumber();
+
+        void setPageNumber(final int pageNumber);
+
+        Integer getStep();
+
+        void range(final int from,
+                   final int to);
+
+        void showIndexingIncomplete();
+
+        void hideEmptyState();
+
+        void showSearchHitNothing();
+
+        void showNoMoreAssets();
+
+        void setForwardDisabled(final boolean disabled);
+
+        void setBackwardDisabled(final boolean disabled);
     }
 
     /**

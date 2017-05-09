@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,60 +16,36 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 import com.google.gwt.user.client.Timer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.kie.workbench.common.screens.library.api.AssetInfo;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(Parameterized.class)
-public class ProjectScreenFirstIndexTest
+@RunWith(MockitoJUnitRunner.class)
+public class ProjectScreenSequentialLoadRequestTest
         extends ProjectScreenTestBase {
 
-    private final int givenStep;
-    private final int givenPageNumber;
-    private final int expectedStartIndex;
     @Mock
     private Timer timer;
 
-    public ProjectScreenFirstIndexTest(final int givenStep,
-                                       final int givenPageNumber,
-                                       final int expectedStartIndex) {
-
-        this.givenStep = givenStep;
-        this.givenPageNumber = givenPageNumber;
-        this.expectedStartIndex = expectedStartIndex;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> caseSensitivity() {
-        return Arrays.asList(
-                new Object[][]{
-                        // Step, Page Number, Start Index
-                        {15, 1, 0},
-                        {15, 2, 15},
-                        {45, 1, 0},
-                        {15, 0, 0},
-                        {5, 10, 45}
-                }
-        );
-    }
+    @Captor
+    private ArgumentCaptor<ProjectAssetsQuery> queryCaptor;
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
 
         projectScreen = spy(new ProjectScreen(view,
                                               libraryPlaces,
@@ -100,27 +76,39 @@ public class ProjectScreenFirstIndexTest
         mockClientResourceType();
         mockAssets();
 
-        when(view.getFilterValue()).thenReturn("");
         when(view.getStep()).thenReturn(15);
 
         projectInfo = createProjectInfo();
-        projectScreen.onStartup(new ProjectDetailEvent(projectInfo));
     }
 
     @Test
-    public void startIndexTest() throws Exception {
+    public void sequentialLoadRequestTest() {
+        final boolean[] inCall = {true};
+        doAnswer(a -> {
+            //This mocks a successive request to load the asset list whilst the first request is incomplete with a filter "ab"
+            if (inCall[0]) {
+                when(view.getFilterValue()).thenReturn("ab");
+                projectScreen.onUpdateAssets();
+                inCall[0] = false;
+            }
 
-        reset(libraryService);
-        doReturn(assets).when(libraryService).getProjectAssets(any(ProjectAssetsQuery.class));
+            return assets;
+        }).when(libraryService).getProjectAssets(any(ProjectAssetsQuery.class));
 
-        when(view.getStep()).thenReturn(givenStep);
-        when(view.getPageNumber()).thenReturn(givenPageNumber);
+        //This invokes the first request to load the asset list with a filter "a"
+        when(view.getFilterValue()).thenReturn("a");
+        projectScreen.onStartup(new ProjectDetailEvent(projectInfo));
 
-        projectScreen.onUpdateAssets();
         verify(libraryService,
-               times(1)).getProjectAssets(queryArgumentCaptor.capture());
-
-        assertEquals(expectedStartIndex,
-                     queryArgumentCaptor.getValue().getStartIndex());
+               times(2)).getProjectAssets(queryCaptor.capture());
+        final List<ProjectAssetsQuery> queries = queryCaptor.getAllValues();
+        assertEquals(2,
+                     queries.size());
+        assertEquals("a",
+                     queries.get(0).getFilter());
+        assertEquals("ab",
+                     queries.get(1).getFilter());
+        verify(view,
+               times(2)).getFilterValue();
     }
 }

@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.library.client.screens;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -39,6 +38,7 @@ import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -61,7 +61,7 @@ public class ProjectScreenTestBase {
     protected Classifier assetClassifier;
 
     @Mock
-    protected Event<AssetDetailEvent> assetDetailEvent;
+    protected EventSourceMock<AssetDetailEvent> assetDetailEvent;
 
     @Mock
     protected BusyIndicatorView busyIndicatorView;
