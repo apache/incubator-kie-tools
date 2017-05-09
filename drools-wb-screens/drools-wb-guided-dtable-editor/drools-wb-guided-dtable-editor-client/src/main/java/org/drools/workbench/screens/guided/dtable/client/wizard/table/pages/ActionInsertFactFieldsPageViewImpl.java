@@ -242,7 +242,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         chosenPatternsWidget.setEmptyListWidget( lstEmpty );
 
-        final MultiSelectionModel<ActionInsertFactFieldsPattern> selectionModel = new MultiSelectionModel<ActionInsertFactFieldsPattern>();
+        final MultiSelectionModel<ActionInsertFactFieldsPattern> selectionModel = new MultiSelectionModel<ActionInsertFactFieldsPattern>(System::identityHashCode);
         chosenPatternsWidget.setSelectionModel( selectionModel );
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
@@ -317,7 +317,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         chosenFieldsWidget.setEmptyListWidget( lstEmpty );
 
-        final MultiSelectionModel<ActionInsertFactCol52> selectionModel = new MultiSelectionModel<ActionInsertFactCol52>();
+        final MultiSelectionModel<ActionInsertFactCol52> selectionModel = new MultiSelectionModel<ActionInsertFactCol52>(System::identityHashCode);
         chosenFieldsWidget.setSelectionModel( selectionModel );
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {

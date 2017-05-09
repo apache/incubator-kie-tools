@@ -287,7 +287,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         chosenConditionsWidget.setEmptyListWidget( lstEmpty );
 
-        final MultiSelectionModel<ConditionCol52> selectionModel = new MultiSelectionModel<ConditionCol52>();
+        final MultiSelectionModel<ConditionCol52> selectionModel = new MultiSelectionModel<ConditionCol52>(System::identityHashCode);
         chosenConditionsWidget.setSelectionModel( selectionModel );
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {

@@ -186,7 +186,7 @@ public class FactPatternsPageViewImpl extends Composite
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         chosenPatternWidget.setEmptyListWidget( lstEmpty );
 
-        final MultiSelectionModel<Pattern52> selectionModel = new MultiSelectionModel<Pattern52>();
+        final MultiSelectionModel<Pattern52> selectionModel = new MultiSelectionModel<Pattern52>(System::identityHashCode);
         chosenPatternWidget.setSelectionModel( selectionModel );
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {

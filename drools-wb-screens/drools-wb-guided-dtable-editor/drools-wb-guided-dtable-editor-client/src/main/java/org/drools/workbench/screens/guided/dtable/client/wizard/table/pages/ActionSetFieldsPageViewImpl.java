@@ -234,7 +234,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         chosenFieldsWidget.setEmptyListWidget( lstEmpty );
 
-        final MultiSelectionModel<ActionSetFieldCol52> selectionModel = new MultiSelectionModel<ActionSetFieldCol52>();
+        final MultiSelectionModel<ActionSetFieldCol52> selectionModel = new MultiSelectionModel<ActionSetFieldCol52>(System::identityHashCode);
         chosenFieldsWidget.setSelectionModel( selectionModel );
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
