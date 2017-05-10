@@ -98,7 +98,7 @@ public class ActionSetFactWrapper implements ActionWrapper {
 
     @Override
     public String getFactType() {
-        return "";
+        return plugin.getPresenter().getModel().getConditionPattern(getBoundName()).getFactType();
     }
 
     @Override

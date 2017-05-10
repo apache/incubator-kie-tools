@@ -370,15 +370,22 @@ public class ActionSetFactPluginTest {
     @Test
     public void testSetFactFieldWhenFactPatternIsNotNew() {
         final AsyncPackageDataModelOracle oracle = mock(AsyncPackageDataModelOracle.class);
-        final ActionSetFactWrapper actionWrapper = mock(ActionSetFactWrapper.class);
         final PatternWrapper patternWrapper = mock(PatternWrapper.class);
-
-        doReturn(false).when(plugin).isNewFactPattern();
-        doReturn(actionWrapper).when(plugin).newActionSetFactWrapper();
+        final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
+        final Pattern52 pattern = mock(Pattern52.class);
 
         doReturn(oracle).when(presenter).getDataModelOracle();
-        doReturn("type").when(oracle).getFieldType(any(),
-                                                   any());
+        doReturn(presenter).when(plugin).getPresenter();
+        doReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY).when(model).getTableFormat();
+        doReturn(model).when(presenter).getModel();
+        doReturn(pattern).when(model).getConditionPattern(eq("boundName"));
+        doReturn("factType").when(pattern).getFactType();
+        doReturn("type").when(oracle).getFieldType(eq("factType"),
+                                                   eq("selectedValue"));
+
+        final ActionSetFactWrapper actionWrapper = spy(new ActionSetFactWrapper(plugin));
+        doReturn(false).when(plugin).isNewFactPattern();
+        doReturn(actionWrapper).when(plugin).newActionSetFactWrapper();
 
         doReturn("factType").when(patternWrapper).getFactType();
         doReturn("boundName").when(patternWrapper).getBoundName();
