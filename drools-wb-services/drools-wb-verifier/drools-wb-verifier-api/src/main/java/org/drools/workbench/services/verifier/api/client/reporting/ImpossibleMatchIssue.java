@@ -108,4 +108,14 @@ public class ImpossibleMatchIssue
         result = 31 * result + (ruleId != null ? ~~ruleId.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
