@@ -133,7 +133,8 @@ public class WiresConnector
     }
 
     public void setWiresConnectorHandler( final HandlerRegistrationManager m_registrationManager,
-                                          final WiresConnectorHandler handler ) {
+                                          final WiresConnectorHandler handler )
+    {
 
         final Group group = getGroup();
 

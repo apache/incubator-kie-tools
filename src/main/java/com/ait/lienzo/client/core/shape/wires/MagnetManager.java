@@ -159,7 +159,7 @@ public class MagnetManager
                 }
                 else
                 {
-                    return Direction.NORTH_WEST;
+                    return Direction.WEST;//Direction.NORTH_WEST;
                 }
             }
             else
@@ -174,7 +174,7 @@ public class MagnetManager
                 }
                 else
                 {
-                    return Direction.SOUTH_WEST;
+                    return Direction.WEST;//Direction.SOUTH_WEST;
                 }
             }
         }
@@ -192,7 +192,7 @@ public class MagnetManager
                 }
                 else
                 {
-                    return Direction.NORTH_EAST;
+                    return Direction.EAST;//Direction.NORTH_EAST;
                 }
             }
             else
@@ -207,7 +207,7 @@ public class MagnetManager
                 }
                 else
                 {
-                    return Direction.SOUTH_EAST;
+                    return Direction.EAST;//Direction.SOUTH_EAST;
                 }
             }
         }

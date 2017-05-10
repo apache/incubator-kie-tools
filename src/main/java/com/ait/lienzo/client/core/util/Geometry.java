@@ -586,6 +586,11 @@ public final class Geometry
         return (Math.abs(dx) > Math.abs(dy)) ? (dy / dx) : (dx / dy);
     }
 
+    public static final double distance(final double x0, final double y0, double x1, double y1)
+    {
+        return distance(x1 - x0, y1 - y0);
+    }
+
     public static final double distance(final double dx, final double dy)
     {
         return Math.sqrt((dx * dx) + (dy * dy));
@@ -1266,6 +1271,11 @@ public final class Geometry
         return new Point2DArray(c, n, ne, e, se, s, sw, w, nw);
     }
 
+    public static final Direction getQuadrant(final Point2D c, final Point2D p1)
+    {
+        return getQuadrant(c.getX(), c.getY(), p1.getX(), p1.getY());
+    }
+
     /**
      * Returns the NESW quadrant the point is in.  The delta from the center
      * NE x > 0, y < 0
@@ -1273,22 +1283,23 @@ public final class Geometry
      * SW x <= 0, y >= 0
      * NW x <= 0, y < 0
      *
+     * @param cx
+     * @param cy*
      * @param x0
      * @param y0
-     * @param c
      * @return
      */
-    public static final Direction getQuadrant(final double x0, final double y0, final Point2D c)
+    public static final Direction getQuadrant(final double cx, double cy, final double x0, final double y0)
     {
-        if (x0 > c.getX() && y0 < c.getY())
+        if (x0 > cx && y0 < cy)
         {
             return Direction.NORTH_EAST;
         }
-        if (x0 > c.getX() && y0 >= c.getY())
+        if (x0 > cx && y0 >= cy)
         {
             return Direction.SOUTH_EAST;
         }
-        if (x0 <= c.getX() && y0 >= c.getY())
+        if (x0 <= cx && y0 >= cy)
         {
             return Direction.SOUTH_WEST;
         }
