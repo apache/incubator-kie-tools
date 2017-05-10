@@ -114,6 +114,9 @@ public class Constants {
     public static final String NewContainerFormView_NewContainerWizardSaveError = "NewContainerFormView.NewContainerWizardSaveError";
 
     @TranslationKey(defaultValue = "")
+    public static final String NewContainerFormView_StartContainerText = "NewContainerFormView.StartContainerText";
+
+    @TranslationKey(defaultValue = "")
     public static final String NewContainerFormView_TitleText = "NewContainerFormView.TitleText";
 
     @TranslationKey(defaultValue = "")

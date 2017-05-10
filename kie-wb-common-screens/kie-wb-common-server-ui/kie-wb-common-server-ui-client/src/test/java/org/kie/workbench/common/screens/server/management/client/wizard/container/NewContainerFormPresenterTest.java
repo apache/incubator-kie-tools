@@ -270,4 +270,27 @@ public class NewContainerFormPresenterTest {
 
         verify( view ).setContainerName( path );
     }
+
+    @Test
+    public void testNewContainerStarted() {
+        final String path = "org:kie:1.0";
+        final GAV gav = new GAV( path );
+        when( m2RepoService.loadGAVFromJar( path ) ).thenReturn( gav );
+        when( view.getContainerName() ).thenReturn( "containerName" );
+        when( view.getContainerAlias() ).thenReturn( "containerAlias" );
+        when( view.getGroupId() ).thenReturn( gav.getGroupId() );
+        when( view.getArtifactId() ).thenReturn( gav.getArtifactId() );
+        when( view.getVersion() ).thenReturn( gav.getVersion() );
+        when( view.isStartContainer() ).thenReturn( true );
+
+        presenter.asWidget();
+
+
+        final ContainerSpec containerSpec = presenter.buildContainerSpec( "templateId", Collections.<Capability, ContainerConfig>emptyMap() );
+
+        assertEquals( new ReleaseId( gav.getGroupId(), gav.getArtifactId(), gav.getVersion() ), containerSpec.getReleasedId() );
+        assertEquals( KieContainerStatus.STARTED, containerSpec.getStatus() );
+        assertEquals( "containerAlias", containerSpec.getContainerName() );
+        assertEquals( "containerName", containerSpec.getId() );
+    }
 }

@@ -25,6 +25,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
+import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -87,6 +88,10 @@ public class NewContainerFormView extends Composite
     TextBox version;
 
     @Inject
+    @DataField("new-start-container")
+    CheckBox startContainer;
+
+    @Inject
     @DataField("content-area")
     Div content;
 
@@ -147,6 +152,7 @@ public class NewContainerFormView extends Composite
                 fireChangeHandlers();
             }
         } );
+        startContainer.setText(getStartContainerCheckBoxText());
     }
 
     private void fireChangeHandlers() {
@@ -172,6 +178,7 @@ public class NewContainerFormView extends Composite
         groupId.setText( "" );
         artifactId.setText( "" );
         version.setText( "" );
+        startContainer.setValue( false );
 
         noErrors();
     }
@@ -228,6 +235,16 @@ public class NewContainerFormView extends Composite
     @Override
     public void setContainerName( final String value ) {
         containerName.setText( value );
+    }
+
+    @Override
+    public boolean isStartContainer() {
+        return startContainer.getValue();
+    }
+
+    @Override
+    public void setStartContainer(boolean startContainer) {
+        this.startContainer.setValue( startContainer );
     }
 
     @Override
@@ -304,5 +321,9 @@ public class NewContainerFormView extends Composite
 
     private String getTitleText() {
         return translationService.format( Constants.NewContainerFormView_TitleText );
+    }
+
+    private String getStartContainerCheckBoxText() {
+        return translationService.format( Constants.NewContainerFormView_StartContainerText );
     }
 }

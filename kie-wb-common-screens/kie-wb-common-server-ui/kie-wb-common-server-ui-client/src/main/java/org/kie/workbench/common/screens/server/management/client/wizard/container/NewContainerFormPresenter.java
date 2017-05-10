@@ -66,6 +66,8 @@ public class NewContainerFormPresenter implements WizardPage {
 
         void setContainerName( final String containerName );
 
+        void setStartContainer( boolean startContainer );
+
         String getContainerName();
 
         String getContainerAlias();
@@ -75,6 +77,8 @@ public class NewContainerFormPresenter implements WizardPage {
         String getArtifactId();
 
         String getVersion();
+
+        boolean isStartContainer();
 
         void errorOnContainerName();
 
@@ -334,7 +338,7 @@ public class NewContainerFormPresenter implements WizardPage {
                                   view.getContainerAlias(),
                                   new ServerTemplateKey( serverTemplateId, null ),
                                   new ReleaseId( view.getGroupId(), view.getArtifactId(), view.getVersion() ),
-                                  KieContainerStatus.STOPPED,
+                                  view.isStartContainer() ? KieContainerStatus.STARTED : KieContainerStatus.STOPPED,
                                   configs );
     }
 
