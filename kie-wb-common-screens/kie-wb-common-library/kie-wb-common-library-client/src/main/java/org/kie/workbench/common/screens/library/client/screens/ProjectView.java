@@ -24,7 +24,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Form;
 import org.jboss.errai.common.client.dom.Input;
 import org.jboss.errai.common.client.dom.Select;
 import org.jboss.errai.common.client.dom.Span;
@@ -51,7 +50,7 @@ public class ProjectView
     Div projectToolbar;
     @Inject
     @DataField("assets-toolbar")
-    Form assetsToolbar;
+    Div assetsToolbar;
     @Inject
     @DataField("details-container")
     Div detailsContainer;

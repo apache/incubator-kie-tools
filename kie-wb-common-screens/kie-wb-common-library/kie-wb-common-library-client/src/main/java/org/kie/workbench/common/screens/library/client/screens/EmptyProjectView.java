@@ -21,7 +21,6 @@ import javax.inject.Inject;
 import com.google.gwt.event.dom.client.ClickEvent;
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Form;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -56,7 +55,7 @@ public class EmptyProjectView implements EmptyProjectScreen.View,
 
     @Inject
     @DataField("assets-toolbar")
-    Form assetsToolbar;
+    Div assetsToolbar;
 
     @Inject
     @DataField("details-container")
