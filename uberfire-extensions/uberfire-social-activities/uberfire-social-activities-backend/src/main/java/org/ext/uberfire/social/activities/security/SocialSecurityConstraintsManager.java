@@ -50,11 +50,15 @@ public class SocialSecurityConstraintsManager {
         }
     }
 
-    private boolean isAllowed(SocialActivitiesEvent event) {
-        for (SocialSecurityConstraint securityConstraint : getSocialSecurityConstraints()) {
-            if (securityConstraint.hasRestrictions(event)) {
-                return false;
+    boolean isAllowed(SocialActivitiesEvent event) {
+        try {
+            for (SocialSecurityConstraint securityConstraint : getSocialSecurityConstraints()) {
+                if (securityConstraint.hasRestrictions(event)) {
+                    return false;
+                }
             }
+        } catch (Exception e) {
+            return false;
         }
         return true;
     }

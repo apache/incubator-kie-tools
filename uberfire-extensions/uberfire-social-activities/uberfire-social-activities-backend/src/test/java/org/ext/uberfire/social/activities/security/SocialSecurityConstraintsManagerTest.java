@@ -45,7 +45,7 @@ public class SocialSecurityConstraintsManagerTest {
         securityConstraints = mock(Instance.class);
         event1 = generateEvent(new SocialUser("admin"));
         event2 = generateEvent(new SocialUser("dora"));
-        events = new ArrayList<SocialActivitiesEvent>();
+        events = new ArrayList<>();
         events.add(event1);
         events.add(event2);
         constraint1 = mock(SocialSecurityConstraint.class);
@@ -79,6 +79,19 @@ public class SocialSecurityConstraintsManagerTest {
                      secureEvents.size());
         assertEquals(event2,
                      secureEvents.get(0));
+    }
+
+    @Test
+    public void isAllowedShouldReturnFalseWhenASecurityConstraintThrowsException(){
+        socialSecurityConstraintsManager = new SocialSecurityConstraintsManager(){
+            @Override
+            Instance<SocialSecurityConstraint> getSocialSecurityConstraints() {
+                throw new RuntimeException();
+            }
+        };
+
+        assertFalse(socialSecurityConstraintsManager.isAllowed(new SocialActivitiesEvent()));
+
     }
 
     private Iterator<SocialSecurityConstraint> createSecurityConstraintsIterator() {
