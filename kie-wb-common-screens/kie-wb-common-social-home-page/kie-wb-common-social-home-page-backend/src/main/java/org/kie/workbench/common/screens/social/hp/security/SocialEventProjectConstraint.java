@@ -15,18 +15,18 @@
  */
 package org.kie.workbench.common.screens.social.hp.security;
 
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.social.ProjectEventType;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.ext.uberfire.social.activities.service.SocialSecurityConstraint;
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.social.ProjectEventType;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
 import org.uberfire.security.authz.AuthorizationManager;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 /**
  * A Social Events Constraint to restrict access to Social Events relating to Projects. If a User
@@ -34,7 +34,6 @@ import javax.inject.Inject;
  * This implementation delegates filtering by Organizational Unit and Repository to SocialEventRepositoryConstraint.
  * This is a performance gain to avoid building collections for authorized Organizational Unit and Repository first
  * before we filter by authorized Projects.
- *
  * @see SocialEventRepositoryConstraint
  */
 @ApplicationScoped
@@ -50,64 +49,66 @@ public class SocialEventProjectConstraint implements SocialSecurityConstraint {
     }
 
     @Inject
-    public SocialEventProjectConstraint( final SocialEventRepositoryConstraint delegate,
-                                         final AuthorizationManager authorizationManager,
-                                         final KieProjectService projectService,
-                                         final UserCDIContextHelper userCDIContextHelper) {
-        this.delegate = PortablePreconditions.checkNotNull( "delegate",
-                                                            delegate );
-        this.authorizationManager = PortablePreconditions.checkNotNull( "authorizationManager",
-                                                                        authorizationManager );
-        this.projectService = PortablePreconditions.checkNotNull( "projectService",
-                                                                  projectService );
-        this.userCDIContextHelper = PortablePreconditions.checkNotNull( "userCDIContextHelper",
-                                                                        userCDIContextHelper );
+    public SocialEventProjectConstraint(final SocialEventRepositoryConstraint delegate,
+                                        final AuthorizationManager authorizationManager,
+                                        final KieProjectService projectService,
+                                        final UserCDIContextHelper userCDIContextHelper) {
+        this.delegate = PortablePreconditions.checkNotNull("delegate",
+                                                           delegate);
+        this.authorizationManager = PortablePreconditions.checkNotNull("authorizationManager",
+                                                                       authorizationManager);
+        this.projectService = PortablePreconditions.checkNotNull("projectService",
+                                                                 projectService);
+        this.userCDIContextHelper = PortablePreconditions.checkNotNull("userCDIContextHelper",
+                                                                       userCDIContextHelper);
     }
 
     @Override
     public void init() {
-        if ( userCDIContextHelper.thereIsALoggedUserInScope() ) {
+        if (userCDIContextHelper.thereIsALoggedUserInScope()) {
             delegate.init();
         }
     }
 
     @Override
-    public boolean hasRestrictions( final SocialActivitiesEvent event ) {
-        if ( !userCDIContextHelper.thereIsALoggedUserInScope() ) {
-            return false;
-        }
-
-        if ( event.isVFSLink() || isAProjectEvent( event ) ) {
-            final boolean isRepositoryRestricted = delegate.hasRestrictions( event );
-            if ( isRepositoryRestricted ) {
-                return true;
+    public boolean hasRestrictions(final SocialActivitiesEvent event) {
+        try {
+            if (!userCDIContextHelper.thereIsALoggedUserInScope()) {
+                return false;
             }
-            final Project project = getEventProject( event );
-            if ( thereIsAProjectAssociatedWithThisEvent( project ) ) {
-                return !authorizationManager.authorize( project,
-                                                        userCDIContextHelper.getUser() );
 
+            if (event.isVFSLink() || isAProjectEvent(event)) {
+                final boolean isRepositoryRestricted = delegate.hasRestrictions(event);
+                if (isRepositoryRestricted) {
+                    return true;
+                }
+                final Project project = getEventProject(event);
+                if (thereIsAProjectAssociatedWithThisEvent(project)) {
+                    return !authorizationManager.authorize(project,
+                                                           userCDIContextHelper.getUser());
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
-        } else {
-            return false;
+        } catch (Exception e) {
+            return true;
         }
     }
 
-    private boolean thereIsAProjectAssociatedWithThisEvent( Project project ) {
+    private boolean thereIsAProjectAssociatedWithThisEvent(Project project) {
         return project != null;
     }
 
-    private boolean isAProjectEvent( final SocialActivitiesEvent event ) {
-        return event.getLinkType().equals( SocialActivitiesEvent.LINK_TYPE.CUSTOM )
-                && event.getType().equals( ProjectEventType.NEW_PROJECT.name() );
+    private boolean isAProjectEvent(final SocialActivitiesEvent event) {
+        return event.getLinkType().equals(SocialActivitiesEvent.LINK_TYPE.CUSTOM)
+                && event.getType().equals(ProjectEventType.NEW_PROJECT.name());
     }
 
-    Project getEventProject( final SocialActivitiesEvent event ) {
-        final Path path = Paths.get( event.getLinkTarget() );
-        final org.uberfire.backend.vfs.Path vfsPath = org.uberfire.backend.server.util.Paths.convert( path );
-        return projectService.resolveProject( vfsPath );
+    Project getEventProject(final SocialActivitiesEvent event) {
+        final Path path = Paths.get(event.getLinkTarget());
+        final org.uberfire.backend.vfs.Path vfsPath = org.uberfire.backend.server.util.Paths.convert(path);
+        return projectService.resolveProject(vfsPath);
     }
-
 }

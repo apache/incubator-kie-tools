@@ -15,25 +15,24 @@
  */
 package org.kie.workbench.common.screens.social.hp.security;
 
-import org.guvnor.common.services.project.social.ProjectEventType;
-import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
-import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
-import org.guvnor.structure.repositories.Repository;
-import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
-import org.ext.uberfire.social.activities.service.SocialSecurityConstraint;
-import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.Paths;
-import org.uberfire.security.authz.AuthorizationManager;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
+import org.ext.uberfire.social.activities.service.SocialSecurityConstraint;
+import org.guvnor.common.services.project.social.ProjectEventType;
+import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.repositories.Repository;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.Paths;
+import org.uberfire.security.authz.AuthorizationManager;
 
 @ApplicationScoped
 public class SocialEventRepositoryConstraint implements SocialSecurityConstraint {
@@ -53,10 +52,10 @@ public class SocialEventRepositoryConstraint implements SocialSecurityConstraint
     }
 
     @Inject
-    public SocialEventRepositoryConstraint( final OrganizationalUnitService organizationalUnitService,
-                                            final AuthorizationManager authorizationManager,
-                                            final ConfiguredRepositories configuredRepositories,
-                                            final UserCDIContextHelper userCDIContextHelper ) {
+    public SocialEventRepositoryConstraint(final OrganizationalUnitService organizationalUnitService,
+                                           final AuthorizationManager authorizationManager,
+                                           final ConfiguredRepositories configuredRepositories,
+                                           final UserCDIContextHelper userCDIContextHelper) {
 
         this.organizationalUnitService = organizationalUnitService;
         this.authorizationManager = authorizationManager;
@@ -66,44 +65,47 @@ public class SocialEventRepositoryConstraint implements SocialSecurityConstraint
 
     @Override
     public void init() {
-        if ( userCDIContextHelper.thereIsALoggedUserInScope() ) {
+        if (userCDIContextHelper.thereIsALoggedUserInScope()) {
             authorizedRepos = getAuthorizedRepositories();
         }
     }
 
-    public boolean hasRestrictions( SocialActivitiesEvent event ) {
-        if ( !userCDIContextHelper.thereIsALoggedUserInScope() ) {
-            return false;
-        }
-
-        if ( event.isVFSLink() || isAProjectEvent( event ) ) {
-            Repository repository = getEventRepository( event );
-            final boolean userHasAccessToRepo = authorizedRepos.contains( repository );
-            return !userHasAccessToRepo;
-        } else {
-            return false;
+    public boolean hasRestrictions(SocialActivitiesEvent event) {
+        try {
+            if (!userCDIContextHelper.thereIsALoggedUserInScope()) {
+                return false;
+            }
+            if (event.isVFSLink() || isAProjectEvent(event)) {
+                Repository repository = getEventRepository(event);
+                final boolean userHasAccessToRepo = authorizedRepos.contains(repository);
+                return !userHasAccessToRepo;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            return true;
         }
     }
 
-    Repository getEventRepository( SocialActivitiesEvent event ) {
-        final Path path = Paths.get( event.getLinkTarget() );
+    Repository getEventRepository(SocialActivitiesEvent event) {
+        final Path path = Paths.get(event.getLinkTarget());
         final FileSystem fileSystem = path.getFileSystem();
-        return configuredRepositories.getRepositoryByRepositoryFileSystem( fileSystem );
+        return configuredRepositories.getRepositoryByRepositoryFileSystem(fileSystem);
     }
 
-    private boolean isAProjectEvent( SocialActivitiesEvent event ) {
-        return event.getLinkType().equals( SocialActivitiesEvent.LINK_TYPE.CUSTOM )
-                && event.getType().equals( ProjectEventType.NEW_PROJECT.name() );
+    private boolean isAProjectEvent(SocialActivitiesEvent event) {
+        return event.getLinkType().equals(SocialActivitiesEvent.LINK_TYPE.CUSTOM)
+                && event.getType().equals(ProjectEventType.NEW_PROJECT.name());
     }
 
     public Set<Repository> getAuthorizedRepositories() {
         final Set<Repository> authorizedRepos = new HashSet<Repository>();
-        for ( OrganizationalUnit ou : getAuthorizedOrganizationUnits() ) {
+        for (OrganizationalUnit ou : getAuthorizedOrganizationUnits()) {
             final Collection<Repository> repositories = ou.getRepositories();
-            for ( final Repository repository : repositories ) {
-                if ( authorizationManager.authorize( repository,
-                                                     userCDIContextHelper.getUser() ) ) {
-                    authorizedRepos.add( repository );
+            for (final Repository repository : repositories) {
+                if (authorizationManager.authorize(repository,
+                                                   userCDIContextHelper.getUser())) {
+                    authorizedRepos.add(repository);
                 }
             }
         }
@@ -113,13 +115,12 @@ public class SocialEventRepositoryConstraint implements SocialSecurityConstraint
     private Collection<OrganizationalUnit> getAuthorizedOrganizationUnits() {
         final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getOrganizationalUnits();
         final Collection<OrganizationalUnit> authorizedOrganizationalUnits = new ArrayList<OrganizationalUnit>();
-        for ( OrganizationalUnit ou : organizationalUnits ) {
-            if ( authorizationManager.authorize( ou,
-                                                 userCDIContextHelper.getUser() ) ) {
-                authorizedOrganizationalUnits.add( ou );
+        for (OrganizationalUnit ou : organizationalUnits) {
+            if (authorizationManager.authorize(ou,
+                                               userCDIContextHelper.getUser())) {
+                authorizedOrganizationalUnits.add(ou);
             }
         }
         return authorizedOrganizationalUnits;
     }
-
 }

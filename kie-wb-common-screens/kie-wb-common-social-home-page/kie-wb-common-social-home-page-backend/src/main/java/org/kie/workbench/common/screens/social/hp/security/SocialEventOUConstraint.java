@@ -15,19 +15,19 @@
  */
 package org.kie.workbench.common.screens.social.hp.security;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
+import org.ext.uberfire.social.activities.service.SocialSecurityConstraint;
 import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.social.OrganizationalUnitEventType;
-import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
-import org.ext.uberfire.social.activities.service.SocialSecurityConstraint;
 import org.uberfire.security.authz.AuthorizationManager;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 
 @ApplicationScoped
 public class SocialEventOUConstraint implements SocialSecurityConstraint {
@@ -47,10 +47,10 @@ public class SocialEventOUConstraint implements SocialSecurityConstraint {
     }
 
     @Inject
-    public SocialEventOUConstraint( final OrganizationalUnitService organizationalUnitService,
-                                    final AuthorizationManager authorizationManager,
-                                    final RepositoryServiceImpl repositoryService,
-                                    final UserCDIContextHelper userCDIContextHelper ) {
+    public SocialEventOUConstraint(final OrganizationalUnitService organizationalUnitService,
+                                   final AuthorizationManager authorizationManager,
+                                   final RepositoryServiceImpl repositoryService,
+                                   final UserCDIContextHelper userCDIContextHelper) {
 
         this.organizationalUnitService = organizationalUnitService;
         this.authorizationManager = authorizationManager;
@@ -60,43 +60,47 @@ public class SocialEventOUConstraint implements SocialSecurityConstraint {
 
     @Override
     public void init() {
-        if ( userCDIContextHelper.thereIsALoggedUserInScope() ) {
+        if (userCDIContextHelper.thereIsALoggedUserInScope()) {
             authorizedOrganizationalUnits = getAuthorizedOrganizationUnits();
         }
     }
 
-    public boolean hasRestrictions( SocialActivitiesEvent event ) {
-        if ( !userCDIContextHelper.thereIsALoggedUserInScope() ) {
-            return false;
-        }
+    public boolean hasRestrictions(SocialActivitiesEvent event) {
+        try {
+            if (!userCDIContextHelper.thereIsALoggedUserInScope()) {
+                return false;
+            }
 
-        if ( isOUSocialEvent( event ) ) {
-            return hasRestrictionsForThisOU( event );
+            if (isOUSocialEvent(event)) {
+                return hasRestrictionsForThisOU(event);
+            }
+            return false;
+        } catch (Exception e) {
+            return true;
         }
-        return false;
     }
 
-    private boolean hasRestrictionsForThisOU( SocialActivitiesEvent event ) {
-        for ( OrganizationalUnit authorizedOrganizationalUnit : authorizedOrganizationalUnits ) {
-            if ( authorizedOrganizationalUnit.getName().equals( event.getLinkTarget() ) ) {
+    private boolean hasRestrictionsForThisOU(SocialActivitiesEvent event) {
+        for (OrganizationalUnit authorizedOrganizationalUnit : authorizedOrganizationalUnits) {
+            if (authorizedOrganizationalUnit.getName().equals(event.getLinkTarget())) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean isOUSocialEvent( SocialActivitiesEvent event ) {
-        if ( event.getLinkType().equals( SocialActivitiesEvent.LINK_TYPE.CUSTOM ) ) {
-            if ( isAOUSocialEvent( event ) ) {
+    boolean isOUSocialEvent(SocialActivitiesEvent event) {
+        if (event.getLinkType().equals(SocialActivitiesEvent.LINK_TYPE.CUSTOM)) {
+            if (isAOUSocialEvent(event)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isAOUSocialEvent( SocialActivitiesEvent event ) {
-        for ( OrganizationalUnitEventType organizationalUnitEventType : OrganizationalUnitEventType.values() ) {
-            if ( event.getType().equals( organizationalUnitEventType.name() ) ) {
+    private boolean isAOUSocialEvent(SocialActivitiesEvent event) {
+        for (OrganizationalUnitEventType organizationalUnitEventType : OrganizationalUnitEventType.values()) {
+            if (event.getType().equals(organizationalUnitEventType.name())) {
                 return true;
             }
         }
@@ -106,13 +110,12 @@ public class SocialEventOUConstraint implements SocialSecurityConstraint {
     Collection<OrganizationalUnit> getAuthorizedOrganizationUnits() {
         final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getOrganizationalUnits();
         final Collection<OrganizationalUnit> authorizedOrganizationalUnits = new ArrayList<OrganizationalUnit>();
-        for ( OrganizationalUnit ou : organizationalUnits ) {
-            if ( authorizationManager.authorize( ou,
-                                                 userCDIContextHelper.getUser() ) ) {
-                authorizedOrganizationalUnits.add( ou );
+        for (OrganizationalUnit ou : organizationalUnits) {
+            if (authorizationManager.authorize(ou,
+                                               userCDIContextHelper.getUser())) {
+                authorizedOrganizationalUnits.add(ou);
             }
         }
         return authorizedOrganizationalUnits;
     }
-
 }

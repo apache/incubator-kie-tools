@@ -15,6 +15,12 @@
  */
 package org.kie.workbench.common.screens.social.hp.security;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+
+import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
+import org.ext.uberfire.social.activities.model.SocialUser;
 import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -25,24 +31,14 @@ import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
-import org.ext.uberfire.social.activities.model.SocialUser;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import javax.enterprise.inject.Instance;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class SocialEventOUConstraintTest {
 
     @Mock
@@ -59,78 +55,115 @@ public class SocialEventOUConstraintTest {
 
     private SocialEventOUConstraint socialEventOUConstraint;
 
-    private SocialUser socialUser = new SocialUser( "dora" );
-    private User user = new UserImpl( "bento" );
-
+    private SocialUser socialUser = new SocialUser("dora");
+    private User user = new UserImpl("bento");
 
     @Before
     public void setUp() throws Exception {
         Collection<OrganizationalUnit> ous = new ArrayList<OrganizationalUnit>();
-        final OrganizationalUnitImpl ou = new OrganizationalUnitImpl( "ouname", "owner", "groupid" );
-        ous.add( ou );
-        when( organizationalUnitService.getOrganizationalUnits() ).thenReturn( ous );
-        when( authorizationManager.authorize( ou, user ) ).thenReturn( true );
-        when( userCDIContextHelper.getUser() ).thenReturn( user );
-        when( userCDIContextHelper.thereIsALoggedUserInScope() ).thenReturn( true );
+        final OrganizationalUnitImpl ou = new OrganizationalUnitImpl("ouname",
+                                                                     "owner",
+                                                                     "groupid");
+        ous.add(ou);
+        when(organizationalUnitService.getOrganizationalUnits()).thenReturn(ous);
+        when(authorizationManager.authorize(ou,
+                                            user)).thenReturn(true);
+        when(userCDIContextHelper.getUser()).thenReturn(user);
+        when(userCDIContextHelper.thereIsALoggedUserInScope()).thenReturn(true);
 
-        socialEventOUConstraint = new SocialEventOUConstraint( organizationalUnitService, authorizationManager, repositoryService, userCDIContextHelper );
+        socialEventOUConstraint = new SocialEventOUConstraint(organizationalUnitService,
+                                                              authorizationManager,
+                                                              repositoryService,
+                                                              userCDIContextHelper);
     }
-
 
     @Test
     public void init() throws Exception {
         socialEventOUConstraint.init();
-        assertFalse( socialEventOUConstraint.getAuthorizedOrganizationUnits().isEmpty() );
+        assertFalse(socialEventOUConstraint.getAuthorizedOrganizationUnits().isEmpty());
     }
 
     @Test
     public void hasRestrictionsTest() throws Exception {
 
-        final SocialActivitiesEvent event = new SocialActivitiesEvent( socialUser, OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT, new Date() )
-                .withLink( "otherName", "otherName", SocialActivitiesEvent.LINK_TYPE.CUSTOM );
+        final SocialActivitiesEvent event = new SocialActivitiesEvent(socialUser,
+                                                                      OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT,
+                                                                      new Date())
+                .withLink("otherName",
+                          "otherName",
+                          SocialActivitiesEvent.LINK_TYPE.CUSTOM);
 
         socialEventOUConstraint.init();
-        assertTrue( socialEventOUConstraint.hasRestrictions( event ) );
-
+        assertTrue(socialEventOUConstraint.hasRestrictions(event));
     }
 
     @Test
     public void hasNoRestrictionsTest() throws Exception {
 
-        final SocialActivitiesEvent event = new SocialActivitiesEvent( socialUser, OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT, new Date() )
-                .withLink( "name", "ouname", SocialActivitiesEvent.LINK_TYPE.CUSTOM );
+        final SocialActivitiesEvent event = new SocialActivitiesEvent(socialUser,
+                                                                      OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT,
+                                                                      new Date())
+                .withLink("name",
+                          "ouname",
+                          SocialActivitiesEvent.LINK_TYPE.CUSTOM);
 
         socialEventOUConstraint.init();
-        assertFalse( socialEventOUConstraint.hasRestrictions( event ) );
+        assertFalse(socialEventOUConstraint.hasRestrictions(event));
+    }
+
+    @Test
+    public void hasRestrictionsBecauseThrowsAnExceptionTest() throws Exception {
+
+        final SocialActivitiesEvent event = new SocialActivitiesEvent(socialUser,
+                                                                      OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT,
+                                                                      new Date())
+                .withLink("name",
+                          "ouname",
+                          SocialActivitiesEvent.LINK_TYPE.CUSTOM);
+
+        SocialEventOUConstraint spy = spy(socialEventOUConstraint);
+        when(spy.isOUSocialEvent(event)).thenThrow(RuntimeException.class);
+
+        spy.init();
+        assertTrue(spy.hasRestrictions(event));
     }
 
     @Test
     public void hasNoRestrictionsForOtherSocialEventsTest() throws Exception {
 
-        final SocialActivitiesEvent VSFotherType = new SocialActivitiesEvent( socialUser, "type", new Date() )
-                .withLink( "link", "link", SocialActivitiesEvent.LINK_TYPE.VFS );
-        final SocialActivitiesEvent customEventOtherType = new SocialActivitiesEvent( socialUser, "type", new Date() )
-                .withLink( "link", "link", SocialActivitiesEvent.LINK_TYPE.CUSTOM );
+        final SocialActivitiesEvent vfsOtherType = new SocialActivitiesEvent(socialUser,
+                                                                             "type",
+                                                                             new Date())
+                .withLink("link",
+                          "link",
+                          SocialActivitiesEvent.LINK_TYPE.VFS);
+        final SocialActivitiesEvent customEventOtherType = new SocialActivitiesEvent(socialUser,
+                                                                                     "type",
+                                                                                     new Date())
+                .withLink("link",
+                          "link",
+                          SocialActivitiesEvent.LINK_TYPE.CUSTOM);
 
         socialEventOUConstraint.init();
 
-        assertFalse( socialEventOUConstraint.hasRestrictions( VSFotherType ) );
-        assertFalse( socialEventOUConstraint.hasRestrictions( customEventOtherType ) );
-
+        assertFalse(socialEventOUConstraint.hasRestrictions(vfsOtherType));
+        assertFalse(socialEventOUConstraint.hasRestrictions(customEventOtherType));
     }
-
 
     @Test
     public void ifThereIsNoLoggedUserInScopeShouldNotHaveRestrictions() throws Exception {
 
-        when( userCDIContextHelper.thereIsALoggedUserInScope() ).thenReturn( false );
+        when(userCDIContextHelper.thereIsALoggedUserInScope()).thenReturn(false);
 
-
-        final SocialActivitiesEvent restrictedEvent = new SocialActivitiesEvent( socialUser, OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT, new Date() )
-                .withLink( "otherName", "otherName", SocialActivitiesEvent.LINK_TYPE.CUSTOM );
+        final SocialActivitiesEvent restrictedEvent = new SocialActivitiesEvent(socialUser,
+                                                                                OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT,
+                                                                                new Date())
+                .withLink("otherName",
+                          "otherName",
+                          SocialActivitiesEvent.LINK_TYPE.CUSTOM);
 
         socialEventOUConstraint.init();
 
-        assertFalse( socialEventOUConstraint.hasRestrictions( restrictedEvent ) );
+        assertFalse(socialEventOUConstraint.hasRestrictions(restrictedEvent));
     }
 }
