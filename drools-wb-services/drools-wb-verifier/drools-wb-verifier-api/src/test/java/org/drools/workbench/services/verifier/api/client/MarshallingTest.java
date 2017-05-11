@@ -45,17 +45,19 @@ public class MarshallingTest {
         check(new ImpossibleMatchIssue(Severity.WARNING,
                                        CheckType.IMPOSSIBLE_MATCH,
                                        "1",
-                                       "Person",
+                                       "String",
                                        "name",
                                        "1",
-                                       "2"),
+                                       "2",
+                                       Collections.singleton(1)),
               new ImpossibleMatchIssue(Severity.ERROR,
                                        CheckType.IMPOSSIBLE_MATCH,
                                        "1",
                                        "Person",
                                        "name",
                                        "1",
-                                       "2"));
+                                       "2",
+                                       Collections.singleton(1)));
     }
 
     @Test
