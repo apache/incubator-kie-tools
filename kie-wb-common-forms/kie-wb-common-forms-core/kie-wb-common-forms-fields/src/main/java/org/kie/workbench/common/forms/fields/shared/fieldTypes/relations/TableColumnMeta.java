@@ -51,7 +51,7 @@ public class TableColumnMeta {
     )
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
-            className = "org.kie.workbench.common.forms.data.modeller.dataProvider.BeanPropertiesProvider")
+            className = "org.kie.workbench.common.forms.data.modeller.service.dataProvider.BeanPropertiesProvider")
     @NotNull
     @NotEmpty
     private String property;

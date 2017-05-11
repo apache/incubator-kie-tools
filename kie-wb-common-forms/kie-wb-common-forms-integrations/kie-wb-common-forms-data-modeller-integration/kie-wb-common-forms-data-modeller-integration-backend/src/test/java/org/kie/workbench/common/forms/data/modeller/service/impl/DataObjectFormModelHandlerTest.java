@@ -160,11 +160,16 @@ public class DataObjectFormModelHandlerTest {
     //JBPM-5718 reproducer
     private void formFieldsShouldNotBeGeneratedForPersistenceId(List<FieldDefinition> formModelFields) {
         assertNotNull(dataObject.getProperty("id"));
-        int EXPECTED_FORM_FIELD_COUNT = finderService.getDataObjectProperties(formModel.getClassName(),
-                                                                              path).size() - 1;
+
+        List<ObjectProperty> properties = finderService.getDataObjectProperties(formModel.getClassName(),
+                                                                                path);
+
+        properties.forEach(property -> assertNotEquals("id",
+                                                       property.getName()));
+
         assertEquals("Form field should be generated for every data field except of persistence id",
-                     EXPECTED_FORM_FIELD_COUNT,
-                     formModelFields.size());
+                     formModelFields.size(),
+                     properties.size());
     }
 
     //JBPM-5912 reproducer, TODO: implement after JBPM-5912 is fixed

@@ -52,12 +52,7 @@ public class DataModellerFieldGenerator {
         List<FieldDefinition> result = new ArrayList<>();
         if (dataObject != null) {
             for (ObjectProperty property : dataObject.getProperties()) {
-                if (ArrayUtils.contains(RESTRICTED_PROPERTY_NAMES,
-                                        property.getName())) {
-                    continue;
-                }
-
-                if (hasRestrictedAnnotation(property)) {
+                if (!isValidDataObjectProperty(property)) {
                     continue;
                 }
 
@@ -67,15 +62,6 @@ public class DataModellerFieldGenerator {
             }
         }
         return result;
-    }
-
-    protected boolean hasRestrictedAnnotation(ObjectProperty property) {
-        for (String annotation : RESTRICTED_ANNOTATIONS) {
-            if (property.getAnnotation(annotation) != null) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public FieldDefinition createFieldDefinition(String holderName,
@@ -108,5 +94,19 @@ public class DataModellerFieldGenerator {
         }
 
         return property.getName();
+    }
+
+    public static boolean isValidDataObjectProperty(ObjectProperty property) {
+        if (ArrayUtils.contains(RESTRICTED_PROPERTY_NAMES,
+                                property.getName())) {
+            return false;
+        }
+
+        for (String annotation : RESTRICTED_ANNOTATIONS) {
+            if (property.getAnnotation(annotation) != null) {
+                return false;
+            }
+        }
+        return true;
     }
 }

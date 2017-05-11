@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.data.modeller.dataProvider;
+package org.kie.workbench.common.forms.data.modeller.service.dataProvider;
 
 import java.util.HashMap;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SystemSelectorDataProvider;
@@ -27,14 +30,17 @@ import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContex
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableColumnMeta;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
-import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.uberfire.backend.vfs.Path;
 
 @Dependent
 public class BeanPropertiesProvider implements SystemSelectorDataProvider {
 
-    @Inject
     private DataObjectFinderService dataObjectFinderService;
+
+    @Inject
+    public BeanPropertiesProvider(DataObjectFinderService dataObjectFinderService) {
+        this.dataObjectFinderService = dataObjectFinderService;
+    }
 
     @Override
     public String getProviderName() {
@@ -51,31 +57,23 @@ public class BeanPropertiesProvider implements SystemSelectorDataProvider {
 
                 FormEditorRenderingContext editorContext = (FormEditorRenderingContext) context;
 
-                MultipleSubFormFieldDefinition subForm = (MultipleSubFormFieldDefinition) context.getParentContext().getModel();
+                if (context.getParentContext() != null) {
+                    MultipleSubFormFieldDefinition subForm = (MultipleSubFormFieldDefinition) context.getParentContext().getModel();
 
-                Path path = editorContext.getFormPath();
-                String typeName = subForm.getStandaloneClassName();
+                    Path path = editorContext.getFormPath();
+                    String typeName = subForm.getStandaloneClassName();
 
-                TableColumnMeta model = (TableColumnMeta) context.getModel();
+                    final TableColumnMeta currentMeta = (TableColumnMeta) context.getModel();
 
-                for (ObjectProperty property : dataObjectFinderService.getDataObjectProperties(typeName,
-                                                                                               path)) {
-                    boolean add = true;
+                    Set<String> unavailableProperties = subForm.getColumnMetas().stream().map(TableColumnMeta::getProperty).collect(Collectors.toSet());
 
-                    for (int i = 0; i < subForm.getColumnMetas().size() && add == true; i++) {
-                        TableColumnMeta meta = subForm.getColumnMetas().get(i);
-                        if (model != null && property.getName().equals(model.getProperty())) {
-                            break;
-                        }
-                        if (meta.getProperty().equals(property.getName())) {
-                            add = false;
-                        }
+                    if (currentMeta != null && !StringUtils.isEmpty(currentMeta.getProperty())) {
+                        unavailableProperties.remove(currentMeta.getProperty());
                     }
 
-                    if (add) {
-                        values.put(property.getName(),
-                                   property.getName());
-                    }
+                    dataObjectFinderService.getDataObjectProperties(typeName,
+                                                                    path).stream().filter(property -> !unavailableProperties.contains(property.getName())).forEachOrdered(property -> values.put(property.getName(),
+                                                                                                                                                                                                 property.getName()));
                 }
             }
         }
