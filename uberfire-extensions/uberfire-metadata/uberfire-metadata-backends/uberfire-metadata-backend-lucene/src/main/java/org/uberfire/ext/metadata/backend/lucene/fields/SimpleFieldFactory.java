@@ -24,10 +24,12 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FloatField;
 import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.LongField;
+import org.apache.lucene.document.SortedDocValuesField;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexableField;
+import org.apache.lucene.util.BytesRef;
 import org.uberfire.ext.metadata.model.KProperty;
 import org.uberfire.java.nio.base.version.VersionHistory;
 import org.uberfire.java.nio.file.attribute.FileTime;
@@ -51,6 +53,10 @@ public class SimpleFieldFactory implements FieldFactory {
         }
 
         if (property.getValue().getClass() == String.class) {
+            if (property.isSortable()) {
+                return new IndexableField[]{new SortedDocValuesField(property.getName(),
+                                                                     new BytesRef(property.getValue().toString()))};
+            }
             if (property.isSearchable()) {
                 return new IndexableField[]{new TextField(property.getName(),
                                                           property.getValue().toString(),

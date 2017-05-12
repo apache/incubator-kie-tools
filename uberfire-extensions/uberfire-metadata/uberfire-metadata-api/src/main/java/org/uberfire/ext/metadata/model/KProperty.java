@@ -23,4 +23,8 @@ public interface KProperty<T extends Object> {
     T getValue();
 
     boolean isSearchable();
+
+    default boolean isSortable() {
+        return false;
+    }
 }

@@ -24,5 +24,7 @@ import org.uberfire.ext.metadata.model.KProperty;
  */
 public interface FieldFactory {
 
+    String FILE_NAME_FIELD_SORTED = "filenamesorted";
+
     IndexableField[] build(final KProperty<?> property);
 }

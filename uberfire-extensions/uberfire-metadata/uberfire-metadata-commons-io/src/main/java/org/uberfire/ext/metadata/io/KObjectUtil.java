@@ -20,6 +20,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
+import org.uberfire.ext.metadata.backend.lucene.fields.FieldFactory;
 import org.uberfire.ext.metadata.backend.lucene.model.KClusterImpl;
 import org.uberfire.ext.metadata.model.KCluster;
 import org.uberfire.ext.metadata.model.KObject;
@@ -156,6 +157,30 @@ public final class KObjectUtil {
 
                         @Override
                         public boolean isSearchable() {
+                            return true;
+                        }
+                    });
+                    add(new KProperty<String>() {
+                        @Override
+                        public String getName() {
+                            return FieldFactory.FILE_NAME_FIELD_SORTED;
+                        }
+
+                        @Override
+                        public String getValue() {
+                            if (path.getFileName() == null) {
+                                return "";
+                            }
+                            return getBaseName(path.getFileName().toString()).toLowerCase();
+                        }
+
+                        @Override
+                        public boolean isSearchable() {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean isSortable() {
                             return true;
                         }
                     });
