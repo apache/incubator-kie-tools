@@ -44,7 +44,7 @@ public class TaskFormModel extends AbstractJBPMFormModel {
         this.processId = processId;
         this.taskId = taskId;
         this.taskName = taskName;
-        this.formName = formName;
+        setFormName(formName);
     }
 
     @Override
@@ -78,10 +78,13 @@ public class TaskFormModel extends AbstractJBPMFormModel {
 
     @Override
     public String getFormName() {
-        return formName + BPMNVariableUtils.TASK_FORM_SUFFIX;
+        return formName;
     }
 
     public void setFormName(String formName) {
+        if(!formName.endsWith(BPMNVariableUtils.TASK_FORM_SUFFIX)) {
+            formName += BPMNVariableUtils.TASK_FORM_SUFFIX;
+        }
         this.formName = formName;
     }
 

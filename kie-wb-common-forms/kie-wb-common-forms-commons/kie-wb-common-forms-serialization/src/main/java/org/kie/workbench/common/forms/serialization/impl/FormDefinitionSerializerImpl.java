@@ -26,12 +26,8 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 
-;
-
 @Dependent
 public class FormDefinitionSerializerImpl implements FormDefinitionSerializer {
-
-    ;
 
     private FieldSerializer fieldSerializer;
 
