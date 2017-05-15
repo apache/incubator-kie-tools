@@ -98,5 +98,7 @@ public interface AppConstants
 
     String Library();
 
+    String ArtifactRepository();
+
     String AdminPreferences();
 }

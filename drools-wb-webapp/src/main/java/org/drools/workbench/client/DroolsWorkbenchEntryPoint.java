@@ -24,6 +24,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.kie.workbench.common.services.shared.service.PlaceManagerActivityService;
 import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
+import org.kie.workbench.common.workbench.client.admin.resources.i18n.PreferencesConstants;
 import org.kie.workbench.common.workbench.client.entrypoint.DefaultWorkbenchEntryPoint;
 import org.kie.workbench.common.workbench.client.menu.DefaultWorkbenchFeaturesMenusHelper;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
@@ -79,6 +80,12 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
                                 "LibraryPreferences",
                                 AppConstants.INSTANCE.Library(),
                                 "fa-cubes",
+                                "preferences");
+
+        adminPage.addPreference("root",
+                                "ArtifactRepositoryPreference",
+                                AppConstants.INSTANCE.ArtifactRepository(),
+                                "fa-archive",
                                 "preferences");
 
         final AbstractWorkbenchPerspectiveActivity defaultPerspective = menusHelper.getDefaultPerspectiveActivity();
