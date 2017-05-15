@@ -25,4 +25,7 @@ public class PreferencesConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String LibraryPreferences_Title = "LibraryPreferences.Title";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ArtifactRepositoryPreferences_Title = "ArtifactRepositoryPreferences.Title";
 }

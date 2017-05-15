@@ -143,6 +143,12 @@ public class DefaultAdminPageHelper {
                                 translationService.format(PreferencesConstants.LibraryPreferences_Title),
                                 "fa-cubes",
                                 "preferences");
+
+        adminPage.addPreference("root",
+                                "ArtifactRepositoryPreference",
+                                translationService.format(PreferencesConstants.ArtifactRepositoryPreferences_Title),
+                                "fa-archive",
+                                "preferences");
     }
 
     boolean hasAccessToPerspective(final String perspectiveId) {

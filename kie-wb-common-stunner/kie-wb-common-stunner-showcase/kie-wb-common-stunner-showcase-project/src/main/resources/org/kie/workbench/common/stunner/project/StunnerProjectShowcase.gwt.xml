@@ -33,6 +33,7 @@
   <!-- Guvnor, Drools & KIE workbench integration.-->
   <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
   <inherits name="org.guvnor.structure.GuvnorStructureClient"/>
+  <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorAPI"/>
   <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
   <inherits name='org.guvnor.common.services.GuvnorServicesAPI'/>
   <inherits name="org.guvnor.common.services.project.GuvnorProjectAPI"/>
