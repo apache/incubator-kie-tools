@@ -263,7 +263,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
         setupPreferences();
         setupServices();
         setupProviders();
-        setupPresenter();
+        dtPresenter = setupPresenter();
     }
 
     private void setupProviders() {
@@ -288,7 +288,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
         linkManager = spy(new DefaultGuidedDecisionTableLinkManager());
     }
 
-    private void setupPresenter() {
+    protected GuidedDecisionTablePresenter setupPresenter() {
         final GuidedDecisionTablePresenter wrapped = new GuidedDecisionTablePresenter(identity,
                                                                                       resourceType,
                                                                                       ruleNameServiceCaller,
@@ -371,7 +371,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
                 return synchronizers;
             }
         };
-        dtPresenter = spy(wrapped);
+        GuidedDecisionTablePresenter presenter = spy(wrapped);
 
         model = new GuidedDecisionTable52();
         final PackageDataModelOracleBaselinePayload dmoBaseline = mock(PackageDataModelOracleBaselinePayload.class);
@@ -390,12 +390,14 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
         when(view.getLayer()).thenReturn(gridLayer);
         when(modellerPresenter.getView()).thenReturn(modellerView);
         when(modellerView.getGridLayerView()).thenReturn(gridLayer);
-        when(dtPresenter.getModellerPresenter()).thenReturn(modellerPresenter);
+        when(presenter.getModellerPresenter()).thenReturn(modellerPresenter);
 
-        dtPresenter.setContent(dtPath,
+        presenter.setContent(dtPath,
                                dtPlaceRequest,
                                dtContent,
                                modellerPresenter,
                                false);
+
+        return presenter;
     }
 }

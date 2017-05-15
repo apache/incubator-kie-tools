@@ -34,6 +34,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInse
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
@@ -79,6 +80,16 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePresenterTest {
 
+    private GuidedDecisionTable52 model1;
+    private GuidedDecisionTable52 model2;
+    private GuidedDecisionTable52 model3;
+    private List uiModel1Columns;
+    private List uiModel2Columns;
+    private List uiModel3Columns;
+    private GridColumn uiModel1MockColumn;
+    private GridColumn uiModel2MockColumn;
+    private GridColumn uiModel3MockColumn;
+
     @Captor
     private ArgumentCaptor<Map<String, String>> callbackValueCaptor;
 
@@ -94,6 +105,18 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         dtPresenter.onAppendRow();
         dtPresenter.onAppendRow();
         dtPresenter.onAppendRow();
+
+        model1 = new GuidedDecisionTable52();
+        model2 = new GuidedDecisionTable52();
+        model3 = new GuidedDecisionTable52();
+
+        uiModel1Columns = mock(List.class);
+        uiModel2Columns = mock(List.class);
+        uiModel3Columns = mock(List.class);
+
+        uiModel1MockColumn = mock(GridColumn.class);
+        uiModel2MockColumn = mock(GridColumn.class);
+        uiModel3MockColumn = mock(GridColumn.class);
     }
 
     @Test
@@ -287,9 +310,6 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     @Test
     @SuppressWarnings("unchecked")
     public void link() {
-        final GuidedDecisionTable52 model1 = new GuidedDecisionTable52();
-        final GuidedDecisionTable52 model2 = new GuidedDecisionTable52();
-        final GuidedDecisionTable52 model3 = new GuidedDecisionTable52();
         final GuidedDecisionTableView.Presenter dtPresenter2 = mock(GuidedDecisionTableView.Presenter.class);
         final GuidedDecisionTableView.Presenter dtPresenter3 = mock(GuidedDecisionTableView.Presenter.class);
         final Set<GuidedDecisionTableView.Presenter> dtPresenters = new HashSet<GuidedDecisionTableView.Presenter>() {{
@@ -316,30 +336,6 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     @Test
     @SuppressWarnings("unchecked")
     public void linkMultipleRelatedTables() {
-        final GuidedDecisionTable52 model1 = new GuidedDecisionTable52();
-        final GuidedDecisionTable52 model2 = new GuidedDecisionTable52();
-        final GuidedDecisionTable52 model3 = new GuidedDecisionTable52();
-
-        final GridData uiModel1 = spy(new BaseGridData());
-        final GridData uiModel2 = spy(new BaseGridData());
-        final GridData uiModel3 = spy(new BaseGridData());
-        final List uiModel1Columns = mock(List.class);
-        final List uiModel2Columns = mock(List.class);
-        final List uiModel3Columns = mock(List.class);
-        final GridColumn uiModel1MockColumn = mock(GridColumn.class);
-        final GridColumn uiModel2MockColumn = mock(GridColumn.class);
-        final GridColumn uiModel3MockColumn = mock(GridColumn.class);
-
-        final GuidedDecisionTableView dtView2 = mock(GuidedDecisionTableView.class);
-        final GuidedDecisionTableView dtView3 = mock(GuidedDecisionTableView.class);
-        final GuidedDecisionTableView.Presenter dtPresenter2 = mock(GuidedDecisionTableView.Presenter.class);
-        final GuidedDecisionTableView.Presenter dtPresenter3 = mock(GuidedDecisionTableView.Presenter.class);
-        final Set<GuidedDecisionTableView.Presenter> dtPresenters = new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add(dtPresenter);
-            add(dtPresenter2);
-            add(dtPresenter3);
-        }};
-
         addActionInsertFactToModel(model1,
                                    "Applicant",
                                    "name");
@@ -349,6 +345,182 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         addConstraintToModel(model3,
                              "Applicant",
                              "name");
+
+        linkTables();
+
+        verify(uiModel1Columns,
+               atLeast(1)).get(eq(2));
+        verify(uiModel2Columns,
+               atLeast(1)).get(eq(2));
+        verify(uiModel3Columns,
+               atLeast(1)).get(eq(2));
+
+        verify(uiModel2MockColumn).setLink(eq(uiModel1MockColumn));
+        verify(uiModel3MockColumn).setLink(eq(uiModel1MockColumn));
+    }
+
+    @Test
+    public void testLinkOneProducerTwoConsumersOneFact() throws Exception {
+        addActionInsertFactToModel(model1,
+                                 "Applicant",
+                                 "name");
+        addActionInsertFactToModel(model1,
+                                   "Applicant",
+                                   "age");
+
+        addConstraintToModel(model2,
+                            "Applicant",
+                            "name");
+
+        addBrlConstraintToModel(model3,
+                                "Applicant",
+                                "age");
+
+        linkTables();
+
+        verify(uiModel2MockColumn).setLink(eq(uiModel1MockColumn));
+        verify(uiModel3MockColumn).setLink(eq(uiModel1MockColumn));
+    }
+
+    @Test
+    public void testLinkOneProducerTwoConsumersTwoFacts() throws Exception {
+        addActionInsertFactToModel(model1,
+                                   "Applicant",
+                                   "name");
+        addActionInsertFactToModel(model1,
+                                   "LoanApplication",
+                                   "amount");
+
+        addConstraintToModel(model2,
+                             "Applicant",
+                             "name");
+
+        addBrlConstraintToModel(model3,
+                                "LoanApplication",
+                                "amount");
+
+        linkTables();
+
+        verify(uiModel2MockColumn).setLink(eq(uiModel1MockColumn));
+        verify(uiModel3MockColumn).setLink(eq(uiModel1MockColumn));
+    }
+
+    @Test
+    public void testLinkTwoProducersOneConsumerOneFact() throws Exception {
+        addBrlInsertActionToModel(model1,
+                                  "Applicant",
+                                  "name");
+
+        addBrlInsertActionToModel(model1,
+                                  "Applicant",
+                                  "age");
+
+        addActionInsertFactToModel(model2,
+                                   "Applicant",
+                                   "name");
+        addActionInsertFactToModel(model2,
+                                   "Applicant",
+                                   "age");
+
+        addConstraintToModel(model3,
+                             "Applicant",
+                             "name");
+
+        linkTables();
+
+        verify(uiModel3MockColumn).setLink(eq(uiModel1MockColumn));
+        verify(uiModel3MockColumn).setLink(eq(uiModel2MockColumn));
+    }
+
+    @Test
+    public void testLinkTwoProducersOneConsumerTwoFacts() throws Exception {
+        addBrlInsertActionToModel(model1,
+                                  "Applicant",
+                                  "name");
+
+        addBrlInsertActionToModel(model1,
+                                  "LoanApplication",
+                                  "age");
+
+        addActionInsertFactToModel(model2,
+                                   "Applicant",
+                                   "name");
+        addActionInsertFactToModel(model2,
+                                   "Applicant",
+                                   "age");
+
+        addConstraintToModel(model3,
+                             "Applicant",
+                             "name");
+
+        linkTables();
+
+        verify(uiModel3MockColumn).setLink(eq(uiModel1MockColumn));
+        verify(uiModel3MockColumn).setLink(eq(uiModel2MockColumn));
+    }
+
+    @Test
+    public void testLinkCircle() throws Exception {
+        addConstraintToModel(model1,
+                             "Applicant",
+                             "name");
+
+        addActionInsertFactToModel(model1,
+                                   "Applicant",
+                                   "age");
+
+        addConstraintToModel(model2,
+                             "Applicant",
+                             "age");
+
+        addActionInsertFactToModel(model2,
+                                   "LoanApplication",
+                                   "amount");
+
+        addConstraintToModel(model3,
+                             "LoanApplication",
+                             "amount");
+
+        addActionInsertFactToModel(model3,
+                                   "Applicant",
+                                   "name");
+
+        linkTables();
+
+        verify(uiModel1MockColumn).setLink(eq(uiModel3MockColumn));
+        verify(uiModel2MockColumn).setLink(eq(uiModel1MockColumn));
+        verify(uiModel3MockColumn).setLink(eq(uiModel2MockColumn));
+    }
+
+    @Test
+    public void testNoLink() throws Exception {
+        addActionInsertFactToModel(model1,
+                                   "Applicant",
+                                   "name");
+        addConstraintToModel(model2,
+                             "Applicant",
+                             "age");
+
+        linkTables();
+
+        verify(uiModel2MockColumn, never()).setLink(eq(uiModel1MockColumn));
+        verify(uiModel1MockColumn, never()).setLink(eq(uiModel2MockColumn));
+    }
+
+    private void linkTables() {
+        final GridData uiModel1 = spy(new BaseGridData());
+        final GridData uiModel2 = spy(new BaseGridData());
+        final GridData uiModel3 = spy(new BaseGridData());
+
+        final GuidedDecisionTableView dtView2 = mock(GuidedDecisionTableView.class);
+        final GuidedDecisionTableView dtView3 = mock(GuidedDecisionTableView.class);
+        final GuidedDecisionTableView.Presenter dtPresenter2 = setupPresenter();
+        final GuidedDecisionTableView.Presenter dtPresenter3 = setupPresenter();
+        final Set<GuidedDecisionTableView.Presenter> dtPresenters = new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add(dtPresenter);
+            add(dtPresenter2);
+            add(dtPresenter3);
+        }};
 
         when(dtPresenter.getModel()).thenReturn(model1);
         when(dtPresenter2.getModel()).thenReturn(model2);
@@ -367,16 +539,8 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         when(uiModel3Columns.get(anyInt())).thenReturn(uiModel3MockColumn);
 
         dtPresenter.link(dtPresenters);
-
-        verify(uiModel1Columns,
-               atLeast(1)).get(eq(2));
-        verify(uiModel2Columns,
-               atLeast(1)).get(eq(2));
-        verify(uiModel3Columns,
-               atLeast(1)).get(eq(2));
-
-        verify(uiModel2MockColumn).setLink(eq(uiModel1MockColumn));
-        verify(uiModel3MockColumn).setLink(eq(uiModel1MockColumn));
+        dtPresenter2.link(dtPresenters);
+        dtPresenter3.link(dtPresenters);
     }
 
     private void addConstraintToModel(final GuidedDecisionTable52 model,
@@ -399,6 +563,29 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         aif.setFactType(factType);
         aif.setFactField(fieldName);
         model.getActionCols().add(aif);
+    }
+
+    private void addBrlInsertActionToModel(final GuidedDecisionTable52 model,
+                                           final String factType,
+                                           final String field) {
+        final BRLActionColumn brlAction = new BRLActionColumn();
+        BRLActionVariableColumn variableColumn = new BRLActionVariableColumn(null,
+                                                                             null,
+                                                                             factType,
+                                                                             field);
+        brlAction.getChildColumns().add(variableColumn);
+        model.getActionCols().add(brlAction);
+    }
+
+    private void addBrlConstraintToModel(final GuidedDecisionTable52 model,
+                                         final String factType,
+                                         final String field) {
+        final Pattern52 p = new Pattern52();
+        p.setFactType(factType);
+        final BRLConditionColumn conditionColumn = new BRLConditionColumn();
+        conditionColumn.setFactField(field);
+        p.getChildColumns().add(conditionColumn);
+        model.getConditions().add(p);
     }
 
     @Test
