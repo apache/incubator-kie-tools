@@ -19,12 +19,9 @@ package org.uberfire.ext.apps.client.home.components.popup;
 import org.uberfire.ext.apps.api.Directory;
 import org.uberfire.ext.apps.client.resources.i18n.CommonConstants;
 
-import java.util.regex.Pattern;
-
 public class DirectoryNameValidator {
 
     public static final String VALID_DIR_REGEX = "^([^*\"\\/><?\\\\\\!|;:]*)$";
-    private static final Pattern VALID_DIR_PATTERN = Pattern.compile(VALID_DIR_REGEX);
     private final Directory currentDirectory;
 
     public DirectoryNameValidator(Directory currentDirectory) {
@@ -39,7 +36,7 @@ public class DirectoryNameValidator {
         if (dirName == null || dirName.trim().isEmpty()) {
             return Boolean.FALSE;
         }
-        if (!VALID_DIR_PATTERN.matcher(dirName).matches()) {
+        if (!dirName.matches(VALID_DIR_REGEX)) {
             return Boolean.FALSE;
         }
         if (currentDirectory.alreadyHasChild(dirName)) {

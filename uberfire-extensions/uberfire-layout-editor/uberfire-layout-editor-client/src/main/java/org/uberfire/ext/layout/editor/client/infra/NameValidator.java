@@ -17,12 +17,9 @@ package org.uberfire.ext.layout.editor.client.infra;
 
 import org.uberfire.ext.layout.editor.client.resources.i18n.CommonConstants;
 
-import java.util.regex.Pattern;
-
 public class NameValidator {
 
     public static final String VALID_DIR_REGEX = "^([^*\"\\/><?\\\\\\!|;:]*)$";
-    private static final Pattern VALID_DIR_PATTERN = Pattern.compile(VALID_DIR_REGEX);
 
     private String error;
 
@@ -58,7 +55,7 @@ public class NameValidator {
         if (dirName == null || dirName.isEmpty()) {
             return Boolean.FALSE;
         }
-        if (!VALID_DIR_PATTERN.matcher(dirName).matches()) {
+        if (!dirName.matches(VALID_DIR_REGEX)) {
             return Boolean.FALSE;
         }
         return Boolean.TRUE;
