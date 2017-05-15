@@ -18,6 +18,7 @@ package org.uberfire.ext.editor.commons.backend.validation;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Pattern;
 import javax.lang.model.SourceVersion;
 
 import org.apache.commons.lang3.CharUtils;
@@ -26,7 +27,8 @@ import org.apache.commons.lang3.StringUtils;
 public class ValidationUtils {
 
     private static final char[] ILLEGAL_CHARACTERS = {'/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':'};
-
+    // See org.apache.maven.model.validation.DefaultModelValidator.java::ID_REGEX
+    private static final Pattern ARTIFACT_ID_PATTERN = Pattern.compile("[A-Za-z0-9_\\-.]+");
     public static boolean isFileName(final String value) {
         //Null check
         if (StringUtils.isBlank(value)) {
@@ -40,7 +42,7 @@ public class ValidationUtils {
 
         //Illegal character check
         for (Character c : ILLEGAL_CHARACTERS) {
-            if (value.contains(c.toString())) {
+            if (value.indexOf(c) != -1) {
                 return false;
             }
         }
@@ -70,7 +72,6 @@ public class ValidationUtils {
     }
 
     public static boolean isArtifactIdentifier(final String value) {
-        // See org.apache.maven.model.validation.DefaultModelValidator.java::ID_REGEX
-        return value != null && value.matches("[A-Za-z0-9_\\-.]+");
+        return value != null && ARTIFACT_ID_PATTERN.matcher(value).matches();
     }
 }

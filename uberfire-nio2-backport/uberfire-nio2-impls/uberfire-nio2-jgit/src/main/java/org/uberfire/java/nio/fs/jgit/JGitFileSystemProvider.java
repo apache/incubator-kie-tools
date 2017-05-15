@@ -47,6 +47,7 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.jcraft.jsch.Session;
@@ -221,6 +222,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     public static final String DEFAULT_COMMIT_LIMIT_TO_GC = "20";
     protected static final String DEFAULT_IO_SERVICE_NAME = "default";
     private static final Logger LOG = LoggerFactory.getLogger(JGitFileSystemProvider.class);
+    private static final Pattern FORK_ORIGIN_PATTERN = Pattern.compile("(^\\w+\\/\\w+$)");
     private static final String SCHEME = "git";
     private static final int SCHEME_SIZE = (SCHEME + "://").length();
     private static final int DEFAULT_SCHEME_SIZE = ("default://").length();
@@ -924,7 +926,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     }
 
     private boolean isForkOrigin(final String originURI) {
-        return originURI.matches("(^\\w+\\/\\w+$)");
+        return FORK_ORIGIN_PATTERN.matcher(originURI).matches();
     }
 
     private void migrateOldRepository(String oldName,

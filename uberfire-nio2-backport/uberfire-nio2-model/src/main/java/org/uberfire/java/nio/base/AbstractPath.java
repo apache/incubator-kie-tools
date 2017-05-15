@@ -91,7 +91,7 @@ public abstract class AbstractPath<FS extends FileSystem>
                                  host);
         this.isRealPath = isRealPath;
         this.isNormalized = isNormalized;
-        this.usesWindowsFormat = path.matches(".*\\\\.*");
+        this.usesWindowsFormat = path.indexOf('\\') != -1;
 
         final RootInfo rootInfo = setupRoot(fs,
                                             path,
