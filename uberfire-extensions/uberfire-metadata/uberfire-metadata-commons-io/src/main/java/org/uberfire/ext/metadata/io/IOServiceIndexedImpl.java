@@ -230,7 +230,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         super.dispose();
     }
 
-    private void setupWatchService(final FileSystem fs) {
+    protected void setupWatchService(final FileSystem fs) {
         if (watchedList.contains(fs)) {
             return;
         }

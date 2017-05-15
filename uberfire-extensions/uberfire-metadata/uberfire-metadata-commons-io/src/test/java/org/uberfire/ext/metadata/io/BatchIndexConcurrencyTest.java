@@ -23,27 +23,62 @@ import java.util.concurrent.CountDownLatch;
 import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
+import org.uberfire.ext.metadata.engine.MetaIndexEngine;
+import org.uberfire.ext.metadata.model.KCluster;
+import org.uberfire.io.IOService;
+import org.uberfire.io.attribute.DublinCoreView;
+import org.uberfire.java.nio.base.version.VersionAttributeView;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
 @BMScript(value = "byteman/index.btm")
 public class BatchIndexConcurrencyTest extends BaseIndexTest {
+
+    private MetaIndexEngine metaIndexEngine;
 
     @Override
     protected String[] getRepositoryNames() {
         return new String[]{this.getClass().getSimpleName()};
     }
 
+    @Override
+    protected IOService ioService() {
+        if (ioService == null) {
+            config = new LuceneConfigBuilder()
+                    .withInMemoryMetaModelStore()
+                    .useDirectoryBasedIndex()
+                    .useInMemoryDirectory()
+                    .build();
+
+            metaIndexEngine = spy(config.getIndexEngine());
+
+            ioService = new IOServiceIndexedImpl(metaIndexEngine,
+                                                 DublinCoreView.class,
+                                                 VersionAttributeView.class) {
+                @Override
+                protected void setupWatchService(final FileSystem fs) {
+                    //No WatchService for this test
+                }
+            };
+        }
+        return ioService;
+    }
+
     @Test
     //See https://bugzilla.redhat.com/show_bug.cgi?id=1288132
     public void testSingleConcurrentBatchIndexExecution() throws IOException, InterruptedException {
+        //Write a file to ensure the FileSystem has a Root Directory
         final Path path1 = getBasePath(this.getClass().getSimpleName()).resolve("xxx");
         ioService().write(path1,
                           "xxx!");
 
-        setupCountDown(3);
+        setupCountDown(1);
 
         final URI fsURI = URI.create("git://" + this.getClass().getSimpleName() + "/file1");
 
@@ -66,5 +101,7 @@ public class BatchIndexConcurrencyTest extends BaseIndexTest {
 
         assertEquals(1,
                      getStartBatchCount());
+        verify(metaIndexEngine,
+               times(3)).freshIndex(any(KCluster.class));
     }
 }
