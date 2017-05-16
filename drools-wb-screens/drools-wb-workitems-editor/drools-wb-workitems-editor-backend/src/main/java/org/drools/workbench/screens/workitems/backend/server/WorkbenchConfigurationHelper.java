@@ -47,7 +47,7 @@ public class WorkbenchConfigurationHelper {
                                                                          "\n" +
                                                                          "[\n" +
                                                                          "  [\n" +
-                                                                         "    \"name\" : \"MyTask|\", \n" +
+                                                                         "    \"name\" : \"MyTask\", \n" +
                                                                          "    \"parameters\" : [ \n" +
                                                                          "        \"MyFirstParam\" : new StringDataType(), \n" +
                                                                          "        \"MySecondParam\" : new StringDataType(), \n" +
@@ -61,11 +61,31 @@ public class WorkbenchConfigurationHelper {
                                                                          "  ]\n" +
                                                                          "]" ) );
         group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_PARAMETER,
-                                                                 "\"MyParam|\" : new StringDataType()" ) );
+                                                                 "\"MyParam\" : new StringDataType()" ) );
         group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_RESULT,
-                                                                 "\"Result|\" : new ObjectDataType()" ) );
+                                                                 "\"Result\" : new ObjectDataType()" ) );
         group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_DISPLAY_NAME,
-                                                                 "\"displayName\" : \"My Task|\"" ) );
+                                                                 "\"displayName\" : \"My Task\"" ) );
+
+        group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_PARAMETER_VALUES,
+                "\"parameterValues\" : [\n" +
+                        "   \"MyFirstParam\" : \"A,B,C\",   \n" +
+                        "   \"MySecondParam\" : \"X,Y,Z\"\n" +
+                        "]" ) );
+
+        group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_CUSTOM_EDITOR,
+                "\"customEditor\" : \"true\"" ) );
+
+
         return group;
+    }
+
+
+    /**
+     * Sets ConfigurationFactory (for tests)
+     * @param configurationFactory
+     */
+    public void setConfigurationFactory( ConfigurationFactory configurationFactory ) {
+        this.configurationFactory = configurationFactory;
     }
 }

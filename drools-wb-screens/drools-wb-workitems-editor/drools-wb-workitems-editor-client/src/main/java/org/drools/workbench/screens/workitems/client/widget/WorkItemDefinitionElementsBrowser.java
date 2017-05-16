@@ -162,6 +162,10 @@ public class WorkItemDefinitionElementsBrowser extends Composite implements HasW
             return WorkItemsEditorConstants.INSTANCE.Parameter();
         } else if ( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_RESULT.equals( buttonKey ) ) {
             return WorkItemsEditorConstants.INSTANCE.Result();
+        } else if( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_CUSTOM_EDITOR.equals( buttonKey ) ) {
+            return WorkItemsEditorConstants.INSTANCE.CustomEditor();
+        } else if( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_PARAMETER_VALUES.equals( buttonKey ) ) {
+            return WorkItemsEditorConstants.INSTANCE.ParameterValues();
         }
         return buttonKey;
     }

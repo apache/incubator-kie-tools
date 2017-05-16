@@ -56,6 +56,10 @@ public interface WorkItemsEditorService
 
     public static final String WORK_ITEMS_EDITOR_SETTINGS_DISPLAY_NAME = "DisplayName";
 
+    public static final String WORK_ITEMS_EDITOR_SETTINGS_CUSTOM_EDITOR = "CustomEditor";
+
+    public static final String WORK_ITEMS_EDITOR_SETTINGS_PARAMETER_VALUES = "ParameterValues";
+
     WorkItemsModelContent loadContent( final Path path );
 
     WorkItemDefinitionElements loadDefinitionElements();

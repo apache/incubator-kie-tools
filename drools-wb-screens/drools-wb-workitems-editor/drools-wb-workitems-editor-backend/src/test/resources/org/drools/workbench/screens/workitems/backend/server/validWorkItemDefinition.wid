@@ -9,6 +9,11 @@ import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
         "MySecondParam" : new StringDataType(),
         "MyThirdParam" : new ObjectDataType()
     ],
+    "parameterValues" : [
+        "MyFirstParam" : "A,B,C",
+        "MySecondParam" : "one,two,three"
+    ],
+    "customEditor" : "false",
     "results" : [
         "Result" : new ObjectDataType("java.util.Map")
     ],

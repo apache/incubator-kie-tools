@@ -49,4 +49,8 @@ public interface WorkItemsEditorConstants
     String Result();
 
     String DisplayName();
+
+    String CustomEditor();
+
+    String ParameterValues();
 }

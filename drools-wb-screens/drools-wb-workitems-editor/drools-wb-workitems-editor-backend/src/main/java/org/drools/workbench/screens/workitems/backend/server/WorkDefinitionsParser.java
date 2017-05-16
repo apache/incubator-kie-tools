@@ -81,6 +81,10 @@ public class WorkDefinitionsParser {
                             workDefinition.setParameters( parameters );
                         }
 
+                        if( workDefinitionMap.get( "parameterValues" ) != null ) {
+                            workDefinition.setParameterValues( (Map<String, Object>) workDefinitionMap.get("parameterValues") );
+                        }
+
                         if ( workDefinitionMap.get( "results" ) != null ) {
                             final Set<ParameterDefinition> results = new HashSet<ParameterDefinition>();
                             final Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get( "results" );
