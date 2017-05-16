@@ -512,6 +512,7 @@ public class LibraryPlacesTest {
                                                   activeProject));
         libraryPlaces.projectDeleted(deleteProjectEvent);
 
+        verify(libraryPlaces).closeAllPlaces();
         verify(libraryPlaces).goToLibrary();
         verify(notificationEvent).fire(any());
     }
@@ -528,6 +529,8 @@ public class LibraryPlacesTest {
 
         libraryPlaces.projectDeleted(deleteProjectEvent);
 
+        verify(libraryPlaces,
+               never()).closeAllPlaces();
         verify(libraryPlaces,
                never()).goToLibrary();
         verify(notificationEvent,
@@ -612,6 +615,7 @@ public class LibraryPlacesTest {
         libraryPlaces.onSocialFileSelected(event);
 
         verify(placeManager).goTo(libraryPerspective);
-        verify(libraryPlaces).goToAsset(any(ProjectInfo.class), any(Path.class));
+        verify(libraryPlaces).goToAsset(any(ProjectInfo.class),
+                                        any(Path.class));
     }
 }

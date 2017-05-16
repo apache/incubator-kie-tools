@@ -24,9 +24,6 @@ import org.uberfire.preferences.shared.bean.BasePreference;
         bundleKey = "LibraryProjectPreferences.Label")
 public class LibraryProjectPreferences implements BasePreference<LibraryProjectPreferences> {
 
-    @Property(bundleKey = "LibraryProjectPreferences.GroupId")
-    String groupId;
-
     @Property(bundleKey = "LibraryProjectPreferences.Version")
     String version;
 
@@ -35,10 +32,6 @@ public class LibraryProjectPreferences implements BasePreference<LibraryProjectP
 
     @Property(bundleKey = "LibraryProjectPreferences.Branch")
     String branch;
-
-    public String getGroupId() {
-        return groupId;
-    }
 
     public String getVersion() {
         return version;

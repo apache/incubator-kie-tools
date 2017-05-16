@@ -200,6 +200,7 @@ public class LibraryServiceImplTest {
         final Repository repository2 = getRepository("repository2");
         final Repository repository3 = getRepository("repository3");
         final Repository repository4 = getRepository("organizationalUnit4-repository1");
+        final Repository repository5 = getRepository("organizationalUnit3-repository1");
 
         final OrganizationalUnit organizationalUnit1 = getOrganizationalUnit("organizationalUnit1",
                                                                              repository1);
@@ -226,6 +227,10 @@ public class LibraryServiceImplTest {
         organizationalUnitWithNoRepositoriesCreatesTheSecondaryRepositorySincePrimaryAlreadyExists(organizationalUnit3,
                                                                                                    "organizationalUnit3-repository1",
                                                                                                    repository1);
+        organizationalUnitWithNoRepositoriesCreatesATertiaryRepositorySincePrimaryAndSecondaryAlreadyExists(organizationalUnit3,
+                                                                                                            "organizationalUnit3-repository1-2",
+                                                                                                            repository1,
+                                                                                                            repository5);
         organizationalUnitWithSecondaryRepositoryExistent(organizationalUnit4,
                                                           "organizationalUnit4-repository1");
     }
@@ -253,14 +258,17 @@ public class LibraryServiceImplTest {
         when(preferences.getRepositoryPreferences().getName()).thenReturn("repo-alias");
         when(preferences.getOrganizationalUnitPreferences().getAliasInSingular()).thenReturn("team");
         when(preferences.getProjectPreferences().getBranch()).thenReturn("master");
-        when(preferences.getProjectPreferences().getGroupId()).thenReturn("projectGroupID");
         when(preferences.getProjectPreferences().getVersion()).thenReturn("1.0");
+
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        when(organizationalUnit.getDefaultGroupId()).thenReturn("ouGroupID");
 
         final Repository repository = mock(Repository.class);
         final Path projectRootPath = mock(Path.class);
         when(repository.getRoot()).thenReturn(projectRootPath);
 
         libraryService.createProject("Project Name",
+                                     organizationalUnit,
                                      repository,
                                      "baseURL",
                                      "description");
@@ -271,6 +279,8 @@ public class LibraryServiceImplTest {
                                              any());
 
         final POM pom = pomArgumentCaptor.getValue();
+        assertEquals("ouGroupID",
+                     pom.getGav().getGroupId());
         assertEquals("ProjectName",
                      pom.getGav().getArtifactId());
         assertEquals("description",
@@ -315,11 +325,12 @@ public class LibraryServiceImplTest {
 
     @Test
     public void emptyFirstPage() throws Exception {
-
         final Project project = mock(Project.class);
         final Path path = mock(Path.class);
         when(project.getRootPath()).thenReturn(path);
-        when(path.toURI()).thenReturn("a/b/c");
+        when(path.toURI()).thenReturn("file://a/b/c");
+
+        doReturn(true).when(ioService).exists(any());
 
         final ProjectAssetsQuery query = new ProjectAssetsQuery(project,
                                                                 "",
@@ -341,7 +352,7 @@ public class LibraryServiceImplTest {
         assertEquals(1,
                      pageRequest.getQueryTerms().size());
 
-        assertEquals("a/b/c",
+        assertEquals("file://a/b/c",
                      pageRequest.getQueryTerms().iterator().next().getValue());
 
         assertEquals(0,
@@ -356,7 +367,9 @@ public class LibraryServiceImplTest {
         final Project project = mock(Project.class);
         final Path path = mock(Path.class);
         when(project.getRootPath()).thenReturn(path);
-        when(path.toURI()).thenReturn("the_project");
+        when(path.toURI()).thenReturn("file://the_project");
+
+        doReturn(true).when(ioService).exists(any());
 
         final ProjectAssetsQuery query = new ProjectAssetsQuery(project,
                                                                 "helloo",
@@ -378,9 +391,9 @@ public class LibraryServiceImplTest {
         assertEquals(2,
                      pageRequest.getQueryTerms().size());
 
-        assertQuertTermsContains(pageRequest.getQueryTerms(),
-                                 "the_project");
-        assertQuertTermsContains(pageRequest.getQueryTerms(),
+        assertQueryTermsContains(pageRequest.getQueryTerms(),
+                                 "file://the_project");
+        assertQueryTermsContains(pageRequest.getQueryTerms(),
                                  "*helloo*");
 
         assertEquals(10,
@@ -389,7 +402,7 @@ public class LibraryServiceImplTest {
                      (int) pageRequest.getPageSize());
     }
 
-    private void assertQuertTermsContains(final Set<ValueIndexTerm> terms,
+    private void assertQueryTermsContains(final Set<ValueIndexTerm> terms,
                                           final String value) {
         assertTrue(terms.stream().filter((t) -> t.getValue().equals(value)).findFirst().isPresent());
     }
@@ -514,12 +527,15 @@ public class LibraryServiceImplTest {
 
     @Test
     public void createPOM() {
-        when(preferences.getProjectPreferences().getGroupId()).thenReturn("projectGroupID");
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        when(organizationalUnit.getDefaultGroupId()).thenReturn("ouGroupID");
+
         when(preferences.getProjectPreferences().getVersion()).thenReturn("1.0");
         when(preferences.getProjectPreferences().getDescription()).thenReturn("desc");
 
         GAV gav = libraryService.createGAV("proj",
-                                           preferences);
+                                           preferences,
+                                           organizationalUnit);
         POM proj = libraryService.createPOM("proj",
                                             "description",
                                             gav);
@@ -534,13 +550,16 @@ public class LibraryServiceImplTest {
 
     @Test
     public void createGAV() {
-        when(preferences.getProjectPreferences().getGroupId()).thenReturn("projectGroupID");
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        when(organizationalUnit.getDefaultGroupId()).thenReturn("ouGroupID");
+
         when(preferences.getProjectPreferences().getVersion()).thenReturn("1.0");
 
         GAV gav = libraryService.createGAV("proj",
-                                           preferences);
+                                           preferences,
+                                           organizationalUnit);
 
-        assertEquals(preferences.getProjectPreferences().getGroupId(),
+        assertEquals(organizationalUnit.getDefaultGroupId(),
                      gav.getGroupId());
         assertEquals("proj",
                      gav.getArtifactId());
@@ -562,6 +581,21 @@ public class LibraryServiceImplTest {
                                                                                                             final String repositoryIdentifier,
                                                                                                             final Repository alreadyExistentPrimaryRepository) {
         doReturn(alreadyExistentPrimaryRepository).when(repositoryService).getRepository("repository1");
+        final OrganizationalUnitRepositoryInfo info = libraryService.getOrganizationalUnitRepositoryInfo(organizationalUnit);
+        assertOrganizationalUnitRepositoryInfo(info,
+                                               4,
+                                               organizationalUnit.getIdentifier(),
+                                               0,
+                                               repositoryIdentifier);
+    }
+
+    private void organizationalUnitWithNoRepositoriesCreatesATertiaryRepositorySincePrimaryAndSecondaryAlreadyExists(final OrganizationalUnit organizationalUnit,
+                                                                                                                     final String repositoryIdentifier,
+                                                                                                                     final Repository alreadyExistentPrimaryRepository,
+                                                                                                                     final Repository alreadyExistentSecondaryRepository) {
+        doReturn(alreadyExistentPrimaryRepository).when(repositoryService).getRepository("repository1");
+        doReturn(alreadyExistentSecondaryRepository).when(repositoryService).getRepository("organizationalUnit3-repository1");
+
         final OrganizationalUnitRepositoryInfo info = libraryService.getOrganizationalUnitRepositoryInfo(organizationalUnit);
         assertOrganizationalUnitRepositoryInfo(info,
                                                4,

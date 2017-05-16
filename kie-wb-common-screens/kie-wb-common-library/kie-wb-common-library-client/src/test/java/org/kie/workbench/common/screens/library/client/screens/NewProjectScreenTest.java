@@ -16,7 +16,6 @@
 package org.kie.workbench.common.screens.library.client.screens;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.events.NewProjectEvent;
@@ -127,6 +126,9 @@ public class NewProjectScreenTest {
 
     @Test
     public void newProjectIsCreatedIntoSelectedRepository() throws Exception {
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        when(libraryPlaces.getSelectedOrganizationalUnit()).thenReturn(organizationalUnit);
+
         final Repository repository = mock(Repository.class);
         when(libraryPlaces.getSelectedRepository()).thenReturn(repository);
 
@@ -134,6 +136,7 @@ public class NewProjectScreenTest {
                                        "description");
 
         verify(libraryService).createProject("test",
+                                             organizationalUnit,
                                              repository,
                                              "baseUrl",
                                              "description");
@@ -155,6 +158,7 @@ public class NewProjectScreenTest {
     @Test
     public void createProjectFailedTest() {
         doThrow(new RuntimeException()).when(libraryService).createProject(anyString(),
+                                                                           any(),
                                                                            any(Repository.class),
                                                                            anyString(),
                                                                            anyString());

@@ -40,6 +40,7 @@ public interface LibraryService {
                                final String branch);
 
     KieProject createProject(final String projectName,
+                             final OrganizationalUnit selectedOrganizationalUnit,
                              final Repository selectedRepository,
                              final String baseURL,
                              final String projectDescription);
@@ -63,5 +64,4 @@ public interface LibraryService {
     Project importProject(final ExampleProject exampleProject);
 
     List<OrganizationalUnit> getOrganizationalUnits();
-
 }

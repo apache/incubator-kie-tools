@@ -257,6 +257,7 @@ public class LibraryPlaces {
     public void projectDeleted(@Observes final DeleteProjectEvent deleteProjectEvent) {
         if (isLibraryPerspectiveOpen()) {
             if (deleteProjectEvent.getProject().equals(lastViewedProject)) {
+                closeAllPlaces();
                 goToLibrary();
                 notificationEvent.fire(new NotificationEvent(ts.getTranslation(LibraryConstants.ProjectDeleted),
                                                              NotificationEvent.NotificationType.DEFAULT));
@@ -342,7 +343,7 @@ public class LibraryPlaces {
         } else if (isProjectEvent(eventType)) {
             placeManager.goTo(libraryPerspective);
             goToProject(projectInfo);
-        } else if (path != null){
+        } else if (path != null) {
             placeManager.goTo(libraryPerspective);
             goToProject(projectInfo,
                         true,
@@ -639,5 +640,11 @@ public class LibraryPlaces {
         closingLibraryPlaces = false;
 
         return placesClosed;
+    }
+
+    void closeAllPlaces() {
+        closingLibraryPlaces = true;
+        placeManager.closeAllPlaces();
+        closingLibraryPlaces = false;
     }
 }

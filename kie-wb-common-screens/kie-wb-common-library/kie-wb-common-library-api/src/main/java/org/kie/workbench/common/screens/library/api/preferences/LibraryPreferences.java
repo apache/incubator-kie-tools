@@ -47,7 +47,6 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
         defaultValue.repositoryPreferences.name = "myrepo";
         defaultValue.repositoryPreferences.scheme = "git";
 
-        defaultValue.projectPreferences.groupId = "com.myteam";
         defaultValue.projectPreferences.version = "1.0.0";
         defaultValue.projectPreferences.description = "default description";
         defaultValue.projectPreferences.branch = "master";

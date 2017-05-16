@@ -39,12 +39,6 @@ public class LibraryPreferencesTest {
     }
 
     @Test
-    public void projectGroupIdIsAValidPackageTest() {
-        libraryPreferences = libraryPreferences.defaultValue(libraryPreferences);
-        assertTrue(packageNameValidator.isValid(libraryPreferences.getProjectPreferences().getGroupId()));
-    }
-
-    @Test
     public void organizationalUnitGroupIdIsAValidPackageTest() {
         libraryPreferences = libraryPreferences.defaultValue(libraryPreferences);
         assertTrue(packageNameValidator.isValid(libraryPreferences.getOrganizationalUnitPreferences().getGroupId()));

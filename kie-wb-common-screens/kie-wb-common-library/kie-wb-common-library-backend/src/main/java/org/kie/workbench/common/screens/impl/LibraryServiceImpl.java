@@ -54,9 +54,9 @@ import org.kie.workbench.common.screens.library.api.AssetInfo;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
+import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
-import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindAllLibraryAssetsQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFullFileNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
@@ -159,6 +159,7 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     public KieProject createProject(final String projectName,
+                                    final OrganizationalUnit selectedOrganizationalUnit,
                                     final Repository selectedRepository,
                                     final String baseURL,
                                     final String projectDescription) {
@@ -166,7 +167,8 @@ public class LibraryServiceImpl implements LibraryService {
         final LibraryPreferences preferences = getPreferences();
 
         final GAV gav = createGAV(projectName,
-                                  preferences);
+                                  preferences,
+                                  selectedOrganizationalUnit);
         final POM pom = createPOM(projectName,
                                   projectDescription,
                                   gav);
@@ -197,6 +199,11 @@ public class LibraryServiceImpl implements LibraryService {
         checkNotNull("query",
                      query);
 
+        final boolean projectStillExists = ioService.exists(Paths.convert(query.getProject().getRootPath()));
+        if (!projectStillExists) {
+            return Collections.emptyList();
+        }
+
         final HashSet<ValueIndexTerm> queryTerms = new HashSet<>();
 
         queryTerms.add(new ValueProjectRootPathIndexTerm(query.getProject().getRootPath().toURI()));
@@ -223,7 +230,6 @@ public class LibraryServiceImpl implements LibraryService {
                                       Collections.<String>emptyList(),
                                       explorerServiceHelper.getRestrictedOperations(path)
             ));
-
         }
 
         return assets.stream()
@@ -273,7 +279,10 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public Project importProject(final ExampleProject exampleProject) {
         final OrganizationalUnit ou = getDefaultOrganizationalUnit();
-        return importProject(ou, getDefaultRepository(ou), "master", exampleProject);
+        return importProject(ou,
+                             getDefaultRepository(ou),
+                             "master",
+                             exampleProject);
     }
 
     @Override
@@ -317,9 +326,11 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     GAV createGAV(final String projectName,
-                  final LibraryPreferences preferences) {
-        return new GAV(preferences.getProjectPreferences().getGroupId(),
-                       projectName.replace(" ", ""),
+                  final LibraryPreferences preferences,
+                  final OrganizationalUnit selectedOrganizationalUnit) {
+        return new GAV(selectedOrganizationalUnit.getDefaultGroupId(),
+                       projectName.replace(" ",
+                                           ""),
                        preferences.getProjectPreferences().getVersion());
     }
 
@@ -381,9 +392,15 @@ public class LibraryServiceImpl implements LibraryService {
             if (repositoryService.getRepository(primaryDefaultRepositoryName) == null) {
                 return createDefaultRepository(ou,
                                                primaryDefaultRepositoryName);
-            } else {
+            } else if (repositoryService.getRepository(secondaryDefaultRepositoryName) == null) {
                 return createDefaultRepository(ou,
                                                secondaryDefaultRepositoryName);
+            } else {
+                int i = 1;
+                while (repositoryService.getRepository(secondaryDefaultRepositoryName + "-" + ++i) != null) {
+                }
+                return createDefaultRepository(ou,
+                                               secondaryDefaultRepositoryName + "-" + i);
             }
         }
     }

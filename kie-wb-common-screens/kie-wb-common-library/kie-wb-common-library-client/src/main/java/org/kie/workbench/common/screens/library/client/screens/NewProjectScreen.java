@@ -106,10 +106,11 @@ public class NewProjectScreen {
                           libraryPlaces.getSelectedBranch());
 
         libraryPreferences.load(loadedLibraryPreferences -> {
-            view.init(NewProjectScreen.this);
-            view.setProjectDescription(loadedLibraryPreferences.getProjectPreferences().getDescription());
-        }, error -> {
-        });
+                                    view.init(NewProjectScreen.this);
+                                    view.setProjectDescription(loadedLibraryPreferences.getProjectPreferences().getDescription());
+                                },
+                                error -> {
+                                });
     }
 
     public void cancel() {
@@ -122,6 +123,7 @@ public class NewProjectScreen {
         busyIndicatorView.showBusyIndicator(ts.getTranslation(LibraryConstants.NewProjectScreen_Saving));
         libraryService.call(getSuccessCallback(),
                             getErrorCallBack()).createProject(projectName,
+                                                              libraryPlaces.getSelectedOrganizationalUnit(),
                                                               libraryPlaces.getSelectedRepository(),
                                                               getBaseURL(),
                                                               projectDescription);

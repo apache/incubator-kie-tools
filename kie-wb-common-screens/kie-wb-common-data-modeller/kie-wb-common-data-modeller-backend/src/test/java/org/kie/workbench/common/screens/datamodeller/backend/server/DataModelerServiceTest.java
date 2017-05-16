@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.enterprise.inject.Instance;
 
@@ -44,18 +45,19 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileSystem;
 
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataModelerServiceTest {
 
-    private static final Path PATH = PathFactory.newPath( "Sample.java",
-                                                          "default://project/src/main/java/old/package/Sample.java" );
+    private static final Path PATH = PathFactory.newPath("Sample.java",
+                                                         "default://project/src/main/java/old/package/Sample.java");
     private static final String NEW_NAME = "NewSample";
     private static final String NEW_PACKAGE_NAME = "new.package";
-    private static final Path TARGET_DIRECTORY = PathFactory.newPath( "/",
-                                                                      "default://project/src/main/java/new/package" );
+    private static final Path TARGET_DIRECTORY = PathFactory.newPath("/",
+                                                                     "default://project/src/main/java/new/package");
     private static final String COMMENT = "comment";
 
     @Mock
@@ -91,156 +93,168 @@ public class DataModelerServiceTest {
 
     @Test
     public void copyToAnotherPackageTest() {
-        makeCopy( true );
+        makeCopy(true);
 
-        verify( dataModelerService ).refactorClass( eq( PATH ),
-                                                    eq( NEW_PACKAGE_NAME ),
-                                                    eq( NEW_NAME ) );
-        verify( copyService ).copy( eq( PATH ),
-                                    eq( NEW_NAME ),
-                                    eq( TARGET_DIRECTORY ),
-                                    eq( COMMENT ) );
+        verify(dataModelerService).refactorClass(eq(PATH),
+                                                 eq(NEW_PACKAGE_NAME),
+                                                 eq(NEW_NAME));
+        verify(copyService).copy(eq(PATH),
+                                 eq(NEW_NAME),
+                                 eq(TARGET_DIRECTORY),
+                                 eq(COMMENT));
     }
 
     @Test
     public void copyToAnotherPackageWithoutRefactorTest() {
-        makeCopy( false );
+        makeCopy(false);
 
-        verify( dataModelerService,
-                never() ).refactorClass( eq( PATH ),
-                                         eq( NEW_PACKAGE_NAME ),
-                                         eq( NEW_NAME ) );
-        verify( copyService ).copy( eq( PATH ),
-                                    eq( NEW_NAME ),
-                                    eq( TARGET_DIRECTORY ),
-                                    eq( COMMENT ) );
+        verify(dataModelerService,
+               never()).refactorClass(eq(PATH),
+                                      eq(NEW_PACKAGE_NAME),
+                                      eq(NEW_NAME));
+        verify(copyService).copy(eq(PATH),
+                                 eq(NEW_NAME),
+                                 eq(TARGET_DIRECTORY),
+                                 eq(COMMENT));
     }
 
-    private void makeCopy( boolean refactor ) {
-        dataModelerService.copy( PATH,
-                                 NEW_NAME,
-                                 NEW_PACKAGE_NAME,
-                                 TARGET_DIRECTORY,
-                                 COMMENT,
-                                 refactor );
+    private void makeCopy(boolean refactor) {
+        dataModelerService.copy(PATH,
+                                NEW_NAME,
+                                NEW_PACKAGE_NAME,
+                                TARGET_DIRECTORY,
+                                COMMENT,
+                                refactor);
     }
 
     @Test
     public void saveSourcePackageNameChanged() {
-        testSaveSource( "newPackageName",
-                        null );
+        testSaveSource("newPackageName",
+                       null);
     }
 
     @Test
     public void saveSourceFileNameChanged() {
-        testSaveSource( null,
-                        "newFileName" );
+        testSaveSource(null,
+                       "newFileName");
     }
 
     @Test
     public void saveSourceBothPackageAndFileNameChanged() {
-        testSaveSource( "newPackageName",
-                        "newFileName" );
+        testSaveSource("newPackageName",
+                       "newFileName");
     }
 
     @Test
     public void saveSourceNoPackageAndFileNameChange() {
-        testSaveSource( null,
-                        null );
+        testSaveSource(null,
+                       null);
     }
 
-    private void testSaveSource( String newPackageName,
-                                 String newFileName ) {
-        Path dataObjectPath = PathFactory.newPath( "TestDataObject",
-                                                   "file:///dataobjects/TestDataObject.java" );
-        Path srcPath = PathFactory.newPath( "src",
-                                            "file:///src" );
-        Package packageMock = mock( Package.class );
-        when( packageMock.getPackageMainSrcPath() ).thenReturn( srcPath );
-        when( serviceHelper.ensurePackageStructure( any( Project.class ),
-                                                    anyString() ) ).thenReturn( packageMock );
+    private void testSaveSource(String newPackageName,
+                                String newFileName) {
+        Path dataObjectPath = PathFactory.newPath("TestDataObject",
+                                                  "file:///dataobjects/TestDataObject.java");
+        Path srcPath = PathFactory.newPath("src",
+                                           "file:///src");
+        Package packageMock = mock(Package.class);
+        when(packageMock.getPackageMainSrcPath()).thenReturn(srcPath);
+        when(serviceHelper.ensurePackageStructure(any(Project.class),
+                                                  anyString())).thenReturn(packageMock);
 
-        DataModelerSaveHelper saveHelper = mock( DataModelerSaveHelper.class );
-        List<DataModelerSaveHelper> saveHelpers = Arrays.asList( saveHelper );
-        when( saveHelperInstance.iterator() ).thenReturn( saveHelpers.iterator() );
+        DataModelerSaveHelper saveHelper = mock(DataModelerSaveHelper.class);
+        List<DataModelerSaveHelper> saveHelpers = Arrays.asList(saveHelper);
+        when(saveHelperInstance.iterator()).thenReturn(saveHelpers.iterator());
 
-        DataObject dataObject = new DataObjectImpl( "dataobjects",
-                                                    "TestDataObject" );
+        DataObject dataObject = new DataObjectImpl("dataobjects",
+                                                   "TestDataObject");
 
-        dataModelerService.saveSource( "Source",
-                                       dataObjectPath,
-                                       dataObject,
-                                       mock( Metadata.class ),
-                                       "Commit message",
-                                       newPackageName,
-                                       newFileName );
+        dataModelerService.saveSource("Source",
+                                      dataObjectPath,
+                                      dataObject,
+                                      mock(Metadata.class),
+                                      "Commit message",
+                                      newPackageName,
+                                      newFileName);
 
-        verify( ioService,
-                times( 1 ) ).startBatch( any( FileSystem.class ) );
+        verify(ioService,
+               times(1)).startBatch(any(FileSystem.class));
 
-        if ( newPackageName == null && newFileName == null ) {
-            verify( ioService,
-                    times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
-                                        anyString(),
-                                        anyMap(),
-                                        any( CommentedOption.class ) );
-        } else if ( newPackageName != null && newFileName != null ) {
-            verify( ioService,
-                    times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
-                                        anyString(),
-                                        anyMap(),
-                                        any( CommentedOption.class ) );
-            verify( ioService,
-                    times( 1 ) ).move( any( org.uberfire.java.nio.file.Path.class ),
-                                       any( org.uberfire.java.nio.file.Path.class ),
-                                       any( CommentedOption.class ) );
-        } else if ( newPackageName != null ) {
-            verify( ioService,
-                    times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
-                                        anyString(),
-                                        anyMap(),
-                                        any( CommentedOption.class ) );
-            verify( ioService,
-                    times( 1 ) ).move( any( org.uberfire.java.nio.file.Path.class ),
-                                       any( org.uberfire.java.nio.file.Path.class ),
-                                       any( CommentedOption.class ) );
+        if (newPackageName == null && newFileName == null) {
+            verify(ioService,
+                   times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+                                   anyString(),
+                                   anyMap(),
+                                   any(CommentedOption.class));
+        } else if (newPackageName != null && newFileName != null) {
+            verify(ioService,
+                   times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+                                   anyString(),
+                                   anyMap(),
+                                   any(CommentedOption.class));
+            verify(ioService,
+                   times(1)).move(any(org.uberfire.java.nio.file.Path.class),
+                                  any(org.uberfire.java.nio.file.Path.class),
+                                  any(CommentedOption.class));
+        } else if (newPackageName != null) {
+            verify(ioService,
+                   times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+                                   anyString(),
+                                   anyMap(),
+                                   any(CommentedOption.class));
+            verify(ioService,
+                   times(1)).move(any(org.uberfire.java.nio.file.Path.class),
+                                  any(org.uberfire.java.nio.file.Path.class),
+                                  any(CommentedOption.class));
         } else {
-            verify( renameService,
-                    times( 1 ) ).rename( any( Path.class ),
-                                         anyString(),
-                                         anyString() );
+            verify(renameService,
+                   times(1)).rename(any(Path.class),
+                                    anyString(),
+                                    anyString());
         }
 
-        verify( saveHelper,
-                times( 1 ) ).postProcess( any( Path.class ),
-                                          any( Path.class ) );
-        verify( ioService,
-                times( 1 ) ).endBatch();
+        verify(saveHelper,
+               times(1)).postProcess(any(Path.class),
+                                     any(Path.class));
+        verify(ioService,
+               times(1)).endBatch();
     }
 
     @Test
     public void renameWorkaround() {
-        Path dataObjectPath = PathFactory.newPath( "TestDataObject",
-                                                   "file:///dataobjects/TestDataObject.java" );
-        DataModelerRenameWorkaroundHelper renameHelper = mock( DataModelerRenameWorkaroundHelper.class );
-        List<DataModelerRenameWorkaroundHelper> renameHelpers = Arrays.asList( renameHelper );
-        when( renameHelperInstance.iterator() ).thenReturn( renameHelpers.iterator() );
+        Path dataObjectPath = PathFactory.newPath("TestDataObject",
+                                                  "file:///dataobjects/TestDataObject.java");
+        DataModelerRenameWorkaroundHelper renameHelper = mock(DataModelerRenameWorkaroundHelper.class);
+        List<DataModelerRenameWorkaroundHelper> renameHelpers = Arrays.asList(renameHelper);
+        when(renameHelperInstance.iterator()).thenReturn(renameHelpers.iterator());
 
-        dataModelerService.renameWorkaround( dataObjectPath,
-                                             "NewName",
-                                             "New content",
-                                             "Comment" );
+        dataModelerService.renameWorkaround(dataObjectPath,
+                                            "NewName",
+                                            "New content",
+                                            "Comment");
 
-        verify( ioService,
-                times( 1 ) ).startBatch( any( FileSystem[].class ) );
-        verify( ioService,
-                times( 1 ) ).move( any( org.uberfire.java.nio.file.Path.class ),
-                                   any( org.uberfire.java.nio.file.Path.class ),
-                                   any( CommentedOption.class ) );
-        verify( renameHelper,
-                times( 1 ) ).postProcess( any( Path.class ),
-                                          any( Path.class ) );
-        verify( ioService,
-                times( 1 ) ).endBatch();
+        verify(ioService,
+               times(1)).startBatch(any(FileSystem[].class));
+        verify(ioService,
+               times(1)).move(any(org.uberfire.java.nio.file.Path.class),
+                              any(org.uberfire.java.nio.file.Path.class),
+                              any(CommentedOption.class));
+        verify(renameHelper,
+               times(1)).postProcess(any(Path.class),
+                                     any(Path.class));
+        verify(ioService,
+               times(1)).endBatch();
+    }
+
+    @Test
+    public void findClassUsagesOfRecentlyDeletedProject() {
+        final Path projectPath = mock(Path.class);
+        doReturn(null).when(projectService).resolveProject(projectPath);
+
+        final List<Path> classUsages = dataModelerService.findClassUsages(projectPath,
+                                                                          "myClass");
+
+        assertEquals(Collections.emptyList(),
+                     classUsages);
     }
 }
