@@ -57,7 +57,7 @@
       <g:cell width="33%" horizontalAlignment="right">
         <g:HorizontalPanel ui:field="rightToolbar">
           <g:FlowPanel width="100%" ui:field="rightActionsToolbar" addStyleNames="{style.rightToolBar}"/>
-          <b:Button ui:field="columnPickerButton" dataToggle="BUTTON" icon="LIST_UL"/>
+          <b:Button ui:field="columnPickerButton" dataToggle="BUTTON" icon="COLUMNS"/>
         </g:HorizontalPanel>
       </g:cell>
     </g:HorizontalPanel>
