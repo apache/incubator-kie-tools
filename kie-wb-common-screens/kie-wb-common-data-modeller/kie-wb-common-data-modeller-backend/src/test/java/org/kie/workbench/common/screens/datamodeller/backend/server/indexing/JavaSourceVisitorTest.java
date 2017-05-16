@@ -34,8 +34,8 @@ import org.jboss.forge.roaster.model.source.MethodSource;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.workbench.common.services.refactoring.model.index.Resource;
-import org.kie.workbench.common.services.refactoring.model.index.ResourceReference;
+import org.kie.workbench.common.services.refactoring.Resource;
+import org.kie.workbench.common.services.refactoring.ResourceReference;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 
 import static org.junit.Assert.assertEquals;

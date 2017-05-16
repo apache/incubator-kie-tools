@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.services.refactoring.model.index;
+package org.kie.workbench.common.services.refactoring;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.PartType;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.metadata.model.KProperty;
 
 /**
  * This object is a DTO to represent a "shared" part reference in a resource (a DRL rule definition or a BPMN2 process definition).
@@ -39,19 +39,23 @@ public class SharedPart implements IndexElementsGenerator {
     private final String partName;
     private PartType partType;
 
-
-    public SharedPart( final String partName,  PartType partType ) {
-        this.partName = PortablePreconditions.checkNotNull( "partName", partName );
-        this.partType = PortablePreconditions.checkNotNull( "partType", partType );
+    public SharedPart(final String partName,
+                      PartType partType) {
+        this.partName = PortablePreconditions.checkNotNull("partName",
+                                                           partName);
+        this.partType = PortablePreconditions.checkNotNull("partType",
+                                                           partType);
     }
 
     @Override
-    public List<Pair<String, String>> toIndexElements() {
-        final List<Pair<String, String>> indexElements = new ArrayList<Pair<String, String>>();
+    public List<KProperty<?>> toIndexElements() {
+        final List<KProperty<?>> indexElements = new ArrayList<>();
 
         // Impact Analysis reference
-        ValueSharedPartIndexTerm sharedPartTerm = new ValueSharedPartIndexTerm(this.partName, this.partType);
-        indexElements.add(new Pair<String, String>(sharedPartTerm.getTerm(), sharedPartTerm.getValue()));
+        ValueSharedPartIndexTerm sharedPartTerm = new ValueSharedPartIndexTerm(this.partName,
+                                                                               this.partType);
+        indexElements.add(new KPropertyImpl<>(sharedPartTerm.getTerm(),
+                                              sharedPartTerm.getValue()));
 
         return indexElements;
     }

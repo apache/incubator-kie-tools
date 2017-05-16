@@ -26,17 +26,17 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
-import org.kie.workbench.common.services.refactoring.model.index.ResourceReference;
-import org.kie.workbench.common.services.refactoring.model.index.Resource;
-import org.kie.workbench.common.services.refactoring.model.index.SharedPart;
+import org.kie.workbench.common.services.refactoring.ResourceReference;
+import org.kie.workbench.common.services.refactoring.Resource;
+import org.kie.workbench.common.services.refactoring.SharedPart;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.metadata.engine.Indexer;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KObjectKey;
+import org.uberfire.ext.metadata.model.KProperty;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
@@ -78,7 +78,7 @@ public abstract class AbstractFileIndexer implements Indexer {
             // create a builder with the default information
             DefaultIndexBuilder builder = fillIndexBuilder(path);
 
-            Set<Pair<String, String>> indexElements = null;
+            Set<KProperty<?>> indexElements = null;
             if( builder != null ) {
                 // build index document
                 indexElements = builder.build();

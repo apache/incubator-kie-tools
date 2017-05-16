@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.services.refactoring.model.index;
+package org.kie.workbench.common.services.refactoring;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValuePartIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueResourceIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.metadata.model.KProperty;
 
 public class Resource implements IndexElementsGenerator {
 
@@ -34,15 +33,18 @@ public class Resource implements IndexElementsGenerator {
 
     private final Map<String, PartType> parts;
 
-    public Resource(String resourceFQN, ResourceType resourceType ) {
+    public Resource(String resourceFQN,
+                    ResourceType resourceType) {
         this.resourceFQN = resourceFQN;
         this.resourceType = resourceType;
         this.parts = new HashMap<String, PartType>();
     }
 
-    public void addPart( String uniquePartName, PartType partType ) {
-        PartType previousPartType = parts.put(uniquePartName, partType);
-        if( previousPartType != null ) {
+    public void addPart(String uniquePartName,
+                        PartType partType) {
+        PartType previousPartType = parts.put(uniquePartName,
+                                              partType);
+        if (previousPartType != null) {
             throw new IllegalArgumentException(partType.toString() + " " + uniquePartName + " has already been added!");
         }
     }
@@ -56,16 +58,20 @@ public class Resource implements IndexElementsGenerator {
     }
 
     @Override
-    public List<Pair<String, String>> toIndexElements() {
-        final List<Pair<String, String>> indexElements = new ArrayList<Pair<String, String>>();
+    public List<KProperty<?>> toIndexElements() {
+        final List<KProperty<?>> indexElements = new ArrayList<>();
 
-        ValueResourceIndexTerm resTerm = new ValueResourceIndexTerm(resourceFQN, resourceType);
-        indexElements.add(new Pair<String, String>(resTerm.getTerm(), resTerm.getValue()));
+        ValueResourceIndexTerm resTerm = new ValueResourceIndexTerm(resourceFQN,
+                                                                    resourceType);
+        indexElements.add(new KPropertyImpl<>(resTerm.getTerm(),
+                                              resTerm.getValue()));
 
-        for( Entry<String, PartType> part : parts.entrySet() ) {
-            ValuePartIndexTerm partTerm = new ValuePartIndexTerm(part.getKey(), part.getValue());
-            indexElements.add(new Pair<String, String>(partTerm.getTerm(), partTerm.getValue()));
-        }
+        parts.entrySet().forEach((part) -> {
+            ValuePartIndexTerm partTerm = new ValuePartIndexTerm(part.getKey(),
+                                                                 part.getValue());
+            indexElements.add(new KPropertyImpl<>(partTerm.getTerm(),
+                                                  partTerm.getValue()));
+        });
 
         return indexElements;
     }
@@ -74,5 +80,4 @@ public class Resource implements IndexElementsGenerator {
     public String toString() {
         return resourceType.toString() + " => " + resourceFQN;
     }
-
 }

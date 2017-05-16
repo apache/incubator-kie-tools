@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.Supplier;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -30,6 +31,8 @@ import javax.inject.Named;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.TopFieldDocs;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.TotalHitCountCollector;
 import org.drools.workbench.models.datamodel.util.PortablePreconditions;
@@ -91,21 +94,22 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
                                             request );
         final String queryName = PortablePreconditions.checkNotNull( "queryName",
                                                                      request.getQueryName() );
-        NamedQuery namedQuery = namedQueries.findNamedQuery( queryName );
+        final NamedQuery namedQuery = namedQueries.findNamedQuery( queryName );
 
         //Validate provided terms against those required for the named query
         namedQuery.validateTerms(request.getQueryTerms());
 
         final Query query = namedQuery.toQuery( request.getQueryTerms() );
+        final Sort sort = namedQuery.getSortOrder();
 
         final int pageSize = request.getPageSize();
         final int startIndex = request.getStartRowIndex();
 
         final List<KObject> kObjects
             = search(query,
-                     (hits) -> ( (startIndex + 1) * ( pageSize > 0 ? pageSize : 1 ) ), // num docs to get
-                     (collector) -> (collector.topDocs( startIndex ).scoreDocs), // get docs starting at startIndex
-                     (numHits) -> ( numHits > pageSize ? pageSize : numHits ) // num docs to add to response
+                     sort,
+                     () -> ( startIndex ), // start index of docs to get
+                     (numHits) -> ( numHits - startIndex > pageSize ? pageSize : numHits - startIndex ) // num docs to add to response
                     );
 
         if( ! kObjects.isEmpty() ) {
@@ -125,17 +129,18 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
         PortablePreconditions.checkNotNull( "queryTerms",
                                             queryTerms );
 
-        NamedQuery namedQuery = namedQueries.findNamedQuery( queryName );
+        final NamedQuery namedQuery = namedQueries.findNamedQuery( queryName );
 
         //Validate provided terms against those required for the named query
         namedQuery.validateTerms(queryTerms);
 
         final Query query = namedQuery.toQuery( queryTerms );
+        final Sort sort = namedQuery.getSortOrder();
 
         final List<KObject> kObjects
             = search(query,
-                     (hits) -> (hits), // num docs to get
-                     (collector) -> (collector.topDocs().scoreDocs), // get all docs
+                     sort,
+                     () -> (0), // start index of docs to get
                      (numHits) -> (numHits) // num docs to add to response
                     );
 
@@ -148,9 +153,9 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
     }
 
     private List<KObject> search(final Query query,
-                                 final IntFunction<Integer> totalHitsSupplier,
-                                 final Function<TopScoreDocCollector, ScoreDoc[]> getDocsHitFunction,
-                                 final IntFunction<Integer> numDocsInResponseFunction,
+                                 final Sort sort,
+                                 final Supplier<Integer> startIndexSupplier,
+                                 final IntFunction<Integer> numOfHitsToReturnSupplier,
                                  final ClusterSegment... clusterSegments) {
 
         final LuceneIndexManager indexManager = ( (LuceneIndexManager) config.getIndexManager() );
@@ -165,13 +170,14 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
 
             int numHits = totalHitCountCollector.getTotalHits();
             if( numHits > 0 ) {
-                final TopScoreDocCollector topScoreDocCollector = TopScoreDocCollector.create( totalHitsSupplier.apply(numHits) );
-                index.search( query, topScoreDocCollector );
-                final ScoreDoc[] docsHit = getDocsHitFunction.apply(topScoreDocCollector);
+                final TopFieldDocs docsHit = index.search(query,
+                                                          Integer.MAX_VALUE,
+                                                          sort );
+                final int startIndex = startIndexSupplier.get();
+                final int numOfHitsToReturn = numOfHitsToReturnSupplier.apply(docsHit.totalHits);
 
-                int numDocs = numDocsInResponseFunction.apply(docsHit.length);
-                for ( int i = 0; i < numDocs; i++ ) {
-                    result.add( toKObject( index.doc( docsHit[ i ].doc ) ) );
+                for ( int i = startIndex; i < startIndex+numOfHitsToReturn; i++ ) {
+                    result.add( toKObject( index.doc(docsHit.scoreDocs[ i ].doc) ) );
                 }
             }
         } catch ( final Exception ex ) {

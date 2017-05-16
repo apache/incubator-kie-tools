@@ -24,9 +24,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
-import org.kie.workbench.common.services.refactoring.model.index.ResourceReference;
-import org.kie.workbench.common.services.refactoring.model.index.Resource;
-import org.kie.workbench.common.services.refactoring.model.index.SharedPart;
+import org.kie.workbench.common.services.refactoring.ResourceReference;
+import org.kie.workbench.common.services.refactoring.Resource;
+import org.kie.workbench.common.services.refactoring.SharedPart;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.slf4j.Logger;

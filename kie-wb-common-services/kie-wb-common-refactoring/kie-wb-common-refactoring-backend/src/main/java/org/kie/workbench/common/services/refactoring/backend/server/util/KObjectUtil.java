@@ -18,11 +18,8 @@ package org.kie.workbench.common.services.refactoring.backend.server.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
-import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KObjectKey;
 import org.uberfire.ext.metadata.model.KProperty;
@@ -31,7 +28,7 @@ import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.base.SegmentedPath;
 import org.uberfire.java.nio.file.Path;
 
-import static org.apache.commons.codec.binary.Base64.*;
+import static org.apache.commons.codec.binary.Base64.encodeBase64String;
 
 public class KObjectUtil {
 
@@ -39,9 +36,9 @@ public class KObjectUtil {
 
     static {
         try {
-            DIGEST = MessageDigest.getInstance( "SHA1" );
-        } catch ( final NoSuchAlgorithmException e ) {
-            throw new RuntimeException( e );
+            DIGEST = MessageDigest.getInstance("SHA1");
+        } catch (final NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -56,12 +53,12 @@ public class KObjectUtil {
 
     }
 
-    public static KObjectKey toKObjectKey( final Path path ) {
+    public static KObjectKey toKObjectKey(final Path path) {
         return new KObjectKey() {
 
             @Override
             public String getId() {
-                return sha1( getType().getName() + "|refactor-info|" + getKey() );
+                return sha1(getType().getName() + "|refactor-info|" + getKey());
             }
 
             @Override
@@ -71,12 +68,12 @@ public class KObjectUtil {
 
             @Override
             public String getClusterId() {
-                return ( (FileSystemId) path.getFileSystem() ).id();
+                return ((FileSystemId) path.getFileSystem()).id();
             }
 
             @Override
             public String getSegmentId() {
-                return ( (SegmentedPath) path ).getSegmentId();
+                return ((SegmentedPath) path).getSegmentId();
             }
 
             @Override
@@ -86,26 +83,26 @@ public class KObjectUtil {
 
             @Override
             public String toString() {
-                StringBuilder sb = new StringBuilder( "KObject{" +
-                                                              ", key='" + getKey() + '\'' +
-                                                              ", id='" + getId() + '\'' +
-                                                              ", type=" + getType() +
-                                                              ", clusterId='" + getClusterId() + '\'' +
-                                                              ", segmentId='" + getSegmentId() + '\'' );
-                sb.append( '}' );
+                StringBuilder sb = new StringBuilder("KObject{" +
+                                                             ", key='" + getKey() + '\'' +
+                                                             ", id='" + getId() + '\'' +
+                                                             ", type=" + getType() +
+                                                             ", clusterId='" + getClusterId() + '\'' +
+                                                             ", segmentId='" + getSegmentId() + '\'');
+                sb.append('}');
 
                 return sb.toString();
             }
         };
     }
 
-    public static KObject toKObject( final Path path,
-                                     final Set<Pair<String, String>> indexElements ) {
+    public static KObject toKObject(final Path path,
+                                    final Set<KProperty<?>> indexElements) {
         return new KObject() {
 
             @Override
             public String getId() {
-                return sha1( getType().getName() + "|refactor-info|" + getKey() );
+                return sha1(getType().getName() + "|refactor-info|" + getKey());
             }
 
             @Override
@@ -115,12 +112,12 @@ public class KObjectUtil {
 
             @Override
             public String getClusterId() {
-                return ( (FileSystemId) path.getFileSystem() ).id();
+                return ((FileSystemId) path.getFileSystem()).id();
             }
 
             @Override
             public String getSegmentId() {
-                return ( (SegmentedPath) path ).getSegmentId();
+                return ((SegmentedPath) path).getSegmentId();
             }
 
             @Override
@@ -130,26 +127,7 @@ public class KObjectUtil {
 
             @Override
             public Iterable<KProperty<?>> getProperties() {
-                final List<KProperty<?>> result = new ArrayList<KProperty<?>>();
-                for ( final Pair<String, String> indexElement : indexElements ) {
-                    result.add( new KProperty<Object>() {
-                        @Override
-                        public String getName() {
-                            return indexElement.getK1();
-                        }
-
-                        @Override
-                        public Object getValue() {
-                            return indexElement.getK2();
-                        }
-
-                        @Override
-                        public boolean isSearchable() {
-                            return true;
-                        }
-                    } );
-                }
-                return result;
+                return indexElements;
             }
 
             @Override
@@ -159,28 +137,28 @@ public class KObjectUtil {
 
             @Override
             public String toString() {
-                StringBuilder sb = new StringBuilder( "KObject{" +
-                                                              ", key='" + getKey() + '\'' +
-                                                              ", id='" + getId() + '\'' +
-                                                              ", type=" + getType() +
-                                                              ", clusterId='" + getClusterId() + '\'' +
-                                                              ", segmentId='" + getSegmentId() + '\'' );
+                StringBuilder sb = new StringBuilder("KObject{" +
+                                                             ", key='" + getKey() + '\'' +
+                                                             ", id='" + getId() + '\'' +
+                                                             ", type=" + getType() +
+                                                             ", clusterId='" + getClusterId() + '\'' +
+                                                             ", segmentId='" + getSegmentId() + '\'');
 
-                for ( KProperty<?> xproperty : getProperties() ) {
-                    sb.append( ", " + xproperty.getName() + "='" + xproperty.getValue() + '\'' );
+                for (KProperty<?> xproperty : getProperties()) {
+                    sb.append(", " + xproperty.getName() + "='" + xproperty.getValue() + '\'');
                 }
 
-                sb.append( '}' );
+                sb.append('}');
 
                 return sb.toString();
             }
         };
     }
 
-    private static String sha1( final String input ) {
-        if ( input == null || input.trim().length() == 0 ) {
+    private static String sha1(final String input) {
+        if (input == null || input.trim().length() == 0) {
             return "--";
         }
-        return encodeBase64String( DIGEST.digest( input.getBytes() ) );
+        return encodeBase64String(DIGEST.digest(input.getBytes()));
     }
 }

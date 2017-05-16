@@ -32,7 +32,7 @@ import org.jboss.forge.roaster.model.source.MethodSource;
 import org.jboss.forge.roaster.model.source.ParameterSource;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
-import org.kie.workbench.common.services.refactoring.model.index.Resource;
+import org.kie.workbench.common.services.refactoring.Resource;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.slf4j.Logger;

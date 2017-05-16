@@ -27,7 +27,7 @@ import org.kie.workbench.common.screens.javaeditor.type.JavaResourceTypeDefiniti
 import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.Resource;
+import org.kie.workbench.common.services.refactoring.Resource;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.slf4j.Logger;

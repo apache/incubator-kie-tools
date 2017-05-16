@@ -84,14 +84,14 @@ import org.drools.workbench.models.datamodel.oracle.ModelField.FIELD_CLASS_TYPE;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
-import org.kie.workbench.common.services.refactoring.model.index.ResourceReference;
-import org.kie.workbench.common.services.refactoring.model.index.SharedPart;
+import org.kie.workbench.common.services.refactoring.ResourceReference;
+import org.kie.workbench.common.services.refactoring.SharedPart;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.metadata.model.KProperty;
 
 public class PackageDescrIndexVisitor extends ResourceReferenceCollector {
 
@@ -145,7 +145,7 @@ public class PackageDescrIndexVisitor extends ResourceReferenceCollector {
                                                                packageDescr);
     }
 
-    public Set<Pair<String, String>> visit() {
+    public Set<KProperty<?>> visit() {
         visit(packageDescr);
         return builder.build();
     }

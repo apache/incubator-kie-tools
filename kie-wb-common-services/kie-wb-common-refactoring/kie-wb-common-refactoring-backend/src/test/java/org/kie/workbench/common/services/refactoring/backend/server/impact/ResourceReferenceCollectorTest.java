@@ -19,7 +19,7 @@ import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.services.refactoring.model.index.ResourceReference;
+import org.kie.workbench.common.services.refactoring.ResourceReference;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 
 import static org.junit.Assert.*;

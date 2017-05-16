@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -35,7 +34,6 @@ import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
@@ -69,7 +67,6 @@ import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
 import static java.util.Collections.singletonList;
-import static org.jgroups.util.Util.assertEquals;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -350,7 +347,7 @@ public class LibraryServiceImplTest {
         assertEquals(0,
                      pageRequest.getStartRowIndex());
         assertEquals(10,
-                     pageRequest.getPageSize());
+                     (int) pageRequest.getPageSize());
     }
 
     @Test
@@ -381,16 +378,20 @@ public class LibraryServiceImplTest {
         assertEquals(2,
                      pageRequest.getQueryTerms().size());
 
-        final Iterator<ValueIndexTerm> iterator = pageRequest.getQueryTerms().iterator();
-        assertEquals("the_project",
-                     iterator.next().getValue());
-        assertEquals("*helloo*",
-                     iterator.next().getValue());
+        assertQuertTermsContains(pageRequest.getQueryTerms(),
+                                 "the_project");
+        assertQuertTermsContains(pageRequest.getQueryTerms(),
+                                 "*helloo*");
 
         assertEquals(10,
                      pageRequest.getStartRowIndex());
         assertEquals(20,
-                     pageRequest.getPageSize());
+                     (int) pageRequest.getPageSize());
+    }
+
+    private void assertQuertTermsContains(final Set<ValueIndexTerm> terms,
+                                          final String value) {
+        assertTrue(terms.stream().filter((t) -> t.getValue().equals(value)).findFirst().isPresent());
     }
 
     @Test

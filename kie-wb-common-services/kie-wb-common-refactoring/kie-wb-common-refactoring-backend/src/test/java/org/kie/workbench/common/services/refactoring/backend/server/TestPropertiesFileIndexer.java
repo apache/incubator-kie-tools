@@ -20,15 +20,15 @@ import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 
+import org.kie.workbench.common.services.refactoring.KPropertyImpl;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KObjectKey;
+import org.uberfire.ext.metadata.model.KProperty;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
@@ -45,49 +45,47 @@ public class TestPropertiesFileIndexer implements TestIndexer<TestPropertiesFile
     private TestPropertiesFileTypeDefinition type;
 
     @Override
-    public void setIOService( final IOService ioService ) {
+    public void setIOService(final IOService ioService) {
         this.ioService = ioService;
     }
 
     @Override
-    public void setProjectService( final KieProjectService projectService ) {
+    public void setProjectService(final KieProjectService projectService) {
         this.projectService = projectService;
     }
 
     @Override
-    public void setResourceTypeDefinition( final TestPropertiesFileTypeDefinition type ) {
+    public void setResourceTypeDefinition(final TestPropertiesFileTypeDefinition type) {
         this.type = type;
     }
 
     @Override
-    public boolean supportsPath( final Path path ) {
-        return type.accept( Paths.convert( path ) );
+    public boolean supportsPath(final Path path) {
+        return type.accept(Paths.convert(path));
     }
 
     @Override
-    public KObject toKObject( final Path path ) {
+    public KObject toKObject(final Path path) {
         InputStream is = null;
         final Properties properties = new Properties();
         try {
-            is = ioService.newInputStream( path );
-            properties.load( is );
+            is = ioService.newInputStream(path);
+            properties.load(is);
             is.close();
-
-        } catch ( IOException e ) {
+        } catch (IOException e) {
             //Swallow
         }
-        final Set<Pair<String, String>> indexElements = new HashSet<Pair<String, String>>();
-        for ( String propertyName : properties.stringPropertyNames() ) {
-            indexElements.add( new Pair<String, String>( propertyName,
-                                                         properties.getProperty( propertyName ) ) );
+        final Set<KProperty<?>> indexElements = new HashSet<>();
+        for (String propertyName : properties.stringPropertyNames()) {
+            indexElements.add(new KPropertyImpl<>(propertyName,
+                                                  properties.getProperty(propertyName)));
         }
-        return KObjectUtil.toKObject( path,
-                                      indexElements );
+        return KObjectUtil.toKObject(path,
+                                     indexElements);
     }
 
     @Override
-    public KObjectKey toKObjectKey( final Path path ) {
-        return KObjectUtil.toKObjectKey( path );
+    public KObjectKey toKObjectKey(final Path path) {
+        return KObjectUtil.toKObjectKey(path);
     }
-
 }

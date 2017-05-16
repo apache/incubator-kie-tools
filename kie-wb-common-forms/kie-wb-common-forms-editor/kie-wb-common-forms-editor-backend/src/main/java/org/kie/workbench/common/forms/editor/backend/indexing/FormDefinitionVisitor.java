@@ -17,8 +17,8 @@ package org.kie.workbench.common.forms.editor.backend.indexing;
 
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.services.refactoring.Resource;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
-import org.kie.workbench.common.services.refactoring.model.index.Resource;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 
