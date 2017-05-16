@@ -32,13 +32,13 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
+import org.kie.workbench.common.services.refactoring.ResourceReference;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.ResourceReference;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.metadata.model.KProperty;
 
 /**
  * Visitor to extract index information from a Scenario
@@ -61,7 +61,7 @@ public class TestScenarioIndexVisitor extends ResourceReferenceCollector {
                                                          model );
     }
 
-    public Set<Pair<String, String>> visit() {
+    public Set<KProperty<?>> visit() {
         visit( model );
         return builder.build();
     }

@@ -38,13 +38,13 @@ import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
+import org.kie.workbench.common.services.refactoring.ResourceReference;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.ResourceReference;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.metadata.model.KProperty;
 
 /**
  * Visitor to extract index information from a Guided Rule Model
@@ -62,7 +62,7 @@ public class GuidedRuleModelIndexVisitor extends ResourceReferenceCollector {
                                                          model );
     }
 
-    public Set<Pair<String, String>> visit() {
+    public Set<KProperty<?>> visit() {
         visit( model );
         return builder.build();
     }

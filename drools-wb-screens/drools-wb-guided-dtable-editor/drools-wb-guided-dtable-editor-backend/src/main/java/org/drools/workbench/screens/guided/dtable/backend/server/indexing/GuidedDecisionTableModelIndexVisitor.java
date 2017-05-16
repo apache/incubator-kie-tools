@@ -36,14 +36,14 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.kie.workbench.common.services.refactoring.ResourceReference;
+import org.kie.workbench.common.services.refactoring.SharedPart;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.ResourceReference;
-import org.kie.workbench.common.services.refactoring.model.index.SharedPart;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.metadata.model.KProperty;
 
 /**
  * Visitor to extract index information from a Guided Decision Table
@@ -52,7 +52,7 @@ public class GuidedDecisionTableModelIndexVisitor extends ResourceReferenceColle
 
     private final DefaultIndexBuilder builder;
     private final GuidedDecisionTable52 model;
-    private final Set<Pair<String, String>> results = new HashSet<Pair<String, String>>();
+    private final Set<KProperty<?>> results = new HashSet<>();
 
     public GuidedDecisionTableModelIndexVisitor( final DefaultIndexBuilder builder,
                                                  final GuidedDecisionTable52 model ) {
@@ -62,7 +62,7 @@ public class GuidedDecisionTableModelIndexVisitor extends ResourceReferenceColle
                                                          model );
     }
 
-    public Set<Pair<String, String>> visit() {
+    public Set<KProperty<?>> visit() {
         visit( model );
         results.addAll( builder.build() );
         return results;

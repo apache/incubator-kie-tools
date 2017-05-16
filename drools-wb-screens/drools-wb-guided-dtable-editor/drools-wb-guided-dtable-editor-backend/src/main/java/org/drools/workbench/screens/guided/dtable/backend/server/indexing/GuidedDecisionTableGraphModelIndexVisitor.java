@@ -22,8 +22,8 @@ import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEdito
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.service.PartType;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.metadata.model.KProperty;
 
 /**
  * Visitor to extract index information from a Guided Decision Table Graph
@@ -32,7 +32,7 @@ public class GuidedDecisionTableGraphModelIndexVisitor extends ResourceReference
 
     private final DefaultIndexBuilder builder;
     private final GuidedDecisionTableEditorGraphModel model;
-    private final Set<Pair<String, String>> results = new HashSet<Pair<String, String>>();
+    private final Set<KProperty<?>> results = new HashSet<>();
 
     public GuidedDecisionTableGraphModelIndexVisitor(final DefaultIndexBuilder builder,
                                                      final GuidedDecisionTableEditorGraphModel model) {
@@ -42,7 +42,7 @@ public class GuidedDecisionTableGraphModelIndexVisitor extends ResourceReference
                                                         model);
     }
 
-    public Set<Pair<String, String>> visit() {
+    public Set<KProperty<?>> visit() {
         model.getEntries().stream().forEach(e -> addSharedReference(e.getPathHead().toURI(),
                                                                     PartType.PATH));
 
