@@ -47,13 +47,13 @@ import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEdito
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphEditorService;
-import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
@@ -102,6 +102,7 @@ import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopu
 public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionTableEditorPresenter {
 
     private final Caller<GuidedDecisionTableGraphEditorService> graphService;
+    private final Caller<KieProjectService> projectService;
     private final Event<SaveInProgressEvent> saveInProgressEvent;
     private final LockManager lockManager;
     protected ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
@@ -110,13 +111,13 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
     private GuidedDecisionTableEditorGraphContent content;
     private LoadGraphLatch loadGraphLatch = null;
     private SaveGraphLatch saveGraphLatch = null;
-    private ProjectContext context;
     private NewGuidedDecisionTableWizardHelper helper;
 
     @Inject
     public GuidedDecisionTableGraphEditorPresenter(final View view,
                                                    final Caller<GuidedDecisionTableEditorService> service,
                                                    final Caller<GuidedDecisionTableGraphEditorService> graphService,
+                                                   final Caller<KieProjectService> projectService,
                                                    final Event<NotificationEvent> notification,
                                                    final Event<SaveInProgressEvent> saveInProgressEvent,
                                                    final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
@@ -127,7 +128,6 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                                                    final InsertMenuBuilder insertMenuBuilder,
                                                    final RadarMenuBuilder radarMenuBuilder,
                                                    final GuidedDecisionTableModellerView.Presenter modeller,
-                                                   final ProjectContext context,
                                                    final NewGuidedDecisionTableWizardHelper helper,
                                                    final SyncBeanManager beanManager,
                                                    final PlaceManager placeManager,
@@ -146,8 +146,8 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
               beanManager,
               placeManager);
         this.graphService = graphService;
+        this.projectService = projectService;
         this.saveInProgressEvent = saveInProgressEvent;
-        this.context = context;
         this.helper = helper;
         this.lockManager = lockManager;
     }
@@ -174,13 +174,14 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
     }
 
     void onNewDocument() {
-        final Path contextPath = context.getActivePackage().getPackageMainResourcesPath();
-        helper.createNewGuidedDecisionTable(contextPath,
-                                            "",
-                                            GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY,
-                                            GuidedDecisionTable52.HitPolicy.NONE,
-                                            view,
-                                            (path) -> onOpenDocumentsInEditor(Collections.singletonList(path)));
+        projectService.call((org.guvnor.common.services.project.model.Package pkg) -> {
+            helper.createNewGuidedDecisionTable(pkg.getPackageMainResourcesPath(),
+                                                "",
+                                                GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY,
+                                                GuidedDecisionTable52.HitPolicy.NONE,
+                                                view,
+                                                (path) -> onOpenDocumentsInEditor(Collections.singletonList(path)));
+        }).resolvePackage(editorPath);
     }
 
     @Override

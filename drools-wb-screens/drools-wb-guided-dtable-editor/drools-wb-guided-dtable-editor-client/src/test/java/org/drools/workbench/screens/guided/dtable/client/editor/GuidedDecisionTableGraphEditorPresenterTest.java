@@ -40,7 +40,6 @@ import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEdito
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphEditorService;
-import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
@@ -48,6 +47,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.metadata.client.KieDocument;
@@ -95,7 +95,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     private Caller<GuidedDecisionTableGraphEditorService> dtGraphServiceCaller;
 
     @Mock
-    private ProjectContext context;
+    private KieProjectService projectService;
+    private Caller<KieProjectService> projectServiceCaller;
 
     @Mock
     private NewGuidedDecisionTableWizardHelper helper;
@@ -154,9 +155,10 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     @Before
     public void setup() {
         this.dtGraphServiceCaller = new CallerMock<>(dtGraphService);
+        this.projectServiceCaller = new CallerMock<>(projectService);
 
         when(view.asWidget()).thenReturn(mock(Widget.class));
-        when(context.getActivePackage()).thenReturn(activePackage);
+        when(projectService.resolvePackage(any(Path.class))).thenReturn(activePackage);
         when(activePackage.getPackageMainResourcesPath()).thenReturn(activePackageResourcesPath);
 
         super.setup();
@@ -167,6 +169,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         return new GuidedDecisionTableGraphEditorPresenter(view,
                                                            dtServiceCaller,
                                                            dtGraphServiceCaller,
+                                                           projectServiceCaller,
                                                            notification,
                                                            saveInProgressEvent,
                                                            decisionTableSelectedEvent,
@@ -177,7 +180,6 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                            insertMenuBuilder,
                                                            radarMenuBuilder,
                                                            modeller,
-                                                           context,
                                                            helper,
                                                            beanManager,
                                                            placeManager,
