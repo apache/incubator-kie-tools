@@ -58,7 +58,7 @@ public class ProjectScreenTest
                                               busyIndicatorView) {
             @Override
             protected void reload() {
-                onUpdateAssets();
+                onFilterChange();
             }
 
             @Override
@@ -71,7 +71,7 @@ public class ProjectScreenTest
         doReturn("lastModifiedTime").when(projectScreen).getLastModifiedTime(any(AssetInfo.class));
 
         doAnswer(a -> {
-            projectScreen.loadProjectInfo();
+            projectScreen.onTimerAction();
             return null;
         }).when(timer).schedule(anyInt());
 
@@ -103,8 +103,6 @@ public class ProjectScreenTest
                                   any(Command.class));
         verify(busyIndicatorView).hideBusyIndicator();
         verify(view).setProjectName("projectName");
-        verify(view).range(1,
-                           3);
     }
 
     @Test
@@ -168,8 +166,9 @@ public class ProjectScreenTest
 
         when(view.getFilterValue()).thenReturn("file3");
         when(view.getStep()).thenReturn(100);
-        when(view.getPageNumber()).thenReturn(123);
-        projectScreen.onUpdateAssets();
+        when(view.getFirstIndex()).thenReturn(12200);
+
+        projectScreen.onFilterChange();
 
         verify(libraryService).getProjectAssets(queryArgumentCaptor.capture());
         assertEquals("file3",
@@ -178,6 +177,15 @@ public class ProjectScreenTest
                      queryArgumentCaptor.getValue().getAmount());
         assertEquals(12200,
                      queryArgumentCaptor.getValue().getStartIndex());
+    }
+
+    @Test
+    public void updatedSearchParameterResetsToFirstPage() throws Exception {
+        reset(view);
+        when(view.getFilterValue()).thenReturn("something");
+        projectScreen.onFilterChange();
+
+        verify(view).resetList();
     }
 
     @Test
@@ -205,41 +213,6 @@ public class ProjectScreenTest
     }
 
     @Test
-    public void zeroOrNegativeValuesAreNotAllowedAsPageNumber() throws Exception {
-        reset(libraryService,
-              view);
-        mockAssets();
-
-        when(view.getFilterValue()).thenReturn("");
-        when(view.getStep()).thenReturn(15);
-
-        when(view.getPageNumber()).thenReturn(0);
-
-        projectScreen.onUpdateAssets();
-
-        verify(view).setPageNumber(1);
-        verify(libraryService).getProjectAssets(any(ProjectAssetsQuery.class));
-    }
-
-    @Test
-    public void clickingPreviousShouldNotSetThePageToNegative() throws Exception {
-
-        reset(libraryService,
-              view);
-        mockAssets();
-
-        when(view.getFilterValue()).thenReturn("");
-        when(view.getStep()).thenReturn(15);
-
-        when(view.getPageNumber()).thenReturn(1);
-
-        projectScreen.onToPrevious();
-
-        verify(view).setPageNumber(1);
-        verify(libraryService).getProjectAssets(any(ProjectAssetsQuery.class));
-    }
-
-    @Test
     public void detailsCommandTest() {
         final Path assetPath = mock(Path.class);
 
@@ -251,9 +224,13 @@ public class ProjectScreenTest
 
     @Test
     public void filterUpdateTest() {
+        reset(view);
+        when(view.getFilterValue()).thenReturn("name");
+
         projectScreen.filterUpdate(new FilterUpdateEvent("name"));
 
         verify(view).setFilterName("name");
-        verify(projectScreen).onUpdateAssets();
+        verify(projectScreen).onFilterChange();
+
     }
 }

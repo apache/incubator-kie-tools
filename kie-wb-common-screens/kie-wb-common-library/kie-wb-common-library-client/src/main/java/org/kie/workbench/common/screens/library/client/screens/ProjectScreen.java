@@ -57,6 +57,38 @@ import org.uberfire.util.URIUtil;
         owningPerspective = LibraryPerspective.class)
 public class ProjectScreen {
 
+    public interface View extends UberElement<ProjectScreen> {
+
+        void setProjectName(final String projectName);
+
+        void clearAssets();
+
+        void addAsset(final String assetName,
+                      final String assetPath,
+                      final String assetType,
+                      final IsWidget assetIcon,
+                      final String lastModifiedTime,
+                      final String createdTime,
+                      final Command details,
+                      final Command select);
+
+        String getFilterValue();
+
+        void setFilterName(final String name);
+
+        Integer getStep();
+
+        void showIndexingIncomplete();
+
+        void showSearchHitNothing();
+
+        void showNoMoreAssets();
+
+        int getFirstIndex();
+
+        void resetList();
+    }
+
     private View view;
     private LibraryPlaces libraryPlaces;
     private TranslationService ts;
@@ -70,6 +102,7 @@ public class ProjectScreen {
     private Timer projectLoadTimer;
     private boolean isProjectLoadPending = false;
     private boolean isProjectLoadInProgress = false;
+
     @Inject
     public ProjectScreen(final View view,
                          final LibraryPlaces libraryPlaces,
@@ -100,19 +133,18 @@ public class ProjectScreen {
         }
     }
 
-    public void onUpdateAssets() {
-        cancel();
-        projectLoadTimer = createTimer();
-        projectLoadTimer.schedule(250);
-    }
-
     protected Timer createTimer() {
         return new Timer() {
             @Override
             public void run() {
-                loadProjectInfo();
+                onTimerAction();
             }
         };
+    }
+
+    protected void onTimerAction() {
+        view.resetList();
+        loadProjectInfo();
     }
 
     private void cancel() {
@@ -157,19 +189,13 @@ public class ProjectScreen {
 
         isProjectLoadInProgress = true;
 
-        final int firstIndex = getFirstIndex();
-
         libraryService.call(new RemoteCallback<List<AssetInfo>>() {
             @Override
             public void callback(List<AssetInfo> assetsList) {
 
                 assets = assetsList;
 
-                view.range(firstIndex + 1,
-                           firstIndex + assetsList.size());
-
                 setupAssets(assets);
-                setupForwardBackwardButtons(firstIndex);
 
                 busyIndicatorView.hideBusyIndicator();
 
@@ -184,45 +210,22 @@ public class ProjectScreen {
             }
         }).getProjectAssets(new ProjectAssetsQuery(projectInfo.getProject(),
                                                    view.getFilterValue(),
-                                                   firstIndex,
+                                                   view.getFirstIndex(),
                                                    view.getStep()));
-    }
-
-    private void setupForwardBackwardButtons(final int firstIndex) {
-        view.setBackwardDisabled(firstIndex == 0);
-        view.setForwardDisabled(isThereRoomOnThisPage());
-    }
-
-    private boolean isThereRoomOnThisPage() {
-        Integer step = view.getStep();
-        return step > assets.size();
-    }
-
-    private int getFirstIndex() {
-        final int step = view.getStep();
-        final int result = (view.getPageNumber() * step) - step;
-
-        if (result < 1) {
-            view.setPageNumber(1);
-            return 0;
-        } else {
-            return result;
-        }
     }
 
     private void setupAssets(final List<AssetInfo> assets) {
         view.clearAssets();
-        view.hideEmptyState();
 
         if (assets.isEmpty()) {
             if (isFilterEmpty()) {
-                if (getFirstIndex() == 0) {
+                if (view.getFirstIndex() == 0) {
                     view.showIndexingIncomplete();
                 } else {
                     view.showNoMoreAssets();
                 }
             } else {
-                if (getFirstIndex() == 0) {
+                if (view.getFirstIndex() == 0) {
                     view.showSearchHitNothing();
                 } else {
                     view.showNoMoreAssets();
@@ -250,7 +253,7 @@ public class ProjectScreen {
 
     public void filterUpdate(@Observes final FilterUpdateEvent event) {
         view.setFilterName(event.getName());
-        onUpdateAssets();
+        onFilterChange();
     }
 
     private boolean isFilterEmpty() {
@@ -276,18 +279,7 @@ public class ProjectScreen {
         return view;
     }
 
-    public void onToFirstPage() {
-        view.setPageNumber(1);
-        loadProjectInfo();
-    }
-
-    public void onToNextPage() {
-        view.setPageNumber(view.getPageNumber() + 1);
-        loadProjectInfo();
-    }
-
-    public void onToPrevious() {
-        view.setPageNumber(view.getPageNumber() - 1);
+    public void onReload() {
         loadProjectInfo();
     }
 
@@ -302,45 +294,10 @@ public class ProjectScreen {
                                            1000);
     }
 
-    public interface View extends UberElement<ProjectScreen> {
-
-        void setProjectName(String projectName);
-
-        void clearAssets();
-
-        void addAsset(final String assetName,
-                      final String assetPath,
-                      final String assetType,
-                      final IsWidget assetIcon,
-                      final String lastModifiedTime,
-                      final String createdTime,
-                      final Command details,
-                      final Command select);
-
-        String getFilterValue();
-
-        void setFilterName(String name);
-
-        Integer getPageNumber();
-
-        void setPageNumber(final int pageNumber);
-
-        Integer getStep();
-
-        void range(final int from,
-                   final int to);
-
-        void showIndexingIncomplete();
-
-        void hideEmptyState();
-
-        void showSearchHitNothing();
-
-        void showNoMoreAssets();
-
-        void setForwardDisabled(final boolean disabled);
-
-        void setBackwardDisabled(final boolean disabled);
+    public void onFilterChange() {
+        cancel();
+        projectLoadTimer = createTimer();
+        projectLoadTimer.schedule(250);
     }
 
     /**
@@ -360,11 +317,11 @@ public class ProjectScreen {
                 active = false;
             }
 
-            if (assetsList.isEmpty() && getFirstIndex() == 0 && filterIsNotSet()) {
+            if (assetsList.isEmpty() && view.getFirstIndex() == 0 && filterIsNotSet()) {
                 active = true;
             }
 
-            if (active && getFirstIndex() != 0) {
+            if (active && view.getFirstIndex() != 0) {
                 active = false;
             }
 

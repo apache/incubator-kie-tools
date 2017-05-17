@@ -67,7 +67,7 @@ public class ProjectScreenReloadTest
             protected void reload() {
                 numberOfCalls++;
 
-                onUpdateAssets();
+                onFilterChange();
             }
 
             @Override
@@ -105,7 +105,6 @@ public class ProjectScreenReloadTest
         });
 
         when(view.getFilterValue()).thenReturn("");
-        when(view.getPageNumber()).thenReturn(1);
         when(view.getStep()).thenReturn(15);
 
         projectInfo = createProjectInfo();
@@ -121,7 +120,6 @@ public class ProjectScreenReloadTest
 
         verify(view,
                never()).showIndexingIncomplete();
-        verify(view).hideEmptyState();
 
         assertEquals(0,
                      numberOfCalls);
@@ -137,7 +135,6 @@ public class ProjectScreenReloadTest
         verify(view,
                never()).showIndexingIncomplete();
         verify(view).showSearchHitNothing();
-        verify(view).hideEmptyState();
 
         assertEquals(0,
                      numberOfCalls);
@@ -146,7 +143,7 @@ public class ProjectScreenReloadTest
     @Test
     public void onlyReloadOnFirstPage() throws Exception {
 
-        when(view.getPageNumber()).thenReturn(2);
+        when(view.getFirstIndex()).thenReturn(15);
 
         projectScreen.onStartup(new ProjectDetailEvent(projectInfo));
 
@@ -155,7 +152,6 @@ public class ProjectScreenReloadTest
         verify(view,
                never()).showSearchHitNothing();
         verify(view).showNoMoreAssets();
-        verify(view).hideEmptyState();
 
         assertEquals(0,
                      numberOfCalls);
@@ -165,8 +161,7 @@ public class ProjectScreenReloadTest
     public void doNotReloadSearchOnLaterPages() throws Exception {
 
         when(view.getFilterValue()).thenReturn("some asset");
-
-        when(view.getPageNumber()).thenReturn(2);
+        when(view.getFirstIndex()).thenReturn(15);
 
         projectScreen.onStartup(new ProjectDetailEvent(projectInfo));
 
@@ -175,7 +170,6 @@ public class ProjectScreenReloadTest
         verify(view,
                never()).showSearchHitNothing();
         verify(view).showNoMoreAssets();
-        verify(view).hideEmptyState();
 
         assertEquals(0,
                      numberOfCalls);

@@ -18,15 +18,10 @@ package org.kie.workbench.common.screens.library.client.screens;
 
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.dom.Button;
-import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Input;
-import org.jboss.errai.common.client.dom.Select;
-import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -48,62 +43,52 @@ public class ProjectView
     @Inject
     @DataField("project-toolbar")
     Div projectToolbar;
+
     @Inject
     @DataField("assets-toolbar")
     Div assetsToolbar;
+
     @Inject
     @DataField("details-container")
     Div detailsContainer;
-    @Inject
-    @DataField("asset-list")
-    Div assetList;
+
     @Inject
     @DataField("filter-text")
     Input filterText;
-    @Inject
-    @DataField
-    Input pageNumber;
+
     @Inject
     @DataField("project-name")
     Div projectNameContainer;
+
     @Inject
     @DataField
-    Button previousPageLink;
-    @Inject
-    @DataField
-    Button nextPageLink;
-    @Inject
-    @DataField
-    Button toFirstPage;
-    @Inject
-    @DataField
-    Select howManyOnOnePage;
-    @Inject
-    @DataField
-    Span fromToRange;
-    @Inject
-    @DataField("indexing-info")
-    Div indexingInfo;
+    Div assetListContainer;
+
     private ProjectScreen presenter;
+
     @Inject
     private ProjectsDetailScreen projectsDetailScreen;
+
     @Inject
     private ManagedInstance<AssetItemWidget> itemWidgetsInstances;
+
     @Inject
     private TranslationService ts;
+
     @Inject
     private ProjectActionsWidget projectActionsWidget;
+
     @Inject
     private AssetsActionsWidget assetsActionsWidget;
 
-    private EmptyState emptyState;
+    private AssetList assetList;
 
     public ProjectView() {
     }
 
     @Inject
-    public ProjectView(EmptyState emptyState) {
-        this.emptyState = emptyState;
+    public ProjectView(final AssetList assetList) {
+        this.assetList = assetList;
     }
 
     @Override
@@ -116,8 +101,13 @@ public class ProjectView
         detailsContainer.appendChild(projectsDetailScreen.getView().getElement());
         assetsToolbar.appendChild(assetsActionsWidget.getView().getElement());
         projectToolbar.appendChild(projectActionsWidget.getView().getElement());
-
-        howManyOnOnePage.setValue("15");
+        assetListContainer.appendChild(assetList.getElement());
+        assetList.addChangeHandler(new Command() {
+            @Override
+            public void execute() {
+                presenter.onReload();
+            }
+        });
     }
 
     @Override
@@ -127,7 +117,12 @@ public class ProjectView
 
     @Override
     public void clearAssets() {
-        DOMUtil.removeAllChildren(assetList);
+        assetList.clear();
+    }
+
+    @Override
+    public void resetList() {
+        assetList.reset();
     }
 
     @Override
@@ -148,93 +143,35 @@ public class ProjectView
                              createdDate,
                              details,
                              select);
-        assetList.appendChild(assetItemWidget.getElement());
+        assetList.add(assetItemWidget.getElement());
     }
 
     @Override
     public void showIndexingIncomplete() {
-        emptyState.setMessage(ts.getTranslation(LibraryConstants.IndexingHasNotFinished),
-                              ts.getTranslation(LibraryConstants.PleaseWaitWhileTheProjectContentIsBeingIndexed));
-        showEmptyState();
-    }
-
-    private void showEmptyState() {
-
-        indexingInfo.setClassName("blank-slate-pf");
-        indexingInfo.getStyle()
-                .setProperty("height",
-                             "100%");
-        indexingInfo.getStyle()
-                .setProperty("width",
-                             "100%");
-        indexingInfo.getStyle()
-                .setProperty("visibility",
-                             "visible");
-        indexingInfo.setInnerHTML(emptyState.getElement().getOuterHTML());
-    }
-
-    @Override
-    public void hideEmptyState() {
-
-        emptyState.clear();
-
-        indexingInfo.setClassName("");
-        indexingInfo.getStyle()
-                .setProperty("visibility",
-                             "hidden");
-        indexingInfo.getStyle()
-                .setProperty("height",
-                             "0px");
-        indexingInfo.getStyle()
-                .setProperty("width",
-                             "0px");
-        indexingInfo.setInnerHTML("");
+        assetList.showEmptyState(ts.getTranslation(LibraryConstants.IndexingHasNotFinished),
+                                 ts.getTranslation(LibraryConstants.PleaseWaitWhileTheProjectContentIsBeingIndexed));
     }
 
     @Override
     public void showSearchHitNothing() {
-        emptyState.setMessage(ts.getTranslation(LibraryConstants.EmptySearch),
-                              ts.getTranslation(LibraryConstants.NoFilesWhereFoundWithTheGivenSearchCriteria));
-        showEmptyState();
+        assetList.showEmptyState(ts.getTranslation(LibraryConstants.EmptySearch),
+                                 ts.getTranslation(LibraryConstants.NoFilesWhereFoundWithTheGivenSearchCriteria));
     }
 
     @Override
     public void showNoMoreAssets() {
-        emptyState.setMessage(ts.getTranslation(LibraryConstants.EndOfFileList),
-                              ts.getTranslation(LibraryConstants.NoMoreFilesPleasePressPrevious));
-        showEmptyState();
+        assetList.showEmptyState(ts.getTranslation(LibraryConstants.EndOfFileList),
+                                 ts.getTranslation(LibraryConstants.NoMoreFilesPleasePressPrevious));
     }
 
     @Override
-    public void setForwardDisabled(final boolean disabled) {
-        nextPageLink.setDisabled(disabled);
-    }
-
-    @Override
-    public void setBackwardDisabled(final boolean disabled) {
-        toFirstPage.setDisabled(disabled);
-        previousPageLink.setDisabled(disabled);
-    }
-
-    @Override
-    public Integer getPageNumber() {
-        return Integer.valueOf(pageNumber.getValue());
-    }
-
-    @Override
-    public void setPageNumber(int pageNumber) {
-        this.pageNumber.setValue(Integer.toString(pageNumber));
+    public int getFirstIndex() {
+        return assetList.getFirstIndex();
     }
 
     @Override
     public Integer getStep() {
-        return Integer.valueOf(howManyOnOnePage.getValue());
-    }
-
-    @Override
-    public void range(int from,
-                      int to) {
-        fromToRange.setInnerHTML(from + " - " + to);
+        return assetList.getStep();
     }
 
     @Override
@@ -247,41 +184,9 @@ public class ProjectView
         this.filterText.setValue(name);
     }
 
-    @SinkNative(Event.ONBLUR | Event.ONKEYDOWN)
-    @EventHandler("pageNumber")
-    public void onPageChange(Event e) {
-        if (e.getKeyCode() < 0 || e.getKeyCode() == KeyCodes.KEY_ENTER) {
-            presenter.onUpdateAssets();
-        }
-    }
-
-    @SinkNative(Event.ONCHANGE)
-    @EventHandler("howManyOnOnePage")
-    public void onStepChange(Event e) {
-        presenter.onUpdateAssets();
-    }
-
-    @SinkNative(Event.ONCLICK)
-    @EventHandler("toFirstPage")
-    public void toFirstPage(Event e) {
-        presenter.onToFirstPage();
-    }
-
-    @SinkNative(Event.ONCLICK)
-    @EventHandler("nextPageLink")
-    public void onNextPage(Event e) {
-        presenter.onToNextPage();
-    }
-
-    @SinkNative(Event.ONCLICK)
-    @EventHandler("previousPageLink")
-    public void onPreviousNextPage(Event e) {
-        presenter.onToPrevious();
-    }
-
     @SinkNative(Event.ONKEYUP)
     @EventHandler("filter-text")
     public void onFilterTextChange(Event e) {
-        presenter.onUpdateAssets();
+        presenter.onFilterChange();
     }
 }

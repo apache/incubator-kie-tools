@@ -56,7 +56,7 @@ public class ProjectScreenSequentialLoadRequestTest
                                               busyIndicatorView) {
             @Override
             protected void reload() {
-                onUpdateAssets();
+                onFilterChange();
             }
 
             @Override
@@ -88,7 +88,7 @@ public class ProjectScreenSequentialLoadRequestTest
             //This mocks a successive request to load the asset list whilst the first request is incomplete with a filter "ab"
             if (inCall[0]) {
                 when(view.getFilterValue()).thenReturn("ab");
-                projectScreen.onUpdateAssets();
+                projectScreen.onFilterChange();
                 inCall[0] = false;
             }
 
