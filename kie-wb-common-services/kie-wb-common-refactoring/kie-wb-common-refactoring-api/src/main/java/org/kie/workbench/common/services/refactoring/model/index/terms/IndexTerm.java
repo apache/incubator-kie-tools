@@ -26,6 +26,8 @@ package org.kie.workbench.common.services.refactoring.model.index.terms;
  */
 public interface IndexTerm {
 
+    String REFACTORING_CLASSIFIER = "refactor-info";
+
     String getTerm();
 
 }

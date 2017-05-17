@@ -55,12 +55,11 @@ import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
+import org.kie.workbench.common.screens.library.api.index.LibraryValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
-import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindAllLibraryAssetsQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFullFileNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
@@ -206,7 +205,7 @@ public class LibraryServiceImpl implements LibraryService {
 
         final HashSet<ValueIndexTerm> queryTerms = new HashSet<>();
 
-        queryTerms.add(new ValueProjectRootPathIndexTerm(query.getProject().getRootPath().toURI()));
+        queryTerms.add(new LibraryValueProjectRootPathIndexTerm(query.getProject().getRootPath().toURI()));
 
         if (query.hasFilter()) {
             queryTerms.add(new ValueFullFileNameIndexTerm("*" + query.getFilter() + "*",

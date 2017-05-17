@@ -24,6 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.services.refactoring.KPropertyImpl;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
+import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.ext.metadata.model.KObject;
@@ -81,11 +82,13 @@ public class TestPropertiesFileIndexer implements TestIndexer<TestPropertiesFile
                                                   properties.getProperty(propertyName)));
         }
         return KObjectUtil.toKObject(path,
+                                     IndexTerm.REFACTORING_CLASSIFIER,
                                      indexElements);
     }
 
     @Override
     public KObjectKey toKObjectKey(final Path path) {
-        return KObjectUtil.toKObjectKey(path);
+        return KObjectUtil.toKObjectKey(path,
+                                        IndexTerm.REFACTORING_CLASSIFIER);
     }
 }

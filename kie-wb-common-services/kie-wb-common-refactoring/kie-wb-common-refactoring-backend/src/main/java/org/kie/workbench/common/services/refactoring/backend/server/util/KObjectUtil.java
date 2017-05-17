@@ -53,12 +53,13 @@ public class KObjectUtil {
 
     }
 
-    public static KObjectKey toKObjectKey(final Path path) {
+    public static KObjectKey toKObjectKey(final Path path,
+                                          final String classifier) {
         return new KObjectKey() {
 
             @Override
             public String getId() {
-                return sha1(getType().getName() + "|refactor-info|" + getKey());
+                return sha1(getType().getName() + "|" + classifier + "|" + getKey());
             }
 
             @Override
@@ -97,12 +98,13 @@ public class KObjectUtil {
     }
 
     public static KObject toKObject(final Path path,
+                                    final String classifier,
                                     final Set<KProperty<?>> indexElements) {
         return new KObject() {
 
             @Override
             public String getId() {
-                return sha1(getType().getName() + "|refactor-info|" + getKey());
+                return sha1(getType().getName() + "|" + classifier + "|" + getKey());
             }
 
             @Override

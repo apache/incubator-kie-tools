@@ -13,24 +13,19 @@
  * limitations under the License.
 */
 
-package org.kie.workbench.common.services.refactoring.backend.server.query.findresources;
+package org.kie.workbench.common.screens.impl;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
-import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
-import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlFileIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlFileTypeDefinition;
+import org.kie.workbench.common.screens.library.api.index.LibraryValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.DefaultResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
-import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindAllLibraryAssetsQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -44,7 +39,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class FindAllLibraryAssetsSortedQueryTest
-        extends BaseIndexingTest<TestDrlFileTypeDefinition> {
+        extends BaseLibraryIndexingTest {
 
     private static final String SOME_OTHER_PROJECT_ROOT = "some/other/projectRoot";
     private static final String SOME_OTHER_PROJECT_NAME = "other-mock-project";
@@ -89,19 +84,19 @@ public class FindAllLibraryAssetsSortedQueryTest
     public void listAllInProjectSorted() throws IOException, InterruptedException {
 
         //Add test files
-        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
-                    "rule3.drl");
-        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
-                    "functions.drl");
-        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
-                    "drl3.drl");
-        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
-                    "drl2.drl");
-        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                    "rule3.rule");
+        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                    "functions.functions");
+        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                    "drl3.ext3");
+        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                    "drl2.ext2");
+        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
                     "drl1.drl");
-        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
-                    "RULE4.drl");
-        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                    "RULE4.rule");
+        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
                     "DRL4.drl");
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
@@ -109,8 +104,8 @@ public class FindAllLibraryAssetsSortedQueryTest
         {
             final RefactoringPageRequest request = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                  add(new ValueProjectRootPathIndexTerm(BaseIndexingTest.TEST_PROJECT_ROOT,
-                                                                                                                        TermSearchType.WILDCARD));
+                                                                                  add(new LibraryValueProjectRootPathIndexTerm(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                                                                                                                               TermSearchType.WILDCARD));
                                                                               }},
                                                                               0,
                                                                               10);
@@ -127,17 +122,17 @@ public class FindAllLibraryAssetsSortedQueryTest
                              response.getPageRowList().size());
                 assertEquals("drl1.drl",
                              ((Path) response.getPageRowList().get(0).getValue()).getFileName());
-                assertEquals("drl2.drl",
+                assertEquals("drl2.ext2",
                              ((Path) response.getPageRowList().get(1).getValue()).getFileName());
-                assertEquals("drl3.drl",
+                assertEquals("drl3.ext3",
                              ((Path) response.getPageRowList().get(2).getValue()).getFileName());
                 assertEquals("DRL4.drl",
                              ((Path) response.getPageRowList().get(3).getValue()).getFileName());
-                assertEquals("functions.drl",
+                assertEquals("functions.functions",
                              ((Path) response.getPageRowList().get(4).getValue()).getFileName());
-                assertEquals("rule3.drl",
+                assertEquals("rule3.rule",
                              ((Path) response.getPageRowList().get(5).getValue()).getFileName());
-                assertEquals("RULE4.drl",
+                assertEquals("RULE4.rule",
                              ((Path) response.getPageRowList().get(6).getValue()).getFileName());
             } catch (IllegalArgumentException e) {
                 fail("Exception thrown: " + e.getMessage());
@@ -149,19 +144,19 @@ public class FindAllLibraryAssetsSortedQueryTest
     public void listAllInProjectSortedPaged() throws IOException, InterruptedException {
 
         //Add test files
-        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
-                    "rule3.drl");
-        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
-                    "functions.drl");
-        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
-                    "drl3.drl");
-        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
-                    "drl2.drl");
-        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                    "rule3.rule");
+        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                    "functions.functions");
+        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                    "drl3.ext3");
+        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                    "drl2.ext2");
+        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
                     "drl1.drl");
-        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
-                    "RULE4.drl");
-        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                    "RULE4.rule");
+        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
                     "DRL4.drl");
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
@@ -169,15 +164,15 @@ public class FindAllLibraryAssetsSortedQueryTest
         {
             final RefactoringPageRequest request1 = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                                new HashSet<ValueIndexTerm>() {{
-                                                                                   add(new ValueProjectRootPathIndexTerm(BaseIndexingTest.TEST_PROJECT_ROOT,
-                                                                                                                         TermSearchType.WILDCARD));
+                                                                                   add(new LibraryValueProjectRootPathIndexTerm(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                                                                                                                                TermSearchType.WILDCARD));
                                                                                }},
                                                                                0,
                                                                                4);
             final RefactoringPageRequest request2 = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                                new HashSet<ValueIndexTerm>() {{
-                                                                                   add(new ValueProjectRootPathIndexTerm(BaseIndexingTest.TEST_PROJECT_ROOT,
-                                                                                                                         TermSearchType.WILDCARD));
+                                                                                   add(new LibraryValueProjectRootPathIndexTerm(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                                                                                                                                TermSearchType.WILDCARD));
                                                                                }},
                                                                                4,
                                                                                4);
@@ -194,9 +189,9 @@ public class FindAllLibraryAssetsSortedQueryTest
                              response1.getPageRowList().size());
                 assertEquals("drl1.drl",
                              ((Path) response1.getPageRowList().get(0).getValue()).getFileName());
-                assertEquals("drl2.drl",
+                assertEquals("drl2.ext2",
                              ((Path) response1.getPageRowList().get(1).getValue()).getFileName());
-                assertEquals("drl3.drl",
+                assertEquals("drl3.ext3",
                              ((Path) response1.getPageRowList().get(2).getValue()).getFileName());
                 assertEquals("DRL4.drl",
                              ((Path) response1.getPageRowList().get(3).getValue()).getFileName());
@@ -210,26 +205,16 @@ public class FindAllLibraryAssetsSortedQueryTest
 
                 assertEquals(3,
                              response2.getPageRowList().size());
-                assertEquals("functions.drl",
+                assertEquals("functions.functions",
                              ((Path) response2.getPageRowList().get(0).getValue()).getFileName());
-                assertEquals("rule3.drl",
+                assertEquals("rule3.rule",
                              ((Path) response2.getPageRowList().get(1).getValue()).getFileName());
-                assertEquals("RULE4.drl",
+                assertEquals("RULE4.rule",
                              ((Path) response2.getPageRowList().get(2).getValue()).getFileName());
             } catch (IllegalArgumentException e) {
                 fail("Exception thrown: " + e.getMessage());
             }
         }
-    }
-
-    @Override
-    protected TestIndexer getIndexer() {
-        return new TestDrlFileIndexer();
-    }
-
-    @Override
-    protected TestDrlFileTypeDefinition getResourceTypeDefinition() {
-        return new TestDrlFileTypeDefinition();
     }
 
     @Override

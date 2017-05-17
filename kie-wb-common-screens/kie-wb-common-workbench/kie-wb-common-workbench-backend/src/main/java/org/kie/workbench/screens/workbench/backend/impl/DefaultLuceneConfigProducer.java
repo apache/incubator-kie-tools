@@ -24,6 +24,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.kie.workbench.common.screens.library.api.index.LibraryProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ImpactAnalysisAnalyzerWrapperFactory;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.LowerCaseOnlyAnalyzer;
 import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
@@ -46,8 +47,8 @@ public class DefaultLuceneConfigProducer {
     public void setup() {
         final Map<String, Analyzer> analyzers = getAnalyzers();
         this.config = new LuceneConfigBuilder().withInMemoryMetaModelStore()
-                .usingAnalyzers( analyzers )
-                .usingAnalyzerWrapperFactory( ImpactAnalysisAnalyzerWrapperFactory.getInstance() )
+                .usingAnalyzers(analyzers)
+                .usingAnalyzerWrapperFactory(ImpactAnalysisAnalyzerWrapperFactory.getInstance())
                 .useDirectoryBasedIndex()
                 .useNIODirectory()
                 .build();
@@ -61,12 +62,14 @@ public class DefaultLuceneConfigProducer {
 
     Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
-            put( ProjectRootPathIndexTerm.TERM,
-                 new FilenameAnalyzer() );
-            put( PackageNameIndexTerm.TERM,
-                 new LowerCaseOnlyAnalyzer() );
-            put( LuceneIndex.CUSTOM_FIELD_FILENAME,
-                 new FilenameAnalyzer() );
+            put(ProjectRootPathIndexTerm.TERM,
+                new FilenameAnalyzer());
+            put(LibraryProjectRootPathIndexTerm.TERM,
+                new FilenameAnalyzer());
+            put(PackageNameIndexTerm.TERM,
+                new LowerCaseOnlyAnalyzer());
+            put(LuceneIndex.CUSTOM_FIELD_FILENAME,
+                new FilenameAnalyzer());
 
             // all of the (resource, part, shared, etc) references and resource or part terms
             // are taken care of via the ImpactAnalysisAnalyzerWrapper

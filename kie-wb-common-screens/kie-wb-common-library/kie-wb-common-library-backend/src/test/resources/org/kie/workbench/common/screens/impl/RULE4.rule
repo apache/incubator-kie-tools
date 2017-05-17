@@ -1,6 +1,6 @@
-package org.kie.workbench.mock.package;
+package org.kie.workbench.common.screens.impl;
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,3 @@ package org.kie.workbench.mock.package;
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-
-import org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant;
-
-import function org.kie.workbench.mock.package.f1;
-import function org.kie.workbench.mock.package.f3;
-
-rule "myRule"
-ruleflow-group "myRuleFlowGroup"
-when
-  Applicant( age > f1(0) )
-then
-end;
-

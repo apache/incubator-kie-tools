@@ -18,17 +18,17 @@ package org.kie.workbench.common.services.refactoring.backend.server.indexing;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.kie.workbench.common.services.refactoring.Resource;
+import org.kie.workbench.common.services.refactoring.ResourceReference;
+import org.kie.workbench.common.services.refactoring.SharedPart;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
-import org.kie.workbench.common.services.refactoring.ResourceReference;
-import org.kie.workbench.common.services.refactoring.Resource;
-import org.kie.workbench.common.services.refactoring.SharedPart;
+import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,12 +57,11 @@ public abstract class AbstractFileIndexer implements Indexer {
     /**
      * This method fills a {@link DefaultIndexBuilder} instance with the default information.
      * If the index builder could not be built, it should either throw an exception or return null.
-     *
      * @param path The {@link Path} of the resource to be indexed.
      * @return A {@link DefaultIndexBuilder} instance with the information to be indexed
      * @throws Exception if something goes wrong
      */
-    protected abstract DefaultIndexBuilder fillIndexBuilder( final Path path ) throws Exception;
+    protected abstract DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception;
 
     /**
      * This method should not be overridden by implementation classes!
@@ -71,7 +70,7 @@ public abstract class AbstractFileIndexer implements Indexer {
      * when they try to make proxy beans.
      */
     @Override
-    public KObject toKObject( Path path ) {
+    public KObject toKObject(Path path) {
         KObject index = null;
 
         try {
@@ -79,66 +78,72 @@ public abstract class AbstractFileIndexer implements Indexer {
             DefaultIndexBuilder builder = fillIndexBuilder(path);
 
             Set<KProperty<?>> indexElements = null;
-            if( builder != null ) {
+            if (builder != null) {
                 // build index document
                 indexElements = builder.build();
             } else {
                 indexElements = Collections.emptySet();
             }
 
-            index = KObjectUtil.toKObject(path, indexElements);
-        } catch( Exception e ) {
+            index = KObjectUtil.toKObject(path,
+                                          IndexTerm.REFACTORING_CLASSIFIER,
+                                          indexElements);
+        } catch (Exception e) {
             // Unexpected parsing or processing error
-            logger.error("Unable to index '" + path.toUri().toString() + "'.", e.getMessage(), e);
+            logger.error("Unable to index '" + path.toUri().toString() + "'.",
+                         e.getMessage(),
+                         e);
         }
 
         return index;
     }
 
     protected DefaultIndexBuilder getIndexBuilder(Path path) {
-        final Project project = projectService.resolveProject( Paths.convert( path ) );
-        if ( project == null ) {
-            logger.error( "Unable to index " + path.toUri().toString() + ": project could not be resolved." );
+        final Project project = projectService.resolveProject(Paths.convert(path));
+        if (project == null) {
+            logger.error("Unable to index " + path.toUri().toString() + ": project could not be resolved.");
             return null;
         }
 
-        final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
-        if ( pkg == null ) {
-            logger.error( "Unable to index " + path.toUri().toString() + ": package could not be resolved." );
+        final Package pkg = projectService.resolvePackage(Paths.convert(path));
+        if (pkg == null) {
+            logger.error("Unable to index " + path.toUri().toString() + ": package could not be resolved.");
             return null;
         }
 
         // responsible for basic index info: project name, branch, etc
-        return new DefaultIndexBuilder(Paths.convert(path).getFileName(), project, pkg);
+        return new DefaultIndexBuilder(Paths.convert(path).getFileName(),
+                                       project,
+                                       pkg);
     }
 
     /**
      * This method adds the index terms necessary for impact analysis to the {@link DefaultIndexBuilder}, which is basically
      * the lucene doc for a resource.
-     *
      * @param builder The {@link DefaultIndexBuilder} instance for a resource
      * @param resRefCollector A collector containing info (resources, references) on the asset indexed
      * to other resources that an indexed resource has.
      */
-    protected void addReferencedResourcesToIndexBuilder( DefaultIndexBuilder builder, ResourceReferenceCollector resRefCollector ) {
+    protected void addReferencedResourcesToIndexBuilder(DefaultIndexBuilder builder,
+                                                        ResourceReferenceCollector resRefCollector) {
         Collection<ResourceReference> referencedResources = resRefCollector.getResourceReferences();
-        if( ! referencedResources.isEmpty() ) {
-            for( ResourceReference resourceRef : referencedResources ) {
+        if (!referencedResources.isEmpty()) {
+            for (ResourceReference resourceRef : referencedResources) {
                 builder.addGenerator(resourceRef);
             }
         }
         Collection<SharedPart> sharedReferences = resRefCollector.getSharedReferences();
-        if( ! sharedReferences.isEmpty() ) {
-           for( SharedPart sharedRef : sharedReferences ) {
-              builder.addGenerator(sharedRef);
-           }
+        if (!sharedReferences.isEmpty()) {
+            for (SharedPart sharedRef : sharedReferences) {
+                builder.addGenerator(sharedRef);
+            }
         }
 
         Collection<Resource> resources = resRefCollector.getResources();
-        if( ! resources.isEmpty() ) {
-           for( Resource res : resources ) {
-              builder.addGenerator(res);
-           }
+        if (!resources.isEmpty()) {
+            for (Resource res : resources) {
+                builder.addGenerator(res);
+            }
         }
     }
 
@@ -149,8 +154,8 @@ public abstract class AbstractFileIndexer implements Indexer {
      * when they try to make proxy beans.
      */
     @Override
-    public KObjectKey toKObjectKey( final Path path ) {
-        return KObjectUtil.toKObjectKey(path);
+    public KObjectKey toKObjectKey(final Path path) {
+        return KObjectUtil.toKObjectKey(path,
+                                        IndexTerm.REFACTORING_CLASSIFIER);
     }
-
 }

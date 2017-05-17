@@ -175,6 +175,11 @@
       <artifactId>simple-jndi</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-client-api</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

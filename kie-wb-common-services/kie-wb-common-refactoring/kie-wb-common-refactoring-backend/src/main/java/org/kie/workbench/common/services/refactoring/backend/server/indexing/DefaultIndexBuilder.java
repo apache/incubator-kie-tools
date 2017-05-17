@@ -23,20 +23,18 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.services.refactoring.IndexElementsGenerator;
 import org.kie.workbench.common.services.refactoring.KPropertyImpl;
-import org.kie.workbench.common.services.refactoring.model.index.terms.FullFileNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
 import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.ext.metadata.backend.lucene.fields.FieldFactory;
 import org.uberfire.ext.metadata.model.KProperty;
 
 public class DefaultIndexBuilder {
 
-    private final String fileName;
-    private Project project;
-    private Package pkg;
-    private String pkgName;
+    protected final String fileName;
+    protected final Project project;
+    protected final Package pkg;
+    protected String pkgName;
 
     private Set<IndexElementsGenerator> generators = new HashSet<IndexElementsGenerator>();
 
@@ -61,13 +59,6 @@ public class DefaultIndexBuilder {
         final Set<KProperty<?>> indexElements = new HashSet<>();
         generators.forEach((generator) -> addIndexElements(indexElements,
                                                            generator));
-
-        indexElements.add(new KPropertyImpl<>(FullFileNameIndexTerm.TERM,
-                                              fileName));
-        indexElements.add(new KPropertyImpl<>(FieldFactory.FILE_NAME_FIELD_SORTED,
-                                              fileName.toLowerCase(),
-                                              false,
-                                              true));
 
         if (project != null && project.getRootPath() != null) {
             final String projectRootUri = project.getRootPath().toURI();
