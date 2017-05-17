@@ -215,42 +215,4 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
 
         return BPMNVariableUtils.getRealTypeForInput(type);
     }
-
-    private class TaskVariableSetting {
-
-        private String variable;
-        private String input;
-        private String output;
-        private String type;
-
-        public TaskVariableSetting(String variable,
-                                   String type) {
-            this.variable = variable;
-            this.type = type;
-        }
-
-        public String getVariable() {
-            return variable;
-        }
-
-        public String getInput() {
-            return input;
-        }
-
-        public void setInput(String input) {
-            this.input = input;
-        }
-
-        public String getOutput() {
-            return output;
-        }
-
-        public void setOutput(String output) {
-            this.output = output;
-        }
-
-        public String getType() {
-            return type;
-        }
-    }
 }
