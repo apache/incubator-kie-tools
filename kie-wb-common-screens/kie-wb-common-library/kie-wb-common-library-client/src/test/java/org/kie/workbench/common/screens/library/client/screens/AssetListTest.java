@@ -87,7 +87,7 @@ public class AssetListTest {
     }
 
     @Test
-    public void testReset() throws Exception {
+    public void testResetPageRangeIndicator() throws Exception {
 
         assetList.onChangeAmountOfItemsShown(25);
 
@@ -96,15 +96,13 @@ public class AssetListTest {
 
         reset(view);
 
-        assetList.reset();
+        assetList.resetPageRangeIndicator();
 
-        verify(view).clearAssets();
         verify(view).hideEmptyState();
 
         assetList.add(mock(HTMLElement.class));
         verify(view).range(1,
-                           1);
-        verify(view).setStep(15);
+                           25);
     }
 
     @Test

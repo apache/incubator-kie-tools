@@ -185,7 +185,7 @@ public class ProjectScreenTest
         when(view.getFilterValue()).thenReturn("something");
         projectScreen.onFilterChange();
 
-        verify(view).resetList();
+        verify(view).resetPageRangeIndicator();
     }
 
     @Test
@@ -231,6 +231,5 @@ public class ProjectScreenTest
 
         verify(view).setFilterName("name");
         verify(projectScreen).onFilterChange();
-
     }
 }

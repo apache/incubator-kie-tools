@@ -69,18 +69,13 @@ public class AssetList
     }
 
     /**
-     * Resets the component to default state.
+     * Resets the page range.
      */
-    public void reset() {
-
-        clear();
-
-        step = DEFAULT_STEP;
-        view.setStep(step);
-
+    public void resetPageRangeIndicator() {
         updateToFirstPage();
         view.range(1,
                    step);
+        view.hideEmptyState();
     }
 
     /**

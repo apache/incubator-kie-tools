@@ -86,7 +86,7 @@ public class ProjectScreen {
 
         int getFirstIndex();
 
-        void resetList();
+        void resetPageRangeIndicator();
     }
 
     private View view;
@@ -143,7 +143,7 @@ public class ProjectScreen {
     }
 
     protected void onTimerAction() {
-        view.resetList();
+        view.resetPageRangeIndicator();
         loadProjectInfo();
     }
 

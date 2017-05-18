@@ -121,8 +121,8 @@ public class ProjectView
     }
 
     @Override
-    public void resetList() {
-        assetList.reset();
+    public void resetPageRangeIndicator() {
+        assetList.resetPageRangeIndicator();
     }
 
     @Override
