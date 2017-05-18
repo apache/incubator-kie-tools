@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -98,7 +97,8 @@ public class ServletSecurityAuthenticationServiceTest {
         RoleRegistry.get().registerRole("role1");
         Set<Principal> principals = mockPrincipals("admin",
                                                    "role1",
-                                                   "group1");
+                                                   "group1",
+                                                   null);
         Subject subject = new Subject();
         subject.getPrincipals().addAll(principals);
         doReturn(subject).when(tested).getSubjectFromPolicyContext();
