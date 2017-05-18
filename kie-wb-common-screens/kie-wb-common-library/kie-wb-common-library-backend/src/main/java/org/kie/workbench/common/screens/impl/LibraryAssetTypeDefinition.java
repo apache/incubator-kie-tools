@@ -17,7 +17,9 @@ package org.kie.workbench.common.screens.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.java.nio.file.Files;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
@@ -56,6 +58,10 @@ public class LibraryAssetTypeDefinition
 
     @Override
     public boolean accept(final Path path) {
-        return !path.getFileName().startsWith(".");
+        return !(isFolder(path) || path.getFileName().startsWith("."));
+    }
+
+    boolean isFolder(final Path path) {
+        return Files.isDirectory(Paths.convert(path));
     }
 }
