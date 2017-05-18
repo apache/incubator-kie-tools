@@ -29,6 +29,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.Categories;
+import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
@@ -74,6 +76,10 @@ public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitio
             StartSignalEvent.class);
         put(Categories.EVENTS,
             StartTimerEvent.class);
+        put(Categories.EVENTS,
+            EndNoneEvent.class);
+        put(Categories.EVENTS,
+            EndTerminateEvent.class);
         put(Categories.EVENTS,
             IntermediateTimerEvent.class);
         put(Categories.GATEWAYS,

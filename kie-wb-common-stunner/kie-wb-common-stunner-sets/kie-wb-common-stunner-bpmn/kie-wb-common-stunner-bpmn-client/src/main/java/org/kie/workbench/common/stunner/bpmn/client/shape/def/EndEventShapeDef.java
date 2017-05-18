@@ -35,7 +35,7 @@ public class EndEventShapeDef
         extends AbstractShapeDef<BaseEndEvent>
         implements SVGMutableShapeDef<BaseEndEvent, BPMNSVGViewFactory> {
 
-    private static final String EVENT_END = "eventEnd";
+    private static final String EVENT_END_NONE = "eventEndNone";
     private static final String EVENT_END_TERMINATE = "eventEndTerminate";
 
     @Override
@@ -102,7 +102,7 @@ public class EndEventShapeDef
 
         private final Map<Class<?>, BPMNPictures> PICTURES = new HashMap<Class<?>, BPMNPictures>(3) {{
             put(EndNoneEvent.class,
-                BPMNPictures.EVENT_END);
+                BPMNPictures.EVENT_END_NONE);
             put(EndTerminateEvent.class,
                 BPMNPictures.EVENT_END_TERMINATE);
         }};
@@ -137,7 +137,7 @@ public class EndEventShapeDef
     public boolean isSVGViewVisible(final String viewName,
                                     final BaseEndEvent element) {
         switch (viewName) {
-            case EVENT_END:
+            case EVENT_END_NONE:
                 return element instanceof EndNoneEvent;
             case EVENT_END_TERMINATE:
                 return element instanceof EndTerminateEvent;

@@ -17,8 +17,11 @@
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 		 xmlns:stunner="http://www.kie.org/2017/stunner"
 		 x="0px" y="0px" width="448px" height="448px" viewBox="0 0 448 448">
-	<circle cx="224px" cy="224px" r="224px" style="fill:none; stroke: black; stroke-width: 5;"/>
-	<g id="eventEndTerminate" stunner:layout="CENTER" transform="scale(0.7,0.7)">
+	<circle cx="224px" cy="224px" r="224px" style="fill:none; stroke: black; stroke-width: 25;"/>
+	<g id="eventEndNone" stunner:layout="CENTER" transform="scale(1.0,1.0)">
+		<use xlink:href="event-end-none.svg#Layer_1" style="opacity:1"/>
+	</g>
+	<g id="eventEndTerminate" stunner:layout="CENTER" transform="scale(1.0,1.0)">
 		<use xlink:href="event-end-terminate.svg#Layer_1" style="opacity:1"/>
 	</g>
 </svg>
