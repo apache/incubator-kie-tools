@@ -44,6 +44,14 @@ public class PatternFlyBootstrapper {
         }
     }
 
+    public static void ensureBootstrapSelectIsAvailable() {
+        if (!isBootstrapSelectLoaded()) {
+            ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.bootstrapSelect().getText())
+                    .setWindow(ScriptInjector.TOP_WINDOW)
+                    .inject();
+        }
+    }
+
     /**
      * Checks to see if jQuery is already present.
      * @return true is jQuery is loaded, false otherwise.
@@ -59,5 +67,14 @@ public class PatternFlyBootstrapper {
     private static native boolean isPrettifyLoaded() /*-{
         return (typeof $wnd['prettyPrint'] !== 'undefined');
     }-*/;
+
+    /**
+     * Checks to see if bootstrap-select is already present.
+     * @return true is bootstrap-select is loaded, false otherwise.
+     */
+    private static native boolean isBootstrapSelectLoaded() /*-{
+        return (typeof $wnd['Selectpicker'] !== 'undefined');
+    }-*/;
+
 }
 

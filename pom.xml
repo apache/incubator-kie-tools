@@ -61,6 +61,7 @@
     <version.org.jboss.errai>4.0.1-SNAPSHOT</version.org.jboss.errai>
     <version.org.webjars.bower.org.patternfly>3.18.1</version.org.webjars.bower.org.patternfly>
     <version.org.webjars.bower.google-code-prettify>1.0.4</version.org.webjars.bower.google-code-prettify>
+    <version.org.webjars.bower.bootstrap-select>1.10.0</version.org.webjars.bower.bootstrap-select>
     <version.org.gwtbootstrap3>0.9.3</version.org.gwtbootstrap3>
 
     <version.org.jboss.byteman>3.0.6</version.org.jboss.byteman>

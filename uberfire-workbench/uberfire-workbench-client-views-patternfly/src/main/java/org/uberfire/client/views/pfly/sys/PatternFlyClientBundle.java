@@ -26,4 +26,8 @@ public interface PatternFlyClientBundle extends ClientBundle {
 
     @Source("org/uberfire/client/views/static/prettify/bin/prettify.min.js")
     TextResource prettify();
+
+    @Source("org/uberfire/client/views/static/bootstrap-select/js/bootstrap-select.min.js")
+    TextResource bootstrapSelect();
+
 }

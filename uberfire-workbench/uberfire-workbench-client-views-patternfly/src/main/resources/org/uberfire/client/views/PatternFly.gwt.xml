@@ -25,6 +25,7 @@
 
   <public path="static"/>
 
+  <stylesheet src="bootstrap-select/css/bootstrap-select.min.css"/>
   <stylesheet src="prettify/bin/prettify.min.css"/>
   <stylesheet src="uberfire-patternfly.css" />
 </module>

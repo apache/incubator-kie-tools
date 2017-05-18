@@ -141,7 +141,6 @@
               <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
-
           <execution>
             <id>unpack-prettify</id>
             <phase>process-resources</phase>
@@ -157,6 +156,27 @@
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/prettify</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-bootstrap-select</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.webjars.bower</groupId>
+                  <artifactId>bootstrap-select</artifactId>
+                  <version>${version.org.webjars.bower.bootstrap-select}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/bootstrap-select</outputDirectory>
                 </artifactItem>
               </artifactItems>
               <overWriteReleases>false</overWriteReleases>
@@ -183,6 +203,9 @@
                   <includes>
                     <include>**</include>
                   </includes>
+                  <excludes>
+                    <exclude>tests/**</exclude>
+                  </excludes>
                 </resource>
               </resources>
             </configuration>
@@ -200,6 +223,24 @@
                   <directory>${project.build.directory}/prettify/META-INF/resources/webjars/google-code-prettify/${version.org.webjars.bower.google-code-prettify}</directory>
                   <includes>
                     <include>bin/**</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-bootstrap-select-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static/bootstrap-select</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/bootstrap-select/META-INF/resources/webjars/bootstrap-select/${version.org.webjars.bower.bootstrap-select}/dist</directory>
+                  <includes>
+                    <include>**</include>
                   </includes>
                 </resource>
               </resources>
