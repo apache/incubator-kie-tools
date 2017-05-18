@@ -42,79 +42,78 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
 
     @Override
     protected GuidedDecisionTableEditorPresenter getPresenter() {
-        return new GuidedDecisionTableEditorPresenter( view,
-                                                       dtServiceCaller,
-                                                       notification,
-                                                       decisionTableSelectedEvent,
-                                                       validationPopup,
-                                                       resourceType,
-                                                       editMenuBuilder,
-                                                       viewMenuBuilder,
-                                                       insertMenuBuilder,
-                                                       radarMenuBuilder,
-                                                       modeller,
-                                                       beanManager,
-                                                       placeManager );
+        return new GuidedDecisionTableEditorPresenter(view,
+                                                      dtServiceCaller,
+                                                      notification,
+                                                      decisionTableSelectedEvent,
+                                                      validationPopup,
+                                                      resourceType,
+                                                      editMenuBuilder,
+                                                      viewMenuBuilder,
+                                                      insertMenuBuilder,
+                                                      radarMenuBuilder,
+                                                      modeller,
+                                                      beanManager,
+                                                      placeManager);
     }
 
     @Test
     public void testSetupMenuBar() {
-        verify( fileMenuBuilder,
-                times( 1 ) ).addSave( any( MenuItem.class ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addCopy( any( BasicFileMenuBuilder.PathProvider.class ),
-                                      eq( fileNameValidator ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addRename( any( BasicFileMenuBuilder.PathProvider.class ),
-                                        eq( fileNameValidator ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addDelete( any( BasicFileMenuBuilder.PathProvider.class ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addValidate( any( Command.class ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addNewTopLevelMenu( eq( editMenuItem ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addNewTopLevelMenu( eq( viewMenuItem ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addNewTopLevelMenu( eq( insertMenuItem ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addNewTopLevelMenu( eq( radarMenuItem ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addNewTopLevelMenu( eq( versionManagerMenuItem ) );
+        verify(fileMenuBuilder,
+               times(1)).addSave(any(MenuItem.class));
+        verify(fileMenuBuilder,
+               times(1)).addCopy(any(BasicFileMenuBuilder.PathProvider.class),
+                                 eq(fileNameValidator));
+        verify(fileMenuBuilder,
+               times(1)).addRename(any(BasicFileMenuBuilder.PathProvider.class),
+                                   eq(fileNameValidator));
+        verify(fileMenuBuilder,
+               times(1)).addDelete(any(BasicFileMenuBuilder.PathProvider.class));
+        verify(fileMenuBuilder,
+               times(1)).addValidate(any(Command.class));
+        verify(fileMenuBuilder,
+               times(1)).addNewTopLevelMenu(eq(editMenuItem));
+        verify(fileMenuBuilder,
+               times(1)).addNewTopLevelMenu(eq(viewMenuItem));
+        verify(fileMenuBuilder,
+               times(1)).addNewTopLevelMenu(eq(insertMenuItem));
+        verify(fileMenuBuilder,
+               times(1)).addNewTopLevelMenu(eq(radarMenuItem));
+        verify(fileMenuBuilder,
+               times(1)).addNewTopLevelMenu(eq(versionManagerMenuItem));
     }
 
     @Test
     public void startUpSelectsDecisionTable() {
-        final ObservablePath path = mock( ObservablePath.class );
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        final ObservablePath path = mock(ObservablePath.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
         final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( path,
-                                                                                 path,
-                                                                                 placeRequest,
-                                                                                 content );
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable(path,
+                                                                                path,
+                                                                                placeRequest,
+                                                                                content);
 
-        presenter.onStartup( path,
-                             placeRequest );
+        presenter.onStartup(path,
+                            placeRequest);
 
-        verify( decisionTableSelectedEvent,
-                times( 1 ) ).fire( dtSelectedEventCaptor.capture() );
+        verify(decisionTableSelectedEvent,
+               times(1)).fire(dtSelectedEventCaptor.capture());
 
         final DecisionTableSelectedEvent dtSelectedEvent = dtSelectedEventCaptor.getValue();
-        assertNotNull( dtSelectedEvent );
-        assertNotNull( dtSelectedEvent.getPresenter() );
-        assertEquals( dtPresenter,
-                      dtSelectedEvent.getPresenter() );
+        assertNotNull(dtSelectedEvent);
+        assertTrue(dtSelectedEvent.getPresenter().isPresent());
+        assertEquals(dtPresenter,
+                     dtSelectedEvent.getPresenter().get());
     }
 
     @Test
     public void checkGetAvailableDocumentPaths() {
-        presenter.getAvailableDocumentPaths( ( result ) -> assertTrue( result.isEmpty() ) );
+        presenter.getAvailableDocumentPaths((result) -> assertTrue(result.isEmpty()));
     }
 
     @Test
     public void checkOnOpenDocumentsInEditor() {
-        exception.expect( UnsupportedOperationException.class );
-        presenter.onOpenDocumentsInEditor( Collections.<Path>emptyList() );
+        exception.expect(UnsupportedOperationException.class);
+        presenter.onOpenDocumentsInEditor(Collections.<Path>emptyList());
     }
-
 }

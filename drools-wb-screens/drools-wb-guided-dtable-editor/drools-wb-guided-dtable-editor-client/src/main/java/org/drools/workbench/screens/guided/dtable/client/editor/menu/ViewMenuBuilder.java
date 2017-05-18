@@ -138,7 +138,7 @@ public class ViewMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuB
     @Override
     public void onDecisionTableSelectedEvent(final @Observes DecisionTableSelectedEvent event) {
         super.onDecisionTableSelectedEvent(event);
-        enableZoomMenu(true);
+        enableZoomMenu(event.getPresenter().isPresent());
     }
 
     @Override

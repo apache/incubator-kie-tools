@@ -26,6 +26,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTablePinnedEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -78,141 +79,163 @@ public class RadarMenuBuilderTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         this.transform = new Transform();
-        this.builder = new RadarMenuBuilder( view );
+        this.builder = new RadarMenuBuilder(view);
         this.builder.setup();
-        this.builder.setModeller( modeller );
+        this.builder.setModeller(modeller);
 
-        when( modeller.getView() ).thenReturn( modellerView );
-        when( modeller.getView().getGridLayerView() ).thenReturn( modellerLayer );
-        when( modellerLayer.getViewport() ).thenReturn( modellerViewport );
-        when( modellerViewport.getTransform() ).thenReturn( transform );
-        when( modellerViewport.getAttributes() ).thenReturn( attributes );
-        when( modeller.getView().getBounds() ).thenReturn( bounds );
-        when( modeller.getView().getGridLayerView().getVisibleBounds() ).thenReturn( visibleBounds );
-        when( modeller.getAvailableDecisionTables() ).thenReturn( dtables );
+        when(modeller.getView()).thenReturn(modellerView);
+        when(modeller.getView().getGridLayerView()).thenReturn(modellerLayer);
+        when(modellerLayer.getViewport()).thenReturn(modellerViewport);
+        when(modellerViewport.getTransform()).thenReturn(transform);
+        when(modellerViewport.getAttributes()).thenReturn(attributes);
+        when(modeller.getView().getBounds()).thenReturn(bounds);
+        when(modeller.getView().getGridLayerView().getVisibleBounds()).thenReturn(visibleBounds);
+        when(modeller.getAvailableDecisionTables()).thenReturn(dtables);
     }
 
     @Test
     public void testOnClick() {
         builder.onClick();
 
-        verify( view,
-                times( 1 ) ).reset();
-        verify( view,
-                times( 1 ) ).setModellerBounds( eq( bounds ) );
-        verify( view,
-                times( 1 ) ).setAvailableDecisionTables( eq( dtables ) );
-        verify( view,
-                times( 1 ) ).setVisibleBounds( eq( visibleBounds ) );
+        verify(view,
+               times(1)).reset();
+        verify(view,
+               times(1)).setModellerBounds(eq(bounds));
+        verify(view,
+               times(1)).setAvailableDecisionTables(eq(dtables));
+        verify(view,
+               times(1)).setVisibleBounds(eq(visibleBounds));
     }
 
     @Test
     public void testOnDragVisibleBounds() {
-        final ArgumentCaptor<Transform> transformArgumentCaptor = ArgumentCaptor.forClass( Transform.class );
+        final ArgumentCaptor<Transform> transformArgumentCaptor = ArgumentCaptor.forClass(Transform.class);
 
-        builder.onDragVisibleBounds( 10, 10 );
+        builder.onDragVisibleBounds(10,
+                                    10);
 
-        verify( modellerViewport,
-                times( 1 ) ).setTransform( transformArgumentCaptor.capture() );
+        verify(modellerViewport,
+               times(1)).setTransform(transformArgumentCaptor.capture());
         final Transform result = transformArgumentCaptor.getValue();
-        assertNotNull( result );
-        assertEquals( -10.0,
-                      result.getTranslateX(),
-                      0.0 );
-        assertEquals( -10.0,
-                      result.getTranslateY(),
-                      0.0 );
+        assertNotNull(result);
+        assertEquals(-10.0,
+                     result.getTranslateX(),
+                     0.0);
+        assertEquals(-10.0,
+                     result.getTranslateY(),
+                     0.0);
 
-        verify( modellerLayer,
-                times( 1 ) ).batch();
+        verify(modellerLayer,
+               times(1)).batch();
     }
 
     @Test
     public void testOnDragVisibleBoundsScaled50pct() {
-        final ArgumentCaptor<Transform> transformArgumentCaptor = ArgumentCaptor.forClass( Transform.class );
+        final ArgumentCaptor<Transform> transformArgumentCaptor = ArgumentCaptor.forClass(Transform.class);
 
-        transform.scale( 0.5, 0.5 );
-        builder.onDragVisibleBounds( 10, 10 );
+        transform.scale(0.5,
+                        0.5);
+        builder.onDragVisibleBounds(10,
+                                    10);
 
-        verify( modellerViewport,
-                times( 1 ) ).setTransform( transformArgumentCaptor.capture() );
+        verify(modellerViewport,
+               times(1)).setTransform(transformArgumentCaptor.capture());
         final Transform result = transformArgumentCaptor.getValue();
-        assertNotNull( result );
-        assertEquals( -5.0,
-                      result.getTranslateX(),
-                      0.0 );
-        assertEquals( -5.0,
-                      result.getTranslateY(),
-                      0.0 );
+        assertNotNull(result);
+        assertEquals(-5.0,
+                     result.getTranslateX(),
+                     0.0);
+        assertEquals(-5.0,
+                     result.getTranslateY(),
+                     0.0);
 
-        verify( modellerLayer,
-                times( 1 ) ).batch();
+        verify(modellerLayer,
+               times(1)).batch();
     }
 
     @Test
     public void testOnUpdateRadarEventNullModeller() {
-        builder.onUpdateRadarEvent( new RadarMenuBuilder.UpdateRadarEvent( null ) );
+        builder.onUpdateRadarEvent(new RadarMenuBuilder.UpdateRadarEvent(null));
 
-        verify( view,
-                never() ).setVisibleBounds( any( Bounds.class ) );
+        verify(view,
+               never()).setVisibleBounds(any(Bounds.class));
     }
 
     @Test
     public void testOnUpdateRadarEventDifferentModeller() {
-        builder.onUpdateRadarEvent( new RadarMenuBuilder.UpdateRadarEvent( mock( GuidedDecisionTableModellerView.Presenter.class ) ) );
+        builder.onUpdateRadarEvent(new RadarMenuBuilder.UpdateRadarEvent(mock(GuidedDecisionTableModellerView.Presenter.class)));
 
-        verify( view,
-                never() ).setVisibleBounds( any( Bounds.class ) );
+        verify(view,
+               never()).setVisibleBounds(any(Bounds.class));
     }
 
     @Test
     public void testOnUpdateRadarEventAssociatedModeller() {
-        builder.onUpdateRadarEvent( new RadarMenuBuilder.UpdateRadarEvent( modeller ) );
+        builder.onUpdateRadarEvent(new RadarMenuBuilder.UpdateRadarEvent(modeller));
 
-        verify( view,
-                times( 1 ) ).reset();
-        verify( view,
-                times( 1 ) ).setModellerBounds( eq( bounds ) );
-        verify( view,
-                times( 1 ) ).setAvailableDecisionTables( eq( dtables ) );
-        verify( view,
-                times( 1 ) ).setVisibleBounds( eq( visibleBounds ) );
+        verify(view,
+               times(1)).reset();
+        verify(view,
+               times(1)).setModellerBounds(eq(bounds));
+        verify(view,
+               times(1)).setAvailableDecisionTables(eq(dtables));
+        verify(view,
+               times(1)).setVisibleBounds(eq(visibleBounds));
     }
 
     @Test
     public void testEnableDrag_Pinned() {
-        builder.onDecisionTablePinnedEvent( new DecisionTablePinnedEvent( modeller,
-                                                                          true ) );
+        builder.onDecisionTablePinnedEvent(new DecisionTablePinnedEvent(modeller,
+                                                                        true));
 
-        verify( view,
-                times( 1 ) ).enableDrag( eq( false ) );
+        verify(view,
+               times(1)).enableDrag(eq(false));
     }
 
     @Test
     public void testEnableDrag_Pinned_DifferentModeller() {
-        builder.onDecisionTablePinnedEvent( new DecisionTablePinnedEvent( mock( GuidedDecisionTableModellerView.Presenter.class ),
-                                                                          true ) );
+        builder.onDecisionTablePinnedEvent(new DecisionTablePinnedEvent(mock(GuidedDecisionTableModellerView.Presenter.class),
+                                                                        true));
 
-        verify( view,
-                never() ).enableDrag( any( Boolean.class ) );
+        verify(view,
+               never()).enableDrag(any(Boolean.class));
     }
 
     @Test
     public void testEnableDrag_Unpinned() {
-        builder.onDecisionTablePinnedEvent( new DecisionTablePinnedEvent( modeller,
-                                                                          false ) );
+        builder.onDecisionTablePinnedEvent(new DecisionTablePinnedEvent(modeller,
+                                                                        false));
 
-        verify( view,
-                times( 1 ) ).enableDrag( eq( true ) );
+        verify(view,
+               times(1)).enableDrag(eq(true));
     }
 
     @Test
     public void testEnableDrag_Unpinned_DifferentModeller() {
-        builder.onDecisionTablePinnedEvent( new DecisionTablePinnedEvent( mock( GuidedDecisionTableModellerView.Presenter.class ),
-                                                                          false ) );
+        builder.onDecisionTablePinnedEvent(new DecisionTablePinnedEvent(mock(GuidedDecisionTableModellerView.Presenter.class),
+                                                                        false));
 
-        verify( view,
-                never() ).enableDrag( any( Boolean.class ) );
+        verify(view,
+               never()).enableDrag(any(Boolean.class));
     }
 
+    @Test
+    public void testOnDecisionTableSelectedEvent() {
+        final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent(dtPresenter);
+
+        builder.onDecisionTableSelectedEvent(event);
+
+        verify(view,
+               times(1)).setEnabled(true);
+    }
+
+    @Test
+    public void testOnDecisionTableSelectedEventNoTableSelected() {
+        final DecisionTableSelectedEvent event = DecisionTableSelectedEvent.NONE;
+
+        builder.onDecisionTableSelectedEvent(event);
+
+        verify(view,
+               times(1)).setEnabled(false);
+    }
 }

@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.client.editor.menu;
 
+import java.util.Optional;
+
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
@@ -28,17 +30,16 @@ public abstract class BaseMenu implements BaseMenuView.BaseMenuPresenter {
     protected GuidedDecisionTableView.Presenter activeDecisionTable;
 
     @Override
-    public void onDecisionTableSelectedEvent( final DecisionTableSelectedEvent event ) {
-        final GuidedDecisionTableView.Presenter dtPresenter = event.getPresenter();
-        activeDecisionTable = dtPresenter;
+    public void onDecisionTableSelectedEvent(final DecisionTableSelectedEvent event) {
+        final Optional<GuidedDecisionTableView.Presenter> dtPresenter = event.getPresenter();
+        activeDecisionTable = dtPresenter.orElse(null);
         initialise();
     }
 
     @Override
-    public void onDecisionTableSelectionsChangedEvent( final DecisionTableSelectionsChangedEvent event ) {
+    public void onDecisionTableSelectionsChangedEvent(final DecisionTableSelectionsChangedEvent event) {
         final GuidedDecisionTableView.Presenter dtPresenter = event.getPresenter();
         activeDecisionTable = dtPresenter;
         initialise();
     }
-
 }

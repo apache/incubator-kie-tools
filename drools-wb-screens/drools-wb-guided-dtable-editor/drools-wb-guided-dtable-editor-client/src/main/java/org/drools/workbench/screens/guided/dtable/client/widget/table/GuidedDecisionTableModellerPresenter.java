@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -324,17 +325,18 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
 
     @Override
     public void onDecisionTableSelected(final @Observes DecisionTableSelectedEvent event) {
-        final GuidedDecisionTableView.Presenter dtPresenter = event.getPresenter();
-        if (dtPresenter == null) {
+        final Optional<GuidedDecisionTableView.Presenter> dtPresenter = event.getPresenter();
+        if (!dtPresenter.isPresent()) {
             return;
         }
-        if (!isDecisionTableAvailable(dtPresenter)) {
+        final GuidedDecisionTableView.Presenter presenter = dtPresenter.get();
+        if (!isDecisionTableAvailable(presenter)) {
             return;
         }
-        if (dtPresenter.equals(getActiveDecisionTable())) {
+        if (presenter.equals(getActiveDecisionTable())) {
             return;
         }
-        doDecisionTableSelected(dtPresenter);
+        doDecisionTableSelected(presenter);
     }
 
     @Override

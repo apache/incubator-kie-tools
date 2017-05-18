@@ -135,7 +135,7 @@ public class GuidedDecisionTableEditorMenusTest {
 
     @Mock
     protected RadarMenuView radarMenuView;
-    protected RadarMenuBuilder radarMenuBuilder = new RadarMenuBuilder(radarMenuView);
+    protected RadarMenuBuilder radarMenuBuilder;
 
     @Mock
     protected RegisteredDocumentsMenuView registeredDocumentsMenuView;
@@ -287,6 +287,9 @@ public class GuidedDecisionTableEditorMenusTest {
                                                    menuItemFactory);
         this.viewMenuBuilder.setup();
         this.viewMenuBuilder.setModeller(modeller);
+
+        this.radarMenuBuilder = new RadarMenuBuilder(radarMenuView);
+        this.radarMenuBuilder.setup();
 
         final GuidedDecisionTableEditorPresenter wrapped = new GuidedDecisionTableEditorPresenter(view,
                                                                                                   dtServiceCaller,

@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.editor;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.enterprise.event.Event;
 
@@ -54,6 +55,7 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
+import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.mvp.PlaceRequest;
@@ -70,8 +72,7 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
                                   KieEditorView,
                                   IsWidget {
 
-        void setModellerView( final GuidedDecisionTableModellerView view );
-
+        void setModellerView(final GuidedDecisionTableModellerView view);
     }
 
     protected View view;
@@ -97,20 +98,20 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
     protected SyncBeanManager beanManager;
     protected PlaceManager placeManager;
 
-    public BaseGuidedDecisionTableEditorPresenter( final View view,
-                                                   final Caller<GuidedDecisionTableEditorService> service,
-                                                   final Event<NotificationEvent> notification,
-                                                   final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
-                                                   final ValidationPopup validationPopup,
-                                                   final ClientResourceType resourceType,
-                                                   final EditMenuBuilder editMenuBuilder,
-                                                   final ViewMenuBuilder viewMenuBuilder,
-                                                   final InsertMenuBuilder insertMenuBuilder,
-                                                   final RadarMenuBuilder radarMenuBuilder,
-                                                   final GuidedDecisionTableModellerView.Presenter modeller,
-                                                   final SyncBeanManager beanManager,
-                                                   final PlaceManager placeManager ) {
-        super( view );
+    public BaseGuidedDecisionTableEditorPresenter(final View view,
+                                                  final Caller<GuidedDecisionTableEditorService> service,
+                                                  final Event<NotificationEvent> notification,
+                                                  final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
+                                                  final ValidationPopup validationPopup,
+                                                  final ClientResourceType resourceType,
+                                                  final EditMenuBuilder editMenuBuilder,
+                                                  final ViewMenuBuilder viewMenuBuilder,
+                                                  final InsertMenuBuilder insertMenuBuilder,
+                                                  final RadarMenuBuilder radarMenuBuilder,
+                                                  final GuidedDecisionTableModellerView.Presenter modeller,
+                                                  final SyncBeanManager beanManager,
+                                                  final PlaceManager placeManager) {
+        super(view);
         this.view = view;
         this.service = service;
         this.notification = notification;
@@ -134,86 +135,86 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
 
     @Override
     //Delegated to expose package-protected setter for Unit Tests
-    protected void setKieEditorWrapperView( final KieMultipleDocumentEditorWrapperView kieEditorWrapperView ) {
-        super.setKieEditorWrapperView( kieEditorWrapperView );
+    protected void setKieEditorWrapperView(final KieMultipleDocumentEditorWrapperView kieEditorWrapperView) {
+        super.setKieEditorWrapperView(kieEditorWrapperView);
     }
 
     @Override
     //Delegated to expose package-protected setter for Unit Tests
-    protected void setOverviewWidget( final OverviewWidgetPresenter overviewWidget ) {
-        super.setOverviewWidget( overviewWidget );
+    protected void setOverviewWidget(final OverviewWidgetPresenter overviewWidget) {
+        super.setOverviewWidget(overviewWidget);
     }
 
     @Override
     //Delegated to expose package-protected setter for Unit Tests
-    protected void setSavePopUpPresenter( final SavePopUpPresenter savePopUpPresenter ) {
-        super.setSavePopUpPresenter( savePopUpPresenter );
+    protected void setSavePopUpPresenter(final SavePopUpPresenter savePopUpPresenter) {
+        super.setSavePopUpPresenter(savePopUpPresenter);
     }
 
     @Override
     //Delegated to expose package-protected setter for Unit Tests
-    protected void setImportsWidget( final ImportsWidgetPresenter importsWidget ) {
-        super.setImportsWidget( importsWidget );
+    protected void setImportsWidget(final ImportsWidgetPresenter importsWidget) {
+        super.setImportsWidget(importsWidget);
     }
 
     @Override
     //Delegated to expose package-protected setter for Unit Tests
-    protected void setNotificationEvent( final Event<NotificationEvent> notificationEvent ) {
-        super.setNotificationEvent( notificationEvent );
+    protected void setNotificationEvent(final Event<NotificationEvent> notificationEvent) {
+        super.setNotificationEvent(notificationEvent);
     }
 
     @Override
     //Delegated to expose package-protected setter for Unit Tests
-    protected void setChangeTitleEvent( final Event<ChangeTitleWidgetEvent> changeTitleEvent ) {
-        super.setChangeTitleEvent( changeTitleEvent );
+    protected void setChangeTitleEvent(final Event<ChangeTitleWidgetEvent> changeTitleEvent) {
+        super.setChangeTitleEvent(changeTitleEvent);
     }
 
     @Override
     //Delegated to expose package-protected setter for Unit Tests
-    protected void setWorkbenchContext( final ProjectContext workbenchContext ) {
-        super.setWorkbenchContext( workbenchContext );
+    protected void setWorkbenchContext(final ProjectContext workbenchContext) {
+        super.setWorkbenchContext(workbenchContext);
     }
 
     @Override
     //Delegated to expose package-protected setter for Unit Tests
-    protected void setVersionRecordManager( final VersionRecordManager versionRecordManager ) {
-        super.setVersionRecordManager( versionRecordManager );
+    protected void setVersionRecordManager(final VersionRecordManager versionRecordManager) {
+        super.setVersionRecordManager(versionRecordManager);
     }
 
     @Override
     //Delegated to expose package-protected setter for Unit Tests
-    protected void setFileMenuBuilder( final FileMenuBuilder fileMenuBuilder ) {
-        super.setFileMenuBuilder( fileMenuBuilder );
+    protected void setFileMenuBuilder(final FileMenuBuilder fileMenuBuilder) {
+        super.setFileMenuBuilder(fileMenuBuilder);
     }
 
     @Override
     //Delegated to expose package-protected setter for Unit Tests
-    protected void setRegisteredDocumentsMenuBuilder( final RegisteredDocumentsMenuBuilder registeredDocumentsMenuBuilder ) {
-        super.setRegisteredDocumentsMenuBuilder( registeredDocumentsMenuBuilder );
+    protected void setRegisteredDocumentsMenuBuilder(final RegisteredDocumentsMenuBuilder registeredDocumentsMenuBuilder) {
+        super.setRegisteredDocumentsMenuBuilder(registeredDocumentsMenuBuilder);
     }
 
     @Override
     //Delegated to expose package-protected setter for Unit Tests
-    protected void setFileNameValidator( final DefaultFileNameValidator fileNameValidator ) {
-        super.setFileNameValidator( fileNameValidator );
+    protected void setFileNameValidator(final DefaultFileNameValidator fileNameValidator) {
+        super.setFileNameValidator(fileNameValidator);
     }
 
     protected void init() {
-        viewMenuBuilder.setModeller( modeller );
-        insertMenuBuilder.setModeller( modeller );
-        radarMenuBuilder.setModeller( modeller );
-        view.setModellerView( modeller.getView() );
+        viewMenuBuilder.setModeller(modeller);
+        insertMenuBuilder.setModeller(modeller);
+        radarMenuBuilder.setModeller(modeller);
+        view.setModellerView(modeller.getView());
     }
 
-    protected void onStartup( final ObservablePath path,
-                              final PlaceRequest placeRequest ) {
+    protected void onStartup(final ObservablePath path,
+                             final PlaceRequest placeRequest) {
         this.editorPath = path;
         this.editorPlaceRequest = placeRequest;
     }
 
     protected void onFocus() {
-        if ( modeller.getActiveDecisionTable() != null ) {
-            decisionTableSelectedEvent.fire( new DecisionTableSelectedEvent( modeller.getActiveDecisionTable() ) );
+        if (modeller.getActiveDecisionTable() != null) {
+            decisionTableSelectedEvent.fire(new DecisionTableSelectedEvent(modeller.getActiveDecisionTable()));
             modeller.getActiveDecisionTable().initialiseAnalysis();
         }
     }
@@ -223,24 +224,24 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
     }
 
     @Override
-    public String getDocumentTitle( final GuidedDecisionTableView.Presenter dtPresenter ) {
+    public String getDocumentTitle(final GuidedDecisionTableView.Presenter dtPresenter) {
         return dtPresenter.getCurrentPath().getFileName() + " - " + resourceType.getDescription();
     }
 
     protected boolean mayClose() {
-        for ( GuidedDecisionTableView.Presenter dtPresenter : modeller.getAvailableDecisionTables() ) {
-            if ( !mayClose( dtPresenter ) ) {
+        for (GuidedDecisionTableView.Presenter dtPresenter : modeller.getAvailableDecisionTables()) {
+            if (!mayClose(dtPresenter)) {
                 return false;
             }
         }
         return true;
     }
 
-    protected boolean mayClose( final GuidedDecisionTableView.Presenter dtPresenter ) {
+    protected boolean mayClose(final GuidedDecisionTableView.Presenter dtPresenter) {
         final Integer originalHashCode = dtPresenter.getOriginalHashCode();
         final Integer currentHashCode = dtPresenter.getModel().hashCode();
-        return mayClose( originalHashCode,
-                         currentHashCode );
+        return mayClose(originalHashCode,
+                        currentHashCode);
     }
 
     @Override
@@ -249,63 +250,68 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
         modeller.onClose();
     }
 
-    protected void onDecisionTableSelected( final DecisionTableSelectedEvent event ) {
-        final GuidedDecisionTableView.Presenter dtPresenter = event.getPresenter();
-        if ( dtPresenter == null ) {
+    protected void onDecisionTableSelected(final DecisionTableSelectedEvent event) {
+        final Optional<GuidedDecisionTableView.Presenter> dtPresenter = event.getPresenter();
+        enableMenuItem(dtPresenter.isPresent(),
+                       MenuItems.VALIDATE);
+
+        if (!dtPresenter.isPresent()) {
             return;
         }
-        if ( !modeller.isDecisionTableAvailable( dtPresenter ) ) {
+
+        final GuidedDecisionTableView.Presenter presenter = dtPresenter.get();
+        if (!modeller.isDecisionTableAvailable(presenter)) {
             return;
         }
-        if ( dtPresenter.equals( getActiveDocument() ) ) {
+        if (presenter.equals(getActiveDocument())) {
             return;
         }
-        activateDocument( dtPresenter );
+        activateDocument(presenter);
     }
 
-    protected void activateDocument( final GuidedDecisionTableView.Presenter dtPresenter ) {
-        enableMenus( true );
+    protected void activateDocument(final GuidedDecisionTableView.Presenter dtPresenter) {
+        enableMenus(true);
 
         dtPresenter.activate();
 
-        activateDocument( dtPresenter,
-                          dtPresenter.getOverview(),
-                          dtPresenter.getDataModelOracle(),
-                          dtPresenter.getModel().getImports(),
-                          !dtPresenter.getAccess().isEditable() );
+        activateDocument(dtPresenter,
+                         dtPresenter.getOverview(),
+                         dtPresenter.getDataModelOracle(),
+                         dtPresenter.getModel().getImports(),
+                         !dtPresenter.getAccess().isEditable());
     }
 
     @Override
-    public void refreshDocument( final GuidedDecisionTableView.Presenter dtPresenter ) {
+    public void refreshDocument(final GuidedDecisionTableView.Presenter dtPresenter) {
         final ObservablePath versionPath = dtPresenter.getCurrentPath();
 
         view.showLoading();
-        service.call( getRefreshContentSuccessCallback( dtPresenter ),
-                      getNoSuchFileExceptionErrorCallback() ).loadContent( versionPath );
+        service.call(getRefreshContentSuccessCallback(dtPresenter),
+                     getNoSuchFileExceptionErrorCallback()).loadContent(versionPath);
     }
 
-    private RemoteCallback<GuidedDecisionTableEditorContent> getRefreshContentSuccessCallback( final GuidedDecisionTableView.Presenter dtPresenter ) {
+    private RemoteCallback<GuidedDecisionTableEditorContent> getRefreshContentSuccessCallback(final GuidedDecisionTableView.Presenter dtPresenter) {
         final ObservablePath path = dtPresenter.getLatestPath();
         final PlaceRequest place = dtPresenter.getPlaceRequest();
         final boolean isReadOnly = dtPresenter.isReadOnly();
 
-        return ( content ) -> {
+        return (content) -> {
             //Refresh Decision Table in modeller
-            modeller.refreshDecisionTable( dtPresenter,
-                                           path,
-                                           place,
-                                           content,
-                                           isReadOnly );
-            activateDocument( dtPresenter );
+            modeller.refreshDecisionTable(dtPresenter,
+                                          path,
+                                          place,
+                                          content,
+                                          isReadOnly);
+            activateDocument(dtPresenter);
 
             view.hideBusyIndicator();
         };
     }
 
     @Override
-    public void removeDocument( final GuidedDecisionTableView.Presenter dtPresenter ) {
-        modeller.removeDecisionTable( dtPresenter );
-        deregisterDocument( dtPresenter );
+    public void removeDocument(final GuidedDecisionTableView.Presenter dtPresenter) {
+        modeller.removeDecisionTable(dtPresenter);
+        deregisterDocument(dtPresenter);
         dtPresenter.onClose();
 
         openOtherDecisionTable();
@@ -313,102 +319,101 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
 
     void openOtherDecisionTable() {
         final Set<GuidedDecisionTableView.Presenter> availableDecisionTables = modeller.getAvailableDecisionTables();
-        if ( availableDecisionTables == null || availableDecisionTables.isEmpty() ) {
-            placeManager.forceClosePlace( editorPlaceRequest );
+        if (availableDecisionTables == null || availableDecisionTables.isEmpty()) {
+            decisionTableSelectedEvent.fire(DecisionTableSelectedEvent.NONE);
         } else {
             final GuidedDecisionTableView.Presenter dtPresenter = availableDecisionTables.iterator().next();
-            activateDocument( dtPresenter );
+            activateDocument(dtPresenter);
         }
     }
 
     @Override
-    public void onValidate( final GuidedDecisionTableView.Presenter dtPresenter ) {
+    public void onValidate(final GuidedDecisionTableView.Presenter dtPresenter) {
         final ObservablePath path = dtPresenter.getCurrentPath();
         final GuidedDecisionTable52 model = dtPresenter.getModel();
 
-        service.call( new RemoteCallback<List<ValidationMessage>>() {
+        service.call(new RemoteCallback<List<ValidationMessage>>() {
             @Override
-            public void callback( final List<ValidationMessage> results ) {
-                if ( results == null || results.isEmpty() ) {
-                    notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                                              NotificationEvent.NotificationType.SUCCESS ) );
+            public void callback(final List<ValidationMessage> results) {
+                if (results == null || results.isEmpty()) {
+                    notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                                            NotificationEvent.NotificationType.SUCCESS));
                 } else {
-                    showValidationPopup( results );
+                    showValidationPopup(results);
                 }
             }
-        } ).validate( path,
-                      model );
+        }).validate(path,
+                    model);
     }
 
-    void showValidationPopup( final List<ValidationMessage> results ) {
-        validationPopup.showMessages( results );
+    void showValidationPopup(final List<ValidationMessage> results) {
+        validationPopup.showMessages(results);
     }
 
     @Override
-    public void onSave( final GuidedDecisionTableView.Presenter dtPresenter,
-                        final String commitMessage ) {
+    public void onSave(final GuidedDecisionTableView.Presenter dtPresenter,
+                       final String commitMessage) {
         final ObservablePath path = dtPresenter.getCurrentPath();
         final GuidedDecisionTable52 model = dtPresenter.getModel();
         final Metadata metadata = dtPresenter.getOverview().getMetadata();
 
-        service.call( getSaveSuccessCallback( dtPresenter,
-                                              model.hashCode() ),
-                      new HasBusyIndicatorDefaultErrorCallback( view ) ).saveAndUpdateGraphEntries( path,
-                                                                                                    model,
-                                                                                                    metadata,
-                                                                                                    commitMessage );
+        service.call(getSaveSuccessCallback(dtPresenter,
+                                            model.hashCode()),
+                     new HasBusyIndicatorDefaultErrorCallback(view)).saveAndUpdateGraphEntries(path,
+                                                                                               model,
+                                                                                               metadata,
+                                                                                               commitMessage);
     }
 
     @Override
-    public void onSourceTabSelected( final GuidedDecisionTableView.Presenter dtPresenter ) {
+    public void onSourceTabSelected(final GuidedDecisionTableView.Presenter dtPresenter) {
         final ObservablePath path = dtPresenter.getCurrentPath();
         final GuidedDecisionTable52 model = dtPresenter.getModel();
 
-        service.call( new RemoteCallback<String>() {
-                          @Override
-                          public void callback( String source ) {
-                              updateSource( source );
-                          }
-                      },
-                      getCouldNotGenerateSourceErrorCallback() ).toSource( path,
-                                                                           model );
+        service.call(new RemoteCallback<String>() {
+                         @Override
+                         public void callback(String source) {
+                             updateSource(source);
+                         }
+                     },
+                     getCouldNotGenerateSourceErrorCallback()).toSource(path,
+                                                                        model);
     }
 
     protected MenuItem getEditMenuItem() {
-        if ( editMenuItem == null ) {
+        if (editMenuItem == null) {
             editMenuItem = editMenuBuilder.build();
         }
         return editMenuItem;
     }
 
     protected MenuItem getViewMenuItem() {
-        if ( viewMenuItem == null ) {
+        if (viewMenuItem == null) {
             viewMenuItem = viewMenuBuilder.build();
         }
         return viewMenuItem;
     }
 
     protected MenuItem getInsertMenuItem() {
-        if ( insertMenuItem == null ) {
+        if (insertMenuItem == null) {
             insertMenuItem = insertMenuBuilder.build();
         }
         return insertMenuItem;
     }
 
     protected MenuItem getRadarMenuItem() {
-        if ( radarMenuItem == null ) {
+        if (radarMenuItem == null) {
             radarMenuItem = radarMenuBuilder.build();
         }
         return radarMenuItem;
     }
 
     @Override
-    protected void enableMenus( final boolean enabled ) {
-        super.enableMenus( enabled );
-        getEditMenuItem().setEnabled( enabled );
-        getViewMenuItem().setEnabled( enabled );
-        getInsertMenuItem().setEnabled( enabled );
-        getRadarMenuItem().setEnabled( enabled );
+    protected void enableMenus(final boolean enabled) {
+        super.enableMenus(enabled);
+        getEditMenuItem().setEnabled(enabled);
+        getViewMenuItem().setEnabled(enabled);
+        getInsertMenuItem().setEnabled(enabled);
+        getRadarMenuItem().setEnabled(enabled);
     }
-
 }

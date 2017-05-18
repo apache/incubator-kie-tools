@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTablePinnedEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
@@ -34,6 +35,7 @@ public class RadarMenuBuilder implements MenuFactory.CustomMenuBuilder,
                                          RadarMenuView.Presenter {
 
     private RadarMenuView view;
+    private MenuItem radarMenuItem;
     private GuidedDecisionTableModellerView.Presenter modeller;
 
     //Event to trigger redraw of Radar
@@ -41,38 +43,24 @@ public class RadarMenuBuilder implements MenuFactory.CustomMenuBuilder,
 
         private final GuidedDecisionTableModellerView.Presenter modeller;
 
-        public UpdateRadarEvent( final GuidedDecisionTableModellerView.Presenter modeller ) {
+        public UpdateRadarEvent(final GuidedDecisionTableModellerView.Presenter modeller) {
             this.modeller = modeller;
         }
 
         public GuidedDecisionTableModellerView.Presenter getModeller() {
             return modeller;
         }
-
     }
 
     @Inject
-    public RadarMenuBuilder( final RadarMenuView view ) {
+    public RadarMenuBuilder(final RadarMenuView view) {
         this.view = view;
     }
 
     @PostConstruct
-    void setup() {
-        view.init( this );
-    }
-
-    @Override
-    public void setModeller( final GuidedDecisionTableModellerView.Presenter modeller ) {
-        this.modeller = modeller;
-    }
-
-    @Override
-    public void push( final MenuFactory.CustomMenuBuilder element ) {
-    }
-
-    @Override
-    public MenuItem build() {
-        return new BaseMenuCustom<IsWidget>() {
+    public void setup() {
+        view.init(this);
+        radarMenuItem = new BaseMenuCustom<IsWidget>() {
             @Override
             public IsWidget build() {
                 return view;
@@ -84,47 +72,66 @@ public class RadarMenuBuilder implements MenuFactory.CustomMenuBuilder,
             }
 
             @Override
-            public void setEnabled( final boolean enabled ) {
-                view.setEnabled( enabled );
+            public void setEnabled(final boolean enabled) {
+                view.setEnabled(enabled);
             }
         };
     }
 
+    @Override
+    public void setModeller(final GuidedDecisionTableModellerView.Presenter modeller) {
+        this.modeller = modeller;
+    }
+
+    @Override
+    public void push(final MenuFactory.CustomMenuBuilder element) {
+    }
+
+    @Override
+    public MenuItem build() {
+        return radarMenuItem;
+    }
+
     @SuppressWarnings("unused")
-    public void onUpdateRadarEvent( final @Observes UpdateRadarEvent event ) {
+    public void onUpdateRadarEvent(final @Observes UpdateRadarEvent event) {
         final GuidedDecisionTableModellerView.Presenter modeller = event.getModeller();
-        if ( modeller == null ) {
+        if (modeller == null) {
             return;
         }
-        if ( !modeller.equals( this.modeller ) ) {
+        if (!modeller.equals(this.modeller)) {
             return;
         }
         onClick();
     }
 
     @SuppressWarnings("unused")
-    public void onDecisionTablePinnedEvent( final @Observes DecisionTablePinnedEvent event ) {
+    public void onDecisionTablePinnedEvent(final @Observes DecisionTablePinnedEvent event) {
         final GuidedDecisionTableModellerView.Presenter modeller = event.getPresenter();
-        if ( modeller == null ) {
+        if (modeller == null) {
             return;
         }
-        if ( !modeller.equals( this.modeller ) ) {
+        if (!modeller.equals(this.modeller)) {
             return;
         }
-        view.enableDrag( !event.isPinned() );
+        view.enableDrag(!event.isPinned());
+    }
+
+    @SuppressWarnings("unused")
+    public void onDecisionTableSelectedEvent(final @Observes DecisionTableSelectedEvent event) {
+        radarMenuItem.setEnabled(event.getPresenter().isPresent());
     }
 
     @Override
     public void onClick() {
         view.reset();
-        view.setModellerBounds( modeller.getView().getBounds() );
-        view.setAvailableDecisionTables( modeller.getAvailableDecisionTables() );
-        view.setVisibleBounds( modeller.getView().getGridLayerView().getVisibleBounds() );
+        view.setModellerBounds(modeller.getView().getBounds());
+        view.setAvailableDecisionTables(modeller.getAvailableDecisionTables());
+        view.setVisibleBounds(modeller.getView().getGridLayerView().getVisibleBounds());
     }
 
     @Override
-    public void onDragVisibleBounds( final double canvasX,
-                                     final double canvasY ) {
+    public void onDragVisibleBounds(final double canvasX,
+                                    final double canvasY) {
         final double _canvasX = -canvasX;
         final double _canvasY = -canvasY;
         final Transform oldTransform = modeller.getView().getGridLayerView().getViewport().getTransform();
@@ -132,13 +139,12 @@ public class RadarMenuBuilder implements MenuFactory.CustomMenuBuilder,
         final double scaleY = oldTransform.getScaleY();
         final double translateX = oldTransform.getTranslateX();
         final double translateY = oldTransform.getTranslateY();
-        final double dx = _canvasX - ( translateX / scaleX );
-        final double dy = _canvasY - ( translateY / scaleY );
-        final Transform newTransform = oldTransform.copy().translate( dx,
-                                                                      dy );
+        final double dx = _canvasX - (translateX / scaleX);
+        final double dy = _canvasY - (translateY / scaleY);
+        final Transform newTransform = oldTransform.copy().translate(dx,
+                                                                     dy);
 
-        modeller.getView().getGridLayerView().getViewport().setTransform( newTransform );
+        modeller.getView().getGridLayerView().getViewport().setTransform(newTransform);
         modeller.getView().getGridLayerView().batch();
     }
-
 }

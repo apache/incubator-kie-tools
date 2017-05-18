@@ -318,4 +318,17 @@ public class ViewMenuBuilderTest {
         assertFalse(builder.miToggleMergeState.getMenuItem().isEnabled());
         assertFalse(builder.miViewAuditLog.getMenuItem().isEnabled());
     }
+
+    @Test
+    public void testOnDecisionTableSelectedEventNoTableSelected() {
+        //ViewMenuBuilder.setup() called in @Setup disables view by default
+        assertFalse(builder.miToggleMergeState.getMenuItem().isEnabled());
+        assertFalse(builder.miViewAuditLog.getMenuItem().isEnabled());
+
+        builder.onDecisionTableSelectedEvent(DecisionTableSelectedEvent.NONE);
+
+        //Verify clearing Decision Table selection disables view
+        assertFalse(builder.miToggleMergeState.getMenuItem().isEnabled());
+        assertFalse(builder.miViewAuditLog.getMenuItem().isEnabled());
+    }
 }

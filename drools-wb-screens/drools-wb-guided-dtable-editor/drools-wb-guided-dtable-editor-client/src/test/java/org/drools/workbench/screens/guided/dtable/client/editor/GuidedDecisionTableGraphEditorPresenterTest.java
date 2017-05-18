@@ -233,7 +233,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                times(1)).fire(dtSelectedEventCaptor.capture());
         assertNotNull(dtSelectedEventCaptor.getValue());
         assertEquals(dtPresenter,
-                     dtSelectedEventCaptor.getValue().getPresenter());
+                     dtSelectedEventCaptor.getValue().getPresenter().get());
     }
 
     @Test
@@ -434,9 +434,9 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                times(1)).fire(dtSelectedEventCaptor.capture());
         final DecisionTableSelectedEvent dtSelectedEvent = dtSelectedEventCaptor.getValue();
         assertNotNull(dtSelectedEvent);
-        assertNotNull(dtSelectedEvent.getPresenter());
+        assertTrue(dtSelectedEvent.getPresenter().isPresent());
         assertEquals(dtPresenter,
-                     dtSelectedEvent.getPresenter());
+                     dtSelectedEvent.getPresenter().get());
 
         verify(lockManager,
                never()).acquireLock();
