@@ -42,6 +42,7 @@ import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
@@ -182,8 +183,8 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
                                                                                                             @Override
                                                                                                             public void onComplete(final int x,
                                                                                                                                    final int y,
-                                                                                                                                   final int sourceMagnet,
-                                                                                                                                   final int targetMagnet) {
+                                                                                                                                   final Magnet sourceMagnet,
+                                                                                                                                   final Magnet targetMagnet) {
                                                                                                                 final NodeBuildRequest request = new NodeBuildRequestImpl(x,
                                                                                                                                                                           y,
                                                                                                                                                                           node,

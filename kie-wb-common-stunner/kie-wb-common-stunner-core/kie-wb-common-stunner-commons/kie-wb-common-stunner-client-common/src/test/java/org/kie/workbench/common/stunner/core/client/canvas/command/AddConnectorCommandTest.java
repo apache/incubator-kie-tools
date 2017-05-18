@@ -20,6 +20,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -31,7 +33,7 @@ public class AddConnectorCommandTest extends AbstractCanvasCommandTest {
 
     private static final String EDGE_ID = "e1";
     private static final String SOURCE_ID = "s1";
-    private static final int MAGNET = 2;
+    private static final Magnet MAGNET = MagnetImpl.Builder.build(Magnet.MagnetType.OUTGOING);
 
     @Mock
     private Edge candidate;
@@ -62,7 +64,7 @@ public class AddConnectorCommandTest extends AbstractCanvasCommandTest {
         assertEquals(source,
                      graphCommand.getSourceNode());
         assertEquals(MAGNET,
-                     graphCommand.getMagnetIndex().intValue());
+                     graphCommand.getMagnet());
     }
 
     @Test

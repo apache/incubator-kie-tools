@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
@@ -235,7 +236,8 @@ public class TestingGraphMockHandler {
                                            final Node source) {
         return execute(commandFactory.addConnector(source,
                                                    edge,
-                                                   0));
+                                                   MagnetImpl.Builder.build(0d,
+                                                                            0d)));
     }
 
     @SuppressWarnings("unchecked")
@@ -243,14 +245,16 @@ public class TestingGraphMockHandler {
                                              final Node target) {
         return execute(commandFactory.setTargetNode(target,
                                                     edge,
-                                                    0));
+                                                    MagnetImpl.Builder.build(0d,
+                                                                             0d)));
     }
 
     @SuppressWarnings("unchecked")
     public TestingGraphMockHandler removeTargetConnection(final Edge edge) {
         return execute(commandFactory.setTargetNode(null,
                                                     edge,
-                                                    0));
+                                                    MagnetImpl.Builder.build(0d,
+                                                                             0d)));
     }
 
     private TestingGraphMockHandler execute(final

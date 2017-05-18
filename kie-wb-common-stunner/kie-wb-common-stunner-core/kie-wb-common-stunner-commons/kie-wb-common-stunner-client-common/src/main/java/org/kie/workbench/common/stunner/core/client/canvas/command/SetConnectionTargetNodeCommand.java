@@ -20,6 +20,7 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
@@ -27,21 +28,27 @@ public class SetConnectionTargetNodeCommand extends AbstractCanvasGraphCommand {
 
     private final Node<? extends View<?>, Edge> node;
     private final Edge<? extends View<?>, Node> edge;
-    private final int magnetIndex;
+    private final Magnet magnet;
+    // true if a new connection is being made; false if a different magnet is being selected
+    // on an existing connection
+    private final boolean isNewConnection;
 
     public SetConnectionTargetNodeCommand(final Node<? extends View<?>, Edge> node,
                                           final Edge<? extends View<?>, Node> edge,
-                                          final int magnetIndex) {
+                                          Magnet magnet,
+                                          boolean isNewConnection) {
         this.node = node;
         this.edge = edge;
-        this.magnetIndex = magnetIndex;
+        this.magnet = magnet;
+        this.isNewConnection = isNewConnection;
     }
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
         return new org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand(node,
                                                                                                            edge,
-                                                                                                           magnetIndex);
+                                                                                                           magnet,
+                                                                                                           isNewConnection);
     }
 
     @Override

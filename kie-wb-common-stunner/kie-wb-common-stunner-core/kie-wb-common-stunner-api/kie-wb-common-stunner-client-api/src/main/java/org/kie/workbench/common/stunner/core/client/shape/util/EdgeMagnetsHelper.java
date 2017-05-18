@@ -17,9 +17,10 @@
 package org.kie.workbench.common.stunner.core.client.shape.util;
 
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
 
 public interface EdgeMagnetsHelper {
 
-    int[] getDefaultMagnetsIndex(final ShapeView<?> sourceView,
-                                 final ShapeView<?> targetView);
+    Magnet[] getDefaultMagnets(final ShapeView<?> sourceView,
+                               final ShapeView<?> targetView);
 }

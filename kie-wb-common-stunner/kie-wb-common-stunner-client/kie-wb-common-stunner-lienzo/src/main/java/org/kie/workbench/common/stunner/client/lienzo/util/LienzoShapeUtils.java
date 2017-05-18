@@ -27,8 +27,14 @@ import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
 
 public class LienzoShapeUtils {
+
+    public static final int DEFAULT_SOURCE_MAGNET = 3;
+    public static final int DEFAULT_TARGET_MAGNET = 7;
+
 
     public static void scalePicture(final Picture picture,
                                     final double width,
@@ -84,12 +90,12 @@ public class LienzoShapeUtils {
      * TODO: This is enough for the current line/arc support in stunner's shapes, but consider
      * improving this behavior on the future.
      */
-    public static int[] getDefaultMagnetsIndex(final WiresShape sourceShape,
-                                               final WiresShape targetShape) {
+    public static Magnet[] getDefaultMagnets(final WiresShape sourceShape,
+                                             final WiresShape targetShape) {
         final MagnetManager.Magnets sourceMagnets = sourceShape.getMagnets();
         final MagnetManager.Magnets targetMagnets = targetShape.getMagnets();
-        int sMagnet = 0;
-        int tMagnet = 0;
+        int iSourceMagnet = 0;
+        int iTargetMagnet = 0;
         double dist = Double.MAX_VALUE;
         for (int x = 0; x < sourceMagnets.size(); x++) {
             if (isOddNumber(x)) {
@@ -107,25 +113,29 @@ public class LienzoShapeUtils {
                                                           tY);
                         if (_d < dist) {
                             dist = _d;
-                            sMagnet = x;
-                            tMagnet = y;
+                            iSourceMagnet = x;
+                            iTargetMagnet = y;
                         }
                     }
                 }
             }
         }
-        return new int[]{sMagnet, tMagnet};
+        Magnet sMagnet = MagnetImpl.Builder.build(sourceMagnets.getMagnet(iSourceMagnet).getX(),
+                                                  sourceMagnets.getMagnet(iSourceMagnet).getY());
+        Magnet tMagnet = MagnetImpl.Builder.build(targetMagnets.getMagnet(iTargetMagnet).getX(),
+                                                  targetMagnets.getMagnet(iTargetMagnet).getY());
+        return new Magnet[]{sMagnet, tMagnet};
     }
 
-    public static int[] getDefaultMagnetsIndex(final Shape sourceShape,
-                                               final Shape targetShape) {
+    public static Magnet[] getDefaultMagnets(final Shape sourceShape,
+                                             final Shape targetShape) {
         final ShapeView<?> sourceView = sourceShape.getShapeView();
         final ShapeView<?> targetView = targetShape.getShapeView();
         if (sourceView instanceof WiresShape && targetView instanceof WiresShape) {
-            return getDefaultMagnetsIndex((WiresShape) sourceView,
-                                          (WiresShape) targetView);
+            return getDefaultMagnets((WiresShape) sourceView,
+                                     (WiresShape) targetView);
         }
-        return new int[]{0, 0};
+        return new Magnet[]{MagnetImpl.Builder.build(Magnet.MagnetType.OUTGOING), MagnetImpl.Builder.build(Magnet.MagnetType.INCOMING)};
     }
 
     private static boolean isOddNumber(final int i) {

@@ -31,6 +31,8 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnectorImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
@@ -86,8 +88,10 @@ public class ConnectorShapeTest {
                                                 new BoundImpl(15d,
                                                               40d)
                                         ));
-        content.setSourceMagnetIndex(2);
-        content.setTargetMagnetIndex(5);
+        Magnet sourceMagnet = MagnetImpl.Builder.build(Magnet.MagnetType.OUTGOING);
+        Magnet targetMagnet = MagnetImpl.Builder.build(Magnet.MagnetType.INCOMING);
+        content.setSourceMagnet(sourceMagnet);
+        content.setTargetMagnet(targetMagnet);
         edge.setContent(content);
         final ShapeView<?> source = mock(ShapeView.class);
         final ShapeView<?> target = mock(ShapeView.class);
@@ -97,9 +101,9 @@ public class ConnectorShapeTest {
                                 MutationContext.STATIC);
         verify(((IsConnector) shapeView),
                times(1)).connect(eq(source),
-                                 eq(2),
+                                 eq(sourceMagnet),
                                  eq(target),
-                                 eq(5),
+                                 eq(targetMagnet),
                                  eq(true),
                                  eq(false));
     }

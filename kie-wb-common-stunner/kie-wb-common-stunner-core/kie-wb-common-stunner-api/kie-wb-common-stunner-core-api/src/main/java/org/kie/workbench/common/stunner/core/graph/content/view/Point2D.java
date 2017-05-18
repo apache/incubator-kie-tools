@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,18 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.canvas;
+package org.kie.workbench.common.stunner.core.graph.content.view;
+
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * The values for the X/Y coordinates on the cartesian coordinates system.
  */
+@Portable
 public final class Point2D {
 
     private final double x;
     private final double y;
 
-    public Point2D(final double x,
-                   final double y) {
+    public Point2D(final @MapsTo("x") double x,
+                   final @MapsTo("y") double y) {
         this.x = x;
         this.y = y;
     }
@@ -35,5 +40,10 @@ public final class Point2D {
 
     public double getY() {
         return y;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + x + ", " + y + "]";
     }
 }

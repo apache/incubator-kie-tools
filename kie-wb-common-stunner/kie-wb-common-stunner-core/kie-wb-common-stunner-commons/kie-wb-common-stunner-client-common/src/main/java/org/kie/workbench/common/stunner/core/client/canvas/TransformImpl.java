@@ -15,6 +15,8 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+
 public class TransformImpl implements Transform {
 
     private final Point2D translate;

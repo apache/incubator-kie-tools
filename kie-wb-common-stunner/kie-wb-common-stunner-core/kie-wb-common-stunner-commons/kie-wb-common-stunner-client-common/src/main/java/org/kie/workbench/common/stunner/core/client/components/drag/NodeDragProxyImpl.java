@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.client.shape.util.EdgeMagnetsHelper;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
@@ -104,7 +105,7 @@ public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
                                        @Override
                                        public void onComplete(final int x,
                                                               final int y) {
-                                           final int[] magnets = getMagnets();
+                                           final Magnet[] magnets = getMagnets();
                                            callback.onComplete(x,
                                                                y);
                                            callback.onComplete(x,
@@ -117,10 +118,10 @@ public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
 
                                        private void drawEdge() {
                                            if (inEdge.getContent() instanceof ViewConnector) {
-                                               final int[] magnets = getMagnets();
+                                               final Magnet[] magnets = getMagnets();
                                                final ViewConnector viewConnector = (ViewConnector) inEdge.getContent();
-                                               viewConnector.setSourceMagnetIndex(magnets[0]);
-                                               viewConnector.setTargetMagnetIndex(magnets[1]);
+                                               viewConnector.setSourceMagnet(magnets[0]);
+                                               viewConnector.setTargetMagnet(magnets[1]);
                                            }
                                            NodeDragProxyImpl.this.transientEdgeShape.applyConnections(inEdge,
                                                                                                       edgeSourceNodeShape.getShapeView(),
@@ -129,8 +130,8 @@ public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
                                            canvas.draw();
                                        }
 
-                                       private int[] getMagnets() {
-                                           return magnetsHelper.getDefaultMagnetsIndex(edgeSourceNodeShape.getShapeView(),
+                                       private Magnet[] getMagnets() {
+                                           return magnetsHelper.getDefaultMagnets(edgeSourceNodeShape.getShapeView(),
                                                                                        nodeShape.getShapeView());
                                        }
                                    });

@@ -24,6 +24,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
@@ -58,6 +60,10 @@ public class DeleteConnectorCommandTest extends AbstractGraphCommandTest {
     private Edge edge;
     @Mock
     private ViewConnector connContent;
+
+    private Optional<Magnet> sourceMagnet;
+    private Optional<Magnet> targetMagnet;
+
     private DeleteConnectorCommand tested;
 
     @Before
@@ -66,6 +72,11 @@ public class DeleteConnectorCommandTest extends AbstractGraphCommandTest {
                    500);
         source = mockNode(SOURCE_UUID);
         target = mockNode(TARGET_UUID);
+        sourceMagnet = Optional.of(MagnetImpl.Builder.build(0d,
+                                                            0d));
+        targetMagnet = Optional.of(MagnetImpl.Builder.build(0d,
+                                                            0d));
+
         edge = mockEdge(UUID);
         when(graphIndex.getNode(eq(SOURCE_UUID))).thenReturn(source);
         when(graphIndex.getNode(eq(TARGET_UUID))).thenReturn(target);
@@ -73,8 +84,8 @@ public class DeleteConnectorCommandTest extends AbstractGraphCommandTest {
         when(edge.getContent()).thenReturn(connContent);
         when(edge.getSourceNode()).thenReturn(source);
         when(edge.getTargetNode()).thenReturn(target);
-        when(connContent.getSourceMagnetIndex()).thenReturn(0);
-        when(connContent.getTargetMagnetIndex()).thenReturn(1);
+        when(connContent.getSourceMagnet()).thenReturn(sourceMagnet);
+        when(connContent.getTargetMagnet()).thenReturn(targetMagnet);
         this.tested = new DeleteConnectorCommand(UUID);
     }
 

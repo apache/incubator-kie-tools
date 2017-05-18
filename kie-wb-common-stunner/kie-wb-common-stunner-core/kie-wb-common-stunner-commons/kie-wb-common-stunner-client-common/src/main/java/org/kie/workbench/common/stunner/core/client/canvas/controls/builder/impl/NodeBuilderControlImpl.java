@@ -24,7 +24,6 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequest;
@@ -44,6 +43,8 @@ import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
@@ -115,8 +116,8 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
         final double y = request.getY();
         final Node<View<?>, Edge> node = request.getNode();
         final Edge<View<?>, Node> inEdge = request.getInEdge();
-        final int sourceManget = request.getSourceManger();
-        final int targetMagnet = request.getTargetMagnet();
+        final Magnet sourceMagnet = request.getSourceMagnet();
+        final Magnet targetMagnet = request.getTargetMagnet();
         if (null != node) {
             final Object nodeDef = node.getContent().getDefinition();
             final String nodeId = clientDefinitionManager.adapters().forDefinition().getId(nodeDef);
@@ -142,18 +143,19 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
                                                // The commands to batch for the edge that connects both nodes.
                                                commandBuilder.addCommand(commandFactory.addConnector(inEdge.getSourceNode(),
                                                                                                      inEdge,
-                                                                                                     sourceManget,
+                                                                                                     sourceMagnet,
                                                                                                      ssid));
                                                commandBuilder.addCommand(commandFactory.setTargetNode(node,
                                                                                                       inEdge,
-                                                                                                      targetMagnet));
+                                                                                                      targetMagnet,
+                                                                                                      true));
                                            }
                                            final CommandResult<CanvasViolation> results = elementBuilderControl.getCommandManager().execute(canvasHandler,
                                                                                                                                             commandBuilder.build());
                                            if (!CommandUtils.isError(results)) {
                                                updateConnectorShape(inEdge,
                                                                     node,
-                                                                    sourceManget,
+                                                                    sourceMagnet,
                                                                     targetMagnet);
                                            }
                                            buildCallback.onSuccess(uuid);
@@ -170,8 +172,8 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
     @SuppressWarnings("unchecked")
     protected void updateConnectorShape(final Edge<View<?>, Node> inEdge,
                                         final Node targetNode,
-                                        final int sourceMagnet,
-                                        final int targetManget) {
+                                        final Magnet sourceMagnet,
+                                        final Magnet targetMagnet) {
         final ViewConnector connectorContent = (ViewConnector) inEdge.getContent();
         canvasHandler.applyElementMutation(inEdge,
                                            MutationContext.STATIC);
@@ -180,8 +182,8 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
         if (null != source && null != targetNode) {
             final Shape<?> sShape = canvasHandler.getCanvas().getShape(source.getUUID());
             final Shape<?> tShape = canvasHandler.getCanvas().getShape(targetNode.getUUID());
-            connectorContent.setSourceMagnetIndex(sourceMagnet);
-            connectorContent.setTargetMagnetIndex(targetManget);
+            connectorContent.setSourceMagnet(sourceMagnet);
+            connectorContent.setTargetMagnet(targetMagnet);
             edgeShape.applyConnections(inEdge,
                                        sShape.getShapeView(),
                                        tShape.getShapeView(),

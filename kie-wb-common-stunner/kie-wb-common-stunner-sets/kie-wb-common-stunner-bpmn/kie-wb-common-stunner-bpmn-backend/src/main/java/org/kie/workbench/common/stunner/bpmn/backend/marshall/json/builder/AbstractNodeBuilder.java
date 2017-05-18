@@ -35,8 +35,9 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
@@ -190,12 +191,21 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
                     // Create the outgoing edge.
                     Edge edge = (Edge) outgoingBuilder.build(context);
                     // Command - Execute the graph command to set the node as the edge connection's source..
-                    int magnetIdx = getSourceConnectionMagnetIndex(context,
-                                                                   node,
-                                                                   edge);
+                    Double sourceDocker[] = null;
+                    final List<Double[]> dockers = ((AbstractEdgeBuilder) outgoingBuilder).dockers;
+                    if (dockers != null && dockers.size() > 1) {
+                        sourceDocker = dockers.get(0);
+                    }
+                    Magnet sourceMagnet;
+                    if (sourceDocker != null) {
+                        sourceMagnet = MagnetImpl.Builder.build(sourceDocker[0],
+                                                                sourceDocker[1]);
+                    } else {
+                        sourceMagnet = MagnetImpl.Builder.build(Magnet.MagnetType.OUTGOING);
+                    }
                     commands.add(context.getCommandFactory().setSourceNode(node,
                                                                            edge,
-                                                                           magnetIdx));
+                                                                           sourceMagnet));
                     ;
                 }
                 if (!commands.isEmpty()) {
@@ -238,18 +248,6 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
                                                " Resutls = [" + results.toString() + "]");
         }
         return true;
-    }
-
-    public int getSourceConnectionMagnetIndex(final BuilderContext context,
-                                              final T node,
-                                              final Edge<ViewConnector<W>, Node> edge) {
-        return 3;
-    }
-
-    public int getTargetConnectionMagnetIndex(final BuilderContext context,
-                                              final T node,
-                                              final Edge<ViewConnector<W>, Node> edge) {
-        return 7;
     }
 
     @Override

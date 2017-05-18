@@ -48,6 +48,8 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -66,8 +68,8 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
     private final CanvasLayoutUtils canvasLayoutUtils;
 
     private String definitionId;
-    private int sourceMagnet;
-    private int targetMagnet;
+    private Magnet sourceMagnet;
+    private Magnet targetMagnet;
     private HasEventHandlers<?, ?> layerEventHandlers;
 
     protected NewNodeCommand() {
@@ -171,8 +173,8 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
                                                                                         getBuilderControl().setCommandManagerProvider(context::getCommandManager);
                                                                                         getGraphBoundsIndexer().build(canvasHandler.getDiagram().getGraph());
                                                                                         // TODO: Use right magnets.
-                                                                                        NewNodeCommand.this.sourceMagnet = 3;
-                                                                                        NewNodeCommand.this.targetMagnet = 7;
+                                                                                        NewNodeCommand.this.sourceMagnet = MagnetImpl.Builder.build(Magnet.MagnetType.OUTGOING);
+                                                                                        NewNodeCommand.this.targetMagnet = MagnetImpl.Builder.build(Magnet.MagnetType.INCOMING);
                                                                                         final double[] next = canvasLayoutUtils.getNext(canvasHandler,
                                                                                                                                         (Node<View<?>, Edge>) element);
                                                                                         log(Level.INFO,
@@ -239,8 +241,8 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
             @Override
             public void onComplete(final int x,
                                    final int y,
-                                   final int sourceMagnet,
-                                   final int targetMagnet) {
+                                   final Magnet sourceMagnet,
+                                   final Magnet targetMagnet) {
                 NewNodeCommand.this.sourceMagnet = sourceMagnet;
                 NewNodeCommand.this.targetMagnet = targetMagnet;
                 NewNodeCommand.this.onComplete(context,

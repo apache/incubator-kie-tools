@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.view;
 
-import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 /**
  * The view for a shape instance.

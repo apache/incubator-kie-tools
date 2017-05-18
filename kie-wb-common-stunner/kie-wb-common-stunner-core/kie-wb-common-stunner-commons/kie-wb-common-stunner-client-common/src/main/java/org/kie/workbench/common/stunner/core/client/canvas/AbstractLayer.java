@@ -15,6 +15,8 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+
 public abstract class AbstractLayer<T, S, A> implements Layer<T, S, A> {
 
     protected abstract Point2D getTranslate();

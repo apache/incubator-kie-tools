@@ -15,6 +15,8 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+
 /**
  * The current transforms that are supported for canvas layers.
  * See <a>org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl</a>

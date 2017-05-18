@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
 
@@ -72,11 +73,11 @@ public class DefaultCanvasCommandFactory implements CanvasCommandFactory<Abstrac
     @Override
     public CanvasCommand<AbstractCanvasHandler> addConnector(final Node sourceNode,
                                                              final Edge candidate,
-                                                             final int magnetIndex,
+                                                             final Magnet magnet,
                                                              final String shapeSetId) {
         return new AddConnectorCommand(sourceNode,
                                        candidate,
-                                       magnetIndex,
+                                       magnet,
                                        shapeSetId);
     }
 
@@ -137,19 +138,23 @@ public class DefaultCanvasCommandFactory implements CanvasCommandFactory<Abstrac
     @Override
     public CanvasCommand<AbstractCanvasHandler> setSourceNode(final Node<? extends View<?>, Edge> node,
                                                               final Edge<? extends View<?>, Node> edge,
-                                                              final int magnetIndex) {
+                                                              final Magnet magnet,
+                                                              boolean isNewConnection) {
         return new SetConnectionSourceNodeCommand(node,
                                                   edge,
-                                                  magnetIndex);
+                                                  magnet,
+                                                  isNewConnection);
     }
 
     @Override
     public CanvasCommand<AbstractCanvasHandler> setTargetNode(final Node<? extends View<?>, Edge> node,
                                                               final Edge<? extends View<?>, Node> edge,
-                                                              final int magnetIndex) {
+                                                              final Magnet magnet,
+                                                              boolean isNewConnection) {
         return new SetConnectionTargetNodeCommand(node,
                                                   edge,
-                                                  magnetIndex);
+                                                  magnet,
+                                                  isNewConnection);
     }
 
     @Override

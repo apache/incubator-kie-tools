@@ -25,6 +25,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -49,13 +51,15 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
     private static final String LAST_TARGET_NODE_UUID = "lastTargetNodeUUID";
     private static final String SOURCET_UUID = "nodeSourceUUID";
     private static final String EDGE_UUID = "edgeUUID";
-    private static final Integer MAGNET_INDEX = 1;
+    private static final Double MAGNETX = 15d;
+    private static final Double MAGNETY = 0d;
 
     private Node node;
     private Node lastTargetNode;
     private Node source;
     private Edge edge;
     private ViewConnector edgeContent;
+    private Optional<Magnet> targetMagnet;
     private SetConnectionTargetNodeCommand tested;
 
     @Before
@@ -68,6 +72,8 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
         source = mockNode(SOURCET_UUID);
         edge = mockEdge(EDGE_UUID);
         edgeContent = mock(ViewConnector.class);
+        targetMagnet = Optional.of(MagnetImpl.Builder.build(0d,
+                                                            0d));
         graphNodes.add(node);
         when(graphIndex.getNode(eq(NODE_UUID))).thenReturn(node);
         when(graphIndex.getNode(eq(LAST_TARGET_NODE_UUID))).thenReturn(lastTargetNode);
@@ -76,9 +82,13 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
         when(edge.getContent()).thenReturn(edgeContent);
         when(edge.getSourceNode()).thenReturn(source);
         when(edge.getTargetNode()).thenReturn(lastTargetNode);
+        when(edgeContent.getTargetMagnet()).thenReturn(targetMagnet);
+
         this.tested = new SetConnectionTargetNodeCommand(node,
                                                          edge,
-                                                         MAGNET_INDEX);
+                                                         MagnetImpl.Builder.build(MAGNETX,
+                                                                                  MAGNETY),
+                                                         true);
     }
 
     @Test
@@ -130,7 +140,9 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
     public void testAllowNoTargetConnection() {
         this.tested = new SetConnectionTargetNodeCommand(null,
                                                          edge,
-                                                         MAGNET_INDEX);
+                                                         MagnetImpl.Builder.build(MAGNETX,
+                                                                                  MAGNETY),
+                                                         true);
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
@@ -195,7 +207,7 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
         verify(targetInEdges,
                times(1)).add(eq(edge));
         verify(edgeContent,
-               times(1)).setTargetMagnetIndex(eq(MAGNET_INDEX));
+               times(1)).setTargetMagnet(any(Magnet.class));
         verify(edge,
                times(1)).setTargetNode(eq(node));
         verify(targetInEdges,
@@ -255,7 +267,7 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
         verify(targetInEdges,
                times(1)).add(eq(edge));
         verify(edgeContent,
-               times(0)).setTargetMagnetIndex(eq(MAGNET_INDEX));
+               times(0)).setTargetMagnet(any(Magnet.class));
         verify(edge,
                times(1)).setTargetNode(eq(node));
         verify(targetInEdges,

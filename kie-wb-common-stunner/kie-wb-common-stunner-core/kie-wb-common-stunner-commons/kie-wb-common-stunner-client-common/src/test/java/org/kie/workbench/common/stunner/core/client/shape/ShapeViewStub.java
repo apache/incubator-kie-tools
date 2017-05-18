@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.shape;
 
-import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 public class ShapeViewStub implements ShapeView<Object> {
 

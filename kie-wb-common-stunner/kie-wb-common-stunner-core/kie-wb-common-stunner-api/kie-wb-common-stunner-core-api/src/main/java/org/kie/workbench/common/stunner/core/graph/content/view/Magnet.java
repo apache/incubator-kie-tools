@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
-import java.util.Optional;
+public interface Magnet {
 
-/**
- * Indicates that the view for the node/edge represents a physical connector that will the drawn in the canvas.
- * @param <W> The Definition of the connector's graphical view representation.
- */
-public interface ViewConnector<W> extends View<W> {
+    enum MagnetType {
+        OUTGOING,
+        INCOMING
+    }
 
-    Optional<Magnet> getSourceMagnet();
+    MagnetType getMagnetType();
 
-    Optional<Magnet> getTargetMagnet();
-
-    void setSourceMagnet(final Magnet magnet);
-
-    void setTargetMagnet(final Magnet magnet);
-
+    Point2D getLocation();
 }

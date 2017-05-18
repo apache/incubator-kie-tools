@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.req
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.BuildRequest;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public interface NodeBuildRequest extends BuildRequest {
@@ -27,7 +28,7 @@ public interface NodeBuildRequest extends BuildRequest {
 
     Edge<View<?>, Node> getInEdge();
 
-    int getSourceManger();
+    Magnet getSourceMagnet();
 
-    int getTargetMagnet();
+    Magnet getTargetMagnet();
 }

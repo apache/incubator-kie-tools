@@ -3482,30 +3482,37 @@ public class Bpmn2JsonMarshaller {
         Bounds targetBounds = ((BPMNShape) findDiagramElement(plane,
                                                               sequenceFlow.getTargetRef())).getBounds();
         generator.writeArrayFieldStart("dockers");
-        generator.writeStartObject();
-        generator.writeObjectField("x",
-                                   sourceBounds.getWidth() / 2);
-        generator.writeObjectField("y",
-                                   sourceBounds.getHeight() / 2);
-        generator.writeEndObject();
         List<Point> waypoints = ((BPMNEdge) findDiagramElement(plane,
                                                                sequenceFlow)).getWaypoint();
+
+        if (waypoints.size() > 1) {
+            Point waypoint = waypoints.get(0);
+            writeWaypointObject(generator, waypoint.getX() - sourceBounds.getX(), waypoint.getY() - sourceBounds.getY());
+        } else {
+            writeWaypointObject(generator, sourceBounds.getWidth() / 2, sourceBounds.getHeight() / 2);
+        }
+
         for (int i = 1; i < waypoints.size() - 1; i++) {
             Point waypoint = waypoints.get(i);
-            generator.writeStartObject();
-            generator.writeObjectField("x",
-                                       waypoint.getX());
-            generator.writeObjectField("y",
-                                       waypoint.getY());
-            generator.writeEndObject();
+            writeWaypointObject(generator, waypoint.getX(), waypoint.getY());
         }
+
+        if (waypoints.size() > 1) {
+            Point waypoint = waypoints.get(waypoints.size() - 1);
+            writeWaypointObject(generator, waypoint.getX() - targetBounds.getX(), waypoint.getY() - targetBounds.getY());
+        } else {
+            writeWaypointObject(generator, targetBounds.getWidth() / 2, targetBounds.getHeight() / 2);
+        }
+        generator.writeEndArray();
+    }
+
+    private void writeWaypointObject(final JsonGenerator generator, final float x, final float y) throws IOException {
         generator.writeStartObject();
         generator.writeObjectField("x",
-                                   targetBounds.getWidth() / 2);
+                                   x);
         generator.writeObjectField("y",
-                                   targetBounds.getHeight() / 2);
+                                   y);
         generator.writeEndObject();
-        generator.writeEndArray();
     }
 
     private DiagramElement findDiagramElement(BPMNPlane plane,

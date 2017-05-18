@@ -695,7 +695,7 @@ public class Bpmn2JsonUnmarshaller {
                                                         if (edgePoints != null && edgePoints.size() > 1) {
                                                             if (eleBounds != null) {
                                                                 Point first = edgePoints.get(0);
-                                                                first.setX(first.getX() + laneBounds.getX() + (eleBounds.getWidth() / 2));
+                                                                first.setX(first.getX() + laneBounds.getX());
                                                                 first.setY(first.getY() + laneBounds.getY());
                                                             }
                                                         }
@@ -713,7 +713,7 @@ public class Bpmn2JsonUnmarshaller {
                                                         if (edgePoints != null && edgePoints.size() > 1) {
                                                             if (eleBounds != null) {
                                                                 Point last = edgePoints.get(edgePoints.size() - 1);
-                                                                last.setX(last.getX() + laneBounds.getX() - eleBounds.getWidth());
+                                                                last.setX(last.getX() + laneBounds.getX());
                                                                 last.setY(last.getY() + laneBounds.getY());
                                                             }
                                                         }
@@ -3206,21 +3206,37 @@ public class Bpmn2JsonUnmarshaller {
         edge.setBpmnElement(sequenceFlow);
         DcFactory dcFactory = DcFactory.eINSTANCE;
         Point point = dcFactory.createPoint();
+        List<Point> dockers = _dockers.get(sequenceFlow.getId());
         if (sequenceFlow.getSourceRef() != null) {
             Bounds sourceBounds = _bounds.get(sequenceFlow.getSourceRef().getId());
-            point.setX(sourceBounds.getX() + (sourceBounds.getWidth() / 2));
-            point.setY(sourceBounds.getY() + (sourceBounds.getHeight() / 2));
+            // Test for valid docker with X and Y  > -1, created by EdgeParser
+            if (dockers != null && dockers.size() > 0 && dockers.get(0).getX() > -1 && dockers.get(0).getY() > -1) {
+                // First docker is connection to Source
+                point.setX(sourceBounds.getX() + dockers.get(0).getX());
+                point.setY(sourceBounds.getY() + dockers.get(0).getY());
+            } else {
+                // Default is right middle of Source
+                point.setX(sourceBounds.getX() + sourceBounds.getWidth());
+                point.setY(sourceBounds.getY() + (sourceBounds.getHeight() / 2));
+            }
         }
         edge.getWaypoint().add(point);
-        List<Point> dockers = _dockers.get(sequenceFlow.getId());
         for (int i = 1; i < dockers.size() - 1; i++) {
             edge.getWaypoint().add(dockers.get(i));
         }
         point = dcFactory.createPoint();
         if (sequenceFlow.getTargetRef() != null) {
             Bounds targetBounds = _bounds.get(sequenceFlow.getTargetRef().getId());
-            point.setX(targetBounds.getX() + (targetBounds.getWidth() / 2));
-            point.setY(targetBounds.getY() + (targetBounds.getHeight() / 2));
+            // Test for valid docker with X and Y  > -1, created by EdgeParser
+            if (dockers != null && dockers.size() > 1 && dockers.get(dockers.size() - 1).getX() > -1 && dockers.get(dockers.size() - 1).getY() > -1) {
+                // Last docker is connection to Target
+                point.setX(targetBounds.getX() + dockers.get(dockers.size() - 1).getX());
+                point.setY(targetBounds.getY() + dockers.get(dockers.size() - 1).getY());
+            } else {
+                // Default is left middle of Target
+                point.setX(targetBounds.getX());
+                point.setY(targetBounds.getY() + (targetBounds.getHeight() / 2));
+            }
         }
         edge.getWaypoint().add(point);
         plane.getPlaneElement().add(edge);

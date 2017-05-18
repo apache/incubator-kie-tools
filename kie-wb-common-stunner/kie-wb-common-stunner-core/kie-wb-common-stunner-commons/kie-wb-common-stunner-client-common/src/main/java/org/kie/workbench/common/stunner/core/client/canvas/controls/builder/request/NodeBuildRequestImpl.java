@@ -18,14 +18,15 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.req
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public final class NodeBuildRequestImpl extends AbstractBuildRequest implements NodeBuildRequest {
 
     private final Node<View<?>, Edge> node;
     private Edge<View<?>, Node> inEdge;
-    private final int sourceMagnet;
-    private final int targetMagnet;
+    private final Magnet sourceMagnet;
+    private final Magnet targetMagnet;
 
     public NodeBuildRequestImpl(final double x,
                                 final double y,
@@ -33,8 +34,8 @@ public final class NodeBuildRequestImpl extends AbstractBuildRequest implements 
         super(x,
               y);
         this.node = node;
-        this.sourceMagnet = 0;
-        this.targetMagnet = 0;
+        this.sourceMagnet = null;
+        this.targetMagnet = null;
     }
 
     public NodeBuildRequestImpl(final double x,
@@ -45,16 +46,16 @@ public final class NodeBuildRequestImpl extends AbstractBuildRequest implements 
               y);
         this.node = node;
         this.inEdge = inEdge;
-        this.sourceMagnet = 0;
-        this.targetMagnet = 0;
+        this.sourceMagnet = null;
+        this.targetMagnet = null;
     }
 
     public NodeBuildRequestImpl(final double x,
                                 final double y,
                                 final Node<View<?>, Edge> node,
                                 final Edge<View<?>, Node> inEdge,
-                                final int sourceMagnet,
-                                final int targetMagnet) {
+                                final Magnet sourceMagnet,
+                                final Magnet targetMagnet) {
         super(x,
               y);
         this.node = node;
@@ -74,12 +75,12 @@ public final class NodeBuildRequestImpl extends AbstractBuildRequest implements 
     }
 
     @Override
-    public int getSourceManger() {
+    public Magnet getSourceMagnet() {
         return sourceMagnet;
     }
 
     @Override
-    public int getTargetMagnet() {
+    public Magnet getTargetMagnet() {
         return targetMagnet;
     }
 }

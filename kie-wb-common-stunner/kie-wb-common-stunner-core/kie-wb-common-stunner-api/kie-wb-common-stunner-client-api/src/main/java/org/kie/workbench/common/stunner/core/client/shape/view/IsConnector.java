@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.view;
 
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+
 public interface IsConnector<T> {
 
     T connect(final ShapeView headShapeView,
-              final int _headMagnetsIndex,
+              final Magnet _headMagnet,
               final ShapeView tailShapeView,
-              final int _tailMagnetsIndex,
+              final Magnet _tailMagnet,
               final boolean tailArrow,
               final boolean headArrow);
 }

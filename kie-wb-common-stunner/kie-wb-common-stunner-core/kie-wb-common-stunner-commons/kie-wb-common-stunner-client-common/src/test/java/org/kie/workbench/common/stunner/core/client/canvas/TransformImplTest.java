@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.canvas;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;

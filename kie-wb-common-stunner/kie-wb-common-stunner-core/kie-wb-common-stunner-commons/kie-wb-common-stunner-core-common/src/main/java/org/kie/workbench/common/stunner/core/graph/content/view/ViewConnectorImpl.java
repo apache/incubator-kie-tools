@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
+import java.util.Optional;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -25,15 +27,15 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
 
     protected W definition;
     protected Bounds bounds;
-    protected Integer sourceMagnetIndex;
-    protected Integer targetMagnetIndex;
+    private Magnet sourceMagnet;
+    private Magnet targetMagnet;
 
     public ViewConnectorImpl(final @MapsTo("definition") W definition,
                              final @MapsTo("bounds") Bounds bounds) {
         this.definition = definition;
         this.bounds = bounds;
-        this.sourceMagnetIndex = 0;
-        this.targetMagnetIndex = 0;
+        this.sourceMagnet = null;
+        this.targetMagnet = null;
     }
 
     @Override
@@ -57,22 +59,23 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
     }
 
     @Override
-    public Integer getSourceMagnetIndex() {
-        return sourceMagnetIndex;
+    public Optional<Magnet> getSourceMagnet() {
+        return Optional.ofNullable(sourceMagnet);
     }
 
     @Override
-    public Integer getTargetMagnetIndex() {
-        return targetMagnetIndex;
+    public Optional<Magnet> getTargetMagnet() {
+        return Optional.ofNullable(targetMagnet);
     }
 
     @Override
-    public void setSourceMagnetIndex(final Integer index) {
-        this.sourceMagnetIndex = index;
+    public void setSourceMagnet(final Magnet sourceMagnet) {
+        this.sourceMagnet = sourceMagnet;
     }
 
     @Override
-    public void setTargetMagnetIndex(final Integer index) {
-        this.targetMagnetIndex = index;
+    public void setTargetMagnet(final Magnet targetMagnet) {
+        this.targetMagnet = targetMagnet;
     }
+
 }

@@ -23,6 +23,8 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -73,12 +75,21 @@ public abstract class AbstractEdgeBuilder<W, T extends Edge<View<W>, Node>>
                 // Command - Add the node into the graph store.
                 AddNodeCommand addNodeCommand = context.getCommandFactory().addNode(node);
                 // Command - Set the edge connection's target node.
-                int magnetIdx = ((AbstractNodeBuilder) outgoingNodeBuilder).getTargetConnectionMagnetIndex(context,
-                                                                                                           node,
-                                                                                                           edge);
+                Double targetDocker[] = null;
+                if (dockers != null && dockers.size() > 1) {
+                    targetDocker = dockers.get(dockers.size() - 1);
+                }
+                Magnet targetMagnet;
+                if (targetDocker != null) {
+                    targetMagnet = MagnetImpl.Builder.build(targetDocker[0],
+                                                            targetDocker[1]);
+                } else {
+                    targetMagnet = MagnetImpl.Builder.build(Magnet.MagnetType.INCOMING);
+                }
+
                 SetConnectionTargetNodeCommand setTargetNodeCommand = context.getCommandFactory().setTargetNode(node,
                                                                                                                 edge,
-                                                                                                                magnetIdx);
+                                                                                                                targetMagnet);
                 CommandResult<RuleViolation> results1 = context.execute(addNodeCommand);
                 if (hasErrors(results1)) {
                     throw new RuntimeException("Error building BPMN graph. Command 'addNodeCommand' execution failed.");

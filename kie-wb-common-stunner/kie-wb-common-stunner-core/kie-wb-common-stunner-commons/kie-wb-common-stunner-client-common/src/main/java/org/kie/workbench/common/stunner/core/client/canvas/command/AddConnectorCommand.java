@@ -20,6 +20,7 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 /**
@@ -29,16 +30,16 @@ public class AddConnectorCommand extends AbstractCanvasGraphCommand {
 
     private final Node source;
     private final Edge candidate;
-    private final int magnetIndex;
+    private final Magnet magnet;
     private final String shapeSetId;
 
     public AddConnectorCommand(final Node source,
                                final Edge candidate,
-                               final int magnetIndex,
+                               final Magnet magnet,
                                final String shapeSetId) {
         this.source = source;
         this.candidate = candidate;
-        this.magnetIndex = magnetIndex;
+        this.magnet = magnet;
         this.shapeSetId = shapeSetId;
     }
 
@@ -46,7 +47,7 @@ public class AddConnectorCommand extends AbstractCanvasGraphCommand {
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
         return new org.kie.workbench.common.stunner.core.graph.command.impl.AddConnectorCommand(source,
                                                                                                 candidate,
-                                                                                                magnetIndex);
+                                                                                                magnet);
     }
 
     @Override

@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.components.drag;
 
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+
 public interface NodeDragProxyCallback extends DragProxyCallback {
 
     void onComplete(final int x,
                     final int y,
-                    final int sourceMagnet,
-                    final int targetMagnet);
+                    final Magnet sourceMagnet,
+                    final Magnet targetMagnet);
 }

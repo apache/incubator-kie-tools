@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 @ApplicationScoped
@@ -61,10 +62,10 @@ public class GraphCommandFactory {
     @SuppressWarnings("unchecked")
     public AddConnectorCommand addConnector(final Node target,
                                             final Edge edge,
-                                            final int magnetIdx) {
+                                            final Magnet magnet) {
         return new AddConnectorCommand(target,
                                        edge,
-                                       magnetIdx);
+                                       magnet);
     }
 
     @SuppressWarnings("unchecked")
@@ -98,18 +99,20 @@ public class GraphCommandFactory {
 
     public SetConnectionSourceNodeCommand setSourceNode(final Node<? extends View<?>, Edge> sourceNode,
                                                         final Edge<? extends View<?>, Node> edge,
-                                                        final int magnetIndex) {
+                                                        final Magnet magnet) {
         return new SetConnectionSourceNodeCommand(sourceNode,
                                                   edge,
-                                                  magnetIndex);
+                                                  magnet,
+                                                  true);
     }
 
     public SetConnectionTargetNodeCommand setTargetNode(final Node<? extends View<?>, Edge> targetNode,
                                                         final Edge<? extends View<?>, Node> edge,
-                                                        final int magnetIndex) {
+                                                        final Magnet magnet) {
         return new SetConnectionTargetNodeCommand(targetNode,
                                                   edge,
-                                                  magnetIndex);
+                                                  magnet,
+                                                  true);
     }
 
     public UpdateElementPositionCommand updatePosition(final Node<?, Edge> element,

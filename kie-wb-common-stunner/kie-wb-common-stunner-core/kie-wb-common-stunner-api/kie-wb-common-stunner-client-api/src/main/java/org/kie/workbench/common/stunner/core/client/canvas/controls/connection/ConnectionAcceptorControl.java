@@ -21,6 +21,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasContro
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public interface ConnectionAcceptorControl<H extends CanvasHandler> extends CanvasControl<H>,
@@ -28,17 +29,17 @@ public interface ConnectionAcceptorControl<H extends CanvasHandler> extends Canv
 
     boolean allowSource(final Node source,
                         final Edge<View<?>, Node> connector,
-                        final int magnet);
+                        final Magnet magnet);
 
     boolean allowTarget(final Node source,
                         final Edge<View<?>, Node> connector,
-                        final int magnet);
+                        final Magnet magnet);
 
     boolean acceptSource(final Node source,
                          final Edge<View<?>, Node> connector,
-                         final int magnet);
+                         final Magnet magnet);
 
     boolean acceptTarget(final Node source,
                          final Edge<View<?>, Node> connector,
-                         final int magnet);
+                         final Magnet magnet);
 }

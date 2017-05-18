@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -33,6 +34,8 @@ public class SetConnectionSourceNodeCommandTest extends AbstractCanvasCommandTes
     private Node node;
     @Mock
     private Edge edge;
+    @Mock
+    private Magnet magnet;
 
     private SetConnectionSourceNodeCommand tested;
 
@@ -44,7 +47,8 @@ public class SetConnectionSourceNodeCommandTest extends AbstractCanvasCommandTes
         when(node.getUUID()).thenReturn("n1");
         this.tested = new SetConnectionSourceNodeCommand(node,
                                                          edge,
-                                                         1);
+                                                         magnet,
+                                                         true);
     }
 
     @Test
@@ -56,9 +60,8 @@ public class SetConnectionSourceNodeCommandTest extends AbstractCanvasCommandTes
                      graphCommand.getEdge());
         assertEquals(node,
                      graphCommand.getSourceNode());
-        assertEquals(1,
-                     graphCommand.getMagnetIndex(),
-                     0);
+        assertEquals(magnet,
+                     graphCommand.getMagnet());
     }
 
     @Test
