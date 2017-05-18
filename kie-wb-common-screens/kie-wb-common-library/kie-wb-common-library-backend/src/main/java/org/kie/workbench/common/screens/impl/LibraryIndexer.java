@@ -73,13 +73,13 @@ public class LibraryIndexer extends AbstractFileIndexer {
     protected DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
         final KieProject project = getProject(path);
         if (project == null) {
-            logger.error("Unable to index " + path.toUri().toString() + ": project could not be resolved.");
+            logger.debug("Unable to index " + path.toUri().toString() + ": project could not be resolved.");
             return null;
         }
 
         final Package pkg = getPackage(path);
         if (pkg == null) {
-            logger.error("Unable to index " + path.toUri().toString() + ": package could not be resolved.");
+            logger.debug("Unable to index " + path.toUri().toString() + ": package could not be resolved.");
             return null;
         }
 
