@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.editor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import com.google.gwt.cell.client.FieldUpdater;
@@ -44,6 +46,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.resources.images.ImagesResources;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
@@ -91,9 +94,15 @@ public class DataObjectBrowserViewImpl
 
     private int tableHeight = 480;
 
-    @Inject
+    private List<DomainHandler> domainHandlers = new ArrayList<>();
+
     public DataObjectBrowserViewImpl() {
+    }
+
+    @Inject
+    public DataObjectBrowserViewImpl(Instance<DomainHandler> domainHandlerInstance) {
         initWidget( uiBinder.createAndBindUi( this ) );
+        domainHandlerInstance.forEach(domainHandlers::add);
     }
 
     @PostConstruct
@@ -164,7 +173,12 @@ public class DataObjectBrowserViewImpl
         enableDeleteRowAction( !readonly );
     }
 
-    public void enableNewPropertyAction( boolean enable ) {
+    // added for test purposes
+    void setDomainHandlers(List<DomainHandler> domainHandlers) {
+        this.domainHandlers = domainHandlers;
+    }
+
+    public void enableNewPropertyAction(boolean enable ) {
         newPropertyButton.setEnabled( enable );
     }
 
@@ -294,27 +308,39 @@ public class DataObjectBrowserViewImpl
     }
 
     private void addRemoveRowColumn() {
-        Column<ObjectProperty, String> column = new Column<ObjectProperty, String>( new ButtonCell( IconType.TRASH, ButtonType.DANGER, ButtonSize.SMALL ) ) {
+        ButtonCell buttonCell = new ButtonCell(IconType.TRASH,
+                                               ButtonType.DANGER,
+                                               ButtonSize.SMALL);
+        Column<ObjectProperty, String> column = new Column<ObjectProperty, String>(buttonCell) {
             @Override
-            public String getValue( ObjectProperty objectProperty ) {
+            public String getValue(ObjectProperty objectProperty) {
+                buttonCell.setEnabled(isRemoveButtonEnabled(objectProperty));
                 return Constants.INSTANCE.objectBrowser_action_delete();
             }
         };
 
-        column.setFieldUpdater( new FieldUpdater<ObjectProperty, String>() {
+        column.setFieldUpdater(new FieldUpdater<ObjectProperty, String>() {
             @Override
-            public void update( int index,
-                    ObjectProperty objectProperty,
-                    String value ) {
+            public void update(int index,
+                               ObjectProperty objectProperty,
+                               String value) {
 
-                if ( !readonly ) {
-                    presenter.onDeleteProperty( objectProperty, index );
+                if (!readonly) {
+                    presenter.onDeleteProperty(objectProperty,
+                                               index);
                 }
             }
-        } );
+        });
 
-        propertiesTable.addColumn( column, "" );
-        propertiesTable.setColumnWidth( column, calculateButtonSize( Constants.INSTANCE.objectBrowser_action_delete() ), Style.Unit.PX );
+        propertiesTable.addColumn(column,
+                                  "");
+        propertiesTable.setColumnWidth(column,
+                                       calculateButtonSize(Constants.INSTANCE.objectBrowser_action_delete()),
+                                       Style.Unit.PX);
+    }
+
+    boolean isRemoveButtonEnabled(final ObjectProperty objectProperty) {
+        return domainHandlers.stream().noneMatch(h -> h.isDomainSpecificProperty(objectProperty));
     }
 
     private void addSortHandler() {

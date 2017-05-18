@@ -58,50 +58,55 @@ public class JPADomainHandler implements DomainHandler {
     }
 
     @Override
-    public ResourceOptions getResourceOptions( boolean newInstance ) {
+    public ResourceOptions getResourceOptions(boolean newInstance) {
         //currently same instance is always returned, since file handlers are all ApplicationScoped
         return newResourceOptions.get();
     }
 
     @Override
-    public void postCommandProcessing( DataModelCommand command ) {
-        if ( command instanceof FieldTypeChangeCommand &&
-                ( isPersistable( ( (FieldTypeChangeCommand) command ).getDataObject() ) ||
-                        isRelationConfigured( ( (FieldTypeChangeCommand) command ).getField() ) ) ) {
+    public void postCommandProcessing(DataModelCommand command) {
+        if (command instanceof FieldTypeChangeCommand &&
+                (isPersistable(((FieldTypeChangeCommand) command).getDataObject()) ||
+                        isRelationConfigured(((FieldTypeChangeCommand) command).getField()))) {
 
             AdjustFieldDefaultRelationsCommand postCommand = commandBuilder.buildAdjustFieldDefaultRelationsCommand(
                     (FieldTypeChangeCommand) command,
                     getName(),
-                    ( (FieldTypeChangeCommand) command ).getField() );
+                    ((FieldTypeChangeCommand) command).getField());
             postCommand.execute();
-
-        } else if ( command instanceof AddPropertyCommand &&
-                isPersistable( ( (AddPropertyCommand) command ).getDataObject() ) ) {
+        } else if (command instanceof AddPropertyCommand &&
+                isPersistable(((AddPropertyCommand) command).getDataObject())) {
             AdjustFieldDefaultRelationsCommand postCommand = commandBuilder.buildAdjustFieldDefaultRelationsCommand(
                     (AddPropertyCommand) command,
                     getName(),
-                    ( (AddPropertyCommand) command ).getProperty() );
+                    ((AddPropertyCommand) command).getProperty());
             postCommand.execute();
         }
     }
 
-    public boolean isOptionEnabled( String option ) {
-        return ApplicationPreferences.getBooleanPref( "data-modeler-options." + option );
+    public boolean isOptionEnabled(String option) {
+        return ApplicationPreferences.getBooleanPref("data-modeler-options." + option);
     }
 
     public boolean isDataObjectAuditEnabled() {
-        return isOptionEnabled( JPADomainHandler.ENABLE_DATA_OBJECT_AUDIT );
+        return isOptionEnabled(JPADomainHandler.ENABLE_DATA_OBJECT_AUDIT);
     }
 
-    private boolean isPersistable( DataObject dataObject ) {
-        return dataObject.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ENTITY_ANNOTATION ) != null;
+    private boolean isPersistable(DataObject dataObject) {
+        return dataObject.getAnnotation(JPADomainAnnotations.JAVAX_PERSISTENCE_ENTITY_ANNOTATION) != null;
     }
 
-    private boolean isRelationConfigured( ObjectProperty objectProperty ) {
-        return objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_MANY_TO_ONE ) != null ||
-                objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_MANY_TO_MANY ) != null ||
-                objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_ONE ) != null ||
-                objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_MANY ) != null ||
-                objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ELEMENT_COLLECTION ) != null;
+    private boolean isRelationConfigured(ObjectProperty objectProperty) {
+        return objectProperty.getAnnotation(JPADomainAnnotations.JAVAX_PERSISTENCE_MANY_TO_ONE) != null ||
+                objectProperty.getAnnotation(JPADomainAnnotations.JAVAX_PERSISTENCE_MANY_TO_MANY) != null ||
+                objectProperty.getAnnotation(JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_ONE) != null ||
+                objectProperty.getAnnotation(JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_MANY) != null ||
+                objectProperty.getAnnotation(JPADomainAnnotations.JAVAX_PERSISTENCE_ELEMENT_COLLECTION) != null;
+    }
+
+    @Override
+    public boolean isDomainSpecificProperty(ObjectProperty objectProperty) {
+        // no specific object properties defined for this domain
+        return false;
     }
 }

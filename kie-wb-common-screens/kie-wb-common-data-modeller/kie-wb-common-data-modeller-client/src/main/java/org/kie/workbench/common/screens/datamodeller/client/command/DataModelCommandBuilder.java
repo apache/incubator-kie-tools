@@ -171,6 +171,17 @@ public class DataModelCommandBuilder {
                 propertyType, isMultiple, notifier );
     }
 
+    public RemovePropertyCommand buildRemovePropertyCommand(final DataModelerContext context,
+                                                            final String source,
+                                                            final DataObject dataObject,
+                                                            final String propertyName) {
+        return new RemovePropertyCommand(context,
+                                         source,
+                                         dataObject,
+                                         propertyName,
+                                         notifier);
+    }
+
     public DataObjectSuperClassChangeCommand buildDataObjectSuperClassChangeCommand( final DataModelerContext context,
             final String source,
             final DataObject dataObject,

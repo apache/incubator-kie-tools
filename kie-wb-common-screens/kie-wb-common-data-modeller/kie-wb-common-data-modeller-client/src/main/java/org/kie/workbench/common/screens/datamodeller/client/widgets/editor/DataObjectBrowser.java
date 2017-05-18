@@ -243,7 +243,7 @@ public class DataObjectBrowser
         }
     }
 
-    private void setDataObject( DataObject dataObject ) {
+    void setDataObject( DataObject dataObject ) {
         this.dataObject = dataObject;
         setObjectSelectorLabel( dataObject );
 
@@ -519,6 +519,13 @@ public class DataObjectBrowser
     }
 
     private void onDataObjectFieldCreated( @Observes DataObjectFieldCreatedEvent event ) {
+        if ( event.isFromContext( context != null ? context.getContextId() : null ) &&
+                !DataModelerEvent.DATA_OBJECT_BROWSER.equals( event.getSource() ) ) {
+            setDataObject( dataObject );
+        }
+    }
+
+    void onDataObjectFieldDeleted( @Observes DataObjectFieldDeletedEvent event ) {
         if ( event.isFromContext( context != null ? context.getContextId() : null ) &&
                 !DataModelerEvent.DATA_OBJECT_BROWSER.equals( event.getSource() ) ) {
             setDataObject( dataObject );

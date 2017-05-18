@@ -28,10 +28,12 @@ import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContextChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.DomainEditorBaseTest;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.client.mvp.PlaceManager;
@@ -222,4 +224,23 @@ public class DataObjectBrowserTest
         assertEquals( 3, dataObject.getProperties().size() );
     }
 
+    @Test
+    public void onDataObjectFieldDeleted() {
+        DataObjectBrowser dataObjectBrowser = spy(createBrowser());
+        DataModelerContext context = createContext();
+        context.setContextId("contextId");
+        dataObjectBrowser.setContext( context );
+
+        DataObject dataObject = mock(DataObject.class);
+        dataObjectBrowser.setDataObject(dataObject);
+
+        DataObjectFieldDeletedEvent event = new DataObjectFieldDeletedEvent();
+        event.setContextId("contextId");
+
+        Mockito.reset(dataObjectBrowser);
+
+        dataObjectBrowser.onDataObjectFieldDeleted(event);
+
+        verify(dataObjectBrowser, times(1)).setDataObject(dataObject);
+    }
 }
