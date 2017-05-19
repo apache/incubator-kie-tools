@@ -22,6 +22,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AbstractDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
+import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.uberfire.ext.services.shared.preferences.GridGlobalPreferences;
 import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
@@ -38,10 +39,16 @@ public class PagedTable<T>
 
     public static final int DEFAULT_PAGE_SIZE = 10;
     private static Binder uiBinder = GWT.create(Binder.class);
+
     @UiField
     public UberfireSimplePager pager;
+
     @UiField
     public ListBox pageSizesSelector;
+
+    @UiField
+    public Column topToolbar;
+
     protected boolean showPageSizesSelector = false;
     private int pageSize;
     private AbstractDataProvider<T> dataProvider;

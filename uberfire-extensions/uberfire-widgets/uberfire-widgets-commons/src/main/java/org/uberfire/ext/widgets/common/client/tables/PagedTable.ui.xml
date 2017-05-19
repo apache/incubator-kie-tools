@@ -47,6 +47,9 @@
   </ui:style>
 
   <g:FlowPanel addStyleNames="{style.dataGridContainer}">
+    <b:Row>
+      <b:Column size="MD_12" ui:field="topToolbar"/>
+    </b:Row>
     <g:HorizontalPanel ui:field="toolbarContainer" width="100%">
       <g:cell width="33%">
         <g:FlowPanel width="100%" ui:field="leftToolbar" addStyleNames="{style.leftToolBar}"></g:FlowPanel>
