@@ -113,110 +113,17 @@ public class ActionSetFactPluginTest {
     }
 
     @Test
-    public void testGenerateColumnWhenItIsValid() {
+    public void testGenerateColumn() {
         final ActionCol52 actionCol52 = mock(ActionCol52.class);
         final ActionWrapper actionWrapper = mock(ActionWrapper.class);
 
         doReturn(actionCol52).when(actionWrapper).getActionCol52();
         doReturn(actionWrapper).when(plugin).editingWrapper();
-        doReturn(true).when(plugin).isValid(any());
 
         final Boolean success = plugin.generateColumn();
 
         assertTrue(success);
         verify(presenter).appendColumn(actionCol52);
-    }
-
-    @Test
-    public void testGenerateColumnWhenItIsNotValid() {
-        doReturn(false).when(plugin).isValid(any());
-
-        final Boolean success = plugin.generateColumn();
-
-        assertFalse(success);
-        verify(presenter,
-               never()).appendColumn(any(ActionCol52.class));
-    }
-
-    @Test
-    public void testIsValidWhenFactTypeIsBlank() {
-        final ActionCol52 actionCol52 = mock(ActionCol52.class);
-        final ActionWrapper actionWrapper = mock(ActionWrapper.class);
-        final String errorKey = GuidedDecisionTableErraiConstants.ActionInsertFactPlugin_YouMustEnterAColumnPattern;
-
-        when(actionWrapper.getFactType()).thenReturn("");
-        when(actionWrapper.getActionCol52()).thenReturn(actionCol52);
-
-        final boolean valid = plugin.isValid(actionWrapper);
-
-        assertFalse(valid);
-        verify(translationService).format(errorKey);
-    }
-
-    @Test
-    public void testIsValidWhenHeaderIsBlank() {
-        final ActionCol52 actionCol52 = mock(ActionCol52.class);
-        final ActionWrapper actionWrapper = mock(ActionWrapper.class);
-        final String errorKey = GuidedDecisionTableErraiConstants.ActionInsertFactPlugin_YouMustEnterAColumnHeaderValueDescription;
-
-        when(actionCol52.getHeader()).thenReturn("");
-        when(actionWrapper.getFactField()).thenReturn("factField");
-        when(actionWrapper.getFactType()).thenReturn("factType");
-        when(actionWrapper.getActionCol52()).thenReturn(actionCol52);
-        when(plugin.editingWrapper()).thenReturn(actionWrapper);
-
-        final boolean valid = plugin.isValid(actionWrapper);
-
-        assertFalse(valid);
-        verify(translationService).format(errorKey);
-    }
-
-    @Test
-    public void testIsValidWhenHeaderIsNotUnique() {
-        final ActionCol52 newActionCol52 = mock(ActionCol52.class);
-        final ActionCol52 oldActionCol52 = mock(ActionCol52.class);
-        final ActionWrapper actionWrapper = mock(ActionWrapper.class);
-        final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
-        final String errorKey = GuidedDecisionTableErraiConstants.ActionInsertFactPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother;
-        final ArrayList<ActionCol52> actionCol52s = new ArrayList<ActionCol52>() {{
-            add(oldActionCol52);
-        }};
-
-        when(oldActionCol52.getHeader()).thenReturn("header");
-        when(model.getActionCols()).thenReturn(actionCol52s);
-        when(presenter.getModel()).thenReturn(model);
-        when(newActionCol52.getHeader()).thenReturn("header");
-        when(actionWrapper.getFactField()).thenReturn("factField");
-        when(actionWrapper.getFactType()).thenReturn("factType");
-        when(actionWrapper.getActionCol52()).thenReturn(newActionCol52);
-        when(plugin.editingWrapper()).thenReturn(actionWrapper);
-
-        final boolean valid = plugin.isValid(actionWrapper);
-
-        assertFalse(valid);
-        verify(translationService).format(errorKey);
-    }
-
-    @Test
-    public void testIsValidWhenItIsValid() {
-        final ActionCol52 actionCol52 = mock(ActionCol52.class);
-        final ActionWrapper actionWrapper = mock(ActionWrapper.class);
-        final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
-        final ArrayList<ActionCol52> actionCol52s = new ArrayList<>();
-
-        when(model.getActionCols()).thenReturn(actionCol52s);
-        when(presenter.getModel()).thenReturn(model);
-        when(actionCol52.getHeader()).thenReturn("header");
-        when(actionWrapper.getFactField()).thenReturn("factField");
-        when(actionWrapper.getFactType()).thenReturn("");
-        when(actionWrapper.getActionCol52()).thenReturn(actionCol52);
-        when(plugin.editingWrapper()).thenReturn(actionWrapper);
-
-        final boolean valid = plugin.isValid(actionWrapper);
-
-        assertTrue(valid);
-        verify(translationService,
-               never()).format(any());
     }
 
     @Test
@@ -621,6 +528,23 @@ public class ActionSetFactPluginTest {
 
         verify(valueOptionsPage).setPlugin(plugin);
         verify(valueOptionsPage).enableLimitedValue();
+    }
+
+    @Test
+    public void testGetAlreadyUsedColumnNames() throws Exception {
+        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        model.getActionCols().add(new ActionCol52() {{
+            setHeader("a");
+        }});
+        model.getActionCols().add(new ActionCol52() {{
+            setHeader("b");
+        }});
+        when(presenter.getModel()).thenReturn(model);
+
+        assertEquals(2,
+                     plugin.getAlreadyUsedColumnHeaders().size());
+        assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("a"));
+        assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("b"));
     }
 
     private Pattern52 fakePattern(final String factType,

@@ -92,8 +92,15 @@ public class OperatorPage extends BaseDecisionTableColumnPage<ConditionColumnPlu
     @Override
     public void isComplete(final Callback<Boolean> callback) {
         boolean hasOperator = !nil(plugin().getFactField()) && !nil(editingCol().getOperator());
+        boolean isComplete = hasOperator || isConstraintValuePredicate();
 
-        callback.callback(hasOperator || isConstraintValuePredicate());
+        if(!isComplete) {
+            view.showOperatorWarning();
+        } else {
+            view.hideOperatorWarning();
+        }
+
+        callback.callback(isComplete);
     }
 
     public String getOperator() {
@@ -193,5 +200,9 @@ public class OperatorPage extends BaseDecisionTableColumnPage<ConditionColumnPlu
         void showPredicateWarning();
 
         void setupOperator(IsWidget dropdown);
+
+        void showOperatorWarning();
+
+        void hideOperatorWarning();
     }
 }

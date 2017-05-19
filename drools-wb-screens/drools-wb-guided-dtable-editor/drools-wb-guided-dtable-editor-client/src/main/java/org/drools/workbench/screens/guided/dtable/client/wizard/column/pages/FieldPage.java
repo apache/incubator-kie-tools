@@ -63,7 +63,13 @@ public class FieldPage<T extends HasFieldPage & DecisionTableColumnPlugin> exten
 
     @Override
     public void isComplete(final Callback<Boolean> callback) {
-        callback.callback(!nil(plugin().getFactField()) || isConstraintValuePredicate());
+        boolean isComplete = !nil(plugin().getFactField()) || isConstraintValuePredicate();
+        if(!isComplete) {
+            view.showSelectFieldWarning();
+        } else {
+            view.hideSelectFieldWarning();
+        }
+        callback.callback(isComplete);
     }
 
     @Override
@@ -163,5 +169,9 @@ public class FieldPage<T extends HasFieldPage & DecisionTableColumnPlugin> exten
         void setupFieldList();
 
         void selectField(final String factField);
+
+        void showSelectFieldWarning();
+
+        void hideSelectFieldWarning();
     }
 }

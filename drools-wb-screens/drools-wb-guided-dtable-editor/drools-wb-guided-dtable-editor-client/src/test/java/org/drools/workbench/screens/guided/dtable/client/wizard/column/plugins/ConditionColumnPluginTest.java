@@ -132,116 +132,6 @@ public class ConditionColumnPluginTest {
     }
 
     @Test
-    public void testIsValidWhenHeaderIsBlank() throws Exception {
-        final String errorKey = GuidedDecisionTableErraiConstants.ConditionColumnPlugin_YouMustEnterAColumnHeaderValueDescription;
-        final String errorMessage = "YouMustEnterAColumnHeaderValueDescription";
-
-        doReturn("").when(editingCol).getHeader();
-        doReturn(editingCol).when(plugin).editingCol();
-        doReturn(errorMessage).when(translationService).format(errorKey);
-
-        final boolean isValid = plugin.isValid();
-
-        assertFalse(isValid);
-        verify(plugin).showError(eq(errorMessage));
-    }
-
-    @Test
-    public void testIsValidWhenConstraintValueIsNotPredicateAndFactFieldIsBlank() throws Exception {
-        final String errorKey = GuidedDecisionTableErraiConstants.ConditionColumnPlugin_PleaseSelectOrEnterField;
-        final String errorMessage = "PleaseSelectOrEnterField";
-
-        doReturn("Header").when(editingCol).getHeader();
-        doReturn("").when(editingCol).getFactField();
-        doReturn(editingCol).when(plugin).editingCol();
-        doReturn(BaseSingleFieldConstraint.TYPE_LITERAL).when(plugin).constraintValue();
-        doReturn(errorMessage).when(translationService).format(errorKey);
-
-        final boolean isValid = plugin.isValid();
-
-        assertFalse(isValid);
-        verify(plugin).showError(eq(errorMessage));
-    }
-
-    @Test
-    public void testIsValidWhenConstraintValueIsNotPredicateAndOperatorIsBlank() throws Exception {
-        final String errorKey = GuidedDecisionTableErraiConstants.ConditionColumnPlugin_NotifyNoSelectedOperator;
-        final String errorMessage = "NotifyNoSelectedOperator";
-
-        doReturn("Header").when(editingCol).getHeader();
-        doReturn("FactField").when(editingCol).getFactField();
-        doReturn("").when(editingCol).getOperator();
-        doReturn(editingCol).when(plugin).editingCol();
-        doReturn(BaseSingleFieldConstraint.TYPE_LITERAL).when(plugin).constraintValue();
-        doReturn(errorMessage).when(translationService).format(errorKey);
-
-        final boolean isValid = plugin.isValid();
-
-        assertFalse(isValid);
-        verify(plugin).showError(eq(errorMessage));
-    }
-
-    @Test
-    public void testIsValidWhenBindingIsNotUnique() throws Exception {
-        final String errorKey = GuidedDecisionTableErraiConstants.ConditionColumnPlugin_PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern;
-        final String errorMessage = "PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern";
-
-        doReturn("Header").when(editingCol).getHeader();
-        doReturn("FactField").when(editingCol).getFactField();
-        doReturn("Operator").when(editingCol).getOperator();
-        doReturn("Binding").when(editingCol).getBinding();
-        doReturn(true).when(plugin).isBindingNotUnique();
-        doReturn(true).when(editingCol).isBound();
-        doReturn(editingCol).when(plugin).editingCol();
-        doReturn(BaseSingleFieldConstraint.TYPE_LITERAL).when(plugin).constraintValue();
-        doReturn(errorMessage).when(translationService).format(errorKey);
-
-        final boolean isValid = plugin.isValid();
-
-        assertFalse(isValid);
-        verify(plugin).showError(eq(errorMessage));
-    }
-
-    @Test
-    public void testIsValidWhenHeaderIsNotUnique() throws Exception {
-        final String errorKey = GuidedDecisionTableErraiConstants.ConditionColumnPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother;
-        final String errorMessage = "ThatColumnNameIsAlreadyInUsePleasePickAnother";
-
-        doReturn("Header").when(editingCol).getHeader();
-        doReturn("FactField").when(editingCol).getFactField();
-        doReturn("Operator").when(editingCol).getOperator();
-        doReturn("Binding").when(editingCol).getBinding();
-        doReturn(false).when(plugin).isBindingNotUnique();
-        doReturn(true).when(plugin).isHeaderNotUnique();
-        doReturn(editingCol).when(plugin).editingCol();
-        doReturn(BaseSingleFieldConstraint.TYPE_LITERAL).when(plugin).constraintValue();
-        doReturn(errorMessage).when(translationService).format(errorKey);
-
-        final boolean isValid = plugin.isValid();
-
-        assertFalse(isValid);
-        verify(plugin).showError(eq(errorMessage));
-    }
-
-    @Test
-    public void testIsValidWhenItIsValid() throws Exception {
-        doReturn("Header").when(editingCol).getHeader();
-        doReturn("FactField").when(editingCol).getFactField();
-        doReturn("Operator").when(editingCol).getOperator();
-        doReturn("Binding").when(editingCol).getBinding();
-        doReturn(false).when(plugin).isBindingNotUnique();
-        doReturn(false).when(plugin).isHeaderNotUnique();
-        doReturn(editingCol).when(plugin).editingCol();
-        doReturn(BaseSingleFieldConstraint.TYPE_LITERAL).when(plugin).constraintValue();
-
-        final boolean isValid = plugin.isValid();
-
-        assertTrue(isValid);
-        verify(plugin,
-               never()).showError(any());
-    }
-
-    @Test
     public void testPrepareValuesWhenConstraintValueIsPredicate() throws Exception {
         doReturn(editingCol).when(plugin).editingCol();
         doReturn(BaseSingleFieldConstraint.TYPE_PREDICATE).when(plugin).constraintValue();
@@ -279,9 +169,8 @@ public class ConditionColumnPluginTest {
     }
 
     @Test
-    public void testGenerateColumnWhenItIsValid() throws Exception {
+    public void testGenerateColumn() throws Exception {
         doReturn(BaseSingleFieldConstraint.TYPE_UNDEFINED).when(plugin).constraintValue();
-        doReturn(true).when(plugin).isValid();
 
         plugin.setupDefaultValues();
 
@@ -290,20 +179,6 @@ public class ConditionColumnPluginTest {
         assertTrue(result);
         verify(plugin).prepareValues();
         verify(plugin).appendColumn();
-    }
-
-    @Test
-    public void testGenerateColumnWhenItIsNotValid() throws Exception {
-        doReturn(BaseSingleFieldConstraint.TYPE_UNDEFINED).when(plugin).constraintValue();
-        doReturn(false).when(plugin).isValid();
-
-        final Boolean result = plugin.generateColumn();
-
-        assertFalse(result);
-        verify(plugin,
-               never()).prepareValues();
-        verify(plugin,
-               never()).appendColumn();
     }
 
     @Test
@@ -565,5 +440,26 @@ public class ConditionColumnPluginTest {
         plugin.init(wizard);
 
         verify(plugin).setupDefaultValues();
+    }
+
+    @Test
+    public void testGetAlreadyUsedColumnNames() throws Exception {
+        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        Pattern52 pattern = new Pattern52();
+        ConditionCol52 conditionOne = new ConditionCol52() {{
+            setHeader("a");
+        }};
+        ConditionCol52 conditionTwo = new ConditionCol52() {{
+            setHeader("b");
+        }};
+        pattern.getChildColumns().add(conditionOne);
+        pattern.getChildColumns().add(conditionTwo);
+        model.getConditions().add(pattern);
+        when(presenter.getModel()).thenReturn(model);
+
+        assertEquals(2,
+                     plugin.getAlreadyUsedColumnHeaders().size());
+        assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("a"));
+        assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("b"));
     }
 }

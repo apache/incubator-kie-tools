@@ -77,7 +77,13 @@ public class PatternPage<T extends HasPatternPage & DecisionTableColumnPlugin> e
 
     @Override
     public void isComplete(final Callback<Boolean> callback) {
-        callback.callback(isPatternSet());
+        boolean isPatternSet = isPatternSet();
+        if(!isPatternSet) {
+            view.showPatternWarning();
+        } else {
+            view.hidePatternWarning();
+        }
+        callback.callback(isPatternSet);
     }
 
     private boolean isPatternSet() {
@@ -218,5 +224,9 @@ public class PatternPage<T extends HasPatternPage & DecisionTableColumnPlugin> e
         void hidePatternListWhenItIsEmpty();
 
         void selectPattern(String currentPatternValue);
+
+        void showPatternWarning();
+
+        void hidePatternWarning();
     }
 }

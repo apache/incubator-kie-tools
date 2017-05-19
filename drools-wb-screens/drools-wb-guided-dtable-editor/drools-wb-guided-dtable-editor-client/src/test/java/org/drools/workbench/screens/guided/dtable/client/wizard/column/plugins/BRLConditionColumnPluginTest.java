@@ -22,9 +22,12 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
+import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
@@ -120,36 +123,9 @@ public class BRLConditionColumnPluginTest {
     }
 
     @Test
-    public void testGenerateColumnWhenHeaderIsBlank() throws Exception {
-        doReturn("").when(editingCol).getHeader();
-
-        final Boolean success = plugin.generateColumn();
-
-        assertFalse(success);
-
-        verify(translationService).format(GuidedDecisionTableErraiConstants.BRLConditionColumnPlugin_YouMustEnterAColumnHeaderValueDescription);
-    }
-
-    @Test
-    public void testGenerateColumnWhenHeaderIsNotUnique() throws Exception {
+    public void testGenerateColumn() throws Exception {
         final String header = "header";
 
-        doReturn(false).when(plugin).isHeaderUnique(header);
-        doReturn(model).when(presenter).getModel();
-        doReturn(header).when(editingCol).getHeader();
-
-        final Boolean success = plugin.generateColumn();
-
-        assertFalse(success);
-
-        verify(translationService).format(GuidedDecisionTableErraiConstants.BRLConditionColumnPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother);
-    }
-
-    @Test
-    public void testGenerateColumnWhenHeaderIsValid() throws Exception {
-        final String header = "header";
-
-        doReturn(true).when(plugin).isHeaderUnique(header);
         doReturn(model).when(presenter).getModel();
         doReturn(header).when(editingCol).getHeader();
 
@@ -219,5 +195,26 @@ public class BRLConditionColumnPluginTest {
 
         assertEquals(expectedTableFormat,
                      actualTableFormat);
+    }
+
+    @Test
+    public void testGetAlreadyUsedColumnNames() throws Exception {
+        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        Pattern52 pattern = new Pattern52();
+        ConditionCol52 conditionOne = new ConditionCol52() {{
+            setHeader("a");
+        }};
+        ConditionCol52 conditionTwo = new ConditionCol52() {{
+            setHeader("b");
+        }};
+        pattern.getChildColumns().add(conditionOne);
+        pattern.getChildColumns().add(conditionTwo);
+        model.getConditions().add(pattern);
+        when(presenter.getModel()).thenReturn(model);
+
+        assertEquals(2,
+                     plugin.getAlreadyUsedColumnHeaders().size());
+        assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("a"));
+        assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("b"));
     }
 }

@@ -21,11 +21,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
@@ -55,8 +55,6 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
-
-import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils.nil;
 
 @Dependent
 public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implements HasFieldPage,
@@ -115,37 +113,7 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
     public Boolean generateColumn() {
         final ActionWrapper actionWrapper = editingWrapper();
 
-        if (!isValid(actionWrapper)) {
-            return false;
-        }
-
         presenter.appendColumn(actionWrapper.getActionCol52());
-
-        return true;
-    }
-
-    boolean isValid(final ActionWrapper editingWrapper) {
-        final ActionCol52 actionCol52 = editingWrapper.getActionCol52();
-
-        if (nil(getFactField())) {
-            Window.alert(translate(GuidedDecisionTableErraiConstants.ActionInsertFactPlugin_YouMustEnterAColumnPattern));
-            return false;
-        }
-
-        if (nil(getFactField())) {
-            Window.alert(translate(GuidedDecisionTableErraiConstants.ActionInsertFactPlugin_YouMustEnterAColumnField));
-            return false;
-        }
-
-        if (nil(actionCol52.getHeader())) {
-            Window.alert(translate(GuidedDecisionTableErraiConstants.ActionInsertFactPlugin_YouMustEnterAColumnHeaderValueDescription));
-            return false;
-        }
-
-        if (!unique(actionCol52.getHeader())) {
-            Window.alert(translate(GuidedDecisionTableErraiConstants.ActionInsertFactPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother));
-            return false;
-        }
 
         return true;
     }
@@ -281,6 +249,13 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
     }
 
     @Override
+    public Set<String> getAlreadyUsedColumnHeaders() {
+        return presenter.getModel().getActionCols().stream()
+                .map(actionCol52 -> actionCol52.getHeader())
+                .collect(Collectors.toSet());
+    }
+
+    @Override
     public void setInsertLogical(final Boolean value) {
         editingWrapper().setInsertLogical(value);
     }
@@ -343,16 +318,6 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
     @Override
     public IsWidget limitedValueWidget() {
         return new LimitedWidgetFactory<>(this).create();
-    }
-
-    private boolean unique(final String header) {
-        for (final ActionCol52 o : presenter.getModel().getActionCols()) {
-            if (o.getHeader().equals(header)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     boolean isNewFactPattern() {

@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.commons;
 
+import java.util.Set;
+
 import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 
 public interface HasAdditionalInfoPage {
@@ -25,6 +27,8 @@ public interface HasAdditionalInfoPage {
     String getHeader();
 
     void setHeader(final String header);
+
+    Set<String> getAlreadyUsedColumnHeaders();
 
     void setInsertLogical(final Boolean value);
 

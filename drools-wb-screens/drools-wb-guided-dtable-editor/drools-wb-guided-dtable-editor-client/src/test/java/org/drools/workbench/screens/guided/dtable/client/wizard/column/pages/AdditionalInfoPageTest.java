@@ -23,8 +23,13 @@ import com.google.gwt.junit.GWTMockUtilities;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ConditionColumnPlugin;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -37,11 +42,17 @@ import org.kie.workbench.common.services.shared.preferences.ApplicationPreferenc
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import static org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants.YouMustEnterAColumnHeaderValueDescription;
+import static org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants.ThatColumnNameIsAlreadyInUsePleasePickAnother;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class AdditionalInfoPageTest {
+
+    private static final String ENTER_COLUMN_DESCRIPTION = "EnterColumnDescription";
+    private static final String PICK_ANOTHER = "PickAnother";
 
     @Mock
     private ConditionColumnPlugin plugin;
@@ -57,6 +68,14 @@ public class AdditionalInfoPageTest {
 
     @Mock
     private TranslationService translationService;
+
+    @Mock
+    private GuidedDecisionTableView.Presenter presenter;
+
+    @Mock
+    NewGuidedDecisionTableColumnWizard wizard;
+
+    private GuidedDecisionTable52 model;
 
     @InjectMocks
     private AdditionalInfoPage<ConditionColumnPlugin> page = spy(new AdditionalInfoPage<>(view,
@@ -77,29 +96,75 @@ public class AdditionalInfoPageTest {
     @Before
     public void setup() {
         when(page.plugin()).thenReturn(plugin);
+        model = new GuidedDecisionTable52();
+
+        when(plugin.getPresenter()).thenReturn(presenter);
+
+        when(translationService.format(YouMustEnterAColumnHeaderValueDescription))
+                .thenReturn(ENTER_COLUMN_DESCRIPTION);
+        when(translationService.format(ThatColumnNameIsAlreadyInUsePleasePickAnother))
+                .thenReturn(PICK_ANOTHER);
+    }
+
+    private void createEmptyModel() {
+        when(presenter.getModel()).thenReturn(model);
+        when(wizard.getPresenter()).thenReturn(presenter);
+
+        doCallRealMethod().when(page).init(any());
+        doNothing().when(page).initialise();
+
+        page.init(wizard);
     }
 
     @Test
     public void testIsCompleteWhenHeaderIsNotEnabled() throws Exception {
+        createEmptyModel();
         page.isComplete(Assert::assertFalse);
+        verify(view).showWarning(ENTER_COLUMN_DESCRIPTION);
     }
 
     @Test
     public void testIsCompleteWhenHeaderIsEnabledButNotCompleted() throws Exception {
+        createEmptyModel();
+
         when(plugin.editingCol()).thenReturn(mock(ConditionCol52.class));
 
         page.enableHeader();
 
         page.isComplete(Assert::assertFalse);
+        verify(view).showWarning(ENTER_COLUMN_DESCRIPTION);
     }
 
     @Test
     public void testIsCompleteWhenHeaderIsEnabledAndCompleted() throws Exception {
+        createEmptyModel();
         when(plugin.getHeader()).thenReturn("header");
 
         page.enableHeader();
 
         page.isComplete(Assert::assertTrue);
+        verify(view, never()).showWarning(ENTER_COLUMN_DESCRIPTION);
+        verify(view, never()).showWarning(PICK_ANOTHER);
+        verify(view).hideWarning();
+    }
+
+    @Test
+    public void testNonUniqueColumn() throws Exception {
+        createEmptyModel();
+        Pattern52 parentCondition = new Pattern52();
+        ConditionCol52 condition = new ConditionCol52();
+        condition.setHeader("header");
+        parentCondition.getChildColumns().add(condition);
+        model.getConditions().add(parentCondition);
+
+        when(plugin.getHeader()).thenReturn("header");
+        doCallRealMethod().when(plugin).getAlreadyUsedColumnHeaders();
+
+        page.enableHeader();
+
+        page.isComplete(Assert::assertFalse);
+        verify(view, never()).showWarning(ENTER_COLUMN_DESCRIPTION);
+        verify(view).showWarning(PICK_ANOTHER);
     }
 
     @Test

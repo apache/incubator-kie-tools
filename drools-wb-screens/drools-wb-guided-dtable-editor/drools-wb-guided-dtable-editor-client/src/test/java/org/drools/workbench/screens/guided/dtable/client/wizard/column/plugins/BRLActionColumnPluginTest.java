@@ -122,38 +122,6 @@ public class BRLActionColumnPluginTest {
     }
 
     @Test
-    public void testGenerateColumnWhenHeaderIsBlank() throws Exception {
-        doReturn("").when(editingCol).getHeader();
-
-        final Boolean success = plugin.generateColumn();
-
-        assertFalse(success);
-
-        verify(translationService).format(GuidedDecisionTableErraiConstants.BRLActionColumnPlugin_YouMustEnterAColumnHeaderValueDescription);
-    }
-
-    @Test
-    public void testGenerateColumnWhenHeaderIsNotUnique() throws Exception {
-        final String header = "header";
-        final ActionCol52 oldActionCol52 = mock(ActionCol52.class);
-        final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
-        final ArrayList<ActionCol52> actionCol52s = new ArrayList<ActionCol52>() {{
-            add(oldActionCol52);
-        }};
-
-        when(oldActionCol52.getHeader()).thenReturn(header);
-        when(model.getActionCols()).thenReturn(actionCol52s);
-        when(presenter.getModel()).thenReturn(model);
-        when(editingCol.getHeader()).thenReturn(header);
-
-        final Boolean success = plugin.generateColumn();
-
-        assertFalse(success);
-
-        verify(translationService).format(GuidedDecisionTableErraiConstants.BRLActionColumnPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother);
-    }
-
-    @Test
     public void testGenerateColumnWhenHeaderIsValid() throws Exception {
         final String header = "header";
         final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
@@ -229,5 +197,22 @@ public class BRLActionColumnPluginTest {
 
         assertEquals(expectedTableFormat,
                      actualTableFormat);
+    }
+
+    @Test
+    public void testGetAlreadyUsedColumnNames() throws Exception {
+        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        model.getActionCols().add(new ActionCol52() {{
+            setHeader("a");
+        }});
+        model.getActionCols().add(new ActionCol52() {{
+            setHeader("b");
+        }});
+        when(presenter.getModel()).thenReturn(model);
+
+        assertEquals(2,
+                     plugin.getAlreadyUsedColumnHeaders().size());
+        assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("a"));
+        assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("b"));
     }
 }

@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -122,104 +121,6 @@ public class ActionWorkItemPluginTest {
 
         verify(editingCol).setHeader(header);
         verify(plugin).fireChangeEvent(additionalInfoPage);
-    }
-
-    @Test
-    public void testGenerateColumnWhenItIsValid() throws Exception {
-        when(plugin.isValid()).thenReturn(true);
-
-        final Boolean success = plugin.generateColumn();
-
-        assertTrue(success);
-        verify(presenter).appendColumn(editingCol);
-    }
-
-    @Test
-    public void testGenerateColumnWhenItIsNotValid() throws Exception {
-        when(plugin.isValid()).thenReturn(false);
-
-        final Boolean success = plugin.generateColumn();
-
-        assertFalse(success);
-        verify(presenter,
-               never()).appendColumn(editingCol);
-    }
-
-    @Test
-    public void testIsValidWhenItIsValid() throws Exception {
-        final String header = "header";
-
-        doReturn(true).when(plugin).unique(header);
-        doReturn(header).when(editingCol).getHeader();
-
-        final boolean isValid = plugin.isValid();
-
-        assertTrue(isValid);
-        verify(plugin,
-               never()).showError(any());
-    }
-
-    @Test
-    public void testIsValidWhenHeaderIsBlank() throws Exception {
-        final String errorKey = GuidedDecisionTableErraiConstants.ActionWorkItemPlugin_YouMustEnterAColumnHeaderValueDescription;
-        final String errorMessage = "YouMustEnterAColumnHeaderValueDescription";
-
-        doReturn(errorMessage).when(translationService).format(errorKey);
-        doReturn("").when(editingCol).getHeader();
-
-        final boolean isValid = plugin.isValid();
-
-        assertFalse(isValid);
-        verify(plugin).showError(errorMessage);
-    }
-
-    @Test
-    public void testIsValidWhenHeaderIsNotUnique() throws Exception {
-        final String header = "header";
-        final String errorKey = GuidedDecisionTableErraiConstants.ActionWorkItemPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother;
-        final String errorMessage = "ThatColumnNameIsAlreadyInUsePleasePickAnother";
-
-        doReturn(false).when(plugin).unique(header);
-        doReturn(errorMessage).when(translationService).format(errorKey);
-        doReturn(header).when(editingCol).getHeader();
-
-        final boolean isValid = plugin.isValid();
-
-        assertFalse(isValid);
-        verify(plugin).showError(errorMessage);
-    }
-
-    @Test
-    public void testUniqueWhenHeaderIsUnique() throws Exception {
-        final ActionCol52 actionCol52 = mock(ActionCol52.class);
-        final List<ActionCol52> actionCol52s = new ArrayList<ActionCol52>() {{
-            add(actionCol52);
-        }};
-
-        when(actionCol52.getHeader()).thenReturn("header1");
-        when(model.getActionCols()).thenReturn(actionCol52s);
-        when(presenter.getModel()).thenReturn(model);
-
-        final boolean unique = plugin.unique("header2");
-
-        assertTrue(unique);
-    }
-
-    @Test
-    public void testUniqueWhenHeaderIsNotUnique() throws Exception {
-        final String header = "header";
-        final ActionCol52 actionCol52 = mock(ActionCol52.class);
-        final List<ActionCol52> actionCol52s = new ArrayList<ActionCol52>() {{
-            add(actionCol52);
-        }};
-
-        when(actionCol52.getHeader()).thenReturn(header);
-        when(model.getActionCols()).thenReturn(actionCol52s);
-        when(presenter.getModel()).thenReturn(model);
-
-        final boolean unique = plugin.unique(header);
-
-        assertFalse(unique);
     }
 
     @Test
@@ -354,6 +255,23 @@ public class ActionWorkItemPluginTest {
 
         assertEquals(expectedWorkItems,
                      actualWorkItems);
+    }
+
+    @Test
+    public void testGetAlreadyUsedColumnNames() throws Exception {
+        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        model.getActionCols().add(new ActionCol52() {{
+            setHeader("a");
+        }});
+        model.getActionCols().add(new ActionCol52() {{
+            setHeader("b");
+        }});
+        when(presenter.getModel()).thenReturn(model);
+
+        assertEquals(2,
+                     plugin.getAlreadyUsedColumnHeaders().size());
+        assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("a"));
+        assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("b"));
     }
 
     private PortableWorkDefinition getMock(final String name) {

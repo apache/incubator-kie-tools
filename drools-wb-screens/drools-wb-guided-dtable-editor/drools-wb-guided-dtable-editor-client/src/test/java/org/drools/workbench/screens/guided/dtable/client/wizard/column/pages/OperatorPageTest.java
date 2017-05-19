@@ -283,6 +283,8 @@ public class OperatorPageTest {
         when(plugin.getFactField()).thenReturn(null);
 
         page.isComplete(Assert::assertFalse);
+        verify(view).showOperatorWarning();
+        verify(view, never()).hideOperatorWarning();
     }
 
     @Test
@@ -291,6 +293,8 @@ public class OperatorPageTest {
         when(plugin.getFactField()).thenReturn("factType");
 
         page.isComplete(Assert::assertFalse);
+        verify(view).showOperatorWarning();
+        verify(view, never()).hideOperatorWarning();
     }
 
     @Test
@@ -299,6 +303,8 @@ public class OperatorPageTest {
         when(plugin.getFactField()).thenReturn("factType");
 
         page.isComplete(Assert::assertTrue);
+        verify(view, never()).showOperatorWarning();
+        verify(view).hideOperatorWarning();
     }
 
     @Test

@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -127,30 +129,11 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
 
     @Override
     public Boolean generateColumn() {
-        if (nil(editingCol().getHeader())) {
-            Window.alert(translate(GuidedDecisionTableErraiConstants.BRLActionColumnPlugin_YouMustEnterAColumnHeaderValueDescription));
-            return false;
-        }
-
-        if (!isHeaderUnique(editingCol().getHeader())) {
-            Window.alert(translate(GuidedDecisionTableErraiConstants.BRLActionColumnPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother));
-            return false;
-        }
-
         getDefinedVariables(getRuleModel());
 
         editingCol().setDefinition(Arrays.asList(getRuleModel().rhs));
         presenter.appendColumn(editingCol());
 
-        return true;
-    }
-
-    private boolean isHeaderUnique(String header) {
-        for (ActionCol52 o : presenter.getModel().getActionCols()) {
-            if (o.getHeader().equals(header)) {
-                return false;
-            }
-        }
         return true;
     }
 
@@ -215,6 +198,13 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
         editingCol.setHeader(header);
 
         fireChangeEvent(additionalInfoPage);
+    }
+
+    @Override
+    public Set<String> getAlreadyUsedColumnHeaders() {
+        return presenter.getModel().getActionCols().stream()
+                .map(actionCol52 -> actionCol52.getHeader())
+                .collect(Collectors.toSet());
     }
 
     @Override

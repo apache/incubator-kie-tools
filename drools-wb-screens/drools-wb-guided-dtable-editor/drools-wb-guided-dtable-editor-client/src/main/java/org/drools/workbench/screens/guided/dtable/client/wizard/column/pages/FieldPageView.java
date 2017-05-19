@@ -44,6 +44,10 @@ public class FieldPageView implements IsElement,
     @DataField("patternWarning")
     private Div patternWarning;
 
+    @Inject
+    @DataField("fieldWarning")
+    private Div fieldWarning;
+
     @DataField("info")
     private Div info;
 
@@ -110,5 +114,15 @@ public class FieldPageView implements IsElement,
                         final String itemKey) {
         fieldsList.addItem(itemName,
                            itemKey);
+    }
+
+    @Override
+    public void showSelectFieldWarning() {
+        fieldWarning.setHidden(false);
+    }
+
+    @Override
+    public void hideSelectFieldWarning() {
+        fieldWarning.setHidden(true);
     }
 }

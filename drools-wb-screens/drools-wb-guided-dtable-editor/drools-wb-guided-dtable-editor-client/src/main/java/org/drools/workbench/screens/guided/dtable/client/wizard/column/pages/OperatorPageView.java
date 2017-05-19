@@ -38,6 +38,10 @@ public class OperatorPageView implements IsElement,
     @DataField("warning")
     private Div warning;
 
+    @Inject
+    @DataField("operatorWarning")
+    private Div operatorWarning;
+
     @DataField("info")
     private Div info;
 
@@ -78,5 +82,15 @@ public class OperatorPageView implements IsElement,
     public void setupOperator(final IsWidget dropdown) {
         addWidgetToContainer(dropdown,
                              operatorsContainer);
+    }
+
+    @Override
+    public void showOperatorWarning() {
+        operatorWarning.setHidden(false);
+    }
+
+    @Override
+    public void hideOperatorWarning() {
+        operatorWarning.setHidden(true);
     }
 }

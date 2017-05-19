@@ -232,60 +232,7 @@ public class ActionWorkItemSetFieldPluginTest {
     }
 
     @Test
-    public void testGenerateColumnWhenFactTypeIsInvalid() throws Exception {
-        doReturn(true).when(plugin).isNewFactPattern();
-        doReturn("").when(editingWrapper).getFactType();
-        doReturn(editingWrapper).when(plugin).editingWrapper();
-
-        final Boolean success = plugin.generateColumn();
-
-        assertFalse(success);
-        verify(translationService).format(GuidedDecisionTableErraiConstants.ActionWorkItemSetFieldPlugin_YouMustEnterAColumnFact);
-    }
-
-    @Test
-    public void testGenerateColumnWhenFactFieldIsInvalid() throws Exception {
-        doReturn("").when(editingWrapper).getFactField();
-        doReturn("factType").when(editingWrapper).getFactType();
-        doReturn(editingWrapper).when(plugin).editingWrapper();
-
-        final Boolean success = plugin.generateColumn();
-
-        assertFalse(success);
-        verify(translationService).format(GuidedDecisionTableErraiConstants.ActionWorkItemSetFieldPlugin_YouMustEnterAColumnField);
-    }
-
-    @Test
-    public void testGenerateColumnWhenHeaderIsInvalid() throws Exception {
-        doReturn("").when(editingWrapper).getHeader();
-        doReturn("factField").when(editingWrapper).getFactField();
-        doReturn("factType").when(editingWrapper).getFactType();
-        doReturn(editingWrapper).when(plugin).editingWrapper();
-
-        final Boolean success = plugin.generateColumn();
-
-        assertFalse(success);
-        verify(translationService).format(GuidedDecisionTableErraiConstants.ActionWorkItemSetFieldPlugin_YouMustEnterAColumnHeaderValueDescription);
-    }
-
-    @Test
-    public void testGenerateColumnWhenHeaderIsNotUnique() throws Exception {
-        final String header = "header";
-
-        doReturn(header).when(editingWrapper).getHeader();
-        doReturn("factField").when(editingWrapper).getFactField();
-        doReturn("factType").when(editingWrapper).getFactType();
-        doReturn(editingWrapper).when(plugin).editingWrapper();
-        doReturn(false).when(plugin).unique(header);
-
-        final Boolean success = plugin.generateColumn();
-
-        assertFalse(success);
-        verify(translationService).format(GuidedDecisionTableErraiConstants.ActionWorkItemSetFieldPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother);
-    }
-
-    @Test
-    public void testGenerateColumnWhenItIsValid() throws Exception {
+    public void testGenerateColumn() throws Exception {
         final ActionCol52 actionCol52 = mock(ActionCol52.class);
         final String header = "header";
 
@@ -294,7 +241,6 @@ public class ActionWorkItemSetFieldPluginTest {
         doReturn("factType").when(editingWrapper).getFactType();
         doReturn(editingWrapper).when(plugin).editingWrapper();
         doReturn(actionCol52).when(editingWrapper).getActionCol52();
-        doReturn(true).when(plugin).unique(header);
 
         final Boolean success = plugin.generateColumn();
 
@@ -447,5 +393,22 @@ public class ActionWorkItemSetFieldPluginTest {
         verify(additionalInfoPage).enableLogicallyInsert();
         verify(additionalInfoPage).enableUpdateEngineWithChanges();
         verify(additionalInfoPage).enableHideColumn();
+    }
+
+    @Test
+    public void testGetAlreadyUsedColumnNames() throws Exception {
+        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        model.getActionCols().add(new ActionCol52() {{
+            setHeader("a");
+        }});
+        model.getActionCols().add(new ActionCol52() {{
+            setHeader("b");
+        }});
+        when(presenter.getModel()).thenReturn(model);
+
+        assertEquals(2,
+                     plugin.getAlreadyUsedColumnHeaders().size());
+        assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("a"));
+        assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("b"));
     }
 }

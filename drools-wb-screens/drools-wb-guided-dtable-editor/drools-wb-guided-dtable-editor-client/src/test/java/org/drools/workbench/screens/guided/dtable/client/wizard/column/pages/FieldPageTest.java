@@ -304,6 +304,7 @@ public class FieldPageTest {
         when(plugin.getFactField()).thenReturn(null);
 
         page.isComplete(Assert::assertFalse);
+        verify(view).showSelectFieldWarning();
     }
 
     @Test
@@ -312,6 +313,7 @@ public class FieldPageTest {
         when(plugin.getFactField()).thenReturn("factField");
 
         page.isComplete(Assert::assertTrue);
+        verify(view).hideSelectFieldWarning();
     }
 
     @Test
@@ -320,6 +322,7 @@ public class FieldPageTest {
         when(plugin.getFactField()).thenReturn(null);
 
         page.isComplete(Assert::assertTrue);
+        verify(view).hideSelectFieldWarning();
     }
 
     @Test

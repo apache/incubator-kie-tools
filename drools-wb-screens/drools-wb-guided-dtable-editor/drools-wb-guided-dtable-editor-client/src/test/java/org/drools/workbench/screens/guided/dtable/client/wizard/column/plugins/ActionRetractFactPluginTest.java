@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -31,6 +30,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuided
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.AdditionalInfoPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.PatternToDeletePage;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -57,7 +57,6 @@ public class ActionRetractFactPluginTest {
     @Mock
     private GuidedDecisionTableView.Presenter presenter;
 
-    @Mock
     private GuidedDecisionTable52 model;
 
     @Mock
@@ -75,11 +74,17 @@ public class ActionRetractFactPluginTest {
                                                                              changeEvent,
                                                                              translationService));
 
+    @Before
+    public void setUp() throws Exception {
+        model = new GuidedDecisionTable52();
+
+    }
+
     @Test
     public void testInit() throws Exception {
         final NewGuidedDecisionTableColumnWizard wizard = mock(NewGuidedDecisionTableColumnWizard.class);
 
-        doReturn(GuidedDecisionTable52.TableFormat.LIMITED_ENTRY).when(model).getTableFormat();
+        model.setTableFormat(GuidedDecisionTable52.TableFormat.LIMITED_ENTRY);
         doReturn(model).when(presenter).getModel();
         doReturn(presenter).when(wizard).getPresenter();
 
@@ -90,7 +95,7 @@ public class ActionRetractFactPluginTest {
 
     @Test
     public void testGetPagesWhenTableFormatIsLimitedEntry() throws Exception {
-        doReturn(GuidedDecisionTable52.TableFormat.LIMITED_ENTRY).when(model).getTableFormat();
+        model.setTableFormat(GuidedDecisionTable52.TableFormat.LIMITED_ENTRY);
         doReturn(model).when(presenter).getModel();
 
         final List<WizardPage> pages = plugin.getPages();
@@ -103,7 +108,7 @@ public class ActionRetractFactPluginTest {
 
     @Test
     public void testGetPagesWhenTableFormatIsNotLimitedEntry() throws Exception {
-        doReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY).when(model).getTableFormat();
+        model.setTableFormat(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
         doReturn(model).when(presenter).getModel();
 
         final List<WizardPage> pages = plugin.getPages();
@@ -115,21 +120,8 @@ public class ActionRetractFactPluginTest {
     }
 
     @Test
-    public void testGenerateColumnWhenItIsNotValid() throws Exception {
-        doReturn(false).when(plugin).isValid();
-
-        final Boolean result = plugin.generateColumn();
-
-        assertFalse(result);
-        verify(presenter,
-               never()).appendColumn(any(ActionCol52.class));
-    }
-
-    @Test
-    public void testGenerateColumnWhenItIsValid() throws Exception {
+    public void testGenerateColumn() throws Exception {
         final ActionCol52 expectedColumn = (ActionCol52) plugin.editingCol();
-
-        doReturn(true).when(plugin).isValid();
 
         final Boolean result = plugin.generateColumn();
 
@@ -147,34 +139,6 @@ public class ActionRetractFactPluginTest {
 
         verify(editingCol).setHeader(header);
         verify(plugin).fireChangeEvent(additionalInfoPage);
-    }
-
-    @Test
-    public void testUniqueWhenItIsUnique() throws Exception {
-        final ArrayList<ActionCol52> actionCols = new ArrayList<ActionCol52>() {{
-            add(actionCol52("Header1"));
-        }};
-
-        doReturn(actionCols).when(model).getActionCols();
-        doReturn(model).when(presenter).getModel();
-
-        boolean result = plugin.unique("Header2");
-
-        assertTrue(result);
-    }
-
-    @Test
-    public void testUniqueWhenItIsNotUnique() throws Exception {
-        final ArrayList<ActionCol52> actionCols = new ArrayList<ActionCol52>() {{
-            add(actionCol52("Header1"));
-        }};
-
-        doReturn(actionCols).when(model).getActionCols();
-        doReturn(model).when(presenter).getModel();
-
-        boolean result = plugin.unique("Header1");
-
-        assertFalse(result);
     }
 
     @Test
@@ -225,51 +189,6 @@ public class ActionRetractFactPluginTest {
     }
 
     @Test
-    public void testIsValidWhenHeaderIsNull() throws Exception {
-        final String errorMessage = "YouMustEnterAColumnHeaderValueDescription";
-
-        doReturn(errorMessage).when(translationService).format(GuidedDecisionTableErraiConstants.ActionRetractFactPlugin_YouMustEnterAColumnHeaderValueDescription);
-        doReturn(null).when(editingCol).getHeader();
-        doReturn(editingCol).when(plugin).editingCol();
-
-        final boolean success = plugin.isValid();
-
-        assertFalse(success);
-        verify(plugin).showError(errorMessage);
-    }
-
-    @Test
-    public void testIsValidWhenHeaderNotUnique() throws Exception {
-        final String errorMessage = "ThatColumnNameIsAlreadyInUsePleasePickAnother";
-        final String header = "Header";
-
-        doReturn(errorMessage).when(translationService).format(GuidedDecisionTableErraiConstants.ActionRetractFactPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother);
-        doReturn(header).when(editingCol).getHeader();
-        doReturn(editingCol).when(plugin).editingCol();
-        doReturn(false).when(plugin).unique(header);
-
-        final boolean success = plugin.isValid();
-
-        assertFalse(success);
-        verify(plugin).showError(errorMessage);
-    }
-
-    @Test
-    public void testIsValidWhenItIsValid() throws Exception {
-        final String header = "Header";
-
-        doReturn(header).when(editingCol).getHeader();
-        doReturn(editingCol).when(plugin).editingCol();
-        doReturn(true).when(plugin).unique(header);
-
-        final boolean success = plugin.isValid();
-
-        assertTrue(success);
-        verify(plugin,
-               never()).showError(any());
-    }
-
-    @Test
     public void testGetTitle() {
         final String errorKey = GuidedDecisionTableErraiConstants.ActionRetractFactPlugin_DeleteAnExistingFact;
         final String errorMessage = "Title";
@@ -287,6 +206,18 @@ public class ActionRetractFactPluginTest {
         plugin.getHeader();
 
         verify(editingCol).getHeader();
+    }
+
+    @Test
+    public void testGetAlreadyUsedColumnNames() throws Exception {
+        model.getActionCols().add(actionCol52("a"));
+        model.getActionCols().add(actionCol52("b"));
+        when(presenter.getModel()).thenReturn(model);
+
+        assertEquals(2, plugin.getAlreadyUsedColumnHeaders().size());
+        assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("a"));
+        assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("b"));
+
     }
 
     private ActionCol52 actionCol52(final String header) {

@@ -18,16 +18,15 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasAdditionalInfoPage;
@@ -124,6 +123,13 @@ public class ActionWorkItemPlugin extends BaseDecisionTableColumnPlugin implemen
     }
 
     @Override
+    public Set<String> getAlreadyUsedColumnHeaders() {
+        return presenter.getModel().getActionCols().stream()
+                .map(actionCol52 -> actionCol52.getHeader())
+                .collect(Collectors.toSet());
+    }
+
+    @Override
     public Boolean isWorkItemSet() {
         return editingCol.getWorkItemDefinition() != null;
     }
@@ -178,41 +184,9 @@ public class ActionWorkItemPlugin extends BaseDecisionTableColumnPlugin implemen
 
     @Override
     public Boolean generateColumn() {
-        if (!isValid()) {
-            return false;
-        }
 
         presenter.appendColumn(editingCol());
 
-        return true;
-    }
-
-    boolean isValid() {
-        if (nil(editingCol().getHeader())) {
-            showError(translate(GuidedDecisionTableErraiConstants.ActionWorkItemPlugin_YouMustEnterAColumnHeaderValueDescription));
-            return false;
-        }
-
-        if (!unique(editingCol().getHeader())) {
-            showError(translate(GuidedDecisionTableErraiConstants.ActionWorkItemPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother));
-            return false;
-        }
-
-        return true;
-    }
-
-    void showError(final String errorMessage) {
-        Window.alert(errorMessage);
-    }
-
-    boolean unique(String header) {
-        final GuidedDecisionTable52 model = presenter.getModel();
-
-        for (ActionCol52 o : model.getActionCols()) {
-            if (o.getHeader().equals(header)) {
-                return false;
-            }
-        }
         return true;
     }
 

@@ -29,7 +29,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
@@ -229,6 +228,13 @@ public class ActionWorkItemSetFieldPlugin extends BaseDecisionTableColumnPlugin 
     }
 
     @Override
+    public Set<String> getAlreadyUsedColumnHeaders() {
+        return presenter.getModel().getActionCols().stream()
+                .map(actionCol52 -> actionCol52.getHeader())
+                .collect(Collectors.toSet());
+    }
+
+    @Override
     public void setInsertLogical(final Boolean isInsertLogical) {
         editingWrapper().setInsertLogical(isInsertLogical);
     }
@@ -255,45 +261,10 @@ public class ActionWorkItemSetFieldPlugin extends BaseDecisionTableColumnPlugin 
 
     @Override
     public Boolean generateColumn() {
-        if (!isFactPatternValid()) {
-            Window.alert(translate(GuidedDecisionTableErraiConstants.ActionWorkItemSetFieldPlugin_YouMustEnterAColumnFact));
-            return false;
-        }
-
-        if (nil(editingWrapper().getFactField())) {
-            Window.alert(translate(GuidedDecisionTableErraiConstants.ActionWorkItemSetFieldPlugin_YouMustEnterAColumnField));
-            return false;
-        }
-        if (nil(editingWrapper().getHeader())) {
-            Window.alert(translate(GuidedDecisionTableErraiConstants.ActionWorkItemSetFieldPlugin_YouMustEnterAColumnHeaderValueDescription));
-            return false;
-        }
-
-        if (!unique(editingWrapper().getHeader())) {
-            Window.alert(translate(GuidedDecisionTableErraiConstants.ActionWorkItemSetFieldPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother));
-            return false;
-        }
 
         // Pass new\modified column back for handling
         presenter.appendColumn(editingWrapper().getActionCol52());
 
-        return true;
-    }
-
-    private boolean isFactPatternValid() {
-        if (isNewFactPattern()) {
-            return !nil(editingWrapper().getFactType());
-        } else {
-            return !nil(editingWrapper().getBoundName());
-        }
-    }
-
-    boolean unique(String header) {
-        for (ActionCol52 o : model().getActionCols()) {
-            if (o.getHeader().equals(header)) {
-                return false;
-            }
-        }
         return true;
     }
 

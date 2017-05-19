@@ -26,12 +26,10 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
@@ -144,10 +142,6 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
 
     @Override
     public Boolean generateColumn() {
-        if (!isValid()) {
-            return false;
-        }
-
         prepareValues();
         appendColumn();
 
@@ -202,37 +196,6 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
         if (constraintValue() != BaseSingleFieldConstraint.TYPE_LITERAL) {
             editingCol().setBinding(null);
         }
-    }
-
-    boolean isValid() {
-        if (nil(editingCol().getHeader())) {
-            showError(translate(GuidedDecisionTableErraiConstants.ConditionColumnPlugin_YouMustEnterAColumnHeaderValueDescription));
-            return false;
-        }
-
-        if (constraintValue() != BaseSingleFieldConstraint.TYPE_PREDICATE) {
-            if (nil(getFactField())) {
-                showError(translate(GuidedDecisionTableErraiConstants.ConditionColumnPlugin_PleaseSelectOrEnterField));
-                return false;
-            }
-
-            if (nil(editingCol().getOperator())) {
-                showError(translate(GuidedDecisionTableErraiConstants.ConditionColumnPlugin_NotifyNoSelectedOperator));
-                return false;
-            }
-        }
-
-        if (isBindingNotUnique()) {
-            showError(translate(GuidedDecisionTableErraiConstants.ConditionColumnPlugin_PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern));
-            return false;
-        }
-
-        if (isHeaderNotUnique()) {
-            showError(translate(GuidedDecisionTableErraiConstants.ConditionColumnPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother));
-            return false;
-        }
-
-        return true;
     }
 
     @Override
@@ -295,6 +258,19 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
         editingCol().setHeader(header);
 
         fireChangeEvent(additionalInfoPage);
+    }
+
+    @Override
+    public Set<String> getAlreadyUsedColumnHeaders() {
+        Set<String> columnNames = new HashSet<>();
+
+        for (CompositeColumn<?> cc : getPresenter().getModel().getConditions()) {
+            for (int iChild = 0; iChild < cc.getChildColumns().size(); iChild++) {
+                columnNames.add(cc.getChildColumns().get(iChild).getHeader());
+            }
+        }
+
+        return columnNames;
     }
 
     @Override
@@ -447,21 +423,6 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
         this.valueOptionsPageCompleted = Boolean.TRUE;
     }
 
-    boolean isHeaderNotUnique() {
-        return !unique(editingCol().getHeader());
-    }
-
-    void showError(final String message) {
-        Window.alert(message);
-    }
-
-    boolean isBindingNotUnique() {
-        final String binding = editingCol().getBinding();
-        final BRLRuleModel rm = new BRLRuleModel(model());
-
-        return editingCol().isBound() && rm.isVariableNameUsed(binding);
-    }
-
     void setupDefaultValues() {
         editingPattern = emptyPattern();
         editingCol = newConditionColumn();
@@ -511,17 +472,6 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
     private ValueOptionsPage<ConditionColumnPlugin> initializedValueOptionsPage() {
         return ValueOptionsPageInitializer.init(valueOptionsPage,
                                                 this);
-    }
-
-    private boolean unique(String header) {
-        for (CompositeColumn<?> cc : model().getConditions()) {
-            for (int iChild = 0; iChild < cc.getChildColumns().size(); iChild++) {
-                if (cc.getChildColumns().get(iChild).getHeader().equals(header)) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     private ConditionCol52 newConditionColumn() {

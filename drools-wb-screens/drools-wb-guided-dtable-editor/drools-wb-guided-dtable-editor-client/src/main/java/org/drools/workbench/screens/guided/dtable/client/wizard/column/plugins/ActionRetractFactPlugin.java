@@ -18,6 +18,8 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -40,8 +42,6 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.c
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
-
-import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils.nil;
 
 @Dependent
 public class ActionRetractFactPlugin extends BaseDecisionTableColumnPlugin implements HasAdditionalInfoPage {
@@ -91,9 +91,6 @@ public class ActionRetractFactPlugin extends BaseDecisionTableColumnPlugin imple
 
     @Override
     public Boolean generateColumn() {
-        if (!isValid()) {
-            return false;
-        }
 
         presenter.appendColumn(editingCol);
 
@@ -118,6 +115,13 @@ public class ActionRetractFactPlugin extends BaseDecisionTableColumnPlugin imple
     }
 
     @Override
+    public Set<String> getAlreadyUsedColumnHeaders() {
+        return presenter.getModel().getActionCols().stream()
+                    .map(actionCol52 -> actionCol52.getHeader())
+                    .collect(Collectors.toSet());
+    }
+
+    @Override
     public void setInsertLogical(final Boolean value) {
         // empty
     }
@@ -135,16 +139,6 @@ public class ActionRetractFactPlugin extends BaseDecisionTableColumnPlugin imple
     @Override
     public boolean showLogicallyInsert() {
         return false;
-    }
-
-    public boolean unique(final String header) {
-        for (final ActionCol52 col52 : presenter.getModel().getActionCols()) {
-            if (col52.getHeader().equals(header)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     public String getEditingColStringValue() {
@@ -171,28 +165,8 @@ public class ActionRetractFactPlugin extends BaseDecisionTableColumnPlugin imple
         editingCol = clone(newActionRetractFactColumn());
     }
 
-    boolean isValid() {
-        final String header = editingCol().getHeader();
-
-        if (nil(header)) {
-            showError(translate(GuidedDecisionTableErraiConstants.ActionRetractFactPlugin_YouMustEnterAColumnHeaderValueDescription));
-            return false;
-        }
-
-        if (!unique(header)) {
-            showError(translate(GuidedDecisionTableErraiConstants.ActionRetractFactPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother));
-            return false;
-        }
-
-        return true;
-    }
-
     void setPatternToDeletePageCompleted(Boolean completed) {
         patternToDeletePageCompleted = completed;
-    }
-
-    void showError(final String message) {
-        Window.alert(message);
     }
 
     private AdditionalInfoPage additionalInfoPage() {

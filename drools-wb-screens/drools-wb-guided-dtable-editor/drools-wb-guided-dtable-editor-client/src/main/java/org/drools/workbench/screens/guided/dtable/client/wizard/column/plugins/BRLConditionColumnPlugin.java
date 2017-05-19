@@ -19,15 +19,16 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
@@ -52,8 +53,6 @@ import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVar
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
-
-import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils.nil;
 
 @Dependent
 public class BRLConditionColumnPlugin extends BaseDecisionTableColumnPlugin implements HasRuleModellerPage,
@@ -114,16 +113,6 @@ public class BRLConditionColumnPlugin extends BaseDecisionTableColumnPlugin impl
 
     @Override
     public Boolean generateColumn() {
-        if (nil(editingCol.getHeader())) {
-            Window.alert(translate(GuidedDecisionTableErraiConstants.BRLConditionColumnPlugin_YouMustEnterAColumnHeaderValueDescription));
-            return false;
-        }
-
-        if (!isHeaderUnique(editingCol.getHeader())) {
-            Window.alert(translate(GuidedDecisionTableErraiConstants.BRLConditionColumnPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother));
-            return false;
-        }
-
         getDefinedVariables(getRuleModel());
 
         editingCol.setDefinition(Arrays.asList(getRuleModel().lhs));
@@ -135,17 +124,6 @@ public class BRLConditionColumnPlugin extends BaseDecisionTableColumnPlugin impl
     @Override
     public Type getType() {
         return Type.ADVANCED;
-    }
-
-    boolean isHeaderUnique(String header) {
-        for (CompositeColumn<?> cc : presenter.getModel().getConditions()) {
-            for (int iChild = 0; iChild < cc.getChildColumns().size(); iChild++) {
-                if (cc.getChildColumns().get(iChild).getHeader().equals(header)) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     boolean getDefinedVariables(RuleModel ruleModel) {
@@ -209,6 +187,19 @@ public class BRLConditionColumnPlugin extends BaseDecisionTableColumnPlugin impl
         editingCol.setHeader(header);
 
         fireChangeEvent(additionalInfoPage);
+    }
+
+    @Override
+    public Set<String> getAlreadyUsedColumnHeaders() {
+        Set<String> columnNames = new HashSet<>();
+
+        for (CompositeColumn<?> cc : getPresenter().getModel().getConditions()) {
+            for (int iChild = 0; iChild < cc.getChildColumns().size(); iChild++) {
+                columnNames.add(cc.getChildColumns().get(iChild).getHeader());
+            }
+        }
+
+        return columnNames;
     }
 
     @Override

@@ -24,6 +24,7 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -35,6 +36,14 @@ import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pa
 @Templated
 public class AdditionalInfoPageView implements IsElement,
                                                AdditionalInfoPage.View {
+
+    @Inject
+    @DataField("warning")
+    private Div warning;
+
+    @Inject
+    @DataField("warningMessage")
+    private Span warningMessage;
 
     @Inject
     @DataField("headerFormItem")
@@ -113,6 +122,18 @@ public class AdditionalInfoPageView implements IsElement,
     @Override
     public void showUpdateEngineWithChanges() {
         updateEngineWithChangesFormItem.setHidden(false);
+    }
+
+    @Override
+    public void showWarning(String message) {
+        warningMessage.setTextContent(message);
+        warning.setHidden(false);
+    }
+
+    @Override
+    public void hideWarning() {
+        warning.setHidden(true);
+        warningMessage.setTextContent("");
     }
 
     @Override

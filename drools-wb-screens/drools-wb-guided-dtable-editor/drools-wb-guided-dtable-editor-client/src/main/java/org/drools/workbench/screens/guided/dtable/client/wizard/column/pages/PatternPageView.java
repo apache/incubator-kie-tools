@@ -43,6 +43,10 @@ public class PatternPageView implements IsElement,
 
     private PatternPage<? extends HasPatternPage> page;
 
+    @Inject
+    @DataField("patternWarning")
+    private Div patternWarning;
+
     @DataField("patternList")
     private ListBox patternList;
 
@@ -143,5 +147,15 @@ public class PatternPageView implements IsElement,
                         final String itemKey) {
         patternList.addItem(itemName,
                             itemKey);
+    }
+
+    @Override
+    public void showPatternWarning() {
+        patternWarning.setHidden(false);
+    }
+
+    @Override
+    public void hidePatternWarning() {
+        patternWarning.setHidden(true);
     }
 }

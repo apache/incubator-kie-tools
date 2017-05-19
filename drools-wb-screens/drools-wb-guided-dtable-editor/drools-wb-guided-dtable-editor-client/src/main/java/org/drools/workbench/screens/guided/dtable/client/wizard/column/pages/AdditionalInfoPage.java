@@ -19,7 +19,6 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasAdditionalInfoPage;
@@ -73,7 +72,22 @@ public class AdditionalInfoPage<T extends HasAdditionalInfoPage & DecisionTableC
 
     @Override
     public void isComplete(final Callback<Boolean> callback) {
-        callback.callback(isHeaderCompleted());
+        boolean isNotEmpty = isHeaderNotEmpty();
+        boolean isUnique = isHeaderUnique();
+        boolean isValid = isNotEmpty && isUnique;
+
+        if (!isNotEmpty) {
+            view.showWarning(translate(GuidedDecisionTableErraiConstants.YouMustEnterAColumnHeaderValueDescription));
+        }
+        if (!isUnique) {
+            view.showWarning(translate(GuidedDecisionTableErraiConstants.ThatColumnNameIsAlreadyInUsePleasePickAnother));
+        }
+
+
+        if (isValid) {
+            view.hideWarning();
+        }
+        callback.callback(isValid);
     }
 
     public void enableHideColumn() {
@@ -135,8 +149,14 @@ public class AdditionalInfoPage<T extends HasAdditionalInfoPage & DecisionTableC
         }
     }
 
-    private boolean isHeaderCompleted() {
+    private boolean isHeaderNotEmpty() {
         return headerEnabled && !nil(getHeader());
+    }
+
+    private boolean isHeaderUnique() {
+        final String header = getHeader();
+
+        return !plugin().getAlreadyUsedColumnHeaders().contains(header);
     }
 
     void setInsertLogical(final Boolean insertLogical) {
@@ -156,6 +176,10 @@ public class AdditionalInfoPage<T extends HasAdditionalInfoPage & DecisionTableC
         void showLogicallyInsert();
 
         void showUpdateEngineWithChanges();
+
+        void showWarning(String message);
+
+        void hideWarning();
 
         void clear();
     }

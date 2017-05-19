@@ -135,25 +135,13 @@ public class GuidedDecisionTableErraiConstants {
     public static final String ActionInsertFactPlugin_SetTheValueOfAField = "ActionInsertFactPlugin.SetTheValueOfAField";
 
     @TranslationKey(defaultValue = "")
-    public static final String ActionInsertFactPlugin_YouMustEnterAColumnPattern = "ActionInsertFactPlugin.YouMustEnterAColumnPattern";
-
-    @TranslationKey(defaultValue = "")
-    public static final String ActionInsertFactPlugin_YouMustEnterAColumnField = "ActionInsertFactPlugin.YouMustEnterAColumnField";
-
-    @TranslationKey(defaultValue = "")
-    public static final String ActionInsertFactPlugin_YouMustEnterAColumnHeaderValueDescription = "ActionInsertFactPlugin.YouMustEnterAColumnHeaderValueDescription";
-
-    @TranslationKey(defaultValue = "")
-    public static final String ActionInsertFactPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother = "ActionInsertFactPlugin.ThatColumnNameIsAlreadyInUsePleasePickAnother";
-
-    @TranslationKey(defaultValue = "")
     public static final String ActionRetractFactPlugin_DeleteAnExistingFact = "ActionRetractFactPlugin.DeleteAnExistingFact";
 
     @TranslationKey(defaultValue = "")
-    public static final String ActionRetractFactPlugin_YouMustEnterAColumnHeaderValueDescription = "ActionRetractFactPlugin.YouMustEnterAColumnHeaderValueDescription";
+    public static final String YouMustEnterAColumnHeaderValueDescription = "YouMustEnterAColumnHeaderValueDescription";
 
     @TranslationKey(defaultValue = "")
-    public static final String ActionRetractFactPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother = "ActionRetractFactPlugin.ThatColumnNameIsAlreadyInUsePleasePickAnother";
+    public static final String ThatColumnNameIsAlreadyInUsePleasePickAnother = "ThatColumnNameIsAlreadyInUsePleasePickAnother";
 
     @TranslationKey(defaultValue = "")
     public static final String ActionWorkItemPlugin_ExecuteWorkItem = "ActionWorkItemPlugin.ExecuteWorkItem";
@@ -172,21 +160,6 @@ public class GuidedDecisionTableErraiConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String ConditionColumnPlugin_AddNewConditionSimpleColumn = "ConditionColumnPlugin.AddNewConditionSimpleColumn";
-
-    @TranslationKey(defaultValue = "")
-    public static final String ConditionColumnPlugin_YouMustEnterAColumnHeaderValueDescription = "ConditionColumnPlugin.YouMustEnterAColumnHeaderValueDescription";
-
-    @TranslationKey(defaultValue = "")
-    public static final String ConditionColumnPlugin_PleaseSelectOrEnterField = "ConditionColumnPlugin.PleaseSelectOrEnterField";
-
-    @TranslationKey(defaultValue = "")
-    public static final String ConditionColumnPlugin_NotifyNoSelectedOperator = "ConditionColumnPlugin.NotifyNoSelectedOperator";
-
-    @TranslationKey(defaultValue = "")
-    public static final String ConditionColumnPlugin_PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern = "ConditionColumnPlugin.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern";
-
-    @TranslationKey(defaultValue = "")
-    public static final String ConditionColumnPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother = "ConditionColumnPlugin.ThatColumnNameIsAlreadyInUsePleasePickAnother";
 
     @TranslationKey(defaultValue = "")
     public static final String MetaDataColumnPlugin_AddNewMetadata = "MetaDataColumnPlugin.AddNewMetadata";
@@ -226,36 +199,6 @@ public class GuidedDecisionTableErraiConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String PatternToDeletePageView_None = "PatternToDeletePageView.None";
-
-    @TranslationKey(defaultValue = "")
-    public static final String ActionWorkItemPlugin_YouMustEnterAColumnHeaderValueDescription = "ActionWorkItemPlugin.YouMustEnterAColumnHeaderValueDescription";
-
-    @TranslationKey(defaultValue = "")
-    public static final String ActionWorkItemPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother = "ActionWorkItemPlugin.ThatColumnNameIsAlreadyInUsePleasePickAnother";
-
-    @TranslationKey(defaultValue = "")
-    public static final String BRLActionColumnPlugin_YouMustEnterAColumnHeaderValueDescription = "BRLActionColumnPlugin.YouMustEnterAColumnHeaderValueDescription";
-
-    @TranslationKey(defaultValue = "")
-    public static final String BRLActionColumnPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother = "BRLActionColumnPlugin.ThatColumnNameIsAlreadyInUsePleasePickAnother";
-
-    @TranslationKey(defaultValue = "")
-    public static final String BRLConditionColumnPlugin_YouMustEnterAColumnHeaderValueDescription = "BRLConditionColumnPlugin.YouMustEnterAColumnHeaderValueDescription";
-
-    @TranslationKey(defaultValue = "")
-    public static final String BRLConditionColumnPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother = "BRLConditionColumnPlugin.ThatColumnNameIsAlreadyInUsePleasePickAnother";
-
-    @TranslationKey(defaultValue = "")
-    public static final String ActionWorkItemSetFieldPlugin_YouMustEnterAColumnFact = "ActionWorkItemSetFieldPlugin.YouMustEnterAColumnFact";
-
-    @TranslationKey(defaultValue = "")
-    public static final String ActionWorkItemSetFieldPlugin_YouMustEnterAColumnField = "ActionWorkItemSetFieldPlugin.YouMustEnterAColumnField";
-
-    @TranslationKey(defaultValue = "")
-    public static final String ActionWorkItemSetFieldPlugin_YouMustEnterAColumnHeaderValueDescription = "ActionWorkItemSetFieldPlugin.YouMustEnterAColumnHeaderValueDescription";
-
-    @TranslationKey(defaultValue = "")
-    public static final String ActionWorkItemSetFieldPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother = "ActionWorkItemSetFieldPlugin.ThatColumnNameIsAlreadyInUsePleasePickAnother";
 
     @TranslationKey(defaultValue = "")
     public static final String GuidedDecisionTableAccordionItem_Metadata = "GuidedDecisionTableAccordionItem.Metadata";

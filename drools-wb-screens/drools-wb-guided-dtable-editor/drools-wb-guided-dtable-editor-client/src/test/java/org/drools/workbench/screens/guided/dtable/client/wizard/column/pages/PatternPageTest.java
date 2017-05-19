@@ -268,6 +268,8 @@ public class PatternPageTest {
                                                             false));
 
         page.isComplete(Assert::assertTrue);
+        verify(view).hidePatternWarning();
+        verify(view, never()).showPatternWarning();
     }
 
     @Test
@@ -277,6 +279,8 @@ public class PatternPageTest {
                                                             false));
 
         page.isComplete(Assert::assertFalse);
+        verify(view, never()).hidePatternWarning();
+        verify(view).showPatternWarning();
     }
 
     @Test
