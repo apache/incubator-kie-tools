@@ -66,6 +66,7 @@ import org.uberfire.client.mvp.SaveInProgressEvent;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
+import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
 import org.uberfire.ext.editor.commons.version.impl.PortableVersionRecord;
 import org.uberfire.java.nio.base.version.VersionRecord;
@@ -969,6 +970,51 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                times(1)).setConcurrentUpdateSessionInfo(eq(null));
         verify(dtPresenter2,
                times(1)).setConcurrentUpdateSessionInfo(eq(null));
+        assertNull(presenter.concurrentUpdateSessionInfo);
+    }
+
+    @Test
+    public void checkSaveDocumentGraphEntriesEmptyGraph() {
+        final ObservablePath dtGraphPath = mock(ObservablePath.class);
+        final PathPlaceRequest dtGraphPlaceRequest = mock(PathPlaceRequest.class);
+        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent();
+
+        when(dtGraphPath.toURI()).thenReturn("dtGraphPath");
+        when(dtGraphPath.getFileName()).thenReturn("filename");
+        when(dtGraphService.loadContent(eq(dtGraphPath))).thenReturn(dtGraphContent);
+        when(versionRecordManager.getCurrentPath()).thenReturn(dtGraphPath);
+
+        when(modeller.getAvailableDecisionTables()).thenReturn(new HashSet<>());
+
+        presenter.onStartup(dtGraphPath,
+                            dtGraphPlaceRequest);
+
+        presenter.saveDocumentGraphEntries();
+
+        verify(savePopUpPresenter,
+               times(1)).show(any(Path.class),
+                              commitMessageCommandCaptor.capture());
+
+        final ParameterizedCommand<String> commitMessageCommand = commitMessageCommandCaptor.getValue();
+        assertNotNull(commitMessageCommand);
+        commitMessageCommand.execute("message");
+
+        verify(view,
+               times(1)).showSaving();
+        verify(saveInProgressEvent,
+               never()).fire(any(SaveInProgressEvent.class));
+        verify(dtGraphService,
+               times(1)).save(eq(dtGraphPath),
+                              any(GuidedDecisionTableEditorGraphModel.class),
+                              any(Metadata.class),
+                              eq("message"));
+
+        final ArgumentCaptor<NotificationEvent> notification = ArgumentCaptor.forClass(NotificationEvent.class);
+        verify(notificationEvent,
+               times(1)).fire(notification.capture());
+        assertEquals(CommonConstants.INSTANCE.ItemSavedSuccessfully(),
+                     notification.getValue().getNotification());
+
         assertNull(presenter.concurrentUpdateSessionInfo);
     }
 

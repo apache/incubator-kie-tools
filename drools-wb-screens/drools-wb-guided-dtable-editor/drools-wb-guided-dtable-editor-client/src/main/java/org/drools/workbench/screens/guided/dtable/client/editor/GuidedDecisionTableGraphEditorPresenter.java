@@ -459,10 +459,14 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                                     editorView.showSaving();
                                     saveGraphLatch = new SaveGraphLatch(allDecisionTables.size(),
                                                                         commitMessage);
-                                    allDecisionTables.stream().forEach((dtPresenter) -> {
-                                        saveGraphLatch.saveDocumentGraphEntry(dtPresenter);
-                                        saveInProgressEvent.fire(new SaveInProgressEvent(dtPresenter.getLatestPath()));
-                                    });
+                                    if(allDecisionTables.isEmpty()) {
+                                        saveGraphLatch.saveDocumentGraph();
+                                    } else {
+                                        allDecisionTables.stream().forEach((dtPresenter) -> {
+                                            saveGraphLatch.saveDocumentGraphEntry(dtPresenter);
+                                            saveInProgressEvent.fire(new SaveInProgressEvent(dtPresenter.getLatestPath()));
+                                        });
+                                    }
                                 });
     }
 
