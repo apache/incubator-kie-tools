@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DateConverter;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.dtable.model.JVMDateConverter;
@@ -92,6 +93,16 @@ public class CellUtilitiesConvertToDateTest {
         dcv.setOtherwise( isOtherwise );
         assertEquals( expected,
                       cellUtilities.convertToDate( dcv ) );
+    }
+
+    @Test
+    public void conversionToDataType() {
+        final DTCellValue52 dcv = new DTCellValue52(value);
+        dcv.setOtherwise(isOtherwise);
+        cellUtilities.convertDTCellValueType(DataType.DataTypes.DATE,
+                                             dcv);
+        assertEquals(expected,
+                     dcv.getDateValue());
     }
 
 }

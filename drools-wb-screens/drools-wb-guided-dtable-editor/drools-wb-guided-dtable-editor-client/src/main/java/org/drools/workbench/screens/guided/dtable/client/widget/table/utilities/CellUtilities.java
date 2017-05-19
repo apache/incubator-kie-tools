@@ -36,7 +36,7 @@ public class CellUtilities {
      * use to hook-in a JVM Compatible implementation for tests
      * @param dc
      */
-    public static void injectDateConvertor( DateConverter dc ) {
+    public static void injectDateConvertor(DateConverter dc) {
         DATE_CONVERTOR = dc;
     }
 
@@ -49,25 +49,52 @@ public class CellUtilities {
      * @param dataType
      * @param dcv
      */
-    public void convertDTCellValueType( DataType.DataTypes dataType,
-                                        DTCellValue52 dcv ) {
-        if ( dcv == null ) {
+    public void convertDTCellValueType(DataType.DataTypes dataType,
+                                       DTCellValue52 dcv) {
+        if (dcv == null) {
             return;
         }
 
         //If already converted exit
-        if ( dataType.equals( dcv.getDataType() ) ) {
+        if (dataType.equals(dcv.getDataType())) {
             return;
         }
 
-        switch ( dcv.getDataType() ) {
+        switch (dataType) {
             case NUMERIC:
-                convertDTCellValueFromNumeric( dataType,
-                                               dcv );
+            case NUMERIC_BIGDECIMAL:
+                dcv.setNumericValue(convertToBigDecimal(dcv));
                 break;
-            default:
-                convertDTCellValueFromString( dataType,
-                                              dcv );
+            case NUMERIC_BIGINTEGER:
+                dcv.setNumericValue(convertToBigInteger(dcv));
+                break;
+            case NUMERIC_BYTE:
+                dcv.setNumericValue(convertToByte(dcv));
+                break;
+            case NUMERIC_DOUBLE:
+                dcv.setNumericValue(convertToDouble(dcv));
+                break;
+            case NUMERIC_FLOAT:
+                dcv.setNumericValue(convertToFloat(dcv));
+                break;
+            case NUMERIC_INTEGER:
+                dcv.setNumericValue(convertToInteger(dcv));
+                break;
+            case NUMERIC_LONG:
+                dcv.setNumericValue(convertToLong(dcv));
+                break;
+            case NUMERIC_SHORT:
+                dcv.setNumericValue(convertToShort(dcv));
+                break;
+            case DATE:
+                dcv.setDateValue(convertToDate(dcv));
+                break;
+            case BOOLEAN:
+                dcv.setBooleanValue(convertToBoolean(dcv));
+                break;
+            case STRING:
+                dcv.setStringValue(convertToString(dcv));
+                break;
         }
     }
 
@@ -76,284 +103,131 @@ public class CellUtilities {
      * @param dcv
      * @return
      */
-    public String asString( final DTCellValue52 dcv ) {
-        switch ( dcv.getDataType() ) {
+    public String asString(final DTCellValue52 dcv) {
+        switch (dcv.getDataType()) {
             case BOOLEAN:
-                return convertBooleanValueToString( dcv );
+                return convertBooleanValueToString(dcv);
             case DATE:
-                return convertDateValueToString( dcv );
+                return convertDateValueToString(dcv);
             case NUMERIC:
-                return convertNumericValueToString( dcv );
+                return convertNumericValueToString(dcv);
             case NUMERIC_BIGDECIMAL:
-                return convertBigDecimalValueToString( dcv );
+                return convertBigDecimalValueToString(dcv);
             case NUMERIC_BIGINTEGER:
-                return convertBigIntegerValueToString( dcv );
+                return convertBigIntegerValueToString(dcv);
             case NUMERIC_BYTE:
-                return convertByteValueToString( dcv );
+                return convertByteValueToString(dcv);
             case NUMERIC_DOUBLE:
-                return convertDoubleValueToString( dcv );
+                return convertDoubleValueToString(dcv);
             case NUMERIC_FLOAT:
-                return convertFloatValueToString( dcv );
+                return convertFloatValueToString(dcv);
             case NUMERIC_INTEGER:
-                return convertIntegerValueToString( dcv );
+                return convertIntegerValueToString(dcv);
             case NUMERIC_LONG:
-                return convertLongValueToString( dcv );
+                return convertLongValueToString(dcv);
             case NUMERIC_SHORT:
-                return convertShortValueToString( dcv );
+                return convertShortValueToString(dcv);
         }
-        return convertStringValueToString( dcv );
+        return convertStringValueToString(dcv);
     }
 
     /**
      * Remove a comma-separated value, replacing the comma-separated value with the first in the comma-separated list
      * @param dcv
      */
-    public void removeCommaSeparatedValue( DTCellValue52 dcv ) {
-        if ( dcv == null ) {
+    public void removeCommaSeparatedValue(DTCellValue52 dcv) {
+        if (dcv == null) {
             return;
         }
-        if ( dcv.getDataType().equals( DataType.DataTypes.STRING ) ) {
-            if ( dcv.getStringValue() == null ) {
+        if (dcv.getDataType().equals(DataType.DataTypes.STRING)) {
+            if (dcv.getStringValue() == null) {
                 return;
             }
-            String[] values = dcv.getStringValue().split( "," );
-            if ( values.length > 0 ) {
-                dcv.setStringValue( values[ 0 ] );
+            String[] values = dcv.getStringValue().split(",");
+            if (values.length > 0) {
+                dcv.setStringValue(values[0]);
             }
         }
     }
 
     //Convert a Boolean value to a String
-    private String convertBooleanValueToString( DTCellValue52 dcv ) {
+    private String convertBooleanValueToString(DTCellValue52 dcv) {
         final Boolean value = dcv.getBooleanValue();
-        return ( value == null ? "" : value.toString() );
+        return (value == null ? "" : value.toString());
     }
 
     //Convert a Date value to a String
-    private String convertDateValueToString( DTCellValue52 dcv ) {
+    private String convertDateValueToString(DTCellValue52 dcv) {
         final Date value = dcv.getDateValue();
         String result = "";
-        if ( value != null ) {
-            result = DATE_CONVERTOR.format( (Date) value );
+        if (value != null) {
+            result = DATE_CONVERTOR.format((Date) value);
         }
         return result;
     }
 
     //Convert a Generic Numeric (BigDecimal) value to a String
-    private String convertNumericValueToString( DTCellValue52 dcv ) {
+    private String convertNumericValueToString(DTCellValue52 dcv) {
         final BigDecimal value = (BigDecimal) dcv.getNumericValue();
-        return ( value == null ? "" : value.toPlainString() );
+        return (value == null ? "" : value.toPlainString());
     }
 
     //Convert a BigDecimal value to a String
-    private String convertBigDecimalValueToString( DTCellValue52 dcv ) {
+    private String convertBigDecimalValueToString(DTCellValue52 dcv) {
         final BigDecimal value = (BigDecimal) dcv.getNumericValue();
-        return ( value == null ? "" : value.toPlainString() );
+        return (value == null ? "" : value.toPlainString());
     }
 
     //Convert a BigInteger value to a String
-    private String convertBigIntegerValueToString( DTCellValue52 dcv ) {
+    private String convertBigIntegerValueToString(DTCellValue52 dcv) {
         final BigInteger value = (BigInteger) dcv.getNumericValue();
-        return ( value == null ? "" : value.toString() );
+        return (value == null ? "" : value.toString());
     }
 
     //Convert a Byte value to a String
-    private String convertByteValueToString( DTCellValue52 dcv ) {
+    private String convertByteValueToString(DTCellValue52 dcv) {
         final Byte value = (Byte) dcv.getNumericValue();
-        return ( value == null ? "" : value.toString() );
+        return (value == null ? "" : value.toString());
     }
 
     //Convert a Double value to a String
-    private String convertDoubleValueToString( DTCellValue52 dcv ) {
+    private String convertDoubleValueToString(DTCellValue52 dcv) {
         final Double value = (Double) dcv.getNumericValue();
-        return ( value == null ? "" : value.toString() );
+        return (value == null ? "" : value.toString());
     }
 
     //Convert a Float value to a String
-    private String convertFloatValueToString( DTCellValue52 dcv ) {
+    private String convertFloatValueToString(DTCellValue52 dcv) {
         final Float value = (Float) dcv.getNumericValue();
-        return ( value == null ? "" : value.toString() );
+        return (value == null ? "" : value.toString());
     }
 
     //Convert a Integer value to a String
-    private String convertIntegerValueToString( DTCellValue52 dcv ) {
+    private String convertIntegerValueToString(DTCellValue52 dcv) {
         final Integer value = (Integer) dcv.getNumericValue();
-        return ( value == null ? "" : value.toString() );
+        return (value == null ? "" : value.toString());
     }
 
     //Convert a Long value to a String
-    private String convertLongValueToString( DTCellValue52 dcv ) {
+    private String convertLongValueToString(DTCellValue52 dcv) {
         final Long value = (Long) dcv.getNumericValue();
-        return ( value == null ? "" : value.toString() );
+        return (value == null ? "" : value.toString());
     }
 
     //Convert a Short value to a String
-    private String convertShortValueToString( DTCellValue52 dcv ) {
+    private String convertShortValueToString(DTCellValue52 dcv) {
         final Short value = (Short) dcv.getNumericValue();
-        return ( value == null ? "" : value.toString() );
+        return (value == null ? "" : value.toString());
     }
 
     //Convert a String value to a String
-    private String convertStringValueToString( DTCellValue52 dcv ) {
+    private String convertStringValueToString(DTCellValue52 dcv) {
         final String value = dcv.getStringValue();
-        return ( value == null ? "" : value );
+        return (value == null ? "" : value);
     }
 
-    //If the Decision Table model has been converted from the legacy text based
-    //class then all values are held in the DTCellValue's StringValue. This
-    //function attempts to set the correct DTCellValue property based on
-    //the DTCellValue's data type.
-    private void convertDTCellValueFromString( DataType.DataTypes dataType,
-                                               DTCellValue52 dcv ) {
-        String text = dcv.getStringValue();
-        switch ( dataType ) {
-            case BOOLEAN:
-                dcv.setBooleanValue( ( text == null ? Boolean.FALSE : Boolean.valueOf( text ) ) );
-                break;
-            case DATE:
-                Date d = null;
-                try {
-                    if ( text != null ) {
-                        if ( DATE_CONVERTOR == null ) {
-                            throw new IllegalArgumentException( "DATE_CONVERTOR has not been initialised." );
-                        }
-                        d = DATE_CONVERTOR.parse( text );
-                    }
-                } catch ( IllegalArgumentException e ) {
-                }
-                dcv.setDateValue( d );
-                break;
-            case NUMERIC:
-                BigDecimal numericValue = null;
-                try {
-                    if ( text != null ) {
-                        numericValue = new BigDecimal( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( numericValue );
-                break;
-            case NUMERIC_BIGDECIMAL:
-                BigDecimal bigDecimalValue = null;
-                try {
-                    if ( text != null ) {
-                        bigDecimalValue = new BigDecimal( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( bigDecimalValue );
-                break;
-            case NUMERIC_BIGINTEGER:
-                BigInteger bigIntegerValue = null;
-                try {
-                    if ( text != null ) {
-                        bigIntegerValue = new BigInteger( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( bigIntegerValue );
-                break;
-            case NUMERIC_BYTE:
-                Byte byteValue = null;
-                try {
-                    if ( text != null ) {
-                        byteValue = Byte.valueOf( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( byteValue );
-                break;
-            case NUMERIC_DOUBLE:
-                Double doubleValue = null;
-                try {
-                    if ( text != null ) {
-                        doubleValue = Double.valueOf( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( doubleValue );
-                break;
-            case NUMERIC_FLOAT:
-                Float floatValue = null;
-                try {
-                    if ( text != null ) {
-                        floatValue = Float.valueOf( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( floatValue );
-                break;
-            case NUMERIC_INTEGER:
-                Integer integerValue = null;
-                try {
-                    if ( text != null ) {
-                        integerValue = Integer.valueOf( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( integerValue );
-                break;
-            case NUMERIC_LONG:
-                Long longValue = null;
-                try {
-                    if ( text != null ) {
-                        longValue = Long.valueOf( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( longValue );
-                break;
-            case NUMERIC_SHORT:
-                Short shortValue = null;
-                try {
-                    if ( text != null ) {
-                        shortValue = Short.valueOf( text );
-                    }
-                } catch ( Exception e ) {
-                }
-                dcv.setNumericValue( shortValue );
-                break;
-        }
-
-    }
-
-    //If the Decision Table model was pre-5.4 Numeric data-types were always stored as 
-    //BigDecimals. This function attempts to set the correct DTCellValue property based 
-    //on the *true* data type.
-    private void convertDTCellValueFromNumeric( DataType.DataTypes dataType,
-                                                DTCellValue52 dcv ) {
-        //Generic type NUMERIC was always stored as a BigDecimal
-        final BigDecimal value = (BigDecimal) dcv.getNumericValue();
-        switch ( dataType ) {
-            case NUMERIC_BIGDECIMAL:
-                dcv.setNumericValue( value == null ? null : value );
-                break;
-            case NUMERIC_BIGINTEGER:
-                dcv.setNumericValue( value == null ? null : value.toBigInteger() );
-                break;
-            case NUMERIC_BYTE:
-                dcv.setNumericValue( value == null ? null : value.byteValue() );
-                break;
-            case NUMERIC_DOUBLE:
-                dcv.setNumericValue( value == null ? null : value.doubleValue() );
-                break;
-            case NUMERIC_FLOAT:
-                dcv.setNumericValue( value == null ? null : value.floatValue() );
-                break;
-            case NUMERIC_INTEGER:
-                dcv.setNumericValue( value == null ? null : value.intValue() );
-                break;
-            case NUMERIC_LONG:
-                dcv.setNumericValue( value == null ? null : value.longValue() );
-                break;
-            case NUMERIC_SHORT:
-                dcv.setNumericValue( value == null ? null : value.shortValue() );
-                break;
-        }
-    }
-
-    public BigDecimal convertToBigDecimal( final DTCellValue52 cell ) {
-        switch ( cell.getDataType() ) {
+    public BigDecimal convertToBigDecimal(final DTCellValue52 cell) {
+        switch (cell.getDataType()) {
             case NUMERIC_BIGDECIMAL:
             case NUMERIC:
             case NUMERIC_BIGINTEGER:
@@ -364,20 +238,20 @@ public class CellUtilities {
             case NUMERIC_LONG:
             case NUMERIC_SHORT:
                 try {
-                    if ( cell.getNumericValue() == null ) {
+                    if (cell.getNumericValue() == null) {
                         return null;
                     }
-                    return new BigDecimal( cell.getNumericValue().toString() );
-                } catch ( NumberFormatException nfe ) {
+                    return new BigDecimal(cell.getNumericValue().toString());
+                } catch (NumberFormatException nfe) {
                     return null;
                 }
             case STRING:
                 try {
-                    if ( cell.getStringValue() == null ) {
+                    if (cell.getStringValue() == null) {
                         return null;
                     }
-                    return new BigDecimal( cell.getStringValue() );
-                } catch ( NumberFormatException nfe ) {
+                    return new BigDecimal(cell.getStringValue());
+                } catch (NumberFormatException nfe) {
                     return null;
                 }
             default:
@@ -385,8 +259,8 @@ public class CellUtilities {
         }
     }
 
-    public BigInteger convertToBigInteger( final DTCellValue52 cell ) {
-        switch ( cell.getDataType() ) {
+    public BigInteger convertToBigInteger(final DTCellValue52 cell) {
+        switch (cell.getDataType()) {
             case NUMERIC:
             case NUMERIC_BIGDECIMAL:
             case NUMERIC_BIGINTEGER:
@@ -397,20 +271,20 @@ public class CellUtilities {
             case NUMERIC_LONG:
             case NUMERIC_SHORT:
                 try {
-                    if ( cell.getNumericValue() == null ) {
+                    if (cell.getNumericValue() == null) {
                         return null;
                     }
-                    return new BigInteger( cell.getNumericValue().toString() );
-                } catch ( NumberFormatException nfe ) {
+                    return new BigInteger(cell.getNumericValue().toString());
+                } catch (NumberFormatException nfe) {
                     return null;
                 }
             case STRING:
                 try {
-                    if ( cell.getStringValue() == null ) {
+                    if (cell.getStringValue() == null) {
                         return null;
                     }
-                    return new BigInteger( cell.getStringValue() );
-                } catch ( NumberFormatException nfe ) {
+                    return new BigInteger(cell.getStringValue());
+                } catch (NumberFormatException nfe) {
                     return null;
                 }
             default:
@@ -418,10 +292,10 @@ public class CellUtilities {
         }
     }
 
-    public Byte convertToByte( final DTCellValue52 cell ) {
-        switch ( cell.getDataType() ) {
+    public Byte convertToByte(final DTCellValue52 cell) {
+        switch (cell.getDataType()) {
             case NUMERIC_BYTE:
-                if ( cell.getNumericValue() == null ) {
+                if (cell.getNumericValue() == null) {
                     return null;
                 }
                 return cell.getNumericValue().byteValue();
@@ -434,20 +308,20 @@ public class CellUtilities {
             case NUMERIC_LONG:
             case NUMERIC_SHORT:
                 try {
-                    if ( cell.getNumericValue() == null ) {
+                    if (cell.getNumericValue() == null) {
                         return null;
                     }
-                    return new Byte( cell.getNumericValue().toString() );
-                } catch ( NumberFormatException nfe ) {
+                    return new Byte(cell.getNumericValue().toString());
+                } catch (NumberFormatException nfe) {
                     return null;
                 }
             case STRING:
                 try {
-                    if ( cell.getStringValue() == null ) {
+                    if (cell.getStringValue() == null) {
                         return null;
                     }
-                    return new Byte( cell.getStringValue() );
-                } catch ( NumberFormatException nfe ) {
+                    return new Byte(cell.getStringValue());
+                } catch (NumberFormatException nfe) {
                     return null;
                 }
             default:
@@ -455,10 +329,10 @@ public class CellUtilities {
         }
     }
 
-    public Double convertToDouble( final DTCellValue52 cell ) {
-        switch ( cell.getDataType() ) {
+    public Double convertToDouble(final DTCellValue52 cell) {
+        switch (cell.getDataType()) {
             case NUMERIC_DOUBLE:
-                if ( cell.getNumericValue() == null ) {
+                if (cell.getNumericValue() == null) {
                     return null;
                 }
                 return cell.getNumericValue().doubleValue();
@@ -471,20 +345,20 @@ public class CellUtilities {
             case NUMERIC_LONG:
             case NUMERIC_SHORT:
                 try {
-                    if ( cell.getNumericValue() == null ) {
+                    if (cell.getNumericValue() == null) {
                         return null;
                     }
-                    return new Double( cell.getNumericValue().toString() );
-                } catch ( NumberFormatException nfe ) {
+                    return new Double(cell.getNumericValue().toString());
+                } catch (NumberFormatException nfe) {
                     return null;
                 }
             case STRING:
                 try {
-                    if ( cell.getStringValue() == null ) {
+                    if (cell.getStringValue() == null) {
                         return null;
                     }
-                    return new Double( cell.getStringValue() );
-                } catch ( NumberFormatException nfe ) {
+                    return new Double(cell.getStringValue());
+                } catch (NumberFormatException nfe) {
                     return null;
                 }
             default:
@@ -492,10 +366,10 @@ public class CellUtilities {
         }
     }
 
-    public Float convertToFloat( final DTCellValue52 cell ) {
-        switch ( cell.getDataType() ) {
+    public Float convertToFloat(final DTCellValue52 cell) {
+        switch (cell.getDataType()) {
             case NUMERIC_FLOAT:
-                if ( cell.getNumericValue() == null ) {
+                if (cell.getNumericValue() == null) {
                     return null;
                 }
                 return cell.getNumericValue().floatValue();
@@ -508,20 +382,20 @@ public class CellUtilities {
             case NUMERIC_LONG:
             case NUMERIC_SHORT:
                 try {
-                    if ( cell.getNumericValue() == null ) {
+                    if (cell.getNumericValue() == null) {
                         return null;
                     }
-                    return new Float( cell.getNumericValue().toString() );
-                } catch ( NumberFormatException nfe ) {
+                    return new Float(cell.getNumericValue().toString());
+                } catch (NumberFormatException nfe) {
                     return null;
                 }
             case STRING:
                 try {
-                    if ( cell.getStringValue() == null ) {
+                    if (cell.getStringValue() == null) {
                         return null;
                     }
-                    return new Float( cell.getStringValue() );
-                } catch ( NumberFormatException nfe ) {
+                    return new Float(cell.getStringValue());
+                } catch (NumberFormatException nfe) {
                     return null;
                 }
             default:
@@ -529,10 +403,10 @@ public class CellUtilities {
         }
     }
 
-    public Integer convertToInteger( final DTCellValue52 cell ) {
-        switch ( cell.getDataType() ) {
+    public Integer convertToInteger(final DTCellValue52 cell) {
+        switch (cell.getDataType()) {
             case NUMERIC_INTEGER:
-                if ( cell.getNumericValue() == null ) {
+                if (cell.getNumericValue() == null) {
                     return null;
                 }
                 return cell.getNumericValue().intValue();
@@ -545,20 +419,20 @@ public class CellUtilities {
             case NUMERIC_LONG:
             case NUMERIC_SHORT:
                 try {
-                    if ( cell.getNumericValue() == null ) {
+                    if (cell.getNumericValue() == null) {
                         return null;
                     }
-                    return new Integer( cell.getNumericValue().toString() );
-                } catch ( NumberFormatException nfe ) {
+                    return new Integer(cell.getNumericValue().toString());
+                } catch (NumberFormatException nfe) {
                     return null;
                 }
             case STRING:
                 try {
-                    if ( cell.getStringValue() == null ) {
+                    if (cell.getStringValue() == null) {
                         return null;
                     }
-                    return new Integer( cell.getStringValue() );
-                } catch ( NumberFormatException nfe ) {
+                    return new Integer(cell.getStringValue());
+                } catch (NumberFormatException nfe) {
                     return null;
                 }
             default:
@@ -566,10 +440,10 @@ public class CellUtilities {
         }
     }
 
-    public Long convertToLong( final DTCellValue52 cell ) {
-        switch ( cell.getDataType() ) {
+    public Long convertToLong(final DTCellValue52 cell) {
+        switch (cell.getDataType()) {
             case NUMERIC_LONG:
-                if ( cell.getNumericValue() == null ) {
+                if (cell.getNumericValue() == null) {
                     return null;
                 }
                 return cell.getNumericValue().longValue();
@@ -582,20 +456,20 @@ public class CellUtilities {
             case NUMERIC_INTEGER:
             case NUMERIC_SHORT:
                 try {
-                    if ( cell.getNumericValue() == null ) {
+                    if (cell.getNumericValue() == null) {
                         return null;
                     }
-                    return new Long( cell.getNumericValue().toString() );
-                } catch ( NumberFormatException nfe ) {
+                    return new Long(cell.getNumericValue().toString());
+                } catch (NumberFormatException nfe) {
                     return null;
                 }
             case STRING:
                 try {
-                    if ( cell.getStringValue() == null ) {
+                    if (cell.getStringValue() == null) {
                         return null;
                     }
-                    return new Long( cell.getStringValue() );
-                } catch ( NumberFormatException nfe ) {
+                    return new Long(cell.getStringValue());
+                } catch (NumberFormatException nfe) {
                     return null;
                 }
             default:
@@ -603,10 +477,10 @@ public class CellUtilities {
         }
     }
 
-    public Short convertToShort( final DTCellValue52 cell ) {
-        switch ( cell.getDataType() ) {
+    public Short convertToShort(final DTCellValue52 cell) {
+        switch (cell.getDataType()) {
             case NUMERIC_SHORT:
-                if ( cell.getNumericValue() == null ) {
+                if (cell.getNumericValue() == null) {
                     return null;
                 }
                 return cell.getNumericValue().shortValue();
@@ -619,20 +493,20 @@ public class CellUtilities {
             case NUMERIC_INTEGER:
             case NUMERIC_LONG:
                 try {
-                    if ( cell.getNumericValue() == null ) {
+                    if (cell.getNumericValue() == null) {
                         return null;
                     }
-                    return new Short( cell.getNumericValue().toString() );
-                } catch ( NumberFormatException nfe ) {
+                    return new Short(cell.getNumericValue().toString());
+                } catch (NumberFormatException nfe) {
                     return null;
                 }
             case STRING:
                 try {
-                    if ( cell.getStringValue() == null ) {
+                    if (cell.getStringValue() == null) {
                         return null;
                     }
-                    return new Short( cell.getStringValue() );
-                } catch ( NumberFormatException nfe ) {
+                    return new Short(cell.getStringValue());
+                } catch (NumberFormatException nfe) {
                     return null;
                 }
             default:
@@ -640,21 +514,21 @@ public class CellUtilities {
         }
     }
 
-    public Date convertToDate( final DTCellValue52 cell ) {
-        switch ( cell.getDataType() ) {
+    public Date convertToDate(final DTCellValue52 cell) {
+        switch (cell.getDataType()) {
             case DATE:
                 return cell.getDateValue();
             case STRING:
                 Date d = null;
                 final String text = cell.getStringValue();
                 try {
-                    if ( text != null ) {
-                        if ( DATE_CONVERTOR == null ) {
-                            throw new IllegalArgumentException( "DATE_CONVERTOR has not been initialised." );
+                    if (text != null) {
+                        if (DATE_CONVERTOR == null) {
+                            throw new IllegalArgumentException("DATE_CONVERTOR has not been initialised.");
                         }
-                        d = DATE_CONVERTOR.parse( text );
+                        d = DATE_CONVERTOR.parse(text);
                     }
-                } catch ( IllegalArgumentException e ) {
+                } catch (IllegalArgumentException e) {
                 }
                 return d;
             default:
@@ -662,15 +536,15 @@ public class CellUtilities {
         }
     }
 
-    public Boolean convertToBoolean( final DTCellValue52 cell ) {
-        switch ( cell.getDataType() ) {
+    public Boolean convertToBoolean(final DTCellValue52 cell) {
+        switch (cell.getDataType()) {
             case BOOLEAN:
                 return cell.getBooleanValue();
             case STRING:
                 final String text = cell.getStringValue();
-                if ( Boolean.TRUE.toString().equalsIgnoreCase( text ) ) {
+                if (Boolean.TRUE.toString().equalsIgnoreCase(text)) {
                     return true;
-                } else if ( Boolean.FALSE.toString().equalsIgnoreCase( text ) ) {
+                } else if (Boolean.FALSE.toString().equalsIgnoreCase(text)) {
                     return false;
                 }
             default:
@@ -678,14 +552,14 @@ public class CellUtilities {
         }
     }
 
-    public String convertToString( final DTCellValue52 cell ) {
-        switch ( cell.getDataType() ) {
+    public String convertToString(final DTCellValue52 cell) {
+        switch (cell.getDataType()) {
             case NUMERIC:
             case NUMERIC_BIGDECIMAL:
-                if ( cell.getNumericValue() == null ) {
+                if (cell.getNumericValue() == null) {
                     return null;
                 }
-                return ( (BigDecimal) cell.getNumericValue() ).toPlainString();
+                return ((BigDecimal) cell.getNumericValue()).toPlainString();
             case NUMERIC_BIGINTEGER:
             case NUMERIC_BYTE:
             case NUMERIC_DOUBLE:
@@ -693,21 +567,21 @@ public class CellUtilities {
             case NUMERIC_INTEGER:
             case NUMERIC_LONG:
             case NUMERIC_SHORT:
-                if ( cell.getNumericValue() == null ) {
+                if (cell.getNumericValue() == null) {
                     return null;
                 }
                 return cell.getNumericValue().toString();
             case DATE:
                 final Date d = cell.getDateValue();
-                if ( d != null ) {
-                    if ( DATE_CONVERTOR == null ) {
-                        throw new IllegalArgumentException( "DATE_CONVERTOR has not been initialised." );
+                if (d != null) {
+                    if (DATE_CONVERTOR == null) {
+                        throw new IllegalArgumentException("DATE_CONVERTOR has not been initialised.");
                     }
-                    return DATE_CONVERTOR.format( d );
+                    return DATE_CONVERTOR.format(d);
                 }
                 return null;
             case BOOLEAN:
-                if ( cell.getBooleanValue() == null ) {
+                if (cell.getBooleanValue() == null) {
                     return null;
                 }
                 return cell.getBooleanValue().toString();
@@ -715,5 +589,4 @@ public class CellUtilities {
                 return cell.getStringValue();
         }
     }
-
 }

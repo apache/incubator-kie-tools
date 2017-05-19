@@ -30,7 +30,6 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidge
 
 public class SystemControlledColumnValuesSynchronizer {
 
-
     private final GuidedDecisionTable52 model;
     private final GuidedDecisionTableUiModel uiModel;
     private final GridWidgetCellFactory gridWidgetCellFactory;
@@ -39,43 +38,48 @@ public class SystemControlledColumnValuesSynchronizer {
     private final SalienceSynchronizer salienceSynchronizer;
     private final PrioritySynchronizer prioritySynchronizer;
 
-    public SystemControlledColumnValuesSynchronizer( final GuidedDecisionTable52 model,
-                                                     final GuidedDecisionTableUiModel uiModel,
-                                                     final GridWidgetCellFactory gridWidgetCellFactory,
-                                                     final CellUtilities cellUtilities,
-                                                     final ColumnUtilities columnUtilities ) {
+    private interface PostSyncOperation {
+
+        void execute(final int rowNumberColumnIndex,
+                     final PrioritySynchronizer.RowNumberChanges rowNumberChanges);
+    }
+
+    public SystemControlledColumnValuesSynchronizer(final GuidedDecisionTable52 model,
+                                                    final GuidedDecisionTableUiModel uiModel,
+                                                    final GridWidgetCellFactory gridWidgetCellFactory,
+                                                    final CellUtilities cellUtilities,
+                                                    final ColumnUtilities columnUtilities) {
         this.model = model;
         this.uiModel = uiModel;
         this.gridWidgetCellFactory = gridWidgetCellFactory;
         this.cellUtilities = cellUtilities;
         this.columnUtilities = columnUtilities;
 
-        salienceSynchronizer = new SalienceSynchronizer( model,
-                                                         uiModel,
-                                                         gridWidgetCellFactory,
-                                                         cellUtilities,
-                                                         columnUtilities );
-        prioritySynchronizer = new PrioritySynchronizer( model,
-                                                         uiModel,
-                                                         gridWidgetCellFactory,
-                                                         cellUtilities,
-                                                         columnUtilities );
+        salienceSynchronizer = new SalienceSynchronizer(model,
+                                                        uiModel,
+                                                        gridWidgetCellFactory,
+                                                        cellUtilities,
+                                                        columnUtilities);
+        prioritySynchronizer = new PrioritySynchronizer(model,
+                                                        uiModel,
+                                                        gridWidgetCellFactory,
+                                                        cellUtilities,
+                                                        columnUtilities);
     }
 
     public void updateSystemControlledColumnValues() {
+        updateSystemControlledColumnValues(prioritySynchronizer::update);
+    }
 
-        for ( final BaseColumn column : model.getExpandedColumns() ) {
-            if ( column instanceof RowNumberCol52 ) {
-
-                updateRowNumberColumnValues( (RowNumberCol52) column );
-
-            } else if ( column instanceof AttributeCol52 ) {
-
+    private void updateSystemControlledColumnValues(final PostSyncOperation postSyncOperation) {
+        for (final BaseColumn column : model.getExpandedColumns()) {
+            if (column instanceof RowNumberCol52) {
+                updateRowNumberColumnValues((RowNumberCol52) column,
+                                            postSyncOperation);
+            } else if (column instanceof AttributeCol52) {
                 final AttributeCol52 attrCol = (AttributeCol52) column;
-
-                if ( attrCol.getAttribute()
-                        .equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
-                    salienceSynchronizer.updateSalienceColumnValues( attrCol );
+                if (attrCol.getAttribute().equals(RuleAttributeWidget.SALIENCE_ATTR)) {
+                    salienceSynchronizer.updateSalienceColumnValues(attrCol);
                 }
             }
         }
@@ -84,47 +88,44 @@ public class SystemControlledColumnValuesSynchronizer {
     /**
      * Update Row Number column values
      */
-    private void updateRowNumberColumnValues( final RowNumberCol52 modelColumn ) {
-
+    private void updateRowNumberColumnValues(final RowNumberCol52 modelColumn,
+                                             final PostSyncOperation postSyncOperation) {
         final PrioritySynchronizer.RowNumberChanges rowNumberChanges = new PrioritySynchronizer.RowNumberChanges();
 
-        final int iModelColumn = model.getExpandedColumns()
-                .indexOf( modelColumn );
-        for ( int rowNumber = 0; rowNumber < model.getData()
-                .size(); rowNumber++ ) {
+        final int iModelColumn = model.getExpandedColumns().indexOf(modelColumn);
+        for (int rowNumber = 0; rowNumber < model.getData().size(); rowNumber++) {
 
-            final List<DTCellValue52> modelRow = model.getData()
-                    .get( rowNumber );
-            final DTCellValue52 modelCell = modelRow.get( iModelColumn );
+            final List<DTCellValue52> modelRow = model.getData().get(rowNumber);
+            final DTCellValue52 modelCell = modelRow.get(iModelColumn);
 
             final int oldRowNumber = (Integer) modelCell.getNumericValue();
             final int newRowNumber = rowNumber + 1;
 
-            rowNumberChanges.put( oldRowNumber,
-                                  newRowNumber );
+            rowNumberChanges.put(oldRowNumber,
+                                 newRowNumber);
 
-            modelCell.setNumericValue( newRowNumber );
+            modelCell.setNumericValue(newRowNumber);
 
-            uiModel.setCellInternal( rowNumber,
-                                     iModelColumn,
-                                     gridWidgetCellFactory.convertCell( modelCell,
-                                                                        modelColumn,
-                                                                        cellUtilities,
-                                                                        columnUtilities ) );
+            uiModel.setCellInternal(rowNumber,
+                                    iModelColumn,
+                                    gridWidgetCellFactory.convertCell(modelCell,
+                                                                      modelColumn,
+                                                                      cellUtilities,
+                                                                      columnUtilities));
         }
-        if ( GuidedDecisionTable52.HitPolicy.RESOLVED_HIT.equals( model.getHitPolicy() ) ) {
-            prioritySynchronizer.update( iModelColumn, rowNumberChanges );
-        }
+
+        postSyncOperation.execute(iModelColumn,
+                                  rowNumberChanges);
     }
 
-    public void deleteRow( final int rowIndex ) {
+    public void deleteRow(final int rowIndex) {
         prioritySynchronizer.deleteRow(rowIndex);
-        updateSystemControlledColumnValues();
+        updateSystemControlledColumnValues((a, b) -> {/*None*/});
     }
 
-    public void insertRow( final int rowIndex ) {
+    public void insertRow(final int rowIndex) {
         prioritySynchronizer.insertRow(rowIndex);
-        updateSystemControlledColumnValues();
+        updateSystemControlledColumnValues((a, b) -> {/*None*/});
     }
 
     public void appendRow() {

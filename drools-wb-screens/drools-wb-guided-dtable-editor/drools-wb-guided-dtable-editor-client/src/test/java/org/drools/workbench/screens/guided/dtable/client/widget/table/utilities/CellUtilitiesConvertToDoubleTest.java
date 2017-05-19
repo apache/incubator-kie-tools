@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
+import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,6 +78,16 @@ public class CellUtilitiesConvertToDoubleTest {
         dcv.setOtherwise( isOtherwise );
         assertEquals( expected,
                       cellUtilities.convertToDouble( dcv ) );
+    }
+
+    @Test
+    public void conversionToDataType() {
+        final DTCellValue52 dcv = new DTCellValue52(value);
+        dcv.setOtherwise(isOtherwise);
+        cellUtilities.convertDTCellValueType(DataType.DataTypes.NUMERIC_DOUBLE,
+                                             dcv);
+        assertEquals(expected,
+                     dcv.getNumericValue());
     }
 
 }

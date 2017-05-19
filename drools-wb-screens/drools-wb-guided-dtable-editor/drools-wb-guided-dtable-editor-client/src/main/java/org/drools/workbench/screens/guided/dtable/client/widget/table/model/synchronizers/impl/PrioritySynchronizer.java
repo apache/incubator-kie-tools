@@ -51,6 +51,9 @@ public class PrioritySynchronizer {
 
     public void update(final int rowNumberColumnIndex,
                        final RowNumberChanges rowNumberChanges) {
+        if (!GuidedDecisionTable52.HitPolicy.RESOLVED_HIT.equals(model.getHitPolicy())) {
+            return;
+        }
 
         final Optional<BaseColumnInfo> optional = getPriorityColumnInfo();
 
@@ -70,7 +73,7 @@ public class PrioritySynchronizer {
 
                     GuidedDecisionTableUiCell newUiCell;
                     if (oldValue > rowNumber || rowNumberChanges.get(oldValue) > rowNumber) {
-                        newUiCell = new GuidedDecisionTableUiCell("");
+                        newUiCell = new GuidedDecisionTableUiCell<>("");
                     } else {
                         dtCellValue52.setStringValue(Integer.toString(rowNumberChanges.get(oldValue)));
                         newUiCell = gridWidgetCellFactory.convertCell(dtCellValue52,
@@ -113,71 +116,70 @@ public class PrioritySynchronizer {
     }
 
     public void deleteRow(final int deletedRowIndex) {
+        if (!GuidedDecisionTable52.HitPolicy.RESOLVED_HIT.equals(model.getHitPolicy())) {
+            return;
+        }
 
         final int deletedRowNumber = deletedRowIndex + 1;
 
-        if (GuidedDecisionTable52.HitPolicy.RESOLVED_HIT.equals(model.getHitPolicy())) {
+        final Optional<BaseColumnInfo> optional = getPriorityColumnInfo();
 
-            final Optional<BaseColumnInfo> optional = getPriorityColumnInfo();
+        if (optional.isPresent()) {
 
-            if (optional.isPresent()) {
+            final BaseColumnInfo baseColumnInfo = optional.get();
 
-                final BaseColumnInfo baseColumnInfo = optional.get();
+            int rowNumber = 0;
 
-                int rowNumber = 0;
+            for (final List<DTCellValue52> row : model.getData()) {
 
-                for (final List<DTCellValue52> row : model.getData()) {
+                final DTCellValue52 dtCellValue52 = row.get(baseColumnInfo.getColumnIndex());
+                final int oldValue = getNumber(dtCellValue52);
 
-                    final DTCellValue52 dtCellValue52 = row.get(baseColumnInfo.getColumnIndex());
-                    final int oldValue = getNumber(dtCellValue52);
-
-                    if (oldValue >= deletedRowNumber) {
-                        dtCellValue52.setNumericValue(oldValue - 1);
-
-                        uiModel.setCellInternal(rowNumber,
-                                                baseColumnInfo.getColumnIndex(),
-                                                gridWidgetCellFactory.convertCell(dtCellValue52,
-                                                                                  baseColumnInfo.getBaseColumn(),
-                                                                                  cellUtilities,
-                                                                                  columnUtilities));
-                    }
-
-                    rowNumber++;
+                if (oldValue >= deletedRowNumber) {
+                    dtCellValue52.setStringValue(Integer.toString(oldValue - 1));
+                    uiModel.setCellInternal(rowNumber,
+                                            baseColumnInfo.getColumnIndex(),
+                                            gridWidgetCellFactory.convertCell(dtCellValue52,
+                                                                              baseColumnInfo.getBaseColumn(),
+                                                                              cellUtilities,
+                                                                              columnUtilities));
                 }
+
+                rowNumber++;
             }
         }
     }
 
     public void insertRow(final int insertedRowIndex) {
+        if (!GuidedDecisionTable52.HitPolicy.RESOLVED_HIT.equals(model.getHitPolicy())) {
+            return;
+        }
 
-        if (GuidedDecisionTable52.HitPolicy.RESOLVED_HIT.equals(model.getHitPolicy())) {
+        final Optional<BaseColumnInfo> optional = getPriorityColumnInfo();
 
-            final Optional<BaseColumnInfo> optional = getPriorityColumnInfo();
+        if (optional.isPresent()) {
 
-            if (optional.isPresent()) {
+            final BaseColumnInfo baseColumnInfo = optional.get();
 
-                final BaseColumnInfo baseColumnInfo = optional.get();
+            int rowNumber = 0;
 
-                int rowNumber = 0;
+            for (final List<DTCellValue52> row : model.getData()) {
 
-                for (final List<DTCellValue52> row : model.getData()) {
+                final DTCellValue52 dtCellValue52 = row.get(baseColumnInfo.getColumnIndex());
+                final int oldValue = getNumber(dtCellValue52);
 
-                    final DTCellValue52 dtCellValue52 = row.get(baseColumnInfo.getColumnIndex());
-                    final int oldValue = getNumber(dtCellValue52);
+                if (oldValue != 0 && oldValue >= insertedRowIndex) {
+                    dtCellValue52.setStringValue(Integer.toString(oldValue + 1));
 
-                    if (oldValue != 0 && oldValue == insertedRowIndex) {
-                        dtCellValue52.setNumericValue(oldValue + 1);
-
-                        uiModel.setCellInternal(rowNumber,
-                                                baseColumnInfo.getColumnIndex(),
-                                                gridWidgetCellFactory.convertCell(dtCellValue52,
-                                                                                  baseColumnInfo.getBaseColumn(),
-                                                                                  cellUtilities,
-                                                                                  columnUtilities));
-                    }
-
-                    rowNumber++;
+                    uiModel.setCellInternal(rowNumber,
+                                            baseColumnInfo.getColumnIndex(),
+                                            gridWidgetCellFactory.convertCell(dtCellValue52,
+                                                                              baseColumnInfo.getBaseColumn(),
+                                                                              cellUtilities,
+                                                                              columnUtilities));
                 }
+
+                rowNumber++;
             }
         }
     }

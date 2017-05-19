@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
+import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,9 +40,9 @@ public class CellUtilitiesConvertToBigDecimalTest {
 
     private CellUtilities cellUtilities;
 
-    public CellUtilitiesConvertToBigDecimalTest( final Object expected,
-                                                 final Object value,
-                                                 final boolean isOtherwise ) {
+    public CellUtilitiesConvertToBigDecimalTest(final Object expected,
+                                                final Object value,
+                                                final boolean isOtherwise) {
         this.expected = expected;
         this.value = value;
         this.isOtherwise = isOtherwise;
@@ -54,29 +55,38 @@ public class CellUtilitiesConvertToBigDecimalTest {
 
     @Parameterized.Parameters
     public static Collection testParameters() {
-        return Arrays.asList( new Object[][]{
-                { new BigDecimal( "1" ), new BigDecimal( "1" ), false },
-                { new BigDecimal( "2" ), new BigInteger( "2" ), false },
-                { new BigDecimal( "3" ), new Byte( "3" ), false },
-                { new BigDecimal( "4.0" ), new Double( "4.0" ), false },
-                { new BigDecimal( "5.0" ), new Float( "5.0" ), false },
-                { new BigDecimal( "6" ), new Integer( "6" ), false },
-                { new BigDecimal( "7" ), new Long( "7" ), false },
-                { new BigDecimal( "8" ), new Short( "8" ), false },
-                { new BigDecimal( "9" ), "9", false },
-                { null, true, false },
-                { null, new Date(), false },
-                { null, "banana", false },
-                { null, null, true }
-        } );
+        return Arrays.asList(new Object[][]{
+                {new BigDecimal("1"), new BigDecimal("1"), false},
+                {new BigDecimal("2"), new BigInteger("2"), false},
+                {new BigDecimal("3"), new Byte("3"), false},
+                {new BigDecimal("4.0"), new Double("4.0"), false},
+                {new BigDecimal("5.0"), new Float("5.0"), false},
+                {new BigDecimal("6"), new Integer("6"), false},
+                {new BigDecimal("7"), new Long("7"), false},
+                {new BigDecimal("8"), new Short("8"), false},
+                {new BigDecimal("9"), "9", false},
+                {null, true, false},
+                {null, new Date(), false},
+                {null, "banana", false},
+                {null, null, true}
+        });
     }
 
     @Test
     public void conversion() {
-        final DTCellValue52 dcv = new DTCellValue52( value );
-        dcv.setOtherwise( isOtherwise );
-        assertEquals( expected,
-                      cellUtilities.convertToBigDecimal( dcv ) );
+        final DTCellValue52 dcv = new DTCellValue52(value);
+        dcv.setOtherwise(isOtherwise);
+        assertEquals(expected,
+                     cellUtilities.convertToBigDecimal(dcv));
     }
 
+    @Test
+    public void conversionToDataType() {
+        final DTCellValue52 dcv = new DTCellValue52(value);
+        dcv.setOtherwise(isOtherwise);
+        cellUtilities.convertDTCellValueType(DataType.DataTypes.NUMERIC_BIGDECIMAL,
+                                             dcv);
+        assertEquals(expected,
+                     dcv.getNumericValue());
+    }
 }
