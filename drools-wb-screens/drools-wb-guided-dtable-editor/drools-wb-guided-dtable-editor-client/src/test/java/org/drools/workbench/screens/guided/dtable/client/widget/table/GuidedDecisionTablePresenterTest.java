@@ -22,6 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
@@ -68,6 +73,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
@@ -242,6 +248,8 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         verify(dtPresenter,
                times(1)).initialiseValidationAndVerification();
         verify(dtPresenter,
+               times(1)).initialiseEventHandlers();
+        verify(dtPresenter,
                times(1)).initialiseAuditLog();
 
         assertEquals(GuidedDecisionTableView.ROW_HEIGHT,
@@ -309,6 +317,99 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
     @Test
     @SuppressWarnings("unchecked")
+    public void initialiseEventHandler() {
+        final ArgumentCaptor<NodeDragMoveHandler> nodeDragMoveHandlerArgumentCaptor = ArgumentCaptor.forClass(NodeDragMoveHandler.class);
+        final ArgumentCaptor<NodeMouseDoubleClickHandler> nodeMouseDoubleClickHandlerArgumentCaptor = ArgumentCaptor.forClass(NodeMouseDoubleClickHandler.class);
+
+        //dtPresenter.setContent(...) is called by the base tests @Before method
+        verify(view,
+               times(1)).registerNodeDragMoveHandler(nodeDragMoveHandlerArgumentCaptor.capture());
+        verify(view,
+               times(1)).registerNodeMouseDoubleClickHandler(nodeMouseDoubleClickHandlerArgumentCaptor.capture());
+
+        final NodeDragMoveHandler nodeDragMoveHandler = nodeDragMoveHandlerArgumentCaptor.getValue();
+        final NodeMouseDoubleClickHandler nodeMouseDoubleClickHandler = nodeMouseDoubleClickHandlerArgumentCaptor.getValue();
+        assertNotNull(nodeDragMoveHandler);
+        assertNotNull(nodeMouseDoubleClickHandler);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkRegisteredNodeDragMoveHandler() {
+        final ArgumentCaptor<NodeDragMoveHandler> nodeDragMoveHandlerArgumentCaptor = ArgumentCaptor.forClass(NodeDragMoveHandler.class);
+
+        //dtPresenter.setContent(...) is called by the base tests @Before method
+        verify(view,
+               times(1)).registerNodeDragMoveHandler(nodeDragMoveHandlerArgumentCaptor.capture());
+
+        final NodeDragMoveHandler nodeDragMoveHandler = nodeDragMoveHandlerArgumentCaptor.getValue();
+        assertNotNull(nodeDragMoveHandler);
+
+        nodeDragMoveHandler.onNodeDragMove(mock(NodeDragMoveEvent.class));
+        verify(modellerPresenter,
+               times(1)).updateRadar();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkRegisteredNodeMouseDoubleClickHandlerOverHeader() {
+        final ArgumentCaptor<NodeMouseDoubleClickHandler> nodeMouseDoubleClickHandlerArgumentCaptor = ArgumentCaptor.forClass(NodeMouseDoubleClickHandler.class);
+
+        //dtPresenter.setContent(...) is called by the base tests @Before method
+        verify(view,
+               times(1)).registerNodeMouseDoubleClickHandler(nodeMouseDoubleClickHandlerArgumentCaptor.capture());
+
+        final NodeMouseDoubleClickHandler nodeMouseDoubleClickHandler = nodeMouseDoubleClickHandlerArgumentCaptor.getValue();
+        assertNotNull(nodeMouseDoubleClickHandler);
+
+        //Mouse over Header, not pinned
+        final NodeMouseDoubleClickEvent event = mock(NodeMouseDoubleClickEvent.class);
+        when(view.isNodeMouseEventOverCaption(eq(event))).thenReturn(true);
+        when(modellerPresenter.isGridPinned()).thenReturn(false);
+
+        nodeMouseDoubleClickHandler.onNodeMouseDoubleClick(event);
+
+        verify(dtPresenter,
+               times(1)).enterPinnedMode(eq(view),
+                                         any(Command.class));
+
+        //Mouse over Header, pinned
+        when(modellerPresenter.isGridPinned()).thenReturn(true);
+
+        nodeMouseDoubleClickHandler.onNodeMouseDoubleClick(event);
+
+        verify(dtPresenter,
+               times(1)).exitPinnedMode(any(Command.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkRegisteredNodeMouseDoubleClickHandlerNotOverHeader() {
+        final ArgumentCaptor<NodeMouseDoubleClickHandler> nodeMouseDoubleClickHandlerArgumentCaptor = ArgumentCaptor.forClass(NodeMouseDoubleClickHandler.class);
+
+        //dtPresenter.setContent(...) is called by the base tests @Before method
+        verify(view,
+               times(1)).registerNodeMouseDoubleClickHandler(nodeMouseDoubleClickHandlerArgumentCaptor.capture());
+
+        final NodeMouseDoubleClickHandler nodeMouseDoubleClickHandler = nodeMouseDoubleClickHandlerArgumentCaptor.getValue();
+        assertNotNull(nodeMouseDoubleClickHandler);
+
+        //Mouse not over Header
+        final NodeMouseDoubleClickEvent event = mock(NodeMouseDoubleClickEvent.class);
+        when(view.isNodeMouseEventOverCaption(eq(event))).thenReturn(false);
+
+        nodeMouseDoubleClickHandler.onNodeMouseDoubleClick(event);
+
+        verify(dtPresenter,
+               never()).enterPinnedMode(any(GridWidget.class),
+                                        any(Command.class));
+        verify(dtPresenter,
+               never()).enterPinnedMode(any(GridWidget.class),
+                                        any(Command.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void link() {
         final GuidedDecisionTableView.Presenter dtPresenter2 = mock(GuidedDecisionTableView.Presenter.class);
         final GuidedDecisionTableView.Presenter dtPresenter3 = mock(GuidedDecisionTableView.Presenter.class);
@@ -360,17 +461,18 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testLinkOneProducerTwoConsumersOneFact() throws Exception {
         addActionInsertFactToModel(model1,
-                                 "Applicant",
-                                 "name");
+                                   "Applicant",
+                                   "name");
         addActionInsertFactToModel(model1,
                                    "Applicant",
                                    "age");
 
         addConstraintToModel(model2,
-                            "Applicant",
-                            "name");
+                             "Applicant",
+                             "name");
 
         addBrlConstraintToModel(model3,
                                 "Applicant",
@@ -383,6 +485,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testLinkOneProducerTwoConsumersTwoFacts() throws Exception {
         addActionInsertFactToModel(model1,
                                    "Applicant",
@@ -406,6 +509,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testLinkTwoProducersOneConsumerOneFact() throws Exception {
         addBrlInsertActionToModel(model1,
                                   "Applicant",
@@ -433,6 +537,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testLinkTwoProducersOneConsumerTwoFacts() throws Exception {
         addBrlInsertActionToModel(model1,
                                   "Applicant",
@@ -460,6 +565,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testLinkCircle() throws Exception {
         addConstraintToModel(model1,
                              "Applicant",
@@ -493,6 +599,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testNoLink() throws Exception {
         addActionInsertFactToModel(model1,
                                    "Applicant",
@@ -503,10 +610,13 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         linkTables();
 
-        verify(uiModel2MockColumn, never()).setLink(eq(uiModel1MockColumn));
-        verify(uiModel1MockColumn, never()).setLink(eq(uiModel2MockColumn));
+        verify(uiModel2MockColumn,
+               never()).setLink(eq(uiModel1MockColumn));
+        verify(uiModel1MockColumn,
+               never()).setLink(eq(uiModel2MockColumn));
     }
 
+    @SuppressWarnings("unchecked")
     private void linkTables() {
         final GridData uiModel1 = spy(new BaseGridData());
         final GridData uiModel2 = spy(new BaseGridData());

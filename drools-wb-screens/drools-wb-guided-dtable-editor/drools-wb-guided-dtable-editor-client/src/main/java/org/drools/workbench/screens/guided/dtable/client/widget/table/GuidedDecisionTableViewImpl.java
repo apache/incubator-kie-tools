@@ -19,6 +19,8 @@ import java.util.Set;
 import javax.enterprise.event.Event;
 
 import com.ait.lienzo.client.core.event.INodeXYEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.client.core.shape.BoundingBoxPathClipper;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPathClipper;
@@ -109,8 +111,16 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
         this.eventBus = eventBus;
         this.access = access;
         this.headerCaption = makeHeaderCaption();
+    }
 
-        addNodeDragMoveHandler((event) -> presenter.getModellerPresenter().updateRadar());
+    @Override
+    public void registerNodeDragMoveHandler(final NodeDragMoveHandler handler) {
+        addNodeDragMoveHandler(handler);
+    }
+
+    @Override
+    public void registerNodeMouseDoubleClickHandler(final NodeMouseDoubleClickHandler handler) {
+        addNodeMouseDoubleClickHandler(handler);
     }
 
     private Group makeHeaderCaption() {
@@ -143,7 +153,7 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
                                                0,
                                                captionWidth,
                                                HEADER_CAPTION_HEIGHT);
-        final IPathClipper clipper = new BoundingBoxPathClipper(bb);
+        final IPathClipper clipper = getPathClipper(bb);
         g.setPathClipper(clipper);
         clipper.setActive(true);
 
@@ -151,19 +161,12 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
         g.add(caption);
         g.add(border);
 
-        //Add handler to enter/exit "pinned" mode
-        addNodeMouseDoubleClickHandler((event) -> {
-            if (isNodeMouseEventOverCaption(event)) {
-                if (presenter.isGridPinned()) {
-                    presenter.exitPinnedMode(() -> {/*Nothing*/});
-                } else {
-                    presenter.enterPinnedMode(GuidedDecisionTableViewImpl.this,
-                                              () -> {/*Nothing*/});
-                }
-            }
-        });
-
         return g;
+    }
+
+    //Allow overriding in Unit Tests as BoundingBoxPathClipper cannot be mocked
+    IPathClipper getPathClipper(final BoundingBox bb) {
+        return new BoundingBoxPathClipper(bb);
     }
 
     private double getHeaderCaptionWidth() {
@@ -176,7 +179,8 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
         return isNodeMouseEventOverCaption(event);
     }
 
-    private boolean isNodeMouseEventOverCaption(final INodeXYEvent event) {
+    @Override
+    public boolean isNodeMouseEventOverCaption(final INodeXYEvent event) {
         final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(this,
                                                                           new Point2D(event.getX(),
                                                                                       event.getY()));

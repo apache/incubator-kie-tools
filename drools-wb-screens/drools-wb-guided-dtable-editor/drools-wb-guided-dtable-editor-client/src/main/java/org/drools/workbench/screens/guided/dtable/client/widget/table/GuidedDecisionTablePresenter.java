@@ -334,6 +334,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         initialiseUtilities();
         initialiseModels();
         initialiseValidationAndVerification();
+        initialiseEventHandlers();
         initialiseAuditLog();
     }
 
@@ -466,6 +467,20 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                                                             oracle,
                                                                             model,
                                                                             eventBus);
+    }
+
+    void initialiseEventHandlers() {
+        view.registerNodeDragMoveHandler((event) -> getModellerPresenter().updateRadar());
+        view.registerNodeMouseDoubleClickHandler((event) -> {
+            if (view.isNodeMouseEventOverCaption(event)) {
+                if (isGridPinned()) {
+                    exitPinnedMode(() -> {/*Nothing*/});
+                } else {
+                    enterPinnedMode(view,
+                                    () -> {/*Nothing*/});
+                }
+            }
+        });
     }
 
     //Setup Audit Log
