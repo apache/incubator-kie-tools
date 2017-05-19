@@ -70,6 +70,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.paging.PageResponse;
 import org.uberfire.rpc.SessionInfo;
@@ -216,37 +217,43 @@ public class LibraryServiceImpl implements LibraryService {
                                                                                                                                   queryTerms,
                                                                                                                                   query.getStartIndex(),
                                                                                                                                   query.getAmount()));
-        final List<FolderItem> assets = new ArrayList<>();
-
-        for (final RefactoringPageRow<Path> refactoringPageRow : findRulesByProjectQuery.getPageRowList()) {
-
-            final Path path = refactoringPageRow.getValue();
-            assets.add(new FolderItem(path,
-                                      path.getFileName(),
-                                      FolderItemType.FILE,
-                                      false,
-                                      Paths.readLockedBy(path),
-                                      Collections.<String>emptyList(),
-                                      explorerServiceHelper.getRestrictedOperations(path)
-            ));
-        }
+        final List<FolderItem> assets = findRulesByProjectQuery
+                .getPageRowList()
+                .stream()
+                .map(row -> {
+                    final Path path = (Path) row.getValue();
+                    return new FolderItem(path,
+                                          path.getFileName(),
+                                          FolderItemType.FILE,
+                                          false,
+                                          Paths.readLockedBy(path),
+                                          Collections.<String>emptyList(),
+                                          explorerServiceHelper.getRestrictedOperations(path));
+                })
+                .collect(Collectors.toList());
 
         return assets.stream()
                 .map(asset -> {
+                    AssetInfo info = null;
+                    try {
+                        final Map<String, Object> attributes = ioService.readAttributes(Paths.convert((Path) asset.getItem()));
 
-                    final Map<String, Object> attributes = ioService.readAttributes(Paths.convert((Path) asset.getItem()));
-
-                    final FileTime lastModifiedFileTime = (FileTime) getAttribute(LibraryService.LAST_MODIFIED_TIME,
-                                                                                  attributes).get();
-                    final FileTime createdFileTime = (FileTime) getAttribute(LibraryService.CREATED_TIME,
-                                                                             attributes).get();
-                    final Date lastModifiedTime = new Date(lastModifiedFileTime.toMillis());
-                    final Date createdTime = new Date(createdFileTime.toMillis());
-
-                    return new AssetInfo(asset,
-                                         lastModifiedTime,
-                                         createdTime);
+                        final FileTime lastModifiedFileTime = (FileTime) getAttribute(LibraryService.LAST_MODIFIED_TIME,
+                                                                                      attributes).get();
+                        final FileTime createdFileTime = (FileTime) getAttribute(LibraryService.CREATED_TIME,
+                                                                                 attributes).get();
+                        final Date lastModifiedTime = new Date(lastModifiedFileTime.toMillis());
+                        final Date createdTime = new Date(createdFileTime.toMillis());
+                        info = new AssetInfo(asset,
+                                             lastModifiedTime,
+                                             createdTime);
+                    } catch (NoSuchFileException nfe) {
+                        log.debug("File '" + asset.getFileName() + "' in LibraryIndex but not VFS. Suspected deletion. Skipping.");
+                    }
+                    return Optional.ofNullable(info);
                 })
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(Collectors.toList());
     }
 

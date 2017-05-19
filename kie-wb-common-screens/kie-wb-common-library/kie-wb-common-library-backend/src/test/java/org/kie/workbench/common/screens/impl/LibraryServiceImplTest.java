@@ -42,6 +42,7 @@ import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ExampleTargetRepository;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper;
+import org.kie.workbench.common.screens.library.api.AssetInfo;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
@@ -61,6 +62,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.paging.PageResponse;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -363,10 +365,10 @@ public class LibraryServiceImplTest {
     @Test
     public void queryWithAFilter() throws Exception {
 
+        final Path path = mockPath("file://the_project");
+
         final Project project = mock(Project.class);
-        final Path path = mock(Path.class);
         when(project.getRootPath()).thenReturn(path);
-        when(path.toURI()).thenReturn("file://the_project");
 
         doReturn(true).when(ioService).exists(any());
 
@@ -399,6 +401,45 @@ public class LibraryServiceImplTest {
                      pageRequest.getStartRowIndex());
         assertEquals(20,
                      (int) pageRequest.getPageSize());
+    }
+
+    @Test
+    public void queryAnItemThatIsInLuceneIndexButAlreadyDeletedFromGitRepository() throws Exception {
+
+        final Path path = mockPath("file://the_project");
+
+        final Project project = mock(Project.class);
+        when(project.getRootPath()).thenReturn(path);
+
+        doReturn(true).when(ioService).exists(any());
+
+        final ProjectAssetsQuery query = new ProjectAssetsQuery(project,
+                                                                "",
+                                                                10,
+                                                                20);
+
+        final PageResponse<RefactoringPageRow> pageRowPageResponse = new PageResponse<>();
+        final ArrayList<RefactoringPageRow> assetPageRowList = new ArrayList<>();
+        final RefactoringPageRow pageRow = mock(RefactoringPageRow.class);
+        final Path filePath = mockPath("file://the_project/delete.me");
+        when(filePath.getFileName()).thenReturn("delete.me");
+        when(pageRow.getValue()).thenReturn(filePath);
+        assetPageRowList.add(pageRow);
+
+        pageRowPageResponse.setPageRowList(assetPageRowList);
+        when(refactoringQueryService.query(any(RefactoringPageRequest.class))).thenReturn(pageRowPageResponse);
+
+        when(ioService.readAttributes(any())).thenThrow(new NoSuchFileException());
+
+        final List<AssetInfo> projectAssets = libraryService.getProjectAssets(query);
+
+        assertTrue(projectAssets.isEmpty());
+    }
+
+    private Path mockPath(final String uri) {
+        final Path path = mock(Path.class);
+        when(path.toURI()).thenReturn(uri);
+        return path;
     }
 
     private void assertQueryTermsContains(final Set<ValueIndexTerm> terms,
