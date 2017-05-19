@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.editor;
 
 import java.util.Collections;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
@@ -25,6 +26,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
@@ -115,5 +117,26 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
     public void checkOnOpenDocumentsInEditor() {
         exception.expect(UnsupportedOperationException.class);
         presenter.onOpenDocumentsInEditor(Collections.<Path>emptyList());
+    }
+
+    @Test
+    public void checkRemoveDocumentClosesEditor() {
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
+        final GuidedDecisionTableView.Presenter dtPresenter = mock(GuidedDecisionTableView.Presenter.class);
+        presenter.editorPlaceRequest = placeRequest;
+
+        presenter.removeDocument(dtPresenter);
+
+        final ArgumentCaptor<Scheduler.ScheduledCommand> commandCaptor = ArgumentCaptor.forClass(Scheduler.ScheduledCommand.class);
+
+        verify(presenter,
+               times(1)).scheduleClosure(commandCaptor.capture());
+
+        final Scheduler.ScheduledCommand command = commandCaptor.getValue();
+        assertNotNull(command);
+        command.execute();
+
+        verify(placeManager,
+               times(1)).forceClosePlace(eq(placeRequest));
     }
 }

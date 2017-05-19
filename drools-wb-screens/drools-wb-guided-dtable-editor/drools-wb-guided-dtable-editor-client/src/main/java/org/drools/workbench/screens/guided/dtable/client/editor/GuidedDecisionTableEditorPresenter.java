@@ -24,6 +24,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.EditMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuBuilder;
@@ -55,42 +56,42 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.*;
+import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.EDITOR_PROVIDED;
 
 /**
  * Guided Decision Table Editor Presenter
  */
 @Dependent
-@WorkbenchEditor(identifier = "GuidedDecisionTableEditor", supportedTypes = { GuidedDTableResourceType.class }, lockingStrategy = EDITOR_PROVIDED)
+@WorkbenchEditor(identifier = "GuidedDecisionTableEditor", supportedTypes = {GuidedDTableResourceType.class}, lockingStrategy = EDITOR_PROVIDED)
 public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableEditorPresenter {
 
     @Inject
-    public GuidedDecisionTableEditorPresenter( final View view,
-                                               final Caller<GuidedDecisionTableEditorService> service,
-                                               final Event<NotificationEvent> notification,
-                                               final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
-                                               final ValidationPopup validationPopup,
-                                               final GuidedDTableResourceType resourceType,
-                                               final EditMenuBuilder editMenuBuilder,
-                                               final ViewMenuBuilder viewMenuBuilder,
-                                               final InsertMenuBuilder insertMenuBuilder,
-                                               final RadarMenuBuilder radarMenuBuilder,
-                                               final GuidedDecisionTableModellerView.Presenter modeller,
-                                               final SyncBeanManager beanManager,
-                                               final PlaceManager placeManager ) {
-        super( view,
-               service,
-               notification,
-               decisionTableSelectedEvent,
-               validationPopup,
-               resourceType,
-               editMenuBuilder,
-               viewMenuBuilder,
-               insertMenuBuilder,
-               radarMenuBuilder,
-               modeller,
-               beanManager,
-               placeManager );
+    public GuidedDecisionTableEditorPresenter(final View view,
+                                              final Caller<GuidedDecisionTableEditorService> service,
+                                              final Event<NotificationEvent> notification,
+                                              final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
+                                              final ValidationPopup validationPopup,
+                                              final GuidedDTableResourceType resourceType,
+                                              final EditMenuBuilder editMenuBuilder,
+                                              final ViewMenuBuilder viewMenuBuilder,
+                                              final InsertMenuBuilder insertMenuBuilder,
+                                              final RadarMenuBuilder radarMenuBuilder,
+                                              final GuidedDecisionTableModellerView.Presenter modeller,
+                                              final SyncBeanManager beanManager,
+                                              final PlaceManager placeManager) {
+        super(view,
+              service,
+              notification,
+              decisionTableSelectedEvent,
+              validationPopup,
+              resourceType,
+              editMenuBuilder,
+              viewMenuBuilder,
+              insertMenuBuilder,
+              radarMenuBuilder,
+              modeller,
+              beanManager,
+              placeManager);
     }
 
     @Override
@@ -101,13 +102,13 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
 
     @Override
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest placeRequest ) {
-        super.onStartup( path,
-                         placeRequest );
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest placeRequest) {
+        super.onStartup(path,
+                        placeRequest);
 
-        loadDocument( path,
-                      placeRequest );
+        loadDocument(path,
+                     placeRequest);
     }
 
     @Override
@@ -117,32 +118,33 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
     }
 
     @Override
-    public void loadDocument( final ObservablePath path,
-                              final PlaceRequest placeRequest ) {
+    public void loadDocument(final ObservablePath path,
+                             final PlaceRequest placeRequest) {
         view.showLoading();
-        service.call( getLoadContentSuccessCallback( path,
-                                                     placeRequest ),
-                      getNoSuchFileExceptionErrorCallback() ).loadContent( path );
+        service.call(getLoadContentSuccessCallback(path,
+                                                   placeRequest),
+                     getNoSuchFileExceptionErrorCallback()).loadContent(path);
     }
 
-    protected RemoteCallback<GuidedDecisionTableEditorContent> getLoadContentSuccessCallback( final ObservablePath path,
-                                                                                              final PlaceRequest placeRequest ) {
-        return ( content ) -> {
+    protected RemoteCallback<GuidedDecisionTableEditorContent> getLoadContentSuccessCallback(final ObservablePath path,
+                                                                                             final PlaceRequest placeRequest) {
+        return (content) -> {
             //Path is set to null when the Editor is closed (which can happen before async calls complete).
-            if ( path == null ) {
+            if (path == null) {
                 return;
             }
 
             //Add Decision Table to modeller
-            final GuidedDecisionTableView.Presenter dtPresenter = modeller.addDecisionTable( path,
-                                                                                             placeRequest,
-                                                                                             content,
-                                                                                             placeRequest.getParameter( "readOnly", null ) != null,
-                                                                                             null,
-                                                                                             null );
-            registerDocument( dtPresenter );
+            final GuidedDecisionTableView.Presenter dtPresenter = modeller.addDecisionTable(path,
+                                                                                            placeRequest,
+                                                                                            content,
+                                                                                            placeRequest.getParameter("readOnly",
+                                                                                                                      null) != null,
+                                                                                            null,
+                                                                                            null);
+            registerDocument(dtPresenter);
 
-            decisionTableSelectedEvent.fire( new DecisionTableSelectedEvent( dtPresenter ) );
+            decisionTableSelectedEvent.fire(new DecisionTableSelectedEvent(dtPresenter));
 
             view.hideBusyIndicator();
         };
@@ -179,35 +181,45 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
     }
 
     @Override
-    protected void onDecisionTableSelected( final @Observes DecisionTableSelectedEvent event ) {
-        super.onDecisionTableSelected( event );
+    protected void onDecisionTableSelected(final @Observes DecisionTableSelectedEvent event) {
+        super.onDecisionTableSelected(event);
     }
 
     @Override
     public void makeMenuBar() {
         this.menus = fileMenuBuilder
-                .addSave( getSaveMenuItem() )
-                .addCopy( () -> getActiveDocument().getCurrentPath(),
-                          fileNameValidator )
-                .addRename( () -> getActiveDocument().getLatestPath(),
-                            fileNameValidator )
-                .addDelete( () -> getActiveDocument().getLatestPath() )
-                .addValidate( () -> onValidate( getActiveDocument() ) )
-                .addNewTopLevelMenu( getEditMenuItem() )
-                .addNewTopLevelMenu( getViewMenuItem() )
-                .addNewTopLevelMenu( getInsertMenuItem() )
-                .addNewTopLevelMenu( getRadarMenuItem() )
-                .addNewTopLevelMenu( getVersionManagerMenuItem() )
+                .addSave(getSaveMenuItem())
+                .addCopy(() -> getActiveDocument().getCurrentPath(),
+                         fileNameValidator)
+                .addRename(() -> getActiveDocument().getLatestPath(),
+                           fileNameValidator)
+                .addDelete(() -> getActiveDocument().getLatestPath())
+                .addValidate(() -> onValidate(getActiveDocument()))
+                .addNewTopLevelMenu(getEditMenuItem())
+                .addNewTopLevelMenu(getViewMenuItem())
+                .addNewTopLevelMenu(getInsertMenuItem())
+                .addNewTopLevelMenu(getRadarMenuItem())
+                .addNewTopLevelMenu(getVersionManagerMenuItem())
                 .build();
     }
 
     @Override
-    public void onOpenDocumentsInEditor( final List<Path> selectedDocumentPaths ) {
+    public void onOpenDocumentsInEditor(final List<Path> selectedDocumentPaths) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void getAvailableDocumentPaths( final Callback<List<Path>> callback ) {
-        callback.callback( Collections.<Path>emptyList() );
+    public void getAvailableDocumentPaths(final Callback<List<Path>> callback) {
+        callback.callback(Collections.<Path>emptyList());
+    }
+
+    @Override
+    public void removeDocument(GuidedDecisionTableView.Presenter dtPresenter) {
+        super.removeDocument(dtPresenter);
+        scheduleClosure(() -> placeManager.forceClosePlace(editorPlaceRequest));
+    }
+
+    void scheduleClosure(final Scheduler.ScheduledCommand command) {
+        Scheduler.get().scheduleDeferred(command);
     }
 }
