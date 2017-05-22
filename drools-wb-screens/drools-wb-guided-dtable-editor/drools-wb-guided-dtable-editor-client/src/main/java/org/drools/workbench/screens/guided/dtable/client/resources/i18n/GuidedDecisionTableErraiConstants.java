@@ -99,6 +99,9 @@ public class GuidedDecisionTableErraiConstants {
     public static final String MetaDataColumnPage_ThatColumnNameIsAlreadyInUsePleasePickAnother = "MetaDataColumnPage.ThatColumnNameIsAlreadyInUsePleasePickAnother";
 
     @TranslationKey(defaultValue = "")
+    public static final String MetaDataColumnPage_IsNotValidIdentifier = "MetaDataColumnPage.IsNotValidIdentifier";
+
+    @TranslationKey(defaultValue = "")
     public static final String OperatorPage_Operator = "OperatorPage.Operator";
 
     @TranslationKey(defaultValue = "")

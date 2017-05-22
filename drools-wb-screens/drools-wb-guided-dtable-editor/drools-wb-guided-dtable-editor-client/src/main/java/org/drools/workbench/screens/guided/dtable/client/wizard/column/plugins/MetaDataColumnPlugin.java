@@ -30,8 +30,6 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
-import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils.nil;
-
 @Dependent
 public class MetaDataColumnPlugin extends BaseDecisionTableColumnPlugin {
 
@@ -63,10 +61,6 @@ public class MetaDataColumnPlugin extends BaseDecisionTableColumnPlugin {
 
     @Override
     public Boolean generateColumn() {
-        if (!isValidMetadata()) {
-            return false;
-        }
-
         presenter.appendColumn(metadataColumn());
 
         return true;
@@ -75,20 +69,6 @@ public class MetaDataColumnPlugin extends BaseDecisionTableColumnPlugin {
     @Override
     public Type getType() {
         return Type.ADVANCED;
-    }
-
-    boolean isValidMetadata() {
-        if (nil(metaData)) {
-            page.emptyMetadataError();
-            return false;
-        }
-
-        if (!presenter.isMetaDataUnique(metaData)) {
-            page.columnNameIsAlreadyInUseError();
-            return false;
-        }
-
-        return true;
     }
 
     private MetadataCol52 metadataColumn() {

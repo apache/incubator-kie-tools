@@ -26,14 +26,18 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.MetaDataColumnPlugin;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -49,6 +53,11 @@ public class MetaDataColumnPageTest {
 
     @Mock
     private TranslationService translationService;
+    
+    private Caller<ValidationService> validationServiceCaller;
+
+    @Mock
+    private ValidationService validationService;
 
     @Mock
     private MetaDataColumnPage.View view;
@@ -58,7 +67,10 @@ public class MetaDataColumnPageTest {
 
     @InjectMocks
     private MetaDataColumnPage page = new MetaDataColumnPage(view,
-                                                             translationService);
+                                                             translationService,
+                                                             validationServiceCaller);
+
+    private static Map<String, Boolean> validationResult;
 
     @BeforeClass
     public static void setupPreferences() {
@@ -70,6 +82,24 @@ public class MetaDataColumnPageTest {
 
         // Prevent runtime GWT.create() error at 'content = new SimplePanel()'
         GWTMockUtilities.disarm();
+
+        validationResult = new HashMap<>();
+        validationResult.put("metaData", true);
+        validationResult.put("*", false);
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        when(translationService.format(GuidedDecisionTableErraiConstants.MetaDataColumnPage_MetadataNameEmpty))
+                .thenReturn("empty");
+        when(translationService.format(GuidedDecisionTableErraiConstants.MetaDataColumnPage_ThatColumnNameIsAlreadyInUsePleasePickAnother))
+                .thenReturn("alreadyUsed");
+        when(translationService.format(GuidedDecisionTableErraiConstants.MetaDataColumnPage_IsNotValidIdentifier))
+                .thenReturn("isNotValid");
+
+        validationServiceCaller = new CallerMock<>(validationService);
+        page.validationService = validationServiceCaller;
+        when(validationService.evaluateJavaIdentifiers(any())).thenReturn(validationResult);
     }
 
     @Test
@@ -77,6 +107,8 @@ public class MetaDataColumnPageTest {
         when(plugin.getMetaData()).thenReturn(null);
 
         page.isComplete(Assert::assertFalse);
+        verify(view).showError("empty");
+        verify(view, never()).hideError();
     }
 
     @Test
@@ -84,13 +116,19 @@ public class MetaDataColumnPageTest {
         when(plugin.getMetaData()).thenReturn("");
 
         page.isComplete(Assert::assertFalse);
+        verify(view).showError("empty");
+        verify(view, never()).hideError();
     }
 
     @Test
     public void testIsCompleteWhenMetaDataIsNotNull() throws Exception {
         when(plugin.getMetaData()).thenReturn("metaData");
+        when(presenter.isMetaDataUnique("metaData")).thenReturn(true);
 
         page.isComplete(Assert::assertTrue);
+
+        verify(view, never()).showError(anyString());
+        verify(view).hideError();
     }
 
     @Test
@@ -101,19 +139,48 @@ public class MetaDataColumnPageTest {
     }
 
     @Test
-    public void testEmptyMetadataError() throws Exception {
-        page.emptyMetadataError();
+    public void testColumnNameIsAlreadyInUseError() throws Exception {
+        when(plugin.getMetaData()).thenReturn("metaData");
+        when(presenter.isMetaDataUnique("metaData")).thenReturn(false);
 
-        verify(view).showError(any());
-        verify(translationService).format(GuidedDecisionTableErraiConstants.MetaDataColumnPage_MetadataNameEmpty);
+        page.isComplete(Assert::assertFalse);
+        verify(view).showError("alreadyUsed");
+        verify(view, never()).hideError();
     }
 
     @Test
-    public void testColumnNameIsAlreadyInUseError() throws Exception {
-        page.columnNameIsAlreadyInUseError();
+    public void testShowJustOneErrorEmptyAndNotUnique() throws Exception {
+        when(plugin.getMetaData()).thenReturn("");
+        when(presenter.isMetaDataUnique("")).thenReturn(false);
 
-        verify(view).showError(any());
-        verify(translationService).format(GuidedDecisionTableErraiConstants.MetaDataColumnPage_ThatColumnNameIsAlreadyInUsePleasePickAnother);
+        page.isComplete(Assert::assertFalse);
+        verify(view).showError("empty");
+        verify(view, never()).showError("isNotValid");
+        verify(view, never()).showError("alreadyUsed");
+        verify(view, never()).hideError();
+    }
+
+    @Test
+    public void testShowJustOneErrorNotEmptyNotUnique() throws Exception {
+        when(plugin.getMetaData()).thenReturn("a");
+        when(presenter.isMetaDataUnique("a")).thenReturn(false);
+
+        page.isComplete(Assert::assertFalse);
+        verify(view, never()).showError("empty");
+        verify(view, never()).showError("isNotValid");
+        verify(view).showError("alreadyUsed");
+        verify(view, never()).hideError();
+    }
+
+    @Test
+    public void testInvalidIdentifier() throws Exception {
+        when(plugin.getMetaData()).thenReturn("*");
+        when(presenter.isMetaDataUnique("*")).thenReturn(true);
+
+        page.isComplete(Assert::assertFalse);
+        
+        verify(view).showError("isNotValid");
+        verify(view, never()).hideError();
     }
 
     @Test

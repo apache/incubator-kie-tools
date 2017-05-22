@@ -16,17 +16,21 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 
+import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.Window;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.BaseDecisionTableColumnPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.MetaDataColumnPlugin;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.client.mvp.UberView;
 
 import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils.nil;
 
@@ -35,12 +39,16 @@ public class MetaDataColumnPage extends BaseDecisionTableColumnPage<MetaDataColu
 
     private View view;
 
+    Caller<ValidationService> validationService;
+
     @Inject
     public MetaDataColumnPage(final View view,
-                              final TranslationService translationService) {
+                              final TranslationService translationService,
+                              final Caller<ValidationService> validationService) {
         super(translationService);
 
         this.view = view;
+        this.validationService = validationService;
     }
 
     @Override
@@ -55,9 +63,22 @@ public class MetaDataColumnPage extends BaseDecisionTableColumnPage<MetaDataColu
 
     @Override
     public void isComplete(final Callback<Boolean> callback) {
-        final boolean hasMetaData = !nil(plugin().getMetaData());
+        final String metadata = plugin().getMetaData();
+        final boolean hasMetaData = !nil(metadata);
+        final boolean isUnique = hasMetaData && presenter.isMetaDataUnique(metadata);
 
-        callback.callback(hasMetaData);
+        if(!hasMetaData) {
+            view.showError(translate(GuidedDecisionTableErraiConstants.MetaDataColumnPage_MetadataNameEmpty));
+        }
+        else if(!isUnique) {
+            view.showError(translate(GuidedDecisionTableErraiConstants.MetaDataColumnPage_ThatColumnNameIsAlreadyInUsePleasePickAnother));
+        }
+
+        if(isUnique) {
+            isValidIdentifier(metadata, callback);
+        } else {
+            callback.callback(false);
+        }
     }
 
     @Override
@@ -74,18 +95,27 @@ public class MetaDataColumnPage extends BaseDecisionTableColumnPage<MetaDataColu
         plugin().setMetaData(metadata.trim());
     }
 
-    public void emptyMetadataError() {
-        view.showError(translate(GuidedDecisionTableErraiConstants.MetaDataColumnPage_MetadataNameEmpty));
-    }
-
-    public void columnNameIsAlreadyInUseError() {
-        view.showError(translate(GuidedDecisionTableErraiConstants.MetaDataColumnPage_ThatColumnNameIsAlreadyInUsePleasePickAnother));
-    }
-
     public interface View extends UberElement<MetaDataColumnPage> {
 
         void showError(String errorMessage);
 
+        void hideError();
+
         void clear();
+    }
+
+    private void isValidIdentifier(String text, Callback<Boolean> callback) {
+        validationService.call(new RemoteCallback<Map<String, Boolean>>() {
+                                   @Override
+                                   public void callback(Map<String, Boolean> evaluatedIdentifiers) {
+                                       if (!evaluatedIdentifiers.get(text)) {
+                                           view.showError(translate(GuidedDecisionTableErraiConstants.MetaDataColumnPage_IsNotValidIdentifier));
+                                           callback.callback(false);
+                                       } else {
+                                           view.hideError();
+                                           callback.callback(true);
+                                       }
+                                   }
+                               }).evaluateJavaIdentifiers(new String[] {text});
     }
 }

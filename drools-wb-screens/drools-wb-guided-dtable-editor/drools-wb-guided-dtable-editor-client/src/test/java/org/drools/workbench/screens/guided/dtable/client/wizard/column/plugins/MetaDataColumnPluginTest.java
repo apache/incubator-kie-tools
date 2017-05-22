@@ -74,18 +74,6 @@ public class MetaDataColumnPluginTest {
     }
 
     @Test
-    public void testGenerateColumnWhenMetaDataIsNotValid() throws Exception {
-        final MetadataCol52 column = mock(MetadataCol52.class);
-
-        final Boolean success = plugin.generateColumn();
-
-        verify(presenter,
-               never()).appendColumn(column);
-
-        assertFalse(success);
-    }
-
-    @Test
     public void testGenerateColumnWhenMetaDataIsValid() throws Exception {
         final String metaData = "metaData";
         final ArgumentCaptor<MetadataCol52> colCaptor = ArgumentCaptor.forClass(MetadataCol52.class);
@@ -102,52 +90,6 @@ public class MetaDataColumnPluginTest {
         assertTrue(colCaptor.getValue().isHideColumn());
         assertEquals(metaData,
                      colCaptor.getValue().getMetadata());
-    }
-
-    @Test
-    public void testIsValidMetadataWhenMetadataIsNull() throws Exception {
-        plugin.setMetaData(null);
-
-        final boolean isValid = plugin.isValidMetadata();
-
-        verify(page).emptyMetadataError();
-
-        assertFalse(isValid);
-    }
-
-    @Test
-    public void testIsValidMetadataWhenMetadataIsBlank() throws Exception {
-        plugin.setMetaData("");
-
-        final boolean isValid = plugin.isValidMetadata();
-
-        verify(page).emptyMetadataError();
-
-        assertFalse(isValid);
-    }
-
-    @Test
-    public void testIsValidMetadataWhenMetadataIsNotUnique() throws Exception {
-        plugin.setMetaData("metaData");
-
-        when(presenter.isMetaDataUnique(eq("metaData"))).thenReturn(false);
-
-        final boolean isValid = plugin.isValidMetadata();
-
-        verify(page).columnNameIsAlreadyInUseError();
-
-        assertFalse(isValid);
-    }
-
-    @Test
-    public void testIsValidMetadataWhenMetadataIsValid() throws Exception {
-        plugin.setMetaData("metaData");
-
-        when(presenter.isMetaDataUnique(eq("metaData"))).thenReturn(true);
-
-        final boolean isValid = plugin.isValidMetadata();
-
-        assertTrue(isValid);
     }
 
     @Test

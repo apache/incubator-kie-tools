@@ -70,9 +70,14 @@ public class MetaDataColumnPageView implements IsElement,
     }
 
     @Override
-    public void clear() {
-        metaDataBox.setText(page.getMetadata());
+    public void hideError() {
         errorMessage.setTextContent("");
         error.setHidden(true);
+    }
+
+    @Override
+    public void clear() {
+        metaDataBox.setText(page.getMetadata());
+        hideError();
     }
 }
