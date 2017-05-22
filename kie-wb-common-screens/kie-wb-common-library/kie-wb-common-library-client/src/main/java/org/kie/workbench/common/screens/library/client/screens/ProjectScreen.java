@@ -291,7 +291,7 @@ public class ProjectScreen {
                                                    return false;
                                                }
                                            },
-                                           1000);
+                                           2000);
     }
 
     public void onFilterChange() {
