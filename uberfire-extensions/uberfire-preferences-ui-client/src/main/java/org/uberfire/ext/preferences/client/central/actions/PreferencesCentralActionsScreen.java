@@ -91,15 +91,17 @@ public class PreferencesCentralActionsScreen {
     }
 
     void goBackToAdminPage() {
-        Map<String, String> params = new HashMap<>();
-        params.put("screen",
-                   adminPageScreenToGoBack);
-        if (perspectiveIdentifierToGoBackTo != null) {
-            params.put("perspectiveIdentifierToGoBackTo",
-                       perspectiveIdentifierToGoBackTo);
+        if (adminPageScreenToGoBack != null) {
+            Map<String, String> params = new HashMap<>();
+            params.put("screen",
+                       adminPageScreenToGoBack);
+            if (perspectiveIdentifierToGoBackTo != null) {
+                params.put("perspectiveIdentifierToGoBackTo",
+                           perspectiveIdentifierToGoBackTo);
+            }
+            placeManager.goTo(new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER,
+                                                      params));
         }
-        placeManager.goTo(new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER,
-                                                  params));
     }
 
     @WorkbenchPartTitle

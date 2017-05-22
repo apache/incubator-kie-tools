@@ -18,8 +18,6 @@ package org.uberfire.ext.preferences.client.central.tree;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -31,15 +29,12 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.preferences.client.central.form.DefaultPreferenceForm;
 import org.uberfire.ext.preferences.client.central.hierarchy.HierarchyItemPresenter;
 import org.uberfire.ext.preferences.client.central.hierarchy.HierarchyStructurePresenter;
 import org.uberfire.ext.preferences.client.central.hierarchy.HierarchyStructureView;
 import org.uberfire.ext.preferences.client.event.HierarchyItemFormInitializationEvent;
-import org.uberfire.ext.preferences.client.event.HierarchyItemSelectedEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
 import org.uberfire.ext.preferences.client.utils.PreferenceFormBeansInfo;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.preferences.shared.bean.BasePreference;
 import org.uberfire.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.preferences.shared.bean.PreferenceBeanServerStore;
@@ -135,19 +130,6 @@ public class TreeHierarchyStructurePresenter implements HierarchyStructurePresen
         }
     }
 
-    public void hierarchyItemSelectedEvent(@Observes HierarchyItemSelectedEvent hierarchyItemSelectedEvent) {
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("id",
-                       hierarchyItemSelectedEvent.getItemId());
-        parameters.put("title",
-                       view.getTranslation(hierarchyItemSelectedEvent.getPreference().bundleKey()));
-
-        placeManager.goTo(new DefaultPlaceRequest(getPreferenceFormIdentifier(hierarchyItemSelectedEvent.getPreferenceIdentifier()),
-                                                  parameters));
-        final HierarchyItemFormInitializationEvent event = new HierarchyItemFormInitializationEvent(hierarchyItemSelectedEvent.getHierarchyElement());
-        hierarchyItemFormInitializationEvent.fire(event);
-    }
-
     public void saveEvent(@Observes PreferencesCentralSaveEvent event) {
         Collection<BasePreferencePortable<? extends BasePreference<?>>> preferencesToSave = getPreferencesToSave(preferenceElement);
 
@@ -183,11 +165,6 @@ public class TreeHierarchyStructurePresenter implements HierarchyStructurePresen
 
     public HierarchyItemPresenter getHierarchyItem() {
         return hierarchyItem;
-    }
-
-    public String getPreferenceFormIdentifier(final String preferenceIdentifier) {
-        final String customForm = preferenceFormBeansInfo.getPreferenceFormFor(preferenceIdentifier);
-        return customForm != null ? customForm : DefaultPreferenceForm.IDENTIFIER;
     }
 
     @Override

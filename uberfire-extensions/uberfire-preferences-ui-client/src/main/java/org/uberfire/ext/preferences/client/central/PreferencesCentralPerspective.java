@@ -16,27 +16,16 @@
 
 package org.uberfire.ext.preferences.client.central;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.workbench.docks.UberfireDock;
-import org.uberfire.client.workbench.docks.UberfireDockPosition;
-import org.uberfire.client.workbench.docks.UberfireDockReadyEvent;
-import org.uberfire.client.workbench.docks.UberfireDocks;
-import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
-import org.uberfire.ext.preferences.client.central.actions.PreferencesCentralActionsScreen;
-import org.uberfire.ext.preferences.client.resources.i18n.Constants;
+import org.uberfire.ext.preferences.client.central.screen.PreferencesRootScreen;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.model.CompassPosition;
-import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
@@ -49,18 +38,7 @@ public class PreferencesCentralPerspective {
     @Inject
     private TranslationService translationService;
 
-    @Inject
-    private UberfireDocks uberfireDocks;
-
-    private UberfireDock dock;
-
     private PerspectiveDefinition perspective;
-
-    public void perspectiveChangeEvent(@Observes UberfireDockReadyEvent dockReadyEvent) {
-        if (dockReadyEvent.getCurrentPerspective().equals(IDENTIFIER)) {
-            uberfireDocks.expand(dock);
-        }
-    }
 
     @Perspective
     public PerspectiveDefinition getPerspective() {
@@ -68,28 +46,11 @@ public class PreferencesCentralPerspective {
     }
 
     PerspectiveDefinition buildPerspective() {
-        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(StaticWorkbenchPanelPresenter.class.getName());
         perspective.setName("Preferences");
 
-        final PanelDefinition actionsBar = new PanelDefinitionImpl(StaticWorkbenchPanelPresenter.class.getName());
-        actionsBar.setHeight(80);
-        actionsBar.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(PreferencesCentralActionsScreen.IDENTIFIER)));
-
-        perspective.getRoot().insertChild(CompassPosition.SOUTH,
-                                          actionsBar);
+        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest(PreferencesRootScreen.IDENTIFIER)));
 
         return perspective;
-    }
-
-    @PostConstruct
-    public void setupNavBarDock() {
-        dock = new UberfireDock(UberfireDockPosition.WEST,
-                                "ADJUST",
-                                new DefaultPlaceRequest(PreferencesCentralNavBarScreen.IDENTIFIER),
-                                IDENTIFIER)
-                .withLabel(translationService.format(Constants.PreferencesCentralPerspective_Preferences))
-                .withSize(420);
-
-        uberfireDocks.add(dock);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,47 +14,61 @@
  * limitations under the License.
  */
 
-package org.uberfire.ext.preferences.client.central.tree;
+package org.uberfire.ext.preferences.client.central.screen;
 
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.ext.preferences.client.resources.i18n.Constants;
 
-@Dependent
 @Templated
-public class TreeHierarchyStructureView implements IsElement,
-                                                   TreeHierarchyStructurePresenter.View {
+public class PreferencesRootView implements IsElement,
+                                            PreferencesRootScreen.View {
 
     private final TranslationService translationService;
 
     @Inject
-    @DataField("preference-tree")
-    Div tree;
+    @DataField("preferences-navbar")
+    private Div navbar;
 
     @Inject
-    public TreeHierarchyStructureView(final TranslationService translationService) {
+    @DataField("preferences-editor")
+    private Div editor;
+
+    @Inject
+    @DataField("preferences-actions")
+    private Div actions;
+
+    @Inject
+    public PreferencesRootView(TranslationService translationService) {
         this.translationService = translationService;
     }
 
     @Override
-    public void init(final TreeHierarchyStructurePresenter presenter) {
-        tree.setInnerHTML("");
-        tree.appendChild(((IsElement) presenter.getHierarchyItem().getView()).getElement());
+    public void init(PreferencesRootScreen presenter) {
     }
 
     @Override
-    public String getTranslation(final String key) {
+    public HTMLElement getNavbarContainer() {
+        return navbar;
+    }
+
+    @Override
+    public HTMLElement getEditorContainer() {
+        return editor;
+    }
+
+    @Override
+    public HTMLElement getActionsContainer() {
+        return actions;
+    }
+
+    @Override
+    public String getTranslation(String key) {
         return translationService.format(key);
-    }
-
-    @Override
-    public String getSaveSuccessMessage() {
-        return translationService.format(Constants.TreeHierarchyStructureView_SaveSuccess);
     }
 }

@@ -30,6 +30,7 @@ import org.uberfire.ext.preferences.client.event.PreferencesCentralActionsConfig
 import org.uberfire.ext.preferences.client.event.PreferencesCentralPreSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralUndoChangesEvent;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -73,12 +74,13 @@ public class PreferencesCentralActionsScreenTest {
         params = new HashMap<>();
         params.put("screen",
                    "screen");
-        actionsScreen.initEvent(new PreferencesCentralActionsConfigurationEvent("screen",
-                                                                                null));
     }
 
     @Test
     public void fireSaveEventTest() {
+        actionsScreen.initEvent(new PreferencesCentralActionsConfigurationEvent("screen",
+                                                                                null));
+
         actionsScreen.fireSaveEvent();
 
         verify(preSaveEvent).fire(any(PreferencesCentralPreSaveEvent.class));
@@ -88,13 +90,36 @@ public class PreferencesCentralActionsScreenTest {
     }
 
     @Test
+    public void fireSaveEventWithoutAdminScreenToGoBackToTest() {
+        actionsScreen.fireSaveEvent();
+
+        verify(preSaveEvent).fire(any(PreferencesCentralPreSaveEvent.class));
+        verify(saveEvent).fire(any(PreferencesCentralSaveEvent.class));
+        verify(placeManager,
+               never()).goTo(any(PlaceRequest.class));
+    }
+
+    @Test
     public void fireUndoEventTest() {
+        actionsScreen.initEvent(new PreferencesCentralActionsConfigurationEvent("screen",
+                                                                                null));
+
         actionsScreen.fireCancelEvent();
 
         verify(undoChangesEvent).fire(any(PreferencesCentralUndoChangesEvent.class));
         verify(notification).fire(any(NotificationEvent.class));
         verify(placeManager).goTo(eq(new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER,
                                                              params)));
+    }
+
+    @Test
+    public void fireUndoEventWithoutAdminScreenToGoBackToTest() {
+        actionsScreen.fireCancelEvent();
+
+        verify(undoChangesEvent).fire(any(PreferencesCentralUndoChangesEvent.class));
+        verify(notification).fire(any(NotificationEvent.class));
+        verify(placeManager,
+               never()).goTo(any(PlaceRequest.class));
     }
 
     @Test
