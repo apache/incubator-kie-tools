@@ -75,11 +75,29 @@ public class DecimalBoxTest {
 
     @Test
     public void testSetValueWithEvents() {
-
+        decimalBox = spy(decimalBox);
         decimalBox.setValue(TEST_VALUE_DOUBLE,
                             true);
 
         verify(view).setValue(TEST_VALUE_STRING);
+        verify(decimalBox).notifyValueChange(TEST_VALUE_STRING);
+    }
+
+    @Test
+    public void testSetNullValue() {
+        decimalBox = spy(decimalBox);
+
+        // Current DoubleBox Value is Null
+        decimalBox.setValue(null,
+                            true);
+        verify(decimalBox,
+               times(0)).notifyValueChange(null);
+
+        // Current DoubleBox Value is NOT Null
+        when(view.getTextValue()).thenReturn(TEST_VALUE_STRING);
+        decimalBox.setValue(null,
+                            true);
+        verify(decimalBox).notifyValueChange(null);
     }
 
     @Test

@@ -73,11 +73,33 @@ public class IntegerBoxTest {
 
     @Test
     public void testSetValueWithEvents() {
+        integerBox = spy(integerBox);
 
         integerBox.setValue(TEST_VALUE_LONG,
                             true);
 
         verify(view).setValue(TEST_VALUE_STRING);
+        verify(integerBox).notifyValueChange(TEST_VALUE_STRING);
+    }
+
+    @Test
+    public void testChangeValueToNull() {
+        integerBox = spy(integerBox);
+
+        when(view.getTextValue()).thenReturn(TEST_VALUE_STRING);
+        integerBox.setValue(null,
+                            true);
+        verify(integerBox).notifyValueChange(null);
+    }
+
+    @Test
+    public void testSetValueToNullWhileItIsAlreadyNull() {
+        integerBox = spy(integerBox);
+
+        integerBox.setValue(null,
+                            true);
+        verify(integerBox,
+               times(0)).notifyValueChange(null);
     }
 
     @Test

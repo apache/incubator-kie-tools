@@ -27,7 +27,7 @@ public class FormGenerationUtils {
     public static void sort(String firstName,
                             List<Map<String, String>> elements) {
 
-        if (elements == null && elements.isEmpty()) {
+        if (elements == null || elements.isEmpty()) {
             return;
         }
 

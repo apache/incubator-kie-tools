@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.widgets.decimalBox;
 
+import java.util.Objects;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -54,11 +55,16 @@ public class DecimalBox implements IsWidget,
     @Override
     public void setValue(Double value,
                          boolean fireEvents) {
+        if (value == null && this.getValue() == null) {
+            return;
+        }
 
-        if (this.getValue() != value) {
-            view.setValue(value.toString());
+        if (this.getValue() == null || !this.getValue().equals(value)) {
+            view.setValue(Objects.toString(value,
+                                           null));
             if (fireEvents) {
-                notifyValueChange(value.toString());
+                notifyValueChange(Objects.toString(value,
+                                                   null));
             }
         }
     }

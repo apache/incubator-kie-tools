@@ -91,7 +91,7 @@ public class FormModelerContent {
 
         FormModelerContent content = (FormModelerContent) other;
 
-        return definition.equals(content);
+        return definition.equals(content.getDefinition());
     }
 
     @Override
