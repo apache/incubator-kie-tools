@@ -32,7 +32,7 @@ import org.drools.workbench.models.datamodel.rule.HasCEPWindow;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.TableFormat;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
-import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
+import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
 import org.gwtbootstrap3.client.ui.InlineRadio;

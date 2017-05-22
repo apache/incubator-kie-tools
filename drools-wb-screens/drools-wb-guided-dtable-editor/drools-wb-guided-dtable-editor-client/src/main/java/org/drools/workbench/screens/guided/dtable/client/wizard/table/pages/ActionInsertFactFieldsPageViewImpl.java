@@ -53,7 +53,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.drools.workbench.screens.guided.dtable.client.wizard.table.pages.cells.ActionInsertFactFieldCell;
 import org.drools.workbench.screens.guided.dtable.client.wizard.table.pages.cells.ActionInsertFactFieldPatternCell;
 import org.drools.workbench.screens.guided.dtable.client.wizard.table.pages.cells.AvailableFieldCell;
-import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
+import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.FormGroup;

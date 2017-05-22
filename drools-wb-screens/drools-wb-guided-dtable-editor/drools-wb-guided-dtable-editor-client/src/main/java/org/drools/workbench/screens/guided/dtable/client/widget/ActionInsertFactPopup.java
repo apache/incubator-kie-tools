@@ -48,7 +48,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.images.Guided
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
-import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
+import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;

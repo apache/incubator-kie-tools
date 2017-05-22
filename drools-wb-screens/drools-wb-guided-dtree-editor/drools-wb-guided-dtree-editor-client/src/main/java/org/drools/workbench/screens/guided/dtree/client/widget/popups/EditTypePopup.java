@@ -32,6 +32,7 @@ import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.TypeNodeImpl;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
 import org.drools.workbench.screens.guided.dtree.client.widget.utils.BindingUtilities;
+import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Label;

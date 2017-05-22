@@ -21,15 +21,15 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
+import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -53,13 +53,19 @@ public class NewPatternView implements NewPatternPresenter.View,
     private ListBox factTypeList;
 
     @DataField("binding")
-    private TextBox binding;
+    private BindingTextBox binding;
 
     @DataField("negatePatternMatch")
     private CheckBox negatePatternMatch;
 
     @DataField("negatePatternContainer")
     private Div negatePatternContainer;
+
+    @DataField("warning")
+    private Div warning;
+
+    @DataField("warningMessage")
+    private Span warningMessage;
 
     private TranslationService translationService;
 
@@ -70,15 +76,19 @@ public class NewPatternView implements NewPatternPresenter.View,
     @Inject
     public NewPatternView(final Div body,
                           final ListBox factTypeList,
-                          final TextBox binding,
+                          final BindingTextBox binding,
                           final CheckBox negatePatternMatch,
                           final Div negatePatternContainer,
+                          final Div warning,
+                          final Span warningMessage,
                           final TranslationService translationService) {
         this.body = body;
         this.factTypeList = factTypeList;
         this.binding = binding;
         this.negatePatternMatch = negatePatternMatch;
         this.negatePatternContainer = negatePatternContainer;
+        this.warning = warning;
+        this.warningMessage = warningMessage;
         this.translationService = translationService;
     }
 
@@ -105,6 +115,7 @@ public class NewPatternView implements NewPatternPresenter.View,
         binding.setEnabled(true);
         negatePatternMatch.setValue(false);
         negatePatternContainer.setHidden(false);
+        hideError();
     }
 
     @Override
@@ -124,7 +135,14 @@ public class NewPatternView implements NewPatternPresenter.View,
 
     @Override
     public void showError(final String errorMessage) {
-        Window.alert(errorMessage);
+        warningMessage.setTextContent(errorMessage);
+        warning.setHidden(false);
+    }
+
+    @Override
+    public void hideError() {
+        warningMessage.setTextContent("");
+        warning.setHidden(true);
     }
 
     @Override

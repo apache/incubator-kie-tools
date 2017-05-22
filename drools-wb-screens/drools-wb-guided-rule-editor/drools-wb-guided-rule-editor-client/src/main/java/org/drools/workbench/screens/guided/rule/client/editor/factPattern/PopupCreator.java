@@ -33,7 +33,7 @@ import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.HasConstraints;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
-import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
+import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;

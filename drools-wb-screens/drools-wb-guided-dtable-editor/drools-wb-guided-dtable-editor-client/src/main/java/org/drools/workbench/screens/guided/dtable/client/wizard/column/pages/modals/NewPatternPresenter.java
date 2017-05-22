@@ -32,6 +32,8 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.mvp.UberElement;
 
+import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils.nil;
+
 @Dependent
 public class NewPatternPresenter {
 
@@ -107,7 +109,7 @@ public class NewPatternPresenter {
 
     private boolean isValid() {
         if (!isNegatePatternMatch()) {
-            if (factName().equals("")) {
+            if (nil(factName())) {
                 view.showError(translate(GuidedDecisionTableErraiConstants.NewPatternPresenter_PleaseEnterANameForFact));
                 return false;
             } else if (factName().equals(factType())) {
@@ -118,6 +120,8 @@ public class NewPatternPresenter {
                 return false;
             }
         }
+
+        view.hideError();
 
         return true;
     }
@@ -167,6 +171,8 @@ public class NewPatternPresenter {
         String getBindingText();
 
         void showError(String errorMessage);
+
+        void hideError();
 
         void disableNegatedPattern();
     }

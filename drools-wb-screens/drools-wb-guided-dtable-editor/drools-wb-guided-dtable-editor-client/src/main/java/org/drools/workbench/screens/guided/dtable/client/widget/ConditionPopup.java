@@ -46,7 +46,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
-import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
+import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.ListBox;
