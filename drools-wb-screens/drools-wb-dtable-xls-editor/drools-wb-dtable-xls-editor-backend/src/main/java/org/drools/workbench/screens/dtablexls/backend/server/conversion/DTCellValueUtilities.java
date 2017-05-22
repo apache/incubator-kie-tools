@@ -137,7 +137,8 @@ public class DTCellValueUtilities {
                 BigDecimal numericValue = null;
                 try {
                     if (!(text == null || text.isEmpty())) {
-                        numericValue = new BigDecimal(stripQuotes(text));
+                        numericValue = new BigDecimal(stripTrailing(stripQuotes(text),
+                                                                    "B"));
                     }
                 } catch (Exception e) {
                     callback.onConversionError(text,
@@ -149,7 +150,8 @@ public class DTCellValueUtilities {
                 BigDecimal bigDecimalValue = null;
                 try {
                     if (!(text == null || text.isEmpty())) {
-                        bigDecimalValue = new BigDecimal(stripQuotes(text));
+                        bigDecimalValue = new BigDecimal(stripTrailing(stripQuotes(text),
+                                                                       "B"));
                     }
                 } catch (Exception e) {
                     callback.onConversionError(text,
@@ -161,7 +163,8 @@ public class DTCellValueUtilities {
                 BigInteger bigIntegerValue = null;
                 try {
                     if (!(text == null || text.isEmpty())) {
-                        bigIntegerValue = new BigInteger(stripQuotes(text));
+                        bigIntegerValue = new BigInteger(stripTrailing(stripQuotes(text),
+                                                                       "I"));
                     }
                 } catch (Exception e) {
                     callback.onConversionError(text,
@@ -253,6 +256,18 @@ public class DTCellValueUtilities {
         }
         if (text.endsWith("\"")) {
             text = text.substring(0,
+                                  text.length() - 1);
+        }
+        return text;
+    }
+
+    static String stripTrailing(String text,
+                                String suffix) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+        if (text.endsWith(suffix)) {
+            return text.substring(0,
                                   text.length() - 1);
         }
         return text;
