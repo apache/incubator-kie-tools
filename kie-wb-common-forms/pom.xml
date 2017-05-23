@@ -28,6 +28,7 @@
   <properties>
     <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
     <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
+    <findbugs.failOnViolation>true</findbugs.failOnViolation>
   </properties>
 
   <build>

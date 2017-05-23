@@ -74,8 +74,6 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
 
     protected FormModelHandlerManager modelHandlerManager;
 
-    protected KieProjectService projectService;
-
     protected FormDefinitionSerializer formDefinitionSerializer;
 
     protected VFSFormFinderService vfsFormFinderService;
