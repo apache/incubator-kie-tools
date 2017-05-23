@@ -68,6 +68,10 @@ public class ProjectActionsWidget {
         showSettingsCommand.execute();
     }
 
+    public void goToPreferences() {
+        libraryPlaces.goToPreferences();
+    }
+
     public void compileProject() {
         if (userCanBuildProject()) {
             buildExecutor.triggerBuild();

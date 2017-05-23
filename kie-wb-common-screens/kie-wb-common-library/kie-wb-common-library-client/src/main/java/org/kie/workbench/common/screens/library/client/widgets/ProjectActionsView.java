@@ -42,6 +42,10 @@ public class ProjectActionsView implements ProjectActionsWidget.View,
     Button settings;
 
     @Inject
+    @DataField("preferences")
+    Button preferences;
+
+    @Inject
     @DataField("compile")
     Button compile;
 
@@ -71,6 +75,11 @@ public class ProjectActionsView implements ProjectActionsWidget.View,
     @EventHandler("settings")
     public void projectSettings(final ClickEvent clickEvent) {
         presenter.goToProjectSettings();
+    }
+
+    @EventHandler("preferences")
+    public void projectPreferences(final ClickEvent clickEvent) {
+        presenter.goToPreferences();
     }
 
     @EventHandler("compile")

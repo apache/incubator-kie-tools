@@ -40,8 +40,6 @@ public interface ProjectScreenView
 
         void onGAVMetadataPanelSelected();
 
-        void onProjectPreferencesSelected();
-
         void onKBasePanelSelected();
 
         void onKBaseMetadataPanelSelected();

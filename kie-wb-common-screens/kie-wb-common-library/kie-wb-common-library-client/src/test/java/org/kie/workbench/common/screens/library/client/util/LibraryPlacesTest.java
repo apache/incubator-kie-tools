@@ -20,6 +20,7 @@ import javax.enterprise.event.Event;
 
 import org.ext.uberfire.social.activities.model.ExtendedTypes;
 import org.ext.uberfire.social.activities.model.SocialFileSelectedEvent;
+import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
@@ -53,12 +54,17 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.ext.preferences.client.central.screen.PreferencesRootScreen;
+import org.uberfire.ext.preferences.client.event.PreferencesCentralInitializationEvent;
+import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
+import org.uberfire.ext.preferences.client.event.PreferencesCentralUndoChangesEvent;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.UberfireBreadcrumbs;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
@@ -125,6 +131,12 @@ public class LibraryPlacesTest {
     private ExplorerService explorerService;
     private Caller<ExplorerService> explorerServiceCaller;
 
+    @Mock
+    private ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier;
+
+    @Mock
+    private Event<PreferencesCentralInitializationEvent> preferencesCentralInitializationEvent;
+
     private LibraryPlaces libraryPlaces;
 
     private OrganizationalUnit activeOrganizationalUnit;
@@ -157,7 +169,9 @@ public class LibraryPlacesTest {
                                               examplesWizards,
                                               translationUtils,
                                               vfsServiceCaller,
-                                              explorerServiceCaller));
+                                              explorerServiceCaller,
+                                              projectScopedResolutionStrategySupplier,
+                                              preferencesCentralInitializationEvent));
 
         activeOrganizationalUnit = mock(OrganizationalUnit.class);
         activeRepository = mock(Repository.class);
@@ -376,6 +390,48 @@ public class LibraryPlacesTest {
     }
 
     @Test
+    public void onPreferencesSaveTest() {
+        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        doNothing().when(libraryPlaces).goToProject(any());
+
+        libraryPlaces.onPreferencesSave(mock(PreferencesCentralSaveEvent.class));
+
+        verify(libraryPlaces).goToProject(libraryPlaces.getProjectInfo());
+    }
+
+    @Test
+    public void onPreferencesSaveOutsideLibraryTest() {
+        doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(any(PlaceRequest.class));
+
+        libraryPlaces.onPreferencesSave(mock(PreferencesCentralSaveEvent.class));
+
+        verify(libraryPlaces,
+               never()).goToProject(any());
+    }
+
+    @Test
+    public void onPreferencesCancelTest() {
+        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        doNothing().when(libraryPlaces).goToProject(any());
+
+        libraryPlaces.onPreferencesCancel(mock(PreferencesCentralUndoChangesEvent.class));
+
+        verify(libraryPlaces).goToProject(libraryPlaces.getProjectInfo());
+    }
+
+    @Test
+    public void onPreferencesCancelOutsideLibraryTest() {
+        doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(any(PlaceRequest.class));
+
+        libraryPlaces.onPreferencesCancel(mock(PreferencesCentralUndoChangesEvent.class));
+
+        verify(libraryPlaces,
+               never()).goToProject(any());
+    }
+
+    @Test
     public void goToOrganizationalUnitsTest() {
         final PlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.ORGANIZATIONAL_UNITS_SCREEN);
         final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
@@ -496,6 +552,24 @@ public class LibraryPlacesTest {
         libraryPlaces.goToMessages();
 
         verify(placeManager).goTo(LibraryPlaces.MESSAGES);
+    }
+
+    @Test
+    public void goToPreferencesTest() {
+        final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo = mock(PreferenceScopeResolutionStrategyInfo.class);
+        doReturn(scopeResolutionStrategyInfo).when(projectScopedResolutionStrategySupplier).get();
+
+        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(PreferencesRootScreen.IDENTIFIER);
+        final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
+        part.setSelectable(false);
+
+        libraryPlaces.goToPreferences();
+
+        verify(placeManager).goTo(eq(part),
+                                  any(PanelDefinition.class));
+        verify(preferencesCentralInitializationEvent).fire(new PreferencesCentralInitializationEvent("ProjectPreferences",
+                                                                                                     scopeResolutionStrategyInfo));
+        verify(libraryPlaces).setupLibraryBreadCrumbsForPreferences(any());
     }
 
     @Test

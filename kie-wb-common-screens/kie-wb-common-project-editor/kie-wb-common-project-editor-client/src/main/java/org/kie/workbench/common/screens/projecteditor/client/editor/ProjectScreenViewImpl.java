@@ -201,11 +201,6 @@ public class ProjectScreenViewImpl
         presenter.onGAVMetadataPanelSelected();
     }
 
-    @UiHandler(value = "projectPreferencesButton")
-    public void onProjectPreferencesClick(ClickEvent clickEvent) {
-        presenter.onProjectPreferencesSelected();
-    }
-
     private void setGAVDropboxTitle(String subItem) {
         dropDownButton.setText(ProjectEditorResources.CONSTANTS.ProjectSettings() + ": " + subItem);
     }
@@ -587,5 +582,4 @@ public class ProjectScreenViewImpl
         popup.setClosable(false);
         popup.show();
     }
-
 }

@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import org.ext.uberfire.social.activities.model.ExtendedTypes;
 import org.ext.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.guvnor.asset.management.social.AssetManagementEventTypes;
+import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
@@ -59,12 +60,17 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.ext.editor.commons.client.event.ConcurrentRenameAcceptedEvent;
+import org.uberfire.ext.preferences.client.central.screen.PreferencesRootScreen;
+import org.uberfire.ext.preferences.client.event.PreferencesCentralInitializationEvent;
+import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
+import org.uberfire.ext.preferences.client.event.PreferencesCentralUndoChangesEvent;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.UberfireBreadcrumbs;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
@@ -94,6 +100,7 @@ public class LibraryPlaces {
         add(ORGANIZATIONAL_UNITS_SCREEN);
         add(PROJECT_SETTINGS);
         add(MESSAGES);
+        add(PreferencesRootScreen.IDENTIFIER);
     }});
 
     private UberfireBreadcrumbs breadcrumbs;
@@ -132,6 +139,10 @@ public class LibraryPlaces {
 
     private Caller<ExplorerService> explorerService;
 
+    private ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier;
+
+    private Event<PreferencesCentralInitializationEvent> preferencesCentralInitializationEvent;
+
     private boolean docksReady = false;
 
     private boolean docksHidden = true;
@@ -158,7 +169,9 @@ public class LibraryPlaces {
                          final ManagedInstance<ExamplesWizard> examplesWizards,
                          final TranslationUtils translationUtils,
                          final Caller<VFSService> vfsService,
-                         final Caller<ExplorerService> explorerService) {
+                         final Caller<ExplorerService> explorerService,
+                         final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier,
+                         final Event<PreferencesCentralInitializationEvent> preferencesCentralInitializationEvent) {
         this.breadcrumbs = breadcrumbs;
         this.ts = ts;
         this.projectDetailEvent = projectDetailEvent;
@@ -177,6 +190,8 @@ public class LibraryPlaces {
         this.translationUtils = translationUtils;
         this.vfsService = vfsService;
         this.explorerService = explorerService;
+        this.projectScopedResolutionStrategySupplier = projectScopedResolutionStrategySupplier;
+        this.preferencesCentralInitializationEvent = preferencesCentralInitializationEvent;
     }
 
     public ProjectInfo getProjectInfo() {
@@ -312,6 +327,18 @@ public class LibraryPlaces {
     private boolean isLibraryPerspectiveOpen() {
         return placeManager.getStatus(LIBRARY_PERSPECTIVE).equals(PlaceStatus.OPEN)
                 || placeManager.getStatus(getLibraryPlaceRequestWithoutRefresh()).equals(PlaceStatus.OPEN);
+    }
+
+    public void onPreferencesSave(@Observes PreferencesCentralSaveEvent event) {
+        if (isLibraryPerspectiveOpen()) {
+            goToProject(getProjectInfo());
+        }
+    }
+
+    public void onPreferencesCancel(@Observes PreferencesCentralUndoChangesEvent event) {
+        if (isLibraryPerspectiveOpen()) {
+            goToProject(getProjectInfo());
+        }
     }
 
     public void onSocialFileSelected(@Observes final SocialFileSelectedEvent event) {
@@ -450,6 +477,22 @@ public class LibraryPlaces {
                                   assetName,
                                   () -> goToAsset(projectInfo,
                                                   path));
+    }
+
+    public void setupLibraryBreadCrumbsForPreferences(final ProjectInfo projectInfo) {
+        breadcrumbs.clearBreadcrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                  translationUtils.getOrganizationalUnitAliasInPlural(),
+                                  () -> goToOrganizationalUnits());
+        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                  getSelectedOrganizationalUnit().getName(),
+                                  () -> goToLibrary());
+        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                  projectInfo.getProject().getProjectName(),
+                                  () -> goToProject(projectInfo));
+        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                  ts.getTranslation(LibraryConstants.Preferences),
+                                  () -> goToPreferences());
     }
 
     public void refresh(final Command callback) {
@@ -602,6 +645,21 @@ public class LibraryPlaces {
 
     public void goToMessages() {
         placeManager.goTo(MESSAGES);
+    }
+
+    public void goToPreferences() {
+        final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy = projectScopedResolutionStrategySupplier.get();
+        final PreferencesCentralInitializationEvent initEvent = new PreferencesCentralInitializationEvent("ProjectPreferences",
+                                                                                                          customScopeResolutionStrategy);
+
+        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(PreferencesRootScreen.IDENTIFIER);
+        final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
+        part.setSelectable(false);
+        placeManager.goTo(part,
+                          libraryPerspective.getRootPanel());
+
+        preferencesCentralInitializationEvent.fire(initEvent);
+        setupLibraryBreadCrumbsForPreferences(getProjectInfo());
     }
 
     public OrganizationalUnit getSelectedOrganizationalUnit() {

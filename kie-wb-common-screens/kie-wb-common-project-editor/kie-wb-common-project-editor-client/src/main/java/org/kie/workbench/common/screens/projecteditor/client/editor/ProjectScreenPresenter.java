@@ -89,7 +89,6 @@ import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
-import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.lifecycle.OnClose;
@@ -98,7 +97,6 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.authz.ResourceActionRef;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -955,17 +953,6 @@ public class ProjectScreenPresenter
         view.showGAVMetadataPanel();
         acquireLockOnDemand(model.getPathToPOM(),
                             view.getPomMetadataPart());
-    }
-
-    @Override
-    public void onProjectPreferencesSelected() {
-        Map<String, String> params = new HashMap<>();
-        params.put("screen",
-                   "project");
-        params.put("perspectiveIdentifierToGoBackTo",
-                   "AuthoringPerspective");
-        placeManager.goTo(new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER,
-                                                  params));
     }
 
     @Override

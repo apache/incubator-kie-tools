@@ -41,9 +41,6 @@
           <bootstrap:AnchorListItem ui:field="gavMetadataButton">
             <ui:text from="{i18n.Metadata}"/>
           </bootstrap:AnchorListItem>
-          <bootstrap:AnchorListItem ui:field="projectPreferencesButton">
-            <ui:text from="{i18n.ProjectPreferences}"/>
-          </bootstrap:AnchorListItem>
           <bootstrap:DropDownHeader>
             <ui:text from="{i18n.KnowledgeBaseSettings}"/>
           </bootstrap:DropDownHeader>
