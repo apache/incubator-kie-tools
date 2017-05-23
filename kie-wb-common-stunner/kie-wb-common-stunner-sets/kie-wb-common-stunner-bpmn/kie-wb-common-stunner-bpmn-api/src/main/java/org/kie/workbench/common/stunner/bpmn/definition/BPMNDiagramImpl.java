@@ -53,7 +53,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 public class BPMNDiagramImpl implements BPMNDiagram {
 
     @Category
-    public static final transient String category = Categories.LANES;
+    public static final transient String category = Categories.CONTAINERS;
 
     @Title
     public static final transient String title = "BPMN Diagram";

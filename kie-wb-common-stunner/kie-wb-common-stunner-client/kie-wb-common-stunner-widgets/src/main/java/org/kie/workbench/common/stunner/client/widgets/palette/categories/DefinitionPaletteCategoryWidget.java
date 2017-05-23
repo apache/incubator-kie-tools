@@ -38,103 +38,104 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.def
 public class DefinitionPaletteCategoryWidget implements DefinitionPaletteCategoryWidgetView.Presenter,
                                                         IsElement {
 
-    private DefinitionPaletteCategory category;
-    private Palette.ItemMouseDownCallback itemMouseDownCallback;
-    private PaletteWidget.IconRendererProvider iconRendererProvider;
+  private DefinitionPaletteCategory category;
+  private Palette.ItemMouseDownCallback itemMouseDownCallback;
+  private PaletteWidget.IconRendererProvider iconRendererProvider;
 
-    private DefinitionPaletteCategoryWidgetView view;
-    private ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgetInstance;
-    private ManagedInstance<DefinitionPaletteGroupWidget> definitionPaletteGroupWidgetInstance;
+  private DefinitionPaletteCategoryWidgetView view;
+  private ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgetInstance;
+  private ManagedInstance<DefinitionPaletteGroupWidget> definitionPaletteGroupWidgetInstance;
 
-    @Inject
-    public DefinitionPaletteCategoryWidget(DefinitionPaletteCategoryWidgetView view,
-                                           ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgetInstance,
-                                           ManagedInstance<DefinitionPaletteGroupWidget> definitionPaletteGroupWidgetInstance) {
-        this.view = view;
-        this.definitionPaletteItemWidgetInstance = definitionPaletteItemWidgetInstance;
-        this.definitionPaletteGroupWidgetInstance = definitionPaletteGroupWidgetInstance;
-    }
+  @Inject
+  public DefinitionPaletteCategoryWidget(DefinitionPaletteCategoryWidgetView view,
+                                         ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgetInstance,
+                                         ManagedInstance<DefinitionPaletteGroupWidget> definitionPaletteGroupWidgetInstance) {
+    this.view = view;
+    this.definitionPaletteItemWidgetInstance = definitionPaletteItemWidgetInstance;
+    this.definitionPaletteGroupWidgetInstance = definitionPaletteGroupWidgetInstance;
+  }
 
-    @PostConstruct
-    public void setUp() {
-        view.init(this);
-    }
+  @PostConstruct
+  public void setUp() {
+    view.init(this);
+  }
 
-    @Override
-    public HTMLElement getElement() {
-        return view.getElement();
-    }
+  @Override
+  public HTMLElement getElement() {
+    return view.getElement();
+  }
 
-    public void initialize(DefinitionPaletteCategory category,
-                           PaletteWidget.IconRendererProvider iconRendererProvider,
-                           Palette.ItemMouseDownCallback itemMouseDownCallback) {
-        this.category = category;
-        this.itemMouseDownCallback = itemMouseDownCallback;
-        this.iconRendererProvider = iconRendererProvider;
+  public void initialize(DefinitionPaletteCategory category,
+                         PaletteWidget.IconRendererProvider iconRendererProvider,
+                         Palette.ItemMouseDownCallback itemMouseDownCallback) {
+    this.category = category;
+    this.itemMouseDownCallback = itemMouseDownCallback;
+    this.iconRendererProvider = iconRendererProvider;
 
-        IconRenderer iconRenderer = iconRendererProvider.getCategoryIconRenderer(category);
+    IconRenderer iconRenderer = iconRendererProvider.getCategoryIconRenderer(category);
 
-        iconRenderer.resize(IconRenderer.Size.LARGE);
+    iconRenderer.resize(IconRenderer.Size.LARGE);
 
-        view.render(iconRenderer);
+    view.render(iconRenderer);
 
-        renderItems(category.getItems());
-    }
+    renderItems(category.getItems());
+  }
 
-    private void renderItems(List<DefinitionPaletteItem> items) {
-        if (items != null && !items.isEmpty()) {
-            items.forEach(item -> {
-                if (item instanceof DefinitionPaletteGroup) {
-                    renderGroup((DefinitionPaletteGroup) item);
-                } else {
-                    DefinitionPaletteItemWidget categoryItemWidget = definitionPaletteItemWidgetInstance.get();
+  private void renderItems(List<DefinitionPaletteItem> items) {
+    if (items != null && !items.isEmpty()) {
+      items.forEach(item -> {
+        if (item instanceof DefinitionPaletteGroup) {
 
-                    categoryItemWidget.initialize(item,
-                                                  iconRendererProvider,
-                                                  itemMouseDownCallback);
+          renderGroup((DefinitionPaletteGroup) item);
+        } else {
+          DefinitionPaletteItemWidget categoryItemWidget = definitionPaletteItemWidgetInstance.get();
 
-                    view.addItem(categoryItemWidget);
-                }
-            });
+          categoryItemWidget.initialize(item,
+                                        iconRendererProvider,
+                                        itemMouseDownCallback);
+
+          view.addItem(categoryItemWidget);
         }
+      });
     }
+  }
 
-    private void renderGroup(DefinitionPaletteGroup group) {
-        DefinitionPaletteGroupWidget groupWidget = definitionPaletteGroupWidgetInstance.get();
+  private void renderGroup(DefinitionPaletteGroup group) {
+    DefinitionPaletteGroupWidget groupWidget = definitionPaletteGroupWidgetInstance.get();
 
-        groupWidget.initialize(group,
-                               iconRendererProvider,
-                               itemMouseDownCallback);
+    groupWidget.initialize(group,
+                           iconRendererProvider,
+                           itemMouseDownCallback);
 
-        view.addGroup(groupWidget);
+    view.addGroup(groupWidget);
+  }
+
+  public DefinitionPaletteCategoryWidgetView getView() {
+    return view;
+  }
+
+  @Override
+  public DefinitionPaletteCategory getCategory() {
+    return category;
+  }
+
+  @Override
+  public void onMouseDown(int clientX,
+                          int clientY,
+                          int x,
+                          int y) {
+    if (itemMouseDownCallback != null) {
+      itemMouseDownCallback.onItemMouseDown(category.getId(),
+                                            clientX,
+                                            clientY,
+                                            x,
+                                            y);
     }
+  }
 
-    public DefinitionPaletteCategoryWidgetView getView() {
-        return view;
-    }
-
-    @Override
-    public DefinitionPaletteCategory getCategory() {
-        return category;
-    }
-
-    @Override
-    public void onMouseDown(int clientX,
-                            int clientY,
-                            int x,
-                            int y) {
-        if (itemMouseDownCallback != null) {
-            itemMouseDownCallback.onItemMouseDown(category.getId(),
-                                                  clientX,
-                                                  clientY,
-                                                  x,
-                                                  y);
-        }
-    }
-
-    @PreDestroy
-    public void destroy() {
-        definitionPaletteItemWidgetInstance.destroyAll();
-        definitionPaletteGroupWidgetInstance.destroyAll();
-    }
+  @PreDestroy
+  public void destroy() {
+    definitionPaletteItemWidgetInstance.destroyAll();
+    definitionPaletteGroupWidgetInstance.destroyAll();
+  }
 }

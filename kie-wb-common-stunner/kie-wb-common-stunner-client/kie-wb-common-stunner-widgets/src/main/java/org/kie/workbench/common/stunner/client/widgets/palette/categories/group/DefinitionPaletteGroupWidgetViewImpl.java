@@ -56,6 +56,7 @@ public class DefinitionPaletteGroupWidgetViewImpl implements DefinitionPaletteGr
 
     @Override
     public void addItem(DefinitionPaletteItemWidget categoryItem) {
+
         PortablePreconditions.checkNotNull("categoryItem",
                                            categoryItem);
         this.getElement().appendChild(categoryItem.getElement());
@@ -96,4 +97,6 @@ public class DefinitionPaletteGroupWidgetViewImpl implements DefinitionPaletteGr
     public void showLess(ClickEvent clickEvent) {
         presenter.showLess();
     }
+
+
 }

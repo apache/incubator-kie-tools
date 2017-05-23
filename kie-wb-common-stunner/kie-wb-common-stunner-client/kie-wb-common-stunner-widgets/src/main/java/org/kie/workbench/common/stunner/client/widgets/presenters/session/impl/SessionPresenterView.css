@@ -1,0 +1,55 @@
+.loading-panel {
+    margin: 5px;
+    position: absolute;
+    padding: 5px;
+}
+
+.toolbar-panel {
+    width: 100%;
+    margin: 5px;
+    text-align: center;
+}
+
+.canvas-view {
+    position: relative;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 10px;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    /*
+      Introduced in IE 10.
+      See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+    */
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.canvas-view > div:first-child {
+    position: absolute;
+}
+
+.toolbar-view {
+    position: absolute;
+    z-index: 500;
+}
+
+.toolbar-view-fixed {
+    position: fixed;
+    z-index: 500;
+}
+
+.palette-panel,.palette-panel-fixed {
+    width: 100%;
+}
+
+.palette-panel-fixed {
+    position:fixed;
+}
+
+.canvas-panel {
+    width: 100%;
+    position: relative;
+    left: 48px;
+}

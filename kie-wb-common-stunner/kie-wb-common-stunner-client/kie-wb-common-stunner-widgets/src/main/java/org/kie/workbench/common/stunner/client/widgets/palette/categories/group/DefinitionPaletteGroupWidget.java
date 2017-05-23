@@ -36,120 +36,120 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.def
 public class DefinitionPaletteGroupWidget implements DefinitionPaletteGroupWidgetView.Presenter,
                                                      IsElement {
 
-    private enum State {
-        COMPACT,
-        FULL_LIST
+  private enum State {
+    COMPACT,
+    FULL_LIST
+  }
+
+  public static final int COMPACT_ELEMENTS_LIST_SIZE = 3;
+
+  private State state = State.COMPACT;
+
+  private List<DefinitionPaletteItemWidget> hiddenList = new ArrayList<>();
+
+  private DefinitionPaletteGroupWidgetView view;
+
+  private DefinitionPaletteGroup group;
+
+  private ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgets;
+
+  private PaletteWidget.IconRendererProvider rendererProvider;
+  private Palette.ItemMouseDownCallback itemMouseDownCallback;
+
+  @Inject
+  public DefinitionPaletteGroupWidget(DefinitionPaletteGroupWidgetView view,
+                                      ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgets) {
+    this.view = view;
+    this.definitionPaletteItemWidgets = definitionPaletteItemWidgets;
+  }
+
+  @PostConstruct
+  public void setUp() {
+    view.init(this);
+  }
+
+  public void initialize(DefinitionPaletteGroup group,
+                         PaletteWidget.IconRendererProvider rendererProvider,
+                         Palette.ItemMouseDownCallback itemMouseDownCallback) {
+    this.group = group;
+    this.rendererProvider = rendererProvider;
+    this.itemMouseDownCallback = (id, mouseX, mouseY, itemX, itemY) -> {
+      switchState(State.COMPACT);
+      return itemMouseDownCallback.onItemMouseDown(id,
+                                                   mouseX,
+                                                   mouseY,
+                                                   itemX,
+                                                   itemY);
+    };
+
+    loadItems();
+  }
+
+  protected void loadItems() {
+    view.initView();
+    definitionPaletteItemWidgets.destroyAll();
+
+    List<DefinitionPaletteItem> items = group.getItems();
+
+    for (int i = 0; i < items.size(); i++) {
+      DefinitionPaletteItem item = items.get(i);
+      DefinitionPaletteItemWidget categoryItemWidget = definitionPaletteItemWidgets.get();
+
+      categoryItemWidget.initialize(item,
+                                    rendererProvider,
+                                    itemMouseDownCallback);
+      if (i >= COMPACT_ELEMENTS_LIST_SIZE) {
+        categoryItemWidget.getElement().getStyle().setProperty("display",
+                                                               "none");
+        hiddenList.add(categoryItemWidget);
+      }
+      view.addItem(categoryItemWidget);
     }
-
-    public static final int COMPACT_ELEMENTS_LIST_SIZE = 3;
-
-    private State state = State.COMPACT;
-
-    private List<DefinitionPaletteItemWidget> hiddenList = new ArrayList<>();
-
-    private DefinitionPaletteGroupWidgetView view;
-
-    private DefinitionPaletteGroup group;
-
-    private ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgets;
-
-    private PaletteWidget.IconRendererProvider rendererProvider;
-    private Palette.ItemMouseDownCallback itemMouseDownCallback;
-
-    @Inject
-    public DefinitionPaletteGroupWidget(DefinitionPaletteGroupWidgetView view,
-                                        ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgets) {
-        this.view = view;
-        this.definitionPaletteItemWidgets = definitionPaletteItemWidgets;
+    if (!hiddenList.isEmpty()) {
+      view.addAnchors();
+      view.showMoreAnchor();
     }
+  }
 
-    @PostConstruct
-    public void setUp() {
-        view.init(this);
+  protected void switchState(final State state) {
+    if (!this.state.equals(state)) {
+      this.state = state;
+      String displayStyle = state.equals(State.COMPACT) ? "none" : "block";
+      hiddenList.forEach(item -> {
+        item.getElement().getStyle().setProperty("display",
+                                                 displayStyle);
+      });
+
+      if (state.equals(State.COMPACT)) {
+        view.showMoreAnchor();
+      } else {
+        view.showLessAnchor();
+      }
     }
+  }
 
-    public void initialize(DefinitionPaletteGroup group,
-                           PaletteWidget.IconRendererProvider rendererProvider,
-                           Palette.ItemMouseDownCallback itemMouseDownCallback) {
-        this.group = group;
-        this.rendererProvider = rendererProvider;
-        this.itemMouseDownCallback = (id, mouseX, mouseY, itemX, itemY) -> {
-            switchState(State.COMPACT);
-            return itemMouseDownCallback.onItemMouseDown(id,
-                                                         mouseX,
-                                                         mouseY,
-                                                         itemX,
-                                                         itemY);
-        };
+  @Override
+  public void showMore() {
+    switchState(State.FULL_LIST);
+  }
 
-        loadItems();
-    }
+  @Override
+  public void showLess() {
+    switchState(State.COMPACT);
+  }
 
-    protected void loadItems() {
-        view.initView();
-        definitionPaletteItemWidgets.destroyAll();
+  @Override
+  public DefinitionPaletteGroup getItem() {
+    return group;
+  }
 
-        List<DefinitionPaletteItem> items = group.getItems();
+  @Override
+  public HTMLElement getElement() {
+    return view.getElement();
+  }
 
-        for (int i = 0; i < items.size(); i++) {
-            DefinitionPaletteItem item = items.get(i);
-            DefinitionPaletteItemWidget categoryItemWidget = definitionPaletteItemWidgets.get();
-
-            categoryItemWidget.initialize(item,
-                                          rendererProvider,
-                                          itemMouseDownCallback);
-            if (i >= COMPACT_ELEMENTS_LIST_SIZE) {
-                categoryItemWidget.getElement().getStyle().setProperty("display",
-                                                                       "none");
-                hiddenList.add(categoryItemWidget);
-            }
-            view.addItem(categoryItemWidget);
-        }
-        if (!hiddenList.isEmpty()) {
-            view.addAnchors();
-            view.showMoreAnchor();
-        }
-    }
-
-    protected void switchState(final State state) {
-        if (!this.state.equals(state)) {
-            this.state = state;
-            String displayStyle = state.equals(State.COMPACT) ? "none" : "block";
-            hiddenList.forEach(item -> {
-                item.getElement().getStyle().setProperty("display",
-                                                         displayStyle);
-            });
-
-            if (state.equals(State.COMPACT)) {
-                view.showMoreAnchor();
-            } else {
-                view.showLessAnchor();
-            }
-        }
-    }
-
-    @Override
-    public void showMore() {
-        switchState(State.FULL_LIST);
-    }
-
-    @Override
-    public void showLess() {
-        switchState(State.COMPACT);
-    }
-
-    @Override
-    public DefinitionPaletteGroup getItem() {
-        return group;
-    }
-
-    @Override
-    public HTMLElement getElement() {
-        return view.getElement();
-    }
-
-    @PreDestroy
-    public void destroy() {
-        definitionPaletteItemWidgets.destroyAll();
-    }
+  @PreDestroy
+  public void destroy() {
+    definitionPaletteItemWidgets.destroyAll();
+  }
 }

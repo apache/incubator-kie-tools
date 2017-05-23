@@ -55,7 +55,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 public class Lane implements BPMNDefinition {
 
     @Category
-    public static final transient String category = Categories.LANES;
+    public static final transient String category = Categories.CONTAINERS;
 
     @Title
     public static final transient String title = "Lane";

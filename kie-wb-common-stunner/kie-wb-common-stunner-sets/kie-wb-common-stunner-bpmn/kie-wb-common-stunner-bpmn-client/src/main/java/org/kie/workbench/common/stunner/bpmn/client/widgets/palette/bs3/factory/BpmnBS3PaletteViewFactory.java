@@ -51,7 +51,7 @@ public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactor
     private final static Map<String, IconResource> CATEGORY_RERNDERERS_SETTINGS = new HashMap<String, IconResource>() {{
         put(Categories.ACTIVITIES,
             new IconResource(BPMNImageResources.INSTANCE.categoryActivity()));
-        put(Categories.LANES,
+        put(Categories.CONTAINERS,
             new IconResource(BPMNImageResources.INSTANCE.categoryContainer()));
         put(Categories.GATEWAYS,
             new IconResource(BPMNImageResources.INSTANCE.categoryGateway()));

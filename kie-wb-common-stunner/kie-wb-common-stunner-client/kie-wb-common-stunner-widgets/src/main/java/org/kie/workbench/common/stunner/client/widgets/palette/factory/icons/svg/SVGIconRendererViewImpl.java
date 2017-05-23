@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.Ico
 public class SVGIconRendererViewImpl implements SVGIconRendererView,
                                                 IsElement {
 
-    private static final int LARGE_ICON_SIZE = 30;
+    private static final int LARGE_ICON_SIZE = 20;
     private static final int SMALL_ICON_SIZE = 15;
 
     @Inject

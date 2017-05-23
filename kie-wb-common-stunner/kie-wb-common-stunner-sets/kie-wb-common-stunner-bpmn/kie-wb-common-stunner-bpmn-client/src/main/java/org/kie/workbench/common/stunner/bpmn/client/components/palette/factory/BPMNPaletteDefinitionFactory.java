@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.components.palette.factory;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -25,6 +26,7 @@ import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
@@ -35,7 +37,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
-import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
@@ -43,111 +44,105 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.BindableDefSetPaletteDefinitionFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
+import org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService;
 
 // TODO: i18n.
 @Dependent
 public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitionFactory {
 
-    private static final Map<String, String> CAT_TITLES = new HashMap<String, String>(6) {{
-        put(Categories.ACTIVITIES,
-            "Activities");
-        put(Categories.SUBPROCESSES,
-            "Subprocesses");
-        put(Categories.CONNECTING_OBJECTS,
-            "Connecting objects");
-        put(Categories.EVENTS,
-            "Events");
-        put(Categories.GATEWAYS,
-            "Gateways");
-        put(Categories.LANES,
-            "Lanes");
-    }};
+  private final AbstractTranslationService translationService;
 
-    private static final Map<String, Class<?>> CAT_DEF_IDS = new HashMap<String, Class<?>>(1) {{
-        put(Categories.ACTIVITIES,
-            NoneTask.class);
-        put(Categories.SUBPROCESSES,
-            ReusableSubprocess.class);
-        put(Categories.CONNECTING_OBJECTS,
-            SequenceFlow.class);
-        put(Categories.EVENTS,
-            StartNoneEvent.class);
-        put(Categories.EVENTS,
-            StartSignalEvent.class);
-        put(Categories.EVENTS,
-            StartTimerEvent.class);
-        put(Categories.EVENTS,
-            EndNoneEvent.class);
-        put(Categories.EVENTS,
-            EndTerminateEvent.class);
-        put(Categories.EVENTS,
-            IntermediateTimerEvent.class);
-        put(Categories.GATEWAYS,
-            ParallelGateway.class);
-        put(Categories.LANES,
-            Lane.class);
-    }};
 
-    private static final Map<String, String> MORPH_GROUP_TITLES = new HashMap<String, String>(5) {{
-        put(BaseTask.class.getName(),
-            "Tasks");
-        put(BaseStartEvent.class.getName(),
-            "Start Events");
-        put(BaseEndEvent.class.getName(),
-            "End Events");
-        put(BaseSubprocess.class.getName(),
-            "Subprocesses");
-        put(BaseGateway.class.getName(),
-            "Gateways");
-    }};
+  private static final Map<String, Class<?>> CAT_DEF_IDS = new HashMap<String, Class<?>>(1) {{
+    put(Categories.ACTIVITIES,
+        NoneTask.class);
+    put(Categories.CONNECTING_OBJECTS,
+        SequenceFlow.class);
+    put(Categories.EVENTS,
+        StartNoneEvent.class);
+    put(Categories.EVENTS,
+        StartSignalEvent.class);
+    put(Categories.EVENTS,
+        StartTimerEvent.class);
+    put(Categories.EVENTS,
+        EndNoneEvent.class);
+    put(Categories.EVENTS,
+        EndTerminateEvent.class);
+    put(Categories.EVENTS,
+        IntermediateTimerEvent.class);
+    put(Categories.GATEWAYS,
+        ParallelGateway.class);
+    put(Categories.CONTAINERS,
+        Lane.class);
+  }};
+  private final Map<String, String> CAT_TITLES = new HashMap<String, String>(6);
+  private static final Map<String, String> MORPH_GROUP_TITLES = new HashMap<String, String>(6);
 
-    @Inject
-    public BPMNPaletteDefinitionFactory(final ShapeManager shapeManager,
-                                        final DefinitionSetPaletteBuilder paletteBuilder) {
-        super(shapeManager,
-              paletteBuilder);
-    }
 
-    @Override
-    protected void configureBuilder() {
-        super.configureBuilder();
-        // Exclude BPMN Diagram from palette model.
-        excludeDefinition(BPMNDiagramImpl.class);
-        // Exclude the none task from palette, it will be available by dragging from the main Activities category.
-        excludeDefinition(NoneTask.class);
-        // TODO: Exclude connectors category from being present on the palette model - Dropping connectors from palette produces an error right now, must fix it on lienzo side.
-        excludeCategory(Categories.CONNECTING_OBJECTS);
-    }
+  @Inject
+  public BPMNPaletteDefinitionFactory(final ShapeManager shapeManager,
+                                      final DefinitionSetPaletteBuilder paletteBuilder,
+                                      final AbstractTranslationService translationService) {
+    super(shapeManager,
+          paletteBuilder);
+    this.translationService = translationService;
+  }
 
-    @Override
-    protected String getCategoryTitle(final String id) {
-        return CAT_TITLES.get(id);
-    }
+  @PostConstruct
+  public void init() {
+    CAT_TITLES.put(Categories.ACTIVITIES, translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.category.activities"));
+    CAT_TITLES.put(Categories.CONNECTING_OBJECTS, translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.category.connectingObjects"));
+    CAT_TITLES.put(Categories.EVENTS, translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.category.events"));
+    CAT_TITLES.put(Categories.GATEWAYS, translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.category.gateways"));
+    CAT_TITLES.put(Categories.CONTAINERS, translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.category.containers"));
+    MORPH_GROUP_TITLES.put(BaseTask.class.getName(), translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.tasks"));
+    MORPH_GROUP_TITLES.put(BaseStartEvent.class.getName(), translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.start"));
+    MORPH_GROUP_TITLES.put(BaseEndEvent.class.getName(), translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.end"));
+    MORPH_GROUP_TITLES.put(BaseIntermediateEvent.class.getName(), translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.intermediate"));
+    MORPH_GROUP_TITLES.put(BaseSubprocess.class.getName(), translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.subprocess"));
+    MORPH_GROUP_TITLES.put(BaseGateway.class.getName(), translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.gateways"));
+  }
 
-    @Override
-    protected Class<?> getCategoryTargetDefinitionId(final String id) {
-        return CAT_DEF_IDS.get(id);
-    }
+  @Override
+  protected void configureBuilder() {
+    super.configureBuilder();
+    // Exclude BPMN Diagram from palette model.
+    excludeDefinition(BPMNDiagramImpl.class);
+    // Exclude the none task from palette, it will be available by dragging from the main Activities category.
+    excludeDefinition(NoneTask.class);
+    // TODO: Exclude connectors category from being present on the palette model - Dropping connectors from palette produces an error right now, must fix it on lienzo side.
+    excludeCategory(Categories.CONNECTING_OBJECTS);
+  }
 
-    @Override
-    protected String getCategoryDescription(final String id) {
-        return CAT_TITLES.get(id);
-    }
+  @Override
+  protected String getCategoryTitle(final String id) {
+    return CAT_TITLES.get(id);
+  }
 
-    @Override
-    protected String getMorphGroupTitle(final String morphBaseId,
-                                        final Object definition) {
-        return MORPH_GROUP_TITLES.get(morphBaseId);
-    }
+  @Override
+  protected Class<?> getCategoryTargetDefinitionId(final String id) {
+    return CAT_DEF_IDS.get(id);
+  }
 
-    @Override
-    protected String getMorphGroupDescription(final String morphBaseId,
-                                              final Object definition) {
-        return MORPH_GROUP_TITLES.get(morphBaseId);
-    }
+  @Override
+  protected String getCategoryDescription(final String id) {
+    return CAT_TITLES.get(id);
+  }
 
-    @Override
-    protected Class<?> getDefinitionSetType() {
-        return BPMNDefinitionSet.class;
-    }
+  @Override
+  protected String getMorphGroupTitle(final String morphBaseId,
+                                      final Object definition) {
+    return MORPH_GROUP_TITLES.get(morphBaseId);
+  }
+
+  @Override
+  protected String getMorphGroupDescription(final String morphBaseId,
+                                            final Object definition) {
+    return MORPH_GROUP_TITLES.get(morphBaseId);
+  }
+
+  @Override
+  protected Class<?> getDefinitionSetType() {
+    return BPMNDefinitionSet.class;
+  }
 }

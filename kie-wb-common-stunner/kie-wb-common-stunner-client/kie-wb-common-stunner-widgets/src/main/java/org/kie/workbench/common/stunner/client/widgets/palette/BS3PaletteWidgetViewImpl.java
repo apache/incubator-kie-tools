@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import com.ait.lienzo.client.core.shape.Group;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -35,82 +36,90 @@ import org.uberfire.commons.validation.PortablePreconditions;
 public class BS3PaletteWidgetViewImpl implements BS3PaletteWidgetView,
                                                  IsElement {
 
-    private ShapeGlyphDragHandler shapeGlyphDragHandler;
+  private ShapeGlyphDragHandler shapeGlyphDragHandler;
 
-    private BS3PaletteWidget presenter;
+  private BS3PaletteWidget presenter;
 
-    @Inject
-    @DataField("kie-palette")
-    private Div palette;
+  @Inject
+  @DataField("kie-palette")
+  private Div palette;
 
-    @Override
-    public void init(BS3PaletteWidget presenter) {
-        this.presenter = presenter;
-    }
+  @Inject
+  @DataField("list-group")
+  private UnorderedList ul;
 
-    @Override
-    public void setShapeGlyphDragHandler(ShapeGlyphDragHandler shapeGlyphDragHandler) {
-        this.shapeGlyphDragHandler = shapeGlyphDragHandler;
-    }
+  @Override
+  public void init(BS3PaletteWidget presenter) {
+    this.presenter = presenter;
+  }
 
-    @Override
-    public void showDragProxy(String itemId,
-                              double x,
-                              double y) {
-        final Glyph<Group> glyph = (Glyph<Group>) presenter.getShapeGlyph(itemId);
-        presenter.onDragStart(itemId,
-                              x,
-                              y);
+  @Override
+  public void setShapeGlyphDragHandler(ShapeGlyphDragHandler shapeGlyphDragHandler) {
+    this.shapeGlyphDragHandler = shapeGlyphDragHandler;
+  }
 
-        shapeGlyphDragHandler.show(glyph,
-                                   x,
-                                   y,
-                                   new ShapeGlyphDragHandler.Callback() {
+  @Override
+  public void showDragProxy(String itemId,
+                            double x,
+                            double y) {
+    final Glyph<Group> glyph = (Glyph<Group>) presenter.getShapeGlyph(itemId);
+    presenter.onDragStart(itemId,
+                          x,
+                          y);
 
-                                       @Override
-                                       public void onMove(final double x,
-                                                          final double y) {
-                                           presenter.onDragProxyMove(itemId,
-                                                                     x,
-                                                                     y);
-                                       }
+    shapeGlyphDragHandler.show(glyph,
+                               x,
+                               y,
+                               new ShapeGlyphDragHandler.Callback() {
 
-                                       @Override
-                                       public void onComplete(final double x,
-                                                              final double y) {
-                                           glyph.destroy();
-                                           presenter.onDragProxyComplete(itemId,
-                                                                         x,
-                                                                         y);
-                                       }
-                                   });
-    }
+                                 @Override
+                                 public void onMove(final double x,
+                                                    final double y) {
+                                   presenter.onDragProxyMove(itemId,
+                                                             x,
+                                                             y);
+                                 }
 
-    @Override
-    public void add(DefinitionPaletteCategoryWidget widget) {
-        PortablePreconditions.checkNotNull("widget",
-                                           widget);
-        palette.appendChild(widget.getElement());
-    }
+                                 @Override
+                                 public void onComplete(final double x,
+                                                        final double y) {
+                                   glyph.destroy();
+                                   presenter.onDragProxyComplete(itemId,
+                                                                 x,
+                                                                 y);
+                                 }
+                               });
+  }
 
-    @Override
-    public void clear() {
-        DOMUtil.removeAllChildren(palette);
-    }
+  @Override
+  public void add(DefinitionPaletteCategoryWidget widget) {
+    PortablePreconditions.checkNotNull("widget",
+                                       widget);
 
-    @Override
-    public void destroy() {
-        clear();
-    }
 
-    @Override
-    public void setBackgroundColor(String backgroundColor) {
-        palette.getStyle().setProperty("background-color",
-                                       backgroundColor);
-    }
+    palette.appendChild(ul);
 
-    @Override
-    public void showEmptyView(boolean showEmptyView) {
-        palette.setHidden(showEmptyView);
-    }
+    ul.appendChild(widget.getElement());
+  }
+
+  @Override
+  public void clear() {
+    DOMUtil.removeAllChildren(palette);
+  }
+
+  @Override
+  public void destroy() {
+    clear();
+  }
+
+  @Override
+  public void setBackgroundColor(String backgroundColor) {
+    palette.getStyle().setProperty("background-color",
+                                   backgroundColor);
+  }
+
+  @Override
+  public void showEmptyView(boolean showEmptyView) {
+    palette.setHidden(showEmptyView);
+  }
 }
