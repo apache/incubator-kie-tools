@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -37,6 +37,7 @@ import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.core.client.tree.Tree;
+import org.uberfire.ext.widgets.core.client.tree.FSTreeItem;
 import org.uberfire.ext.widgets.core.client.tree.TreeItem;
 import org.uberfire.workbench.type.DotResourceTypeDefinition;
 
@@ -52,7 +53,7 @@ public class TreeNavigator extends Composite implements Navigator {
 
     private NavigatorOptions options = new NavigatorOptions();
 
-    private final Tree tree = new Tree();
+    private final Tree<FSTreeItem> tree = new Tree<>();
     private BaseViewPresenter presenter;
 
     private FolderListing activeContent;
@@ -62,18 +63,18 @@ public class TreeNavigator extends Composite implements Navigator {
         tree.addStyleName( NavigatorResources.INSTANCE.css().treeNav() );
         initWidget( tree );
 
-        tree.addOpenHandler( new OpenHandler<TreeItem>() {
+        tree.addOpenHandler( new OpenHandler<FSTreeItem>() {
             @Override
-            public void onOpen( final OpenEvent<TreeItem> event ) {
+            public void onOpen( final OpenEvent<FSTreeItem> event ) {
                 if ( needsLoading( event.getTarget() ) ) {
                     presenter.loadContent( (FolderItem) event.getTarget().getUserObject() );
                 }
             }
         } );
 
-        tree.addSelectionHandler( new SelectionHandler<TreeItem>() {
+        tree.addSelectionHandler( new SelectionHandler<FSTreeItem>() {
             @Override
-            public void onSelection( SelectionEvent<TreeItem> event ) {
+            public void onSelection( SelectionEvent<FSTreeItem> event ) {
                 if ( event.getSelectedItem().getUserObject() != null && event.getSelectedItem().getUserObject() instanceof FolderItem ) {
                     presenter.onItemSelected( ( FolderItem ) event.getSelectedItem().getUserObject() );
                 }
@@ -101,16 +102,16 @@ public class TreeNavigator extends Composite implements Navigator {
         }
         if ( content.equals( activeContent ) ) {
             if ( tree.getSelectedItem() != null ) {
-                tree.getSelectedItem().setState( TreeItem.State.OPEN,
-                                                 true,
-                                                 false );
+                tree.getSelectedItem().setState(TreeItem.State.OPEN,
+                                                true,
+                                                false );
             }
             return;
         }
 
         this.activeContent = content;
 
-        TreeItem item = null;
+        FSTreeItem item = null;
         if ( !tree.isEmpty() ) {
             item = findItemInTree( content.getItem() );
         }
@@ -118,14 +119,14 @@ public class TreeNavigator extends Composite implements Navigator {
         if ( item == null ) {
             if ( content.getSegments().isEmpty() ) {
                 final FolderItem rootItem = content.getItem();
-                item = new TreeItem( TreeItem.Type.FOLDER,
-                                     rootItem.getFileName().replaceAll( " ",
-                                                                        "\u00a0" ) );
+                item = new FSTreeItem(FSTreeItem.FSType.FOLDER,
+                                      rootItem.getFileName().replaceAll( " ",
+                                                                          "\u00a0" ) );
                 tree.addItem( item );
                 item.setUserObject( rootItem );
             } else {
-                final TreeItem parent = loadRoots( content.getSegments(),
-                                                   siblings );
+                final FSTreeItem parent = loadRoots( content.getSegments(),
+                                                     siblings );
                 if ( parent != null ) {
                     item = loadSiblings( content.getItem(),
                                          new TreeNavigatorItemImpl( parent ),
@@ -149,9 +150,9 @@ public class TreeNavigator extends Composite implements Navigator {
         }
     }
 
-    private TreeItem findItemInTree( final FolderItem xxx ) {
-        TreeItem item = null;
-        for ( final TreeItem treeItem : tree.getItems() ) {
+    private FSTreeItem findItemInTree( final FolderItem xxx ) {
+        FSTreeItem item = null;
+        for ( final FSTreeItem treeItem : tree.getItems() ) {
             if ( item != null ) {
                 return item;
             }
@@ -164,14 +165,14 @@ public class TreeNavigator extends Composite implements Navigator {
         return item;
     }
 
-    private TreeItem loadRoots( final List<FolderItem> segments,
+    private FSTreeItem loadRoots( final List<FolderItem> segments,
                                 final Map<FolderItem, List<FolderItem>> siblings ) {
-        TreeItem parent = null;
+        FSTreeItem parent = null;
         for ( final FolderItem segment : segments ) {
-            TreeItem item;
+            FSTreeItem item;
             if ( tree.isEmpty() ) {
-                item = new TreeItem( TreeItem.Type.FOLDER,
-                                     segment.getFileName().replaceAll( " ",
+                item = new FSTreeItem(FSTreeItem.FSType.FOLDER,
+                                    segment.getFileName().replaceAll( " ",
                                                                        "\u00a0" ) );
                 item.setUserObject( segment );
                 tree.addItem( item );
@@ -198,7 +199,7 @@ public class TreeNavigator extends Composite implements Navigator {
         return parent;
     }
 
-    private TreeItem loadSiblings( final FolderItem item,
+    private FSTreeItem loadSiblings( final FolderItem item,
                                    final TreeNavigatorItemImpl parent,
                                    final Map<FolderItem, List<FolderItem>> siblings ) {
         final List<FolderItem> mySiblings = siblings.get( item );
@@ -223,10 +224,10 @@ public class TreeNavigator extends Composite implements Navigator {
                                    item );
     }
 
-    private TreeItem findItemInChildren( final TreeItem item,
+    private FSTreeItem findItemInChildren( final FSTreeItem item,
                                          final FolderItem target ) {
-        TreeItem result = null;
-        for ( final TreeItem treeItem : item.getChildren() ) {
+        FSTreeItem result = null;
+        for ( final FSTreeItem treeItem : item.getChildren() ) {
             if ( result != null ) {
                 break;
             }
@@ -298,9 +299,9 @@ public class TreeNavigator extends Composite implements Navigator {
 
     private class TreeNavigatorItemImpl implements NavigatorItem {
 
-        private final TreeItem parent;
+        private final FSTreeItem parent;
 
-        TreeNavigatorItemImpl( final TreeItem treeItem ) {
+        TreeNavigatorItemImpl( final FSTreeItem treeItem ) {
             this.parent = checkNotNull( "parent", treeItem );
         }
 
@@ -313,8 +314,8 @@ public class TreeNavigator extends Composite implements Navigator {
                 }
             }
 
-            final TreeItem newDirectory = parent.addItem( TreeItem.Type.FOLDER, child.getFileName().replaceAll( " ", "\u00a0" ) );
-            newDirectory.addItem( TreeItem.Type.LOADING, LAZY_LOAD );
+            final FSTreeItem newDirectory = parent.addItem( FSTreeItem.FSType.FOLDER, child.getFileName().replaceAll( " ", "\u00a0" ) );
+            newDirectory.addItem( FSTreeItem.FSType.LOADING, LAZY_LOAD );
             newDirectory.setUserObject( child );
         }
 
@@ -327,7 +328,7 @@ public class TreeNavigator extends Composite implements Navigator {
                 }
             }
 
-            final TreeItem newFile = parent.addItem( TreeItem.Type.ITEM, child.getFileName().replaceAll( " ", "\u00a0" ) );
+            final FSTreeItem newFile = parent.addItem( FSTreeItem.FSType.ITEM, child.getFileName().replaceAll( " ", "\u00a0" ) );
             newFile.setUserObject( child );
         }
 

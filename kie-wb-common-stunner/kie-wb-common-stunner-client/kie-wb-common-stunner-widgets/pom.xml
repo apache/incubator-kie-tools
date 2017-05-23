@@ -140,6 +140,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-core-client</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.ahome-it</groupId>
       <artifactId>lienzo-core</artifactId>
       <scope>provided</scope>

@@ -226,6 +226,19 @@ public class GraphUtils {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
+    public static boolean hasChildren(final Node<?, ? extends Edge> element) {
+        final List<? extends Edge> outEdges = element.getOutEdges();
+        if (null != outEdges) {
+            return
+                    outEdges.stream()
+                            .filter(edge -> (edge.getContent() instanceof Child))
+                            .findAny()
+                            .isPresent();
+        }
+        return false;
+    }
+
     private static String getElementDefinitionId(final DefinitionManager definitionManager,
                                                  final Element<?> element) {
         String targetId = null;

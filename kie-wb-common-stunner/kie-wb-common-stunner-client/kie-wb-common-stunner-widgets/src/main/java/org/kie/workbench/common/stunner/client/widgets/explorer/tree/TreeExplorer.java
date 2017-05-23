@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,10 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.widgets.explorer.tree;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -29,8 +27,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.client.lienzo.util.LienzoPanelUtils;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasEvent;
@@ -41,65 +39,45 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.AbstractChildrenTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.widgets.core.client.tree.TreeItem;
 
 // TODO: Use incremental updates, do not visit whole graph on each model update.
 @Dependent
 public class TreeExplorer implements IsWidget {
 
     private static Logger LOGGER = Logger.getLogger(TreeExplorer.class.getName());
-
-    public interface View extends UberView<TreeExplorer> {
-
-        View addItem(final String uuid,
-                     final IsWidget itemView,
-                     final boolean state);
-
-        View addItem(final String uuid,
-                     final IsWidget itemView,
-                     final boolean state,
-                     final int... parentIdx);
-
-        View removeItem(final int index);
-
-        View removeItem(final int index,
-                        final int... parentIdx);
-
-        View clear();
-    }
-
-    private DefinitionManager definitionManager;
-    private ChildrenTraverseProcessor childrenTraverseProcessor;
-    private ManagedInstance<TreeExplorerItem> treeExplorerItemInstances;
-    private Event<CanvasElementSelectedEvent> elementSelectedEventEvent;
-    private View view;
-
-    //ManagedInstance<T> releases instances when TreeExplorer is destroyed; therefore when
-    //nodes are added, removed or updated whilst the instance of TreeExplorer is active
-    //more and more instances of TreeExplorerItem are created. TreeExplorerItem's view
-    //includes a Glyph which can lead to the DOM being flooded with <img..> elements
-    //unless we destroy instances when the TreeExplorer is refreshed.
-    private Set<TreeExplorerItem> treeExplorerItems = new HashSet<>();
-
+    private final int icoHeight = 13;
+    private final int icoWidth = 13;
+    ChildrenTraverseProcessor childrenTraverseProcessor;
+    ShapeManager shapeManager;
+    Event<CanvasElementSelectedEvent> elementSelectedEventEvent;
+    View view;
+    DefinitionUtils definitionUtils;
     private CanvasHandler canvasHandler;
 
     @Inject
-    public TreeExplorer(final DefinitionManager definitionManager,
-                        final ChildrenTraverseProcessor childrenTraverseProcessor,
-                        final ManagedInstance<TreeExplorerItem> treeExplorerItemInstances,
+    public TreeExplorer(final ChildrenTraverseProcessor childrenTraverseProcessor,
                         final Event<CanvasElementSelectedEvent> elementSelectedEventEvent,
+                        final DefinitionUtils definitionUtils,
+                        final ShapeManager shapeManager,
                         final View view) {
-        this.definitionManager = definitionManager;
         this.childrenTraverseProcessor = childrenTraverseProcessor;
-        this.treeExplorerItemInstances = treeExplorerItemInstances;
         this.elementSelectedEventEvent = elementSelectedEventEvent;
+        this.definitionUtils = definitionUtils;
+        this.shapeManager = shapeManager;
         this.view = view;
     }
 
@@ -128,9 +106,9 @@ public class TreeExplorer implements IsWidget {
         childrenTraverseProcessor.traverse(graph,
                                            new AbstractChildrenTraverseCallback<Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge>, Edge<Child, Node>>() {
 
+                                               final List<Integer> levelIdx = new LinkedList<Integer>();
                                                Node parent = null;
                                                int level = 0;
-                                               final List<Integer> levelIdx = new LinkedList<Integer>();
 
                                                @Override
                                                public void startEdgeTraversal(final Edge<Child, Node> edge) {
@@ -180,28 +158,66 @@ public class TreeExplorer implements IsWidget {
                                                    super.startNodeTraversal(node);
                                                    inc(levelIdx,
                                                        level);
+
+                                                   String name = getItemName(node);
+
+                                                   LienzoPanelUtils p = new LienzoPanelUtils();
+                                                   TreeItem.Type itemType;
+                                                   Glyph ico = getGlyph(getShapeSetId(),
+                                                                        node);
+
                                                    if (null == parent) {
-                                                       final TreeExplorerItem item = treeExplorerItemInstances.get();
-                                                       treeExplorerItems.add(item);
+
+                                                       if (GraphUtils.hasChildren(node)) {
+                                                           itemType = TreeItem.Type.CONTAINER;
+                                                       } else {
+                                                           itemType = TreeItem.Type.ITEM;
+                                                       }
                                                        view.addItem(node.getUUID(),
-                                                                    item.asWidget(),
+                                                                    name,
+                                                                    p.newPanel(ico,
+                                                                               icoWidth,
+                                                                               icoHeight),
+                                                                    itemType,
                                                                     expand);
-                                                       item.show(getShapeSetId(),
-                                                                 node);
                                                    } else {
                                                        int[] parentsIdx = getParentsIdx(levelIdx,
                                                                                         level);
-                                                       final TreeExplorerItem item = treeExplorerItemInstances.get();
-                                                       treeExplorerItems.add(item);
-                                                       view.addItem(node.getUUID(),
-                                                                    item.asWidget(),
-                                                                    expand,
-                                                                    parentsIdx);
-                                                       item.show(getShapeSetId(),
-                                                                 node);
+
+                                                       if (GraphUtils.hasChildren(node)) {
+                                                           itemType = TreeItem.Type.CONTAINER;
+                                                           view.addItem(node.getUUID(),
+                                                                        name,
+                                                                        p.newPanel(ico,
+                                                                                   icoWidth,
+                                                                                   icoHeight),
+                                                                        itemType,
+                                                                        expand,
+                                                                        parentsIdx);
+                                                       } else {
+                                                           itemType = TreeItem.Type.ITEM;
+                                                           view.addItem(node.getUUID(),
+                                                                        name,
+                                                                        p.newPanel(ico,
+                                                                                   icoWidth,
+                                                                                   icoHeight),
+                                                                        itemType,
+                                                                        expand,
+                                                                        parentsIdx);
+                                                       }
                                                    }
                                                }
                                            });
+    }
+
+    private Glyph getGlyph(final String shapeSetId,
+                           final Element<org.kie.workbench.common.stunner.core.graph.content.view.View> element) {
+        final Object definition = element.getContent().getDefinition();
+        final String defId = definitionUtils.getDefinitionManager().adapters().forDefinition().getId(definition);
+        final ShapeFactory factory = shapeManager.getShapeSet(shapeSetId).getShapeFactory();
+        return factory.glyph(defId,
+                             icoWidth,
+                             icoHeight);
     }
 
     private void inc(final List<Integer> levels,
@@ -217,6 +233,7 @@ public class TreeExplorer implements IsWidget {
 
     private int[] getParentsIdx(final List<Integer> idxList,
                                 final int maxLevel) {
+
         if (!idxList.isEmpty()) {
             final int targetPos = (idxList.size() - (idxList.size() - maxLevel)) + 1;
             final int[] resultArray = new int[targetPos];
@@ -229,9 +246,6 @@ public class TreeExplorer implements IsWidget {
     }
 
     public void clear() {
-        //Destroy existing TreeExplorerItems; that otherwise are not GC'ed until TreeExplorer closes.
-        treeExplorerItems.forEach(TreeExplorerItem::destroy);
-        treeExplorerItems.clear();
         view.clear();
     }
 
@@ -305,5 +319,39 @@ public class TreeExplorer implements IsWidget {
 
     public CanvasHandler getCanvasHandler() {
         return canvasHandler;
+    }
+
+    private String getItemName(final Element<org.kie.workbench.common.stunner.core.graph.content.view.View> item) {
+        final String name = definitionUtils.getName(item.getContent().getDefinition());
+
+        final String title = definitionUtils.getDefinitionManager().adapters().forDefinition().getTitle(item.getContent().getDefinition());
+
+        if (name != null && name.trim().equals("") && title != null) {
+            return title;
+        }
+        return (name != null ? name : "- No name -");
+    }
+
+    public interface View extends UberView<TreeExplorer> {
+
+        View addItem(final String uuid,
+                     final String name,
+                     final IsWidget icon,
+                     final TreeItem.Type itemType,
+                     final boolean state);
+
+        View addItem(final String uuid,
+                     final String name,
+                     final IsWidget icon,
+                     final TreeItem.Type itemType,
+                     final boolean state,
+                     final int... parentIdx);
+
+        View removeItem(final int index);
+
+        View removeItem(final int index,
+                        final int... parentIdx);
+
+        View clear();
     }
 }
