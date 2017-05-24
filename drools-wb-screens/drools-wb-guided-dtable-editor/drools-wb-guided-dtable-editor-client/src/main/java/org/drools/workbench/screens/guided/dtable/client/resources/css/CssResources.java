@@ -38,7 +38,5 @@ public interface CssResources
 
     String ruleInheritance();
 
-    String ruleInheritanceDropdown();
-
     String ruleInheritanceLabel();
 }

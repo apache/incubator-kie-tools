@@ -276,8 +276,6 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
             presenter.getActiveDecisionTable().setParentRuleName(e.getValue());
         });
 
-        getRuleSelector().setStyleName(GuidedDecisionTableResources.INSTANCE.css().ruleInheritanceDropdown());
-
         return getRuleSelector();
     }
 

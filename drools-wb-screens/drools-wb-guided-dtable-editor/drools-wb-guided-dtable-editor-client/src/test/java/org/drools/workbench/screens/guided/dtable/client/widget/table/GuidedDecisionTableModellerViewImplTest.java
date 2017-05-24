@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.google.gwt.dev.util.collect.HashMap;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -165,7 +164,6 @@ public class GuidedDecisionTableModellerViewImplTest {
 
         verify(ruleSelector).setEnabled(false);
         verify(ruleSelector).addValueChangeHandler(any());
-        verify(ruleSelector).setStyleName(GuidedDecisionTableResources.INSTANCE.css().ruleInheritanceDropdown());
 
         assertEquals(ruleSelector,
                      actualRuleSelector);
