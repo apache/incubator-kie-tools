@@ -20,11 +20,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
+import org.kie.workbench.common.screens.library.api.index.LibraryValueFileNameIndexTerm;
 import org.kie.workbench.common.screens.library.api.index.LibraryValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.DefaultResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFullFileNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
@@ -140,8 +140,8 @@ public class FindAllLibraryAssetsQueryTest
                                                                               new HashSet<ValueIndexTerm>() {{
                                                                                   add(new LibraryValueProjectRootPathIndexTerm(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
                                                                                                                                TermSearchType.WILDCARD));
-                                                                                  add(new ValueFullFileNameIndexTerm("*rule*",
-                                                                                                                     TermSearchType.WILDCARD));
+                                                                                  add(new LibraryValueFileNameIndexTerm("*rule*",
+                                                                                                                        TermSearchType.WILDCARD));
                                                                               }},
                                                                               0,
                                                                               10);

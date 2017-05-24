@@ -55,10 +55,10 @@ import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
+import org.kie.workbench.common.screens.library.api.index.LibraryValueFileNameIndexTerm;
 import org.kie.workbench.common.screens.library.api.index.LibraryValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFullFileNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
@@ -209,8 +209,8 @@ public class LibraryServiceImpl implements LibraryService {
         queryTerms.add(new LibraryValueProjectRootPathIndexTerm(query.getProject().getRootPath().toURI()));
 
         if (query.hasFilter()) {
-            queryTerms.add(new ValueFullFileNameIndexTerm("*" + query.getFilter() + "*",
-                                                          ValueIndexTerm.TermSearchType.WILDCARD));
+            queryTerms.add(new LibraryValueFileNameIndexTerm("*" + query.getFilter() + "*",
+                                                             ValueIndexTerm.TermSearchType.WILDCARD));
         }
 
         final PageResponse<RefactoringPageRow> findRulesByProjectQuery = refactoringQueryService.query(new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,

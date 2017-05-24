@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.lucene.analysis.Analyzer;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.screens.library.api.index.LibraryFileNameIndexTerm;
 import org.kie.workbench.common.screens.library.api.index.LibraryProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.LowerCaseOnlyAnalyzer;
 import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
@@ -43,10 +44,11 @@ public class DefaultLuceneConfigProducerTest {
     public void checkDefaultAnalyzers() {
         final Map<String, Analyzer> analyzers = producer.getAnalyzers();
 
-        assertEquals(4,
+        assertEquals(5,
                      analyzers.size());
-        assertTrue(analyzers.get(ProjectRootPathIndexTerm.TERM) instanceof FilenameAnalyzer);
+        assertTrue(analyzers.get(LibraryFileNameIndexTerm.TERM) instanceof FilenameAnalyzer);
         assertTrue(analyzers.get(LibraryProjectRootPathIndexTerm.TERM) instanceof FilenameAnalyzer);
+        assertTrue(analyzers.get(ProjectRootPathIndexTerm.TERM) instanceof FilenameAnalyzer);
         assertTrue(analyzers.get(PackageNameIndexTerm.TERM) instanceof LowerCaseOnlyAnalyzer);
         assertTrue(analyzers.get(LuceneIndex.CUSTOM_FIELD_FILENAME) instanceof FilenameAnalyzer);
     }

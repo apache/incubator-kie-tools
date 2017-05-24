@@ -22,12 +22,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.Package;
+import org.kie.workbench.common.screens.library.api.index.LibraryFileNameIndexTerm;
 import org.kie.workbench.common.screens.library.api.index.LibraryProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.KPropertyImpl;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
-import org.kie.workbench.common.services.refactoring.model.index.terms.FullFileNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectNameIndexTerm;
 import org.kie.workbench.common.services.shared.project.KieProject;
@@ -91,7 +91,7 @@ public class LibraryIndexer extends AbstractFileIndexer {
             public Set<KProperty<?>> build() {
                 final Set<KProperty<?>> indexElements = new HashSet<>();
 
-                indexElements.add(new KPropertyImpl<>(FullFileNameIndexTerm.TERM,
+                indexElements.add(new KPropertyImpl<>(LibraryFileNameIndexTerm.TERM,
                                                       fileName));
                 indexElements.add(new KPropertyImpl<>(FieldFactory.FILE_NAME_FIELD_SORTED,
                                                       fileName.toLowerCase(),

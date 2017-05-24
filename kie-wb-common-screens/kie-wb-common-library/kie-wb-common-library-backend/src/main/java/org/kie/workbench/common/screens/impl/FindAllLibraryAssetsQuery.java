@@ -22,12 +22,12 @@ import javax.inject.Inject;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
+import org.kie.workbench.common.screens.library.api.index.LibraryValueFileNameIndexTerm;
 import org.kie.workbench.common.screens.library.api.index.LibraryValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.FileDetailsResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.AbstractFindQuery;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFullFileNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.uberfire.ext.metadata.backend.lucene.fields.FieldFactory;
 
@@ -80,7 +80,7 @@ public class FindAllLibraryAssetsQuery
                                              null // not required
                                      },
                                      (t) -> (t instanceof LibraryValueProjectRootPathIndexTerm),
-                                     (t) -> (t instanceof ValueFullFileNameIndexTerm)
+                                     (t) -> (t instanceof LibraryValueFileNameIndexTerm)
         );
 
         checkTermsSize(2,

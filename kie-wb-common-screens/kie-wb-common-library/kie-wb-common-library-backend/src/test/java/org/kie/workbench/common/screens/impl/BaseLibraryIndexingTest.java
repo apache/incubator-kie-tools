@@ -39,11 +39,14 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.kie.workbench.common.screens.library.api.index.LibraryFileNameIndexTerm;
 import org.kie.workbench.common.screens.library.api.index.LibraryProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ImpactAnalysisAnalyzerWrapperFactory;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.LowerCaseOnlyAnalyzer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQueries;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
+import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -52,6 +55,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
+import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.io.IOServiceIndexedImpl;
 import org.uberfire.ext.metadata.io.IndexersFactory;
 import org.uberfire.io.IOService;
@@ -65,13 +69,13 @@ public abstract class BaseLibraryIndexingTest {
     public static final String TEST_PROJECT_NAME = "mock-project";
     public static final String TEST_PACKAGE_NAME = "org.kie.workbench.mock.package";
     protected static final Logger logger = LoggerFactory.getLogger(BaseLibraryIndexingTest.class);
-    protected static final List<File> tempFiles = new ArrayList<File>();
+    protected static final List<File> tempFiles = new ArrayList<>();
     private static LuceneConfig config;
     protected int seed = new Random(10L).nextInt();
     protected boolean created = false;
     protected Path basePath;
     protected RefactoringQueryServiceImpl service;
-    private IOService ioService = null;
+    protected IOService ioService = null;
 
     @AfterClass
     @BeforeClass
@@ -86,6 +90,7 @@ public abstract class BaseLibraryIndexingTest {
     }
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() throws IOException {
         if (!created) {
             final String repositoryName = getRepositoryName();
@@ -105,7 +110,7 @@ public abstract class BaseLibraryIndexingTest {
             try {
                 IOService ioService = ioService();
                 ioService.newFileSystem(newRepo,
-                                        new HashMap<String, Object>());
+                                        new HashMap<>());
 
                 // Don't ask, but we need to write a single file first in order for indexing to work
                 basePath = getDirectoryPath().resolveSibling("someNewOtherPath");
@@ -162,14 +167,6 @@ public abstract class BaseLibraryIndexingTest {
         return dir;
     }
 
-    private Map<String, Analyzer> getAnalyzers() {
-        return new HashMap<String, Analyzer>() {{
-            put(ProjectRootPathIndexTerm.TERM,
-                new FilenameAnalyzer());
-            put(LibraryProjectRootPathIndexTerm.TERM,
-                new FilenameAnalyzer());
-        }};
-    }
 
     protected void addTestFile(final String projectName,
                                final String pathToFile) throws IOException {
@@ -203,6 +200,7 @@ public abstract class BaseLibraryIndexingTest {
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected IOService ioService() {
         if (ioService == null) {
             final Map<String, Analyzer> analyzers = getAnalyzers();
@@ -223,6 +221,7 @@ public abstract class BaseLibraryIndexingTest {
             ioService = new IOServiceIndexedImpl(config.getIndexEngine());
 
             final LibraryIndexer indexer = new LibraryIndexer(new LibraryAssetTypeDefinition());
+            IndexersFactory.clear();
             IndexersFactory.addIndexer(indexer);
 
             //Mock CDI injection and setup
@@ -230,6 +229,21 @@ public abstract class BaseLibraryIndexingTest {
             indexer.setProjectService(getProjectService());
         }
         return ioService;
+    }
+
+    private Map<String, Analyzer> getAnalyzers() {
+        return new HashMap<String, Analyzer>() {{
+            put(LibraryFileNameIndexTerm.TERM,
+                new FilenameAnalyzer());
+            put(LibraryProjectRootPathIndexTerm.TERM,
+                new FilenameAnalyzer());
+            put(ProjectRootPathIndexTerm.TERM,
+                new FilenameAnalyzer());
+            put(PackageNameIndexTerm.TERM,
+                new LowerCaseOnlyAnalyzer());
+            put(LuceneIndex.CUSTOM_FIELD_FILENAME,
+                new FilenameAnalyzer());
+        }};
     }
 
     protected KieProjectService getProjectService() {
