@@ -21,17 +21,20 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 
 public interface Column<T> {
 
+    Integer DEFAULT_COLUMN_HEIGHT = 12;
+    Integer DEFAULT_COLUMN_WIDTH = 12;
+
     UberElement<T> getView();
 
     String getParentId();
 
-    Integer getSize();
+    Integer getColumnWidth();
 
-    void setSize(Integer size);
+    void setColumnWidth(Integer size);
 
-    void incrementSize();
+    void incrementWidth();
 
-    void reduzeSize();
+    void reduceWidth();
 
     void setupResize(boolean canResizeLeft,
                      boolean canResizeRight);
@@ -40,7 +43,15 @@ public interface Column<T> {
 
     boolean hasInnerRows();
 
-    void calculateSize();
+    void calculateWidth();
 
     String getId();
+
+    Integer getColumnHeight();
+
+    default boolean isInnerColumn() {
+        return false;
+    }
+
+    void setColumnHeight(Integer columnHeight);
 }

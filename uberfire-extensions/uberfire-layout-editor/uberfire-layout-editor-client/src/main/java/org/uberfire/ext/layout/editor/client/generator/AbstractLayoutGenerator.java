@@ -29,6 +29,7 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.ext.layout.editor.client.infra.ColumnSizeBuilder;
+import org.uberfire.ext.layout.editor.client.infra.RowSizeBuilder;
 
 public abstract class AbstractLayoutGenerator implements LayoutGenerator {
 
@@ -36,32 +37,50 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
     public Panel build(LayoutTemplate layoutTemplate) {
         ComplexPanel container = getLayoutContainer();
         List<LayoutRow> rows = layoutTemplate.getRows();
-        generateRows(rows,
+        generateRows(layoutTemplate,
+                     rows,
                      container);
         return container;
     }
 
-    private void generateRows(List<LayoutRow> rows,
+    private void generateRows(LayoutTemplate layoutTemplate,
+                              List<LayoutRow> rows,
                               ComplexPanel parentWidget) {
         for (LayoutRow layoutRow : rows) {
             Row row = new Row();
+            if (layoutTemplate.isPageLayout()) {
+                row.getElement().addClassName(RowSizeBuilder.buildRowSize(layoutRow.getHeight()));
+            }
             for (LayoutColumn layoutColumn : layoutRow.getLayoutColumns()) {
                 Column column = new Column(
                         ColumnSizeBuilder.buildColumnSize(new Integer(layoutColumn.getSpan())));
+                if (layoutTemplate.isPageLayout() && layoutColumn.getHeight().isEmpty()) {
+                    column.getElement().addClassName("uf-perspective-col");
+                }
                 if (columnHasNestedRows(layoutColumn)) {
-                    generateRows(layoutColumn.getRows(),
+                    if (layoutTemplate.isPageLayout() && layoutColumn.getHeight().isEmpty()) {
+                        column.asWidget().getElement().addClassName("uf-perspective-col");
+                    } else if (!layoutColumn.getHeight().isEmpty()) {
+                        column.getElement().addClassName("uf-perspective-row-" + layoutColumn.getHeight());
+                    }
+                    generateRows(layoutTemplate,
+                                 layoutColumn.getRows(),
                                  column);
                 } else {
-                    generateComponents(layoutColumn,
+                    generateComponents(layoutTemplate,
+                                       layoutColumn,
                                        column);
                 }
+                column.getElement().addClassName("uf-perspective-rendered-col");
                 row.add(column);
             }
+            row.getElement().addClassName("uf-perspective-rendered-row");
             parentWidget.add(row);
         }
     }
 
-    private void generateComponents(final LayoutColumn layoutColumn,
+    private void generateComponents(LayoutTemplate layoutTemplate,
+                                    final LayoutColumn layoutColumn,
                                     final Column column) {
         for (final LayoutComponent layoutComponent : layoutColumn.getLayoutComponents()) {
             final LayoutDragComponent dragComponent = getLayoutDragComponent(layoutComponent);
@@ -69,6 +88,11 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
                 RenderingContext componentContext = new RenderingContext(layoutComponent,
                                                                          column);
                 IsWidget componentWidget = dragComponent.getShowWidget(componentContext);
+                if (layoutTemplate.isPageLayout() && layoutColumn.getHeight().isEmpty()) {
+                    componentWidget.asWidget().getElement().addClassName("uf-perspective-col");
+                } else if (!layoutColumn.getHeight().isEmpty()) {
+                    column.getElement().addClassName("uf-perspective-row-" + layoutColumn.getHeight());
+                }
                 if (componentWidget != null) {
                     column.add(componentWidget);
                 }

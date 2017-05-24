@@ -93,6 +93,7 @@ public class LayoutEditorPresenterTest {
                                   EMPTY_TITLE_TEXT,
                                   EMPTY_SUB_TITLE_TEXT);
         verify(container).loadEmptyLayout(LAYOUT_NAME,
+                                          LayoutTemplate.Style.FLUID,
                                           EMPTY_TITLE_TEXT,
                                           EMPTY_SUB_TITLE_TEXT);
     }

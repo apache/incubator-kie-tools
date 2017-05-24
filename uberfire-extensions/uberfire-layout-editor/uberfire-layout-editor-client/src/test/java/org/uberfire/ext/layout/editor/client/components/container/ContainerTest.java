@@ -27,6 +27,7 @@ import org.uberfire.ext.layout.editor.client.components.columns.ComponentColumn;
 import org.uberfire.ext.layout.editor.client.components.rows.Row;
 import org.uberfire.ext.layout.editor.client.components.rows.RowDnDEvent;
 import org.uberfire.ext.layout.editor.client.components.rows.RowDrop;
+import org.uberfire.ext.layout.editor.client.infra.RowResizeEvent;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.jgroups.util.Util.assertEquals;
@@ -39,6 +40,7 @@ public class ContainerTest extends AbstractLayoutEditorTest {
     @Test
     public void assertEmptyContainerHasEmptyDropRow() {
         container.loadEmptyLayout("layout",
+                                  LayoutTemplate.Style.FLUID,
                                   "",
                                   "");
         assertTrue(container.getRows().isEmpty());
@@ -47,8 +49,9 @@ public class ContainerTest extends AbstractLayoutEditorTest {
     }
 
     @Test
-    public void createFirstRow() {
+    public void createFirstRowFluid() {
         container.loadEmptyLayout("layout",
+                                  LayoutTemplate.Style.FLUID,
                                   "",
                                   "");
         assertEquals(0,
@@ -67,9 +70,68 @@ public class ContainerTest extends AbstractLayoutEditorTest {
     }
 
     @Test
-    public void loadAndExportLayout() throws Exception {
+    public void createRowsPage() {
+        container.loadEmptyLayout("layout",
+                                  LayoutTemplate.Style.PAGE,
+                                  "",
+                                  "");
+        assertEquals(0,
+                     getRowsSizeFromContainer());
+        assertNotNull(container.getEmptyDropRow());
+        verify(view).addEmptyRow(emptyDropRow.getView());
 
-        LayoutTemplate expected = loadLayout(SAMPLE_FULL_LAYOUT);
+        container.createEmptyDropCommand()
+                .execute(new RowDrop(new LayoutComponent("dragType"),
+                                     emptyDropRow.getId(),
+                                     RowDrop.Orientation.BEFORE));
+        assertEquals(1,
+                     getRowsSizeFromContainer());
+        assertEquals(Row.ROW_DEFAULT_HEIGHT,
+                     getRowByIndex(0).getHeight());
+        verify(componentDropEventMock,
+               times(1)).fire(any(ComponentDropEvent.class));
+
+        Row row0 = getRowByIndex(0);
+
+        row0.drop("dragType",
+                  RowDrop.Orientation.AFTER);
+
+        assertEquals(Row.ROW_DEFAULT_HEIGHT / 2,
+                     getRowByIndex(0).getHeight());
+        assertEquals(Row.ROW_DEFAULT_HEIGHT / 2,
+                     getRowByIndex(1).getHeight());
+
+        container.resizeRows(new RowResizeEvent(row0.getId()).down());
+
+        assertEquals(Row.ROW_DEFAULT_HEIGHT / 2 + 1,
+                     getRowByIndex(0).getHeight());
+        assertEquals(Row.ROW_DEFAULT_HEIGHT / 2 - 1,
+                     getRowByIndex(1).getHeight());
+
+        ComponentColumn col = (ComponentColumn) getColumnByIndex(getRowByIndex(1),
+                                                                 0);
+        col.remove();
+
+        assertEquals(Row.ROW_DEFAULT_HEIGHT,
+                     getRowByIndex(0).getHeight());
+    }
+
+    @Test
+    public void loadAndExportFluidLayout() throws Exception {
+
+        LayoutTemplate expected = loadLayout(SAMPLE_FULL_FLUID_LAYOUT);
+
+        LayoutTemplate actual = container.toLayoutTemplate();
+        assertEquals(expected,
+                     actual);
+        assertEquals(convertLayoutToString(expected),
+                     convertLayoutToString(actual));
+    }
+
+    @Test
+    public void loadAndExportPageLayout() throws Exception {
+
+        LayoutTemplate expected = loadLayout(SAMPLE_FULL_PAGE_LAYOUT);
 
         LayoutTemplate actual = container.toLayoutTemplate();
 
@@ -138,7 +200,7 @@ public class ContainerTest extends AbstractLayoutEditorTest {
 
     @Test
     public void swapRows() throws Exception {
-        loadLayout(SAMPLE_FULL_LAYOUT);
+        loadLayout(SAMPLE_FULL_FLUID_LAYOUT);
 
         Row row1 = getRowByIndex(FIRST_ROW);
         Row row2 = getRowByIndex(SECOND_ROW);

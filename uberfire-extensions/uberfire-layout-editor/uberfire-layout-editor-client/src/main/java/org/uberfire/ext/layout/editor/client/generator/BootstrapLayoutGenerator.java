@@ -39,6 +39,8 @@ public class BootstrapLayoutGenerator extends AbstractLayoutGenerator {
     public ComplexPanel getLayoutContainer() {
         Container mainPanel = new Container();
         mainPanel.getElement().setId("mainContainer");
+        mainPanel.getElement().addClassName("uf-perspective-container");
+        mainPanel.getElement().addClassName("uf-perspective-rendered-container");
         return mainPanel;
     }
 

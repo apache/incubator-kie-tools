@@ -22,7 +22,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
@@ -103,7 +102,6 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
         HTMLElement panelContainer = activity.resolvePosition(position);
 
         if (panelContainer.hasChildNodes()) {
-            GWT.log("----> " + panelContainer.getInnerHTML());
             throw new IllegalStateException("Child position " + position + " is already occupied");
         }
 

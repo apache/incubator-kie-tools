@@ -1,0 +1,84 @@
+{
+  "version": 2,
+  "name": "A",
+  "style": "PAGE",
+  "layoutProperties": {
+    "LAYOUT_TAGS": "a|"
+  },
+  "rows": [
+    {
+      "height": "8",
+      "layoutColumns": [
+        {
+          "span": "8",
+          "height": "12",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TargetDivDragComponent",
+              "properties": {
+                "ID_PARAMETER": "dora_div_id"
+              }
+            }
+          ]
+        },
+        {
+          "span": "4",
+          "height": "12",
+          "rows": [
+            {
+              "height": "12",
+              "layoutColumns": [
+                {
+                  "span": "12",
+                  "height": "6",
+                  "rows": [],
+                  "layoutComponents": [
+                    {
+                      "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TargetDivDragComponent",
+                      "properties": {
+                        "ID_PARAMETER": "bento_div_id"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "span": "12",
+                  "height": "6",
+                  "rows": [],
+                  "layoutComponents": [
+                    {
+                      "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent",
+                      "properties": {
+                        "Place Name": "AnotherScreen"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "layoutComponents": []
+        }
+      ]
+    },
+    {
+      "height": "4",
+      "layoutColumns": [
+        {
+          "span": "12",
+          "height": "12",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TargetDivDragComponent",
+              "properties": {
+                "ID_PARAMETER": "another_div_id"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

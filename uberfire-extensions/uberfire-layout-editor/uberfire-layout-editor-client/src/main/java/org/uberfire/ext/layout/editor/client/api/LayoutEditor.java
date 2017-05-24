@@ -25,6 +25,12 @@ public interface LayoutEditor {
               String emptyTitleText,
               String emptySubTitleText);
 
+    void init(String layoutName,
+              LayoutDragComponentGroup layoutDragComponentGroup,
+              String emptyTitleText,
+              String emptySubTitleText,
+              LayoutTemplate.Style style);
+
     void clear();
 
     Widget asWidget();

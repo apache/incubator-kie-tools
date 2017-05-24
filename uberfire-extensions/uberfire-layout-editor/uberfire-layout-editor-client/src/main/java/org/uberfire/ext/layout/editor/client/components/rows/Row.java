@@ -30,6 +30,7 @@ import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
 import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
 import org.uberfire.ext.layout.editor.client.components.columns.Column;
@@ -40,17 +41,21 @@ import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
 import org.uberfire.ext.layout.editor.client.infra.ColumnResizeEvent;
 import org.uberfire.ext.layout.editor.client.infra.DnDManager;
 import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
+import org.uberfire.ext.layout.editor.client.infra.RowResizeEvent;
 import org.uberfire.ext.layout.editor.client.infra.UniqueIDGenerator;
 import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
 public class Row {
 
-    public static final int COLUMN_DEFAULT_SIZE = 12;
+    public static final Integer ROW_DEFAULT_HEIGHT = 12;
+    public static final int ROW_MIN_HEIGHT = 2;
+
     private final LayoutDragComponentHelper layoutDragComponentHelper;
     private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
 
     private String id;
+    private LayoutTemplate.Style pageStyle;
 
     private View view;
 
@@ -73,6 +78,11 @@ public class Row {
     private boolean dropEnable = true;
     private Event<ComponentDropEvent> componentDropEvent;
     private Event<ComponentRemovedEvent> componentRemovedEvent;
+    private Event<RowResizeEvent> rowResizeEvent;
+
+    private Integer height;
+    private boolean canResizeUp;
+    private boolean canResizeDown;
 
     @Inject
     public Row(View view,
@@ -81,7 +91,8 @@ public class Row {
                DnDManager dndManager,
                LayoutDragComponentHelper layoutDragComponentHelper,
                Event<ComponentDropEvent> componentDropEvent,
-               Event<ComponentRemovedEvent> componentRemovedEvent) {
+               Event<ComponentRemovedEvent> componentRemovedEvent,
+               Event<RowResizeEvent> rowResizeEvent) {
 
         this.view = view;
         this.columnInstance = columnInstance;
@@ -90,25 +101,32 @@ public class Row {
         this.layoutDragComponentHelper = layoutDragComponentHelper;
         this.componentDropEvent = componentDropEvent;
         this.componentRemovedEvent = componentRemovedEvent;
-    }
-
-    public void init(ParameterizedCommand<RowDrop> dropOnRowCommand,
-                     ParameterizedCommand<Row> removeCommand,
-                     ParameterizedCommand<ColumnDrop> removeComponentCommand) {
-        this.dropOnRowCommand = dropOnRowCommand;
-        this.removeRowCommand = removeCommand;
-        this.removeComponentCommand = removeComponentCommand;
-        this.parentColumnWithComponents = null;
+        this.rowResizeEvent = rowResizeEvent;
     }
 
     public void init(ParameterizedCommand<RowDrop> dropOnRowCommand,
                      ParameterizedCommand<Row> removeCommand,
                      ParameterizedCommand<ColumnDrop> removeComponentCommand,
-                     ColumnWithComponents parentColumnWithComponents) {
+                     Integer height) {
+        this.dropOnRowCommand = dropOnRowCommand;
+        this.removeRowCommand = removeCommand;
+        this.removeComponentCommand = removeComponentCommand;
+        this.parentColumnWithComponents = null;
+        this.height = height;
+        setupPageLayout(height);
+    }
+
+    public void init(ParameterizedCommand<RowDrop> dropOnRowCommand,
+                     ParameterizedCommand<Row> removeCommand,
+                     ParameterizedCommand<ColumnDrop> removeComponentCommand,
+                     ColumnWithComponents parentColumnWithComponents,
+                     Integer height) {
         this.dropOnRowCommand = dropOnRowCommand;
         this.removeRowCommand = removeCommand;
         this.removeComponentCommand = removeComponentCommand;
         this.parentColumnWithComponents = parentColumnWithComponents;
+        this.height = height;
+        setupPageLayout(height);
     }
 
     public void load(ParameterizedCommand<RowDrop> dropOnRowCommand,
@@ -118,8 +136,27 @@ public class Row {
         this.dropOnRowCommand = dropOnRowCommand;
         this.removeRowCommand = removeCommand;
         this.removeComponentCommand = removeComponentCommand;
+        this.height = getHeight(layoutRow.getHeight());
+        setupPageLayout(height);
         extractColumns(layoutRow);
         setupColumnResizeActions();
+    }
+
+    private int getHeight(String layoutRow) {
+        if (shouldILoadDefaultHeight(layoutRow)) {
+            return Row.ROW_DEFAULT_HEIGHT;
+        }
+        return Integer.parseInt(layoutRow);
+    }
+
+    private boolean shouldILoadDefaultHeight(String layoutRow) {
+        return layoutRow == null || layoutRow.isEmpty();
+    }
+
+    private void setupPageLayout(Integer height) {
+        if (pageStyle == LayoutTemplate.Style.PAGE) {
+            view.setupPageLayout(height);
+        }
     }
 
     private void extractColumns(LayoutRow layoutRow) {
@@ -139,19 +176,21 @@ public class Row {
 
     private void extractColumnWithComponents(LayoutColumn layoutColumn) {
         for (LayoutRow row : layoutColumn.getRows()) {
-            Integer size = new Integer(layoutColumn.getSpan());
+            Integer columnWidth = new Integer(layoutColumn.getSpan());
             final ColumnWithComponents columnWithComponents = createColumnWithComponentsInstance();
 
             columnWithComponents
                     .init(id,
-                          size,
+                          columnWidth,
+                          pageStyle,
                           dropCommand(),
                           removeComponentCommand,
-                          removeColumnCommand());
+                          removeColumnCommand(),
+                          getHeight(layoutColumn.getHeight()));
 
             for (LayoutColumn column : row.getLayoutColumns()) {
                 ComponentColumn newComponentColumn = getComponentColumn(column);
-                newComponentColumn.setInnerColumn();
+                newComponentColumn.setColumnHeight(getHeight(column.getHeight()));
                 columnWithComponents.withComponents(newComponentColumn);
             }
 
@@ -205,7 +244,7 @@ public class Row {
         final ComponentColumn column = createComponentColumnInstance();
 
         column.init(id,
-                    COLUMN_DEFAULT_SIZE,
+                    Column.DEFAULT_COLUMN_WIDTH,
                     layoutComponent,
                     dropCommand(),
                     removeColumnCommand(),
@@ -216,7 +255,8 @@ public class Row {
 
     protected ComponentColumn createComponentColumnInstance() {
         final ComponentColumn column = columnInstance.get();
-        column.setId(idGenerator.createColumnID(id));
+        column.setup(idGenerator.createColumnID(id),
+                     pageStyle);
         return column;
     }
 
@@ -266,13 +306,37 @@ public class Row {
     }
 
     private void removeChildComponentColumn(Column targetColumn) {
-        if (needToUpdateSizeOfMySiblings(targetColumn)) {
-            updateSizeOfSibilinColumn(targetColumn);
+        if (needToUpdateWidthOfMySiblings(targetColumn)) {
+            updateWidthOfMySiblings(targetColumn);
+        }
+        if (needToUpdateHeightOfMySiblings(targetColumn)) {
+            updateHeightOfSiblingColumn(targetColumn);
         }
         columns.remove(targetColumn);
         destroy(targetColumn);
         notifyRemoval(targetColumn.getLayoutComponent());
         updateView();
+    }
+
+    private boolean needToUpdateHeightOfMySiblings(Column targetColumn) {
+        return targetColumn.getColumnHeight() != ComponentColumn.DEFAULT_COLUMN_HEIGHT;
+    }
+
+    private void updateHeightOfSiblingColumn(Column columnToRemove) {
+        final int removeIndex = getColumnIndex(columnToRemove);
+        if (isFirstColumn(removeIndex)) {
+            final Column sibling = columns.get(1);
+            Integer remove = columnToRemove.getColumnHeight();
+            Integer add = sibling.getColumnHeight();
+            Integer newHeight = remove + add;
+            sibling.setColumnHeight(newHeight);
+        } else {
+            final Column sibling = columns.get(removeIndex - 1);
+            Integer remove = columnToRemove.getColumnHeight();
+            Integer add = sibling.getColumnHeight();
+            Integer newHeight = remove + add;
+            sibling.setColumnHeight(newHeight);
+        }
     }
 
     private void notifyRemoval(LayoutComponent layoutComponent) {
@@ -299,20 +363,20 @@ public class Row {
         }
     }
 
-    private boolean needToUpdateSizeOfMySiblings(Column targetColumn) {
-        return targetColumn.getSize() != 12;
+    private boolean needToUpdateWidthOfMySiblings(Column targetColumn) {
+        return targetColumn.getColumnWidth() != Column.DEFAULT_COLUMN_WIDTH && !targetColumn.isInnerColumn();
     }
 
-    private void updateSizeOfSibilinColumn(Column columnToRemove) {
+    private void updateWidthOfMySiblings(Column columnToRemove) {
         final int removeIndex = getColumnIndex(columnToRemove);
         if (isFirstColumn(removeIndex)) {
             if (firstColumnHasRightSibling()) {
                 final Column sibling = columns.get(1);
-                sibling.setSize(sibling.getSize() + columnToRemove.getSize());
+                sibling.setColumnWidth(sibling.getColumnWidth() + columnToRemove.getColumnWidth());
             }
         } else {
             final Column sibling = columns.get(removeIndex - 1);
-            sibling.setSize(sibling.getSize() + columnToRemove.getSize());
+            sibling.setColumnWidth(sibling.getColumnWidth() + columnToRemove.getColumnWidth());
         }
     }
 
@@ -403,7 +467,6 @@ public class Row {
                                                   int columnIndex,
                                                   Column currentColumn) {
         ColumnWithComponents column = (ColumnWithComponents) currentColumn;
-
         if (drop.isASideDrop()) {
             handleSideDrop(drop,
                            columns,
@@ -460,13 +523,26 @@ public class Row {
     private void handleInnerDrop(ColumnDrop drop,
                                  List<Column> columns,
                                  ComponentColumn currentColumn) {
+        Integer newInnerColumnHeight = currentColumn.getColumnHeight() / 2;
         final ComponentColumn newColumn = createNewInnerColumn(drop,
-                                                               currentColumn);
-        currentColumn.setInnerColumn();
+                                                               currentColumn,
+                                                               newInnerColumnHeight);
+        currentColumn.setColumnHeight(calculateColumnHeight(currentColumn));
         addColumnsInTheRightPosition(drop,
                                      columns,
                                      currentColumn,
                                      newColumn);
+    }
+
+    private Integer calculateColumnHeight(ComponentColumn column) {
+        Integer originalHeight = column.getColumnHeight();
+        Integer newColumnHeight = originalHeight / 2;
+        if (originalHeight % 2 == 0) {
+            return newColumnHeight;
+        } else {
+            newColumnHeight = newColumnHeight + 1;
+            return newColumnHeight;
+        }
     }
 
     private void addColumnsInTheRightPosition(ColumnDrop drop,
@@ -483,16 +559,17 @@ public class Row {
     }
 
     private ComponentColumn createNewInnerColumn(ColumnDrop drop,
-                                                 ComponentColumn currentColumn) {
+                                                 ComponentColumn currentColumn,
+                                                 Integer innerColumnHeight) {
         final ComponentColumn newColumn = createComponentColumnInstance();
 
         newColumn.init(currentColumn.getParentId(),
-                       COLUMN_DEFAULT_SIZE,
+                       Column.DEFAULT_COLUMN_WIDTH,
                        drop.getComponent(),
                        dropCommand(),
                        removeColumnCommand(),
                        drop.newComponent());
-        newColumn.setInnerColumn();
+        newColumn.setColumnHeight(innerColumnHeight);
         return newColumn;
     }
 
@@ -500,20 +577,23 @@ public class Row {
                                           int columnIndex,
                                           List<Column> columns,
                                           ComponentColumn currentColumn) {
+        Integer innerColumnHeight = (currentColumn.getColumnHeight() / 2);
         if (parentColumnWithComponents == null) {
-            Integer size = currentColumn.getSize();
+            Integer width = currentColumn.getColumnWidth();
             final ColumnWithComponents columnWithComponents = createColumnWithComponentsInstance();
             columnWithComponents
                     .init(id,
-                          size,
+                          width,
+                          pageStyle,
                           dropCommand(),
                           removeComponentCommand,
-                          removeColumnCommand());
+                          removeColumnCommand(),
+                          currentColumn.getColumnHeight());
 
             final ComponentColumn newColumn = createComponentColumn(
                     drop.getComponent(),
                     drop.newComponent());
-            newColumn.setInnerColumn();
+            newColumn.setColumnHeight(innerColumnHeight);
             currentColumn = updateCurrentColumn(currentColumn);
 
             if (drop.isADownDrop()) {
@@ -529,7 +609,8 @@ public class Row {
             final ComponentColumn newColumn = createComponentColumn(
                     drop.getComponent(),
                     drop.newComponent());
-            newColumn.setInnerColumn();
+            newColumn.setColumnHeight(innerColumnHeight);
+            currentColumn.setColumnHeight(calculateColumnHeight(currentColumn));
             addColumnsInTheRightPosition(drop,
                                          columns,
                                          currentColumn,
@@ -538,9 +619,9 @@ public class Row {
     }
 
     private ComponentColumn updateCurrentColumn(ComponentColumn currentColumn) {
-        currentColumn.setSize(12);
-        currentColumn.recalculateSize();
-        currentColumn.setInnerColumn();
+        currentColumn.setColumnWidth(Column.DEFAULT_COLUMN_WIDTH);
+        currentColumn.recalculateWidth();
+        currentColumn.setColumnHeight(calculateColumnHeight(currentColumn));
         return currentColumn;
     }
 
@@ -559,8 +640,7 @@ public class Row {
         newColumn.init(id,
                        columnSize,
                        layoutComponent,
-                       dropCommand()
-                ,
+                       dropCommand(),
                        removeColumnCommand(),
                        newComponent);
         return newColumn;
@@ -585,7 +665,7 @@ public class Row {
     }
 
     private boolean columnCanBeSplitted(Column column) {
-        return column.getSize() != 1;
+        return column.getColumnWidth() != 1;
     }
 
     private boolean isComponentColumn(Column currentColumn) {
@@ -599,37 +679,37 @@ public class Row {
 
         if (drop.isALeftDrop()) {
             final ComponentColumn newColumn = createNewComponentColumn(drop.getComponent(),
-                                                                       currentColumn.getSize() / 2,
+                                                                       currentColumn.getColumnWidth() / 2,
                                                                        drop.newComponent());
-            setupColumnSize(currentColumn);
+            setupColumnWidth(currentColumn);
 
             columns.add(newColumn);
             columns.add(currentColumn);
         } else {
             final ComponentColumn newColumn = createNewComponentColumn(drop.getComponent(),
-                                                                       currentColumn.getSize() / 2,
+                                                                       currentColumn.getColumnWidth() / 2,
                                                                        drop.newComponent());
-            setupColumnSize(currentColumn);
+            setupColumnWidth(currentColumn);
 
             columns.add(currentColumn);
             columns.add(newColumn);
         }
     }
 
-    private Integer setupColumnSize(Column column) {
-        Integer originalSize = column.getSize();
+    private Integer setupColumnWidth(Column column) {
+        Integer originalSize = column.getColumnWidth();
         Integer newColumnSize = originalSize / 2;
         if (originalSize % 2 == 0) {
-            column.setSize(newColumnSize);
+            column.setColumnWidth(newColumnSize);
         } else {
-            column.setSize(newColumnSize + 1);
+            column.setColumnWidth(newColumnSize + 1);
         }
         return newColumnSize;
     }
 
     private boolean dropIsOn(ColumnDrop drop,
                              Column column) {
-        return drop.getEndId() == column.getId();
+        return drop.getEndId().equalsIgnoreCase(column.getId());
     }
 
     public void resizeColumns(@Observes ColumnResizeEvent resize) {
@@ -645,8 +725,8 @@ public class Row {
                     affectedColumn = lookUpForRightNeighbor(resizedColumn);
                 }
                 if (affectedColumn != null) {
-                    resizedColumn.incrementSize();
-                    affectedColumn.reduzeSize();
+                    resizedColumn.incrementWidth();
+                    affectedColumn.reduceWidth();
                 }
             }
             updateView();
@@ -712,7 +792,7 @@ public class Row {
     private boolean canResizeLeft(int index,
                                   List<Column> columns) {
         Column rightSibling = columns.get(index - 1);
-        return rightSibling.getSize() > 1;
+        return rightSibling.getColumnWidth() > 1;
     }
 
     private boolean canResizeRight(int index,
@@ -720,7 +800,7 @@ public class Row {
         if (hasRightSibling(index,
                             columns)) {
             Column rightSibling = columns.get(index + 1);
-            return rightSibling.getSize() > 1;
+            return rightSibling.getColumnWidth() > 1;
         }
         return false;
     }
@@ -744,7 +824,15 @@ public class Row {
     }
 
     public boolean isDropEnable() {
-        return dropEnable;
+        return dropEnable && canISplitMySize();
+    }
+
+    private boolean canISplitMySize() {
+        if (pageStyle == LayoutTemplate.Style.PAGE) {
+            Integer size = Integer.valueOf(getHeight());
+            return size > (ROW_MIN_HEIGHT * 2);
+        }
+        return true;
     }
 
     protected void destroy(Object o) {
@@ -753,7 +841,7 @@ public class Row {
 
     public void calculateSizeChilds() {
         for (Column column : columns) {
-            column.calculateSize();
+            column.calculateWidth();
         }
     }
 
@@ -761,8 +849,55 @@ public class Row {
         return id;
     }
 
-    public void setId(String id) {
+    public void setup(String id,
+                      LayoutTemplate.Style pageStyle) {
         this.id = id;
+        this.pageStyle = pageStyle;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+        view.setHeight(height);
+    }
+
+    public boolean canResizeUp() {
+        return canResizeUp;
+    }
+
+    public boolean canResizeDown() {
+        return canResizeDown;
+    }
+
+    public void resizeUp() {
+        rowResizeEvent.fire(new RowResizeEvent(id).up());
+    }
+
+    public void resizeDown() {
+        rowResizeEvent.fire(new RowResizeEvent(id).down());
+    }
+
+    public void incrementHeight() {
+        Integer newSize = height + 1;
+        this.height = newSize;
+        view.setHeight(newSize);
+    }
+
+    public void reduceHeight() {
+        Integer newSize = height - 1;
+        this.height = newSize;
+        view.setHeight(newSize);
+    }
+
+    public void setupResize(boolean canResizeUp,
+                            boolean canResizeDown) {
+
+        this.canResizeUp = canResizeUp;
+        this.canResizeDown = canResizeDown;
+        view.setupResize();
     }
 
     public interface View extends UberElement<Row> {
@@ -770,5 +905,11 @@ public class Row {
         void addColumn(UberElement<ComponentColumn> view);
 
         void clear();
+
+        void setupPageLayout(Integer height);
+
+        void setHeight(Integer height);
+
+        void setupResize();
     }
 }

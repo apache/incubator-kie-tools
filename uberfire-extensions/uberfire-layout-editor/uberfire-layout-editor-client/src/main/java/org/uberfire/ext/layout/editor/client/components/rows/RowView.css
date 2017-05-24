@@ -22,12 +22,59 @@
     height: 10px;
 }
 
-.bottom {
-    height: 5px;
-
-}
-
 .rowMovePreview {
     background-color: rgba(204, 204, 204, 0.5);
     cursor: move;
+}
+
+.page-row {
+    height: -moz-calc(100% - 15px);
+    height: -webkit-calc(100% - 15px);
+    height: calc(100% - 15px);
+}
+
+.bottom {
+    height: 10px;
+    display: flex;
+}
+
+.bottom-left {
+    height: 100%;
+    width: 40%;
+}
+
+.bottom-center {
+    height: 100%;
+    width: 20%;
+}
+
+.bottom-right {
+    height: 100%;
+    width: 40%;
+}
+
+.upper {
+    height: 10px;
+    display: flex;
+}
+
+.upper-left {
+    height: 100%;
+    width: 40%;
+}
+
+.upper-center {
+    height: 100%;
+    width: 20%;
+}
+
+.upper-right {
+    height: 100%;
+    width: 40%;
+}
+.rowResizeUp {
+    cursor: n-resize;
+}
+.rowResizeDown {
+    cursor: s-resize;
 }

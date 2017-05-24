@@ -125,6 +125,12 @@ public interface CommonConstants
 
     String ScreenComponent();
 
+    String TargetDivComponent();
+
+    String TargetDivPlaceHolder();
+
+    String TargetDivConfiguration();
+
     String ScreenConfiguration();
 
     String PlaceName();

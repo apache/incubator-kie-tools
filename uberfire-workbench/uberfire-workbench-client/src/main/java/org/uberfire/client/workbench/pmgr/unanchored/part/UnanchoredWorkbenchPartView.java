@@ -47,6 +47,7 @@ public class UnanchoredWorkbenchPartView
     public void init(WorkbenchPartPresenter presenter) {
         this.presenter = presenter;
         Layouts.setToFillParent(this);
+        sp.getElement().addClassName("uf-perspective-component");
     }
 
     @Override

@@ -19,15 +19,22 @@ package org.uberfire.ext.layout.editor.api.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class LayoutRow {
 
+    private String height;
+
     private List<LayoutColumn> layoutColumns = new ArrayList<LayoutColumn>();
 
     public LayoutRow() {
 
+    }
+
+    public LayoutRow(@MapsTo("height") String height) {
+        this.height = height;
     }
 
     public List<LayoutColumn> getLayoutColumns() {
@@ -58,6 +65,10 @@ public class LayoutRow {
         }
 
         return true;
+    }
+
+    public String getHeight() {
+        return height;
     }
 
     @Override

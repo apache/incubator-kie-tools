@@ -1,0 +1,85 @@
+{
+  "version": 2,
+  "name": "A",
+  "style": "FLUID",
+  "layoutProperties": {
+    "LAYOUT_TAGS": "a|"
+  },
+  "rows": [
+    {
+      "height": "12",
+      "layoutColumns": [
+        {
+          "span": "8",
+          "height": "12",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent",
+              "properties": {
+                "Place Name": "AppsHomePresenter"
+              }
+            }
+          ]
+        },
+        {
+          "span": "4",
+          "height": "12",
+          "rows": [
+            {
+              "height": "12",
+              "layoutColumns": [
+                {
+                  "span": "12",
+                  "height": "6",
+                  "rows": [],
+                  "layoutComponents": [
+                    {
+                      "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTML",
+                      "properties": {
+                        "HTML_CODE": "c"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "span": "12",
+                  "height": "6",
+                  "rows": [],
+                  "layoutComponents": [
+                    {
+                      "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent",
+                      "properties": {
+                        "c": "c",
+                        "Place Name": "AnotherScreen"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "layoutComponents": []
+        }
+      ]
+    },
+    {
+      "height": "12",
+      "layoutColumns": [
+        {
+          "span": "12",
+          "height": "12",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent",
+              "properties": {
+                "Place Name": "DoraScreen"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

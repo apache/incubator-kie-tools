@@ -12,6 +12,10 @@
     padding-bottom: 7px;
 }
 
+.page-container{
+    height:90%;
+}
+
 .container-empty {
     padding: 0px;
 }

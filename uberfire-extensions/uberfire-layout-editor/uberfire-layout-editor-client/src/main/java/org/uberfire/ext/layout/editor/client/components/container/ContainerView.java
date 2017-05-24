@@ -20,12 +20,9 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
@@ -84,5 +81,11 @@ public class ContainerView
         addCSSClass(layout,
                     "container-empty");
         layout.appendChild(emptyDropRow.getElement());
+    }
+
+    @Override
+    public void pageMode() {
+        addCSSClass(layout,
+                    "page-container");
     }
 }

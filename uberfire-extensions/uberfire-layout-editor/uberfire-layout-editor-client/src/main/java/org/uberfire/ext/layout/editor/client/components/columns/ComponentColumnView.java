@@ -21,7 +21,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
-import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Document;
 import org.jboss.errai.common.client.dom.HTMLElement;
@@ -53,9 +52,11 @@ public class ComponentColumnView
                    ComponentColumn.View,
                    IsElement {
 
+    public static final String PAGE_ROW_CSS_CLASS = "uf-perspective-row-";
     public static final String COL_CSS_CLASS = "col-md-";
     private final int originalLeftRightWidth = 15;
-    String cssSize = "";
+    String widthSize = "";
+    String heightSize = "";
     private ComponentColumn presenter;
     @Inject
     @DataField
@@ -73,17 +74,14 @@ public class ComponentColumnView
     @DataField
     private Div left;
     @Inject
-    @DataField("resize-left")
-    private Button resizeLeft;
-    @Inject
     @DataField
     private Div right;
     @Inject
-    @DataField("resize-right")
-    private Button resizeRight;
-    @Inject
     @DataField
     private Div content;
+    @Inject
+    @DataField("content-area")
+    private Div contentArea;
     @Inject
     private KebabWidget kebabWidget;
     @Inject
@@ -102,24 +100,45 @@ public class ComponentColumnView
     public void setupWidget() {
         setupEvents();
         setupKebabWidget();
-        setupResize();
         setupOnResize();
     }
 
-    private void setupOnResize() {
-        document.getBody().setOnresize(event -> calculateSize());
+    @Override
+    public void setupPageLayout() {
+
+        addCSSClass(col,
+                    "page-col");
+        addCSSClass(row,
+                    "page-col");
+        addCSSClass(contentArea,
+                    "page-col");
+        addCSSClass(content,
+                    "page-col");
     }
 
     @Override
-    public void setupResize() {
-        resizeLeft.getStyle().setProperty("display",
-                                          "none");
-        resizeRight.getStyle().setProperty("display",
-                                           "none");
+    public void setColumnHeight(Integer innerColumnHeight) {
+
+        addCSSClass(contentArea,
+                    "page-col-inner");
+
+        if (!heightSize.isEmpty()) {
+            removeCSSClass(col,
+                           heightSize);
+        }
+        this.heightSize = PAGE_ROW_CSS_CLASS + innerColumnHeight;
+        removeCSSClass(col,
+                       "page-col");
+        addCSSClass(col,
+                    heightSize);
+    }
+
+    private void setupOnResize() {
+        document.getBody().setOnresize(event -> calculateWidth());
     }
 
     public void dockSelectEvent(@Observes UberfireDocksInteractionEvent event) {
-        calculateSize();
+        calculateWidth();
     }
 
     private void setupKebabWidget() {
@@ -135,7 +154,6 @@ public class ComponentColumnView
         setupContentEvents();
         setupColEvents();
         setupRowEvents();
-        setupResizeEvents();
     }
 
     private void setupRowEvents() {
@@ -145,11 +163,6 @@ public class ComponentColumnView
             removeCSSClass(colDown,
                            "componentDropInColumnPreview");
         });
-    }
-
-    private void setupResizeEvents() {
-        resizeLeft.setOnclick(event -> presenter.resizeLeft());
-        resizeRight.setOnclick(event -> presenter.resizeRight());
     }
 
     private void setupColEvents() {
@@ -260,15 +273,24 @@ public class ComponentColumnView
         right.setOnmouseover(e -> {
             e.preventDefault();
             if (presenter.canResizeRight()) {
-                resizeRight.getStyle().setProperty("display",
-                                                   "block");
+                addCSSClass(right,
+                            "colResizeRight");
+            } else {
+                removeCSSClass(right,
+                               "colResizeRight");
             }
         });
         right.setOnmouseout(e -> {
             e.preventDefault();
+            if (!presenter.canResizeRight()) {
+                removeCSSClass(right,
+                               "colResizeRight");
+            }
+        });
+        right.setOnclick(e -> {
+            e.preventDefault();
             if (presenter.canResizeRight()) {
-                resizeRight.getStyle().setProperty("display",
-                                                   "none");
+                presenter.resizeRight();
             }
         });
     }
@@ -328,7 +350,8 @@ public class ComponentColumnView
         });
         content.setOndragstart(e -> {
             e.stopPropagation();
-            e.getDataTransfer().setData("text/plain", "this-is-a-requirement-to-firefox-html5dnd");
+            e.getDataTransfer().setData("text/plain",
+                                        "this-is-a-requirement-to-firefox-html5dnd");
             addCSSClass(row,
                         "rowDndPreview");
             presenter.dragStartComponent();
@@ -389,25 +412,34 @@ public class ComponentColumnView
         left.setOnmouseover(e -> {
             e.preventDefault();
             if (presenter.canResizeLeft()) {
-                resizeLeft.getStyle().setProperty("display",
-                                                  "block");
+                addCSSClass(left,
+                            "colResizeLeft");
+            } else {
+                removeCSSClass(left,
+                               "colResizeLeft");
             }
         });
         left.setOnmouseout(e -> {
             e.preventDefault();
+            if (!presenter.canResizeLeft()) {
+                removeCSSClass(left,
+                               "colResizeLeft");
+            }
+        });
+        left.setOnclick(e -> {
+            e.preventDefault();
             if (presenter.canResizeLeft()) {
-                resizeLeft.getStyle().setProperty("display",
-                                                  "none");
+                presenter.resizeLeft();
             }
         });
     }
 
     public void resizeEventObserver(@Observes ContainerResizeEvent event) {
-        calculateSize();
+        calculateWidth();
     }
 
     @Override
-    public void calculateSize() {
+    public void calculateWidth() {
         Scheduler.get().scheduleDeferred(() -> {
             controlPadding();
             calculateLeftRightWidth();
@@ -446,22 +478,18 @@ public class ComponentColumnView
         if (contentWidth >= 0) {
             content.getStyle().setProperty("width",
                                            contentWidth + "px");
-            colDown.getStyle().setProperty("width",
-                                           "100%");
-            colUp.getStyle().setProperty("width",
-                                         "100%");
         }
     }
 
     @Override
-    public void setSize(String size) {
+    public void setWidth(String size) {
         if (!col.getClassName().isEmpty()) {
             removeCSSClass(col,
-                           cssSize);
+                           widthSize);
         }
-        cssSize = COL_CSS_CLASS + size;
+        widthSize = COL_CSS_CLASS + size;
         addCSSClass(col,
-                    cssSize);
+                    widthSize);
     }
 
     @Override
@@ -500,7 +528,11 @@ public class ComponentColumnView
         HTMLElement previewElement = helper.getPreviewElement(ElementWrapperWidget.getWidget(content));
         previewElement.getStyle().setProperty("cursor",
                                               "default");
-        previewElement.setClassName("le-widget");
+
+        addCSSClass(previewElement,
+                    "le-widget");
+        addCSSClass(previewElement,
+                    "uf-perspective-col");
         return previewElement;
     }
 

@@ -41,3 +41,9 @@
     padding-left: 0px;
     padding-right: 0px;
 }
+.colResizeLeft {
+    cursor: w-resize;
+}
+.colResizeRight {
+    cursor: e-resize;
+}

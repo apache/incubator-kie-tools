@@ -47,12 +47,14 @@ import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDragComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.components.popup.AddTag;
 import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorGenerator;
+import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TargetDivList;
 import org.uberfire.ext.plugin.client.security.PluginController;
 import org.uberfire.ext.plugin.client.type.PerspectiveLayoutPluginResourceType;
 import org.uberfire.ext.plugin.client.validation.PluginNameValidator;
@@ -140,7 +142,8 @@ public class PerspectiveEditorPresenter extends BaseEditor {
         this.layoutEditorPlugin.init(name,
                                      lookupPerspectiveDragComponents(),
                                      org.uberfire.ext.plugin.client.resources.i18n.CommonConstants.INSTANCE.EmptyTitleText(),
-                                     org.uberfire.ext.plugin.client.resources.i18n.CommonConstants.INSTANCE.EmptySubTitleText());
+                                     org.uberfire.ext.plugin.client.resources.i18n.CommonConstants.INSTANCE.EmptySubTitleText(),
+                                     LayoutTemplate.Style.PAGE);
         this.perspectiveEditorView.setupLayoutEditor(layoutEditorPlugin.asWidget());
     }
 
@@ -309,6 +312,10 @@ public class PerspectiveEditorPresenter extends BaseEditor {
 
     public String getLayoutProperty(String key) {
         return layoutEditorPlugin.getLayoutProperty(key);
+    }
+
+    public List<String> getAllTargetDivs() {
+        return TargetDivList.list(layoutEditorPlugin.getLayout());
     }
 
     public interface View extends BaseEditorView {

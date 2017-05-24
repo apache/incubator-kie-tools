@@ -165,31 +165,31 @@ public class RowTest extends AbstractLayoutEditorTest {
         Column second = getColumnByIndex(getRowByIndex(FIRST_ROW),
                                          SECOND_COLUMN);
 
-        Integer originalFirstSize = first.getSize();
-        Integer originalSecondSize = second.getSize();
+        Integer originalFirstSize = first.getColumnWidth();
+        Integer originalSecondSize = second.getColumnWidth();
 
         row.resizeColumns(new ColumnResizeEvent(second.getId(),
                                                 row.getId()).left());
 
         assertEquals(originalFirstSize - 1,
-                     first.getSize());
+                     first.getColumnWidth());
         assertEquals(originalSecondSize + 1,
-                     second.getSize());
+                     second.getColumnWidth());
 
         row.resizeColumns(new ColumnResizeEvent(second.getId(),
                                                 row.getId()).left());
 
         assertEquals(originalFirstSize - 2,
-                     first.getSize());
+                     first.getColumnWidth());
         assertEquals(originalSecondSize + 2,
-                     second.getSize());
+                     second.getColumnWidth());
 
         row.resizeColumns(new ColumnResizeEvent(first.getId(),
                                                 row.getId()).right());
 
         assertEquals(originalFirstSize - 1,
-                     first.getSize());
+                     first.getColumnWidth());
         assertEquals(originalSecondSize + 1,
-                     second.getSize());
+                     second.getColumnWidth());
     }
 }

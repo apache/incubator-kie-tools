@@ -34,7 +34,8 @@ public class LayoutTemplateAdapter {
 
     private static LayoutTemplate convertToLayoutEditor(Container container) {
         LayoutTemplate layoutTemplate = new LayoutTemplate(container.getLayoutName(),
-                                                           container.getProperties());
+                                                           container.getProperties(),
+                                                           container.getPageStyle());
         extractRows(container.getRows(),
                     layoutTemplate);
         return layoutTemplate;
@@ -43,7 +44,7 @@ public class LayoutTemplateAdapter {
     private static void extractRows(List<Row> rows,
                                     LayoutTemplate layoutTemplate) {
         for (Row row : rows) {
-            LayoutRow layoutRow = new LayoutRow();
+            LayoutRow layoutRow = new LayoutRow(row.getHeight().toString());
             extractColumns(row.getColumns(),
                            layoutRow);
             layoutTemplate.addRow(layoutRow);
@@ -53,7 +54,8 @@ public class LayoutTemplateAdapter {
     private static void extractColumns(List<Column> columns,
                                        LayoutRow layoutRow) {
         for (Column col : columns) {
-            LayoutColumn layoutColumn = new LayoutColumn(col.getSize().toString());
+            LayoutColumn layoutColumn = new LayoutColumn(col.getColumnWidth().toString(),
+                                                         col.getColumnHeight().toString());
             if (col.hasInnerRows()) {
                 extractColumnWithComponents(col,
                                             layoutColumn);
@@ -69,7 +71,7 @@ public class LayoutTemplateAdapter {
                                                     LayoutColumn layoutColumn) {
         if (col instanceof ColumnWithComponents) {
             ColumnWithComponents columnWithComponents = (ColumnWithComponents) col;
-            LayoutRow layoutRow = new LayoutRow();
+            LayoutRow layoutRow = new LayoutRow(Row.ROW_DEFAULT_HEIGHT.toString());
             extractColumns(columnWithComponents.getRow().getColumns(),
                            layoutRow);
             layoutColumn.addRow(layoutRow);

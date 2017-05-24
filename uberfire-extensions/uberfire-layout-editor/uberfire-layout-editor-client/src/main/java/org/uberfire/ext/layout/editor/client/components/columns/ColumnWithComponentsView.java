@@ -21,7 +21,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
-import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Document;
 import org.jboss.errai.ui.client.local.api.IsElement;
@@ -63,16 +62,13 @@ public class ColumnWithComponentsView
     @DataField
     private Div left;
     @Inject
-    @DataField("resize-left")
-    private Button resizeLeft;
-    @Inject
     @DataField
     private Div right;
     @Inject
-    @DataField("resize-right")
-    private Button resizeRight;
-    @Inject
     private Document document;
+    @Inject
+    @DataField("inner-col-colwithComponents")
+    Div innerCol;
 
     @Override
     public void init(ColumnWithComponents presenter) {
@@ -84,29 +80,24 @@ public class ColumnWithComponentsView
         setupLeftEvents();
         setupRightEvents();
         setupOnResize();
-        setupResize();
-        setupResizeEvents();
-    }
-
-    private void setupResizeEvents() {
-        resizeLeft.setOnclick(event -> presenter.resizeLeft());
-        resizeRight.setOnclick(event -> presenter.resizeRight());
     }
 
     @Override
-    public void setupResize() {
-        resizeLeft.getStyle().setProperty("display",
-                                          "none");
-        resizeRight.getStyle().setProperty("display",
-                                           "none");
+    public void setupPageLayout() {
+        addCSSClass(colWithComponents,
+                    "page-col");
+        addCSSClass(innerCol,
+                    "page-col");
+        addCSSClass(row,
+                    "page-col");
     }
 
     private void setupOnResize() {
-        document.getBody().setOnresize(event -> calculateSize());
+        document.getBody().setOnresize(event -> calculateWidth());
     }
 
     public void dockSelectEvent(@Observes UberfireDocksInteractionEvent event) {
-        calculateSize();
+        calculateWidth();
     }
 
     private void setupRightEvents() {
@@ -151,14 +142,24 @@ public class ColumnWithComponentsView
         right.setOnmouseover(e -> {
             e.preventDefault();
             if (presenter.canResizeRight()) {
-                resizeRight.getStyle().setProperty("display",
-                                                   "block");
+                addCSSClass(right,
+                            "colResizeRight");
+            } else {
+                removeCSSClass(right,
+                               "colResizeRight");
             }
         });
         right.setOnmouseout(e -> {
+            e.preventDefault();
+            if (!presenter.canResizeRight()) {
+                removeCSSClass(right,
+                               "colResizeRight");
+            }
+        });
+        right.setOnclick(e -> {
+            e.preventDefault();
             if (presenter.canResizeRight()) {
-                resizeRight.getStyle().setProperty("display",
-                                                   "none");
+                presenter.resizeRight();
             }
         });
     }
@@ -203,20 +204,30 @@ public class ColumnWithComponentsView
         left.setOnmouseover(e -> {
             e.preventDefault();
             if (presenter.canResizeLeft()) {
-                resizeLeft.getStyle().setProperty("display",
-                                                  "block");
+                addCSSClass(left,
+                            "colResizeLeft");
+            } else {
+                removeCSSClass(left,
+                               "colResizeLeft");
             }
         });
         left.setOnmouseout(e -> {
+            e.preventDefault();
+            if (!presenter.canResizeLeft()) {
+                removeCSSClass(left,
+                               "colResizeLeft");
+            }
+        });
+        left.setOnclick(e -> {
+            e.preventDefault();
             if (presenter.canResizeLeft()) {
-                resizeLeft.getStyle().setProperty("display",
-                                                  "none");
+                presenter.resizeLeft();
             }
         });
     }
 
     @Override
-    public void setSize(String size) {
+    public void setWidth(Integer size) {
         if (hasCssSizeClass()) {
             removeCSSClass(colWithComponents,
                            cssSize);
@@ -244,11 +255,11 @@ public class ColumnWithComponentsView
     }
 
     public void resizeEventObserver(@Observes ContainerResizeEvent event) {
-        calculateSize();
+        calculateWidth();
     }
 
     @Override
-    public void calculateSize() {
+    public void calculateWidth() {
 
         Scheduler.get().scheduleDeferred(() -> {
 

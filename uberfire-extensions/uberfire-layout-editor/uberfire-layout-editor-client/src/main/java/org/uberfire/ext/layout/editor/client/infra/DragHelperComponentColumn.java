@@ -33,6 +33,8 @@ import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.mvp.Command;
 
+import static org.jboss.errai.common.client.dom.DOMUtil.addCSSClass;
+
 @Dependent
 public class DragHelperComponentColumn {
 
@@ -64,7 +66,10 @@ public class DragHelperComponentColumn {
 
     public HTMLElement getPreviewElement(Widget context) {
         HTMLElement div = document.createElement("div");
+        addCSSClass(div,
+                    "uf-perspective-col");
         FlowPanel gwtDivWrapper = GWT.create(FlowPanel.class);
+        gwtDivWrapper.getElement().addClassName("uf-perspective-col");
         gwtDivWrapper.add(getLayoutDragComponent()
                                   .getPreviewWidget(new RenderingContext(layoutComponent,
                                                                          context)).asWidget());

@@ -39,6 +39,8 @@ public class RowView
                    Row.View,
                    IsElement {
 
+    public static final String PAGE_ROW_CSS_CLASS = "uf-perspective-row-";
+    String cssSize = "";
     @Inject
     @DataField
     Div upper;
@@ -49,11 +51,14 @@ public class RowView
     @DataField
     Div row;
     @Inject
-    @DataField
-    Div content;
-    @Inject
     @DataField("mainrow")
     Div mainRow;
+    @Inject
+    @DataField("upper-center")
+    Div upperCenter;
+    @Inject
+    @DataField("bottom-center")
+    Div bottomCenter;
     private Row presenter;
 
     @Override
@@ -68,6 +73,7 @@ public class RowView
     }
 
     private void setupBottomEvents() {
+        setupBottomCenter();
         bottom.setOndragover(e -> {
             if (presenter.isDropEnable()) {
                 e.preventDefault();
@@ -91,6 +97,7 @@ public class RowView
                                RowDrop.Orientation.AFTER);
             }
         });
+
         bottom.setOndragleave(e -> {
             if (presenter.isDropEnable()) {
                 e.preventDefault();
@@ -100,7 +107,35 @@ public class RowView
         });
     }
 
+    private void setupBottomCenter() {
+        bottomCenter.setOnclick(e -> {
+                                    if (presenter.canResizeDown()) {
+                                        e.preventDefault();
+                                        presenter.resizeDown();
+                                    }
+                                }
+        );
+        bottomCenter.setOnmouseover(e -> {
+            if (presenter.canResizeDown()) {
+                e.preventDefault();
+                addCSSClass(bottomCenter,
+                            "rowResizeDown");
+            } else {
+                removeCSSClass(bottomCenter,
+                               "rowResizeDown");
+            }
+        });
+        bottomCenter.setOnmouseout(e -> {
+            if (presenter.canResizeDown()) {
+                e.preventDefault();
+                removeCSSClass(bottomCenter,
+                               "rowResizeDown");
+            }
+        });
+    }
+
     private void setupUpperEvents() {
+        setupUpperCenter();
         if (presenter.isDropEnable()) {
             upper.setAttribute("draggable",
                                "true");
@@ -108,7 +143,8 @@ public class RowView
         upper.setOndragstart(e -> {
             if (presenter.isDropEnable()) {
                 presenter.dragStart();
-                e.getDataTransfer().setData("text/plain", "this-is-a-requirement-to-firefox-html5dnd");
+                e.getDataTransfer().setData("text/plain",
+                                            "this-is-a-requirement-to-firefox-html5dnd");
                 addCSSClass(row,
                             "rowDndPreview");
                 removeCSSClass(upper,
@@ -177,14 +213,71 @@ public class RowView
         });
     }
 
+    private void setupUpperCenter() {
+        upperCenter.setOnclick(e -> {
+                                   e.preventDefault();
+                                   if (presenter.canResizeUp()) {
+                                       presenter.resizeUp();
+                                   }
+                               }
+        );
+        upperCenter.setOnmouseover(e -> {
+            if (presenter.canResizeUp()) {
+                e.preventDefault();
+                addCSSClass(upperCenter,
+                            "rowResizeUp");
+            } else {
+                removeCSSClass(upperCenter,
+                               "rowResizeUp");
+            }
+        });
+        upperCenter.setOnmouseout(e -> {
+            if (presenter.canResizeUp()) {
+                e.preventDefault();
+                removeCSSClass(upperCenter,
+                               "rowResizeUp");
+            }
+        });
+    }
+
     @Override
     public void addColumn(UberElement<ComponentColumn> view) {
-        content.appendChild(view.getElement());
+        row.appendChild(view.getElement());
     }
 
     @Override
     public void clear() {
-        removeAllChildren(content);
+        removeAllChildren(row);
+    }
+
+    @Override
+    public void setupPageLayout(Integer height) {
+        setupMainRowSize(height.toString());
+        row.getStyle().setProperty("height",
+                                   "calc(100% - 20px)");
+        addCSSClass(row,
+                    "page-row");
+    }
+
+    @Override
+    public void setHeight(Integer size) {
+        setupMainRowSize(size.toString());
+    }
+
+    @Override
+    public void setupResize() {
+        setupUpperCenter();
+        setupBottomCenter();
+    }
+
+    private void setupMainRowSize(String span) {
+        if (!mainRow.getClassName().isEmpty()) {
+            removeCSSClass(mainRow,
+                           cssSize);
+        }
+        cssSize = PAGE_ROW_CSS_CLASS + span;
+        addCSSClass(mainRow,
+                    cssSize);
     }
 }
 

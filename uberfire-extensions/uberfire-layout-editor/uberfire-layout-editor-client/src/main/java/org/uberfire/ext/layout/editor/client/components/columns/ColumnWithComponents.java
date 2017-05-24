@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.components.rows.Row;
 import org.uberfire.ext.layout.editor.client.components.rows.RowDrop;
 import org.uberfire.ext.layout.editor.client.infra.BeanHelper;
@@ -39,20 +40,23 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class ColumnWithComponents implements Column {
 
     private final View view;
-    private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
     private String id;
     private String parentId;
-    private Integer size;
     private ParameterizedCommand<ColumnDrop> dropCommand;
     private ParameterizedCommand<ColumnDrop> removeComponentCommand;
     private ParameterizedCommand<Column> removeColumnCommand;
     private Row row;
+    private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
     private Instance<Row> rowInstance;
     private DnDManager dndManager;
     private LayoutDragComponentHelper layoutDragComponentHelper;
     private boolean canResizeLeft;
     private boolean canResizeRight;
     private Event<ColumnResizeEvent> columnResizeEvent;
+    private LayoutTemplate.Style pageStyle;
+    private Integer columnHeight = DEFAULT_COLUMN_HEIGHT;
+    private Integer columnWidth;
+
     @Inject
     public ColumnWithComponents(final View view,
                                 Instance<Row> rowInstance,
@@ -77,22 +81,36 @@ public class ColumnWithComponents implements Column {
     }
 
     public void init(String parentId,
-                     Integer size,
+                     Integer columnWidth,
+                     LayoutTemplate.Style pageStyle,
                      ParameterizedCommand<ColumnDrop> dropCommand,
                      ParameterizedCommand<ColumnDrop> removeComponentCommand,
-                     ParameterizedCommand<Column> removeCommand) {
-        this.size = size;
+                     ParameterizedCommand<Column> removeCommand,
+                     Integer columnHeight) {
+        this.columnWidth = columnWidth;
         this.parentId = parentId;
         this.dropCommand = dropCommand;
         this.removeComponentCommand = removeComponentCommand;
         this.removeColumnCommand = removeCommand;
-        view.setSize(size.toString());
+        this.pageStyle = pageStyle;
+        this.columnHeight = columnHeight;
+        view.setWidth(columnWidth);
+        setupPageLayout();
         row = createInstanceRow();
         row.disableDrop();
+        row.setup(idGenerator.createRowID(id),
+                  pageStyle);
         row.init(createDropCommand(),
                  createRowRemoveCommand(),
                  createComponentRemoveCommand(),
-                 this);
+                 this,
+                 Row.ROW_DEFAULT_HEIGHT);
+    }
+
+    private void setupPageLayout() {
+        if (pageStyle == LayoutTemplate.Style.PAGE) {
+            view.setupPageLayout();
+        }
     }
 
     public void onDrop(ColumnDrop.Orientation orientation,
@@ -139,7 +157,8 @@ public class ColumnWithComponents implements Column {
 
     protected Row createInstanceRow() {
         Row row = rowInstance.get();
-        row.setId(idGenerator.createRowID(id));
+        row.setup(idGenerator.createRowID(id),
+                  pageStyle);
         return row;
     }
 
@@ -160,37 +179,39 @@ public class ColumnWithComponents implements Column {
         };
     }
 
+    public void setColumnHeight(Integer columnHeight) {
+        this.columnHeight = columnHeight;
+    }
+
     @Override
     public UberElement<ColumnWithComponents> getView() {
         view.clear();
         if (hasInnerRows()) {
             view.addRow(row.getView());
         }
-        view.calculateSize();
+        view.calculateWidth();
         return view;
     }
 
-    @Override
-    public Integer getSize() {
-        return size;
+    public Integer getColumnWidth() {
+        return columnWidth;
+    }
+
+    public void setColumnWidth(Integer columnWidth) {
+        this.columnWidth = columnWidth;
+        view.setWidth(columnWidth);
     }
 
     @Override
-    public void setSize(Integer size) {
-        this.size = size;
-        view.setSize(size.toString());
+    public void reduceWidth() {
+        final int newSize = this.columnWidth - 1;
+        setColumnWidth(newSize);
     }
 
     @Override
-    public void reduzeSize() {
-        final int newSize = this.size - 1;
-        setSize(newSize);
-    }
-
-    @Override
-    public void incrementSize() {
-        final int newSize = this.size + 1;
-        setSize(newSize);
+    public void incrementWidth() {
+        final int newSize = this.columnWidth + 1;
+        setColumnWidth(newSize);
     }
 
     @Override
@@ -204,8 +225,8 @@ public class ColumnWithComponents implements Column {
     }
 
     @Override
-    public void calculateSize() {
-        view.calculateSize();
+    public void calculateWidth() {
+        view.calculateWidth();
     }
 
     public Row getRow() {
@@ -230,12 +251,15 @@ public class ColumnWithComponents implements Column {
                             boolean canResizeRight) {
         this.canResizeLeft = canResizeLeft;
         this.canResizeRight = canResizeRight;
-        view.setupResize();
     }
 
     @Override
     public String getId() {
         return id;
+    }
+
+    public Integer getColumnHeight() {
+        return columnHeight;
     }
 
     public void setId(String id) {
@@ -248,14 +272,14 @@ public class ColumnWithComponents implements Column {
 
     public interface View extends UberElement<ColumnWithComponents> {
 
-        void setSize(String size);
+        void setWidth(Integer size);
 
         void addRow(UberElement<Row> view);
 
-        void calculateSize();
+        void calculateWidth();
 
         void clear();
 
-        void setupResize();
+        void setupPageLayout();
     }
 }

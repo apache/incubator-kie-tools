@@ -48,10 +48,12 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractLayoutEditorTest {
 
-    public static final String SAMPLE_FULL_LAYOUT = "org/uberfire/ext/layout/editor/client/sampleFullLayout.txt";
+    public static final String SAMPLE_FULL_FLUID_LAYOUT = "org/uberfire/ext/layout/editor/client/sampleFullFluidLayout.txt";
+    public static final String SAMPLE_FULL_PAGE_LAYOUT = "org/uberfire/ext/layout/editor/client/sampleFullPageLayout.txt";
     public static final String SINGLE_ROW_COMPONENT_LAYOUT = "org/uberfire/ext/layout/editor/client/singleRowComponentLayout.txt";
     public static final String SINGLE_ROW_TWO_COMPONENTS_LAYOUT = "org/uberfire/ext/layout/editor/client/singleRowTwoComponentsLayout.txt";
-    public static final String FULL_LAYOUT = "org/uberfire/ext/layout/editor/client/fullLayout.txt";
+    public static final String FULL_LAYOUT_FLUID = "org/uberfire/ext/layout/editor/client/fullLayoutFluid.txt";
+    public static final String FULL_LAYOUT_PAGE = "org/uberfire/ext/layout/editor/client/fullLayoutPage.txt";
     public static final int EMPTY_ROW = 0;
     public static final int FIRST_ROW = 0;
     public static final int SECOND_ROW = 1;
@@ -71,9 +73,9 @@ public abstract class AbstractLayoutEditorTest {
     protected LayoutDragComponentHelper helper;
 
     @Mock
-    protected ComponentDropEventMock componentDropEventMock;
+    protected EventSourceMock<ComponentDropEvent> componentDropEventMock;
     @Mock
-    protected ComponentRemovedEventMock componentRemoveEventMock;
+    protected EventSourceMock<ComponentRemovedEvent> componentRemoveEventMock;
     protected EmptyDropRow emptyDropRow = new EmptyDropRow(mock(EmptyDropRow.View.class),
                                                            helper);
     protected DnDManager dnDManager = new DnDManager();
@@ -96,7 +98,8 @@ public abstract class AbstractLayoutEditorTest {
             @Override
             protected Row createInstanceRow() {
                 Row row = rowProducer();
-                row.setId(idGenerator.createRowID("container"));
+                row.setup(idGenerator.createRowID("container"),
+                          LayoutTemplate.Style.PAGE);
                 return row;
             }
 
@@ -113,7 +116,8 @@ public abstract class AbstractLayoutEditorTest {
                        dnDManager,
                        helper,
                        componentDropEventMock,
-                       componentRemoveEventMock) {
+                       componentRemoveEventMock,
+                       null) {
             private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
 
             @Override
@@ -210,11 +214,11 @@ public abstract class AbstractLayoutEditorTest {
         return columnWithComponents.getRow().getColumns();
     }
 
-    public static class ComponentDropEventMock extends EventSourceMock<ComponentDropEvent> {
-
-    }
-
-    public static class ComponentRemovedEventMock extends EventSourceMock<ComponentRemovedEvent> {
-
-    }
+//    public static class ComponentDropEventMock extends EventSourceMock<ComponentDropEvent> {
+//
+//    }
+//
+//    public static class ComponentRemovedEventMock extends EventSourceMock<ComponentRemovedEvent> {
+//
+//    }
 }

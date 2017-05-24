@@ -70,6 +70,20 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
         this.emptyTitleText = emptyTitleText;
         this.emptySubTitleText = emptySubTitleText;
         layoutEditorPresenter.addDraggableComponentGroup(layoutDragComponentGroup);
+        layoutEditorPresenter.setPageStyle(LayoutTemplate.Style.FLUID);
+    }
+
+    @Override
+    public void init(String layoutName,
+                     LayoutDragComponentGroup layoutDragComponentGroup,
+                     String emptyTitleText,
+                     String emptySubTitleText,
+                     LayoutTemplate.Style style) {
+        this.pluginName = layoutName;
+        this.emptyTitleText = emptyTitleText;
+        this.emptySubTitleText = emptySubTitleText;
+        layoutEditorPresenter.addDraggableComponentGroup(layoutDragComponentGroup);
+        layoutEditorPresenter.setPageStyle(style);
     }
 
     @Override

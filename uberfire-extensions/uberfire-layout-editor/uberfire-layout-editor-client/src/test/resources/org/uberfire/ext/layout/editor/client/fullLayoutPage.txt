@@ -1,14 +1,17 @@
 {
-  "version": 1,
+  "version": 2,
   "name": "A",
+  "style": "PAGE",
   "layoutProperties": {
     "LAYOUT_TAGS": "a|"
   },
   "rows": [
     {
+      "height": "8",
       "layoutColumns": [
         {
           "span": "8",
+          "height": "12",
           "rows": [],
           "layoutComponents": [
             {
@@ -21,11 +24,14 @@
         },
         {
           "span": "4",
+          "height": "12",
           "rows": [
             {
+              "height": "12",
               "layoutColumns": [
                 {
                   "span": "12",
+                  "height": "6",
                   "rows": [],
                   "layoutComponents": [
                     {
@@ -38,6 +44,7 @@
                 },
                 {
                   "span": "12",
+                  "height": "6",
                   "rows": [],
                   "layoutComponents": [
                     {
@@ -57,9 +64,11 @@
       ]
     },
     {
+      "height": "4",
       "layoutColumns": [
         {
           "span": "12",
+          "height": "12",
           "rows": [],
           "layoutComponents": [
             {

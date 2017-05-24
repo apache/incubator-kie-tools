@@ -41,6 +41,7 @@ import org.uberfire.ext.layout.editor.client.components.rows.RowDrop;
 import org.uberfire.ext.layout.editor.client.infra.BeanHelper;
 import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
 import org.uberfire.ext.layout.editor.client.infra.LayoutTemplateAdapter;
+import org.uberfire.ext.layout.editor.client.infra.RowResizeEvent;
 import org.uberfire.ext.layout.editor.client.infra.UniqueIDGenerator;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -60,6 +61,8 @@ public class Container {
     private String emptySubTitleText;
     private Map<String, String> properties = new HashMap<>();
     private Event<ComponentDropEvent> componentDropEvent;
+    private LayoutTemplate.Style pageStyle = LayoutTemplate.Style.FLUID;
+
     @Inject
     public Container(final View view,
                      Instance<Row> rowInstance,
@@ -100,18 +103,22 @@ public class Container {
     }
 
     public void loadEmptyLayout(String layoutName,
+                                LayoutTemplate.Style pageStyle,
                                 String emptyTitleText,
                                 String emptySubTitleText) {
         this.layoutName = layoutName;
+        this.pageStyle = pageStyle;
         this.emptyTitleText = emptyTitleText;
         this.emptySubTitleText = emptySubTitleText;
         createEmptyDropRow();
+        setupResizeRows();
     }
 
     public void load(LayoutTemplate layoutTemplate,
                      String emptyTitleText,
                      String emptySubTitleText) {
         this.layoutTemplate = layoutTemplate;
+        this.pageStyle = layoutTemplate.getStyle();
         this.emptyTitleText = emptyTitleText;
         this.emptySubTitleText = emptySubTitleText;
         if (!layoutTemplate.isEmpty()) {
@@ -124,6 +131,7 @@ public class Container {
         } else {
             createEmptyDropRow();
         }
+        setupResizeRows();
     }
 
     public void reset() {
@@ -134,6 +142,7 @@ public class Container {
         layoutName = null;
         properties = null;
         emptyDropRow = null;
+        pageStyle = LayoutTemplate.Style.FLUID;
     }
 
     private EmptyDropRow createEmptyRow() {
@@ -154,7 +163,8 @@ public class Container {
         return (drop) -> {
             destroy(emptyDropRow);
             notifyDrop(drop.getComponent());
-            rows.add(createRow(drop));
+            rows.add(createRow(drop,
+                               Row.ROW_DEFAULT_HEIGHT));
             updateView();
         };
     }
@@ -163,11 +173,13 @@ public class Container {
         componentDropEvent.fire(new ComponentDropEvent(component));
     }
 
-    private Row createRow(RowDrop drop) {
+    private Row createRow(RowDrop drop,
+                          Integer height) {
         final Row row = createInstanceRow();
         row.init(createRowDropCommand(),
                  createRemoveRowCommand(),
-                 createRemoveComponentCommand());
+                 createRemoveComponentCommand(),
+                 height);
         row.withOneColumn(drop.getComponent(),
                           drop.newComponent());
         view.addRow(row.getView());
@@ -176,15 +188,42 @@ public class Container {
 
     private ParameterizedCommand<Row> createRemoveRowCommand() {
         return (row) -> {
-            this.rows.remove(row);
-            destroy(row);
-            if (layoutIsEmpty()) {
-                init();
-                createEmptyDropRow();
-            } else {
-                updateView();
-            }
+            removeRow(row);
         };
+    }
+
+    private void removeRow(Row row) {
+        if (needToUpdateSizeOfMySiblings(row)) {
+            updateHeightOfSiblingRow(row);
+        }
+        this.rows.remove(row);
+        destroy(row);
+        if (layoutIsEmpty()) {
+            init();
+            createEmptyDropRow();
+        } else {
+            updateView();
+        }
+    }
+
+    private void updateHeightOfSiblingRow(Row rowToRemove) {
+        final int removeIndex = getRowIndex(rowToRemove);
+        if (firstRow(removeIndex)) {
+            if (hasDownSibling(removeIndex,
+                               rows)) {
+                final Row sibling = rows.get(removeIndex + 1);
+                Integer newSize = (sibling.getHeight() + rowToRemove.getHeight());
+                sibling.setHeight(newSize);
+            }
+        } else {
+            final Row sibling = rows.get(removeIndex - 1);
+            Integer newSize = sibling.getHeight() + rowToRemove.getHeight();
+            sibling.setHeight(newSize);
+        }
+    }
+
+    private boolean needToUpdateSizeOfMySiblings(Row row) {
+        return !row.getHeight().equals(Row.ROW_DEFAULT_HEIGHT);
     }
 
     private ParameterizedCommand<ColumnDrop> createRemoveComponentCommand() {
@@ -237,26 +276,52 @@ public class Container {
     }
 
     private void removeOldComponent(Column column) {
+        Row rowToRemove = null;
         for (Row row : rows) {
             row.removeChildColumn(column);
         }
     }
 
-    private void addNewRow(Row row,
+    private void addNewRow(Row currentRow,
                            RowDrop dropRow,
                            List<Row> newRows) {
+        Integer newRowHeight;
+        if (pageStyle == LayoutTemplate.Style.PAGE) {
+            newRowHeight = currentRow.getHeight() / 2;
+        } else {
+            newRowHeight = currentRow.getHeight();
+        }
         if (newRowIsBeforeThisRow(dropRow)) {
-            newRows.add(createRow(dropRow));
-            if (!row.rowIsEmpty()) {
-                newRows.add(row);
+            newRows.add(createRow(dropRow,
+                                  newRowHeight));
+            if (pageStyle == LayoutTemplate.Style.PAGE) {
+                setupRowSize(currentRow);
+            }
+            if (!currentRow.rowIsEmpty()) {
+                newRows.add(currentRow);
             }
         } else {
-            if (!row.rowIsEmpty()) {
-                newRows.add(row);
+            if (!currentRow.rowIsEmpty()) {
+                newRows.add(currentRow);
             }
-            newRows.add(createRow(dropRow));
+            newRows.add(createRow(dropRow,
+                                  newRowHeight));
+            if (pageStyle == LayoutTemplate.Style.PAGE) {
+                setupRowSize(currentRow);
+            }
         }
         notifyDrop(dropRow.getComponent());
+    }
+
+    private void setupRowSize(Row currentRow) {
+        Integer originalSize = currentRow.getHeight();
+        Integer newColumnSize = originalSize / 2;
+        if (originalSize % 2 == 0) {
+            currentRow.setHeight(newColumnSize);
+        } else {
+            newColumnSize = newColumnSize + 1;
+            currentRow.setHeight(newColumnSize);
+        }
     }
 
     private boolean newRowIsBeforeThisRow(RowDrop dropRow) {
@@ -324,7 +389,8 @@ public class Container {
 
     protected Row createInstanceRow() {
         Row row = rowInstance.get();
-        row.setId(idGenerator.createRowID(id));
+        row.setup(idGenerator.createRowID(id),
+                  pageStyle);
         return row;
     }
 
@@ -352,6 +418,9 @@ public class Container {
     }
 
     void updateView() {
+        cleanupEmptyRows();
+        setupPageStyle();
+        setupResizeRows();
         if (!rows.isEmpty()) {
             clearView();
             for (Row row : rows) {
@@ -360,9 +429,121 @@ public class Container {
         }
     }
 
+    private void cleanupEmptyRows() {
+        List<Row> rowsToRemove = new ArrayList<>();
+        for (Row row : rows) {
+            if (row.rowIsEmpty()) {
+                rowsToRemove.add(row);
+            }
+        }
+        for (Row row : rowsToRemove) {
+            removeRow(row);
+        }
+    }
+
+    private void setupResizeRows() {
+        for (int i = 0; i < rows.size(); i++) {
+            Row row = rows.get(i);
+            setupRowResizeActions(rows,
+                                  row,
+                                  i);
+        }
+    }
+
+    private void setupRowResizeActions(List<Row> rows,
+                                       Row row,
+                                       int index) {
+        if (pageStyle == LayoutTemplate.Style.FLUID) {
+            row.setupResize(false,
+                            false);
+        } else {
+            if (firstRow(index)) {
+                boolean canResizeDown = canResizeDown(index,
+                                                      rows);
+                row.setupResize(false,
+                                canResizeDown);
+            } else {
+                row.setupResize(canResizeUp(index,
+                                            rows),
+                                canResizeDown(index,
+                                              rows));
+            }
+        }
+    }
+
+    private boolean canResizeDown(int index,
+                                  List<Row> rows) {
+        if (hasDownSibling(index,
+                           rows)) {
+            Row downSibling = rows.get(index + 1);
+            return downSibling.getHeight() > 2;
+        }
+        return false;
+    }
+
+    private boolean hasDownSibling(int index,
+                                   List<Row> rows) {
+        return rows.size() > index + 1;
+    }
+
+    private boolean canResizeUp(int index,
+                                List<Row> rows) {
+        return (rows.get(index - 1).getHeight() > 2);
+    }
+
+    private boolean firstRow(int index) {
+        return index == 0;
+    }
+
+    private void setupPageStyle() {
+        if (pageStyle == LayoutTemplate.Style.PAGE) {
+            view.pageMode();
+        }
+    }
+
     public UberElement<Container> getView() {
         updateView();
         return view;
+    }
+
+    public void resizeRows(@Observes RowResizeEvent resize) {
+        Row resizedRow = getRow(resize);
+        if (resizedRow != null) {
+            Row affectedRow = null;
+            if (resize.isUP()) {
+                affectedRow = lookUpForUpperNeighbor(resizedRow);
+            } else {
+                affectedRow = lookUpForBottomNeighbor(resizedRow);
+            }
+            if (affectedRow != null) {
+                resizedRow.incrementHeight();
+                affectedRow.reduceHeight();
+            }
+        }
+        setupResizeRows();
+    }
+
+    private Row lookUpForUpperNeighbor(Row resizedRow) {
+        return rows
+                .get(getRowIndex(resizedRow) - 1);
+    }
+
+    private Row lookUpForBottomNeighbor(Row resizedRow) {
+        return rows
+                .get(getRowIndex(resizedRow) + 1);
+    }
+
+    private int getRowIndex(Row row) {
+        return rows.indexOf(row);
+    }
+
+    private Row getRow(RowResizeEvent resize) {
+        for (Row row : getRows()) {
+            if (resize.getRowID() == row.getId()) {
+                return row;
+            }
+        }
+        return null;
     }
 
     EmptyDropRow getEmptyDropRow() {
@@ -373,6 +554,10 @@ public class Container {
         BeanHelper.destroy(o);
     }
 
+    public LayoutTemplate.Style getPageStyle() {
+        return pageStyle;
+    }
+
     public interface View extends UberElement<Container> {
 
         void addRow(UberElement<Row> view);
@@ -380,5 +565,7 @@ public class Container {
         void clear();
 
         void addEmptyRow(UberElement<EmptyDropRow> emptyDropRow);
+
+        void pageMode();
     }
 }

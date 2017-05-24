@@ -129,6 +129,7 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
     @Override
     public void onOpen() {
         mainPanel.clear();
+        mainPanel.getElement().addClassName("uf-perspective-component");
         mainPanel.add(layoutGenerator.build(layoutTemplate));
     }
 

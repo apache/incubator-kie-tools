@@ -26,25 +26,30 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public final class LayoutTemplate {
 
-    private int version = 1;
+    private int version = 2;
 
     private String name;
+
+    private Style style = Style.FLUID;
 
     private Map<String, String> layoutProperties = new HashMap<String, String>();
 
     private List<LayoutRow> rows = new ArrayList<LayoutRow>();
 
+    public LayoutTemplate() {
+
+    }
+
     public LayoutTemplate(String name) {
         this.name = name;
     }
 
-    public LayoutTemplate(String name,
-                          Map<String, String> layoutProperties) {
-        this.name = name;
-        this.layoutProperties = layoutProperties;
-    }
-
-    public LayoutTemplate() {
+    public LayoutTemplate(String layoutName,
+                          Map<String, String> properties,
+                          Style pageStyle) {
+        this.name = layoutName;
+        this.layoutProperties = properties;
+        this.style = pageStyle;
     }
 
     public int getVersion() {
@@ -69,6 +74,10 @@ public final class LayoutTemplate {
 
     public Map<String, String> getLayoutProperties() {
         return layoutProperties;
+    }
+
+    public boolean isPageStyle() {
+        return style.equals(Style.PAGE);
     }
 
     @Override
@@ -118,5 +127,19 @@ public final class LayoutTemplate {
 
     public boolean isEmpty() {
         return rows.isEmpty();
+    }
+
+    public Style getStyle() {
+        return style;
+    }
+
+    public boolean isPageLayout() {
+        return getStyle() == LayoutTemplate.Style.PAGE;
+    }
+
+    @Portable
+    public enum Style {
+        PAGE,
+        FLUID
     }
 }

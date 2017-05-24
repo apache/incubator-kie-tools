@@ -13,6 +13,15 @@
 .innerColumnPadding {
 }
 
+.page-col{
+
+    height: 100%;
+}
+.page-col-inner{
+    padding-bottom: 7px !important;
+    padding-top: 7px !important;
+}
+
 .left {
     float: left;
 }
@@ -31,8 +40,8 @@
 
 .componentDropInColumnPreview {
     height: 15px;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: 15px;
+    margin-right: 20px;
 
     background: #dde0e2; /* Old browsers */
     background: -moz-linear-gradient(top, #eeeeee 0%, #dde0e2 100%); /* FF3.6-15 */
@@ -100,4 +109,10 @@
 .componentMovePreview {
     border-color: #33a6cc !important;
     cursor: move;
+}
+.colResizeLeft {
+    cursor: w-resize;
+}
+.colResizeRight {
+    cursor: e-resize;
 }

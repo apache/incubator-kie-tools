@@ -50,7 +50,7 @@ import static org.uberfire.ext.plugin.client.perspective.editor.layout.editor.Sc
 public class EditScreen
         extends BaseModal {
 
-    public static String PROPERTY_EDITOR_KEY = "LayoutEditor";
+    public static String PROPERTY_EDITOR_KEY = "EditScreen";
     private static Binder uiBinder = GWT.create(Binder.class);
     private final ModalConfigurationContext configContext;
     protected List<String> availableWorkbenchScreensIds = new ArrayList<String>();

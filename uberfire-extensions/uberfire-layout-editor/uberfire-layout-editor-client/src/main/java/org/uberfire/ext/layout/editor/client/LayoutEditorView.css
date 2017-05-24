@@ -1,5 +1,6 @@
 .el-container{
     margin-right: 250px;
+    height: 100%;
 }
 
 .el-sidebar{
@@ -72,18 +73,9 @@
     transform: translateY(-50%);
 }
 
-.dotted {
+.le-default {
     padding: 16px;
-    background-image: -webkit-repeating-radial-gradient(center center, rgba(0, 0, 0, .2), rgba(0, 0, 0, .2) 1px, transparent 1px, transparent 100%);
-    background-image: -moz-repeating-radial-gradient(center center, rgba(0, 0, 0, .2), rgba(0, 0, 0, .2) 1px, transparent 2px, transparent 100%);
-    background-image: -ms-repeating-radial-gradient(center center, rgba(0, 0, 0, .2), rgba(0, 0, 0, .2) 2px, transparent 2px, transparent 100%);
-    background-image: repeating-radial-gradient(center center, rgba(0, 0, 0, .2), rgba(0, 0, 0, .2) 2px, transparent 2px, transparent 100%);
-    -webkit-background-size: 16px 16px;
-    -moz-background-size: 16px 16px;
-    background-size: 16px 16px;
-
-    /* ederign remove this, put browser window size */
-    height: 1000px;
+    height: 100%;
 }
 
 .le-empty {
@@ -120,7 +112,8 @@
 .le-kebab {
     width: 10px;
     float: right;
-
+}
+.le-kebab-dropdown {
 }
 
 .le-kebab-button {
@@ -128,6 +121,9 @@
 }
 
 .le-widget {
-    padding-left: 20px;
-    padding-right: 25px;
+    cursor: default;
+}
+
+.le-full-height{
+    height:100%;
 }

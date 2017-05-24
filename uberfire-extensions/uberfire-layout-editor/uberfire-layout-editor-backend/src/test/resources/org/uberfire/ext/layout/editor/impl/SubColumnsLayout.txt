@@ -1,6 +1,7 @@
 {
   "version": 1,
   "name": "gsgdf",
+  "style": "FLUID",
   "layoutProperties": {
     "LAYOUT_TAGS": "teste|"
   },

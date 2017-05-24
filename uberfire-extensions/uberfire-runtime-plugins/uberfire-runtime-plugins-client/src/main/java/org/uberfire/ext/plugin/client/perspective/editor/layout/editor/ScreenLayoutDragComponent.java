@@ -55,7 +55,6 @@ public class ScreenLayoutDragComponent implements PerspectiveEditorDragComponent
     protected List<String> availableWorkbenchScreensIds = new ArrayList<String>();
     @Inject
     private PlaceManager placeManager;
-    private EditScreen editScreen;
     private ModalConfigurationContext configContext;
 
     @PostConstruct
@@ -77,6 +76,8 @@ public class ScreenLayoutDragComponent implements PerspectiveEditorDragComponent
     public IsWidget getShowWidget(RenderingContext ctx) {
 
         FlowPanel panel = GWT.create(FlowPanel.class);
+        panel.asWidget().getElement().addClassName("uf-perspective-col");
+        panel.asWidget().getElement().addClassName("screen dnd component");
         Map<String, String> properties = extractScreenProperties(ctx);
 
         String placeName = properties.get(PLACE_NAME_PARAMETER);

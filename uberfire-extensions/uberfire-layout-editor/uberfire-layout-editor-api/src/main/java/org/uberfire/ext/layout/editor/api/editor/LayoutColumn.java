@@ -25,14 +25,23 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class LayoutColumn {
 
+    public static final String DEFAULT_COLUMN_HEIGHT = "12";
     private String span;
+    private String height;
 
     private List<LayoutRow> rows = new ArrayList<LayoutRow>();
 
     private List<LayoutComponent> layoutComponents = new ArrayList<LayoutComponent>();
 
-    public LayoutColumn(@MapsTo("span") String span) {
+    public LayoutColumn(String span) {
         this.span = span;
+        this.height = DEFAULT_COLUMN_HEIGHT;
+    }
+
+    public LayoutColumn(@MapsTo("span") String span,
+                        @MapsTo("height") String height) {
+        this.span = span;
+        this.height = height;
     }
 
     public void addRow(LayoutRow layoutRow) {
@@ -49,6 +58,10 @@ public class LayoutColumn {
 
     public List<LayoutRow> getRows() {
         return rows;
+    }
+
+    public String getHeight() {
+        return height;
     }
 
     public List<LayoutComponent> getLayoutComponents() {

@@ -1,11 +1,13 @@
 {
-  "version": 1,
+  "version": 2,
   "name": "12withHTMLComponent",
+  "style": "PAGE",
   "layoutProperties": {
     "LAYOUT_TAGS": "teste|"
   },
   "rows": [
     {
+      "height": "12",
       "layoutColumns": [
         {
           "span": "12",

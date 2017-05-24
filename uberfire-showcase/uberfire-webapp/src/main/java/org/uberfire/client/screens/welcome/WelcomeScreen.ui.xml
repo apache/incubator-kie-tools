@@ -19,7 +19,14 @@
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
              xmlns:h="urn:import:org.gwtbootstrap3.client.ui.html">
 
-  <h:Div>
+  <ui:style>
+    .welc {
+      height: 100%;
+      border: 1px solid lightgrey;
+    }
+  </ui:style>
+
+  <h:Div addStyleNames="{style.welc}">
     <b:Heading alignment="CENTER" size="H1" text="Welcome to UberFire"/>
     <h:Paragraph alignment="CENTER">Now with a bright new Look &amp; Feel based on PatternFly.</h:Paragraph>
   </h:Div>

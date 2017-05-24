@@ -26,6 +26,7 @@ import org.uberfire.ext.layout.editor.client.components.rows.Row;
 import org.uberfire.ext.layout.editor.client.components.rows.RowDrop;
 import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
 import org.uberfire.ext.layout.editor.client.infra.ColumnResizeEvent;
+import org.uberfire.ext.layout.editor.client.infra.RowResizeEvent;
 import org.uberfire.ext.plugin.type.TagsConverterUtil;
 
 import static org.junit.Assert.*;
@@ -33,9 +34,10 @@ import static org.junit.Assert.*;
 public class FullLayoutTest extends AbstractLayoutEditorTest {
 
     @Test
-    public void testFullLayout() throws Exception {
+    public void testFullLayoutFluid() throws Exception {
 
         container.loadEmptyLayout("A",
+                                  LayoutTemplate.Style.FLUID,
                                   "title",
                                   "subtitle");
         container.addProperty(TagsConverterUtil.LAYOUT_PROPERTY,
@@ -45,8 +47,36 @@ public class FullLayoutTest extends AbstractLayoutEditorTest {
         createSecondRow();
 
         LayoutTemplate layoutTemplate = container.toLayoutTemplate();
-        assertEquals(convertLayoutToString(loadLayout(FULL_LAYOUT)),
+        assertEquals(convertLayoutToString(loadLayout(FULL_LAYOUT_FLUID)),
                      convertLayoutToString(layoutTemplate));
+    }
+
+    @Test
+    public void testFullLayoutPage() throws Exception {
+
+        container.loadEmptyLayout("A",
+                                  LayoutTemplate.Style.PAGE,
+                                  "title",
+                                  "subtitle");
+        container.addProperty(TagsConverterUtil.LAYOUT_PROPERTY,
+                              "a|");
+
+        createFirstRow();
+        createSecondRow();
+
+        resizeSecondRow();
+        resizeSecondRow();
+
+        LayoutTemplate layoutTemplate = container.toLayoutTemplate();
+        assertEquals(convertLayoutToString(loadLayout(FULL_LAYOUT_PAGE)),
+                     convertLayoutToString(layoutTemplate));
+    }
+
+    private void resizeSecondRow() {
+        Row firstRow = getRowByIndex(0);
+
+        RowResizeEvent resize = new RowResizeEvent(firstRow.getId()).down();
+        container.resizeRows(resize);
     }
 
     private void createSecondRow() {
