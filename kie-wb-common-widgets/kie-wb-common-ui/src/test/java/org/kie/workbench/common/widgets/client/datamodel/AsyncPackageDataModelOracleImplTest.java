@@ -339,6 +339,12 @@ public class AsyncPackageDataModelOracleImplTest {
                 assertEquals( 2,
                               result.length );
 
+                assertEquals("address",
+                             result[0].getName());
+
+                assertEquals("this",
+                             result[1].getName());
+
                 assertEquals( "Address",
                               oracle.getFieldType( "Person",
                                                    "address" ) );
@@ -362,6 +368,18 @@ public class AsyncPackageDataModelOracleImplTest {
             public void callback( ModelField[] result ) {
                 assertEquals( 4,
                               result.length );
+
+                assertEquals("homeAddress",
+                             result[0].getName());
+
+                assertEquals("number",
+                             result[1].getName());
+
+                assertEquals("street",
+                             result[2].getName());
+
+                assertEquals("this",
+                             result[3].getName());
 
                 assertEquals( "Address",
                               oracle.getFieldClassName( "Address",
