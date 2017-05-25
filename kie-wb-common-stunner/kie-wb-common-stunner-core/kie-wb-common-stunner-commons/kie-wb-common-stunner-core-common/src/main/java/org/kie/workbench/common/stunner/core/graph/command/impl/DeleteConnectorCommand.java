@@ -77,8 +77,7 @@ public final class DeleteConnectorCommand extends AbstractGraphCompositeCommand 
     @Override
     public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
         getMutableIndex(context).addEdge(edge);
-        final CommandResult<RuleViolation> result = super.undo(context,
-                                                               true);
+        final CommandResult<RuleViolation> result = super.undo(context);
         if (CommandUtils.isError(result)) {
             getMutableIndex(context).removeEdge(edge);
         }

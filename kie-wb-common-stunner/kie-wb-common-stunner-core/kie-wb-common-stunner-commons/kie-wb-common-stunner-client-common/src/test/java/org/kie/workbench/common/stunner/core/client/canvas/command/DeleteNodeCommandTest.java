@@ -16,11 +16,21 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.command.CompositeCommand;
-import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
+import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -28,36 +38,123 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DeleteNodeCommandTest extends AbstractCanvasCommandTest {
+public class DeleteNodeCommandTest {
 
-    private static final String ID = "e1";
+    private static final String SHAPE_SET_ID = "ss1";
 
     @Mock
-    private Node candidate;
+    private AbstractCanvasHandler canvasHandler;
+    @Mock
+    private AbstractCanvas canvas;
+    @Mock
+    private Diagram diagram;
+    @Mock
+    private Metadata metadata;
 
+    private TestingGraphMockHandler graphHandler;
+    private TestingGraphInstanceBuilder.TestGraph2 graphHolder;
     private DeleteNodeCommand tested;
 
     @Before
     public void setup() throws Exception {
-        super.setup();
-        when(candidate.getUUID()).thenReturn(ID);
-        this.tested = new DeleteNodeCommand(candidate);
+        this.graphHandler = new TestingGraphMockHandler();
+        this.graphHolder = TestingGraphInstanceBuilder.newGraph2(graphHandler);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(canvasHandler.getCanvas()).thenReturn(canvas);
+        when(canvasHandler.getGraphIndex()).thenReturn(graphHandler.graphIndex);
+        when(canvasHandler.getGraphExecutionContext()).thenReturn(graphHandler.graphCommandExecutionContext);
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(diagram.getGraph()).thenReturn(graphHandler.graph);
+        when(metadata.getDefinitionSetId()).thenReturn(TestingGraphMockHandler.DEF_SET_ID);
+        when(metadata.getShapeSetId()).thenReturn(SHAPE_SET_ID);
+        when(metadata.getCanvasRootUUID()).thenReturn(graphHolder.parentNode.getUUID());
     }
 
     @Test
-    public void testGetGraphCommand() {
+    public void startNodeTestGraphCommand() {
+        this.tested = new DeleteNodeCommand(graphHolder.startNode);
         final org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand graphCommand =
                 (org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand) tested.newGraphCommand(canvasHandler);
         assertNotNull(graphCommand);
-        assertEquals(candidate,
+        assertEquals(graphHolder.startNode,
                      graphCommand.getNode());
     }
 
     @Test
-    public void testGetCanvasCommand() {
-        final CompositeCommand canvasCommand =
-                (CompositeCommand) tested.newCanvasCommand(canvasHandler);
-        assertNotNull(canvasCommand);
-        assertTrue(canvasCommand instanceof CompositeCommand);
+    public void startNodeTestCanvasCommands() {
+        this.tested = new DeleteNodeCommand(graphHolder.startNode);
+        final CommandResult<CanvasViolation> result = tested.allow(canvasHandler);
+        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand =
+                (AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation>) tested.getCommand();
+        assertNotNull(compositeCommand);
+        assertTrue(3 == compositeCommand.size());
+        final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = compositeCommand.getCommands();
+        assertNotNull(commands);
+        final SetCanvasConnectionCommand c1 = (SetCanvasConnectionCommand) commands.get(0);
+        assertNotNull(c1);
+        assertEquals(graphHolder.edge1,
+                     c1.getEdge());
+        final RemoveCanvasChildCommand c2 = (RemoveCanvasChildCommand) commands.get(1);
+        assertNotNull(c2);
+        assertEquals(graphHolder.parentNode,
+                     c2.getParent());
+        assertEquals(graphHolder.startNode,
+                     c2.getChild());
+        final DeleteCanvasNodeCommand c3 = (DeleteCanvasNodeCommand) commands.get(2);
+        assertNotNull(c3);
+        assertEquals(graphHolder.startNode,
+                     c3.getCandidate());
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+    }
+
+    @Test
+    public void intermediateNodeTestGraphCommand() {
+        this.tested = new DeleteNodeCommand(graphHolder.intermNode);
+        final org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand graphCommand =
+                (org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand) tested.newGraphCommand(canvasHandler);
+        assertNotNull(graphCommand);
+        assertEquals(graphHolder.intermNode,
+                     graphCommand.getNode());
+    }
+
+    @Test
+    public void intermediateNodeTestCanvasCommands() {
+        this.tested = new DeleteNodeCommand(graphHolder.intermNode);
+        final CommandResult<CanvasViolation> result = tested.allow(canvasHandler);
+        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand =
+                (AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation>) tested.getCommand();
+        assertNotNull(compositeCommand);
+        assertTrue(6 == compositeCommand.size());
+        final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = compositeCommand.getCommands();
+        assertNotNull(commands);
+        final SetCanvasConnectionCommand c1 = (SetCanvasConnectionCommand) commands.get(0);
+        assertNotNull(c1);
+        assertEquals(graphHolder.edge2,
+                     c1.getEdge());
+        final SetCanvasConnectionCommand c2 = (SetCanvasConnectionCommand) commands.get(1);
+        assertNotNull(c2);
+        assertEquals(graphHolder.edge1,
+                     c2.getEdge());
+        final RemoveCanvasChildCommand c3 = (RemoveCanvasChildCommand) commands.get(2);
+        assertNotNull(c3);
+        assertEquals(graphHolder.parentNode,
+                     c3.getParent());
+        assertEquals(graphHolder.intermNode,
+                     c3.getChild());
+        final DeleteCanvasConnectorCommand c4 = (DeleteCanvasConnectorCommand) commands.get(3);
+        assertNotNull(c4);
+        assertEquals(graphHolder.edge2,
+                     c4.getCandidate());
+        final SetCanvasConnectionCommand c5 = (SetCanvasConnectionCommand) commands.get(4);
+        assertNotNull(c5);
+        assertEquals(graphHolder.edge1,
+                     c5.getEdge());
+        final DeleteCanvasNodeCommand c6 = (DeleteCanvasNodeCommand) commands.get(5);
+        assertNotNull(c6);
+        assertEquals(graphHolder.intermNode,
+                     c6.getCandidate());
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
     }
 }

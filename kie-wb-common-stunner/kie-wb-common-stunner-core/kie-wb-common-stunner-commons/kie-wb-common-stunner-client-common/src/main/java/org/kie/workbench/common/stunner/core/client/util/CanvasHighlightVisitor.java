@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
+import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ContentTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ViewTraverseProcessorImpl;
@@ -91,10 +92,7 @@ public class CanvasHighlightVisitor {
         final Graph graph = canvasHandler.getDiagram().getGraph();
         final TreeWalkTraverseProcessor treeWalkTraverseProcessor =
                 new TreeWalkTraverseProcessorImpl()
-                        .useStartNodePredicate(node -> !node.getInEdges().stream()
-                                .filter(e -> e.getContent() instanceof View)
-                                .findAny()
-                                .isPresent());
+                        .useStartNodePredicate(this::isStartNode);
         new ViewTraverseProcessorImpl(treeWalkTraverseProcessor)
                 .traverse(graph,
                           new ContentTraverseCallback<View<?>, Node<View, Edge>, Edge<View<?>, Node>>() {
@@ -132,6 +130,18 @@ public class CanvasHighlightVisitor {
                                   }
                               }
                           });
+    }
+
+    private boolean isStartNode(final Node<?, Edge> node) {
+        final boolean hasConnectors = node.getInEdges().stream()
+                .filter(e -> e.getContent() instanceof View)
+                .findAny()
+                .isPresent();
+        final boolean hasDocks = node.getInEdges().stream()
+                .filter(e -> e.getContent() instanceof Dock)
+                .findAny()
+                .isPresent();
+        return !hasConnectors && !hasDocks;
     }
 
     private void log(final Level level,

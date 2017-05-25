@@ -19,15 +19,16 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.containment
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
 public interface ContainmentAcceptorControl<H extends CanvasHandler>
         extends CanvasControl<H>,
                 RequiresCommandManager<H> {
 
-    boolean allow(final Node parent,
+    boolean allow(final Element parent,
                   final Node child);
 
-    boolean accept(final Node parent,
+    boolean accept(final Element parent,
                    final Node child);
 }

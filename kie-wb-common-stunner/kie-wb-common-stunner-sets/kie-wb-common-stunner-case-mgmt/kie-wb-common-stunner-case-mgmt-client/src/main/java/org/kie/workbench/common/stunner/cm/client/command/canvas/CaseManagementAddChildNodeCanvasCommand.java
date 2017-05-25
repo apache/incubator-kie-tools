@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.command.AddCanvasNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DeleteCanvasNodeCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -43,8 +44,8 @@ public class CaseManagementAddChildNodeCanvasCommand extends AbstractCanvasComma
     @Override
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         return new CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
-                .addCommand(new CaseManagementAddNodeCanvasCommand(child,
-                                                                   shapeSetId))
+                .addCommand(new AddCanvasNodeCommand(child,
+                                                     shapeSetId))
                 .addCommand(new CaseManagementSetChildNodeCanvasCommand(parent,
                                                                         child,
                                                                         Optional.of(0),

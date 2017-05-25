@@ -70,8 +70,8 @@ public final class ClearGraphCommand extends AbstractGraphCommand {
 
     protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
         if (hasRootUUID()) {
-            checkNodeNotNull(context,
-                             rootUUID);
+            getNodeNotNull(context,
+                           rootUUID);
         }
         return GraphCommandResultBuilder.SUCCESS;
     }

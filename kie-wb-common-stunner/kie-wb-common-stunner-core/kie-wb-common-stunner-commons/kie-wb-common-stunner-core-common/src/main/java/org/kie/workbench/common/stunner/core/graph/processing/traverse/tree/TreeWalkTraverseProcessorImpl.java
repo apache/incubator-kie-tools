@@ -33,7 +33,6 @@ import org.uberfire.mvp.Command;
 public final class TreeWalkTraverseProcessorImpl implements TreeWalkTraverseProcessor {
 
     private Graph graph;
-    private EdgeVisitorPolicy edgeVisitorPolicy;
     private TreeTraverseCallback<Graph, Node, Edge> callback;
     private final Set<String> processesEdges = new HashSet<String>();
     private final Set<String> processesNodes = new HashSet<String>();
@@ -41,14 +40,7 @@ public final class TreeWalkTraverseProcessorImpl implements TreeWalkTraverseProc
     private Predicate<Node<?, Edge>> startNodePredicate;
 
     public TreeWalkTraverseProcessorImpl() {
-        this.edgeVisitorPolicy = EdgeVisitorPolicy.VISIT_EDGE_BEFORE_TARGET_NODE;
         this.startNodePredicate = n -> n.getInEdges().isEmpty();
-    }
-
-    @Override
-    public TreeWalkTraverseProcessorImpl useEdgeVisitorPolicy(final EdgeVisitorPolicy policy) {
-        this.edgeVisitorPolicy = policy;
-        return this;
     }
 
     @Override
@@ -146,16 +138,9 @@ public final class TreeWalkTraverseProcessorImpl implements TreeWalkTraverseProc
         final String uuid = edge.getUUID();
         if (!this.processesEdges.contains(uuid)) {
             processesEdges.add(uuid);
-            boolean isTraverNode = true;
-            if (isVisitBefore()) {
-                isTraverNode = callback.startEdgeTraversal(edge);
-            }
-            if (isTraverNode) {
+            if (callback.startEdgeTraversal(edge)) {
                 ifNotProcessed(edge.getTargetNode(),
                                () -> startNodeTraversal(edge.getTargetNode()));
-            }
-            if (isVisitAfter()) {
-                callback.startEdgeTraversal(edge);
             }
             endEdgeTraversal(edge);
         }
@@ -163,14 +148,6 @@ public final class TreeWalkTraverseProcessorImpl implements TreeWalkTraverseProc
 
     private void endEdgeTraversal(final Edge edge) {
         callback.endEdgeTraversal(edge);
-    }
-
-    private boolean isVisitBefore() {
-        return EdgeVisitorPolicy.VISIT_EDGE_BEFORE_TARGET_NODE.equals(edgeVisitorPolicy);
-    }
-
-    private boolean isVisitAfter() {
-        return !isVisitBefore();
     }
 
     private void ifNotProcessed(final Node node,

@@ -48,4 +48,12 @@ public class RemoveChildCommand extends AbstractCanvasGraphCommand {
         return new RemoveCanvasChildCommand(parent,
                                             child);
     }
+
+    public Node getParent() {
+        return parent;
+    }
+
+    public Node getCandidate() {
+        return child;
+    }
 }

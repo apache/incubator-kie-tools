@@ -44,7 +44,6 @@ public final class FullContentTraverseProcessorImpl implements FullContentTraver
     public void traverse(final Graph<View, Node<View, Edge>> graph,
                          final FullContentTraverseCallback<Node<View, Edge>, Edge<Object, Node>> callback) {
         treeWalkTraverseProcessor
-                .useEdgeVisitorPolicy(TreeWalkTraverseProcessor.EdgeVisitorPolicy.VISIT_EDGE_BEFORE_TARGET_NODE)
                 .traverse(graph,
                           new TreeTraverseCallback<Graph, Node, Edge>() {
 

@@ -100,12 +100,6 @@ public class CompositeCommandTest {
                                                       Command<GraphCommandExecutionContext, RuleViolation> command) {
             return GraphCommandResultBuilder.SUCCESS;
         }
-
-        @Override
-        public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
-            return super.undo(context,
-                              true);
-        }
     }
 
     private static class CommandStub extends AbstractGraphCommand {

@@ -57,9 +57,8 @@ public class CompositeCommandImpl<T, V> extends AbstractCompositeCommand<T, V> {
     }
 
     @Override
-    public CommandResult<V> undo(final T context) {
-        return undo(context,
-                    reverse);
+    protected boolean isUndoReverse() {
+        return reverse;
     }
 
     @NonPortable

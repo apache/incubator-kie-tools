@@ -61,6 +61,11 @@ public class StunnerClientLogger {
                    "Bounds for [" + item.getUUID() + "] ARE " +
                            "{ UL=[" + ul.getX() + ", " + ul.getY() + "] " +
                            "LR=[ " + lr.getX() + ", " + lr.getY() + "] }");
+        LOGGER.log(Level.FINE,
+                   "Bound attributes for [" + item.getUUID() + "] ARE " +
+                           "[X=" + ul.getX() + ", Y=" + ul.getY() + "] " +
+                           "[W=[ " + (lr.getX() - ul.getX()) +
+                           ", H=" + (lr.getY() - ul.getY()) + "] }");
     }
 
     public static void logSessionInfo(final AbstractClientSession session) {

@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.List;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -62,34 +60,28 @@ public class UnDockNodeCommand extends AbstractGraphCommand {
         if (!results.getType().equals(CommandResult.Type.ERROR)) {
             final Node<?, Edge> parent = getParent(context);
             final Node<?, Edge> candidate = getCandidate(context);
-            final Edge<Dock, Node> edge = getEdgeForTarget(parent,
-                                                           candidate);
-            if (null != edge) {
-                edge.setSourceNode(null);
-                edge.setTargetNode(null);
-                parent.getInEdges().remove(edge);
-                candidate.getOutEdges().remove(edge);
-                getMutableIndex(context).removeEdge(edge);
-            }
+            parent.getOutEdges().stream()
+                    .filter(e -> e.getContent() instanceof Dock)
+                    .filter(e -> e.getTargetNode().equals(candidate))
+                    .findFirst()
+                    .ifPresent(e -> removeDockEdge(context,
+                                                   parent,
+                                                   candidate,
+                                                   e));
         }
         return results;
     }
 
     @SuppressWarnings("unchecked")
-    private Edge<Dock, Node> getEdgeForTarget(final Node<?, Edge> parent,
-                                              final Node<?, Edge> candidate) {
-        final List<Edge> outEdges = parent.getInEdges();
-        if (null != outEdges && !outEdges.isEmpty()) {
-            for (Edge<?, Node> outEdge : outEdges) {
-                if (outEdge.getContent() instanceof Dock) {
-                    final Node source = outEdge.getSourceNode();
-                    if (null != source && source.equals(candidate)) {
-                        return (Edge<Dock, Node>) outEdge;
-                    }
-                }
-            }
-        }
-        return null;
+    private void removeDockEdge(final GraphCommandExecutionContext context,
+                                final Node<?, Edge> parent,
+                                final Node<?, Edge> candidate,
+                                final Edge edge) {
+        edge.setSourceNode(null);
+        edge.setTargetNode(null);
+        parent.getOutEdges().remove(edge);
+        candidate.getInEdges().remove(edge);
+        getMutableIndex(context).removeEdge(edge);
     }
 
     protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
@@ -108,8 +100,8 @@ public class UnDockNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings("unchecked")
     private Node<?, Edge> getParent(final GraphCommandExecutionContext context) {
         if (null == parent) {
-            parent = checkNodeNotNull(context,
-                                      parentUUID);
+            parent = getNodeNotNull(context,
+                                    parentUUID);
         }
         return parent;
     }
@@ -117,8 +109,8 @@ public class UnDockNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings("unchecked")
     private Node<?, Edge> getCandidate(final GraphCommandExecutionContext context) {
         if (null == candidate) {
-            candidate = checkNodeNotNull(context,
-                                         candidateUUID);
+            candidate = getNodeNotNull(context,
+                                       candidateUUID);
         }
         return candidate;
     }

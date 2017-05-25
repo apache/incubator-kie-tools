@@ -27,13 +27,6 @@ import org.kie.workbench.common.stunner.core.graph.Node;
  */
 public interface TreeWalkTraverseProcessor extends TreeTraverseProcessor<Graph, Node, Edge> {
 
-    enum EdgeVisitorPolicy {
-        VISIT_EDGE_BEFORE_TARGET_NODE,
-        VISIT_EDGE_AFTER_TARGET_NODE;
-    }
-
-    TreeWalkTraverseProcessor useEdgeVisitorPolicy(final EdgeVisitorPolicy policy);
-
     TreeWalkTraverseProcessor useStartNodePredicate(final Predicate<Node<?, Edge>> predicate);
 
     void traverse(final Graph graph,

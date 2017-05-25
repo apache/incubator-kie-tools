@@ -127,15 +127,24 @@ public class CanvasViewTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testUndock() {
+    public void testDock() {
         final WiresShape wiresShape = mock(WiresShape.class);
         final WiresShape parentWiresShape = mock(WiresShape.class);
-        final WiresShape targetWiresShape = mock(WiresShape.class);
-        tested.undock(targetWiresShape,
-                      parentWiresShape,
-                      wiresShape);
+        tested.dockShape(parentWiresShape,
+                         wiresShape);
         verify(parentWiresShape,
                times(1)).add(eq(wiresShape));
+        verify(wiresShape,
+               times(1)).setDockedTo(eq(parentWiresShape));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUndock() {
+        final WiresShape wiresShape = mock(WiresShape.class);
+        final WiresShape targetWiresShape = mock(WiresShape.class);
+        tested.undock(targetWiresShape,
+                      wiresShape);
         verify(targetWiresShape,
                times(1)).remove(eq(wiresShape));
         verify(wiresShape,

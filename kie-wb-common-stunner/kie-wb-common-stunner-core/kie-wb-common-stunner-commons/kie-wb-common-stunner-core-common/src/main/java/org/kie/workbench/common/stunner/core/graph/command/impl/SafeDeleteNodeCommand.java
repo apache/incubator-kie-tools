@@ -17,24 +17,28 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
-import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.util.SafeDeleteNodeProcessor;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
@@ -47,14 +51,25 @@ import org.uberfire.commons.validation.PortablePreconditions;
 @Portable
 public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
 
+    private static Logger LOGGER = Logger.getLogger(SafeDeleteNodeCommand.class.getName());
+
+    @NonPortable
+    public interface SafeDeleteNodeCommandCallback extends SafeDeleteNodeProcessor.Callback {
+
+        void deleteEdge(final Edge<? extends View<?>, Node> edge);
+
+        void setEdgeTargetNode(final Node<?, Edge> targetNode,
+                               final Edge<? extends View<?>, Node> candidate);
+    }
+
     private String candidateUUID;
     private transient Node<?, Edge> node;
-    private transient SafeDeleteNodeProcessor.Callback safeDeleteCallback;
+    private transient Optional<SafeDeleteNodeCommandCallback> safeDeleteCallback;
 
     public SafeDeleteNodeCommand(final @MapsTo("candidateUUID") String candidateUUID) {
         this.candidateUUID = PortablePreconditions.checkNotNull("candidateUUID",
                                                                 candidateUUID);
-        this.safeDeleteCallback = null;
+        this.safeDeleteCallback = Optional.empty();
     }
 
     public SafeDeleteNodeCommand(final Node<?, Edge> node) {
@@ -63,79 +78,117 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
     }
 
     public SafeDeleteNodeCommand(final Node<?, Edge> node,
-                                 final SafeDeleteNodeProcessor.Callback safeDeleteCallback) {
+                                 final SafeDeleteNodeCommandCallback safeDeleteCallback) {
         this(node);
-        this.safeDeleteCallback = safeDeleteCallback;
+        this.safeDeleteCallback = Optional.ofNullable(safeDeleteCallback);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected SafeDeleteNodeCommand initialize(final GraphCommandExecutionContext context) {
         super.initialize(context);
+        final Graph<?, Node> graph = getGraph(context);
         final Node<Definition<?>, Edge> candidate = (Node<Definition<?>, Edge>) getCandidate(context);
-        // Delete & set incoming & outgoing edges for the node being deleted.
-        final List<Command<GraphCommandExecutionContext, RuleViolation>> commands = new LinkedList<>();
-        new SafeDeleteNodeProcessor(candidate).run(new SafeDeleteNodeProcessor.Callback() {
+        new SafeDeleteNodeProcessor(new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl()),
+                                    graph,
+                                    candidate)
+                .run(new SafeDeleteNodeProcessor.Callback() {
 
-            @Override
-            public void deleteChildNode(final Node<Definition<?>, Edge> node) {
-                commands.add(new SafeDeleteNodeCommand(node,
-                                                       safeDeleteCallback).initialize(context));
-                if (null != safeDeleteCallback) {
-                    safeDeleteCallback.deleteChildNode(node);
-                }
-            }
+                    @Override
+                    public void deleteIncomingConnection(final Edge<? extends View<?>, Node> edge) {
+                        log("IN SetConnectionTargetNodeCommand [edge=" + edge.getUUID() + "]");
+                        addCommand(new SetConnectionTargetNodeCommand(null,
+                                                                      edge));
+                        safeDeleteCallback.ifPresent(c -> c.deleteIncomingConnection(edge));
+                    }
 
-            @Override
-            public void deleteInViewEdge(final Edge<View<?>, Node> edge) {
-                commands.add(new SetConnectionTargetNodeCommand(null,
-                                                                edge));
-                if (null != safeDeleteCallback) {
-                    safeDeleteCallback.deleteInViewEdge(edge);
-                }
-            }
+                    @Override
+                    public void deleteOutgoingConnection(final Edge<? extends View<?>, Node> edge) {
+                        log("OUT SetConnectionSourceNodeCommand [edge=" + edge.getUUID() + "]");
+                        addCommand(new SetConnectionSourceNodeCommand(null,
+                                                                      edge));
+                        safeDeleteCallback.ifPresent(c -> c.deleteOutgoingConnection(edge));
+                    }
 
-            @Override
-            public void deleteInChildEdge(final Edge<Child, Node> edge) {
-                final Node parent = edge.getSourceNode();
-                commands.add(new RemoveChildCommand(parent,
-                                                    candidate));
-                if (null != safeDeleteCallback) {
-                    safeDeleteCallback.deleteInChildEdge(edge);
-                }
-            }
+                    @Override
+                    public void removeChild(final Element<?> parent,
+                                            final Node<?, Edge> candidate) {
+                        log("RemoveChildCommand [parent=" + parent.getUUID() +
+                                    ", candidate=" + candidate.getUUID() + "]");
+                        addCommand(new RemoveChildCommand((Node<?, Edge>) parent,
+                                                          candidate));
+                        safeDeleteCallback.ifPresent(c -> c.removeChild(parent,
+                                                                        candidate));
+                    }
 
-            @Override
-            public void deleteInDockEdge(final Edge<Dock, Node> edge) {
-                final Node parent = edge.getSourceNode();
-                commands.add(new UnDockNodeCommand(parent,
-                                                   candidate));
-                if (null != safeDeleteCallback) {
-                    safeDeleteCallback.deleteInDockEdge(edge);
-                }
-            }
+                    @Override
+                    public void removeDock(final Node<?, Edge> parent,
+                                           final Node<?, Edge> candidate) {
+                        log("UnDockNodeCommand [parent=" + parent.getUUID() +
+                                    ", candidate=" + candidate.getUUID() + "]");
+                        addCommand(new UnDockNodeCommand(parent,
+                                                         candidate));
+                        safeDeleteCallback.ifPresent(c -> c.removeDock(parent,
+                                                                       candidate));
+                    }
 
-            @Override
-            public void deleteOutViewEdge(final Edge<? extends View<?>, Node> edge) {
-                commands.add(new SetConnectionSourceNodeCommand(null,
-                                                                edge));
-                if (null != safeDeleteCallback) {
-                    safeDeleteCallback.deleteOutViewEdge(edge);
-                }
-            }
+                    @Override
+                    public void deleteNode(final Node<?, Edge> node) {
+                        log("DeregisterNodeCommand [node=" + node.getUUID() + "]");
+                        if (isTheCandidate(node)) {
+                            processCandidateConnectorShortcut();
+                        }
+                        addCommand(new DeregisterNodeCommand(node));
+                        safeDeleteCallback.ifPresent(c -> c.deleteNode(node));
+                    }
 
-            @Override
-            public void deleteNode(final Node<Definition<?>, Edge> node) {
-                commands.add(new DeregisterNodeCommand(node));
-                if (null != safeDeleteCallback) {
-                    safeDeleteCallback.deleteNode(node);
-                }
-            }
-        });
-        // Add the commands above as composited.
-        for (Command<GraphCommandExecutionContext, RuleViolation> command : commands) {
-            SafeDeleteNodeCommand.this.addCommand(command);
-        }
+                    private boolean isTheCandidate(final Node<?, Edge> node) {
+                        return null != node && node.equals(candidate);
+                    }
+
+                    private void processCandidateConnectorShortcut() {
+                        // Check if the in/out candidate connectors can be shortcut.
+                        final long inConnectors = countViewConnectors(candidate.getInEdges());
+                        final long outConnectors = countViewConnectors(candidate.getOutEdges());
+                        final boolean isShortcut = 1 == inConnectors && 1 == outConnectors;
+                        if (isShortcut) {
+                            final Edge<? extends ViewConnector<?>, Node> in = getViewConnector(candidate.getInEdges());
+                            final Edge<? extends ViewConnector<?>, Node> out = getViewConnector(candidate.getOutEdges());
+                            shortcut(in,
+                                     out);
+                        }
+                    }
+
+                    private long countViewConnectors(final List<Edge> edgeList) {
+                        return edgeList
+                                .stream()
+                                .filter(e -> e.getContent() instanceof ViewConnector)
+                                .count();
+                    }
+
+                    private Edge getViewConnector(final List<Edge> edgeList) {
+                        return edgeList
+                                .stream()
+                                .filter(e -> e.getContent() instanceof ViewConnector)
+                                .findAny()
+                                .get();
+                    }
+
+                    private void shortcut(final Edge<? extends ViewConnector<?>, Node> in,
+                                          final Edge<? extends ViewConnector<?>, Node> out) {
+                        final ViewConnector<?> outContent = out.getContent();
+                        final Node targetNode = out.getTargetNode();
+                        addCommand(new DeleteConnectorCommand(out));
+                        safeDeleteCallback.ifPresent(c -> c.deleteEdge(out));
+                        addCommand(new SetConnectionTargetNodeCommand(targetNode,
+                                                                      in,
+                                                                      outContent.getTargetMagnet().orElse(null),
+                                                                      true));
+                        safeDeleteCallback.ifPresent(c -> c.setEdgeTargetNode(targetNode,
+                                                                              in));
+                    }
+                });
+
         return this;
     }
 
@@ -170,12 +223,6 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
         return result;
     }
 
-    @Override
-    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
-        return super.undo(context,
-                          true);
-    }
-
     @SuppressWarnings("unchecked")
     private Node<? extends Definition<?>, Edge> getCandidate(final GraphCommandExecutionContext context) {
         if (null == node) {
@@ -196,5 +243,10 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
     @Override
     public String toString() {
         return "SafeDeleteNodeCommand [candidate=" + candidateUUID + "]";
+    }
+
+    private void log(final String message) {
+        LOGGER.log(Level.FINE,
+                   message);
     }
 }

@@ -56,7 +56,6 @@ import org.uberfire.mvp.ParameterizedCommand;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -326,7 +325,6 @@ public class BaseCanvasHandlerTest {
                       candidate);
         verify(canvas,
                times(1)).undock(eq(parentShape),
-                                (Shape) isNull(),
                                 eq(shape));
     }
 

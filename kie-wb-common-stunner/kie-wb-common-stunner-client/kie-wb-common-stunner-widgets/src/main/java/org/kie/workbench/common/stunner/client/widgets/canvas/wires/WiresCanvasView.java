@@ -92,7 +92,6 @@ public class WiresCanvasView extends CanvasView implements WiresCanvas.View {
     @Override
     public WiresCanvas.View setDockingAcceptor(final IDockingAcceptor dockingAcceptor) {
         wiresManager.setDockingAcceptor(dockingAcceptor);
-        wiresManager.getLayer().setDockingAcceptor(dockingAcceptor);
         return this;
     }
 

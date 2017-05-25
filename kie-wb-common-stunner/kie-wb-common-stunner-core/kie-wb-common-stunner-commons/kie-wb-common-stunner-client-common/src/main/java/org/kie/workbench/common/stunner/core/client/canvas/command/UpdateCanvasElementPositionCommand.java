@@ -44,4 +44,10 @@ public class UpdateCanvasElementPositionCommand extends AbstractCanvasCommand {
     public Element<?> getElement() {
         return element;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getName() +
+                " [element=" + getUUID(element) + "]";
+    }
 }

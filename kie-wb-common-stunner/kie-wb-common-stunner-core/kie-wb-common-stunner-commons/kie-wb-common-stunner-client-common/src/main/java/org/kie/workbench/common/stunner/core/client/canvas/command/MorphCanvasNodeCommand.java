@@ -140,4 +140,13 @@ public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
     private boolean isViewEdge(final Edge edge) {
         return edge.getContent() instanceof View;
     }
+
+    @Override
+    public String toString() {
+        final Node parent = getParent();
+        return getClass().getName() +
+                " [parent=" + (null != parent ? parent.getUUID() : "null") + "," +
+                " candidate=" + getUUID(candidate) + "," +
+                " shapeSet=" + shapeSetId + "]";
+    }
 }

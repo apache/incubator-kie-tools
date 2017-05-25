@@ -19,6 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -30,6 +33,8 @@ public class UpdateElementPositionCommandTest extends AbstractCanvasCommandTest 
 
     @Mock
     private Node candidate;
+    @Mock
+    private View<?> content;
 
     private UpdateElementPositionCommand tested;
 
@@ -38,6 +43,14 @@ public class UpdateElementPositionCommandTest extends AbstractCanvasCommandTest 
     public void setup() throws Exception {
         super.setup();
         when(candidate.getUUID()).thenReturn("uuid1");
+        when(candidate.getContent()).thenReturn(content);
+        when(content.getBounds()).thenReturn(new BoundsImpl(
+                new BoundImpl(3d,
+                              27d),
+                new BoundImpl(50d,
+                              50d)
+        ));
+
         this.tested = new UpdateElementPositionCommand(candidate,
                                                        100d,
                                                        200d);
@@ -55,6 +68,12 @@ public class UpdateElementPositionCommandTest extends AbstractCanvasCommandTest 
                      0);
         assertEquals(200d,
                      graphCommand.getY(),
+                     0);
+        assertEquals(3d,
+                     graphCommand.getOldX(),
+                     0);
+        assertEquals(27d,
+                     graphCommand.getOldY(),
                      0);
     }
 

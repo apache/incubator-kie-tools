@@ -20,6 +20,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
@@ -27,20 +28,23 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ViewTraverseProcessor;
 
 @ApplicationScoped
 @CaseManagementEditor
 public class CaseManagementCanvasCommandFactory extends DefaultCanvasCommandFactory {
 
     @Inject
-    public CaseManagementCanvasCommandFactory(final TreeWalkTraverseProcessor treeWalkTraverseProcessor) {
-        super(treeWalkTraverseProcessor);
+    public CaseManagementCanvasCommandFactory(final ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessors,
+                                              final ManagedInstance<ViewTraverseProcessor> viewTraverseProcessors) {
+        super(childrenTraverseProcessors,
+              viewTraverseProcessors);
     }
 
     @Override
     public CanvasCommand<AbstractCanvasHandler> draw() {
-        return new CaseManagementDrawCommand();
+        return new CaseManagementDrawCommand(newChildrenTraverseProcessor());
     }
 
     @Override

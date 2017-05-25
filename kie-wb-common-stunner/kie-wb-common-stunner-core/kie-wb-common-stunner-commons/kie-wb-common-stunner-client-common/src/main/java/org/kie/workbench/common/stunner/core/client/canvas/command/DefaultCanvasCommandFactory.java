@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.command;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -29,20 +30,25 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ViewTraverseProcessor;
 
 @ApplicationScoped
 public class DefaultCanvasCommandFactory implements CanvasCommandFactory<AbstractCanvasHandler> {
 
-    private final TreeWalkTraverseProcessor treeWalkTraverseProcessor;
+    private final ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessors;
+    private final ManagedInstance<ViewTraverseProcessor> viewTraverseProcessors;
 
     protected DefaultCanvasCommandFactory() {
-        this.treeWalkTraverseProcessor = null;
+        this(null,
+             null);
     }
 
     @Inject
-    public DefaultCanvasCommandFactory(final TreeWalkTraverseProcessor treeWalkTraverseProcessor) {
-        this.treeWalkTraverseProcessor = treeWalkTraverseProcessor;
+    public DefaultCanvasCommandFactory(final ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessors,
+                                       final ManagedInstance<ViewTraverseProcessor> viewTraverseProcessors) {
+        this.childrenTraverseProcessors = childrenTraverseProcessors;
+        this.viewTraverseProcessors = viewTraverseProcessors;
     }
 
     @Override
@@ -71,6 +77,11 @@ public class DefaultCanvasCommandFactory implements CanvasCommandFactory<Abstrac
     }
 
     @Override
+    public CanvasCommand<AbstractCanvasHandler> deleteNode(final Node candidate) {
+        return new DeleteNodeCommand(candidate);
+    }
+
+    @Override
     public CanvasCommand<AbstractCanvasHandler> addConnector(final Node sourceNode,
                                                              final Edge candidate,
                                                              final Magnet magnet,
@@ -82,22 +93,15 @@ public class DefaultCanvasCommandFactory implements CanvasCommandFactory<Abstrac
     }
 
     @Override
+    public CanvasCommand<AbstractCanvasHandler> deleteConnector(final Edge candidate) {
+        return new DeleteConnectorCommand(candidate);
+    }
+
+    @Override
     public CanvasCommand<AbstractCanvasHandler> setChildNode(final Node parent,
                                                              final Node candidate) {
         return new SetChildNodeCommand(parent,
                                        candidate);
-    }
-
-    @Override
-    public CanvasCommand<AbstractCanvasHandler> dockNode(final Node parent,
-                                                         final Node candidate) {
-        return new DockNodeCommand(parent,
-                                   candidate);
-    }
-
-    @Override
-    public CanvasCommand<AbstractCanvasHandler> deleteNode(final Node candidate) {
-        return new DeleteNodeCommand(candidate);
     }
 
     @Override
@@ -108,6 +112,20 @@ public class DefaultCanvasCommandFactory implements CanvasCommandFactory<Abstrac
     }
 
     @Override
+    public CanvasCommand<AbstractCanvasHandler> updateChildNode(final Node parent,
+                                                                final Node candidate) {
+        return new UpdateChildNodeCommand(parent,
+                                          candidate);
+    }
+
+    @Override
+    public CanvasCommand<AbstractCanvasHandler> dockNode(final Node parent,
+                                                         final Node candidate) {
+        return new DockNodeCommand(parent,
+                                   candidate);
+    }
+
+    @Override
     public CanvasCommand<AbstractCanvasHandler> unDockNode(final Node parent,
                                                            final Node candidate) {
         return new UnDockNodeCommand(parent,
@@ -115,13 +133,16 @@ public class DefaultCanvasCommandFactory implements CanvasCommandFactory<Abstrac
     }
 
     @Override
-    public CanvasCommand<AbstractCanvasHandler> deleteConnector(final Edge candidate) {
-        return new DeleteConnectorCommand(candidate);
+    public CanvasCommand<AbstractCanvasHandler> updateDockNode(final Node parent,
+                                                               final Node candidate) {
+        return new UpdateDockNodeCommand(parent,
+                                         candidate);
     }
 
     @Override
     public CanvasCommand<AbstractCanvasHandler> draw() {
-        return new DrawCanvasCommand(treeWalkTraverseProcessor);
+        return new DrawCanvasCommand(newChildrenTraverseProcessor(),
+                                     newViewTraverseProcessor());
     }
 
     @Override
@@ -178,5 +199,13 @@ public class DefaultCanvasCommandFactory implements CanvasCommandFactory<Abstrac
     @Override
     public CanvasCommand<AbstractCanvasHandler> clearCanvas() {
         return new ClearCommand();
+    }
+
+    protected ChildrenTraverseProcessor newChildrenTraverseProcessor() {
+        return childrenTraverseProcessors.get();
+    }
+
+    protected ViewTraverseProcessor newViewTraverseProcessor() {
+        return viewTraverseProcessors.get();
     }
 }

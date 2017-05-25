@@ -92,4 +92,11 @@ public class DeleteCanvasNodeCommand extends AbstractCanvasCommand {
     public Node getCandidate() {
         return candidate;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getName() +
+                " [parent=" + getUUID(parent) + "," +
+                " candidate=" + getUUID(candidate) + "]";
+    }
 }

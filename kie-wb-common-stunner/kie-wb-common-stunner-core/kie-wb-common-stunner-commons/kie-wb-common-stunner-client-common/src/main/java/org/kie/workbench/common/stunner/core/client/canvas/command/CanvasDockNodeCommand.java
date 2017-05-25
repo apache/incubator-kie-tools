@@ -19,7 +19,9 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 
 /**
  * Docks a node shape into thee parent's one in the canvas context.
@@ -37,8 +39,18 @@ public class CanvasDockNodeCommand extends AbstractCanvasCommand {
 
     @Override
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+        // For the canvas side, docking the candidate shape into the parent one implies
+        // that it has to be set as a child as well.
+        // So first remove the current parent for the candidate shape, if any.
+        getCandidate().getInEdges().stream()
+                .filter(e -> e.getContent() instanceof Child)
+                .findAny()
+                .ifPresent(e -> context.removeChild(e.getSourceNode(),
+                                                    candidate));
+        // Dock the candidate shape into the parent one.
         context.dock(parent,
                      candidate);
+        // Update both shape view's attributes.
         context.applyElementMutation(parent,
                                      MutationContext.STATIC);
         context.applyElementMutation(candidate,
@@ -56,7 +68,14 @@ public class CanvasDockNodeCommand extends AbstractCanvasCommand {
         return parent;
     }
 
-    public Node getCandidate() {
+    public Node<?, Edge> getCandidate() {
         return candidate;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getName() +
+                " [parent=" + getParent() + "," +
+                " candidate=" + getCandidate() + "]";
     }
 }

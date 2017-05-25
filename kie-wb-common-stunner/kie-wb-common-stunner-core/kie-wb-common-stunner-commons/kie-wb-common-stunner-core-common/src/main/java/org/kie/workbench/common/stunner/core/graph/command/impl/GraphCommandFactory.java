@@ -115,7 +115,7 @@ public class GraphCommandFactory {
                                                   true);
     }
 
-    public UpdateElementPositionCommand updatePosition(final Node<?, Edge> element,
+    public UpdateElementPositionCommand updatePosition(final Node<? extends View<?>, Edge> element,
                                                        final Double x,
                                                        final Double y) {
         return new UpdateElementPositionCommand(element,

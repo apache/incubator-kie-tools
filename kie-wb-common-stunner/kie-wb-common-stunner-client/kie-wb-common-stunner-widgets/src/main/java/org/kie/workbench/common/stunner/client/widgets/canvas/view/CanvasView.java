@@ -21,7 +21,6 @@ import com.ait.lienzo.client.core.shape.GridLayer;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
-import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.google.gwt.dom.client.Style;
@@ -110,14 +109,14 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
     @Override
     public AbstractCanvas.View addChildShape(final ShapeView<?> parent,
                                              final ShapeView<?> child) {
-        final WiresShape parentShape = (WiresShape) parent;
+        final WiresContainer parentShape = (WiresContainer) parent;
         final WiresShape childShape = (WiresShape) child;
         return this.addChildShape(parentShape,
                                   childShape);
     }
 
-    protected AbstractCanvas.View addChildShape(final WiresShape parentShape,
-                                                final WiresShape childShape) {
+    AbstractCanvas.View addChildShape(final WiresContainer parentShape,
+                                      final WiresShape childShape) {
         parentShape.add(childShape);
         return this;
     }
@@ -125,14 +124,14 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
     @Override
     public AbstractCanvas.View removeChildShape(final ShapeView<?> parent,
                                                 final ShapeView<?> child) {
-        final WiresShape parentShape = (WiresShape) parent;
+        final WiresContainer parentShape = (WiresContainer) parent;
         final WiresShape childShape = (WiresShape) child;
         return this.removeChildShape(parentShape,
                                      childShape);
     }
 
-    protected AbstractCanvas.View removeChildShape(final WiresShape parentShape,
-                                                   final WiresShape childShape) {
+    AbstractCanvas.View removeChildShape(final WiresContainer parentShape,
+                                         final WiresShape childShape) {
         parentShape.remove(childShape);
         return this;
     }
@@ -143,39 +142,29 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
                                     final ShapeView<?> child) {
         final WiresShape parentShape = (WiresShape) parent;
         final WiresShape childShape = (WiresShape) child;
-        final WiresContainer parent1 = childShape.getParent();
-        if (null == parent1 || parent1 instanceof WiresLayer) {
-            layer.removeShape(childShape);
-        } else {
-            removeChildShape((ShapeView<?>) parent1,
-                             child);
-        }
+        dockShape(parentShape,
+                  childShape);
+        return this;
+    }
+
+    AbstractCanvas.View dockShape(final WiresContainer parentShape,
+                                  final WiresShape childShape) {
         parentShape.add(childShape);
         childShape.setDockedTo(parentShape);
         return this;
     }
 
     @Override
-    public AbstractCanvas.View undock(final ShapeView<?> targetDockShape,
-                                      final ShapeView<?> childParent,
+    public AbstractCanvas.View undock(final ShapeView<?> target,
                                       final ShapeView<?> child) {
-        final WiresShape newPraentShape = (WiresShape) childParent;
-        final WiresShape targetShape = (WiresShape) targetDockShape;
+        final WiresShape targetShape = (WiresShape) target;
         final WiresShape childShape = (WiresShape) child;
-        return this.undock(targetShape,
-                           newPraentShape,
-                           childShape);
+        return undock(targetShape,
+                      childShape);
     }
 
-    @SuppressWarnings("unchecked")
-    protected AbstractCanvas.View undock(final WiresShape targetShape,
-                                         final WiresShape newPrentShape,
-                                         final WiresShape childShape) {
-        if (null != newPrentShape) {
-            newPrentShape.add(childShape);
-        } else {
-            layer.addShape(childShape);
-        }
+    AbstractCanvas.View undock(final WiresShape targetShape,
+                               final WiresShape childShape) {
         targetShape.remove(childShape);
         childShape.setDockedTo(null);
         return this;

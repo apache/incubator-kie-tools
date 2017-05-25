@@ -96,8 +96,8 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
 
     private Node<?, Edge> checkNodeNotNull(final GraphCommandExecutionContext context) {
         if (null == node) {
-            node = super.checkNodeNotNull(context,
-                                          elementUUID);
+            node = super.getNodeNotNull(context,
+                                        elementUUID);
         }
         return node;
     }

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.cm.client.canvas.controls.containment;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
@@ -32,17 +33,18 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvasHandler;
 import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvasView;
 import org.kie.workbench.common.stunner.cm.client.command.CaseManagementCanvasCommandFactory;
+import org.kie.workbench.common.stunner.cm.client.command.CaseManagementRemoveChildCommand;
+import org.kie.workbench.common.stunner.cm.client.command.CaseManagementSetChildCommand;
 import org.kie.workbench.common.stunner.cm.client.wires.CaseManagementContainmentStateHolder;
 import org.kie.workbench.common.stunner.cm.client.wires.MockCaseManagementShape;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -54,6 +56,9 @@ import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class CaseManagementContainmentAcceptorControlImplTest {
+
+    public static final String PARENT_UUID = "parent1";
+    public static final String CANDIDATE_UUID = "candidate1";
 
     @Mock
     private AbstractCanvas canvas;
@@ -76,6 +81,21 @@ public class CaseManagementContainmentAcceptorControlImplTest {
     @Mock
     private CanvasCommandManager<AbstractCanvasHandler> commandManager;
 
+    @Mock
+    private Node parent;
+
+    @Mock
+    private Node candidate;
+
+    @Mock
+    private Edge<Child, Node> childEdge;
+
+    @Mock
+    private CaseManagementSetChildCommand setChildCommand;
+
+    @Mock
+    private CaseManagementRemoveChildCommand removeChildCommand;
+
     @Captor
     private ArgumentCaptor<IContainmentAcceptor> containmentAcceptorArgumentCaptor;
 
@@ -93,13 +113,33 @@ public class CaseManagementContainmentAcceptorControlImplTest {
         when(commandManagerProvider.getCommandManager()).thenReturn(commandManager);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
-        when(graphIndex.getNode(anyString())).thenReturn(mock(Node.class));
         when(canvas.getView()).thenReturn(canvasView);
+        when(graphIndex.getNode(eq(PARENT_UUID))).thenReturn(parent);
+        when(graphIndex.getNode(eq(CANDIDATE_UUID))).thenReturn(candidate);
+        when(parent.getUUID()).thenReturn(PARENT_UUID);
+        when(parent.getOutEdges()).thenReturn(Collections.singletonList(childEdge));
+        when(candidate.getUUID()).thenReturn(CANDIDATE_UUID);
+        when(candidate.getInEdges()).thenReturn(Collections.singletonList(childEdge));
+        when(childEdge.getContent()).thenReturn(new Child());
+        when(childEdge.getSourceNode()).thenReturn(parent);
+        when(childEdge.getTargetNode()).thenReturn(candidate);
+        when(canvasCommandFactory.setChildNode(any(Node.class),
+                                               any(Node.class))).thenReturn(setChildCommand);
+        when(canvasCommandFactory.removeChild(any(Node.class),
+                                              any(Node.class))).thenReturn(removeChildCommand);
+        when(commandManager.allow(eq(canvasHandler),
+                                  eq(setChildCommand))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
+        when(commandManager.allow(eq(canvasHandler),
+                                  eq(removeChildCommand))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
+        when(commandManager.execute(eq(canvasHandler),
+                                    eq(setChildCommand))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
+        when(commandManager.execute(eq(canvasHandler),
+                                    eq(removeChildCommand))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
     }
 
     @Test
     public void checkDoEnable() {
-        control.doEnable(canvasView);
+        control.onEnable(canvasView);
 
         final IContainmentAcceptor containmentAcceptor = getContainmentAcceptor();
         assertNotNull(containmentAcceptor);
@@ -115,26 +155,10 @@ public class CaseManagementContainmentAcceptorControlImplTest {
 
     @Test
     public void checkDoDisable() {
-        control.doDisable(canvasView);
+        control.onDisable(canvasView);
 
         verify(canvasView,
                times(1)).setContainmentAcceptor(eq(IContainmentAcceptor.NONE));
-    }
-
-    @Test
-    public void isEdgeAcceptedWhenView() {
-        final Edge<View, Node> view = new EdgeImpl<>("view");
-        view.setContent(mock(View.class));
-
-        assertFalse(control.isEdgeAccepted(view));
-    }
-
-    @Test
-    public void isEdgeAcceptedWhenChild() {
-        final Edge<Child, Node> view = new EdgeImpl<>("view");
-        view.setContent(mock(Child.class));
-
-        assertTrue(control.isEdgeAccepted(view));
     }
 
     @Test
@@ -187,19 +211,30 @@ public class CaseManagementContainmentAcceptorControlImplTest {
         control.enable(canvasHandler);
 
         final IContainmentAcceptor containmentAcceptor = getContainmentAcceptor();
-        final WiresShape parentShape = makeWiresShape();
-        final WiresShape childShape = makeWiresShape();
+        final WiresShape parentShape = makeWiresShape(PARENT_UUID);
+        final WiresShape childShape = makeWiresShape(CANDIDATE_UUID);
 
         assertTrue(containmentAcceptor.containmentAllowed(parentShape,
                                                           childShape));
-
+        verify(canvasCommandFactory,
+               times(1)).removeChild(any(Node.class),
+                                     any(Node.class));
         verify(canvasCommandFactory,
                times(1)).setChildNode(any(Node.class),
                                       any(Node.class));
     }
 
     private WiresShape makeWiresShape() {
-        final WiresShape shape = new MockCaseManagementShape();
+        return makeWiresShape(Optional.empty());
+    }
+
+    private WiresShape makeWiresShape(String uuid) {
+        return makeWiresShape(Optional.of(uuid));
+    }
+
+    private WiresShape makeWiresShape(Optional<String> uuid) {
+        final MockCaseManagementShape shape = new MockCaseManagementShape();
+        uuid.ifPresent(shape::setUUID);
         WiresUtils.assertShapeGroup(shape.getGroup(),
                                     WiresCanvas.WIRES_CANVAS_GROUP_ID);
         return shape;
@@ -210,8 +245,8 @@ public class CaseManagementContainmentAcceptorControlImplTest {
         control.enable(canvasHandler);
 
         final IContainmentAcceptor containmentAcceptor = getContainmentAcceptor();
-        final WiresShape parentShape = makeWiresShape();
-        final WiresShape childShape = makeWiresShape();
+        final WiresShape parentShape = makeWiresShape(PARENT_UUID);
+        final WiresShape childShape = makeWiresShape(CANDIDATE_UUID);
 
         assertTrue(containmentAcceptor.acceptContainment(parentShape,
                                                          childShape));
@@ -223,8 +258,8 @@ public class CaseManagementContainmentAcceptorControlImplTest {
     public void checkInterceptingLayoutHandlerAdd() {
         control.enable(canvasHandler);
 
-        final WiresShape parentShape = makeWiresShape();
-        final WiresShape childShape = makeWiresShape();
+        final WiresShape parentShape = makeWiresShape(PARENT_UUID);
+        final WiresShape childShape = makeWiresShape(CANDIDATE_UUID);
         final ILayoutHandler layoutHandler = getILayoutHandler(parentShape,
                                                                childShape);
 

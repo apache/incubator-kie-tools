@@ -50,6 +50,7 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
     private UpdateElementPositionCommand tested;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.init(500,
                    500);
@@ -57,9 +58,10 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
                            Y,
                            W,
                            H);
+        when(candidate.getUUID()).thenReturn(UUID);
         when(candidate.getContent()).thenReturn(content);
         when(graphIndex.getNode(eq(UUID))).thenReturn(candidate);
-        this.tested = new UpdateElementPositionCommand(UUID,
+        this.tested = new UpdateElementPositionCommand(candidate,
                                                        TX,
                                                        TY);
     }
@@ -77,6 +79,11 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
 
     @Test(expected = BadCommandArgumentsException.class)
     public void testAllowNodeNotFound() {
+        this.tested = new UpdateElementPositionCommand(UUID,
+                                                       X,
+                                                       Y,
+                                                       TX,
+                                                       TY);
         when(graphIndex.getNode(eq(UUID))).thenReturn(null);
         tested.allow(graphCommandExecutionContext);
     }
@@ -106,13 +113,18 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
 
     @Test(expected = BadCommandArgumentsException.class)
     public void testExecuteNodeNotFound() {
+        this.tested = new UpdateElementPositionCommand(UUID,
+                                                       X,
+                                                       Y,
+                                                       TX,
+                                                       TY);
         when(graphIndex.getNode(eq(UUID))).thenReturn(null);
         tested.execute(graphCommandExecutionContext);
     }
 
     @Test
     public void testAllowBadBounds() {
-        this.tested = new UpdateElementPositionCommand(UUID,
+        this.tested = new UpdateElementPositionCommand(candidate,
                                                        600d,
                                                        600d);
         final CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
@@ -124,7 +136,7 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
 
     @Test
     public void testExecuteBadBounds() {
-        this.tested = new UpdateElementPositionCommand(UUID,
+        this.tested = new UpdateElementPositionCommand(candidate,
                                                        600d,
                                                        600d);
         final CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);

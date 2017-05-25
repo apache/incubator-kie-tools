@@ -15,78 +15,73 @@
 
 package org.kie.workbench.common.stunner.cm.client.command;
 
+import java.util.List;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.AbstractTreeTraverseCallback;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.AbstractChildrenTraverseCallback;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
 
 /**
  * Draws the whole Case Management diagram. This implementation does not use Commands since loading cannot be "undone".
  */
-public class CaseManagementDrawCommand extends org.kie.workbench.common.stunner.core.client.canvas.command.DrawCanvasCommand {
+public class CaseManagementDrawCommand extends AbstractCanvasCommand {
 
-    public CaseManagementDrawCommand() {
-        super(new TreeWalkTraverseProcessorImpl());
+    private final ChildrenTraverseProcessor childrenTraverseProcessor;
+
+    public CaseManagementDrawCommand(final ChildrenTraverseProcessor childrenTraverseProcessor) {
+        this.childrenTraverseProcessor = childrenTraverseProcessor;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         final Diagram diagram = context.getDiagram();
         final String shapeSetId = context.getDiagram().getMetadata().getShapeSetId();
 
-        treeWalkTraverseProcessor
-                .useEdgeVisitorPolicy(TreeWalkTraverseProcessor.EdgeVisitorPolicy.VISIT_EDGE_AFTER_TARGET_NODE)
+        childrenTraverseProcessor
                 .traverse(diagram.getGraph(),
-                          new AbstractTreeTraverseCallback<Graph, Node, Edge>() {
+                          new AbstractChildrenTraverseCallback<Node<View, Edge>, Edge<Child, Node>>() {
 
                               @Override
-                              @SuppressWarnings("unchecked")
-                              public boolean startNodeTraversal(final Node node) {
-                                  if (node.getContent() instanceof View) {
-                                      context.register(shapeSetId,
-                                                       node);
-                                      context.applyElementMutation(node,
-                                                                   MutationContext.STATIC);
-                                      return true;
-                                  }
-                                  return false;
+                              public void startNodeTraversal(final Node<View, Edge> node) {
+                                  super.startNodeTraversal(node);
+                                  addNode(node);
                               }
 
                               @Override
-                              @SuppressWarnings("unchecked")
-                              public boolean startEdgeTraversal(final Edge edge) {
-                                  final Object content = edge.getContent();
+                              public boolean startNodeTraversal(final List<Node<View, Edge>> parents,
+                                                                final Node<View, Edge> node) {
+                                  super.startNodeTraversal(parents,
+                                                           node);
+                                  addNode(node);
+                                  context.addChild(parents.get(parents.size() - 1),
+                                                   node);
+                                  return true;
+                              }
 
-                                  // The edge policy is "visit after node" therefore the View itself has already been
-                                  // added and we therefore only need to register the client node on the parent node.
-                                  if (content instanceof Child) {
-                                      final Node child = edge.getTargetNode();
-                                      final Node parent = edge.getSourceNode();
-                                      final Object childContent = child.getContent();
-                                      if (childContent instanceof View) {
-                                          context.addChild(parent,
-                                                           child);
-                                      }
-                                      return true;
-                                  }
-                                  return false;
+                              private void addNode(final Node<View, Edge> node) {
+                                  context.register(shapeSetId,
+                                                   node);
+                                  context.applyElementMutation(node,
+                                                               MutationContext.STATIC);
                               }
 
                               @Override
                               public void endGraphTraversal() {
-                                  // Draw the canvas shapes.
+                                  super.endGraphTraversal();
                                   context.getCanvas().draw();
                               }
                           });
+
         return buildResult();
     }
 

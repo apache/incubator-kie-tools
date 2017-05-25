@@ -58,4 +58,12 @@ public class DeleteCanvasConnectorCommand extends AbstractCanvasCommand {
     public Edge getCandidate() {
         return candidate;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getName() +
+                " [candidate=" + getUUID(candidate) + "," +
+                " sourceNode=" + getUUID(source) + "," +
+                " targetNode=" + getUUID(target) + "]";
+    }
 }

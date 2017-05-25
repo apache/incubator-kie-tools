@@ -148,18 +148,11 @@ public class GraphUtils {
 
     @SuppressWarnings("unchecked")
     public static Element<?> getParent(final Node<?, ? extends Edge> element) {
-        final List<? extends Edge> inEdges = element.getInEdges();
-        if (null != inEdges) {
-            final Edge<Child, ?> childEdge =
-                    inEdges.stream()
-                            .filter(edge -> (edge.getContent() instanceof Child))
-                            .findFirst()
-                            .orElse(null);
-            if (null != childEdge) {
-                return childEdge.getSourceNode();
-            }
-        }
-        return null;
+        return element.getInEdges().stream()
+                .filter(e -> e.getContent() instanceof Child)
+                .findAny()
+                .map(Edge::getSourceNode)
+                .orElse(null);
     }
 
     public static Point2D getPosition(final View element) {

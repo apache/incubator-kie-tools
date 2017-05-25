@@ -58,9 +58,6 @@ public class AddCanvasDockedNodeCommandTest extends AbstractCanvasCommandTest {
                times(1)).register(eq(SHAPE_SET_ID),
                                   eq(candidate));
         verify(canvasHandler,
-               times(1)).addChild(eq(parent),
-                                  eq(candidate));
-        verify(canvasHandler,
                times(1)).dock(eq(parent),
                               eq(candidate));
         verify(canvasHandler,
@@ -69,5 +66,8 @@ public class AddCanvasDockedNodeCommandTest extends AbstractCanvasCommandTest {
         verify(canvasHandler,
                times(1)).applyElementMutation(eq(parent),
                                               any(MutationContext.class));
+        verify(canvasHandler,
+               never()).addChild(eq(parent),
+                                 eq(candidate));
     }
 }

@@ -34,9 +34,7 @@ import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
@@ -349,12 +347,7 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
         if (!isCanvasRoot(targetUUID)) {
             final Shape targetShape = getCanvas().getShape(targetUUID);
             final Shape childShape = getCanvas().getShape(childUUID);
-            final Element<?> childParent = GraphUtils.getParent((Node<?, Edge>) child);
-            final String childParentUUID = null != childParent ? childParent.getUUID() : null;
-            final Shape newParentShape = null != childParentUUID && !isCanvasRoot(childParentUUID) ?
-                    getCanvas().getShape(childParentUUID) : null;
             getCanvas().undock(targetShape,
-                               newParentShape,
                                childShape);
         }
     }

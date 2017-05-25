@@ -24,10 +24,11 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.CanvasKeyShortcutsHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.ClientKeyShortcutsHandler;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.SessionKeyShortcutsHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
@@ -42,7 +43,7 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<ClientFullS
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler;
-    private final CanvasKeyShortcutsHandler keyboardListener;
+    private final SessionKeyShortcutsHandler keyboardListener;
 
     protected RedoSessionCommand() {
         this(null,
@@ -53,7 +54,7 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<ClientFullS
     @Inject
     public RedoSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                               final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler,
-                              final CanvasKeyShortcutsHandler keyboardListener) {
+                              final SessionKeyShortcutsHandler keyboardListener) {
         super(false);
         this.redoCommandHandler = redoCommandHandler;
         this.sessionCommandManager = sessionCommandManager;
@@ -84,10 +85,17 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<ClientFullS
     }
 
     @Override
+    public AbstractClientSessionCommand<ClientFullSession> bind(final ClientFullSession session) {
+        super.bind(session);
+        keyboardListener.bind(session);
+        return this;
+    }
+
+    @Override
     public void unbind() {
         super.unbind();
         redoCommandHandler.clear();
-        keyboardListener.clear();
+        keyboardListener.unbind();
     }
 
     @SuppressWarnings("unchecked")
@@ -116,7 +124,7 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<ClientFullS
     }
 
     private boolean isRedoShortcut(final KeyboardEvent.Key... keys) {
-        return CanvasKeyShortcutsHandler.isSameShortcut(keys,
+        return ClientKeyShortcutsHandler.isSameShortcut(keys,
                                                         KeyboardEvent.Key.CONTROL,
                                                         KeyboardEvent.Key.SHIFT,
                                                         KeyboardEvent.Key.Z);

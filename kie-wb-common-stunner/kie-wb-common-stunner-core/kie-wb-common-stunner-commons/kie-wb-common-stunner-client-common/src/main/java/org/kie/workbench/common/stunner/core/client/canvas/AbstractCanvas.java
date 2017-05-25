@@ -80,8 +80,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         View dock(final ShapeView<?> parent,
                   final ShapeView<?> child);
 
-        View undock(final ShapeView<?> targetDockShape,
-                    final ShapeView<?> childParent,
+        View undock(final ShapeView<?> childParent,
                     final ShapeView<?> child);
 
         double getAbsoluteX();
@@ -216,15 +215,12 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     }
 
     @SuppressWarnings("unchecked")
-    public Canvas undock(final Shape targetDockShape,
-                         final Shape childParent,
+    public Canvas undock(final Shape target,
                          final Shape child) {
-        final ShapeView parentView = null != childParent ? childParent.getShapeView() : null;
-        getView().undock(targetDockShape.getShapeView(),
-                         parentView,
+        getView().undock(target.getShapeView(),
                          child.getShapeView());
         log(Level.FINE,
-            "Undocking child [" + child.getUUID() + "] from parent [" + targetDockShape.getUUID() + "]");
+            "Undocking child [" + child.getUUID() + "] from parent [" + target.getUUID() + "]");
         return this;
     }
 

@@ -47,7 +47,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler
 
 public class ViewEventHandlerManager {
 
-    private static final int CLICK_HANDLER_TIMER_DURATION = 350;
+    private static final int CLICK_HANDLER_TIMER_DURATION = 50;
 
     protected final HandlerRegistrationImpl registrationManager = new HandlerRegistrationImpl();
     protected final Map<ViewEventType, HandlerRegistration[]> registrationMap = new HashMap<>();

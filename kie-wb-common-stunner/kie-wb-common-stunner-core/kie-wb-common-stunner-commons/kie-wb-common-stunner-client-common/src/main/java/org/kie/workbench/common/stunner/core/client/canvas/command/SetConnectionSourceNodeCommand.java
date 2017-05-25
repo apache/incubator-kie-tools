@@ -55,4 +55,20 @@ public class SetConnectionSourceNodeCommand extends AbstractCanvasGraphCommand {
     protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
         return new SetCanvasConnectionCommand(edge);
     }
+
+    public Node<? extends View<?>, Edge> getNode() {
+        return node;
+    }
+
+    public Edge<? extends View<?>, Node> getEdge() {
+        return edge;
+    }
+
+    public Magnet getMagnet() {
+        return magnet;
+    }
+
+    public boolean isNewConnection() {
+        return isNewConnection;
+    }
 }

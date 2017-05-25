@@ -76,27 +76,16 @@ public abstract class AbstractGraphCommand implements Command<GraphCommandExecut
         return context.getGraphIndex().getEdge(uuid);
     }
 
-    protected Node<?, Edge> checkNodeNotNull(final GraphCommandExecutionContext context,
-                                             final String uuid) {
-        final Node<?, Edge> e = getNode(context,
-                                        uuid);
-        if (null == e) {
+    @SuppressWarnings("unchecked")
+    protected <C> Node<C, Edge> getNodeNotNull(final GraphCommandExecutionContext context,
+                                               final String uuid) {
+        final Node<?, Edge> node = getNode(context,
+                                           uuid);
+        if (null == node) {
             throw new BadCommandArgumentsException(this,
                                                    uuid,
                                                    "Node not found for [" + uuid + "].");
         }
-        return e;
-    }
-
-    protected Edge<? extends View, Node> checkViewEdgeNotNull(final GraphCommandExecutionContext context,
-                                                              final String uuid) {
-        final Edge<? extends View, Node> e = getViewEdge(context,
-                                                         uuid);
-        if (null == e) {
-            throw new BadCommandArgumentsException(this,
-                                                   uuid,
-                                                   "Edge (view) not found for [" + uuid + "].");
-        }
-        return e;
+        return (Node<C, Edge>) node;
     }
 }

@@ -105,8 +105,8 @@ public final class SetParentNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings("unchecked")
     private Node<?, Edge> getParent(final GraphCommandExecutionContext context) {
         if (null == parent) {
-            parent = checkNodeNotNull(context,
-                                      parentUUID);
+            parent = getNodeNotNull(context,
+                                    parentUUID);
         }
         return parent;
     }
@@ -114,8 +114,8 @@ public final class SetParentNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings("unchecked")
     private Node<?, Edge> getCandidate(final GraphCommandExecutionContext context) {
         if (null == candidate) {
-            candidate = checkNodeNotNull(context,
-                                         candidateUUID);
+            candidate = getNodeNotNull(context,
+                                       candidateUUID);
         }
         return candidate;
     }

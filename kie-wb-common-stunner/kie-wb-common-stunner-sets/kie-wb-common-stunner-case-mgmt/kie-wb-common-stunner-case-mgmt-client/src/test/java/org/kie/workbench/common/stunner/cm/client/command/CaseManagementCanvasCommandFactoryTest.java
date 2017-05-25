@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.cm.client.command;
 
 import java.util.Optional;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,12 +26,16 @@ import org.kie.workbench.common.stunner.cm.client.CaseManagementShapeSet;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ViewTraverseProcessor;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ViewTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseManagementCanvasCommandFactoryTest {
@@ -41,14 +46,20 @@ public class CaseManagementCanvasCommandFactoryTest {
     @Mock
     private Node child;
 
-    private TreeWalkTraverseProcessor treeWalkTraverseProcessor;
+    @Mock
+    private ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessorInstances;
+
+    @Mock
+    private ManagedInstance<ViewTraverseProcessor> viewTraverseProcessorInstances;
 
     private CaseManagementCanvasCommandFactory factory;
 
     @Before
     public void setup() {
-        this.treeWalkTraverseProcessor = new TreeWalkTraverseProcessorImpl();
-        this.factory = new CaseManagementCanvasCommandFactory(treeWalkTraverseProcessor);
+        when(childrenTraverseProcessorInstances.get()).thenReturn(new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl()));
+        when(viewTraverseProcessorInstances.get()).thenReturn(new ViewTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl()));
+        this.factory = new CaseManagementCanvasCommandFactory(childrenTraverseProcessorInstances,
+                                                              null);
     }
 
     @Test

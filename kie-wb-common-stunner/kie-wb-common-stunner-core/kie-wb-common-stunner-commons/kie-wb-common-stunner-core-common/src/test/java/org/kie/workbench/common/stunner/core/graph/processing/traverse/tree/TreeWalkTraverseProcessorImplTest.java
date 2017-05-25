@@ -41,7 +41,6 @@ public class TreeWalkTraverseProcessorImplTest {
     public void setup() {
         this.graphTestHandler = new TestingGraphMockHandler();
         this.tested = new TreeWalkTraverseProcessorImpl()
-                .useEdgeVisitorPolicy(TreeWalkTraverseProcessor.EdgeVisitorPolicy.VISIT_EDGE_BEFORE_TARGET_NODE)
                 .useStartNodePredicate(n -> n.getInEdges().isEmpty());
     }
 

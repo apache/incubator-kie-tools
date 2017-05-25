@@ -43,8 +43,6 @@ public class AddCanvasDockedNodeCommand extends AbstractCanvasCommand {
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         context.register(ssid,
                          candidate);
-        context.addChild(parent,
-                         candidate);
         context.dock(parent,
                      candidate);
         context.applyElementMutation(candidate,
@@ -58,5 +56,13 @@ public class AddCanvasDockedNodeCommand extends AbstractCanvasCommand {
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
         return new DeleteCanvasNodeCommand(candidate,
                                            parent).execute(context);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getName() +
+                " [parent=" + getUUID(parent) + "," +
+                " candidate=" + getUUID(candidate) + "," +
+                " shapeSet=" + ssid + "]";
     }
 }

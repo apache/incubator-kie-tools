@@ -31,11 +31,10 @@ public final class ViewTraverseProcessorImpl extends AbstractContentTraverseProc
     @Inject
     public ViewTraverseProcessorImpl(final TreeWalkTraverseProcessor treeWalkTraverseProcessor) {
         super(treeWalkTraverseProcessor);
-    }
-
-    @Override
-    protected TreeWalkTraverseProcessor.EdgeVisitorPolicy getPolicy() {
-        return TreeWalkTraverseProcessor.EdgeVisitorPolicy.VISIT_EDGE_BEFORE_TARGET_NODE;
+        treeWalkTraverseProcessor.useStartNodePredicate(node -> !node.getInEdges().stream()
+                .filter(e -> e.getContent() instanceof View)
+                .findAny()
+                .isPresent());
     }
 
     @Override

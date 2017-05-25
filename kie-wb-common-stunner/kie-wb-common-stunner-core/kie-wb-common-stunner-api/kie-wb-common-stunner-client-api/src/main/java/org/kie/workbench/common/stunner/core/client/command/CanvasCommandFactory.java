@@ -38,26 +38,32 @@ public interface CanvasCommandFactory<H extends CanvasHandler> {
                                    final Node candidate,
                                    final String shapeSetId);
 
+    CanvasCommand<H> deleteNode(final Node candidate);
+
     CanvasCommand<H> addConnector(final Node sourceNode,
                                   final Edge candidate,
                                   final Magnet magnet,
                                   final String shapeSetId);
 
+    CanvasCommand<H> deleteConnector(final Edge candidate);
+
     CanvasCommand<H> setChildNode(final Node parent,
                                   final Node candidate);
-
-    CanvasCommand<H> dockNode(final Node parent,
-                              final Node candidate);
-
-    CanvasCommand<H> deleteNode(final Node candidate);
 
     CanvasCommand<H> removeChild(final Node parent,
                                  final Node candidate);
 
+    CanvasCommand<H> updateChildNode(final Node parent,
+                                     final Node candidate);
+
+    CanvasCommand<H> dockNode(final Node parent,
+                              final Node candidate);
+
     CanvasCommand<H> unDockNode(final Node parent,
                                 final Node candidate);
 
-    CanvasCommand<H> deleteConnector(final Edge candidate);
+    CanvasCommand<H> updateDockNode(final Node parent,
+                                    final Node candidate);
 
     CanvasCommand<H> draw();
 

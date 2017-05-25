@@ -232,6 +232,20 @@ public class TestingGraphMockHandler {
     }
 
     @SuppressWarnings("unchecked")
+    public TestingGraphMockHandler removeChild(final Node parent,
+                                               final Node candidate) {
+        return execute(commandFactory.removeChild(parent,
+                                                  candidate));
+    }
+
+    @SuppressWarnings("unchecked")
+    public TestingGraphMockHandler dockTo(final Node parent,
+                                          final Node candidate) {
+        return execute(commandFactory.dockNode(parent,
+                                               candidate));
+    }
+
+    @SuppressWarnings("unchecked")
     public TestingGraphMockHandler addEdge(final Edge edge,
                                            final Node source) {
         return execute(commandFactory.addConnector(source,

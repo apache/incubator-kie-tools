@@ -49,28 +49,36 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     private final String uuid;
     private final Double x;
     private final Double y;
-    private Double oldX;
-    private Double oldY;
-    private transient Node<?, Edge> node;
+    private final Double oldX;
+    private final Double oldY;
+    private transient Node<? extends View<?>, Edge> node;
 
     public UpdateElementPositionCommand(final @MapsTo("uuid") String uuid,
                                         final @MapsTo("x") Double x,
-                                        final @MapsTo("y") Double y) {
+                                        final @MapsTo("y") Double y,
+                                        final @MapsTo("oldX") Double oldX,
+                                        final @MapsTo("oldY") Double oldY) {
         this.uuid = PortablePreconditions.checkNotNull("uuid",
                                                        uuid);
         this.x = PortablePreconditions.checkNotNull("x",
                                                     x);
         this.y = PortablePreconditions.checkNotNull("y",
                                                     y);
+        this.oldX = PortablePreconditions.checkNotNull("oldX",
+                                                       oldX);
+        this.oldY = PortablePreconditions.checkNotNull("oldY",
+                                                       oldY);
         this.node = null;
     }
 
-    public UpdateElementPositionCommand(final Node<?, Edge> node,
+    public UpdateElementPositionCommand(final Node<? extends View<?>, Edge> node,
                                         final Double x,
                                         final Double y) {
         this(node.getUUID(),
              x,
-             y);
+             y,
+             GraphUtils.getPosition(node.getContent()).getX(),
+             GraphUtils.getPosition(node.getContent()).getY());
         this.node = PortablePreconditions.checkNotNull("node",
                                                        node);
     }
@@ -108,7 +116,7 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     @Override
     @SuppressWarnings("unchecked")
     public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
-        final BoundsImpl newBounds = getTargetBounds(checkNodeNotNull(context));
+        final BoundsImpl newBounds = getTargetBounds(getNodeNotNull(context));
         LOGGER.log(Level.FINE,
                    "Moving element bounds to " +
                            "[" + newBounds.getX() + "," + newBounds.getY() + "] " +
@@ -118,7 +126,7 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
 
     @SuppressWarnings("unchecked")
     private CommandResult<RuleViolation> checkBounds(final GraphCommandExecutionContext context) {
-        final Element<?> element = checkNodeNotNull(context);
+        final Element<? extends View<?>> element = getNodeNotNull(context);
         final Graph<DefinitionSet, Node> graph = (Graph<DefinitionSet, Node>) getGraph(context);
         final BoundsImpl newBounds = getTargetBounds(element);
         final GraphCommandResultBuilder result = new GraphCommandResultBuilder();
@@ -134,11 +142,8 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     }
 
     @SuppressWarnings("unchecked")
-    private BoundsImpl getTargetBounds(final Element<?> element) {
-        final Point2D oldPosition = GraphUtils.getPosition((View) element.getContent());
-        final double[] oldSize = GraphUtils.getNodeSize((View) element.getContent());
-        this.oldX = oldPosition.getX();
-        this.oldY = oldPosition.getY();
+    private BoundsImpl getTargetBounds(final Element<? extends View<?>> element) {
+        final double[] oldSize = GraphUtils.getNodeSize(element.getContent());
         final double w = oldSize[0];
         final double h = oldSize[1];
         return new BoundsImpl(new BoundImpl(x,
@@ -156,22 +161,28 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
 
     @Override
     public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
-        final UpdateElementPositionCommand undoCommand = new UpdateElementPositionCommand(checkNodeNotNull(context),
+        final UpdateElementPositionCommand undoCommand = new UpdateElementPositionCommand(getNodeNotNull(context),
                                                                                           oldX,
                                                                                           oldY);
         return undoCommand.execute(context);
     }
 
-    private Node<?, Edge> checkNodeNotNull(final GraphCommandExecutionContext context) {
+    private Node<? extends View<?>, Edge> getNodeNotNull(final GraphCommandExecutionContext context) {
         if (null == node) {
-            node = super.checkNodeNotNull(context,
-                                          uuid);
+            node = super.getNodeNotNull(context,
+                                        uuid);
         }
         return node;
     }
 
     @Override
     public String toString() {
-        return "UpdateElementPositionCommand [element=" + uuid + ", x=" + x + ", y=" + y + "]";
+        return "UpdateElementPositionCommand " +
+                "[element=" + uuid +
+                ", x=" + x +
+                ", y=" + y +
+                ", oldX=" + oldX +
+                ", oldY=" + oldY +
+                "]";
     }
 }

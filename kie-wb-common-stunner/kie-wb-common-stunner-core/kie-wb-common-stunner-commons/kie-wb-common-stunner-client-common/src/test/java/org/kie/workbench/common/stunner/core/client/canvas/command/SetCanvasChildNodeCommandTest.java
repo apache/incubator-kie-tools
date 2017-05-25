@@ -25,7 +25,9 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -99,6 +101,46 @@ public class SetCanvasChildNodeCommandTest extends AbstractCanvasCommandTest {
                never()).moveDown();
         verify(connectorShapeView2,
                times(1)).moveToTop();
+        verify(connectorShapeView2,
+               never()).moveToBottom();
+        verify(connectorShapeView2,
+               never()).moveUp();
+        verify(connectorShapeView2,
+               never()).moveDown();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSkipExecutionAsDockIsPresent() {
+        final Edge dockEdge = mock(Edge.class);
+        when(dockEdge.getContent()).thenReturn(new Dock());
+        graph1Instance.intermNode.getInEdges().add(dockEdge);
+        ;
+        final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertNotEquals(CommandResult.Type.ERROR,
+                        result.getType());
+        verify(canvasHandler,
+               never()).addChild(eq(graph1Instance.startNode),
+                                 eq(graph1Instance.intermNode));
+        verify(canvasHandler,
+               never()).applyElementMutation(eq(graph1Instance.intermNode),
+                                             any(MutationContext.class));
+        verify(canvasHandler,
+               never()).applyElementMutation(eq(graph1Instance.startNode),
+                                             any(MutationContext.class));
+        verify(canvasHandler,
+               never()).dock(any(Node.class),
+                             any(Node.class));
+        verify(connectorShapeView1,
+               never()).moveToTop();
+        verify(connectorShapeView1,
+               never()).moveToBottom();
+        verify(connectorShapeView1,
+               never()).moveUp();
+        verify(connectorShapeView1,
+               never()).moveDown();
+        verify(connectorShapeView2,
+               never()).moveToTop();
         verify(connectorShapeView2,
                never()).moveToBottom();
         verify(connectorShapeView2,

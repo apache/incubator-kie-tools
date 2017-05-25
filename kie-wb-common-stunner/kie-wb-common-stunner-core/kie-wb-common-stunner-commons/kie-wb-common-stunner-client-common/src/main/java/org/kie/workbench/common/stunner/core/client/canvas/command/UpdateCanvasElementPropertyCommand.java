@@ -40,4 +40,10 @@ public class UpdateCanvasElementPropertyCommand extends AbstractCanvasCommand {
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
         return execute(context);
     }
+
+    @Override
+    public String toString() {
+        return getClass().getName() +
+                " [element=" + getUUID(element) + "]";
+    }
 }

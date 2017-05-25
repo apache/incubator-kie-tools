@@ -81,7 +81,7 @@ public class TestingGraphInstanceBuilder {
      * **********
      * <p>
      * Structure:
-     * parentNode
+     * -                 parentNode
      * --------------------------------------------
      * |                     |                     |
      * startNode --(edge1)--> intermNode --(edge2)--> endNode

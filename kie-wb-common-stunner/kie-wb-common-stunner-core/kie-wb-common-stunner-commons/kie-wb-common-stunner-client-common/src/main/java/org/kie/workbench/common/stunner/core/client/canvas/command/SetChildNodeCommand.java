@@ -44,4 +44,12 @@ public class SetChildNodeCommand extends AbstractCanvasGraphCommand {
         return new SetCanvasChildNodeCommand(parent,
                                              candidate);
     }
+
+    public Node getParent() {
+        return parent;
+    }
+
+    public Node getCandidate() {
+        return candidate;
+    }
 }

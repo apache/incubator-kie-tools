@@ -44,4 +44,12 @@ public class DockNodeCommand extends AbstractCanvasGraphCommand {
         return new CanvasDockNodeCommand(parent,
                                          candidate);
     }
+
+    public Node getParent() {
+        return parent;
+    }
+
+    public Node getCandidate() {
+        return candidate;
+    }
 }

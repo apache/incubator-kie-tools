@@ -108,8 +108,8 @@ public class NodeParser extends ElementParser<Node<View, Edge>> {
             double bbH = lr.getY() - ul.getY();
             double ulx = parentUl.getX() + ul.getX() - (bbW / 2);
             double uly = parentUl.getY() + ul.getY() - (bbH / 2);
-            double lrx = ulx + (bbW / 2);
-            double lry = uly + (bbH / 2);
+            double lrx = ulx + bbW;
+            double lry = uly + bbH;
             Bounds.Bound newUl = new BoundImpl(ulx,
                                                uly);
             Bounds.Bound newLr = new BoundImpl(lrx,

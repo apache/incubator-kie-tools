@@ -36,7 +36,6 @@ import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -136,15 +135,10 @@ public class AbstractCanvasTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testUndock() {
-        final Shape newParentShape = mock(Shape.class);
-        final ShapeView newParentShapeView = mock(ShapeView.class);
-        when(newParentShape.getShapeView()).thenReturn(newParentShapeView);
         tested.undock(parentShape,
-                      newParentShape,
                       childShape);
         verify(canvasView,
                times(1)).undock(eq(parentShapeView),
-                                eq(newParentShapeView),
                                 eq(childShapeView));
     }
 
@@ -152,11 +146,9 @@ public class AbstractCanvasTest {
     @SuppressWarnings("unchecked")
     public void testUndockToLayer() {
         tested.undock(parentShape,
-                      null,
                       childShape);
         verify(canvasView,
                times(1)).undock(eq(parentShapeView),
-                                (ShapeView<?>) isNull(),
                                 eq(childShapeView));
     }
 

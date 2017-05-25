@@ -78,11 +78,9 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
             final Stack<Command<T, V>> executedCommands = new Stack<>();
             final List<CommandResult<V>> results = new LinkedList<>();
             for (final Command<T, V> command : commands) {
-                LOGGER.log(Level.FINE,
-                           "Checking execution for command [" + command + "]");
                 final CommandResult<V> violations = doExecute(context,
                                                               command);
-                LOGGER.log(Level.FINE,
+                LOGGER.log(Level.FINEST,
                            "Execution of command [" + command + "] finished - Violations [" + violations + "]");
                 results.add(violations);
                 if (CommandResult.Type.ERROR.equals(violations.getType())) {
@@ -96,26 +94,10 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
         return allowResult;
     }
 
-    protected CommandResult<V> undo(final T context,
-                                    final boolean reverse) {
-        final List<CommandResult<V>> results = new LinkedList<>();
-        final List<Command<T, V>> collected = reverse ?
-                commands.stream().collect(reverse()) : commands.stream().collect(forward());
-        collected.forEach(command -> {
-            LOGGER.log(Level.FINE,
-                       "Undoing command [" + command + "]");
-            final CommandResult<V> violations = doUndo(context,
-                                                       command);
-            LOGGER.log(Level.FINE,
-                       "Undo of command [" + command + "] finished - Violations [" + violations + "]");
-            results.add(violations);
-        });
-        return buildResult(results);
-    }
-
-    protected AbstractCompositeCommand<T, V> initialize(final T context) {
-        // Nothing to do by default. Implementation can add commands here.
-        return this;
+    @Override
+    public CommandResult<V> undo(final T context) {
+        return undo(context,
+                    isUndoReverse());
     }
 
     @Override
@@ -125,6 +107,30 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
 
     public List<Command<T, V>> getCommands() {
         return commands;
+    }
+
+    protected AbstractCompositeCommand<T, V> initialize(final T context) {
+        // Nothing to do by default. Implementation can add commands here.
+        return this;
+    }
+
+    protected boolean isUndoReverse() {
+        return true;
+    }
+
+    protected CommandResult<V> undo(final T context,
+                                    final boolean reverse) {
+        final List<CommandResult<V>> results = new LinkedList<>();
+        final List<Command<T, V>> collected = reverse ?
+                commands.stream().collect(reverse()) : commands.stream().collect(forward());
+        collected.forEach(command -> {
+            final CommandResult<V> violations = doUndo(context,
+                                                       command);
+            LOGGER.log(Level.FINEST,
+                       "Undo of command [" + command + "] finished - Violations [" + violations + "]");
+            results.add(violations);
+        });
+        return buildResult(results);
     }
 
     @SuppressWarnings("unchecked")

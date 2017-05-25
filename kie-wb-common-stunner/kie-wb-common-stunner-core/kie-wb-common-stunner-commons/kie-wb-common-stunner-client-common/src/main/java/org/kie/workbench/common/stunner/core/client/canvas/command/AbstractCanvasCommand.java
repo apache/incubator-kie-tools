@@ -20,6 +20,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.graph.Element;
 
 /**
  * Base type for commands that update the canvas.
@@ -33,5 +34,10 @@ public abstract class AbstractCanvasCommand implements CanvasCommand<AbstractCan
 
     protected CommandResult<CanvasViolation> buildResult() {
         return CanvasCommandResultBuilder.SUCCESS;
+    }
+
+    protected String getUUID(final
+                             Element<?> element) {
+        return null != element ? element.getUUID() : "null";
     }
 }

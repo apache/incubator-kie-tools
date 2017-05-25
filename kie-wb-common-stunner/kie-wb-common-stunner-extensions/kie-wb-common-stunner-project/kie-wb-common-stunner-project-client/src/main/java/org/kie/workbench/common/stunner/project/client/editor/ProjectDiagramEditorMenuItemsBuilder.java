@@ -115,7 +115,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
         return new Button() {{
             setSize(ButtonSize.SMALL);
             setIcon(IconType.TRASH_O);
-            setTitle("Delete selected");
+            setTitle("Delete selected [DEL]");
             addClickHandler(clickEvent -> ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm(command));
         }};
     }
@@ -128,7 +128,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
         return new Button() {{
             setSize(ButtonSize.SMALL);
             setIcon(IconType.UNDO);
-            setTitle("Undo");
+            setTitle("Undo [Ctrl+z]");
             addClickHandler(clickEvent -> command.execute());
         }};
     }
@@ -142,7 +142,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
             setSize(ButtonSize.SMALL);
             setIcon(IconType.UNDO);
             setIconRotate(IconRotate.ROTATE_180);
-            setTitle("Redo");
+            setTitle("Redo [Ctrl+Shift+z]");
             addClickHandler(clickEvent -> command.execute());
         }};
     }

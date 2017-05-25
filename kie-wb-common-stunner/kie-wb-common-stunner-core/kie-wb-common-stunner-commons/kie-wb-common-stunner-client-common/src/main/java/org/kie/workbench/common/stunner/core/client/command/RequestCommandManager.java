@@ -103,7 +103,7 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
                                       final Command<AbstractCanvasHandler, CanvasViolation> command,
                                       final CommandResult<CanvasViolation> result) {
                     if (!CommandUtils.isError(result)) {
-                        LOGGER.log(Level.FINE,
+                        LOGGER.log(Level.FINEST,
                                    "Adding command [" + command + "] into current request command builder.");
                         currentCommandBuilder.addCommand(command);
                     }
@@ -186,7 +186,7 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
                                "A new client request cannot be started!");
             clear();
         }
-        LOGGER.log(Level.FINE,
+        LOGGER.log(Level.FINEST,
                    "New client request started.");
         currentCommandBuilder = new CompositeCommandImpl
                 .CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
@@ -198,17 +198,17 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
      * session's registry.
      */
     private void complete() {
-        LOGGER.log(Level.FINE,
+        LOGGER.log(Level.FINEST,
                    "Checking if current client request has been completed...");
         if (isRequestStarted()) {
             // If any commands have been aggregated, let's execute those.
             if (currentCommandBuilder.size() > 0) {
-                LOGGER.log(Level.FINE,
+                LOGGER.log(Level.FINEST,
                            "Adding commands for current request into registry [size=" + currentCommandBuilder.size() + "]");
                 getRegistry().register(currentCommandBuilder.build());
             }
             clear();
-            LOGGER.log(Level.FINE,
+            LOGGER.log(Level.FINEST,
                        "Current client request completed.");
         } else {
             LOGGER.log(Level.WARNING,

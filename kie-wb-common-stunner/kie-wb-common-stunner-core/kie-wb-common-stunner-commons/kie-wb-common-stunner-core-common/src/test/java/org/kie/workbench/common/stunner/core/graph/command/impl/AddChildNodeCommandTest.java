@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -53,6 +54,8 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
 
     private Node parent;
     private Node candidate;
+    private View<?> parentContent;
+    private View<?> candidateContent;
 
     private AddChildNodeCommand tested;
 
@@ -62,6 +65,16 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
                    500);
         this.parent = mockNode(PARENT_UUID);
         this.candidate = mockNode(CANDIDATE_UUID);
+        this.parentContent = mockView(0,
+                                      0,
+                                      1000,
+                                      1000);
+        this.candidateContent = mockView(20,
+                                         20,
+                                         50,
+                                         50);
+        when(parent.getContent()).thenReturn(parentContent);
+        when(candidate.getContent()).thenReturn(candidateContent);
         when(graphIndex.getNode(eq(PARENT_UUID))).thenReturn(parent);
         this.tested = new AddChildNodeCommand(PARENT_UUID,
                                               candidate,

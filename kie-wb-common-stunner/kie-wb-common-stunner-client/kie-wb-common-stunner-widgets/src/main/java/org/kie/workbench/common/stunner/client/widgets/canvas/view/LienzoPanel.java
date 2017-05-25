@@ -22,12 +22,12 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyDownEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyPressEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyUpEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseDownEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseUpEvent;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyDownEvent;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyPressEvent;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyUpEvent;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.uberfire.client.mvp.UberView;
 
 @Dependent

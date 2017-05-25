@@ -73,7 +73,7 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
         this.canvasNameEditionControl = factory.newControl(CanvasNameEditionControl.class);
         this.toolboxControl = factory.newControl(ToolboxControl.class);
         getRegistrationHandler().registerCanvasHandlerControl(dragControl);
-        dragControl.setCommandManagerProvider(() -> sessionCommandManager);
+        dragControl.setCommandManagerProvider(() -> requestCommandManager);
         getRegistrationHandler().registerCanvasHandlerControl(resizeControl);
         resizeControl.setCommandManagerProvider(() -> sessionCommandManager);
         getRegistrationHandler().registerCanvasHandlerControl(toolboxControl);

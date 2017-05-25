@@ -116,7 +116,6 @@ public class GraphValidatorImpl
         final RuleSet ruleSet = aRuleSet.orElse(getRuleSet(graph));
         final ViolationsSet violations = new ViolationsSet();
         treeWalkTraverseProcessor
-                .useEdgeVisitorPolicy(TreeWalkTraverseProcessor.EdgeVisitorPolicy.VISIT_EDGE_BEFORE_TARGET_NODE)
                 .traverse(graph,
                           new AbstractTreeTraverseCallback<org.kie.workbench.common.stunner.core.graph.Graph, Node, Edge>() {
 

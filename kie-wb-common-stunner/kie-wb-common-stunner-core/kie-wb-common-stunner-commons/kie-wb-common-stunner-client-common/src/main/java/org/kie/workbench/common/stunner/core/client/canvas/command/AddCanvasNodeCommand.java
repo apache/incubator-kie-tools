@@ -21,52 +21,48 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 
 /**
  * Registers a node shape into de canvas.
  */
-public class AddCanvasNodeCommand extends AbstractCanvasNodeRegistrationCommand {
+public class AddCanvasNodeCommand extends AbstractCanvasCommand {
 
+    private final Node candidate;
     private final String shapeSetId;
-
-    public AddCanvasNodeCommand(final TreeWalkTraverseProcessor treeWalkTraverseProcessor,
-                                final Node candidate,
-                                final String shapeSetId) {
-        super(treeWalkTraverseProcessor,
-              candidate);
-        this.shapeSetId = shapeSetId;
-    }
 
     public AddCanvasNodeCommand(final Node candidate,
                                 final String shapeSetId) {
-        super(new TreeWalkTraverseProcessorImpl(),
-              candidate);
+        this.candidate = candidate;
         this.shapeSetId = shapeSetId;
-    }
-
-    @Override
-    protected String getShapeSetId(final AbstractCanvasHandler context) {
-        return shapeSetId;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected boolean registerCandidate(final AbstractCanvasHandler context) {
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         context.register(shapeSetId,
-                         getCandidate());
-        context.applyElementMutation(getCandidate(),
+                         candidate);
+        context.applyElementMutation(candidate,
                                      MutationContext.STATIC);
-        return false;
+        return buildResult();
     }
 
     @Override
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
-        return new DeleteCanvasNodeCommand(getCandidate()).execute(context);
+        return new DeleteCanvasNodeCommand(candidate).execute(context);
+    }
+
+    public Node getCandidate() {
+        return candidate;
     }
 
     public String getShapeSetId() {
         return shapeSetId;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getName() +
+                " [candidate=" + getUUID(candidate) + "," +
+                " shapeSet=" + shapeSetId + "]";
     }
 }

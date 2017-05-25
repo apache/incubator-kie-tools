@@ -52,11 +52,6 @@ public final class ChildrenTraverseProcessorImpl extends AbstractContentTraverse
     }
 
     @Override
-    protected TreeWalkTraverseProcessor.EdgeVisitorPolicy getPolicy() {
-        return TreeWalkTraverseProcessor.EdgeVisitorPolicy.VISIT_EDGE_BEFORE_TARGET_NODE;
-    }
-
-    @Override
     protected void doStartGraphTraversal(final Graph graph,
                                          final ChildrenTraverseCallback<Node<View, Edge>, Edge<Child, Node>> callback) {
         parentStack.clear();
@@ -100,14 +95,14 @@ public final class ChildrenTraverseProcessorImpl extends AbstractContentTraverse
 
         if (!parentStack.isRootDefined() || parentStack.isRootPresent()) {
             return fireNodeTraverseCallback(node,
-                                           callback);
+                                            callback);
         }
         return true;
     }
 
     @SuppressWarnings("unchecked")
     private boolean fireNodeTraverseCallback(final Node node,
-                                            final ChildrenTraverseCallback<Node<View, Edge>, Edge<Child, Node>> callback) {
+                                             final ChildrenTraverseCallback<Node<View, Edge>, Edge<Child, Node>> callback) {
         if (!parentStack.isEmpty()) {
             return callback.startNodeTraversal(parentStack.asList(),
                                                node);

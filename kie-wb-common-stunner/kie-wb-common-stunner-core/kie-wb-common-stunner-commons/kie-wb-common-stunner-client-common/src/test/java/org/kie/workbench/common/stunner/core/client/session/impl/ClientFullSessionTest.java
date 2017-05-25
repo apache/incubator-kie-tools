@@ -37,9 +37,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomCon
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 import static org.junit.Assert.*;
@@ -105,15 +107,13 @@ public class ClientFullSessionTest {
         when(factory.newControl(eq(ToolboxControl.class))).thenReturn(toolboxControl);
         when(factory.newControl(eq(ElementBuilderControl.class))).thenReturn(builderControl);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
-        this.tested = new ClientFullSessionImpl(factory,
-                                                canvasCommandManager,
-                                                sessionCommandManager,
-                                                requestCommandManager,
-                                                registryFactory);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testInit() {
+        buildTestedInstance();
+        // Assert session's public getters.
         assertEquals(canvas,
                      tested.getCanvas());
         assertEquals(canvasHandler,
@@ -142,10 +142,60 @@ public class ClientFullSessionTest {
                      tested.getToolboxControl());
         assertEquals(builderControl,
                      tested.getBuilderControl());
+        // Assert setting the right command manager for each control.
+        final ArgumentCaptor<RequiresCommandManager.CommandManagerProvider> conn =
+                ArgumentCaptor.forClass(RequiresCommandManager.CommandManagerProvider.class);
+        verify(connectionAcceptorControl,
+               times(1)).setCommandManagerProvider(conn.capture());
+        assertEquals(requestCommandManager,
+                     conn.getValue().getCommandManager());
+        final ArgumentCaptor<RequiresCommandManager.CommandManagerProvider> cont =
+                ArgumentCaptor.forClass(RequiresCommandManager.CommandManagerProvider.class);
+        verify(containmentAcceptorControl,
+               times(1)).setCommandManagerProvider(cont.capture());
+        assertEquals(requestCommandManager,
+                     cont.getValue().getCommandManager());
+        final ArgumentCaptor<RequiresCommandManager.CommandManagerProvider> docking =
+                ArgumentCaptor.forClass(RequiresCommandManager.CommandManagerProvider.class);
+        verify(dockingAcceptorControl,
+               times(1)).setCommandManagerProvider(docking.capture());
+        assertEquals(requestCommandManager,
+                     docking.getValue().getCommandManager());
+        final ArgumentCaptor<RequiresCommandManager.CommandManagerProvider> builder =
+                ArgumentCaptor.forClass(RequiresCommandManager.CommandManagerProvider.class);
+        verify(builderControl,
+               times(1)).setCommandManagerProvider(builder.capture());
+        assertEquals(sessionCommandManager,
+                     builder.getValue().getCommandManager());
+        final ArgumentCaptor<RequiresCommandManager.CommandManagerProvider> drag =
+                ArgumentCaptor.forClass(RequiresCommandManager.CommandManagerProvider.class);
+        verify(dragControl,
+               times(1)).setCommandManagerProvider(drag.capture());
+        assertEquals(requestCommandManager,
+                     drag.getValue().getCommandManager());
+        final ArgumentCaptor<RequiresCommandManager.CommandManagerProvider> resize =
+                ArgumentCaptor.forClass(RequiresCommandManager.CommandManagerProvider.class);
+        verify(resizeControl,
+               times(1)).setCommandManagerProvider(resize.capture());
+        assertEquals(sessionCommandManager,
+                     resize.getValue().getCommandManager());
+        final ArgumentCaptor<RequiresCommandManager.CommandManagerProvider> toolbox =
+                ArgumentCaptor.forClass(RequiresCommandManager.CommandManagerProvider.class);
+        verify(toolboxControl,
+               times(1)).setCommandManagerProvider(toolbox.capture());
+        assertEquals(sessionCommandManager,
+                     toolbox.getValue().getCommandManager());
+        final ArgumentCaptor<RequiresCommandManager.CommandManagerProvider> name =
+                ArgumentCaptor.forClass(RequiresCommandManager.CommandManagerProvider.class);
+        verify(canvasNameEditionControl,
+               times(1)).setCommandManagerProvider(name.capture());
+        assertEquals(sessionCommandManager,
+                     name.getValue().getCommandManager());
     }
 
     @Test
     public void testOpenSession() {
+        buildTestedInstance();
         tested.open();
         verify(canvas,
                times(1)).addRegistrationListener(any(CanvasShapeListener.class));
@@ -177,6 +227,7 @@ public class ClientFullSessionTest {
 
     @Test
     public void testDestroySession() {
+        buildTestedInstance();
         tested.isOpened = true;
         tested.doOpen(); // Force to register listeners.
         tested.destroy();
@@ -209,5 +260,13 @@ public class ClientFullSessionTest {
                times(1)).disable();
         verify(builderControl,
                times(1)).disable();
+    }
+
+    private void buildTestedInstance() {
+        this.tested = new ClientFullSessionImpl(factory,
+                                                canvasCommandManager,
+                                                sessionCommandManager,
+                                                requestCommandManager,
+                                                registryFactory);
     }
 }

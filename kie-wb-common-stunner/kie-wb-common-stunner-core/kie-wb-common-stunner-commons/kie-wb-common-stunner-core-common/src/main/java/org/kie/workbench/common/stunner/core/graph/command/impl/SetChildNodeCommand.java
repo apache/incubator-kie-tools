@@ -69,7 +69,6 @@ public final class SetChildNodeCommand extends AbstractGraphCommand {
         if (!results.getType().equals(CommandResult.Type.ERROR)) {
             final Node<?, Edge> parent = getParent(context);
             final Node<?, Edge> candidate = getCandidate(context);
-            // TODO: Create a ParentEdgeFactory iface extending EdgeFactory using as content generics type Relationship
             final String uuid = UUID.uuid();
             final Edge<Child, Node> edge = new EdgeImpl<>(uuid);
             edge.setContent(new Child());
@@ -114,8 +113,8 @@ public final class SetChildNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings("unchecked")
     private Node<?, Edge> getParent(final GraphCommandExecutionContext context) {
         if (null == parent) {
-            parent = checkNodeNotNull(context,
-                                      parentUUID);
+            parent = getNodeNotNull(context,
+                                    parentUUID);
         }
         return parent;
     }
@@ -123,8 +122,8 @@ public final class SetChildNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings("unchecked")
     private Node<?, Edge> getCandidate(final GraphCommandExecutionContext context) {
         if (null == candidate) {
-            candidate = checkNodeNotNull(context,
-                                         candidateUUID);
+            candidate = getNodeNotNull(context,
+                                       candidateUUID);
         }
         return candidate;
     }

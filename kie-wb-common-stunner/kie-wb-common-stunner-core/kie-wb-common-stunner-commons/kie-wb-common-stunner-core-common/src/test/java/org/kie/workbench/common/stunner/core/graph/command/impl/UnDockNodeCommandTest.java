@@ -26,9 +26,9 @@ import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumen
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
+import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
@@ -41,36 +41,34 @@ public class UnDockNodeCommandTest extends AbstractGraphCommandTest {
 
     private static final String PARENT_UUID = "parentUUID";
     private static final String CANDIDATE_UUID = "candidateUUID";
-    private static final String Edge_UUID = "edgeUUID";
+    private static final String EDGE_UUID = "edgeUUID";
 
     private Node parent;
     private Node candidate;
     private Edge edge;
-    private
-    @Mock
-    Dock edgeContent;
-    private final List<Edge> candidateOutEdges = new LinkedList<>();
-    private final List<Edge> parentInEdges = new LinkedList<>();
+    private final List<Edge> candidateInEdges = new LinkedList<>();
+    private final List<Edge> parentOutEdges = new LinkedList<>();
 
     private UnDockNodeCommand tested;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.init(500,
                    500);
         this.parent = mockNode(PARENT_UUID);
         this.candidate = mockNode(CANDIDATE_UUID);
-        this.edge = mockEdge(CANDIDATE_UUID);
-        when(edge.getContent()).thenReturn(edgeContent);
-        when(edge.getTargetNode()).thenReturn(parent);
-        when(edge.getSourceNode()).thenReturn(candidate);
+        this.edge = new EdgeImpl<>(EDGE_UUID);
+        this.edge.setContent(new Dock());
+        this.edge.setSourceNode(parent);
+        this.edge.setTargetNode(candidate);
         when(graphIndex.getNode(eq(PARENT_UUID))).thenReturn(parent);
         when(graphIndex.getNode(eq(CANDIDATE_UUID))).thenReturn(candidate);
-        when(graphIndex.getEdge(eq(Edge_UUID))).thenReturn(edge);
-        when(parent.getInEdges()).thenReturn(parentInEdges);
-        when(candidate.getOutEdges()).thenReturn(candidateOutEdges);
-        parentInEdges.add(edge);
-        candidateOutEdges.add(edge);
+        when(graphIndex.getEdge(eq(EDGE_UUID))).thenReturn(edge);
+        when(parent.getOutEdges()).thenReturn(parentOutEdges);
+        when(candidate.getInEdges()).thenReturn(candidateInEdges);
+        parentOutEdges.add(edge);
+        candidateInEdges.add(edge);
         this.tested = new UnDockNodeCommand(PARENT_UUID,
                                             CANDIDATE_UUID);
     }
@@ -101,10 +99,10 @@ public class UnDockNodeCommandTest extends AbstractGraphCommandTest {
         CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
-        assertTrue(parentInEdges.isEmpty());
-        assertTrue(candidateOutEdges.isEmpty());
+        assertTrue(parentOutEdges.isEmpty());
+        assertTrue(candidateInEdges.isEmpty());
         verify(graphIndex,
-               times(1)).removeEdge(any(Edge.class));
+               times(1)).removeEdge(eq(edge));
         verify(graphIndex,
                times(0)).removeNode(any(Node.class));
         verify(graph,

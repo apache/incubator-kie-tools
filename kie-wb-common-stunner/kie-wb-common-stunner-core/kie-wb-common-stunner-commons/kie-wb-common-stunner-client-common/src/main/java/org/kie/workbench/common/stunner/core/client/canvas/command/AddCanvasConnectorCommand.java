@@ -66,4 +66,11 @@ public class AddCanvasConnectorCommand extends AbstractCanvasCommand {
     public String getShapeSetId() {
         return shapeSetId;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getName() +
+                " [candidate=" + getUUID(candidate) + "," +
+                " shapeSet=" + getShapeSetId() + "]";
+    }
 }

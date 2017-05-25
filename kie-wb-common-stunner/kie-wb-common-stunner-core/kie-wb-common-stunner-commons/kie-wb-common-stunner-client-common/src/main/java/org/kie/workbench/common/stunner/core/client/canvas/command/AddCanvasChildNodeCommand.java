@@ -22,61 +22,44 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 
 /**
  * Registers the child shape into the canvas and  add it into the parent's one  as well.
  */
-public class AddCanvasChildNodeCommand extends AbstractCanvasNodeRegistrationCommand {
+public class AddCanvasChildNodeCommand extends AbstractCanvasCommand {
 
     private final Node parent;
+    private final Node candidate;
     private final String shapeSetId;
-
-    public AddCanvasChildNodeCommand(final TreeWalkTraverseProcessor treeWalkTraverseProcessor,
-                                     final Node parent,
-                                     final Node candidate,
-                                     final String shapeSetId) {
-        super(treeWalkTraverseProcessor,
-              candidate);
-        this.parent = parent;
-        this.shapeSetId = shapeSetId;
-    }
 
     public AddCanvasChildNodeCommand(final Node parent,
                                      final Node candidate,
                                      final String shapeSetId) {
-        super(new TreeWalkTraverseProcessorImpl(),
-              candidate);
         this.parent = parent;
+        this.candidate = candidate;
         this.shapeSetId = shapeSetId;
     }
 
     @Override
-    protected String getShapeSetId(final AbstractCanvasHandler context) {
-        return shapeSetId;
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
-    protected boolean registerCandidate(final AbstractCanvasHandler context) {
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         context.register(shapeSetId,
-                         getCandidate());
+                         candidate);
         context.addChild(parent,
-                         getCandidate());
+                         candidate);
         context.applyElementMutation(parent,
                                      MutationContext.STATIC);
-        context.applyElementMutation(getCandidate(),
+        context.applyElementMutation(candidate,
                                      MutationContext.STATIC);
-        return false;
+        return buildResult();
     }
 
     @Override
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
         return new CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
                 .addCommand(new RemoveCanvasChildCommand(parent,
-                                                         getCandidate()))
-                .addCommand(new DeleteCanvasNodeCommand(getCandidate(),
+                                                         candidate))
+                .addCommand(new DeleteCanvasNodeCommand(candidate,
                                                         parent))
                 .build()
                 .execute(context);
@@ -86,7 +69,19 @@ public class AddCanvasChildNodeCommand extends AbstractCanvasNodeRegistrationCom
         return parent;
     }
 
+    public Node getCandidate() {
+        return candidate;
+    }
+
     public String getShapeSetId() {
         return shapeSetId;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getName() +
+                " [parent=" + getUUID(parent) + "," +
+                " candidate=" + getUUID(candidate) + "," +
+                " shapeSet=" + shapeSetId + "]";
     }
 }

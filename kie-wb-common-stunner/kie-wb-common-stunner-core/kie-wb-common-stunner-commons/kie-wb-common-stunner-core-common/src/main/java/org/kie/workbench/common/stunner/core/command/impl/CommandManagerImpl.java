@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.command.CommandListener;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.HasCommandListener;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 public class CommandManagerImpl<C, V> implements CommandManager<C, V>,
@@ -41,16 +42,15 @@ public class CommandManagerImpl<C, V> implements CommandManager<C, V>,
                                   final Command<C, V> command) {
         PortablePreconditions.checkNotNull("command",
                                            command);
-        LOGGER.log(Level.FINE,
-                   "Evaluating (allow) command [" + command + "]...");
+        logCommand("ALLOW",
+                   command);
         final CommandResult<V> result = command.allow(context);
         if (null != listener) {
             listener.onAllow(context,
                              command,
                              result);
         }
-        LOGGER.log(Level.FINE,
-                   "Evaluation (allow) of command [" + command + "] finished - Result [" + result + "]");
+        logResult(result);
         return result;
     }
 
@@ -59,37 +59,47 @@ public class CommandManagerImpl<C, V> implements CommandManager<C, V>,
                                     final Command<C, V> command) {
         PortablePreconditions.checkNotNull("command",
                                            command);
-        LOGGER.log(Level.FINE,
-                   "Executing command [" + command + "]...");
+        logCommand("EXECUTE",
+                   command);
         final CommandResult<V> result = command.execute(context);
         if (null != listener) {
             listener.onExecute(context,
                                command,
                                result);
         }
-        LOGGER.log(Level.FINE,
-                   "Execution of command [" + command + "] finished - Result [" + result + "]");
+        logResult(result);
         return result;
     }
 
     @Override
     public CommandResult<V> undo(final C context,
                                  final Command<C, V> command) {
-        LOGGER.log(Level.FINE,
-                   "Undoing command [" + command + "]...");
+        logCommand("UNDO",
+                   command);
         final CommandResult<V> result = command.undo(context);
         if (null != listener) {
             listener.onUndo(context,
                             command,
                             result);
         }
-        LOGGER.log(Level.FINE,
-                   "Undo of command [" + command + "] finished - Result [" + result + "]");
+        logResult(result);
         return result;
     }
 
     @Override
     public void setCommandListener(final CommandListener<C, V> listener) {
         this.listener = listener;
+    }
+
+    private static void logCommand(final String type,
+                                   final Command<?, ?> command) {
+        LOGGER.log(Level.FINE,
+                   "Evaluating (" + type + ") command [" + command + "]...");
+    }
+
+    private static void logResult(final CommandResult<?> result) {
+        LOGGER.log(Level.FINE,
+                   "Evaluation " + (CommandUtils.isError(result) ? "FAILED" : "SUCCESS") + " - " +
+                           "Result [" + result + "]");
     }
 }

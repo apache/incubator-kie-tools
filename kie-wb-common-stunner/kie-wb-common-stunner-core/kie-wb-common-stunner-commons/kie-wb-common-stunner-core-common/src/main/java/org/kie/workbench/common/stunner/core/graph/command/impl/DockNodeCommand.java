@@ -68,7 +68,6 @@ public final class DockNodeCommand extends AbstractGraphCommand {
         if (!results.getType().equals(CommandResult.Type.ERROR)) {
             final Node<?, Edge> parent = getParent(context);
             final Node<?, Edge> candidate = getCandidate(context);
-            // TODO: Create a DockEdgeFactory iface extending EdgeFactory using as content generics type Relationship
             final String uuid = UUID.uuid();
             final Edge<Dock, Node> edge = new EdgeImpl<>(uuid);
             edge.setContent(new Dock());
@@ -111,8 +110,8 @@ public final class DockNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings("unchecked")
     private Node<?, Edge> getParent(final GraphCommandExecutionContext context) {
         if (null == parent) {
-            parent = checkNodeNotNull(context,
-                                      parentUUID);
+            parent = getNodeNotNull(context,
+                                    parentUUID);
         }
         return parent;
     }
@@ -120,8 +119,8 @@ public final class DockNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings("unchecked")
     private Node<?, Edge> getCandidate(final GraphCommandExecutionContext context) {
         if (null == candidate) {
-            candidate = checkNodeNotNull(context,
-                                         candidateUUID);
+            candidate = getNodeNotNull(context,
+                                       candidateUUID);
         }
         return candidate;
     }

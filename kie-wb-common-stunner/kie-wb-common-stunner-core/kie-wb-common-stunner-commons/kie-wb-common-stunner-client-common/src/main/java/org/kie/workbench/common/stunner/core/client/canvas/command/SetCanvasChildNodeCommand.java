@@ -21,7 +21,9 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 
 public class SetCanvasChildNodeCommand extends AbstractCanvasCommand {
 
@@ -37,15 +39,25 @@ public class SetCanvasChildNodeCommand extends AbstractCanvasCommand {
     @Override
     @SuppressWarnings("unchecked")
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-        context.addChild(parent,
-                         candidate);
-        context.applyElementMutation(parent,
-                                     MutationContext.STATIC);
-        context.applyElementMutation(candidate,
-                                     MutationContext.STATIC);
-        ShapeUtils.moveViewConnectorsToTop(context,
-                                           candidate);
+        // Only update the child on the canvas side if the candidate is not docked.
+        if (!isDocked(candidate)) {
+            context.addChild(parent,
+                             candidate);
+            context.applyElementMutation(parent,
+                                         MutationContext.STATIC);
+            context.applyElementMutation(candidate,
+                                         MutationContext.STATIC);
+            ShapeUtils.moveViewConnectorsToTop(context,
+                                               candidate);
+        }
         return buildResult();
+    }
+
+    private static boolean isDocked(final Node<?, Edge> candidate) {
+        return candidate.getInEdges().stream()
+                .filter(e -> e.getContent() instanceof Dock)
+                .findAny()
+                .isPresent();
     }
 
     @Override
@@ -60,5 +72,12 @@ public class SetCanvasChildNodeCommand extends AbstractCanvasCommand {
 
     public Node getCandidate() {
         return candidate;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getName() +
+                " [parent=" + getUUID(parent) + "," +
+                " candidate=" + getUUID(candidate) + "]";
     }
 }

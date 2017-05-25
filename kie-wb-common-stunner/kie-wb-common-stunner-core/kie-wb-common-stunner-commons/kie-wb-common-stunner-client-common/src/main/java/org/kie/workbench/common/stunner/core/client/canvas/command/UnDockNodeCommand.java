@@ -47,4 +47,12 @@ public class UnDockNodeCommand extends AbstractCanvasGraphCommand {
         return new CanvasUndockNodeCommand(parent,
                                            child);
     }
+
+    public Node getParent() {
+        return parent;
+    }
+
+    public Node getCandidate() {
+        return child;
+    }
 }

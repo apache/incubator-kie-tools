@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.cm.client.canvas.controls.containment;
 
 import java.util.Optional;
+import java.util.function.Function;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -24,7 +25,7 @@ import com.ait.lienzo.client.core.shape.wires.ILayoutHandler;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.Point2D;
-import org.kie.workbench.common.stunner.client.lienzo.canvas.controls.AbstractContainmentBasedControl;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.controls.AbstractAcceptorControl;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.cm.client.command.CaseManagementCanvasCommandFactory;
@@ -34,13 +35,17 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.CompositeCommand;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 
 @Dependent
 @CaseManagementEditor
-public class CaseManagementContainmentAcceptorControlImpl extends AbstractContainmentBasedControl
+public class CaseManagementContainmentAcceptorControlImpl extends AbstractAcceptorControl
         implements ContainmentAcceptorControl<AbstractCanvasHandler> {
 
     private final IContainmentAcceptor CONTAINMENT_ACCEPTOR = new CanvasManagementContainmentAcceptor();
@@ -56,32 +61,82 @@ public class CaseManagementContainmentAcceptorControlImpl extends AbstractContai
     }
 
     @Override
-    protected void doEnable(final WiresCanvas.View view) {
+    protected void onEnable(final WiresCanvas.View view) {
         view.setContainmentAcceptor(CONTAINMENT_ACCEPTOR);
     }
 
     @Override
-    protected void doDisable(final WiresCanvas.View view) {
+    protected void onDisable(final WiresCanvas.View view) {
         view.setContainmentAcceptor(IContainmentAcceptor.NONE);
     }
 
     @Override
-    protected boolean isEdgeAccepted(final Edge edge) {
-        return edge.getContent() instanceof Child;
+    public boolean allow(final Element parent,
+                         final Node child) {
+        return evaluate(parent,
+                        child,
+                        command -> getCommandManager().allow(getCanvasHandler(),
+                                                             command));
     }
 
     @Override
-    protected Command<AbstractCanvasHandler, CanvasViolation> getAddEdgeCommand(final Node parent,
-                                                                                final Node child) {
+    public boolean accept(final Element parent,
+                          final Node child) {
+        throw new UnsupportedOperationException();
+    }
+
+    private boolean evaluate(final Element parent,
+                             final Node child,
+                             final Function<Command<AbstractCanvasHandler, CanvasViolation>, CommandResult<CanvasViolation>> executor) {
+        if (parent == null && child == null) {
+            return false;
+        }
+        final Optional<Edge<?, Node>> edge = getFirstIncomingEdge(child,
+                                                                  e -> e.getContent() instanceof Child);
+        if (edge.isPresent()) {
+            final CompositeCommand<AbstractCanvasHandler, CanvasViolation> command = buildCommands(parent,
+                                                                                                   child,
+                                                                                                   edge.get());
+            final CommandResult<CanvasViolation> result = executor.apply(command);
+            return isCommandSuccess(child,
+                                    result);
+        }
+        return true;
+    }
+
+    private CompositeCommand<AbstractCanvasHandler, CanvasViolation> buildCommands(final Element parent,
+                                                                                   final Node child,
+                                                                                   final Edge edge) {
+        final CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation> builder =
+                new CompositeCommandImpl
+                        .CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
+                        .reverse();
+        if (null != edge.getSourceNode()) {
+            builder.addCommand(
+                    canvasCommandFactory.removeChild(edge.getSourceNode(),
+                                                     child)
+            );
+        }
+        if (null != parent) {
+            builder.addCommand(
+                    canvasCommandFactory.setChildNode((Node) parent,
+                                                      child)
+            );
+        }
+        return builder.build();
+    }
+
+    Command<AbstractCanvasHandler, CanvasViolation> getAddEdgeCommand(final Node parent,
+                                                                      final Node child) {
         return canvasCommandFactory.setChildNode(parent,
                                                  child);
     }
 
-    protected Command<AbstractCanvasHandler, CanvasViolation> getSetEdgeCommand(final Node parent,
-                                                                                final Node child,
-                                                                                final Optional<Integer> index,
-                                                                                final Optional<Node> originalParent,
-                                                                                final Optional<Integer> originalIndex) {
+    Command<AbstractCanvasHandler, CanvasViolation> getSetEdgeCommand(final Node parent,
+                                                                      final Node child,
+                                                                      final Optional<Integer> index,
+                                                                      final Optional<Node> originalParent,
+                                                                      final Optional<Integer> originalIndex) {
         return canvasCommandFactory.setChildNode(parent,
                                                  child,
                                                  index,
@@ -89,9 +144,8 @@ public class CaseManagementContainmentAcceptorControlImpl extends AbstractContai
                                                  originalIndex);
     }
 
-    @Override
-    protected Command<AbstractCanvasHandler, CanvasViolation> getDeleteEdgeCommand(final Node parent,
-                                                                                   final Node child) {
+    Command<AbstractCanvasHandler, CanvasViolation> getDeleteEdgeCommand(final Node parent,
+                                                                         final Node child) {
         return canvasCommandFactory.removeChild(parent,
                                                 child);
     }
@@ -101,8 +155,8 @@ public class CaseManagementContainmentAcceptorControlImpl extends AbstractContai
         @Override
         public boolean containmentAllowed(final WiresContainer wiresContainer,
                                           final WiresShape wiresShape) {
-            if (!isAccept(wiresContainer,
-                          wiresShape)) {
+            if (!isWiresViewAccept(wiresContainer,
+                                   wiresShape)) {
                 return false;
             }
             final Node childNode = WiresUtils.getNode(getCanvasHandler(),
@@ -117,8 +171,7 @@ public class CaseManagementContainmentAcceptorControlImpl extends AbstractContai
         public boolean acceptContainment(final WiresContainer wiresContainer,
                                          final WiresShape wiresShape) {
             // Check containment is allowed. This (almost) replicates AbstractContainmentBasedControl.accept()
-            // that has the additional check whether a Child can be removed from a Container; but for Case Management
-            // that is not a concern.
+            // No need to checked whether a Child can be removed from a Container.
             final boolean isAccept = containmentAllowed(wiresContainer,
                                                         wiresShape);
 
