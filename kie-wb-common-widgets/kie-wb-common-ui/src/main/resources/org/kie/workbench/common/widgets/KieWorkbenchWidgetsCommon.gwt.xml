@@ -28,7 +28,7 @@
   <inherits name="org.jboss.errai.validation.Validation"/>
   <inherits name="org.hibernate.validator.HibernateValidator"/>
 
-  <inherits name="org.gwtbootstrap3.extras.select.Select"/>
+  <inherits name="org.gwtbootstrap3.extras.select.SelectNoResources"/>
 
   <inherits name="org.guvnor.messageconsole.GuvnorMessageConsoleClient"/>
 
