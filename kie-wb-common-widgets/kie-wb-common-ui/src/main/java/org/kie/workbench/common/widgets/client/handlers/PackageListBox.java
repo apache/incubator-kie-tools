@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -29,7 +30,9 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.model.Project;
 import org.gwtbootstrap3.extras.select.client.ui.Option;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.jboss.errai.common.client.api.Caller;
@@ -53,112 +56,133 @@ public class PackageListBox extends Composite {
     private Map<String, Package> packages;
 
     @Inject
-    public PackageListBox( final Caller<KieProjectService> projectService ) {
+    public PackageListBox(final Caller<KieProjectService> projectService) {
         this.projectService = projectService;
-        initWidget( panel );
-        getElement().getStyle().setMarginBottom( 15, Style.Unit.PX );
+        initWidget(panel);
+        getElement().getStyle().setMarginBottom(15,
+                                                Style.Unit.PX);
         packages = new HashMap<String, Package>();
     }
 
-    public void setContext( final ProjectContext context,
-                            final boolean includeDefaultPackage ) {
-        setContext( context, includeDefaultPackage, null );
+    public void setContext(final ProjectContext context,
+                           final boolean includeDefaultPackage) {
+        setContext(context,
+                   includeDefaultPackage,
+                   null);
     }
 
-    public void setContext( final ProjectContext context,
-                            final boolean includeDefaultPackage,
-                            final Command packagesLoadedCommand ) {
+    public void setContext(final ProjectContext context,
+                           final boolean includeDefaultPackage,
+                           final Command packagesLoadedCommand) {
         noPackage();
         packages.clear();
 
         // Disable and set default content if Project is not selected
-        if ( context.getActiveProject() == null ) {
+        if (context.getActiveProject() == null) {
             return;
         }
 
         // Otherwise show list of packages
-        final Package activePackage = context.getActivePackage();
-        projectService.call( new RemoteCallback<Set<Package>>() {
+        projectService.call(new RemoteCallback<Set<Package>>() {
             @Override
-            public void callback( final Set<Package> pkgs ) {
+            public void callback(final Set<Package> pkgs) {
                 //Sort by caption
                 final List<Package> sortedPackages = new ArrayList<Package>();
-                sortedPackages.addAll( pkgs );
-                Collections.sort( sortedPackages,
-                                  ( p1, p2 ) -> p1.getCaption().compareTo( p2.getCaption() ) );
+                sortedPackages.addAll(pkgs);
+                Collections.sort(sortedPackages,
+                                 (p1, p2) -> p1.getCaption().compareTo(p2.getCaption()));
 
                 // Remove default package, if not required (after sorting it is guaranteed to be at index 0)
-                if ( !includeDefaultPackage ) {
-                    sortedPackages.remove( 0 );
+                if (!includeDefaultPackage) {
+                    sortedPackages.remove(0);
                 }
 
                 // Disable and set default content if no Packages available
-                if ( sortedPackages.size() == 0 ) {
+                if (sortedPackages.size() == 0) {
                     return;
                 }
 
-                addPackagesToSelect( sortedPackages, activePackage );
+                final Package activePackage = getGroupIdProjectPackage(context.getActiveProject(),
+                                                                       sortedPackages);
 
-                if ( packagesLoadedCommand != null ) {
+                addPackagesToSelect(sortedPackages,
+                                    activePackage);
+
+                if (packagesLoadedCommand != null) {
                     packagesLoadedCommand.execute();
                 }
             }
-        } ).resolvePackages( context.getActiveProject() );
+        }).resolvePackages(context.getActiveProject());
     }
 
-    private void addPackagesToSelect( final List<Package> sortedPackages,
-                                      final Package activePackage ) {
+    Package getGroupIdProjectPackage(final Project project,
+                                     final List<Package> packages) {
+        final GAV projectGav = project.getPom().getGav();
+        final String projectGroupId = projectGav.getGroupId();
+        final String projectArtifactId = projectGav.getArtifactId();
+
+        final String activePackageCaption = projectGroupId + "." + projectArtifactId;
+
+        final Optional<Package> activePackage = packages.stream().filter(p -> p.getCaption().equals(activePackageCaption)).findFirst();
+
+        return activePackage.orElse(null);
+    }
+
+    private void addPackagesToSelect(final List<Package> sortedPackages,
+                                     final Package activePackage) {
         clearSelect();
 
-        for ( Package pkg : sortedPackages ) {
-            addPackage( pkg, activePackage );
+        for (Package pkg : sortedPackages) {
+            addPackage(pkg,
+                       activePackage);
         }
 
         refreshSelect();
     }
 
     public Package getSelectedPackage() {
-        if ( packages.size() == 0 || select == null ) {
+        if (packages.size() == 0 || select == null) {
             return null;
         }
-        return packages.get( select.getValue() );
+        return packages.get(select.getValue());
     }
 
-    void addPackage( final Package pkg,
-                     final Package activePackage ) {
+    void addPackage(final Package pkg,
+                    final Package activePackage) {
         final Option option = new Option();
-        option.setText( pkg.getCaption() );
-        select.add( option );
-        packages.put( pkg.getCaption(), pkg );
-        if ( pkg.equals( activePackage ) ) {
-            select.setValue( pkg.getCaption() );
+        option.setText(pkg.getCaption());
+        select.add(option);
+        packages.put(pkg.getCaption(),
+                     pkg);
+        if (pkg.equals(activePackage)) {
+            select.setValue(pkg.getCaption());
         }
     }
 
     void noPackage() {
         clearSelect();
         final Option option = new Option();
-        option.setText( CommonConstants.INSTANCE.ItemUndefinedPath() );
+        option.setText(CommonConstants.INSTANCE.ItemUndefinedPath());
 
-        select.add( option );
-        select.setEnabled( false );
+        select.add(option);
+        select.setEnabled(false);
         refreshSelect();
     }
 
     void clearSelect() {
-        if ( select != null ) {
+        if (select != null) {
             select.removeFromParent();
-            removeSelect( select.getElement() );
+            removeSelect(select.getElement());
         }
         select = new Select();
-        panel.setWidget( select );
+        panel.setWidget(select);
     }
 
     void refreshSelect() {
         select.refresh();
     }
 
-    private native void removeSelect( final Element e ) /*-{
+    private native void removeSelect(final Element e) /*-{
         $wnd.jQuery(e).selectpicker('destroy');
     }-*/;
 }
