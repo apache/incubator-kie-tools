@@ -17,14 +17,13 @@ package org.drools.workbench.screens.testscenario.client;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-//import org.kie.guvnor.testscenario.client.resources.Resources;
+import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 
 @EntryPoint
 public class TestScenarioEditorEntryPoint {
 
     @AfterInitialization
     public void startApp() {
-//        Resources.INSTANCE.CSS().ensureInjected();
+        PatternFlyBootstrapper.ensureBootstrapSelectIsAvailable();
     }
-
 }
