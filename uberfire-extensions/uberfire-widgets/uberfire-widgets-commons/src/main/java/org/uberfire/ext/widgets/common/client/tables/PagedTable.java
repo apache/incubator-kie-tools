@@ -19,6 +19,7 @@ package org.uberfire.ext.widgets.common.client.tables;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AbstractDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
@@ -193,6 +194,10 @@ public class PagedTable<T>
             storePageSizeInGridPreferences(gridPreferencesStore.getGlobalPreferences().getPageSize());
             loadPageSizePreferences();
         }
+    }
+
+    public HasWidgets getTopToolbar() {
+        return topToolbar;
     }
 
     interface Binder

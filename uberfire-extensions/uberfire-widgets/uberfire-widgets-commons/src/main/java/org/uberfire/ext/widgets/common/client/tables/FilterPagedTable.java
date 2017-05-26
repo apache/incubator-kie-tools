@@ -32,12 +32,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.shared.event.TabShowEvent;
 import org.gwtbootstrap3.client.shared.event.TabShowHandler;
-import org.gwtbootstrap3.client.ui.Anchor;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.NavTabs;
-import org.gwtbootstrap3.client.ui.TabContent;
-import org.gwtbootstrap3.client.ui.TabListItem;
-import org.gwtbootstrap3.client.ui.TabPane;
+import org.gwtbootstrap3.client.ui.*;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -118,7 +113,14 @@ public class FilterPagedTable<T>
 
     public void addTab(final PagedTable<T> grid,
                        final String key,
-                       Command filterCommand) {
+                       final Command filterCommand) {
+        addTab(grid, key, filterCommand, true);
+    }
+
+    public void addTab(final PagedTable<T> grid,
+                       final String key,
+                       final Command filterCommand,
+                       final boolean selectTab) {
 
         dataGridFilterHashMap.put(key,
                                   new DataGridFilter(key,
@@ -128,8 +130,8 @@ public class FilterPagedTable<T>
                                                                                 NewTabFilterPopup.FILTER_TAB_NAME_PARAM);
         final String gridTitle = multiGridPreferencesStore.getGridSettingParam(key,
                                                                                NewTabFilterPopup.FILTER_TAB_DESC_PARAM);
-        final String safeHtmlGridHeader =(gridHeader!=null ? SafeHtmlUtils.htmlEscape(gridHeader) : "");
-        final String safeHtmlGridTitle =(gridTitle!=null ? SafeHtmlUtils.htmlEscape(gridTitle) : "");
+        final String safeHtmlGridHeader = (gridHeader != null ? SafeHtmlUtils.htmlEscape(gridHeader) : "");
+        final String safeHtmlGridTitle = (gridTitle != null ? SafeHtmlUtils.htmlEscape(gridTitle) : "");
 
         grid.addTableTitle(safeHtmlGridTitle);
 
@@ -154,7 +156,10 @@ public class FilterPagedTable<T>
                       close,
                       grid,
                       key);
-        selectTab(dataGridFilterHashMap.size() - 1);
+
+        if(selectTab) {
+            selectTab(dataGridFilterHashMap.size() - 1);
+        }
     }
 
     protected YesNoCancelPopup getYesNoCancelPopup(final String gridHeader,
