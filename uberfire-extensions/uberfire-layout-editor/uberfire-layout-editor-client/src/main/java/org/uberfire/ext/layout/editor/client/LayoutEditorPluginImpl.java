@@ -235,4 +235,11 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
         layoutEditorPresenter.removeDraggableComponentFromGroup(groupId,
                                                                 componentId);
     }
+
+    @Override
+    public boolean hasDraggableGroupComponent(String groupId,
+                                              String componentId) {
+        return layoutEditorPresenter.hasDraggableComponent(groupId,
+                                                           componentId);
+    }
 }

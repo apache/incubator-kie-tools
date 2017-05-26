@@ -61,7 +61,8 @@ public class LayoutDragComponentGroupView implements UberElement<LayoutDragCompo
     }
 
     @Override
-    public void setTitle(String id, String name) {
+    public void setTitle(String id,
+                         String name) {
         groupTitle.setTextContent(name);
         collapse.setId(id);
         groupTitle.setAttribute("href",
@@ -89,8 +90,16 @@ public class LayoutDragComponentGroupView implements UberElement<LayoutDragCompo
 
     @Override
     public void removeComponent(String componentId) {
-        LayoutDragComponentWidget layoutDragComponentWidget = componentsMap.get(componentId);
-        components.removeChild(layoutDragComponentWidget.getElement());
+        if (hasComponent(componentId)) {
+            LayoutDragComponentWidget layoutDragComponentWidget = componentsMap.get(componentId);
+            components.removeChild(layoutDragComponentWidget.getElement());
+            componentsMap.remove(componentId);
+        }
+    }
+
+    @Override
+    public boolean hasComponent(String componentId) {
+        return componentsMap.containsKey(componentId);
     }
 
     private LayoutDragComponentWidget createDragComponentWidget(LayoutDragComponent dragComponent) {

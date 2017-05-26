@@ -45,8 +45,6 @@ public class LayoutDragComponentGroupPresenter {
         view.addComponents(group.getComponents());
     }
 
-
-
     public void add(String componentId,
                     LayoutDragComponent component) {
         view.addComponent(componentId,
@@ -55,6 +53,10 @@ public class LayoutDragComponentGroupPresenter {
 
     public void removeDraggableComponentFromGroup(String componentId) {
         view.removeComponent(componentId);
+    }
+
+    public boolean hasComponent(String componentId) {
+        return view.hasComponent(componentId);
     }
 
     public UberElement<LayoutDragComponentGroupPresenter> getView() {
@@ -72,5 +74,7 @@ public class LayoutDragComponentGroupPresenter {
                           LayoutDragComponent component);
 
         void removeComponent(String componentId);
+
+        boolean hasComponent(String componentId);
     }
 }

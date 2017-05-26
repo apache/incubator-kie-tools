@@ -145,6 +145,16 @@ public class LayoutEditorPresenter {
         this.pageStyle = pageStyle;
     }
 
+    public boolean hasDraggableGroup(String groupName) {
+        return layoutDragComponentGroups.containsKey(groupName);
+    }
+
+    public boolean hasDraggableComponent(String groupName,
+                                         String componentId) {
+        return hasDraggableGroup(groupName) && layoutDragComponentGroups
+                .get(groupName).hasComponent(componentId);
+    }
+
     public interface View extends UberElement<LayoutEditorPresenter> {
 
         void setupContainer(UberElement<Container> container);

@@ -56,4 +56,7 @@ public interface LayoutEditor {
 
     void removeDraggableGroupComponent(String groupId,
                                        String componentId);
+
+    boolean hasDraggableGroupComponent(String groupId,
+                                       String componentId);
 }

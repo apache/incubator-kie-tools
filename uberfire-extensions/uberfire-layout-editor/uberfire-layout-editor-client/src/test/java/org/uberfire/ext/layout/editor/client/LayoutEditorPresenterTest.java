@@ -149,4 +149,39 @@ public class LayoutEditorPresenterTest {
                      presenter.getLayoutDragComponentGroups().size());
         assertNull(presenter.getLayoutDragComponentGroups().get(DRAGGABLE_GROUP_NAME));
     }
+
+    @Test
+    public void testHasDraggableGroup() {
+        boolean result = presenter.hasDraggableGroup(DRAGGABLE_GROUP_NAME);
+        assertFalse(result);
+
+        testAddDraggableGroups();
+
+        result = presenter.hasDraggableGroup(DRAGGABLE_GROUP_NAME);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testHasDraggableComponent() {
+        boolean result = presenter.hasDraggableComponent(DRAGGABLE_GROUP_NAME,
+                                                         DRAGGABLE_COMPONENT_NAME);
+        assertFalse(result);
+
+        LayoutDragComponentGroup dragGroup = new LayoutDragComponentGroup(DRAGGABLE_GROUP_NAME);
+        presenter.addDraggableComponentGroup(dragGroup);
+
+        result = presenter.hasDraggableComponent(DRAGGABLE_GROUP_NAME,
+                                                 DRAGGABLE_COMPONENT_NAME);
+        assertFalse(result);
+
+        LayoutDragComponent dragComponent = mock(LayoutDragComponent.class);
+        presenter.addDraggableComponentToGroup(DRAGGABLE_GROUP_NAME,
+                                               DRAGGABLE_COMPONENT_NAME,
+                                               dragComponent);
+        when(dragComponentGroupPresenter.hasComponent(DRAGGABLE_COMPONENT_NAME)).thenReturn(true);
+
+        result = presenter.hasDraggableComponent(DRAGGABLE_GROUP_NAME,
+                                                 DRAGGABLE_COMPONENT_NAME);
+        assertTrue(result);
+    }
 }
