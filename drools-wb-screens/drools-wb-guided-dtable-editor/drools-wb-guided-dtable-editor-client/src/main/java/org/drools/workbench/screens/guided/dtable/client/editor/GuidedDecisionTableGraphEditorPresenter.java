@@ -254,7 +254,10 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
 
             loadGraphLatch = new LoadGraphLatch(modelEntries.size(),
                                                 getSelectDecisionTableCommand(modelEntries.iterator().next().getPathHead()),
-                                                () -> originalGraphHash = buildModelFromEditor().hashCode());
+                                                () -> {
+                                                    originalGraphHash = buildModelFromEditor().hashCode();
+                                                    modeller.getView().getGridPanel().setFocus(true);
+                                                });
 
             modelEntries.stream().forEach(loadGraphLatch::loadDocumentGraphEntry);
         };
@@ -459,7 +462,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                                     editorView.showSaving();
                                     saveGraphLatch = new SaveGraphLatch(allDecisionTables.size(),
                                                                         commitMessage);
-                                    if(allDecisionTables.isEmpty()) {
+                                    if (allDecisionTables.isEmpty()) {
                                         saveGraphLatch.saveDocumentGraph();
                                     } else {
                                         allDecisionTables.stream().forEach((dtPresenter) -> {

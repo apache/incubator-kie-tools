@@ -146,6 +146,8 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
 
             decisionTableSelectedEvent.fire(new DecisionTableSelectedEvent(dtPresenter));
 
+            modeller.getView().getGridPanel().setFocus(true);
+
             view.hideBusyIndicator();
         };
     }

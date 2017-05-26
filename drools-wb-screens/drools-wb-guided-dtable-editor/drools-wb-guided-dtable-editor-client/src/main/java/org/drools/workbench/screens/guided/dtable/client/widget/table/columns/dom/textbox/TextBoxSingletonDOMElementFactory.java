@@ -15,9 +15,8 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox;
 
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.KeyDownHandlerCommon;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -29,41 +28,43 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPane
  */
 public abstract class TextBoxSingletonDOMElementFactory<T, W extends TextBox> extends SingleValueSingletonDOMElementFactory<T, W, TextBoxDOMElement<T, W>> {
 
-    public TextBoxSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
-                                              final GridLayer gridLayer,
-                                              final GuidedDecisionTableView gridWidget ) {
-        super( gridPanel,
-               gridLayer,
-               gridWidget );
+    public TextBoxSingletonDOMElementFactory(final GridLienzoPanel gridPanel,
+                                             final GridLayer gridLayer,
+                                             final GuidedDecisionTableView gridWidget) {
+        super(gridPanel,
+              gridLayer,
+              gridWidget);
     }
 
     @Override
-    public TextBoxDOMElement<T, W> createDomElement( final GridLayer gridLayer,
-                                                     final GridWidget gridWidget,
-                                                     final GridBodyCellRenderContext context ) {
+    public TextBoxDOMElement<T, W> createDomElement(final GridLayer gridLayer,
+                                                    final GridWidget gridWidget,
+                                                    final GridBodyCellRenderContext context) {
         this.widget = createWidget();
-        this.widget.addKeyDownHandler( ( e ) -> e.stopPropagation() );
-        this.widget.addMouseDownHandler( ( e ) -> e.stopPropagation() );
-        this.e = new TextBoxDOMElement<T, W>( widget,
-                                              gridLayer,
-                                              gridWidget );
+        this.widget.addMouseDownHandler((e) -> e.stopPropagation());
+        this.widget.addKeyDownHandler(new KeyDownHandlerCommon(gridPanel,
+                                                               gridLayer,
+                                                               gridWidget,
+                                                               this,
+                                                               context));
+        this.widget.addBlurHandler((e) -> {
+            flush();
+            destroyResources();
+            gridLayer.batch();
+            gridPanel.setFocus(true);
+        });
 
-        widget.addBlurHandler( new BlurHandler() {
-            @Override
-            public void onBlur( final BlurEvent event ) {
-                destroyResources();
-                gridLayer.batch();
-                gridPanel.setFocus( true );
-            }
-        } );
+        this.e = new TextBoxDOMElement<>(widget,
+                                         gridLayer,
+                                         gridWidget);
 
         return e;
     }
 
     @Override
     protected T getValue() {
-        if ( widget != null ) {
-            return convert( widget.getValue() );
+        if (widget != null) {
+            return convert(widget.getValue());
         }
         return null;
     }

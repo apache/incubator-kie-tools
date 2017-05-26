@@ -196,6 +196,11 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
     }
 
     @Override
+    public GuidedDecisionTableView.Presenter getPresenter() {
+        return presenter;
+    }
+
+    @Override
     public void setLocation(final double x,
                             final double y) {
         setLocation(new Point2D(x,

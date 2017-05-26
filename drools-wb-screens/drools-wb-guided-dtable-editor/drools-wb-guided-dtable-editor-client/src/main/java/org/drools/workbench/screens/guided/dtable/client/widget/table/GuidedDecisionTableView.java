@@ -133,6 +133,8 @@ public interface GuidedDecisionTableView extends GridWidget,
 
     boolean isNodeMouseEventOverCaption(final INodeXYEvent event);
 
+    GuidedDecisionTableView.Presenter getPresenter();
+
     interface Presenter extends IBindingProvider,
                                 GridSelectionManager,
                                 GridPinnedModeManager,

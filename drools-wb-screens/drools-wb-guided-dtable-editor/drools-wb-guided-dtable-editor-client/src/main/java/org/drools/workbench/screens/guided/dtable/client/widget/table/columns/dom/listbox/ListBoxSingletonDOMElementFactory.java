@@ -15,10 +15,9 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox;
 
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.KeyDownHandlerCommon;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
@@ -29,43 +28,44 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPane
  */
 public abstract class ListBoxSingletonDOMElementFactory<T, W extends ListBox> extends MultiValueSingletonDOMElementFactory<T, W, ListBoxDOMElement<T, W>> {
 
-    public ListBoxSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
-                                              final GridLayer gridLayer,
-                                              final GuidedDecisionTableView gridWidget ) {
-        super( gridPanel,
-               gridLayer,
-               gridWidget );
+    public ListBoxSingletonDOMElementFactory(final GridLienzoPanel gridPanel,
+                                             final GridLayer gridLayer,
+                                             final GuidedDecisionTableView gridWidget) {
+        super(gridPanel,
+              gridLayer,
+              gridWidget);
     }
 
     @Override
-    public ListBoxDOMElement<T, W> createDomElement( final GridLayer gridLayer,
-                                                     final GridWidget gridWidget,
-                                                     final GridBodyCellRenderContext context ) {
+    public ListBoxDOMElement<T, W> createDomElement(final GridLayer gridLayer,
+                                                    final GridWidget gridWidget,
+                                                    final GridBodyCellRenderContext context) {
         this.widget = createWidget();
-        this.widget.addKeyDownHandler( ( e ) -> e.stopPropagation() );
-        this.widget.addMouseDownHandler( ( e ) -> e.stopPropagation() );
-        this.e = new ListBoxDOMElement<T, W>( widget,
-                                              gridLayer,
-                                              gridWidget );
+        this.widget.addMouseDownHandler((e) -> e.stopPropagation());
+        this.widget.addKeyDownHandler(new KeyDownHandlerCommon(gridPanel,
+                                                               gridLayer,
+                                                               gridWidget,
+                                                               this,
+                                                               context));
+        this.widget.addBlurHandler((e) -> {
+            flush();
+            destroyResources();
+            gridLayer.batch();
+            gridPanel.setFocus(true);
+        });
 
-        widget.addBlurHandler( new BlurHandler() {
-            @Override
-            public void onBlur( final BlurEvent event ) {
-                destroyResources();
-                gridLayer.batch();
-                gridPanel.setFocus( true );
-            }
-        } );
+        this.e = new ListBoxDOMElement<>(widget,
+                                         gridLayer,
+                                         gridWidget);
 
         return e;
     }
 
     @Override
     protected T getValue() {
-        if ( widget != null ) {
-            return fromWidget( widget );
+        if (widget != null) {
+            return fromWidget(widget);
         }
         return null;
     }
-
 }

@@ -439,6 +439,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         assertEquals(dtPresenter,
                      dtSelectedEvent.getPresenter().get());
 
+        verify(modellerGridPanel).setFocus(eq(true));
+
         verify(lockManager,
                never()).acquireLock();
     }

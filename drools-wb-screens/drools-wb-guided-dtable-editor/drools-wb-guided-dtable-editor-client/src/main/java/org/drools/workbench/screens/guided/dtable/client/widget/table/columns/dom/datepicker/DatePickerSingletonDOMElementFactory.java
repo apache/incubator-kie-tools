@@ -18,9 +18,11 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.d
 import java.util.Date;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.SingleValueSingletonDOMElementFactory;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.KeyDownHandlerDatePicker;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.uberfire.ext.widgets.common.client.common.DatePicker;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
@@ -34,14 +36,14 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPane
 public class DatePickerSingletonDOMElementFactory extends SingleValueSingletonDOMElementFactory<Date, DatePicker, DatePickerDOMElement> {
 
     private static final String droolsDateFormat = ApplicationPreferences.getDroolsDateFormat();
-    private static final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat( droolsDateFormat );
+    private static final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat(droolsDateFormat);
 
-    public DatePickerSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
-                                                 final GridLayer gridLayer,
-                                                 final GuidedDecisionTableView gridWidget ) {
-        super( gridPanel,
-               gridLayer,
-               gridWidget );
+    public DatePickerSingletonDOMElementFactory(final GridLienzoPanel gridPanel,
+                                                final GridLayer gridLayer,
+                                                final GuidedDecisionTableView gridWidget) {
+        super(gridPanel,
+              gridLayer,
+              gridWidget);
     }
 
     @Override
@@ -50,51 +52,57 @@ public class DatePickerSingletonDOMElementFactory extends SingleValueSingletonDO
             @Override
             protected void onLoad() {
                 super.onLoad();
-                if ( getElement().getParentElement() != null ) {
-                    getElement().getParentElement().getStyle().setPosition( Style.Position.ABSOLUTE );
+                if (getElement().getParentElement() != null) {
+                    getElement().getParentElement().getStyle().setPosition(Style.Position.ABSOLUTE);
                 }
             }
         };
     }
 
     @Override
-    public DatePickerDOMElement createDomElement( final GridLayer gridLayer,
-                                                  final GridWidget gridWidget,
-                                                  final GridBodyCellRenderContext context ) {
+    public DatePickerDOMElement createDomElement(final GridLayer gridLayer,
+                                                 final GridWidget gridWidget,
+                                                 final GridBodyCellRenderContext context) {
         this.widget = createWidget();
-        this.e = new DatePickerDOMElement( widget,
-                                           gridLayer,
-                                           gridWidget );
+        this.e = new DatePickerDOMElement(widget,
+                                          gridLayer,
+                                          gridWidget);
 
-        widget.addChangeDateHandler( ( e ) -> doValueUpdate() );
-        widget.addBlurHandler( ( e ) -> doValueUpdate() );
+        widget.addChangeDateHandler((e) -> doValueUpdate());
+        widget.addDomHandler(new KeyDownHandlerDatePicker(gridPanel,
+                                                          gridLayer,
+                                                          gridWidget,
+                                                          this,
+                                                          context),
+                             KeyDownEvent.getType());
 
         return e;
     }
 
     private void doValueUpdate() {
+        flush();
         destroyResources();
         gridLayer.batch();
-        gridPanel.setFocus( true );
+        gridPanel.setFocus(true);
     }
 
     @Override
-    public String convert( final Date value ) {
-        return dateTimeFormat.format( value );
+    public String convert(final Date value) {
+        return dateTimeFormat.format(value);
     }
 
     @Override
-    public Date convert( final String value ) {
+    public Date convert(final String value) {
         try {
-            return dateTimeFormat.parse( value );
-        } catch ( IllegalArgumentException iae ) {
+            return dateTimeFormat.parse(value);
+        } catch (IllegalArgumentException iae) {
             return new Date();
         }
     }
 
     @Override
     protected Date getValue() {
-        if ( widget != null ) {
+        if (widget != null) {
             return widget.getValue();
         }
         return null;

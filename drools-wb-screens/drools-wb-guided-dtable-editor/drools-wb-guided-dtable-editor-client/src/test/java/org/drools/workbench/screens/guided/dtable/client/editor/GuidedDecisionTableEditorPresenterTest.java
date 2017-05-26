@@ -106,6 +106,8 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
         assertTrue(dtSelectedEvent.getPresenter().isPresent());
         assertEquals(dtPresenter,
                      dtSelectedEvent.getPresenter().get());
+
+        verify(modellerGridPanel).setFocus(eq(true));
     }
 
     @Test

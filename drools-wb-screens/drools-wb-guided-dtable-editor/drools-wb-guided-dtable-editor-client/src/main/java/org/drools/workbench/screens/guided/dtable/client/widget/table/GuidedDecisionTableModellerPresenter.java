@@ -38,6 +38,18 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.DeleteAndEditCell;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.DeleteCell;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.EditCell;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.GotoBeginningOfData;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.GotoBeginningOfRow;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.GotoEndOfData;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.GotoEndOfRow;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.SelectNextCellOnRow;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.SelectPriorCellOnRow;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.SelectionCopy;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.SelectionCut;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.SelectionPaste;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.ColumnHeaderPopOver;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.ColumnHeaderPopOverHandler;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
@@ -47,14 +59,11 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationClearCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationEditCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveDown;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveLeft;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveRight;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveUp;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationSelectBottomRightCell;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationSelectTopLeftCell;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -99,19 +108,23 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
         //Add support for keyboard operations
         final GridLayer layer = view.getGridLayerView();
         final BaseGridWidgetKeyboardHandler handler = new BaseGridWidgetKeyboardHandler(layer);
-        handler.addOperation(new KeyboardOperationClearCell(layer) {
-                                 @Override
-                                 protected void clearCells(final GridWidget gridWidget) {
-                                     getActiveDecisionTable().onDeleteSelectedCells();
-                                 }
-                             },
+        handler.addOperation(new DeleteAndEditCell(layer),
+                             new DeleteCell(layer),
+                             new EditCell(layer),
                              new KeyboardOperationEditCell(layer),
                              new KeyboardOperationMoveLeft(layer),
                              new KeyboardOperationMoveRight(layer),
                              new KeyboardOperationMoveUp(layer),
                              new KeyboardOperationMoveDown(layer),
-                             new KeyboardOperationSelectTopLeftCell(layer),
-                             new KeyboardOperationSelectBottomRightCell(layer));
+                             new SelectionCut(layer),
+                             new SelectionCopy(layer),
+                             new SelectionPaste(layer),
+                             new GotoBeginningOfRow(layer),
+                             new GotoEndOfRow(layer),
+                             new GotoBeginningOfData(layer),
+                             new GotoEndOfData(layer),
+                             new SelectNextCellOnRow(layer),
+                             new SelectPriorCellOnRow(layer));
         handlerRegistrations.add(view.addKeyDownHandler(handler));
 
         //Add support for context menus

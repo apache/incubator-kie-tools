@@ -17,66 +17,62 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.d
 
 import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.BaseDTSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 /**
  * A DOMElement Factory for single-instance multi-value DOMElements.
  */
-public abstract class MultiValueSingletonDOMElementFactory<T, W extends ListBox, E extends MultiValueDOMElement<T, W>> extends BaseSingletonDOMElementFactory<T, W, E> {
+public abstract class MultiValueSingletonDOMElementFactory<T, W extends ListBox, E extends MultiValueDOMElement<T, W>> extends BaseDTSingletonDOMElementFactory<T, W, E> {
 
-    public MultiValueSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
-                                                 final GridLayer gridLayer,
-                                                 final GuidedDecisionTableView gridWidget ) {
-        super( gridPanel,
-               gridLayer,
-               gridWidget );
+    public MultiValueSingletonDOMElementFactory(final GridLienzoPanel gridPanel,
+                                                final GridLayer gridLayer,
+                                                final GuidedDecisionTableView gridWidget) {
+        super(gridPanel,
+              gridLayer,
+              gridWidget);
     }
 
-    public void toWidget( final GridCell<T> cell,
-                          final W widget ) {
-        if ( cell == null || cell.getValue() == null || cell.getValue().getValue() == null ) {
-            if ( widget.getItemCount() > 0 ) {
-                widget.setSelectedIndex( 0 );
+    public void toWidget(final GridCell<T> cell,
+                         final W widget) {
+        if (cell == null || cell.getValue() == null || cell.getValue().getValue() == null) {
+            if (widget.getItemCount() > 0) {
+                widget.setSelectedIndex(0);
             }
-
         } else {
             final T value = cell.getValue().getValue();
-            final String convertedValue = convert( value );
-            for ( int i = 0; i < widget.getItemCount(); i++ ) {
-                if ( widget.getValue( i ).equals( convertedValue ) ) {
-                    widget.setSelectedIndex( i );
+            final String convertedValue = convert(value);
+            for (int i = 0; i < widget.getItemCount(); i++) {
+                if (widget.getValue(i).equals(convertedValue)) {
+                    widget.setSelectedIndex(i);
                     break;
                 }
             }
         }
     }
 
-    public T fromWidget( final W widget ) {
+    public T fromWidget(final W widget) {
         final StringBuilder sb = new StringBuilder();
         int selectedIndex = widget.getSelectedIndex();
-        if ( selectedIndex >= 0 ) {
-            sb.append( widget.getValue( selectedIndex ) );
+        if (selectedIndex >= 0) {
+            sb.append(widget.getValue(selectedIndex));
         }
-        return convert( sb.toString() );
+        return convert(sb.toString());
     }
 
     /**
      * Convert from the given typed value to a String
-     * @param value
-     *         The value to be converted
+     * @param value The value to be converted
      * @return A String representing the type
      */
-    public abstract String convert( final T value );
+    public abstract String convert(final T value);
 
     /**
      * Convert from the given String to a typed value
-     * @param value
-     *         The String to be converted
+     * @param value The String to be converted
      * @return A typed value
      */
-    public abstract T convert( final String value );
-
+    public abstract T convert(final String value);
 }
