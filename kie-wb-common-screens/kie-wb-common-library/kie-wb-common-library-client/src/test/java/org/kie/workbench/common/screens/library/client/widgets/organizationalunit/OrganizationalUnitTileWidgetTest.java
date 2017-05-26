@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.library.client.widgets.organizationalunit;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
@@ -117,13 +118,53 @@ public class OrganizationalUnitTileWidgetTest {
     }
 
     @Test
-    public void openTest() {
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+    public void openAlreadySelectedTeamTest() {
+        final OrganizationalUnit selectedOrganizationalUnit = mock(OrganizationalUnit.class);
+        final Repository selectedRepository = mock(Repository.class);
+        final String selectedBranch = "branch";
+        doReturn(selectedBranch).when(selectedRepository).getDefaultBranch();
 
-        presenter.open(organizationalUnit);
+        doReturn(selectedOrganizationalUnit).when(libraryPlaces).getSelectedOrganizationalUnit();
+        doReturn(selectedRepository).when(libraryPlaces).getSelectedRepository();
+        doReturn(selectedBranch).when(libraryPlaces).getSelectedBranch();
 
-        verify(projectContextChangeEvent).fire(any());
+        final OrganizationalUnitRepositoryInfo info = new OrganizationalUnitRepositoryInfo(Collections.emptyList(),
+                                                                                           selectedOrganizationalUnit,
+                                                                                           Collections.emptyList(),
+                                                                                           selectedRepository);
+        doReturn(info).when(libraryService).getOrganizationalUnitRepositoryInfo(selectedOrganizationalUnit);
+
+        presenter.open(selectedOrganizationalUnit);
+
         verify(libraryPlaces).goToLibrary(any());
+        verify(projectContextChangeEvent,
+               never()).fire(any());
+    }
+
+    @Test
+    public void openNotSelectedTeamTest() {
+        final OrganizationalUnit otherOrganizationalUnit = mock(OrganizationalUnit.class);
+
+        final OrganizationalUnit selectedOrganizationalUnit = mock(OrganizationalUnit.class);
+        final Repository selectedRepository = mock(Repository.class);
+        final String selectedBranch = "branch";
+        doReturn(selectedBranch).when(selectedRepository).getDefaultBranch();
+
+        doReturn(selectedOrganizationalUnit).when(libraryPlaces).getSelectedOrganizationalUnit();
+        doReturn(selectedRepository).when(libraryPlaces).getSelectedRepository();
+        doReturn(selectedBranch).when(libraryPlaces).getSelectedBranch();
+
+        final OrganizationalUnitRepositoryInfo info = new OrganizationalUnitRepositoryInfo(Collections.emptyList(),
+                                                                                           otherOrganizationalUnit,
+                                                                                           Collections.emptyList(),
+                                                                                           selectedRepository);
+        doReturn(info).when(libraryService).getOrganizationalUnitRepositoryInfo(otherOrganizationalUnit);
+
+        presenter.open(otherOrganizationalUnit);
+
+        verify(libraryPlaces,
+               never()).goToLibrary(any());
+        verify(projectContextChangeEvent).fire(any());
     }
 
     @Test

@@ -26,7 +26,6 @@ import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
@@ -123,24 +122,31 @@ public class OrganizationalUnitTileWidget {
     }
 
     public OrganizationalUnitRepositoryInfo open(OrganizationalUnit organizationalUnit) {
-        return libraryService.call(new RemoteCallback<OrganizationalUnitRepositoryInfo>() {
-            @Override
-            public void callback(final OrganizationalUnitRepositoryInfo info) {
-                libraryInternalPreferences.load(loadedLibraryInternalPreferences -> {
-                                                    loadedLibraryInternalPreferences.setLastOpenedOrganizationalUnit(info.getSelectedOrganizationalUnit().getIdentifier());
-                                                    loadedLibraryInternalPreferences.setLastOpenedRepository(info.getSelectedRepository().getAlias());
-                                                    loadedLibraryInternalPreferences.save();
-                                                },
-                                                error -> {
-                                                });
+        return libraryService.call((OrganizationalUnitRepositoryInfo info) -> {
+            libraryInternalPreferences.load(loadedLibraryInternalPreferences -> {
+                                                loadedLibraryInternalPreferences.setLastOpenedOrganizationalUnit(info.getSelectedOrganizationalUnit().getIdentifier());
+                                                loadedLibraryInternalPreferences.setLastOpenedRepository(info.getSelectedRepository().getAlias());
+                                                loadedLibraryInternalPreferences.save();
+                                            },
+                                            error -> {
+                                            });
+
+            if (teamAlreadySelected(info)) {
+                libraryPlaces.goToLibrary(() -> {
+                });
+            } else {
                 final ProjectContextChangeEvent event = new ProjectContextChangeEvent(info.getSelectedOrganizationalUnit(),
                                                                                       info.getSelectedRepository(),
                                                                                       info.getSelectedRepository().getDefaultBranch());
                 projectContextChangeEvent.fire(event);
-                libraryPlaces.goToLibrary(() -> {
-                });
             }
         }).getOrganizationalUnitRepositoryInfo(organizationalUnit);
+    }
+
+    private boolean teamAlreadySelected(OrganizationalUnitRepositoryInfo info) {
+        return info.getSelectedOrganizationalUnit().equals(libraryPlaces.getSelectedOrganizationalUnit())
+                && info.getSelectedRepository().equals(libraryPlaces.getSelectedRepository())
+                && info.getSelectedRepository().getDefaultBranch().equals(libraryPlaces.getSelectedBranch());
     }
 
     public void edit(final OrganizationalUnit organizationalUnit) {
