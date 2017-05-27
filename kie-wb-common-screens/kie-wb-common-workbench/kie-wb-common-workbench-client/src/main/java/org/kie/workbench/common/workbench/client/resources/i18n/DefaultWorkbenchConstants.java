@@ -67,6 +67,8 @@ public interface DefaultWorkbenchConstants
 
     String Jobs();
 
+    String ExecutionErrors();
+
     String Tasks();
 
     String Process_Dashboard();

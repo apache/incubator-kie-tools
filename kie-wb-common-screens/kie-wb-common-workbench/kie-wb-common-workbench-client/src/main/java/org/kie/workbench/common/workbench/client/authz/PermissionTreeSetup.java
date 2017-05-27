@@ -78,6 +78,7 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.setPerspectiveName(DEPLOYMENTS, i18n.Process_Deployments());
         perspectiveTreeProvider.setPerspectiveName(SERVER_MANAGEMENT, i18n.Rule_Deployments());
         perspectiveTreeProvider.setPerspectiveName(JOBS, i18n.Jobs());
+        perspectiveTreeProvider.setPerspectiveName(EXECUTION_ERRORS, i18n.ExecutionErrors());
         perspectiveTreeProvider.setPerspectiveName(TASKS, i18n.Tasks());
         perspectiveTreeProvider.setPerspectiveName(PROCESS_DASHBOARD, i18n.Process_Dashboard());
         perspectiveTreeProvider.setPerspectiveName(BUSINESS_DASHBOARDS, i18n.Business_Dashboards());
