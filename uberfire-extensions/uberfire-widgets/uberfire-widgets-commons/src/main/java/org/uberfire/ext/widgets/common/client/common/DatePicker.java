@@ -27,14 +27,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Focusable;
-import com.google.gwt.user.client.ui.HasEnabled;
-import com.google.gwt.user.client.ui.HasName;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.HasVisibility;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 import org.gwtbootstrap3.client.shared.event.HideEvent;
 import org.gwtbootstrap3.client.shared.event.HideHandler;
@@ -43,25 +36,7 @@ import org.gwtbootstrap3.client.ui.base.HasId;
 import org.gwtbootstrap3.client.ui.base.HasPlaceholder;
 import org.gwtbootstrap3.client.ui.base.HasResponsiveness;
 import org.gwtbootstrap3.client.ui.constants.DeviceSize;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.DatePickerDayOfWeek;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.DatePickerLanguage;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.DatePickerMinView;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.DatePickerPosition;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.HasAutoClose;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.HasDateTimePickerHandlers;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.HasDaysOfWeekDisabled;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.HasEndDate;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.HasForceParse;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.HasHighlightToday;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.HasKeyboardNavigation;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.HasLanguage;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.HasMinView;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.HasPosition;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.HasShowTodayButton;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.HasStartDate;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.HasStartView;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.HasViewSelect;
-import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.HasWeekStart;
+import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.*;
 import org.gwtbootstrap3.extras.datepicker.client.ui.base.events.ChangeDateHandler;
 import org.gwtbootstrap3.extras.datepicker.client.ui.base.events.ChangeMonthHandler;
 import org.gwtbootstrap3.extras.datepicker.client.ui.base.events.ChangeYearHandler;
@@ -146,12 +121,15 @@ public class DatePicker extends Composite
         initWidget(datePicker);
     }
 
-    private Date getDataPickerDate() {
+    protected Date getDataPickerDate() {
         DateTimeFormat dtf = DateTimeFormat.getFormat("dd/M/yyyy");
         String dateStr = parseDate(datePicker.getTextBox().getElement(),
                                    DatePickerFormatUtilities.convertToBS3DateFormat("dd/M/yyyy"));
-        Date dateRes = dtf.parse(dateStr);
-        return dateRes;
+        if(dateStr == null || dateStr.isEmpty()){
+            return null;
+        } else {
+            return dtf.parse(dateStr);
+        }
     }
 
     public void setContainer(final Widget container) {

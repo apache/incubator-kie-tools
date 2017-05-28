@@ -128,5 +128,13 @@ public class DatePickerTest {
         assertEquals(currentLocale,
                      datePicker.getLocaleName());
     }
+
+    @Test
+    public void testGetDataPickerDate(){
+        datePicker = new DatePicker(datePickerMock);
+
+        assertNull(datePicker.getDataPickerDate());
+    }
+
 }
 
