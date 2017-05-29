@@ -16,6 +16,7 @@
 
 package org.uberfire.client.views.pfly.widgets;
 
+import java.util.function.Consumer;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -28,7 +29,6 @@ import org.jboss.errai.common.client.dom.Option;
 import org.jboss.errai.common.client.dom.OptionsCollection;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static org.jboss.errai.common.client.dom.DOMUtil.removeAllElementChildren;
 
 @Dependent
 public class Select implements IsElement,
@@ -86,11 +86,20 @@ public class Select implements IsElement,
     }
 
     public void removeAllOptions() {
-        removeAllElementChildren(select);
+        removeAllOptions(select);
     }
 
     public void refresh() {
-        Scheduler.get().scheduleDeferred(() -> refresh(select));
+        refresh(null);
+    }
+
+    public void refresh(final Consumer<Select> consumer) {
+        Scheduler.get().scheduleDeferred(() -> {
+            if (consumer != null) {
+                consumer.accept(this);
+            }
+            refreshElement(select);
+        });
     }
 
     @Override
@@ -126,7 +135,7 @@ public class Select implements IsElement,
         select.setAttribute("data-width", width);
     }
 
-    private native void refresh(final HTMLElement e) /*-{
+    private native void refreshElement(final HTMLElement e) /*-{
         $wnd.jQuery(e).selectpicker('refresh');
     }-*/;
 
@@ -145,5 +154,9 @@ public class Select implements IsElement,
 
     private native void enable(final HTMLElement e) /*-{
         $wnd.jQuery(e).prop('disabled', false);
+    }-*/;
+
+    private native void removeAllOptions(final HTMLElement e) /*-{
+        $wnd.jQuery(e).find('option').remove();
     }-*/;
 }
