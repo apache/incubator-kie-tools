@@ -22,6 +22,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.docks.view.bars.DocksCollapsedBar;
@@ -29,6 +30,7 @@ import org.uberfire.client.docks.view.bars.DocksExpandedBar;
 import org.uberfire.client.docks.view.menu.MenuBuilder;
 import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
 import org.uberfire.client.mvp.Activity;
+import org.uberfire.client.mvp.PlaceHistoryHandler;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
@@ -47,16 +49,19 @@ public class DocksBars {
     private Event<UberfireDocksInteractionEvent> dockInteractionEvent;
     private UberfireDocksContainer uberfireDocksContainer;
     private List<DocksBar> docks = new ArrayList<>();
+    private PlaceHistoryHandler placeHistoryHandler;
 
     @Inject
     public DocksBars(PlaceManager placeManager,
                      MenuBuilder menuBuilder,
                      Event<UberfireDocksInteractionEvent> dockInteractionEvent,
-                     UberfireDocksContainer uberfireDocksContainer) {
+                     UberfireDocksContainer uberfireDocksContainer,
+                     PlaceHistoryHandler placeHistoryHandler) {
         this.placeManager = placeManager;
         this.menuBuilder = menuBuilder;
         this.dockInteractionEvent = dockInteractionEvent;
         this.uberfireDocksContainer = uberfireDocksContainer;
+        this.placeHistoryHandler = placeHistoryHandler;
     }
 
     public void setup() {
@@ -219,11 +224,18 @@ public class DocksBars {
                          docksBar,
                          expandedBar);
         expand(docksBar.getDockResizeBar());
-        placeManager.goTo(placeRequest,
-                          expandedBar.targetPanel());
+        goToPlace(expandedBar,
+                  placeRequest);
 
         lookUpContextMenus(placeRequest,
                            docksBar.getExpandedBar());
+    }
+
+    private void goToPlace(DocksExpandedBar expandedBar,
+                           PlaceRequest placeRequest) {
+        placeRequest.setUpdateLocationBar(false);
+        placeManager.goTo(placeRequest,
+                          expandedBar.targetPanel());
     }
 
     private void lookUpContextMenus(PlaceRequest placeRequest,
@@ -267,7 +279,6 @@ public class DocksBars {
                         expand(docksBar.getCollapsedBar());
                     }
                     uberfireDocksContainer.resize();
-                    ;
                     dockInteractionEvent.fire(new UberfireDocksInteractionEvent(targetDock,
                                                                                 UberfireDocksInteractionEvent.InteractionType.DESELECTED));
                 }

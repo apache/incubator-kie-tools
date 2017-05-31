@@ -16,19 +16,21 @@
 package org.uberfire.client.mvp;
 
 import java.util.logging.Logger;
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
+import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.ActivityResourceType;
 
-@Dependent
+@ApplicationScoped
 public class PlaceHistoryHandler {
 
     private static final Logger log = Logger.getLogger(PlaceHistoryHandler.class.getName());
@@ -37,6 +39,7 @@ public class PlaceHistoryHandler {
     private PlaceRequestHistoryMapper mapper;
     private PlaceManager placeManager;
     private PlaceRequest defaultPlaceRequest = PlaceRequest.NOWHERE;
+    private String currentBookmarkableURLStatus = "";
 
     /**
      * Create a new PlaceHistoryHandler.
@@ -57,52 +60,36 @@ public class PlaceHistoryHandler {
      * Initialize this place history handler.
      * @return a registration object to de-register the handler
      */
-    public HandlerRegistration register(final PlaceManager placeManager,
+    public HandlerRegistration initialize(final PlaceManager placeManager,
                                         final EventBus eventBus,
                                         final PlaceRequest defaultPlaceRequest) {
         this.placeManager = placeManager;
         this.defaultPlaceRequest = defaultPlaceRequest;
-        /*
-         * final HandlerRegistration placeReg =
-         * eventBus.addHandler(PlaceChangeEvent.TYPE, new
-         * PlaceChangeEvent.Handler() { public void
-         * onPlaceChange(PlaceChangeEvent event) { Place newPlace =
-         * event.getNewPlace();
-         * historian.newItem(tokenForPlace(newPlaceRequest), false); } });
-         */
 
         final HandlerRegistration historyReg =
-                historian.addValueChangeHandler(new ValueChangeHandler<String>() {
-                    @Override
-                    public void onValueChange(ValueChangeEvent<String> event) {
+                historian.addValueChangeHandler(event -> {
                         String token = event.getValue();
                         handleHistoryToken(token);
-                    }
                 });
 
-        return new HandlerRegistration() {
-            @Override
-            public void removeHandler() {
+        return () -> {
                 PlaceHistoryHandler.this.defaultPlaceRequest = DefaultPlaceRequest.NOWHERE;
                 PlaceHistoryHandler.this.placeManager = null;
-                //placeReg.removeHandler();
                 historyReg.removeHandler();
-            }
         };
     }
 
-    public void onPlaceChange(final PlaceRequest placeRequest) {
-        if (placeRequest.isUpdateLocationBarAllowed()) {
-            historian.newItem(tokenForPlace(placeRequest),
+    private void updateHistoryBar() {
+        historian.newItem(currentBookmarkableURLStatus,
                               false);
-        }
     }
 
-    /**
-     * Visible for testing.
-     */
     Logger log() {
         return log;
+    }
+
+    public String getCurrentBookmarkableURLStatus() {
+        return currentBookmarkableURLStatus;
     }
 
     private void handleHistoryToken(String token) {
@@ -125,12 +112,102 @@ public class PlaceHistoryHandler {
         placeManager.goTo(newPlaceRequest);
     }
 
+    /**
+     * currentBookmarkableURLStatus schema   perspective#screen-1,screen-2#editor-path1,editor-path2
+     * @param newPlaceRequest
+     * @return
+     */
     private String tokenForPlace(final PlaceRequest newPlaceRequest) {
         if (defaultPlaceRequest.equals(newPlaceRequest)) {
             return "";
         }
+        return currentBookmarkableURLStatus;
+    }
 
-        return newPlaceRequest.getFullIdentifier();
+    /**
+     * Return true if the given screen is already closed.
+     * @param screen
+     * @return
+     */
+    private boolean isScreenClosed(String screen) {
+        return BookmarkableUrlHelper.isScreenClosed(screen,
+                                                    currentBookmarkableURLStatus);
+    }
+
+    /**
+     * Extract a perspective from a place
+     * @param place
+     * @return
+     */
+    public PlaceRequest getPerspectiveFromPlace(final PlaceRequest place) {
+        return BookmarkableUrlHelper.getPerspectiveFromPlace(place);
+    }
+
+    /**
+     * register opened screen of perspective
+     * @param activity
+     * @param place
+     */
+    public void registerOpen(Activity activity,
+                             PlaceRequest place) {
+        if (place.isUpdateLocationBarAllowed()) {
+            if (activity.isType(ActivityResourceType.PERSPECTIVE.name())) {
+                currentBookmarkableURLStatus = BookmarkableUrlHelper.registerOpenedPerspective(currentBookmarkableURLStatus,
+                                                                                               place);
+            } else if (activity.isType(ActivityResourceType.SCREEN.name())) {
+                currentBookmarkableURLStatus =
+                        BookmarkableUrlHelper.registerOpenedScreen(currentBookmarkableURLStatus,
+                                                                   place);
+            } else if (activity.isType(ActivityResourceType.EDITOR.name())) {
+                currentBookmarkableURLStatus =
+                        BookmarkableUrlHelper.registerOpenedScreen(currentBookmarkableURLStatus,
+                                                                   place);
+            }
+            updateHistoryBar();
+        }
+    }
+
+    public void registerClose(Activity activity,
+                              PlaceRequest place) {
+        if (place.isUpdateLocationBarAllowed()) {
+            final String id = place.getIdentifier();
+            if (activity.isType(ActivityResourceType.SCREEN.name())) {
+                final String token = BookmarkableUrlHelper.getUrlToken(currentBookmarkableURLStatus,
+                                                                       id);
+
+                currentBookmarkableURLStatus =
+                        BookmarkableUrlHelper.registerClose(currentBookmarkableURLStatus,
+                                                            token);
+            }
+            updateHistoryBar();
+        }
+    }
+
+    public void flush() {
+        currentBookmarkableURLStatus = "";
+    }
+
+    public String getToken() {
+        return (historian.getToken());
+    }
+
+    public void registerOpenDock(@Observes UberfireDocksInteractionEvent event) {
+        if (event.getType() == UberfireDocksInteractionEvent.InteractionType.SELECTED) {
+            currentBookmarkableURLStatus =
+                    BookmarkableUrlHelper.registerOpenedDock(currentBookmarkableURLStatus,
+                                                             event.getTargetDock());
+            updateHistoryBar();
+        }
+    }
+
+    public void registerCloseDock(@Observes UberfireDocksInteractionEvent event) {
+        if (event.getType() == UberfireDocksInteractionEvent.InteractionType.DESELECTED) {
+
+            currentBookmarkableURLStatus =
+                    BookmarkableUrlHelper.registerClosedDock(currentBookmarkableURLStatus,
+                                                             event.getTargetDock());
+            updateHistoryBar();
+        }
     }
 
     /**

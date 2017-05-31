@@ -36,4 +36,5 @@ public interface UberfireDocks {
 
     void enable(UberfireDockPosition position,
                 String perspectiveName);
+
 }

@@ -28,10 +28,12 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.QualifierUtil;
 import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.AdditionalAnswers;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -43,6 +45,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.AbstractPopupActivity;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityManager;
+import org.uberfire.client.mvp.BookmarkableUrlHelper;
 import org.uberfire.client.mvp.ContextActivity;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
@@ -58,6 +61,7 @@ import org.uberfire.client.util.MockIOCBeanDef;
 import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchLayout;
+import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
@@ -108,6 +112,12 @@ public class PlaceManagerTest {
     private final PanelDefinition rootPanel = new PanelDefinitionImpl(
             MultiListWorkbenchPanelPresenter.class.getName());
     @Mock
+    PerspectiveActivity defaultPerspective;
+    @Mock
+    SyncBeanManager iocManager;
+    @Mock
+    UberfireDocks uberfireDock;
+    @Mock
     Event<BeforeClosePlaceEvent> workbenchPartBeforeCloseEvent;
     @Mock
     Event<ClosePlaceEvent> workbenchPartCloseEvent;
@@ -138,6 +148,15 @@ public class PlaceManagerTest {
     @Before
     public void setup() {
         ((SyncBeanManagerImpl) IOC.getBeanManager()).reset();
+
+        when(placeHistoryHandler.getPerspectiveFromPlace(any())).then(AdditionalAnswers.returnsFirstArg());
+
+        when(defaultPerspective.getIdentifier())
+                .thenReturn("DefaultPerspective");
+        when(defaultPerspective.isType(any(String.class)))
+                .thenReturn(true);
+        when(perspectiveManager.getCurrentPerspective())
+                .thenReturn(defaultPerspective);
 
         when(activityManager.getActivities(any(PlaceRequest.class))).thenReturn(singleton(notFoundActivity));
 
@@ -170,6 +189,9 @@ public class PlaceManagerTest {
         when(kansasActivity.preferredWidth()).thenReturn(123);
         when(kansasActivity.preferredHeight()).thenReturn(456);
 
+        when(placeHistoryHandler.getPerspectiveFromPlace(any()))
+                .thenAnswer(i -> i.getArgumentAt(0,
+                                                 PlaceRequest.class));
         // arrange for the mock PerspectiveManager to invoke the doWhenFinished callbacks
         doAnswer(new Answer<Void>() {
             @SuppressWarnings({"rawtypes", "unchecked"})
@@ -191,6 +213,10 @@ public class PlaceManagerTest {
                 return null;
             }
         }).when(perspectiveManager).savePerspectiveState(any(Command.class));
+        doReturn(new DefaultPlaceRequest("lastPlaceRequest"))
+                .when(defaultPerspective).getPlace();
+        doReturn(defaultPerspective).when(perspectiveManager)
+                .getCurrentPerspective();
     }
 
     /**
@@ -233,7 +259,7 @@ public class PlaceManagerTest {
     public void testPlaceManagerGetsInitializedToADefaultPlace() throws Exception {
         placeManager.initPlaceHistoryHandler();
 
-        verify(placeHistoryHandler).register(any(PlaceManager.class),
+        verify(placeHistoryHandler).initialize(any(PlaceManager.class),
                                              any(EventBus.class),
                                              any(PlaceRequest.class));
     }
@@ -774,8 +800,6 @@ public class PlaceManagerTest {
                never()).onStartup(any(PlaceRequest.class));
         verify(popupActivity,
                times(1)).onOpen();
-        verify(placeHistoryHandler,
-               times(1)).onPlaceChange(popupPlace);
 
         assertEquals(PlaceStatus.OPEN,
                      placeManager.getStatus(popupPlace));
@@ -799,8 +823,6 @@ public class PlaceManagerTest {
                never()).onStartup(any(PlaceRequest.class));
         verify(popupActivity,
                times(1)).onOpen();
-        verify(placeHistoryHandler,
-               times(1)).onPlaceChange(popupPlace);
         assertEquals(PlaceStatus.OPEN,
                      placeManager.getStatus(popupPlace));
     }
@@ -1226,7 +1248,6 @@ public class PlaceManagerTest {
                                               eq(expectedPartHeight));
 
         // contract between PlaceManager and PlaceHistoryHandler
-        verify(placeHistoryHandler).onPlaceChange(placeRequest);
 
         // state changes in PlaceManager itself (contract between PlaceManager and everyone)
         assertTrue("Actual place requests: " + placeManager.getActivePlaceRequests(),
@@ -1272,10 +1293,6 @@ public class PlaceManagerTest {
                never()).addWorkbenchPanel(eq(panelManager.getRoot()),
                                           any(PanelDefinition.class),
                                           any(Position.class));
-
-        // contract between PlaceManager and PlaceHistoryHandler
-        verify(placeHistoryHandler,
-               never()).onPlaceChange(any(PlaceRequest.class));
 
         // state changes in PlaceManager itself (contract between PlaceManager and everyone)
         assertTrue(

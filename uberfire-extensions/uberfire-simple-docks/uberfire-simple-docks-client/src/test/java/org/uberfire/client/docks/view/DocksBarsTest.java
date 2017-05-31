@@ -67,7 +67,8 @@ public class DocksBarsTest {
         docksBars = new DocksBars(placeManager,
                                   menuBuilder,
                                   dockInteractionEvent,
-                                  uberfireDocksContainer);
+                                  uberfireDocksContainer,
+                                  null);
     }
 
     @Test

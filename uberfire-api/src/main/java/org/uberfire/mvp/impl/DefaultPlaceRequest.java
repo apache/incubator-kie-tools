@@ -29,7 +29,7 @@ import org.uberfire.mvp.PlaceRequest;
 public class DefaultPlaceRequest implements PlaceRequest {
 
     protected final Map<String, String> parameters = new HashMap<String, String>();
-    private final boolean updateLocationBar;
+    private boolean updateLocationBar;
     protected String identifier;
 
     public DefaultPlaceRequest() {
@@ -239,6 +239,11 @@ public class DefaultPlaceRequest implements PlaceRequest {
     @Override
     public boolean isUpdateLocationBarAllowed() {
         return updateLocationBar;
+    }
+
+    @Override
+    public void setUpdateLocationBar(boolean updateLocationBar) {
+        this.updateLocationBar = updateLocationBar;
     }
 
     @Override

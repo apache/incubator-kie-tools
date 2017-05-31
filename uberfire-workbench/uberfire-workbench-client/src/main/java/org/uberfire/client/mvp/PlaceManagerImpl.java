@@ -128,7 +128,7 @@ public class PlaceManagerImpl
 
     @PostConstruct
     public void initPlaceHistoryHandler() {
-        getPlaceHistoryHandler().register(this,
+        getPlaceHistoryHandler().initialize(this,
                                           produceEventBus(),
                                           DefaultPlaceRequest.NOWHERE);
         workbenchLayout = layoutSelection.get();
@@ -267,6 +267,7 @@ public class PlaceManagerImpl
                                     (PopupActivity) activity);
                 doWhenFinished.execute();
             } else if (activity.isType(ActivityResourceType.PERSPECTIVE.name())) {
+                placeHistoryHandler.flush();
                 launchPerspectiveActivity(place,
                                           (PerspectiveActivity) activity,
                                           doWhenFinished);
@@ -713,7 +714,6 @@ public class PlaceManagerImpl
 
         visibleWorkbenchParts.put(place,
                                   part);
-        getPlaceHistoryHandler().onPlaceChange(place);
 
         final IsWidget titleDecoration = maybeWrapExternalWidget(activity,
                                                                  () -> activity.getTitleDecorationElement(),
@@ -739,6 +739,8 @@ public class PlaceManagerImpl
 
         try {
             activity.onOpen();
+            getPlaceHistoryHandler().registerOpen(activity,
+                                                  place);
         } catch (Exception ex) {
             lifecycleErrorHandler.handle(activity,
                                          LifecyclePhase.OPEN,
@@ -766,13 +768,14 @@ public class PlaceManagerImpl
             return;
         }
 
-        getPlaceHistoryHandler().onPlaceChange(place);
 
         activePopups.put(place.getIdentifier(),
                          activity);
 
         try {
             activity.onOpen();
+            getPlaceHistoryHandler().registerOpen(activity,
+                                                  place);
         } catch (Exception ex) {
             activePopups.remove(place.getIdentifier());
             lifecycleErrorHandler.handle(activity,
@@ -781,6 +784,13 @@ public class PlaceManagerImpl
         }
     }
 
+    /**
+     * Before launching the perspective we check that it isn't already open by asking the
+     * placeHistory service to extract the perspective encoded in the URL
+     * @param place
+     * @param activity
+     * @param doWhenFinished
+     */
     private void launchPerspectiveActivity(final PlaceRequest place,
                                            final PerspectiveActivity activity,
                                            final Command doWhenFinished) {
@@ -844,6 +854,8 @@ public class PlaceManagerImpl
                                                 openPartsRecursively(perspectiveDef.getRoot());
                                                 doWhenFinished.execute();
                                                 workbenchLayout.onResize();
+                                                placeHistoryHandler.registerOpen(activity,
+                                                                                 place);
                                             }
                                         });
                 }
@@ -935,6 +947,8 @@ public class PlaceManagerImpl
             }
         }
 
+        getPlaceHistoryHandler().registerClose(activity,
+                                               place);
         workbenchPartCloseEvent.fire(new ClosePlaceEvent(place));
 
         panelManager.removePartForPlace(place);
