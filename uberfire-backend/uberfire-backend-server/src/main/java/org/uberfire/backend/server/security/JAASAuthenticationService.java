@@ -55,7 +55,7 @@ public class JAASAuthenticationService extends GroupAdapterAuthorizationSource i
     static final String DEFAULT_ROLE_PRINCIPLE_NAME = "Roles";
     private final String rolePrincipleName = DEFAULT_ROLE_PRINCIPLE_NAME;
 
-    private final ThreadLocal<User> userOnThisThread = new ThreadLocal<User>();
+    private final ThreadLocal<User> userOnThisThread = new ThreadLocal<>();
 
     private final String domain;
 

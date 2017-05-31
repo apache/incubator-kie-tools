@@ -35,9 +35,31 @@ import org.jboss.errai.security.shared.api.RoleImpl;
 import org.uberfire.backend.server.security.RoleRegistry;
 import org.uberfire.security.authz.adapter.GroupsAdapter;
 
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class GroupAdapterAuthorizationSource {
 
-    private final ServiceLoader<GroupsAdapter> groupsAdapterServiceLoader = ServiceLoader.load(GroupsAdapter.class);
+    private final String roleRegexTemplate = System.getProperty( "org.uberfire.regex.role_mapper",
+                                                                 null );
+    
+    private HashMap<String, Pattern> regexPatterns = new HashMap<>();
+
+    private Iterator<GroupsAdapter> groupsAdapters = null;
+
+    public GroupAdapterAuthorizationSource() {
+        this( ServiceLoader.load( GroupsAdapter.class ).iterator() );
+    }
+
+    /**
+     * Constructor allowing custom {@link GroupsAdapter}s to be used.
+     * 
+     * @param groupsAdapters
+     */
+    public GroupAdapterAuthorizationSource( final Iterator<GroupsAdapter> groupsAdapters ) {
+        this.groupsAdapters = groupsAdapters;
+    }
 
     protected List<String> loadEntitiesFromSubjectAndAdapters(String username,
                                                               Subject subject,
@@ -57,28 +79,30 @@ public class GroupAdapterAuthorizationSource {
         return roles;
     }
 
-    private List<String> filterValidPrincipals(List<String> principals) {
-        if (principals == null) {
-            return new ArrayList<>();
-        }
-        return principals.stream().filter(Objects::nonNull).collect(Collectors.toList());
-    }
+    protected List<String> collectEntitiesFromAdapters( String username,
+                                                        Subject subject ) {
 
-    protected List<String> collectEntitiesFromAdapters(String username,
-                                                       Subject subject) {
-        Set<String> userGroups = new HashSet<String>();
-        for (final GroupsAdapter adapter : groupsAdapterServiceLoader) {
-            final List<Group> groupRoles = adapter.getGroups(username,
-                                                             subject);
-            if (groupRoles != null) {
-                for (Group group : groupRoles) {
-                    userGroups.add(group.getName());
+        Set<String> userGroups = new HashSet<>();
+
+        while ( groupsAdapters.hasNext() ) {
+            final List<Group> groupRoles = groupsAdapters.next().getGroups( username,
+                                                                            subject );
+            if ( groupRoles != null ) {
+
+                for ( Group group : groupRoles ) {
+                    // apply configurable regex pattern for adapters that do not return simple group names     
+                    if ( roleRegexTemplate == null || roleRegexTemplate.isEmpty() ) {
+                        userGroups.add( group.getName() );
+                    } else {
+                        userGroups.add( getSimpleName( group.getName() ) );
+                    }
                 }
             }
         }
 
-        return new LinkedList<String>(userGroups);
+        return new LinkedList<>( userGroups );
     }
+
 
     /**
      * Collects the principals for a given subject.
@@ -90,7 +114,7 @@ public class GroupAdapterAuthorizationSource {
             return null;
         }
 
-        List<String> roles = new ArrayList<String>();
+        List<String> roles = new ArrayList<>();
         try {
             Set<java.security.Principal> principals = subject.getPrincipals();
             if (principals != null) {
@@ -172,5 +196,34 @@ public class GroupAdapterAuthorizationSource {
         }
 
         return Collections.emptyList();
+    }
+
+    private List<String> filterValidPrincipals(List<String> principals) {
+        if (principals == null) {
+            return new ArrayList<>();
+        }
+        return principals.stream().filter(Objects::nonNull).collect(Collectors.toList());
+    }
+    
+    /*
+     * Return simple role name if name provided by adapter matches a regex pattern
+     * 
+     */
+    private String getSimpleName( String name ) {
+        for ( Role role : RoleRegistry.get().getRegisteredRoles() ) {
+            if ( !regexPatterns.containsKey( role.getName() ) ) {
+                regexPatterns.put( role.getName(),
+                                   Pattern.compile( roleRegexTemplate.replaceAll( "role",
+                                                                                  role.getName() ) ) );
+            }
+
+            Matcher matcher = regexPatterns.get( role.getName() ).matcher( name );
+            while ( matcher.find() ) {
+                if ( matcher.group( 0 ) != null ) {
+                    return role.getName();
+                }
+            }
+        }
+        return name;
     }
 }
