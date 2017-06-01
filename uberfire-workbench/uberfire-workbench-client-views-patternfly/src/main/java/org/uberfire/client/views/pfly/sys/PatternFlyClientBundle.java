@@ -30,4 +30,7 @@ public interface PatternFlyClientBundle extends ClientBundle {
     @Source("org/uberfire/client/views/static/bootstrap-select/js/bootstrap-select.min.js")
     TextResource bootstrapSelect();
 
+    @Source("org/uberfire/client/views/static/js/patternfly.min.js")
+    TextResource patternFly();
+
 }

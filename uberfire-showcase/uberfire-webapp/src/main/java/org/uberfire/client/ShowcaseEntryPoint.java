@@ -15,13 +15,7 @@
  */
 package org.uberfire.client;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
@@ -152,7 +146,12 @@ public class ShowcaseEntryPoint {
     @AfterInitialization
     public void startApp() {
         hideLoadingPopup();
+        GWT.log("PatternFly version: " + getPatternFlyVersion());
     }
+
+    private native String getPatternFlyVersion()/*-{
+        return $wnd.patternfly.version;
+    }-*/;
 
     private void setupMenu(@Observes final ApplicationReadyEvent event) {
         final PerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
