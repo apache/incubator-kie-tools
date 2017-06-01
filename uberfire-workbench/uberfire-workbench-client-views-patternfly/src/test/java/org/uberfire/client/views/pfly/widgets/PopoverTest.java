@@ -36,7 +36,7 @@ public class PopoverTest {
 
     @Test
     public void testContent() {
-        final String content = "content";
+        final String content = "some text";
         popover.setContent(content);
 
         verify(anchor).setAttribute("data-content",
@@ -50,4 +50,49 @@ public class PopoverTest {
 
         verify(anchor).setTitle(title);
     }
+
+    @Test
+    public void testContainer() {
+        final String container = "body";
+        popover.setContainer(container);
+
+        verify(anchor).setAttribute("data-container",
+                                    container);
+    }
+
+    @Test
+    public void testHtml() {
+        popover.setHtml(true);
+
+        verify(anchor).setAttribute("data-html",
+                                    "true");
+    }
+
+    @Test
+    public void testPlacement() {
+        final String placement = "top";
+        popover.setPlacement(placement);
+
+        verify(anchor).setAttribute("data-placement",
+                                    placement);
+    }
+
+    @Test
+    public void testTrigger() {
+        final String trigger = "focus";
+        popover.setTrigger(trigger);
+
+        verify(anchor).setAttribute("data-trigger",
+                                    trigger);
+    }
+
+    @Test
+    public void testTemplate() {
+        final String template = "<div></div>";
+        popover.setTemplate(template);
+
+        verify(anchor).setAttribute("data-template",
+                                    template);
+    }
+
 }

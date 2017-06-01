@@ -18,7 +18,7 @@
     opacity: 0.1;
 }
 
-.upper {
+.rowUpper {
     height: 10px;
 }
 
@@ -33,7 +33,7 @@
     height: calc(100% - 15px);
 }
 
-.bottom {
+.rowBottom {
     height: 10px;
     display: flex;
 }
