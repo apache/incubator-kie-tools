@@ -165,8 +165,15 @@ public class KieProjectServiceImpl
     }
 
     @Override
-    public Path resolveDefaultPath( Package pkg, String resourceType ) {
-        return resourceResolver.resolveDefaultPath( pkg, resourceType );
+    public Package resolveDefaultWorkspacePackage(final Project project) {
+        return resourceResolver.resolveDefaultWorkspacePackage(project);
+    }
+
+    @Override
+    public Path resolveDefaultPath(Package pkg,
+                                   String resourceType) {
+        return resourceResolver.resolveDefaultPath(pkg,
+                                                   resourceType);
     }
 
     @Override

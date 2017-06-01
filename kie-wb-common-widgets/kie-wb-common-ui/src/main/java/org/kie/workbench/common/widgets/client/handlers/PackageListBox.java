@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -30,13 +29,11 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.gwtbootstrap3.extras.select.client.ui.Option;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
@@ -78,14 +75,14 @@ public class PackageListBox extends Composite {
         packages.clear();
 
         // Disable and set default content if Project is not selected
-        if (context.getActiveProject() == null) {
+        final Project activeProject = context.getActiveProject();
+        if (activeProject == null) {
             return;
         }
 
         // Otherwise show list of packages
-        projectService.call(new RemoteCallback<Set<Package>>() {
-            @Override
-            public void callback(final Set<Package> pkgs) {
+        projectService.call((Set<Package> pkgs) -> {
+            projectService.call((Package activePackage) -> {
                 //Sort by caption
                 final List<Package> sortedPackages = new ArrayList<Package>();
                 sortedPackages.addAll(pkgs);
@@ -102,30 +99,14 @@ public class PackageListBox extends Composite {
                     return;
                 }
 
-                final Package activePackage = getGroupIdProjectPackage(context.getActiveProject(),
-                                                                       sortedPackages);
-
                 addPackagesToSelect(sortedPackages,
                                     activePackage);
 
                 if (packagesLoadedCommand != null) {
                     packagesLoadedCommand.execute();
                 }
-            }
-        }).resolvePackages(context.getActiveProject());
-    }
-
-    Package getGroupIdProjectPackage(final Project project,
-                                     final List<Package> packages) {
-        final GAV projectGav = project.getPom().getGav();
-        final String projectGroupId = projectGav.getGroupId();
-        final String projectArtifactId = projectGav.getArtifactId();
-
-        final String activePackageCaption = projectGroupId + "." + projectArtifactId;
-
-        final Optional<Package> activePackage = packages.stream().filter(p -> p.getCaption().equals(activePackageCaption)).findFirst();
-
-        return activePackage.orElse(null);
+            }).resolveDefaultWorkspacePackage(activeProject);
+        }).resolvePackages(activeProject);
     }
 
     private void addPackagesToSelect(final List<Package> sortedPackages,

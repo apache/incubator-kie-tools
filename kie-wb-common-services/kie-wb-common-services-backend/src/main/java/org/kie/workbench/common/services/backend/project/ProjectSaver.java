@@ -20,18 +20,16 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang3.StringUtils;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
-import org.guvnor.common.services.project.utils.ProjectResourcePaths;
-import org.guvnor.common.services.project.backend.server.utils.IdentifierUtils;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectRepositoriesService;
+import org.guvnor.common.services.project.utils.ProjectResourcePaths;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
@@ -42,7 +40,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.guvnor.common.services.project.utils.ProjectResourcePaths.*;
+import static org.guvnor.common.services.project.utils.ProjectResourcePaths.MAIN_RESOURCES_PATH;
 
 public class ProjectSaver {
 
@@ -62,17 +60,17 @@ public class ProjectSaver {
     }
 
     @Inject
-    public ProjectSaver( final @Named("ioStrategy") IOService ioService,
-                         final POMService pomService,
-                         final KModuleService kModuleService,
-                         final Event<NewProjectEvent> newProjectEvent,
-                         final Event<NewPackageEvent> newPackageEvent,
-                         final KieResourceResolver resourceResolver,
-                         final ProjectImportsService projectImportsService,
-                         final ProjectRepositoriesService projectRepositoriesService,
-                         final PackageNameWhiteListService packageNameWhiteListService,
-                         final CommentedOptionFactory commentedOptionFactory,
-                         final SessionInfo sessionInfo ) {
+    public ProjectSaver(final @Named("ioStrategy") IOService ioService,
+                        final POMService pomService,
+                        final KModuleService kModuleService,
+                        final Event<NewProjectEvent> newProjectEvent,
+                        final Event<NewPackageEvent> newPackageEvent,
+                        final KieResourceResolver resourceResolver,
+                        final ProjectImportsService projectImportsService,
+                        final ProjectRepositoriesService projectRepositoriesService,
+                        final PackageNameWhiteListService packageNameWhiteListService,
+                        final CommentedOptionFactory commentedOptionFactory,
+                        final SessionInfo sessionInfo) {
         this.ioService = ioService;
         this.pomService = pomService;
         this.kModuleService = kModuleService;
@@ -83,26 +81,25 @@ public class ProjectSaver {
         this.projectRepositoriesService = projectRepositoriesService;
         this.packageNameWhiteListService = packageNameWhiteListService;
         this.commentedOptionFactory = commentedOptionFactory;
-        this.safeSessionInfo = new SafeSessionInfo( sessionInfo );
+        this.safeSessionInfo = new SafeSessionInfo(sessionInfo);
     }
 
-    public KieProject save( final Path repositoryRoot,
-                            final POM pom,
-                            final String baseUrl ) {
+    public KieProject save(final Path repositoryRoot,
+                           final POM pom,
+                           final String baseUrl) {
         try {
-            ioService.startBatch( Paths.convert( repositoryRoot ).getFileSystem(),
-                                  commentedOptionFactory.makeCommentedOption( "New project [" + pom.getName() + "]" ) );
+            ioService.startBatch(Paths.convert(repositoryRoot).getFileSystem(),
+                                 commentedOptionFactory.makeCommentedOption("New project [" + pom.getName() + "]"));
 
-            KieProject kieProject = new NewProjectCreator( pom,
-                                                           repositoryRoot ).create( baseUrl );
+            KieProject kieProject = new NewProjectCreator(pom,
+                                                          repositoryRoot).create(baseUrl);
 
-            newProjectEvent.fire( new NewProjectEvent( kieProject,
-                                                       safeSessionInfo.getId(),
-                                                       safeSessionInfo.getIdentity().getIdentifier() ) );
+            newProjectEvent.fire(new NewProjectEvent(kieProject,
+                                                     safeSessionInfo.getId(),
+                                                     safeSessionInfo.getIdentity().getIdentifier()));
             return kieProject;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         } finally {
             ioService.endBatch();
         }
@@ -110,39 +107,38 @@ public class ProjectSaver {
 
     private class NewProjectCreator {
 
-        private final Path       repositoryRoot;
-        private final Path       projectRootPath;
-        private final POM        pom;
+        private final Path repositoryRoot;
+        private final Path projectRootPath;
+        private final POM pom;
         private final KieProject simpleProjectInstance;
         private final org.uberfire.java.nio.file.Path projectNioRootPath;
 
-        public NewProjectCreator( final POM pom,
-                                  final Path repositoryRoot ) {
+        public NewProjectCreator(final POM pom,
+                                 final Path repositoryRoot) {
             this.repositoryRoot = repositoryRoot;
             this.pom = pom;
 
             String projectName = pom.getName();
 
-            if ( projectName == null || projectName.isEmpty() ) {
+            if (projectName == null || projectName.isEmpty()) {
                 projectName = pom.getGav().getArtifactId();
             }
 
-            projectNioRootPath = Paths.convert( repositoryRoot ).resolve( projectName );
+            projectNioRootPath = Paths.convert(repositoryRoot).resolve(projectName);
 
-            projectRootPath = Paths.convert( projectNioRootPath );
+            projectRootPath = Paths.convert(projectNioRootPath);
 
-            simpleProjectInstance = resourceResolver.simpleProjectInstance( Paths.convert( projectRootPath ) );
-
+            simpleProjectInstance = resourceResolver.simpleProjectInstance(Paths.convert(projectRootPath));
         }
 
-        public KieProject create( final String baseUrl ) {
+        public KieProject create(final String baseUrl) {
 
-            createKieProject( baseUrl );
+            createKieProject(baseUrl);
 
-            return resourceResolver.resolveProject( projectRootPath );
+            return resourceResolver.resolveProject(projectRootPath);
         }
 
-        private Path createKieProject( final String baseUrl ) {
+        private Path createKieProject(final String baseUrl) {
 
             //check if the project already exists.
             checkIfExists();
@@ -151,82 +147,70 @@ public class ProjectSaver {
             updateParentPOM();
 
             //Create POM.xml
-            pomService.create( projectRootPath,
-                               baseUrl,
-                               pom );
+            pomService.create(projectRootPath,
+                              baseUrl,
+                              pom);
 
             //Create Maven project structure
             createMavenDirectories();
 
             //Create a default kmodule.xml
-            kModuleService.setUpKModule( simpleProjectInstance.getKModuleXMLPath() );
+            kModuleService.setUpKModule(simpleProjectInstance.getKModuleXMLPath());
 
             //Create a default workspace based on the GAV
             createDefaultPackage();
 
             //Create Project configuration - project imports
-            projectImportsService.saveProjectImports( simpleProjectInstance.getImportsPath() );
+            projectImportsService.saveProjectImports(simpleProjectInstance.getImportsPath());
 
             //Create Project configuration - project package names White List
-            packageNameWhiteListService.createProjectWhiteList( simpleProjectInstance.getPackageNamesWhiteListPath() );
+            packageNameWhiteListService.createProjectWhiteList(simpleProjectInstance.getPackageNamesWhiteListPath());
 
             //Create Project configuration - Repositories
-            projectRepositoriesService.create( simpleProjectInstance.getRepositoriesPath() );
+            projectRepositoriesService.create(simpleProjectInstance.getRepositoriesPath());
 
             return projectRootPath;
         }
 
         private void checkIfExists() {
-            final org.uberfire.java.nio.file.Path pathToProjectPom = projectNioRootPath.resolve( "pom.xml" );
-            if ( ioService.exists( pathToProjectPom ) ) {
-                throw new FileAlreadyExistsException( pathToProjectPom.toString() );
+            final org.uberfire.java.nio.file.Path pathToProjectPom = projectNioRootPath.resolve("pom.xml");
+            if (ioService.exists(pathToProjectPom)) {
+                throw new FileAlreadyExistsException(pathToProjectPom.toString());
             }
         }
 
         private void updateParentPOM() {
-            Path parentPom = Paths.convert( Paths.convert( repositoryRoot ).resolve( "pom.xml" ) );
-            if ( ioService.exists( Paths.convert( parentPom ) ) ) {
-                POM parent = pomService.load( parentPom );
-                parent.setPackaging( "pom" );
-                parent.getModules().add( pom.getName() );
+            Path parentPom = Paths.convert(Paths.convert(repositoryRoot).resolve("pom.xml"));
+            if (ioService.exists(Paths.convert(parentPom))) {
+                POM parent = pomService.load(parentPom);
+                parent.setPackaging("pom");
+                parent.getModules().add(pom.getName());
 
-                pom.setParent( parent.getGav() );
+                pom.setParent(parent.getGav());
 
-                pomService.save( parentPom,
-                                 parent,
-                                 null,
-                                 "Adding child module " + pom.getName() );
+                pomService.save(parentPom,
+                                parent,
+                                null,
+                                "Adding child module " + pom.getName());
             }
         }
 
         private void createMavenDirectories() {
-            ioService.createDirectory( projectNioRootPath.resolve( ProjectResourcePaths.MAIN_SRC_PATH ) );
-            ioService.createDirectory( projectNioRootPath.resolve( ProjectResourcePaths.MAIN_RESOURCES_PATH ) );
-            ioService.createDirectory( projectNioRootPath.resolve( ProjectResourcePaths.TEST_SRC_PATH ) );
-            ioService.createDirectory( projectNioRootPath.resolve( ProjectResourcePaths.TEST_RESOURCES_PATH ) );
+            ioService.createDirectory(projectNioRootPath.resolve(ProjectResourcePaths.MAIN_SRC_PATH));
+            ioService.createDirectory(projectNioRootPath.resolve(ProjectResourcePaths.MAIN_RESOURCES_PATH));
+            ioService.createDirectory(projectNioRootPath.resolve(ProjectResourcePaths.TEST_SRC_PATH));
+            ioService.createDirectory(projectNioRootPath.resolve(ProjectResourcePaths.TEST_RESOURCES_PATH));
         }
 
         private void createDefaultPackage() {
             //Raise an event for the new project's default workspace
-            newPackageEvent.fire( new NewPackageEvent( resourceResolver.newPackage( getDefaultPackage(),
-                                                                                    getDefaultWorkspacePath(),
-                                                                                    false ) ) );
+            newPackageEvent.fire(new NewPackageEvent(resourceResolver.newPackage(getDefaultPackage(),
+                                                                                 resourceResolver.getDefaultWorkspacePath(pom.getGav()),
+                                                                                 false)));
         }
 
         private Package getDefaultPackage() {
-            return resourceResolver.resolvePackage( Paths.convert( Paths.convert( projectRootPath ).resolve( MAIN_RESOURCES_PATH ) ) );
+            return resourceResolver.resolvePackage(Paths.convert(Paths.convert(projectRootPath).resolve(MAIN_RESOURCES_PATH)));
         }
-
-        private String getDefaultWorkspacePath() {
-            return StringUtils.join( getLegalId( pom.getGav().getGroupId() ),
-                                     "/" ) + "/" + StringUtils.join( getLegalId( pom.getGav().getArtifactId() ),
-                                                                     "/" );
-        }
-
-        private String[] getLegalId( final String id ) {
-            return IdentifierUtils.convertMavenIdentifierToJavaIdentifier( id.split( "\\.",
-                                                                                     -1 ) );
-        }
-
     }
 }

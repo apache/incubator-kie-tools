@@ -22,8 +22,6 @@ import java.util.List;
 import com.google.gwt.dev.util.collect.HashSet;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.model.GAV;
-import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.junit.Before;
@@ -33,7 +31,6 @@ import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -54,66 +51,34 @@ public class PackageListBoxTest {
     }
 
     @Test
-    public void setContextCallsPackageLoadedCommandTest() {
-        final Command packagesLoadedCommand = spy(new Command() {
-            @Override
-            public void execute() {
-            }
-        });
-        doReturn(null).when(packageListBox).getGroupIdProjectPackage(any(),
-                                                                     any());
-
-        packageListBox.setContext(projectContext,
-                                  true,
-                                  packagesLoadedCommand);
-
-        verify(packagesLoadedCommand).execute();
-    }
-
-    @Test
-    public void getExistentGroupIdProjectPackage() {
-        final Project project = createProject("com.myteam",
-                                              "myproject");
-
+    public void setContextTest() {
         final List<Package> packages = new ArrayList<>();
         packages.add(createPackage("com"));
         packages.add(createPackage("com.myteam"));
         packages.add(createPackage("com.myteam.myproject"));
         packages.add(createPackage("com.myteam.myproject.mypackage"));
 
-        assertEquals(packages.get(2),
-                     packageListBox.getGroupIdProjectPackage(project,
-                                                             packages));
-    }
+        final Command packagesLoadedCommand = mock(Command.class);
 
-    @Test
-    public void getNonexistentGroupIdProjectPackage() {
-        final Project project = createProject("com.myteam",
-                                              "myproject");
+        doReturn(new HashSet<>(packages)).when(projectService).resolvePackages(any(Project.class));
+        doReturn(packages.get(2)).when(projectService).resolveDefaultWorkspacePackage(any());
 
-        final List<Package> packages = new ArrayList<>();
-        packages.add(createPackage("com"));
-        packages.add(createPackage("com.myteam"));
-        packages.add(createPackage("com.myteam.myproject.mypackage"));
+        packageListBox.setContext(projectContext,
+                                  true,
+                                  packagesLoadedCommand);
 
-        assertNull(packageListBox.getGroupIdProjectPackage(project,
-                                                           packages));
-    }
-
-    private Project createProject(String groupId,
-                                  String artifactId) {
-        final Project project = mock(Project.class);
-
-        final POM pom = mock(POM.class);
-        doReturn(pom).when(project).getPom();
-
-        final GAV gav = mock(GAV.class);
-        doReturn(gav).when(pom).getGav();
-
-        doReturn(groupId).when(gav).getGroupId();
-        doReturn(artifactId).when(gav).getArtifactId();
-
-        return project;
+        verify(packageListBox,
+               times(4)).addPackage(any(),
+                                    any());
+        verify(packageListBox).addPackage(packages.get(0),
+                                          packages.get(2));
+        verify(packageListBox).addPackage(packages.get(1),
+                                          packages.get(2));
+        verify(packageListBox).addPackage(packages.get(2),
+                                          packages.get(2));
+        verify(packageListBox).addPackage(packages.get(3),
+                                          packages.get(2));
+        verify(packagesLoadedCommand).execute();
     }
 
     private Package createPackage(String caption) {
@@ -126,9 +91,6 @@ public class PackageListBoxTest {
     private void setupProjectService() {
         projectService = mock(KieProjectService.class);
         projectServiceCaller = new CallerMock<>(projectService);
-        final HashSet<Package> packages = new HashSet<>();
-        packages.add(mock(Package.class));
-        doReturn(packages).when(projectService).resolvePackages(any(Project.class));
     }
 
     private void setupProjectContext() {

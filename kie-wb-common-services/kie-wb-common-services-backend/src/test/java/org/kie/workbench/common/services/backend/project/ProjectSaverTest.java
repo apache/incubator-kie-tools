@@ -24,7 +24,6 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.Bean;
 
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
@@ -33,6 +32,7 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectRepositoriesService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
@@ -44,6 +44,7 @@ import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -58,8 +59,6 @@ import org.uberfire.rpc.SessionInfo;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-
-import org.mockito.ArgumentCaptor;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectSaverTest extends WeldProjectTestBase {
@@ -92,46 +91,49 @@ public class ProjectSaverTest extends WeldProjectTestBase {
         super.startWeld();
 
         //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( pathsBean );
+        final Bean pathsBean = (Bean) beanManager.getBeans(Paths.class).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext(pathsBean);
 
-        paths = (Paths) beanManager.getReference( pathsBean,
-                Paths.class,
-                cc );
+        paths = (Paths) beanManager.getReference(pathsBean,
+                                                 Paths.class,
+                                                 cc);
 
         //Ensure URLs use the default:// scheme
         fs.forceAsDefault();
 
-        final Event<NewProjectEvent> newProjectEvent = mock( Event.class );
+        final Event<NewProjectEvent> newProjectEvent = mock(Event.class);
 
-        when( ioService.createDirectory( any( org.uberfire.java.nio.file.Path.class ) ) ).thenAnswer( new Answer<Object>() {
+        when(ioService.createDirectory(any(org.uberfire.java.nio.file.Path.class))).thenAnswer(new Answer<Object>() {
             @Override
-            public Object answer( final InvocationOnMock invocation ) throws Throwable {
-                return invocation.getArguments()[ 0 ];
+            public Object answer(final InvocationOnMock invocation) throws Throwable {
+                return invocation.getArguments()[0];
             }
-        } );
+        });
 
-        saver = new ProjectSaver( ioService,
-                pomService,
-                mock( KModuleService.class ),
-                newProjectEvent,
-                newPackageEvent,
-                resourceResolver,
-                mock( ProjectImportsService.class ),
-                mock( ProjectRepositoriesService.class ),
-                mock( PackageNameWhiteListService.class ),
-                mock( CommentedOptionFactory.class ),
-                new SessionInfo() {
-                    @Override
-                    public String getId() {
-                        return "session";
-                    }
+        doCallRealMethod().when(resourceResolver).getDefaultWorkspacePath(any());
+        doCallRealMethod().when(resourceResolver).getLegalId(any());
 
-                    @Override
-                    public User getIdentity() {
-                        return new UserImpl( "testuser" );
-                    }
-                } );
+        saver = new ProjectSaver(ioService,
+                                 pomService,
+                                 mock(KModuleService.class),
+                                 newProjectEvent,
+                                 newPackageEvent,
+                                 resourceResolver,
+                                 mock(ProjectImportsService.class),
+                                 mock(ProjectRepositoriesService.class),
+                                 mock(PackageNameWhiteListService.class),
+                                 mock(CommentedOptionFactory.class),
+                                 new SessionInfo() {
+                                     @Override
+                                     public String getId() {
+                                         return "session";
+                                     }
+
+                                     @Override
+                                     public User getIdentity() {
+                                         return new UserImpl("testuser");
+                                     }
+                                 });
     }
 
     @After
@@ -142,9 +144,11 @@ public class ProjectSaverTest extends WeldProjectTestBase {
     @Test
     public void testNewProjecCreationByGAV() throws IOException {
 
-        final POM pom = new POM( new GAV( GROUP_ID, ARTIFACT_ID, VERSION ) );
+        final POM pom = new POM(new GAV(GROUP_ID,
+                                        ARTIFACT_ID,
+                                        VERSION));
 
-        runProjecCreationTest( pom );
+        runProjecCreationTest(pom);
     }
 
     @Test
@@ -152,12 +156,12 @@ public class ProjectSaverTest extends WeldProjectTestBase {
 
         final POM pom = new POM();
 
-        pom.setName( PROJECT_NAME );
-        pom.getGav().setGroupId( GROUP_ID );
-        pom.getGav().setArtifactId( ARTIFACT_ID );
-        pom.getGav().setVersion( VERSION );
+        pom.setName(PROJECT_NAME);
+        pom.getGav().setGroupId(GROUP_ID);
+        pom.getGav().setArtifactId(ARTIFACT_ID);
+        pom.getGav().setVersion(VERSION);
 
-        runProjecCreationTest( pom );
+        runProjecCreationTest(pom);
     }
 
     /**
@@ -169,48 +173,55 @@ public class ProjectSaverTest extends WeldProjectTestBase {
     @Test
     public void testDuplicatedChildInManagedRepositoryPrevention() throws URISyntaxException, IOException {
 
-        final POM parentPom = mock( POM.class );
-        final POM newPOM = mock( POM.class );
+        final POM parentPom = mock(POM.class);
+        final POM newPOM = mock(POM.class);
 
-        final Repository repository = mock( Repository.class );
+        final Repository repository = mock(Repository.class);
         final String baseURL = "/";
 
-        final File test = File.createTempFile( "test", Long.toString( System.nanoTime() ) );
-        final Path repositoryRootPath = paths.convert( fs.getPath( test.toURI() ) );
+        final File test = File.createTempFile("test",
+                                              Long.toString(System.nanoTime()));
+        final Path repositoryRootPath = paths.convert(fs.getPath(test.toURI()));
 
         FileAlreadyExistsException fileExistsException = null;
 
-        when( repository.getRoot() ).thenReturn( repositoryRootPath );
+        when(repository.getRoot()).thenReturn(repositoryRootPath);
 
         //name for the project we are trying to re-create over an existing one.
-        when ( newPOM.getName() ).thenReturn( "existingProject" );
+        when(newPOM.getName()).thenReturn("existingProject");
 
         //path that will be calculated for looking for the parent pom.xml for the managed repository. (the parent pom.xml
         //lies basically in the root of the repository by definition.)
-        final org.uberfire.java.nio.file.Path parentPomNioPath = paths.convert( repositoryRootPath ).resolve( "pom.xml" );
-        final Path parentPomVFSPath = paths.convert( parentPomNioPath );
+        final org.uberfire.java.nio.file.Path parentPomNioPath = paths.convert(repositoryRootPath).resolve("pom.xml");
+        final Path parentPomVFSPath = paths.convert(parentPomNioPath);
 
         //path that will be calculated for saving the project pom.xml for the project that are about to be created.
-        final org.uberfire.java.nio.file.Path projectNioPath = paths.convert( repositoryRootPath ).resolve( "existingProject" ).resolve( "pom.xml" );
+        final org.uberfire.java.nio.file.Path projectNioPath = paths.convert(repositoryRootPath).resolve("existingProject").resolve("pom.xml");
 
         //emulates that we have a parent pom.xml in current repository root.
         //This is the case for the ManagedRepository.
-        when( pomService.load( parentPomVFSPath ) ).thenReturn( parentPom );
+        when(pomService.load(parentPomVFSPath)).thenReturn(parentPom);
 
         //emulate the project already exists
-        when ( ioService.exists( projectNioPath ) ).thenReturn( true );
+        when(ioService.exists(projectNioPath)).thenReturn(true);
 
         try {
-            saver.save( repositoryRootPath, newPOM, baseURL );
-        } catch ( FileAlreadyExistsException e ) {
+            saver.save(repositoryRootPath,
+                       newPOM,
+                       baseURL);
+        } catch (FileAlreadyExistsException e) {
             fileExistsException = e;
         }
 
         //The file already exists must have been thrown, since the project already exists.
-        assertNotNull( fileExistsException );
+        assertNotNull(fileExistsException);
 
         //And also the parent pom must have never been updated/modified.
-        verify( pomService, never() ).save( eq( parentPomVFSPath ) , any( POM.class ), any( Metadata.class ), any( String.class ) );
+        verify(pomService,
+               never()).save(eq(parentPomVFSPath),
+                             any(POM.class),
+                             any(Metadata.class),
+                             any(String.class));
     }
 
     @Test
@@ -219,66 +230,73 @@ public class ProjectSaverTest extends WeldProjectTestBase {
         String sanitizedPkgStructure = "hyphs_and/_int/_23/hyphs_and/_int/_23";
 
         POM pom = new POM();
-        pom.setName( "gavBassedPackagesTest" );
-        pom.getGav().setGroupId( unsanitizedId );
-        pom.getGav().setArtifactId( unsanitizedId );
-        pom.getGav().setVersion( VERSION );
+        pom.setName("gavBassedPackagesTest");
+        pom.getGav().setGroupId(unsanitizedId);
+        pom.getGav().setArtifactId(unsanitizedId);
+        pom.getGav().setVersion(VERSION);
 
-        ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass( Event.class );
+        ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
 
-        doNothing().when( newPackageEvent ).fire( ( NewPackageEvent ) eventCaptor.capture() );
-        when( resourceResolver.newPackage( any( org.guvnor.common.services.project.model.Package.class ), anyString(), anyBoolean() ) )
-            .thenAnswer( new Answer<Object>() {
-                @Override
-                public Object answer( InvocationOnMock invocation ) throws Throwable {
-                    org.guvnor.common.services.project.model.Package pkg = mock( org.guvnor.common.services.project.model.Package.class );
-                    when( pkg.getRelativeCaption() ).thenReturn( ( String ) invocation.getArguments()[1] );
-                    return pkg;
-                }
-            } );
+        doNothing().when(newPackageEvent).fire((NewPackageEvent) eventCaptor.capture());
+        when(resourceResolver.newPackage(any(org.guvnor.common.services.project.model.Package.class),
+                                         anyString(),
+                                         anyBoolean()))
+                .thenAnswer(new Answer<Object>() {
+                    @Override
+                    public Object answer(InvocationOnMock invocation) throws Throwable {
+                        org.guvnor.common.services.project.model.Package pkg = mock(org.guvnor.common.services.project.model.Package.class);
+                        when(pkg.getRelativeCaption()).thenReturn((String) invocation.getArguments()[1]);
+                        return pkg;
+                    }
+                });
 
-        runProjecCreationTest( pom );
+        runProjecCreationTest(pom);
 
-        assertEquals( sanitizedPkgStructure, ( ( NewPackageEvent ) eventCaptor.getValue() ).getPackage().getRelativeCaption() );
+        assertEquals(sanitizedPkgStructure,
+                     ((NewPackageEvent) eventCaptor.getValue()).getPackage().getRelativeCaption());
     }
 
-    protected void runProjecCreationTest( final POM pom ) throws IOException {
-        final Repository repository = mock( Repository.class );
+    protected void runProjecCreationTest(final POM pom) throws IOException {
+        final Repository repository = mock(Repository.class);
         final String baseURL = "/";
 
-        final File test = File.createTempFile( "test", Long.toString( System.nanoTime() ) );
-        final Path repositoryRootPath = paths.convert( fs.getPath( test.toURI() ) );
+        final File test = File.createTempFile("test",
+                                              Long.toString(System.nanoTime()));
+        final Path repositoryRootPath = paths.convert(fs.getPath(test.toURI()));
 
-        when( repository.getRoot() ).thenReturn( repositoryRootPath );
+        when(repository.getRoot()).thenReturn(repositoryRootPath);
 
-
-        when( pomService.load( any( Path.class ) ) ).thenReturn( pom );
+        when(pomService.load(any(Path.class))).thenReturn(pom);
 
         final ArrayList<String> directories = new ArrayList<String>();
 
-        when( resourceResolver.simpleProjectInstance( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( mock( KieProject.class ) );
+        when(resourceResolver.simpleProjectInstance(any(org.uberfire.java.nio.file.Path.class))).thenReturn(mock(KieProject.class));
 
         final KieProject kieProject = new KieProject();
-        kieProject.setPom( pom );
-        when( resourceResolver.resolveProject( any( Path.class ) ) ).thenReturn( kieProject );
+        kieProject.setPom(pom);
+        when(resourceResolver.resolveProject(any(Path.class))).thenReturn(kieProject);
 
-        stub( ioService.createDirectory( any( org.uberfire.java.nio.file.Path.class ) ) ).toAnswer( new Answer<org.uberfire.java.nio.file.Path>() {
+        stub(ioService.createDirectory(any(org.uberfire.java.nio.file.Path.class))).toAnswer(new Answer<org.uberfire.java.nio.file.Path>() {
             @Override
-            public org.uberfire.java.nio.file.Path answer( final InvocationOnMock invocationOnMock ) throws Throwable {
-                org.uberfire.java.nio.file.Path path = (org.uberfire.java.nio.file.Path) invocationOnMock.getArguments()[ 0 ];
-                directories.add( path.toString() );
+            public org.uberfire.java.nio.file.Path answer(final InvocationOnMock invocationOnMock) throws Throwable {
+                org.uberfire.java.nio.file.Path path = (org.uberfire.java.nio.file.Path) invocationOnMock.getArguments()[0];
+                directories.add(path.toString());
                 return null;
             }
-        } );
+        });
 
-        Project project = saver.save( repository.getRoot(), pom, baseURL );
+        Project project = saver.save(repository.getRoot(),
+                                     pom,
+                                     baseURL);
 
-        assertEquals( 4, directories.size() );
-        assertTrue( directories.add( "src/main/java" ) );
-        assertTrue( directories.add( "src/main/resources" ) );
-        assertTrue( directories.add( "src/test/resources" ) );
-        assertTrue( directories.add( "src/main/java" ) );
+        assertEquals(4,
+                     directories.size());
+        assertTrue(directories.add("src/main/java"));
+        assertTrue(directories.add("src/main/resources"));
+        assertTrue(directories.add("src/test/resources"));
+        assertTrue(directories.add("src/main/java"));
 
-        assertEquals( pom, project.getPom() );
+        assertEquals(pom,
+                     project.getPom());
     }
 }
