@@ -22,8 +22,8 @@ import java.util.logging.Logger;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.shared.core.types.ColorName;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresNoneLayoutContainer;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresShapeView;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresNoneLayoutContainer;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGBasicShapeView;
 
 public class SVGBasicShapeViewImpl

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.lienzo.shape.view.ext;
+package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
@@ -24,7 +24,7 @@ import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresConnectorView;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
@@ -91,28 +91,28 @@ public class WiresConnectorViewExt<T> extends WiresConnectorView<T>
                         final ViewHandler<? extends ViewEvent> eventHandler) {
         eventHandlerManager.addHandler(type,
                                        eventHandler);
-        return (T) this;
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T removeHandler(final ViewHandler<? extends ViewEvent> eventHandler) {
         eventHandlerManager.removeHandler(eventHandler);
-        return (T) this;
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T disableHandlers() {
         eventHandlerManager.disable();
-        return (T) this;
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T enableHandlers() {
         eventHandlerManager.enable();
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -124,7 +124,7 @@ public class WiresConnectorViewExt<T> extends WiresConnectorView<T>
         if (null != title) {
             // TODO
         }
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -141,14 +141,14 @@ public class WiresConnectorViewExt<T> extends WiresConnectorView<T>
         } else if (Position.CENTER.equals(position)) {
             this.textPosition = LayoutContainer.Layout.CENTER;
         }
-        return (T) this;
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleRotation(double degrees) {
         this.textRotationDegrees = degrees;
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -166,6 +166,11 @@ public class WiresConnectorViewExt<T> extends WiresConnectorView<T>
     @SuppressWarnings("unchecked")
     public T setTitleFontSize(final double fontSize) {
         return updateTextIfAny(() -> text.setFontSize(fontSize));
+    }
+
+    @Override
+    public T setTitleFontColor(final String fillColor) {
+        return cast();
     }
 
     @Override
@@ -204,6 +209,11 @@ public class WiresConnectorViewExt<T> extends WiresConnectorView<T>
         if (null != text) {
             callback.execute();
         }
+        return cast();
+    }
+
+    @SuppressWarnings("unchecked")
+    private T cast() {
         return (T) this;
     }
 }

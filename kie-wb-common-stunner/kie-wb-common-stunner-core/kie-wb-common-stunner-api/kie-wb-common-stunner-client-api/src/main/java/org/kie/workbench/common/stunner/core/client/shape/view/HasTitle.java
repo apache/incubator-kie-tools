@@ -32,15 +32,17 @@ public interface HasTitle<T> {
 
     T setTitleRotation(final double degrees);
 
-    T setTitleStrokeColor(final String color);
+    T setTitleAlpha(final double alpha);
 
     T setTitleFontFamily(final String fontFamily);
 
     T setTitleFontSize(final double fontSize);
 
+    T setTitleFontColor(final String fillColor);
+
     T setTitleStrokeWidth(final double strokeWidth);
 
-    T setTitleAlpha(final double alpha);
+    T setTitleStrokeColor(final String color);
 
     T moveTitleToTop();
 }

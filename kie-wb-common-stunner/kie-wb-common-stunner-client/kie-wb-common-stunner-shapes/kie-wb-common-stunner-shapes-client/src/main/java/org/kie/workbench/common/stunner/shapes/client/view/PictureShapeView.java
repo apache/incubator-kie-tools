@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.shapes.client.view;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Picture;
 import com.google.gwt.core.client.Scheduler;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresContainerShapeView;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresContainerShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
 import static org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils.scalePicture;

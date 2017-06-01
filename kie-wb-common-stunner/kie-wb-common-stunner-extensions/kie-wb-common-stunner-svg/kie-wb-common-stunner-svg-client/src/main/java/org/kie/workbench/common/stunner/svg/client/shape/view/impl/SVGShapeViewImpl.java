@@ -17,11 +17,10 @@
 package org.kie.workbench.common.stunner.svg.client.shape.view.impl;
 
 import java.util.Collection;
-import java.util.logging.Logger;
 
 import com.ait.lienzo.client.core.shape.Shape;
-import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.ext.DecoratedShapeView;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresScalableContainer;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.DecoratedShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGBasicShapeView;
@@ -30,8 +29,6 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 public class SVGShapeViewImpl
         extends DecoratedShapeView<SVGShapeViewImpl>
         implements SVGShapeView<SVGShapeViewImpl> {
-
-    private static Logger LOGGER = Logger.getLogger(SVGShapeViewImpl.class.getName());
 
     private final String name;
     private final SVGChildViewHandler childViewHandler;
@@ -43,7 +40,7 @@ public class SVGShapeViewImpl
                             final double height,
                             final boolean resizable) {
         super(resizable ? ShapeViewSupportedEvents.ALL_DESKTOP_EVENT_TYPES : ShapeViewSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
-              new WiresLayoutContainer(),
+              new WiresScalableContainer(),
               theShape,
               width,
               height);

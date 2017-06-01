@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.svg.gen.codegen.impl;
 
-import java.text.DecimalFormat;
-
 import static org.junit.Assert.*;
 
 public class GeneratorAssertions {
@@ -77,11 +75,20 @@ public class GeneratorAssertions {
         assertTrue(raw.contains("setStrokeWidth(" + formatDouble(value) + ")"));
     }
 
+    public static void assertListening(final String raw,
+                                       final boolean listening) {
+        assertTrue(raw.contains("setListening(" + formatBoolean(listening) + ")"));
+    }
+
     public static String formatDouble(final double value) {
         return SVGGeneratorFormatUtils.format(value);
     }
 
     public static String formatString(final String value) {
         return "\"" + value + "\"";
+    }
+
+    public static String formatBoolean(final boolean value) {
+        return Boolean.toString(value);
     }
 }

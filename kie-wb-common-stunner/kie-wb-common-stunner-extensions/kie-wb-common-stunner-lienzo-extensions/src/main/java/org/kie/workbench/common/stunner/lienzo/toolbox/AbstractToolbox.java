@@ -47,7 +47,7 @@ import static com.ait.lienzo.client.core.AttributeOp.any;
 
 public abstract class AbstractToolbox implements GridToolbox {
 
-    private static final double ANIMATION_DURATION = 200;
+    private static final double ANIMATION_DURATION = 50;
 
     private static final Flows.BooleanOp XYWH_OP = any(Attribute.X,
                                                        Attribute.Y,

@@ -40,7 +40,7 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
         extends AbstractPaletteView<V, Layer, LienzoPaletteElementView>
         implements LienzoPaletteView<V, LienzoPaletteElementView> {
 
-    protected double animationDuration = 500;
+    protected double animationDuration = 200;
     protected AbstractLienzoPalette presenter;
     protected AbstractPalette<? extends AbstractPalette> palette;
     protected IPrimitive<?> colExpButton;
@@ -271,7 +271,7 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
                         AnimationProperty.Properties.FILL_ALPHA(fillAlpha),
                         AnimationProperty.Properties.STROKE_ALPHA(strokeAlpha)
                 ),
-                200
+                animationDuration
         );
     }
 

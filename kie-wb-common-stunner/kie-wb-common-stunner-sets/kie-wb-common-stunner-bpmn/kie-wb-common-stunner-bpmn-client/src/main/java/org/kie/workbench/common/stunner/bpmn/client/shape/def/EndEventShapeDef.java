@@ -20,10 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
+import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
-import org.kie.workbench.common.stunner.bpmn.shape.def.BPMNPictures;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
 import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
@@ -76,6 +76,11 @@ public class EndEventShapeDef
     @Override
     public String getFontColor(final BaseEndEvent element) {
         return element.getFontSet().getFontColor().getValue();
+    }
+
+    @Override
+    public String getFontBorderColor(final BaseEndEvent element) {
+        return element.getFontSet().getFontBorderColor().getValue();
     }
 
     @Override

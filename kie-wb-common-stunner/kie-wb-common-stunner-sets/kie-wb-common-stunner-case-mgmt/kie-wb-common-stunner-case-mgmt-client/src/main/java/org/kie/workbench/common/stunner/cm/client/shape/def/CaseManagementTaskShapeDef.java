@@ -19,13 +19,13 @@ package org.kie.workbench.common.stunner.cm.client.shape.def;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
-import org.kie.workbench.common.stunner.bpmn.shape.def.BPMNPictures;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
@@ -104,6 +104,11 @@ public final class CaseManagementTaskShapeDef
     @Override
     public String getFontColor(final BaseTask element) {
         return element.getFontSet().getFontColor().getValue();
+    }
+
+    @Override
+    public String getFontBorderColor(final BaseTask element) {
+        return element.getFontSet().getFontBorderColor().getValue();
     }
 
     @Override

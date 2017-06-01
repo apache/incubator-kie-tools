@@ -26,6 +26,7 @@ public abstract class AbstractPrimitiveDefinitionGenerator<I extends PrimitiveDe
         implements PrimitiveDefinitionGenerator<I> {
 
     private final static String NON_DRAGGABLE = ".setDraggable(false)";
+    private final static String LISTENING = ".setListening(%1s)";
     private final static String ID = ".setID(\"%1s\")";
     private final static String X = ".setX(%1s)";
     private final static String Y = ".setY(%1s)";
@@ -49,6 +50,9 @@ public abstract class AbstractPrimitiveDefinitionGenerator<I extends PrimitiveDe
                           input);
         appendOpacity(shapeRaw,
                       input);
+        // Listening for events.
+        appendListening(shapeRaw,
+                        input);
         // Transforms.
         appendTransform(shapeRaw,
                         input);
@@ -81,6 +85,12 @@ public abstract class AbstractPrimitiveDefinitionGenerator<I extends PrimitiveDe
                                  final I input) {
         buffer.append(formatDouble(ALPHA,
                                    input.getAlpha()));
+    }
+
+    protected void appendListening(final StringBuffer buffer,
+                                   final I input) {
+        buffer.append(formatString(LISTENING,
+                                   Boolean.toString(input.isListening())));
     }
 
     protected void appendTransform(final StringBuffer buffer,

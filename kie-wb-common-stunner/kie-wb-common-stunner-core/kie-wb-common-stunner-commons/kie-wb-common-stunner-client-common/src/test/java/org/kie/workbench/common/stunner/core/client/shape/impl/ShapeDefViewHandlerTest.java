@@ -34,6 +34,7 @@ import static org.mockito.Mockito.*;
 public class ShapeDefViewHandlerTest {
 
     private static final String COLOR = "#AABBCC";
+    private static final String COLOR2 = "#AABBCD";
     private static final Double DOUBLE_VALUE = 0.2d;
 
     @Mock
@@ -55,6 +56,7 @@ public class ShapeDefViewHandlerTest {
         when(def.getFontColor(any(Object.class))).thenReturn(COLOR);
         when(def.getFontSize(any(Object.class))).thenReturn(DOUBLE_VALUE);
         when(def.getFontBorderSize(any(Object.class))).thenReturn(DOUBLE_VALUE);
+        when(def.getFontBorderColor(any(Object.class))).thenReturn(COLOR2);
         when(def.getFontPosition(any(Object.class))).thenReturn(HasTitle.Position.BOTTOM);
         when(def.getFontRotation(any(Object.class))).thenReturn(DOUBLE_VALUE);
         this.tested = new ShapeDefViewHandler<Object, ShapeViewExtStub, MutableShapeDef<Object>>(def,
@@ -87,6 +89,7 @@ public class ShapeDefViewHandlerTest {
         verify(viewHandler,
                times(1)).applyFont(eq(COLOR),
                                    eq(COLOR),
+                                   eq(COLOR2),
                                    eq(DOUBLE_VALUE),
                                    eq(DOUBLE_VALUE),
                                    eq(1d),

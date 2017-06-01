@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
+import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
-import org.kie.workbench.common.stunner.bpmn.shape.def.BPMNPictures;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
 import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
@@ -79,6 +79,11 @@ public final class CaseManagementSubprocessShapeDef
     @Override
     public String getFontColor(final BaseSubprocess element) {
         return element.getFontSet().getFontColor().getValue();
+    }
+
+    @Override
+    public String getFontBorderColor(final BaseSubprocess element) {
+        return element.getFontSet().getFontBorderColor().getValue();
     }
 
     @Override

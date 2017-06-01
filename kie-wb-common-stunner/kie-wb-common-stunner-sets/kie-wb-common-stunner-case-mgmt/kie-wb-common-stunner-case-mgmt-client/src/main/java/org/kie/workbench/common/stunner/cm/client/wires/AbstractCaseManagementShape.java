@@ -22,7 +22,7 @@ import java.util.Optional;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresContainerShapeView;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresContainerShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 

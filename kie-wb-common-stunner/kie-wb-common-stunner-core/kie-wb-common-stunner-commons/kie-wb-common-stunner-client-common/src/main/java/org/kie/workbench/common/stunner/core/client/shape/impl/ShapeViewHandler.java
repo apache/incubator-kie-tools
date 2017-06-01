@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 /**
  * An util class that handles the different calls to a ShapeView.
- * <p/>
+ * <p>
  * It adds some checks and constraints that can be used  across different implementation
  * for updating the views.
  * @param <V>
@@ -92,8 +92,9 @@ public class ShapeViewHandler<V extends ShapeView> {
         }
     }
 
-    public void applyFont(final String family,
-                          final String color,
+    public void applyFont(final String fontFamily,
+                          final String fontColor,
+                          final String strokeColor,
                           final Double size,
                           final Double borderSize,
                           final Double alpha,
@@ -101,11 +102,14 @@ public class ShapeViewHandler<V extends ShapeView> {
                           final Double rotationDegrees,
                           final MutationContext mutationContext) {
         final HasTitle hasTitle = (HasTitle) getShapeView();
-        if (family != null && family.trim().length() > 0) {
-            hasTitle.setTitleFontFamily(family);
+        if (fontFamily != null && fontFamily.trim().length() > 0) {
+            hasTitle.setTitleFontFamily(fontFamily);
         }
-        if (color != null && color.trim().length() > 0) {
-            hasTitle.setTitleStrokeColor(color);
+        if (fontColor != null && fontColor.trim().length() > 0) {
+            hasTitle.setTitleFontColor(fontColor);
+        }
+        if (strokeColor != null && strokeColor.trim().length() > 0) {
+            hasTitle.setTitleStrokeColor(strokeColor);
         }
         if (size != null && size > 0) {
             hasTitle.setTitleFontSize(size);

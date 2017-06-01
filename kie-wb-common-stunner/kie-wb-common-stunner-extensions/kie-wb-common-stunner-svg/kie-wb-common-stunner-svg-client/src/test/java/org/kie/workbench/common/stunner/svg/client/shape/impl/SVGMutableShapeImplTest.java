@@ -23,6 +23,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.lienzo.shape.impl.AnimationShapeStateHelper;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
@@ -36,6 +37,7 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGShapeViewImpl;
 import org.mockito.Mock;
 
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -101,6 +103,11 @@ public class SVGMutableShapeImplTest {
                times(1)).setAlpha(eq(1d));
     }
 
+    @Test
+    public void testUseAnimatedStates() {
+        assertTrue(tested.getShape().getShapeStateHelper() instanceof AnimationShapeStateHelper);
+    }
+
     private SVGMutableShapeDef<Object, ?> shapeDef = new SVGMutableShapeDef<Object, Object>() {
         @Override
         public double getWidth(final Object element) {
@@ -163,6 +170,11 @@ public class SVGMutableShapeImplTest {
 
         @Override
         public String getFontColor(final Object element) {
+            return null;
+        }
+
+        @Override
+        public String getFontBorderColor(final Object element) {
             return null;
         }
 

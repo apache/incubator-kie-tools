@@ -1,1 +1,1 @@
-new com.ait.lienzo.client.core.shape.MultiPath("${path}")
+new ${className}("${path}")

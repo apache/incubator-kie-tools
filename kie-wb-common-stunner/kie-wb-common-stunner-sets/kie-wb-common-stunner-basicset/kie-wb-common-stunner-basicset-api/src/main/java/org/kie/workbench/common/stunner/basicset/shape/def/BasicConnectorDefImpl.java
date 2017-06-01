@@ -71,6 +71,11 @@ public final class BasicConnectorDefImpl
     }
 
     @Override
+    public String getFontBorderColor(final BasicConnector element) {
+        return null;
+    }
+
+    @Override
     public double getFontSize(final BasicConnector element) {
         return 0;
     }

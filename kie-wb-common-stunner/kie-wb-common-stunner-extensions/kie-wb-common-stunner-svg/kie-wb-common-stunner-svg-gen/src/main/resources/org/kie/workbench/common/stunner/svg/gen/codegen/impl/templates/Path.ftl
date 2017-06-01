@@ -1,1 +1,1 @@
-new com.ait.lienzo.client.core.shape.SVGPath("${path}")
+new ${className}("${path}")

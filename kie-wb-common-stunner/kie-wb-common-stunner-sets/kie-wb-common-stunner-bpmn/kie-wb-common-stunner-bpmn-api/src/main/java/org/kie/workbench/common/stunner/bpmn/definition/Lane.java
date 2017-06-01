@@ -29,6 +29,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontBorderColor;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontBorderSize;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontColor;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontFamily;
@@ -95,7 +96,7 @@ public class Lane implements BPMNDefinition {
         public static final transient String COLOR = "#FFFFFF";
         public static final Double WIDTH = 450d;
         public static final Double HEIGHT = 250d;
-        public static final Double BORDER_SIZE = 1.5d;
+        public static final Double BORDER_SIZE = 1d;
         public static final String BORDER_COLOR = "#000000";
 
         @Override
@@ -107,7 +108,8 @@ public class Lane implements BPMNDefinition {
                             new FontSet(FontFamily.defaultValue,
                                         FontColor.defaultValue,
                                         14d,
-                                        FontBorderSize.defaultValue),
+                                        FontBorderSize.defaultValue,
+                                        FontBorderColor.defaultValue),
                             new RectangleDimensionsSet(WIDTH,
                                                        HEIGHT));
         }

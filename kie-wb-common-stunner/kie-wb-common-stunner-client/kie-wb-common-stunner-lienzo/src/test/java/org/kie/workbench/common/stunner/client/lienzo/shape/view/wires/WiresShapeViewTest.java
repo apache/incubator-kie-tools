@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.lienzo.shape.view;
+package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires;
 
 import java.util.List;
 

@@ -25,6 +25,7 @@ import com.google.gwt.resources.client.ImageResource;
 public interface BPMNImageResources extends ClientBundleWithLookup {
 
     public static final BPMNImageResources INSTANCE = GWT.create(BPMNImageResources.class);
+    public static final String SEQUENCE_FLOW = "images/connectors/sequence.svg";
 
     // ****** BPMN ShapeSet Thumbnail. *******
     @Source("images/bpmn_thumb.png")
@@ -159,6 +160,12 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @ClientBundle.Source(BPMNSVGViewFactory.SUBPROCESS_EMBEDDED)
     @DataResource.MimeType("image/svg+xml")
     DataResource subProcessEmbedded();
+
+    // ******* Connectors *******
+
+    @ClientBundle.Source(SEQUENCE_FLOW)
+    @DataResource.MimeType("image/svg+xml")
+    DataResource sequenceFlow();
 
     // ******* Misc *******
 

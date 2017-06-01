@@ -27,6 +27,7 @@ public abstract class AbstractPrimitiveDefinition<V> implements PrimitiveDefinit
     private double y;
     private double alpha;
     private boolean scalable;
+    private boolean listening;
     private boolean mainShape;
     private TransformDefinition transformDefinition;
     private LayoutDefinition layoutDefinition;
@@ -35,15 +36,18 @@ public abstract class AbstractPrimitiveDefinition<V> implements PrimitiveDefinit
         this(id,
              1,
              false,
+             false,
              false);
     }
 
     protected AbstractPrimitiveDefinition(final String id,
                                           final double alpha,
                                           final boolean scalable,
+                                          final boolean listening,
                                           final boolean mainShape) {
         this.id = id;
         this.alpha = alpha;
+        this.listening = listening;
         this.scalable = scalable;
         this.mainShape = mainShape;
     }
@@ -96,6 +100,15 @@ public abstract class AbstractPrimitiveDefinition<V> implements PrimitiveDefinit
 
     public void setScalable(final boolean scalable) {
         this.scalable = scalable;
+    }
+
+    @Override
+    public boolean isListening() {
+        return listening;
+    }
+
+    public void setListening(final boolean listening) {
+        this.listening = listening;
     }
 
     @Override

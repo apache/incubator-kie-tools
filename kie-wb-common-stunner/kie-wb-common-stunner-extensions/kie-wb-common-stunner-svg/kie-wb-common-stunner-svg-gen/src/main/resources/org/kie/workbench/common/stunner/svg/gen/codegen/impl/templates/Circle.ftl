@@ -1,1 +1,1 @@
-new com.ait.lienzo.client.core.shape.Circle(${radius})
+new ${className}(${radius})

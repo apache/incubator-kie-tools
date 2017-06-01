@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.lienzo.shape.view;
+package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,8 +50,7 @@ public class WiresShapeView<T> extends WiresShape
                           final LayoutContainer layoutContainer) {
         super(path,
               null != layoutContainer ? layoutContainer : new WiresLayoutContainer());
-        // Ensure path bounds are available on the selection context.
-        path.setFillBoundsForSelection(true);
+        setListening(false);
     }
 
     public Shape<?> getShape() {
@@ -59,12 +58,11 @@ public class WiresShapeView<T> extends WiresShape
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T setUUID(final String uuid) {
         this.uuid = uuid;
         WiresUtils.assertShapeUUID(this.getGroup(),
                                    uuid);
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -83,17 +81,15 @@ public class WiresShapeView<T> extends WiresShape
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T setShapeX(final double x) {
         getContainer().getAttributes().setX(x);
-        return (T) this;
+        return cast();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T setShapeY(final double y) {
         getContainer().getAttributes().setY(y);
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -102,10 +98,9 @@ public class WiresShapeView<T> extends WiresShape
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T setAlpha(final double alpha) {
         getContainer().getAttributes().setAlpha(alpha);
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -122,7 +117,7 @@ public class WiresShapeView<T> extends WiresShape
     @SuppressWarnings("unchecked")
     public T setFillColor(final String color) {
         getShape().setFillColor(color);
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -131,10 +126,9 @@ public class WiresShapeView<T> extends WiresShape
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T setFillAlpha(final double alpha) {
         getShape().setFillAlpha(alpha);
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -143,10 +137,9 @@ public class WiresShapeView<T> extends WiresShape
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T setStrokeColor(final String color) {
         getShape().setStrokeColor(color);
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -155,10 +148,9 @@ public class WiresShapeView<T> extends WiresShape
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T setStrokeAlpha(final double alpha) {
         getShape().setStrokeAlpha(alpha);
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -167,14 +159,12 @@ public class WiresShapeView<T> extends WiresShape
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T setStrokeWidth(final double width) {
         getShape().setStrokeWidth(width);
-        return (T) this;
+        return cast();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T setDragBounds(final double x1,
                            final double y1,
                            final double x2,
@@ -189,51 +179,52 @@ public class WiresShapeView<T> extends WiresShape
         } else {
             dragEnforcer.setDragBounds(dragBounds);
         }
-        return (T) this;
+        return cast();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T unsetDragBounds() {
         if (null != dragEnforcer) {
             dragEnforcer.remove();
             dragEnforcer = null;
         }
-        return (T) this;
+        return cast();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T moveToTop() {
         getContainer().moveToTop();
-        return (T) this;
+        return cast();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T moveToBottom() {
         getContainer().moveToBottom();
-        return (T) this;
+        return cast();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T moveUp() {
         getContainer().moveUp();
-        return (T) this;
+        return cast();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T moveDown() {
         getContainer().moveDown();
-        return (T) this;
+        return cast();
     }
 
     @Override
     public void destroy() {
         super.destroy();
         unsetDragBounds();
+    }
+
+    public T setListening(final boolean listening) {
+        getPath().setFillBoundsForSelection(listening);
+        getPath().setListening(listening);
+        return cast();
     }
 
     public WiresDragConstraintEnforcer getDragEnforcer() {
@@ -243,5 +234,10 @@ public class WiresShapeView<T> extends WiresShape
     @Override
     public List<Shape<?>> getDecorators() {
         return Collections.singletonList(getShape());
+    }
+
+    @SuppressWarnings("unchecked")
+    private T cast() {
+        return (T) this;
     }
 }

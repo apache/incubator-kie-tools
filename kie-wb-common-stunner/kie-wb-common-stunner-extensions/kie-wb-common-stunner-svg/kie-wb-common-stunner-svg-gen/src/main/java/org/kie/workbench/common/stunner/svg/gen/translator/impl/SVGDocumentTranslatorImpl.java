@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.svg.gen.exception.TranslatorException;
 import org.kie.workbench.common.stunner.svg.gen.model.PrimitiveDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewRefDefinition;
+import org.kie.workbench.common.stunner.svg.gen.model.impl.AbstractPrimitiveDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.ViewDefinitionImpl;
 import org.kie.workbench.common.stunner.svg.gen.translator.SVGDocumentTranslator;
 import org.kie.workbench.common.stunner.svg.gen.translator.SVGElementTranslator;
@@ -127,6 +128,12 @@ public class SVGDocumentTranslatorImpl implements SVGDocumentTranslator {
             throw new TranslatorException("No SVG main node found!!");
         }
 
+        // Main view shape should listen for events.
+        if (main instanceof AbstractPrimitiveDefinition) {
+            ((AbstractPrimitiveDefinition) main).setListening(true);
+        }
+
+        // Generate the view definition instance.
         final ViewDefinition viewDefinition =
                 new ViewDefinitionImpl(svgId,
                                        svgCoord[0],

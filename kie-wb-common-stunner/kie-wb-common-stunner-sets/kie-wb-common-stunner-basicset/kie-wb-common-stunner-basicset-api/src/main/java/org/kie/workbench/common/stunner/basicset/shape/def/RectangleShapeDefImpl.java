@@ -83,6 +83,11 @@ public final class RectangleShapeDefImpl
     }
 
     @Override
+    public String getFontBorderColor(final Rectangle element) {
+        return element.getFontSet().getFontBorderColor().getValue();
+    }
+
+    @Override
     public double getFontSize(final Rectangle element) {
         return element.getFontSet().getFontSize().getValue();
     }

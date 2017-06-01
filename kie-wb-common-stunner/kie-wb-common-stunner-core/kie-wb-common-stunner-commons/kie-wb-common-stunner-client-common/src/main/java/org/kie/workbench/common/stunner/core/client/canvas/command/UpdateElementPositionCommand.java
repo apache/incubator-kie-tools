@@ -49,4 +49,16 @@ public class UpdateElementPositionCommand extends AbstractCanvasGraphCommand {
     protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
         return new UpdateCanvasElementPositionCommand(element);
     }
+
+    public Node<View<?>, Edge> getElement() {
+        return element;
+    }
+
+    public Double getX() {
+        return x;
+    }
+
+    public Double getY() {
+        return y;
+    }
 }

@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.svg.gen.codegen.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ait.lienzo.client.core.shape.Rectangle;
 import org.kie.workbench.common.stunner.svg.gen.codegen.ShapeDefinitionGenerator;
 import org.kie.workbench.common.stunner.svg.gen.exception.GeneratorException;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.RectDefinition;
@@ -34,6 +35,8 @@ public class RectDefinitionGenerator
         final double height = input.getHeight();
         final double radius = input.getCornerRadius();
         final Map<String, Object> root = new HashMap<String, Object>();
+        root.put("className",
+                 Rectangle.class.getName());
         root.put("width",
                  formatDouble(width));
         root.put("height",

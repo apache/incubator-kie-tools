@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.svg.client.shape.impl;
 
 import java.util.Collection;
 
+import org.kie.workbench.common.stunner.client.lienzo.shape.impl.AnimationShapeStateHelper;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.impl.NodeShapeImpl;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -35,7 +36,8 @@ public class SVGMutableShapeImpl<W, D extends SVGMutableShapeDef<W, ?>>
     public SVGMutableShapeImpl(final D shapeDef,
                                final SVGShapeViewImpl view) {
         super(shapeDef,
-              view);
+              view,
+              new AnimationShapeStateHelper<>());
     }
 
     @Override
@@ -58,5 +60,4 @@ public class SVGMutableShapeImpl<W, D extends SVGMutableShapeDef<W, ?>>
                                                        height,
                                                        mutationContext);
     }
-
 }

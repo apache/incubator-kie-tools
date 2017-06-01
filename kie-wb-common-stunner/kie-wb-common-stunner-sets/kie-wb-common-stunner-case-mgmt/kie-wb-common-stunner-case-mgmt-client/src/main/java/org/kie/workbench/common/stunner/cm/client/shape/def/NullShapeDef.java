@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
+import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
-import org.kie.workbench.common.stunner.bpmn.shape.def.BPMNPictures;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
@@ -76,6 +76,11 @@ public class NullShapeDef<W extends BPMNDefinition> implements MutableShapeDef<W
 
     @Override
     public String getFontColor(final W element) {
+        return "";
+    }
+
+    @Override
+    public String getFontBorderColor(final W element) {
         return "";
     }
 

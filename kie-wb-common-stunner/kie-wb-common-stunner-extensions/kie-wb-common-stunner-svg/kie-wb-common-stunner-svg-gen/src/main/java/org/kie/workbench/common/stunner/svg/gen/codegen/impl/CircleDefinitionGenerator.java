@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.svg.gen.codegen.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ait.lienzo.client.core.shape.Circle;
 import org.kie.workbench.common.stunner.svg.gen.codegen.ShapeDefinitionGenerator;
 import org.kie.workbench.common.stunner.svg.gen.exception.GeneratorException;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.CircleDefinition;
@@ -32,6 +33,8 @@ public class CircleDefinitionGenerator
     public StringBuffer doGenerate(final CircleDefinition input) throws GeneratorException {
         final double radius = input.getRadius();
         final Map<String, Object> root = new HashMap<String, Object>();
+        root.put("className",
+                 Circle.class.getName());
         root.put("radius",
                  formatDouble(radius));
         // Generate the code using the given template.

@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.svg.gen.codegen.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ait.lienzo.client.core.shape.MultiPath;
 import org.kie.workbench.common.stunner.svg.gen.codegen.ShapeDefinitionGenerator;
 import org.kie.workbench.common.stunner.svg.gen.exception.GeneratorException;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.MultiPathDefinition;
@@ -32,6 +33,9 @@ public class MultiPathDefinitionGenerator
     public StringBuffer doGenerate(final MultiPathDefinition input) throws GeneratorException {
         final String path = input.getPath();
         final Map<String, Object> root = new HashMap<String, Object>();
+
+        root.put("className",
+                 MultiPath.class.getName());
         root.put("path",
                  path);
         // Generate the code using the given template.

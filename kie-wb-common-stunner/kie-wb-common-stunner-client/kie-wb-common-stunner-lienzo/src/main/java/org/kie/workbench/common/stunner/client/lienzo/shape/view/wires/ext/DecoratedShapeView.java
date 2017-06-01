@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.lienzo.shape.view.ext;
+package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
-import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.ControlHandleList;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
-import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresShapeControlHandleList;
-import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.shared.core.types.ColorName;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresScalableContainer;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 
@@ -35,8 +33,9 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventTy
  * for attaching the different control points to the view instance, it only
  * requires a single Lienzo shape instance that is being wrapped by an instance
  * of a multi-path.
- * So the internal multi-path instance "decorates" the given shape and childre, if
- * any, by providing a non visible square in which the different control points.
+ * So the internal multi-path instance "decorates" the given shape and the others
+ * shape's children, if any, by providing a non visible square in which
+ * the different control points.
  * <p>
  * This way any kind of path or primitive instance can be added
  * as child for this shape and even if that instance cannot be resized
@@ -52,30 +51,26 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
         implements HasSize<T> {
 
     private final Shape<?> theShape;
-    protected final Group transformableContainer = new Group();
-    protected double width = 0;
-    protected double height = 0;
+    private final WiresScalableContainer scalableContainer;
 
     public DecoratedShapeView(final ViewEventType[] supportedEventTypes,
-                              final LayoutContainer layoutContainer,
+                              final WiresScalableContainer scalableContainer,
                               final Shape<?> theShape,
                               final double width,
                               final double height) {
-        super(supportedEventTypes,
-              setupDecorator(new MultiPath(),
+        super(setupDecorator(new MultiPath(),
                              0,
                              0,
                              width,
                              height),
-              layoutContainer);
+              scalableContainer);
+        setEventHandlerManager(new ViewEventHandlerManager(getGroup(),
+                                                           theShape,
+                                                           supportedEventTypes));
         this.theShape = theShape;
-        this.theShape.setFillBoundsForSelection(true);
-        initializeHandlerManager(getGroup(),
-                                 theShape,
-                                 supportedEventTypes);
-        initializeTextView();
-        getGroup().add(transformableContainer);
-        transformableContainer.add(theShape);
+        this.scalableContainer = scalableContainer;
+        theShape.setFillBoundsForSelection(true);
+        scalableContainer.addScalable(theShape);
         resize(0,
                0,
                width,
@@ -90,11 +85,11 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
 
     @Override
     public Shape<?> getAttachableShape() {
-        return theShape;
+        return getPath();
     }
 
     public DecoratedShapeView addScalableChild(final IPrimitive<?> child) {
-        transformableContainer.add(child);
+        scalableContainer.addScalable(child);
         return this;
     }
 
@@ -102,11 +97,12 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
     @SuppressWarnings("unchecked")
     public T setSize(final double width,
                      final double height) {
-        resize(0,
-               0,
-               width,
-               height,
-               true);
+        // Ensure controls exist to perform resizing.
+        loadControls(IControlHandle.ControlHandleStandardType.RESIZE);
+        getControls().resize(0d,
+                             0d,
+                             width,
+                             height);
         return (T) this;
     }
 
@@ -118,8 +114,9 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
     }
 
     @Override
-    protected void initialize(final ViewEventType[] supportedEventTypes) {
-        // Initialize handlers for the primitive shape instead that on the path, as parent does.
+    @SuppressWarnings("unchecked")
+    public DecoratedWiresShapeControlHandleList getControls() {
+        return (DecoratedWiresShapeControlHandleList) super.getControls();
     }
 
     void resize(final double x,
@@ -127,21 +124,18 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
                 final double width,
                 final double height,
                 final boolean refresh) {
-        // Avoid recurrent calls, if any.
-        if (this.width != width || this.height != height) {
-            this.width = width;
-            this.height = height;
-            final BoundingBox bb = transformableContainer.getBoundingBox();
-            final double sx = width / bb.getWidth();
-            final double sy = height / bb.getHeight();
-            setupDecorator(getPath(),
-                           x,
-                           y,
-                           width,
-                           height);
-            transformableContainer.setX(x).setY(y).setScale(sx,
-                                                            sy);
-        }
+        scalableContainer
+                .scaleTo(x,
+                         y,
+                         width,
+                         height,
+                         () -> setupDecorator(getPath(),
+                                              x,
+                                              y,
+                                              width,
+                                              height),
+                         () -> {
+                         });
         if (refresh) {
             refresh();
         }
@@ -156,22 +150,36 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
                   controls);
         }
 
+        public void resize(final Double x,
+                           final Double y,
+                           final double width,
+                           final double height) {
+            resize(x,
+                   y,
+                   width,
+                   height,
+                   true);
+            updateControlPoints(ControlPointType.RESIZE);
+        }
+
         @Override
         protected void resize(final Double x,
                               final Double y,
                               final double width,
                               final double height,
                               final boolean refresh) {
-            super.resize(x,
-                         y,
-                         width,
-                         height,
-                         refresh);
+            // First let's resize the scalable container.
             DecoratedShapeView.this.resize(null != x ? x : 0,
                                            null != y ? y : 0,
                                            width,
                                            height,
                                            false);
+            // Delegate the resize operation to the parent class.
+            super.resize(x,
+                         y,
+                         width,
+                         height,
+                         refresh);
         }
     }
 
@@ -184,8 +192,6 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
                                  y,
                                  width,
                                  height)
-                .setStrokeColor(ColorName.BLACK)
-                .setStrokeAlpha(0)
-                .setFillAlpha(0.001);
+                .setStrokeAlpha(0);
     }
 }

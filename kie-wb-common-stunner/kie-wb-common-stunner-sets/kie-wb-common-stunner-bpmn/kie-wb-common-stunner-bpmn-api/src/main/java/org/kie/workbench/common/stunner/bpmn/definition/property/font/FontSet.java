@@ -71,37 +71,49 @@ public class FontSet implements BPMNPropertySet {
             afterElement = "fontSize",
             settings = {
                     @FieldParam(name = "min", value = "0.0"),
-                    @FieldParam(name = "max", value = "5.0"),
+                    @FieldParam(name = "max", value = "15.0"),
                     @FieldParam(name = "step", value = "1.0")
             }
     )
     private FontBorderSize fontBorderSize;
 
+    @Property
+    @FormField(
+            type = ColorPickerFieldType.class,
+            afterElement = "fontBorderSize"
+    )
+    private FontBorderColor fontBorderColor;
+
     public FontSet() {
         this(new FontFamily(),
              new FontColor(),
              new FontSize(),
-             new FontBorderSize());
+             new FontBorderSize(),
+             new FontBorderColor());
     }
 
     public FontSet(final @MapsTo("fontFamily") FontFamily fontFamily,
                    final @MapsTo("fontColor") FontColor fontColor,
                    final @MapsTo("fontSize") FontSize fontSize,
-                   final @MapsTo("fontBorderSize") FontBorderSize fontBorderSize) {
+                   final @MapsTo("fontBorderSize") FontBorderSize fontBorderSize,
+                   final @MapsTo("fontBorderColor") FontBorderColor fontBorderColor) {
         this.fontFamily = fontFamily;
         this.fontColor = fontColor;
         this.fontSize = fontSize;
         this.fontBorderSize = fontBorderSize;
+        this.fontBorderColor = fontBorderColor;
     }
 
     public FontSet(final String fontFamily,
                    final String fontColor,
                    final Double fontSize,
-                   final Double fontBorderSize) {
+                   final Double fontBorderSize,
+                   final String fontBorderColor) {
         this.fontFamily = new FontFamily(fontFamily);
         this.fontColor = new FontColor(fontColor);
         this.fontSize = new FontSize(fontSize);
         this.fontBorderSize = new FontBorderSize(fontBorderSize);
+        this.fontBorderColor = new FontBorderColor(fontBorderColor);
     }
 
     public String getPropertySetName() {
@@ -124,6 +136,10 @@ public class FontSet implements BPMNPropertySet {
         return fontBorderSize;
     }
 
+    public FontBorderColor getFontBorderColor() {
+        return fontBorderColor;
+    }
+
     public void setFontFamily(final FontFamily fontFamily) {
         this.fontFamily = fontFamily;
     }
@@ -138,5 +154,9 @@ public class FontSet implements BPMNPropertySet {
 
     public void setFontBorderSize(final FontBorderSize fontBorderSize) {
         this.fontBorderSize = fontBorderSize;
+    }
+
+    public void setFontBorderColor(FontBorderColor fontBorderColor) {
+        this.fontBorderColor = fontBorderColor;
     }
 }

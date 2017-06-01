@@ -28,8 +28,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresConnectorView;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresShapeView;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 
 import static org.junit.Assert.*;
 

@@ -33,6 +33,7 @@ public class GroupDefinitionGeneratorTest {
     private static final double X = 1.5d;
     private static final double Y = 1232.9d;
     private static final double ALPHA = 0.7d;
+    private static final boolean LISTENING = false;
     private static final double VBOX_MIN_X = 12.6;
     private static final double VBOX_MIN_Y = 23.4;
     private static final double VBOX_WIDTH = 300;
@@ -77,5 +78,7 @@ public class GroupDefinitionGeneratorTest {
         GeneratorAssertions.assertScale(generated,
                                         VBOX_WIDTH,
                                         VBOX_HEIGHT);
+        GeneratorAssertions.assertListening(generated,
+                                            LISTENING);
     }
 }

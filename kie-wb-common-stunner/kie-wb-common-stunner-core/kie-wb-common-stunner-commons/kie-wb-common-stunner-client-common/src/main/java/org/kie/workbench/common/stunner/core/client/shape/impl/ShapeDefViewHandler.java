@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
 
 /**
  * An util class that handles the shape's view properties that are coming from a MutableShapeDef type.
- * <p/>
+ * <p>
  * It adds some checks and constraints that can be used  across different implementation
  * for updating the views using the shape definition instance as input.
  * @param <W> The bean type.
@@ -95,14 +95,16 @@ public class ShapeDefViewHandler<W, V extends ShapeView, D extends MutableShapeD
     private void applyFont(final W element,
                            final MutationContext mutationContext) {
         final String family = getFontFamily(element);
-        final String color = getFontColor(element);
+        final String fillColor = getFontColor(element);
+        final String strokeColor = getFontBorderColor(element);
         final Double size = getFontSize(element);
         final Double borderSize = getFontBorderSize(element);
         final Double alpha = getFontAlpha(element);
         final HasTitle.Position position = getPosition(element);
         final Double rotation = getRotation(element);
         viewHandler.applyFont(family,
-                              color,
+                              fillColor,
+                              strokeColor,
                               size,
                               borderSize,
                               alpha,
@@ -141,6 +143,10 @@ public class ShapeDefViewHandler<W, V extends ShapeView, D extends MutableShapeD
 
     private String getFontColor(final W element) {
         return shapeDefinition.getFontColor(element);
+    }
+
+    private String getFontBorderColor(final W element) {
+        return shapeDefinition.getFontBorderColor(element);
     }
 
     private double getFontSize(final W element) {

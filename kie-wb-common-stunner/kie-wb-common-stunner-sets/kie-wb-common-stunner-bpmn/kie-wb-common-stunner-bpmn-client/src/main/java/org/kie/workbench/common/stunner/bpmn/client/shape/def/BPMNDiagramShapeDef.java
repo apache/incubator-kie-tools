@@ -68,6 +68,11 @@ public class BPMNDiagramShapeDef
     }
 
     @Override
+    public String getFontBorderColor(final BPMNDiagramImpl element) {
+        return element.getFontSet().getFontBorderColor().getValue();
+    }
+
+    @Override
     public double getFontSize(final BPMNDiagramImpl element) {
         return element.getFontSet().getFontSize().getValue();
     }

@@ -22,12 +22,16 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
+import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -37,8 +41,6 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
@@ -59,6 +61,8 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.violations.BoundsExceededViolation;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler> implements ResizeControl<AbstractCanvasHandler, Element> {
@@ -81,11 +85,9 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
     @SuppressWarnings("unchecked")
     public void register(final Element element) {
         if (checkNotRegistered(element)) {
-            final AbstractCanvas<?> canvas = canvasHandler.getAbstractCanvas();
+            final Canvas<?> canvas = canvasHandler.getCanvas();
             final Shape<?> shape = canvas.getShape(element.getUUID());
             if (supportsResize(shape)) {
-                registerCPHandlers(element,
-                                   shape.getShapeView());
                 registerResizeHandlers(element,
                                        shape);
             }
@@ -93,6 +95,7 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public CommandResult<CanvasViolation> resize(final Element element,
                                                  final double width,
                                                  final double height) {
@@ -104,6 +107,7 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public CommandResult<CanvasViolation> resize(final Element element,
                                                  final double x,
                                                  final double y,
@@ -136,37 +140,57 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
     private boolean supportsResize(final Shape<?> shape) {
         final ShapeView<?> view = shape.getShapeView();
         final boolean supportsResize = (view instanceof HasEventHandlers) &&
-                (((HasEventHandlers) view).supports(ViewEventType.RESIZE)) &&
-                (((HasEventHandlers) view).supports(ViewEventType.MOUSE_CLICK));
+                ((HasEventHandlers) view).supports(ViewEventType.RESIZE);
         final boolean supportsCtrlPoints = (view instanceof HasControlPoints);
         return supportsResize && supportsCtrlPoints;
     }
 
-    /**
-     * In order to show the shape's control points on mouse click + shift key down.
-     */
-    private void registerCPHandlers(final Element element,
-                                    final ShapeView<?> shapeView) {
-        final HasEventHandlers hasEventHandlers = (HasEventHandlers) shapeView;
-        final HasControlPoints hasControlPoints = (HasControlPoints) shapeView;
-        if (hasEventHandlers.supports(ViewEventType.MOUSE_CLICK)) {
-            final MouseClickHandler clickHandler = new MouseClickHandler() {
-                @Override
-                public void handle(final MouseClickEvent event) {
-                    if (event.isButtonLeft() &&
-                            event.isShiftKeyDown() && !hasControlPoints.areControlsVisible()) {
-                        hasControlPoints.showControlPoints(HasControlPoints.ControlPointType.RESIZE);
-                    } else {
-                        hasControlPoints.hideControlPoints();
-                    }
-                    canvasHandler.getCanvas().getLayer().draw();
-                }
-            };
-            hasEventHandlers.addHandler(ViewEventType.MOUSE_CLICK,
-                                        clickHandler);
-            registerHandler(element.getUUID(),
-                            clickHandler);
+    @SuppressWarnings("unchecked")
+    private void onCanvasElementSelectedEvent(@Observes CanvasElementSelectedEvent event) {
+        checkNotNull("event",
+                     event);
+        final String uuid = event.getElementUUID();
+        if (isSameCanvas(event) && isRegistered(uuid)) {
+            final HasControlPoints<?> hasControlPoints = getControlPointsInstance(uuid);
+            if (!hasControlPoints.areControlsVisible()) {
+                showCPs(hasControlPoints);
+            } else {
+                hideCPs(hasControlPoints);
+            }
         }
+    }
+
+    private void CanvasClearSelectionEvent(@Observes CanvasClearSelectionEvent clearSelectionEvent) {
+        checkNotNull("clearSelectionEvent",
+                     clearSelectionEvent);
+        if (isSameCanvas(clearSelectionEvent)) {
+            hideALLCPs();
+        }
+    }
+
+    private void showCPs(final HasControlPoints<?> hasControlPoints) {
+        if (!hasControlPoints.areControlsVisible()) {
+            hasControlPoints.showControlPoints(HasControlPoints.ControlPointType.RESIZE);
+        }
+    }
+
+    private void hideALLCPs() {
+        getRegisteredElements().forEach(uuid -> getControlPointsInstance(uuid).hideControlPoints());
+    }
+
+    private void hideCPs(final HasControlPoints<?> hasControlPoints) {
+        if (hasControlPoints.areControlsVisible()) {
+            hasControlPoints.hideControlPoints();
+        }
+    }
+
+    private HasControlPoints<?> getControlPointsInstance(final String uuid) {
+        final Shape<?> shape = canvasHandler.getCanvas().getShape(uuid);
+        return (HasControlPoints<?>) shape.getShapeView();
+    }
+
+    private boolean isSameCanvas(final AbstractCanvasHandlerEvent event) {
+        return null != canvasHandler && canvasHandler.equals(event.getCanvasHandler());
     }
 
     @SuppressWarnings("unchecked")
@@ -194,7 +218,6 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
                     final double y = shape.getShapeView().getShapeY();
                     final CommandResult<CanvasViolation> result =
                             doResize(element,
-                                     shape,
                                      x + event.getX(),
                                      y + event.getY(),
                                      event.getWidth(),
@@ -212,23 +235,8 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
         }
     }
 
-    private CommandResult<CanvasViolation> doResize(final Element<? extends View<?>> element,
-                                                    final Double x,
-                                                    final Double y,
-                                                    final double w,
-                                                    final double h) {
-        final Shape shape = canvasHandler.getCanvas().getShape(element.getUUID());
-        return doResize(element,
-                        shape,
-                        x,
-                        y,
-                        w,
-                        h);
-    }
-
     @SuppressWarnings("unchecked")
     private CommandResult<CanvasViolation> doResize(final Element<? extends View<?>> element,
-                                                    final Shape shape,
                                                     final Double x,
                                                     final Double y,
                                                     final double w,
@@ -255,10 +263,10 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
         }
         // Execute the update position and update property/ies command/s on the bean instance to achieve the new bounds.
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = getResizeCommands(element,
-                                                                                                 shape,
                                                                                                  w,
                                                                                                  h);
-        final CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation> commandBuilder = new CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>();
+        final CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation> commandBuilder =
+                new CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>();
         if (null != commands) {
             if (null != x && null != y) {
                 commandBuilder
@@ -283,7 +291,6 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
      * It always updates the element's position, as resize can update it, and it updates as well some of the bean's properties.
      */
     private List<Command<AbstractCanvasHandler, CanvasViolation>> getResizeCommands(final Element<? extends Definition<?>> element,
-                                                                                    final Shape shape,
                                                                                     final double w,
                                                                                     final double h) {
         final Definition content = (Definition) element.getContent();

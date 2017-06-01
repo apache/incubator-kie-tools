@@ -58,6 +58,8 @@ public class AnimationShapeStateHelper<V extends ShapeView, S extends Shape<V>> 
                               final double alpha) {
         new ShapeDecoratorAnimation(color,
                                     width,
-                                    alpha).forShape(getShape()).run();
+                                    alpha)
+                .forShape(getShape())
+                .run();
     }
 }

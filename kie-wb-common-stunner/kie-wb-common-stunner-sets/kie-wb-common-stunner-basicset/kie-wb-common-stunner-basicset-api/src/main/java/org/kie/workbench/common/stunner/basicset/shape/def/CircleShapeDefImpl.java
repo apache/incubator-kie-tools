@@ -58,6 +58,11 @@ public final class CircleShapeDefImpl
     }
 
     @Override
+    public String getFontBorderColor(final Circle element) {
+        return element.getFontSet().getFontBorderColor().getValue();
+    }
+
+    @Override
     public double getFontSize(final Circle element) {
         return element.getFontSet().getFontSize().getValue();
     }

@@ -35,10 +35,10 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 public final class SelectionControlImpl<H extends AbstractCanvasHandler> extends AbstractSelectionControl<H> {
 
     @Inject
-    public SelectionControlImpl(final Event<CanvasElementSelectedEvent> elementSelectedEventEvent,
-                                final Event<CanvasClearSelectionEvent> clearSelectionEventEvent) {
-        super(elementSelectedEventEvent,
-              clearSelectionEventEvent);
+    public SelectionControlImpl(final Event<CanvasElementSelectedEvent> elementSelectedEvent,
+                                final Event<CanvasClearSelectionEvent> clearSelectionEvent) {
+        super(elementSelectedEvent,
+              clearSelectionEvent);
     }
 
     /*
@@ -59,10 +59,8 @@ public final class SelectionControlImpl<H extends AbstractCanvasHandler> extends
                     @Override
                     public void handle(final MouseClickEvent event) {
                         if (event.isButtonLeft()) {
-                            final boolean isSelected = isSelected(element);
-                            SelectionControlImpl.super.handleElementSelection(element,
-                                                                              isSelected,
-                                                                              !event.isShiftKeyDown());
+                            SelectionControlImpl.super.select(element,
+                                                              !event.isShiftKeyDown());
                         }
                     }
                 };

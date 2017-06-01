@@ -20,13 +20,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.function.Predicate;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
@@ -47,11 +45,8 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler> extends AbstractCanvasHandlerRegistrationControl<H>
         implements SelectionControl<H, Element> {
 
-    private static Logger LOGGER = Logger.getLogger(AbstractSelectionControl.class.getName());
-
-    Event<CanvasElementSelectedEvent> elementSelectedEventEvent;
-    Event<CanvasClearSelectionEvent> clearSelectionEventEvent;
-
+    private final Event<CanvasElementSelectedEvent> elementSelectedEventEvent;
+    private final Event<CanvasClearSelectionEvent> clearSelectionEventEvent;
     private final List<String> selectedElements = new ArrayList<String>();
     private ViewHandler<?> layerClickHandler;
 
@@ -62,11 +57,8 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler> 
         this.clearSelectionEventEvent = clearSelectionEventEvent;
     }
 
-    /*
-        **************************************************************
-        *               CANVAS CONTROL METHODS
-        ***************************************************************
-     */
+    protected abstract void register(final Element element,
+                                     final Shape<?> shape);
 
     @Override
     public void enable(final H canvasHandler) {
@@ -87,12 +79,10 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler> 
         this.layerClickHandler = clickHandler;
     }
 
-    protected abstract void register(final Element element,
-                                     final Shape<?> shape);
-
     @Override
     public void register(final Element element) {
-        if (checkNotRegistered(element)) {
+        if (isEnabled()
+                && checkNotRegistered(element)) {
             final Shape<?> shape = getCanvas().getShape(element.getUUID());
             if (null != shape) {
                 register(element,
@@ -101,128 +91,21 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler> 
         }
     }
 
-    protected void handleElementSelection(final Element element,
-                                          final boolean selected,
-                                          final boolean clearSelection) {
-        if (clearSelection) {
-            clearSelection();
-        }
-        if (selected) {
-            log(Level.FINE,
-                "Deselect [element=" + element.getUUID() + "]");
-            deselect(element);
-        } else {
-            log(Level.FINE,
-                "Select [element=" + element.getUUID() + "]");
-            select(element);
-        }
-    }
-
-    /**
-     * When clicking on the layer or on the canvas root element, it's not
-     * being added into the selected list but it fires the selection event
-     * so other components can process or present their stuff at this point.
-     */
-    protected void handleLayerClick(final boolean clearSelection) {
-        if (clearSelection) {
-            clearSelection();
-        }
-        final String canvasRootUUID = getRootUUID();
-        if (null != canvasRootUUID) {
-            elementSelectedEventEvent.fire(new CanvasElementSelectedEvent(canvasHandler,
-                                                                          canvasRootUUID));
-        } else {
-            clearSelectionEventEvent.fire(new CanvasClearSelectionEvent(canvasHandler));
-        }
-    }
-
-    @Override
-    protected void doDisable() {
-        super.doDisable();
-        if (null != layerClickHandler
-                && null != getCanvas()
-                && null != getCanvas().getLayer()) {
-            getCanvas().getLayer().removeHandler(layerClickHandler);
-            this.layerClickHandler = null;
-        }
-    }
-
-    @Override
-    public void deregisterAll() {
-        super.deregisterAll();
-        selectedElements.clear();
-    }
-
-    @Override
-    public void deregister(final String uuid) {
-        super.deregister(uuid);
-        selectedElements.remove(uuid);
-    }
-
-    @SuppressWarnings("unchecked")
-    protected void updateViewShapesState() {
-        if (null != getCanvas()) {
-            final List<Shape> shapes = getCanvas().getShapes();
-            for (final Shape shape : shapes) {
-                final boolean isSelected = !selectedElements.isEmpty() && selectedElements.contains(shape.getUUID());
-                if (isSelected) {
-                    selectShape(shape);
-                } else {
-                    deselectShape(shape);
-                }
-            }
-            // Batch a show operation.
-            getCanvas().draw();
-        }
-    }
-
-    protected void selectShape(final Shape shape) {
-        shape.applyState(ShapeState.SELECTED);
-        getCanvas().draw();
-    }
-
-    protected void deselectShape(final Shape shape) {
-        shape.applyState(ShapeState.NONE);
-        getCanvas().draw();
-    }
-    
-    /*
-        **************************************************************
-        *               SELECTION CONTROL METHODS
-        ***************************************************************
-     */
-
-    public SelectionControl<H, Element> select(final String uuid,
-                                               final boolean fireEvent) {
-        selectedElements.add(uuid);
-        updateViewShapesState();
-        if (fireEvent) {
-            elementSelectedEventEvent.fire(new CanvasElementSelectedEvent(canvasHandler,
-                                                                          uuid));
-        }
-        return this;
-    }
-
     @Override
     public SelectionControl<H, Element> select(final Element element) {
-        return select(element,
-                      true);
+        return doSelect(element,
+                        true);
     }
 
     public SelectionControl<H, Element> select(final Element element,
-                                               final boolean fireEvent) {
-        this.select(element.getUUID(),
-                    fireEvent);
-        return this;
-    }
-
-    public SelectionControl<H, Element> deselect(final String uuid,
-                                                 final boolean fireEvent) {
-        // GWT.log("***** DESELECTING " + uuid );
-        selectedElements.remove(uuid);
-        updateViewShapesState();
-        if (fireEvent) {
-            fireCanvasClear();
+                                               final boolean clearCurrentSelection) {
+        if (clearCurrentSelection) {
+            clearSelection(uuid -> !uuid.equals(element.getUUID()),
+                           true);
+        }
+        if (!isSelected(element)) {
+            doSelect(element,
+                     true);
         }
         return this;
     }
@@ -231,16 +114,6 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler> 
     public SelectionControl<H, Element> deselect(final Element element) {
         return deselect(element,
                         true);
-    }
-
-    public SelectionControl<H, Element> deselect(final Element element,
-                                                 final boolean fireEvent) {
-        return this.deselect(element.getUUID(),
-                             fireEvent);
-    }
-
-    protected boolean isSelected(final String uuid) {
-        return uuid != null && selectedElements.contains(uuid);
     }
 
     @Override
@@ -258,29 +131,37 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler> 
         return clearSelection(true);
     }
 
-    public SelectionControl<H, Element> clearSelection(final boolean fireEvent) {
-        // De-select all currently selected shapes.
-        for (final String uuid : selectedElements) {
-            final Shape<?> shape = canvasHandler.getCanvas().getShape(uuid);
-            if (null != shape) {
-                deselectShape(shape);
-            }
-        }
+    public boolean isEnabled() {
+        return super.isEnabled() && null != canvasHandler.getCanvas();
+    }
+
+    @Override
+    public void deregisterAll() {
+        super.deregisterAll();
         selectedElements.clear();
-        if (null != getCanvas()) {
-            // Force batch re-show.
-            getCanvas().draw();
+    }
+
+    @Override
+    public void deregister(final String uuid) {
+        super.deregister(uuid);
+        selectedElements.remove(uuid);
+    }
+
+    @Override
+    protected void doDisable() {
+        super.doDisable();
+        if (isEnabled()
+                && null != layerClickHandler
+                && null != getCanvas().getLayer()) {
+            getCanvas().getLayer().removeHandler(layerClickHandler);
+            this.layerClickHandler = null;
         }
-        if (fireEvent) {
-            fireCanvasClear();
-        }
-        return this;
     }
 
     void onShapeRemovedEvent(final @Observes CanvasShapeRemovedEvent shapeRemovedEvent) {
         checkNotNull("shapeRemovedEvent",
                      shapeRemovedEvent);
-        if (null != getCanvas() && getCanvas().equals(shapeRemovedEvent.getCanvas())) {
+        if (isEnabled() && getCanvas().equals(shapeRemovedEvent.getCanvas())) {
             final Shape<?> shape = shapeRemovedEvent.getShape();
             if (selectedElements.contains(shape.getUUID())) {
                 this.deselect(shape.getUUID(),
@@ -296,6 +177,17 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler> 
         if (null != canvasHandler && canvasHandler.equals(event.getCanvasHandler())) {
             doSelect(uuid);
         }
+    }
+
+    private SelectionControl<H, Element> select(final String uuid,
+                                                final boolean fireEvent) {
+        selectedElements.add(uuid);
+        updateViewShapesState();
+        if (fireEvent) {
+            elementSelectedEventEvent.fire(new CanvasElementSelectedEvent(canvasHandler,
+                                                                          uuid));
+        }
+        return this;
     }
 
     private void doSelect(final String uuid) {
@@ -314,23 +206,108 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler> 
         }
     }
 
-    protected void fireCanvasClear() {
+    private SelectionControl<H, Element> doSelect(final Element element,
+                                                  final boolean fireEvent) {
+        this.select(element.getUUID(),
+                    fireEvent);
+        return this;
+    }
+
+    private SelectionControl<H, Element> deselect(final String uuid,
+                                                  final boolean fireEvent) {
+        selectedElements.remove(uuid);
+        updateViewShapesState();
+        if (fireEvent) {
+            fireCanvasClear();
+        }
+        return this;
+    }
+
+    private SelectionControl<H, Element> deselect(final Element element,
+                                                  final boolean fireEvent) {
+        return this.deselect(element.getUUID(),
+                             fireEvent);
+    }
+
+    private boolean isSelected(final String uuid) {
+        return uuid != null && selectedElements.contains(uuid);
+    }
+
+    private SelectionControl<H, Element> clearSelection(final boolean fireEvent) {
+        return this.clearSelection(uuid -> true,
+                                   fireEvent);
+    }
+
+    private SelectionControl<H, Element> clearSelection(final Predicate<String> uuidFilter,
+                                                        final boolean fireEvent) {
+        // De-select all currently selected shapes.
+        selectedElements.stream()
+                .filter(uuidFilter)
+                .forEach(uuid -> deselect(uuid,
+                                          fireEvent));
+        selectedElements.clear();
+        if (null != getCanvas()) {
+            // Force batch re-show.
+            getCanvas().draw();
+        }
+        if (fireEvent) {
+            fireCanvasClear();
+        }
+        return this;
+    }
+
+    /**
+     * When clicking on the layer or on the canvas root element, it's not
+     * being added into the selected list but it fires the selection event
+     * so other components can process or present their stuff at this point.
+     */
+    private void handleLayerClick(final boolean clearSelection) {
+        if (clearSelection) {
+            clearSelection();
+        }
+        final String canvasRootUUID = getRootUUID();
+        if (null != canvasRootUUID) {
+            elementSelectedEventEvent.fire(new CanvasElementSelectedEvent(canvasHandler,
+                                                                          canvasRootUUID));
+        } else {
+            clearSelectionEventEvent.fire(new CanvasClearSelectionEvent(canvasHandler));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void updateViewShapesState() {
+        if (isEnabled()) {
+            final List<Shape> shapes = getCanvas().getShapes();
+            for (final Shape shape : shapes) {
+                final boolean isSelected = !selectedElements.isEmpty() && selectedElements.contains(shape.getUUID());
+                if (isSelected) {
+                    selectShape(shape);
+                } else {
+                    deselectShape(shape);
+                }
+            }
+            // Batch a show operation.
+            getCanvas().draw();
+        }
+    }
+
+    private void selectShape(final Shape shape) {
+        shape.applyState(ShapeState.SELECTED);
+    }
+
+    private void deselectShape(final Shape shape) {
+        shape.applyState(ShapeState.NONE);
+    }
+
+    private void fireCanvasClear() {
         clearSelectionEventEvent.fire(new CanvasClearSelectionEvent(canvasHandler));
     }
 
-    protected Canvas getCanvas() {
+    private Canvas getCanvas() {
         return null != canvasHandler ? canvasHandler.getCanvas() : null;
     }
 
     private String getRootUUID() {
         return canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
-    }
-
-    private void log(final Level level,
-                     final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
-            LOGGER.log(level,
-                       message);
-        }
     }
 }

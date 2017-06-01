@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
 
-    public static final double ACTIVE_STROKE_WIDTH = 5d;
+    public static final double ACTIVE_STROKE_WIDTH = 1d;
     public static final double ACTIVE_STROKE_ALPHA = 1d;
 
     /*
@@ -40,8 +40,8 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
         back to NONE state, it just reverts the border attributes
         to these private instance members.
      */
-    private Double strokeWidth;
-    private Double strokeAlpha;
+    private double strokeWidth;
+    private double strokeAlpha;
     private String strokeColor;
     private ShapeState state;
     private double activeStrokeWidth;
@@ -49,7 +49,6 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
 
     public ShapeStateHelper() {
         init();
-        this.activeStrokeWidth = ACTIVE_STROKE_WIDTH;
     }
 
     public ShapeStateHelper(final S shape) {
@@ -86,8 +85,8 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
                 applyInvalidState();
             } else {
                 applyNoneState(strokeColor,
-                               null != this.strokeWidth ? this.strokeWidth : 1,
-                               null != this.strokeAlpha ? this.strokeAlpha : 1);
+                               strokeWidth,
+                               strokeAlpha);
             }
         }
         return this;
@@ -99,7 +98,7 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
 
     protected void applyActiveState(final String color) {
         getShapeView().setStrokeColor(color);
-        getShapeView().setStrokeWidth(activeStrokeWidth);
+        getShapeView().setStrokeWidth(getActiveStrokeWidth());
         getShapeView().setStrokeAlpha(ACTIVE_STROKE_ALPHA);
     }
 
@@ -113,10 +112,14 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
 
     protected void init() {
         this.state = ShapeState.NONE;
+        this.activeStrokeWidth = ACTIVE_STROKE_WIDTH;
+        this.strokeWidth = 1;
+        this.strokeAlpha = 1;
     }
 
     protected double getActiveStrokeWidth() {
-        return activeStrokeWidth;
+        //return activeStrokeWidth;
+        return strokeWidth + (strokeWidth * activeStrokeWidth);
     }
 
     protected S getShape() {
@@ -138,5 +141,4 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
     private V getShapeView() {
         return shape.getShapeView();
     }
-
 }

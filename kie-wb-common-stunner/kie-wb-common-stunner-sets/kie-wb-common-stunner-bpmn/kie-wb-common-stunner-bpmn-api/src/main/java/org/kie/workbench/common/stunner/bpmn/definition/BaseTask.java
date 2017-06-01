@@ -118,7 +118,7 @@ public abstract class BaseTask implements BPMNDefinition {
         public static final String COLOR = "#f9fad2";
         public static final Double WIDTH = 136d;
         public static final Double HEIGHT = 48d;
-        public static final Double BORDER_SIZE = 1d;
+        public static final Double BORDER_SIZE = 0.5d;
         public static final String BORDER_COLOR = "#000000";
     }
 

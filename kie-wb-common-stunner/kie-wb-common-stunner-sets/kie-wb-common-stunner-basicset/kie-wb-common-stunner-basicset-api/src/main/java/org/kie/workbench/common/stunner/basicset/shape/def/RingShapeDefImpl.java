@@ -68,6 +68,11 @@ public final class RingShapeDefImpl
     }
 
     @Override
+    public String getFontBorderColor(final Ring element) {
+        return element.getFontSet().getFontBorderColor().getValue();
+    }
+
+    @Override
     public double getFontSize(final Ring element) {
         return element.getFontSet().getFontSize().getValue();
     }

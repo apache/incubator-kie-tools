@@ -16,8 +16,8 @@
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
+import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
-import org.kie.workbench.common.stunner.bpmn.shape.def.BPMNPictures;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
 import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
@@ -66,6 +66,11 @@ public class IntermediateTimerEventShapeDef extends AbstractShapeDef<Intermediat
     @Override
     public String getFontColor(final IntermediateTimerEvent element) {
         return element.getFontSet().getFontColor().getValue();
+    }
+
+    @Override
+    public String getFontBorderColor(final IntermediateTimerEvent element) {
+        return element.getFontSet().getFontBorderColor().getValue();
     }
 
     @Override

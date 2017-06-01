@@ -40,6 +40,8 @@ public interface MutableShapeDef<W> extends ShapeDef<W> {
 
     String getFontColor(final W element);
 
+    String getFontBorderColor(final W element);
+
     double getFontSize(final W element);
 
     double getFontBorderSize(final W element);

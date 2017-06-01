@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.core.client.animation;
 
 public abstract class AbstractAnimation<S> implements Animation<S> {
 
-    private static final long ANIMATION_DURATION = 250;
+    private static final long ANIMATION_DURATION = 50;
 
     private AnimationCallback callback;
     private long duration = ANIMATION_DURATION;

@@ -66,6 +66,11 @@ public final class CaseManagementDiagramShapeDef
     }
 
     @Override
+    public String getFontBorderColor(final CaseManagementDiagram element) {
+        return element.getFontSet().getFontBorderColor().getValue();
+    }
+
+    @Override
     public double getFontSize(final CaseManagementDiagram element) {
         return element.getFontSet().getFontSize().getValue();
     }

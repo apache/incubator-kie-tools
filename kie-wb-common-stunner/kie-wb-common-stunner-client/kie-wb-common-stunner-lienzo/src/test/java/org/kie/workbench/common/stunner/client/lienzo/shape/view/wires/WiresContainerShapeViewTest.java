@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.stunner.client.lienzo.shape.view;
+
+package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;

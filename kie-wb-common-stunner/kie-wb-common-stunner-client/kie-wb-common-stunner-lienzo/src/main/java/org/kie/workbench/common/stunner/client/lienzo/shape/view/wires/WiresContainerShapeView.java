@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.lienzo.shape.view;
+package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.ext.WiresShapeViewExt;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresShapeViewExt;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;

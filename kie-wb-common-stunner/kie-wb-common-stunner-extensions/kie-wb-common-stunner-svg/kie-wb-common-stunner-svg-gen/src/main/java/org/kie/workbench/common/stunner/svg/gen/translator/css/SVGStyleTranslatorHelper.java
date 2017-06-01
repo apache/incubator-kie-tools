@@ -127,7 +127,6 @@ public class SVGStyleTranslatorHelper {
             if (CSSRule.STYLE_RULE == item.getType()) {
                 final CSSStyleRuleImpl rule = (CSSStyleRuleImpl) item;
                 String selectorText = rule.getSelectorText();
-                System.out.println("- " + selectorText);
                 final CSSStyleDeclaration declaration = rule.getStyle();
                 return parseStyleDefinition(declaration);
             }

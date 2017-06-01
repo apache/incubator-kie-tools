@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.shapes.client;
 
 import org.kie.workbench.common.stunner.client.lienzo.shape.impl.AnimationShapeStateHelper;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.ext.WiresConnectorViewExt;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresConnectorViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
@@ -46,5 +46,4 @@ public class BasicConnectorShape<W, D extends MutableShapeDef<W>, V extends Wire
     private boolean isSelected() {
         return ShapeState.SELECTED.equals(getShape().getShapeStateHelper().getState());
     }
-
 }

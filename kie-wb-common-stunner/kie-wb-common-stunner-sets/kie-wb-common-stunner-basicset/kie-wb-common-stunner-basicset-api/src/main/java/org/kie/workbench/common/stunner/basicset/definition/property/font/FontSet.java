@@ -78,31 +78,44 @@ public class FontSet {
     @Valid
     private FontBorderSize fontBorderSize;
 
+    @Property
+    @FormField(
+            type = ColorPickerFieldType.class,
+            afterElement = "fontBorderSize"
+    )
+    @Valid
+    private FontBorderColor fontBorderColor;
+
     public FontSet() {
         this(new FontFamily(),
              new FontColor(),
              new FontSize(),
-             new FontBorderSize());
+             new FontBorderSize(),
+             new FontBorderColor());
     }
 
     public FontSet(final @MapsTo("fontFamily") FontFamily fontFamily,
                    final @MapsTo("fontColor") FontColor fontColor,
                    final @MapsTo("fontSize") FontSize fontSize,
-                   final @MapsTo("fontBorderSize") FontBorderSize fontBorderSize) {
+                   final @MapsTo("fontBorderSize") FontBorderSize fontBorderSize,
+                   final @MapsTo("fontBorderColor") FontBorderColor fontBorderColor) {
         this.fontFamily = fontFamily;
         this.fontColor = fontColor;
         this.fontSize = fontSize;
         this.fontBorderSize = fontBorderSize;
+        this.fontBorderColor = fontBorderColor;
     }
 
     public FontSet(final String fontFamily,
                    final String fontColor,
                    final Double fontSize,
-                   final Double fontBorderSize) {
+                   final Double fontBorderSize,
+                   final String fontBorderColor) {
         this.fontFamily = new FontFamily(fontFamily);
         this.fontColor = new FontColor(fontColor);
         this.fontSize = new FontSize(fontSize);
         this.fontBorderSize = new FontBorderSize(fontBorderSize);
+        this.fontBorderColor = new FontBorderColor(fontBorderColor);
     }
 
     public String getPropertySetName() {
@@ -125,6 +138,10 @@ public class FontSet {
         return fontBorderSize;
     }
 
+    public FontBorderColor getFontBorderColor() {
+        return fontBorderColor;
+    }
+
     public void setFontFamily(final FontFamily fontFamily) {
         this.fontFamily = fontFamily;
     }
@@ -139,5 +156,9 @@ public class FontSet {
 
     public void setFontBorderSize(final FontBorderSize fontBorderSize) {
         this.fontBorderSize = fontBorderSize;
+    }
+
+    public void setFontBorderColor(final FontBorderColor fontBorderColor) {
+        this.fontBorderColor = fontBorderColor;
     }
 }

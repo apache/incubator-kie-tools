@@ -16,7 +16,7 @@
   -->
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
      x="0px" y="0px" width="448px" height="448px" viewBox="0 0 448 448">
-  <rect x="0px" y="0px" width="448px" height="448px" rx="15" ry="15" style="fill:none; stroke: black; stroke-width: 5;"/>
+  <rect x="0px" y="0px" width="448px" height="448px" rx="10" ry="10" style="fill:none; stroke: black; stroke-width: 5;"/>
   <g id="icon" style="opacity:1">
     <use xlink:href="lane_icon.svg#Layer_1"/>
   </g>

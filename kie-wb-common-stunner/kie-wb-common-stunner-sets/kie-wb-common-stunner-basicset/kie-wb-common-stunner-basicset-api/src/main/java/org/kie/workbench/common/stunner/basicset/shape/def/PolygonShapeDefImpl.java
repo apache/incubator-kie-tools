@@ -73,6 +73,11 @@ public final class PolygonShapeDefImpl
     }
 
     @Override
+    public String getFontBorderColor(final Polygon element) {
+        return element.getFontSet().getFontBorderColor().getValue();
+    }
+
+    @Override
     public double getFontSize(final Polygon element) {
         return element.getFontSet().getFontSize().getValue();
     }

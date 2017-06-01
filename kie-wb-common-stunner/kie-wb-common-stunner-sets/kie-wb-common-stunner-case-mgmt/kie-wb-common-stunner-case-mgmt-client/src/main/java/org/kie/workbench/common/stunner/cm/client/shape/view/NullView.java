@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.cm.client.shape.view;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.ext.WiresShapeViewExt;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresShapeViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 
 /**

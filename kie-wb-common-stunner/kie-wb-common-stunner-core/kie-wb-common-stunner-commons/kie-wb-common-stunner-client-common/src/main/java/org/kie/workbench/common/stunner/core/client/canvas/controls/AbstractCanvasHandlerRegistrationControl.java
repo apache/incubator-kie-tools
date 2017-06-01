@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -68,6 +69,14 @@ public abstract class AbstractCanvasHandlerRegistrationControl<H extends Abstrac
         return isRegistered(element.getUUID());
     }
 
+    protected Set<String> getRegisteredElements() {
+        return handlers.keySet();
+    }
+
+    protected boolean isRegistered(final String uuid) {
+        return handlers.containsKey(uuid);
+    }
+
     protected void deregister(final String uuid) {
         if (isRegistered(uuid)) {
             final Shape shape = canvasHandler.getCanvas().getShape(uuid);
@@ -99,9 +108,5 @@ public abstract class AbstractCanvasHandlerRegistrationControl<H extends Abstrac
             hasEventHandlers.removeHandler(handler);
             handlers.remove(shape.getUUID());
         }
-    }
-
-    private boolean isRegistered(final String uuid) {
-        return handlers.containsKey(uuid);
     }
 }

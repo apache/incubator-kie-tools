@@ -86,16 +86,20 @@ public class SVGDocumentTranslatorTest {
         assertTrue(mainShapeDef instanceof MultiPathDefinition);
         final MultiPathDefinition mainPathDef = (MultiPathDefinition) mainShapeDef;
         SVGTranslationTestAssertions.assertPath(mainPathDef);
+        assertTrue(mainPathDef.isListening());
         // View definition's child shapes.
         final List<PrimitiveDefinition> childrenDefs = viewDefinition.getChildren();
         assertNotNull(childrenDefs);
         assertTrue(childrenDefs.size() == 3);
         final RectDefinition rectDefinition = (RectDefinition) childrenDefs.get(0);
         SVGTranslationTestAssertions.assertRectangle(rectDefinition);
+        assertFalse(rectDefinition.isListening());
         final CircleDefinition circleDefinition = (CircleDefinition) childrenDefs.get(1);
         SVGTranslationTestAssertions.assertCircle(circleDefinition);
+        assertFalse(circleDefinition.isListening());
         // Assert other svg reference elements.
         final GroupDefinition groupDefinition = (GroupDefinition) childrenDefs.get(2);
+        assertFalse(groupDefinition.isListening());
         SVGTranslationTestAssertions.assertGroupRef(groupDefinition);
         final List<ViewRefDefinition> svgViewRefs = viewDefinition.getSVGViewRefs();
         assertNotNull(svgViewRefs);

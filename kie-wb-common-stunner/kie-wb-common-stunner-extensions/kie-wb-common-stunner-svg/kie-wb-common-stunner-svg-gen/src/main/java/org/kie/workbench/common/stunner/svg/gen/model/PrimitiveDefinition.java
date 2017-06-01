@@ -32,6 +32,8 @@ public interface PrimitiveDefinition<V> {
 
     boolean isMain();
 
+    boolean isListening();
+
     LayoutDefinition getLayoutDefinition();
 
     TransformDefinition getTransformDefinition();

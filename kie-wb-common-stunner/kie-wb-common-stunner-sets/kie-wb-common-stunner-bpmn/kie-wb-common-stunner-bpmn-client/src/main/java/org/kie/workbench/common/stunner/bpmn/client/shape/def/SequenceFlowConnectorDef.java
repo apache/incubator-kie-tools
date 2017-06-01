@@ -16,12 +16,13 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
+import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 import org.kie.workbench.common.stunner.shapes.def.AbstractConnectorDef;
-import org.kie.workbench.common.stunner.shapes.def.ConnectorGlyphDef;
 import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
+import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
 
 public final class SequenceFlowConnectorDef
         extends AbstractConnectorDef<SequenceFlow>
@@ -53,6 +54,11 @@ public final class SequenceFlowConnectorDef
     }
 
     @Override
+    public String getFontBorderColor(final SequenceFlow element) {
+        return element.getFontSet().getFontBorderColor().getValue();
+    }
+
+    @Override
     public HasTitle.Position getFontPosition(final SequenceFlow element) {
         return HasTitle.Position.TOP;
     }
@@ -62,21 +68,22 @@ public final class SequenceFlowConnectorDef
         return 0;
     }
 
-    private static class SequenceFlowGlyphDef extends ConnectorGlyphDef<SequenceFlow> {
+    @Override
+    public GlyphDef<SequenceFlow> getGlyphDef() {
+        return GLYPH_DEF;
+    }
 
-        @Override
-        public String getColor() {
-            return "#000000";
-        }
+    private static final PictureGlyphDef<SequenceFlow, BPMNPictures> GLYPH_DEF
+            = new PictureGlyphDef<SequenceFlow, BPMNPictures>() {
 
         @Override
         public String getGlyphDescription(final SequenceFlow element) {
             return element.getTitle();
         }
-    }
 
-    @Override
-    public GlyphDef<SequenceFlow> getGlyphDef() {
-        return new SequenceFlowGlyphDef();
-    }
+        @Override
+        public BPMNPictures getSource(final Class<?> type) {
+            return BPMNPictures.SEQUENCE_FLOW;
+        }
+    };
 }

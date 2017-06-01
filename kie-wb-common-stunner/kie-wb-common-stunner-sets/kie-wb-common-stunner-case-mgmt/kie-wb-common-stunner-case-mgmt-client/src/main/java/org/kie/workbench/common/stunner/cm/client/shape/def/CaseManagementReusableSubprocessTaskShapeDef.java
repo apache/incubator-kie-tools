@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.cm.client.shape.def;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.workbench.common.stunner.bpmn.shape.def.BPMNPictures;
+import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -87,6 +87,11 @@ public final class CaseManagementReusableSubprocessTaskShapeDef
     @Override
     public String getFontColor(final ReusableSubprocess element) {
         return element.getFontSet().getFontColor().getValue();
+    }
+
+    @Override
+    public String getFontBorderColor(final ReusableSubprocess element) {
+        return element.getFontSet().getFontBorderColor().getValue();
     }
 
     @Override

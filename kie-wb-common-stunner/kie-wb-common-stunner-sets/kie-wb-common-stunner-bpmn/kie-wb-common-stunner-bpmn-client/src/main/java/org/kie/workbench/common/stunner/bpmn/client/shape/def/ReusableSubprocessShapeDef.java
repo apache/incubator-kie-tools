@@ -17,8 +17,8 @@
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
+import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
-import org.kie.workbench.common.stunner.bpmn.shape.def.BPMNPictures;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
 import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
@@ -68,6 +68,11 @@ public class ReusableSubprocessShapeDef
     @Override
     public String getFontColor(final ReusableSubprocess element) {
         return element.getFontSet().getFontColor().getValue();
+    }
+
+    @Override
+    public String getFontBorderColor(final ReusableSubprocess element) {
+        return element.getFontSet().getFontBorderColor().getValue();
     }
 
     @Override

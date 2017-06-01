@@ -21,7 +21,7 @@ import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ColorName;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.ext.WiresConnectorViewExt;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresConnectorViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
 public class ConnectorView extends WiresConnectorViewExt<ConnectorView> {

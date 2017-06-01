@@ -40,6 +40,7 @@ public class CircleDefinitionGeneratorTest {
     private static final String STROKE_COLOR = "#654321";
     private static final double STROKE_ALPHA = 0.12d;
     private static final double STROKE_WIDTH = 5.6d;
+    private static final boolean LISTENING = false;
     private static final double VBOX_MIN_X = 12.6;
     private static final double VBOX_MIN_Y = 23.4;
     private static final double VBOX_WIDTH = 300;
@@ -103,5 +104,7 @@ public class CircleDefinitionGeneratorTest {
                                               STROKE_ALPHA);
         GeneratorAssertions.assertStrokeWidth(generated,
                                               STROKE_WIDTH);
+        GeneratorAssertions.assertListening(generated,
+                                            LISTENING);
     }
 }

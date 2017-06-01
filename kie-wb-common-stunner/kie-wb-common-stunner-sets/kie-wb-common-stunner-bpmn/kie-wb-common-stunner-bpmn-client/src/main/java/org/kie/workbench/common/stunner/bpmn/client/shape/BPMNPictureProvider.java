@@ -21,7 +21,6 @@ import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
-import org.kie.workbench.common.stunner.bpmn.shape.def.BPMNPictures;
 import org.kie.workbench.common.stunner.shapes.def.picture.PictureProvider;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
@@ -71,6 +70,8 @@ public class BPMNPictureProvider implements PictureProvider<BPMNPictures> {
                     BPMNImageResources.INSTANCE.gatewayParallelMultiple().getSafeUri());
                 put(BPMNPictures.EXCLUSIVE,
                     BPMNImageResources.INSTANCE.gatewayExclusive().getSafeUri());
+                put(BPMNPictures.SEQUENCE_FLOW,
+                    BPMNImageResources.INSTANCE.sequenceFlow().getSafeUri());
                 put(BPMNPictures.GLYPH_OOME_HACK,
                     BPMNImageResources.INSTANCE.glyphOOMEHack().getSafeUri());
             }};

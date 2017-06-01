@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.lienzo.shape.view;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 import com.ait.lienzo.client.core.event.AbstractNodeGestureEvent;
 import com.ait.lienzo.client.core.event.AbstractNodeTouchEvent;
@@ -29,6 +30,7 @@ import com.ait.lienzo.client.core.event.NodeGestureStartEvent;
 import com.ait.lienzo.client.core.event.NodeGestureStartHandler;
 import com.ait.lienzo.client.core.event.TouchPoint;
 import com.ait.lienzo.client.core.shape.Node;
+import com.ait.lienzo.client.core.shape.Shape;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.GestureEvent;
@@ -53,9 +55,11 @@ public class ViewEventHandlerManager {
     protected final Map<ViewEventType, HandlerRegistration[]> registrationMap = new HashMap<>();
 
     private final Node<?> node;
-    private final Node<?> path;
+    private final Shape<?> shape;
     private final ViewEventType[] supportedTypes;
     private boolean enabled;
+    private BiFunction<Runnable, Integer, Void> timer;
+
     /**
      * This is a flag used to distinguish between click / double click events fired for same node.
      * When doing mouse click on the node, this implementation schedules a timer to trigger the click handler/s, if any.
@@ -66,25 +70,41 @@ public class ViewEventHandlerManager {
     private boolean fireClickHandler;
 
     public ViewEventHandlerManager(final Node<?> node,
-                                   final Node<?> path,
                                    final ViewEventType... supportedTypes) {
+        this(node,
+             null,
+             supportedTypes);
+    }
+
+    public ViewEventHandlerManager(final Node<?> node,
+                                   final Shape<?> shape,
+                                   final ViewEventType... supportedTypes) {
+        this(node,
+             shape,
+             new GWTTimerFunction(),
+             supportedTypes);
+    }
+
+    ViewEventHandlerManager(final Node<?> node,
+                            final Shape<?> shape,
+                            final BiFunction<Runnable, Integer, Void> timer,
+                            final ViewEventType... supportedTypes) {
         this.node = node;
-        this.path = path;
+        this.shape = shape;
         this.supportedTypes = supportedTypes;
+        this.timer = timer;
         this.fireClickHandler = true;
         enable();
     }
 
     public void enable() {
+        listen(true);
         this.enabled = true;
     }
 
     public void disable() {
+        listen(false);
         this.enabled = false;
-    }
-
-    private boolean isEnabled() {
-        return this.enabled;
     }
 
     public boolean supports(final ViewEventType type) {
@@ -211,7 +231,7 @@ public class ViewEventHandlerManager {
 
     protected HandlerRegistration[] registerEnterHandler(final ViewHandler<ViewEvent> eventHandler) {
         return new HandlerRegistration[]{
-                path.addNodeMouseEnterHandler(e -> {
+                shape.addNodeMouseEnterHandler(e -> {
                     if (isEnabled()) {
                         final MouseEnterEvent event = new MouseEnterEvent(e.getX(),
                                                                           e.getY(),
@@ -228,7 +248,7 @@ public class ViewEventHandlerManager {
 
     protected HandlerRegistration[] registerExitHandler(final ViewHandler<ViewEvent> eventHandler) {
         return new HandlerRegistration[]{
-                path.addNodeMouseExitHandler(e -> {
+                shape.addNodeMouseExitHandler(e -> {
                     if (isEnabled()) {
                         final MouseExitEvent event = new MouseExitEvent(e.getX(),
                                                                         e.getY(),
@@ -258,24 +278,22 @@ public class ViewEventHandlerManager {
                         final boolean isButtonLeft = nodeMouseClickEvent.isButtonLeft();
                         final boolean isButtonMiddle = nodeMouseClickEvent.isButtonMiddle();
                         final boolean isButtonRight = nodeMouseClickEvent.isButtonRight();
-                        new Timer() {
-                            @Override
-                            public void run() {
-                                if (fireClickHandler) {
-                                    ViewEventHandlerManager.this.onMouseClick(eventHandler,
-                                                                              x,
-                                                                              y,
-                                                                              clientX,
-                                                                              clientY,
-                                                                              isShiftKeyDown,
-                                                                              isAltKeyDown,
-                                                                              isMetaKeyDown,
-                                                                              isButtonLeft,
-                                                                              isButtonMiddle,
-                                                                              isButtonRight);
-                                }
-                            }
-                        }.schedule(CLICK_HANDLER_TIMER_DURATION);
+                        timer.apply(() -> {
+                                        if (fireClickHandler) {
+                                            ViewEventHandlerManager.this.onMouseClick(eventHandler,
+                                                                                      x,
+                                                                                      y,
+                                                                                      clientX,
+                                                                                      clientY,
+                                                                                      isShiftKeyDown,
+                                                                                      isAltKeyDown,
+                                                                                      isMetaKeyDown,
+                                                                                      isButtonLeft,
+                                                                                      isButtonMiddle,
+                                                                                      isButtonRight);
+                                        }
+                                    },
+                                    CLICK_HANDLER_TIMER_DURATION);
                     }
                 })
         };
@@ -373,6 +391,10 @@ public class ViewEventHandlerManager {
         };
     }
 
+    Map<ViewEventType, HandlerRegistration[]> getRegistrationMap() {
+        return registrationMap;
+    }
+
     private TouchEventImpl buildTouchEvent(final AbstractNodeTouchEvent event) {
         final TouchPoint touchPoint = null != event.getTouches() && !event.getTouches().isEmpty() ?
                 (TouchPoint) event.getTouches().get(0) : null;
@@ -385,5 +407,30 @@ public class ViewEventHandlerManager {
                                       ty);
         }
         return null;
+    }
+
+    private void listen(final boolean listen) {
+        if (null != shape) {
+            shape.setListening(listen);
+        }
+    }
+
+    private boolean isEnabled() {
+        return this.enabled;
+    }
+
+    private static class GWTTimerFunction implements BiFunction<Runnable, Integer, Void> {
+
+        @Override
+        public Void apply(final Runnable runnable,
+                          final Integer delay) {
+            new Timer() {
+                @Override
+                public void run() {
+                    runnable.run();
+                }
+            }.schedule(delay);
+            return null;
+        }
     }
 }

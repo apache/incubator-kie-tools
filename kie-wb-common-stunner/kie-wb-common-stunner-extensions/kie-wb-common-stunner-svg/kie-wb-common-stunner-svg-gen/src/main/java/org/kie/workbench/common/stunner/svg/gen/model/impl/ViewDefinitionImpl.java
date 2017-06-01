@@ -137,6 +137,11 @@ public class ViewDefinitionImpl implements ViewDefinition<SVGShapeView> {
     }
 
     @Override
+    public boolean isListening() {
+        return false;
+    }
+
+    @Override
     public LayoutDefinition getLayoutDefinition() {
         return LayoutDefinition.NONE;
     }

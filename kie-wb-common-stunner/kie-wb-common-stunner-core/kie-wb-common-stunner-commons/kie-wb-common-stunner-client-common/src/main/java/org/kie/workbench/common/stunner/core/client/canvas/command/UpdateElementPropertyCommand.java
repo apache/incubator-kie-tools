@@ -49,4 +49,16 @@ public class UpdateElementPropertyCommand extends AbstractCanvasGraphCommand {
     protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
         return new UpdateCanvasElementPropertyCommand(element);
     }
+
+    public Element getElement() {
+        return element;
+    }
+
+    public String getPropertyId() {
+        return propertyId;
+    }
+
+    public Object getValue() {
+        return value;
+    }
 }

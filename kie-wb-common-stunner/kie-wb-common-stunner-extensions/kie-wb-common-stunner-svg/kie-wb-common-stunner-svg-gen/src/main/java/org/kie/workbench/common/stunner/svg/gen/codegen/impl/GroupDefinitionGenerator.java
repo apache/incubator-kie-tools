@@ -17,7 +17,9 @@
 package org.kie.workbench.common.stunner.svg.gen.codegen.impl;
 
 import java.util.HashMap;
+import java.util.Map;
 
+import com.ait.lienzo.client.core.shape.Group;
 import org.kie.workbench.common.stunner.svg.gen.codegen.PrimitiveDefinitionGenerator;
 import org.kie.workbench.common.stunner.svg.gen.exception.GeneratorException;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.GroupDefinition;
@@ -47,12 +49,21 @@ public class GroupDefinitionGenerator
             wrapper = writeTemplate(new HashMap<>());
             super.appendDraggable(wrapper,
                                   input);
+            super.appendListening(wrapped,
+                                  input);
             wrapper.append(formatString(ADD_WRAPPED,
                                         wrapped.toString()));
         } catch (final GenerationException e) {
             throw new GeneratorException(e);
         }
         return wrapper;
+    }
+
+    @Override
+    protected StringBuffer writeTemplate(final Map<String, Object> ctxt) throws GenerationException {
+        ctxt.put("className",
+                 Group.class.getName());
+        return super.writeTemplate(ctxt);
     }
 
     @Override

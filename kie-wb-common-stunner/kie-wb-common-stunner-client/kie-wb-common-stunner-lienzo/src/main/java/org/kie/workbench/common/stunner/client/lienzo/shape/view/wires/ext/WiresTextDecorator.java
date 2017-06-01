@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.lienzo.shape.view.ext;
+package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
@@ -197,6 +197,11 @@ public class WiresTextDecorator {
     @SuppressWarnings("unchecked")
     public void setTitleFontSize(final double fontSize) {
         text.setFontSize(fontSize);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setTitleFontColor(final String fillColor) {
+        text.setFillColor(fillColor);
     }
 
     @SuppressWarnings("unchecked")

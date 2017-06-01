@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.lienzo.shape.view.ext;
+package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
@@ -25,17 +24,11 @@ import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.event.AbstractWiresDragEvent;
 import com.ait.lienzo.client.core.shape.wires.event.AbstractWiresResizeEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresShapeView;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils;
 import org.kie.workbench.common.stunner.client.lienzo.util.ShapeControlPointsHelper;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
@@ -71,17 +64,24 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
 
     public WiresShapeViewExt(final ViewEventType[] supportedEventTypes,
                              final MultiPath path) {
-        this(supportedEventTypes,
-             path,
+        this(path,
              new WiresLayoutContainer());
+        setEventHandlerManager(new ViewEventHandlerManager(getGroup(),
+                                                           path,
+                                                           supportedEventTypes));
     }
 
-    public WiresShapeViewExt(final ViewEventType[] supportedEventTypes,
-                             final MultiPath path,
-                             final LayoutContainer layoutContainer) {
+    protected WiresShapeViewExt(final MultiPath path,
+                                final LayoutContainer layoutContainer) {
         super(path,
-              null != layoutContainer ? layoutContainer : new WiresLayoutContainer());
-        initialize(supportedEventTypes);
+              layoutContainer);
+        setListening(true);
+    }
+
+    protected void setEventHandlerManager(final ViewEventHandlerManager eventHandlerManager) {
+        this.eventHandlerManager = eventHandlerManager;
+        this.textViewDecorator = new WiresTextDecorator(eventHandlerManager);
+        addTextAsChild();
     }
 
     @Override
@@ -98,7 +98,7 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     @SuppressWarnings("unchecked")
     public T setTitle(final String title) {
         textViewDecorator.setTitle(title);
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -108,56 +108,62 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
             removeChild(textViewDecorator.getView());
             addTextAsChild();
         }
-        return (T) this;
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleRotation(final double degrees) {
         textViewDecorator.setTitleRotation(degrees);
-        return (T) this;
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleStrokeColor(final String color) {
         textViewDecorator.setTitleStrokeColor(color);
-        return (T) this;
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleFontFamily(final String fontFamily) {
         textViewDecorator.setTitleFontFamily(fontFamily);
-        return (T) this;
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleFontSize(final double fontSize) {
         textViewDecorator.setTitleFontSize(fontSize);
-        return (T) this;
+        return cast();
+    }
+
+    @Override
+    public T setTitleFontColor(final String fillColor) {
+        textViewDecorator.setTitleFontColor(fillColor);
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleAlpha(final double alpha) {
         textViewDecorator.setTitleAlpha(alpha);
-        return (T) this;
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleStrokeWidth(final double strokeWidth) {
         textViewDecorator.setTitleStrokeWidth(strokeWidth);
-        return (T) this;
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T moveTitleToTop() {
         textViewDecorator.moveTitleToTop();
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -175,7 +181,7 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
             updateFillGradient(width,
                                height);
         }
-        return (T) this;
+        return cast();
     }
 
     @SuppressWarnings("unchecked")
@@ -190,7 +196,7 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
                                                                                height);
             getShape().setFillGradient(gradient);
         }
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -203,14 +209,14 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
         } else if (null != ctrls) {
             ctrls.show();
         }
-        return (T) this;
+        return cast();
     }
 
-    private IControlHandle.ControlHandleType translate(final ControlPointType type) {
-        if (type.equals(ControlPointType.RESIZE)) {
-            return IControlHandle.ControlHandleStandardType.RESIZE;
+    public T updateControlPoints(final ControlPointType type) {
+        if (areControlsVisible()) {
+            showControlPoints(type);
         }
-        return IControlHandle.ControlHandleStandardType.MAGNET;
+        return cast();
     }
 
     @Override
@@ -220,7 +226,7 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
         if (null != ctrls) {
             ctrls.hide();
         }
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -285,64 +291,42 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
                                                eventHandler);
             }
         }
-        return (T) this;
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T removeHandler(final ViewHandler<? extends ViewEvent> eventHandler) {
         eventHandlerManager.removeHandler(eventHandler);
-        return (T) this;
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T enableHandlers() {
         eventHandlerManager.enable();
-        return (T) this;
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T disableHandlers() {
         eventHandlerManager.disable();
-        return (T) this;
-    }
-
-    protected void initialize(final ViewEventType[] supportedEventTypes) {
-        initializeHandlerManager(getGroup(),
-                                 null != getPath() ? getPath() : getGroup(),
-                                 supportedEventTypes);
-        initializeTextView();
-    }
-
-    protected void initializeHandlerManager(final Node<?> node,
-                                            final Node<?> path,
-                                            final ViewEventType[] supportedEventTypes) {
-        this.eventHandlerManager = createEventHandlerManager(node,
-                                                             path,
-                                                             supportedEventTypes);
-    }
-
-    protected void initializeTextView() {
-        this.textViewDecorator = new WiresTextDecorator(eventHandlerManager);
-        addTextAsChild();
-    }
-
-    private ViewEventHandlerManager createEventHandlerManager(final Node<?> node,
-                                                              final Node<?> path,
-                                                              final ViewEventType[] supportedEventTypes) {
-        if (null != getGroup()) {
-            return new ViewEventHandlerManager(node,
-                                               path,
-                                               supportedEventTypes);
-        }
-        return null;
+        return cast();
     }
 
     private void addTextAsChild() {
         this.addChild(textViewDecorator.getView(),
                       textViewDecorator.getLayout());
+        // Ensure text element is listening for events.
+        textViewDecorator.getView().setListening(true);
+    }
+
+    private IControlHandle.ControlHandleType translate(final ControlPointType type) {
+        if (type.equals(ControlPointType.RESIZE)) {
+            return IControlHandle.ControlHandleStandardType.RESIZE;
+        }
+        return IControlHandle.ControlHandleStandardType.MAGNET;
     }
 
     // TODO: listen for WiresMoveEvent's as well?
@@ -370,26 +354,17 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     private HandlerRegistration[] registerResizeHandler(final ViewHandler<ResizeEvent> eventHandler) {
         final ResizeHandler resizeHandler = (ResizeHandler) eventHandler;
         setResizable(true);
-        HandlerRegistration r0 = addWiresResizeStartHandler(new WiresResizeStartHandler() {
-            @Override
-            public void onShapeResizeStart(final WiresResizeStartEvent wiresResizeStartEvent) {
-                final ResizeEvent event = buildResizeEvent(wiresResizeStartEvent);
-                resizeHandler.start(event);
-            }
+        HandlerRegistration r0 = addWiresResizeStartHandler(wiresResizeStartEvent -> {
+            final ResizeEvent event = buildResizeEvent(wiresResizeStartEvent);
+            resizeHandler.start(event);
         });
-        HandlerRegistration r1 = addWiresResizeStepHandler(new WiresResizeStepHandler() {
-            @Override
-            public void onShapeResizeStep(final WiresResizeStepEvent wiresResizeStepEvent) {
-                final ResizeEvent event = buildResizeEvent(wiresResizeStepEvent);
-                resizeHandler.handle(event);
-            }
+        HandlerRegistration r1 = addWiresResizeStepHandler(wiresResizeStepEvent -> {
+            final ResizeEvent event = buildResizeEvent(wiresResizeStepEvent);
+            resizeHandler.handle(event);
         });
-        HandlerRegistration r2 = addWiresResizeEndHandler(new WiresResizeEndHandler() {
-            @Override
-            public void onShapeResizeEnd(final WiresResizeEndEvent wiresResizeEndEvent) {
-                final ResizeEvent event = buildResizeEvent(wiresResizeEndEvent);
-                resizeHandler.end(event);
-            }
+        HandlerRegistration r2 = addWiresResizeEndHandler(wiresResizeEndEvent -> {
+            final ResizeEvent event = buildResizeEvent(wiresResizeEndEvent);
+            resizeHandler.end(event);
         });
         return new HandlerRegistration[]{r0, r1, r2};
     }
@@ -424,5 +399,10 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
                                cy,
                                w,
                                h);
+    }
+
+    @SuppressWarnings("unchecked")
+    private T cast() {
+        return (T) this;
     }
 }

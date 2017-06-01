@@ -18,17 +18,25 @@ package org.kie.workbench.common.stunner.core.client.shape;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDecorators;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasFillGradient;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 
 public class ShapeViewExtStub
         extends ShapeViewStub
         implements ShapeView<Object>,
+                   HasEventHandlers<ShapeViewExtStub, Object>,
+                   HasControlPoints<ShapeViewExtStub>,
                    HasDecorators<Object>,
                    HasFillGradient<Object>,
                    HasTitle<Object>,
@@ -36,6 +44,19 @@ public class ShapeViewExtStub
                    HasRadius<Object> {
 
     private final List<Object> decorators = new ArrayList<>();
+    private final Optional<HasEventHandlers<ShapeViewExtStub, Object>> hasEventHandlers;
+    private final Optional<HasControlPoints<ShapeViewExtStub>> hasControlPoints;
+
+    public ShapeViewExtStub() {
+        this.hasEventHandlers = Optional.empty();
+        this.hasControlPoints = Optional.empty();
+    }
+
+    public ShapeViewExtStub(final HasEventHandlers<ShapeViewExtStub, Object> hasEventHandlers,
+                            final HasControlPoints<ShapeViewExtStub> hasControlPoints) {
+        this.hasEventHandlers = Optional.of(hasEventHandlers);
+        this.hasControlPoints = Optional.of(hasControlPoints);
+    }
 
     @Override
     public Object setFillGradient(final Type type,
@@ -75,6 +96,11 @@ public class ShapeViewExtStub
     }
 
     @Override
+    public Object setTitleFontColor(final String fillColor) {
+        return this;
+    }
+
+    @Override
     public Object setTitleStrokeWidth(final double strokeWidth) {
         return this;
     }
@@ -103,5 +129,58 @@ public class ShapeViewExtStub
     @Override
     public List<Object> getDecorators() {
         return decorators;
+    }
+
+    @Override
+    public boolean supports(final ViewEventType type) {
+        return hasEventHandlers.isPresent() && hasEventHandlers.get().supports(type);
+    }
+
+    @Override
+    public ShapeViewExtStub addHandler(final ViewEventType type,
+                                       final ViewHandler<? extends ViewEvent> eventHandler) {
+        hasEventHandlers.ifPresent(h -> h.addHandler(type,
+                                                     eventHandler));
+        return this;
+    }
+
+    @Override
+    public ShapeViewExtStub removeHandler(final ViewHandler<? extends ViewEvent> eventHandler) {
+        hasEventHandlers.ifPresent(h -> h.removeHandler(eventHandler));
+        return this;
+    }
+
+    @Override
+    public ShapeViewExtStub enableHandlers() {
+        hasEventHandlers.ifPresent(HasEventHandlers::enableHandlers);
+        return this;
+    }
+
+    @Override
+    public ShapeViewExtStub disableHandlers() {
+        hasEventHandlers.ifPresent(HasEventHandlers::disableHandlers);
+        return this;
+    }
+
+    @Override
+    public Object getAttachableShape() {
+        return hasEventHandlers.map(HasEventHandlers::getAttachableShape).orElse(null);
+    }
+
+    @Override
+    public ShapeViewExtStub showControlPoints(final ControlPointType type) {
+        hasControlPoints.ifPresent(h -> h.showControlPoints(type));
+        return this;
+    }
+
+    @Override
+    public ShapeViewExtStub hideControlPoints() {
+        hasControlPoints.ifPresent(HasControlPoints::hideControlPoints);
+        return this;
+    }
+
+    @Override
+    public boolean areControlsVisible() {
+        return hasControlPoints.isPresent() && hasControlPoints.get().areControlsVisible();
     }
 }

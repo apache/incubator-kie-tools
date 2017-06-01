@@ -157,9 +157,12 @@ public class ShapeViewHandlerTest {
                             null,
                             null,
                             null,
+                            null,
                             MutationContext.STATIC);
         verify(viewExt,
                times(0)).setTitleFontFamily(anyString());
+        verify(viewExt,
+               times(0)).setTitleFontColor(anyString());
         verify(viewExt,
                times(0)).setTitleStrokeColor(anyString());
         verify(viewExt,
@@ -177,6 +180,7 @@ public class ShapeViewHandlerTest {
     @Test
     public void applyFont() {
         testedExt.applyFont("family",
+                            "fontColor",
                             COLOR,
                             DOUBLE_VALUE,
                             0.3d,
@@ -186,6 +190,8 @@ public class ShapeViewHandlerTest {
                             MutationContext.STATIC);
         verify(viewExt,
                times(1)).setTitleFontFamily(eq("family"));
+        verify(viewExt,
+               times(1)).setTitleFontColor(eq("fontColor"));
         verify(viewExt,
                times(1)).setTitleStrokeColor(eq(COLOR));
         verify(viewExt,
