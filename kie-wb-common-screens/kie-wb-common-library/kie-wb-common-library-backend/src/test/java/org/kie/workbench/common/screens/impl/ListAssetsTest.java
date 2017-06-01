@@ -37,6 +37,8 @@ import static org.junit.Assert.*;
 public class ListAssetsTest
         extends BaseLibraryIndexingTest {
 
+    private static final String TEST_PROJECT_ROOT = "list/assets/test/a/mock/project/root";
+
     @Override
     protected Set<NamedQuery> getQueries() {
         return new HashSet<NamedQuery>() {{
@@ -48,11 +50,11 @@ public class ListAssetsTest
     public void listFilesShouldNotHaveDuplicatesFromLibraryIndexer() throws IOException, InterruptedException {
 
         //Add test files
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "rule1.rule");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "rule2.rule");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "rule3.rule");
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index

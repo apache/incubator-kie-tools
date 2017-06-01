@@ -41,7 +41,10 @@ import static org.mockito.Mockito.*;
 public class FindAllLibraryAssetsSortedQueryTest
         extends BaseLibraryIndexingTest {
 
-    private static final String SOME_OTHER_PROJECT_ROOT = "some/other/projectRoot";
+    private static final String TEST_PROJECT_ROOT = "/find/all/library/assets/sorted/query/test/mock/project/root";
+    private static final String TEST_PROJECT_NAME = "mock-project";
+
+    private static final String SOME_OTHER_PROJECT_ROOT = "/find/all/library/assets/sorted/query/test/some/other/projectRoot";
     private static final String SOME_OTHER_PROJECT_NAME = "other-mock-project";
 
     protected Set<NamedQuery> getQueries() {
@@ -84,19 +87,19 @@ public class FindAllLibraryAssetsSortedQueryTest
     public void listAllInProjectSorted() throws IOException, InterruptedException {
 
         //Add test files
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "rule3.rule");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "functions.functions");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "drl3.ext3");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "drl2.ext2");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "drl1.drl");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "RULE4.rule");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "DRL4.drl");
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
@@ -104,7 +107,7 @@ public class FindAllLibraryAssetsSortedQueryTest
         {
             final RefactoringPageRequest request = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                  add(new LibraryValueProjectRootPathIndexTerm(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                                                                                  add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT,
                                                                                                                                TermSearchType.WILDCARD));
                                                                               }},
                                                                               0,
@@ -144,19 +147,19 @@ public class FindAllLibraryAssetsSortedQueryTest
     public void listAllInProjectSortedPaged() throws IOException, InterruptedException {
 
         //Add test files
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "rule3.rule");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "functions.functions");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "drl3.ext3");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "drl2.ext2");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "drl1.drl");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "RULE4.rule");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "DRL4.drl");
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
@@ -164,14 +167,14 @@ public class FindAllLibraryAssetsSortedQueryTest
         {
             final RefactoringPageRequest request1 = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                                new HashSet<ValueIndexTerm>() {{
-                                                                                   add(new LibraryValueProjectRootPathIndexTerm(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                                                                                   add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT,
                                                                                                                                 TermSearchType.WILDCARD));
                                                                                }},
                                                                                0,
                                                                                4);
             final RefactoringPageRequest request2 = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                                new HashSet<ValueIndexTerm>() {{
-                                                                                   add(new LibraryValueProjectRootPathIndexTerm(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                                                                                   add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT,
                                                                                                                                 TermSearchType.WILDCARD));
                                                                                }},
                                                                                4,

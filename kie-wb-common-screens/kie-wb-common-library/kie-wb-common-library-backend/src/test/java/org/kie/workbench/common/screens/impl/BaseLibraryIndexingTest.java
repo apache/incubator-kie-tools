@@ -65,11 +65,12 @@ import static org.mockito.Mockito.*;
 
 public abstract class BaseLibraryIndexingTest {
 
-    public static final String TEST_PROJECT_ROOT = "/a/mock/project/root";
-    public static final String TEST_PROJECT_NAME = "mock-project";
-    public static final String TEST_PACKAGE_NAME = "org.kie.workbench.mock.package";
-    protected static final Logger logger = LoggerFactory.getLogger(BaseLibraryIndexingTest.class);
-    protected static final List<File> tempFiles = new ArrayList<>();
+    private static final String TEST_PACKAGE_NAME = "org.kie.workbench.mock.package";
+
+    private static final Logger logger = LoggerFactory.getLogger(BaseLibraryIndexingTest.class);
+
+    private static final List<File> tempFiles = new ArrayList<>();
+
     private static LuceneConfig config;
     protected int seed = new Random(10L).nextInt();
     protected boolean created = false;
@@ -167,7 +168,6 @@ public abstract class BaseLibraryIndexingTest {
         return dir;
     }
 
-
     protected void addTestFile(final String projectName,
                                final String pathToFile) throws IOException {
         final Path path = basePath.resolve(projectName + "/" + pathToFile);
@@ -247,14 +247,10 @@ public abstract class BaseLibraryIndexingTest {
     }
 
     protected KieProjectService getProjectService() {
-        final KieProject mockProject = getKieProjectMock(TEST_PROJECT_ROOT,
-                                                         TEST_PROJECT_NAME);
-
         final Package mockPackage = mock(Package.class);
         when(mockPackage.getPackageName()).thenReturn(TEST_PACKAGE_NAME);
 
         final KieProjectService mockProjectService = mock(KieProjectService.class);
-        when(mockProjectService.resolveProject(any(org.uberfire.backend.vfs.Path.class))).thenReturn(mockProject);
         when(mockProjectService.resolvePackage(any(org.uberfire.backend.vfs.Path.class))).thenReturn(mockPackage);
 
         return mockProjectService;

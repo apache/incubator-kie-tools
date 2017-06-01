@@ -41,7 +41,10 @@ import static org.mockito.Mockito.*;
 public class FindAllLibraryAssetsQueryTest
         extends BaseLibraryIndexingTest {
 
-    private static final String SOME_OTHER_PROJECT_ROOT = "some/other/projectRoot";
+    private static final String TEST_PROJECT_ROOT = "/find/all/library/assets/query/test/a/mock/project/root";
+    private static final String TEST_PROJECT_NAME = "mock-project";
+
+    private static final String SOME_OTHER_PROJECT_ROOT = "/find/all/library/assets/query/test/some/other/projectRoot";
     private static final String SOME_OTHER_PROJECT_NAME = "other-mock-project";
 
     protected Set<NamedQuery> getQueries() {
@@ -84,13 +87,13 @@ public class FindAllLibraryAssetsQueryTest
     public void listAllInProject() throws IOException, InterruptedException {
 
         //Add test files
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "drl1.drl");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "drl2.ext2");
         addTestFile(SOME_OTHER_PROJECT_ROOT,
                     "drl3.ext3");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "functions.functions");
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
@@ -98,7 +101,7 @@ public class FindAllLibraryAssetsQueryTest
         {
             final RefactoringPageRequest request = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                  add(new LibraryValueProjectRootPathIndexTerm(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                                                                                  add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT,
                                                                                                                                TermSearchType.WILDCARD));
                                                                               }},
                                                                               0,
@@ -124,13 +127,13 @@ public class FindAllLibraryAssetsQueryTest
     public void filterFilesFromProject() throws IOException, InterruptedException {
 
         //Add test files
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "rule1.rule");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "rule2.rule");
         addTestFile(SOME_OTHER_PROJECT_ROOT,
                     "rule3.rule");
-        addTestFile(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT,
                     "functions.functions");
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
@@ -138,7 +141,7 @@ public class FindAllLibraryAssetsQueryTest
         {
             final RefactoringPageRequest request = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                  add(new LibraryValueProjectRootPathIndexTerm(BaseLibraryIndexingTest.TEST_PROJECT_ROOT,
+                                                                                  add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT,
                                                                                                                                TermSearchType.WILDCARD));
                                                                                   add(new LibraryValueFileNameIndexTerm("*rule*",
                                                                                                                         TermSearchType.WILDCARD));
