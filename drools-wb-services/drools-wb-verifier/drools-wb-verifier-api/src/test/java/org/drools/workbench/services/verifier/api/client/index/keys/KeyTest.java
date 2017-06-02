@@ -28,11 +28,4 @@ public class KeyTest {
         final Key b = new Key( KeyDefinition.newKeyDefinition().withId( "id" ).build(), 2 );
         assertEquals( 0, a.compareTo( b ) );
     }
-
-    @Test
-    public void testName() throws Exception {
-        final Key a = new Key( KeyDefinition.newKeyDefinition().withId( "id" ).build(), 2 );
-        final Key b = new Key( KeyDefinition.newKeyDefinition().withId( "id" ).build(), 2 );
-        assertEquals( 0, a.compareTo( b ) );
-    }
 }
