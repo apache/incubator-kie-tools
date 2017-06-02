@@ -68,6 +68,21 @@ public class ListBoxValues {
         this.maxDisplayLength = DEFAULT_MAX_DISPLAY_LENGTH;
     }
 
+    public ListBoxValues(final ListBoxValues copy,
+                         final boolean copyCustomValues) {
+        this.customPrompt = copy.customPrompt;
+        this.editPrefix = copy.editPrefix;
+        this.valueTester = copy.valueTester;
+        this.maxDisplayLength = copy.maxDisplayLength;
+        this.addValues(copy.acceptableValuesWithoutCustomValues);
+        if (copyCustomValues) {
+            for (String copyCustomValue : copy.customValues) {
+                this.addCustomValue(copyCustomValue,
+                                    null);
+            }
+        }
+    }
+
     public String getEditPrefix() {
         return editPrefix;
     }

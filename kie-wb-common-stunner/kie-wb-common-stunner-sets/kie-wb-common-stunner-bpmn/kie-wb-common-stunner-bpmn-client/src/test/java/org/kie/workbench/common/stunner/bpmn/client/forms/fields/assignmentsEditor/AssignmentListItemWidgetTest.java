@@ -312,7 +312,9 @@ public class AssignmentListItemWidgetTest {
         widget.setConstant(sConstant);
         widget.setProcessVariables(processVarListBoxValues);
         verify(processVarComboBox,
-               times(2)).setListBoxValues(processVarListBoxValues);
+               times(1)).setListBoxValues(processVarListBoxValues);
+        verify(processVarComboBox,
+               times(2)).setListBoxValues(any(ListBoxValues.class));
         verify(processVarComboBox).addCustomValueToListBoxValues(sConstant,
                                                                  "");
         verify(processVar).setValue(sConstant);
@@ -335,7 +337,9 @@ public class AssignmentListItemWidgetTest {
         widget.setConstant(sConstant);
         widget.setProcessVariables(processVarListBoxValues);
         verify(processVarComboBox,
-               times(2)).setListBoxValues(processVarListBoxValues);
+               times(1)).setListBoxValues(processVarListBoxValues);
+        verify(processVarComboBox,
+               times(2)).setListBoxValues(any(ListBoxValues.class));
         verify(processVarComboBox).addCustomValueToListBoxValues(sConstant,
                                                                  "");
         verify(processVar).setValue("\"abcdeabcde...\"");

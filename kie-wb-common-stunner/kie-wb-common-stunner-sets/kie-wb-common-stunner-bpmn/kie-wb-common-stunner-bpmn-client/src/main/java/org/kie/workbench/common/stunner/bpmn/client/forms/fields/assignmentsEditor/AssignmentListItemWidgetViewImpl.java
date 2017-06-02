@@ -306,7 +306,9 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
     @Override
     public void setProcessVariables(final ListBoxValues processVarListBoxValues) {
         processVarComboBox.setCurrentTextValue("");
-        processVarComboBox.setListBoxValues(processVarListBoxValues);
+        ListBoxValues copyProcessVarListBoxValues = new ListBoxValues(processVarListBoxValues,
+                                                                      false);
+        processVarComboBox.setListBoxValues(copyProcessVarListBoxValues);
         String con = getConstant();
         // processVar set here because the ListBoxValues must already have been set
         if (con != null && !con.isEmpty()) {
