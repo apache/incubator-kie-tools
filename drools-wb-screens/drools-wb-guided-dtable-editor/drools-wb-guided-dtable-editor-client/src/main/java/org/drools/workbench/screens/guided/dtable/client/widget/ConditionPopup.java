@@ -46,16 +46,18 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
-import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
+import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
+
+import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils.getCurrentIndexFromList;
 
 /**
  * This is a configuration editor for a column in a the guided decision table.
@@ -351,16 +353,18 @@ public class ConditionPopup {
     }
 
     public void doOperatorLabel() {
-        if (editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE) {
+        if (getEditingCol().getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE) {
             view.setOperatorLabelText(GuidedDecisionTableConstants.INSTANCE.notNeededForPredicate());
-        } else if (nil(editingPattern.getFactType())) {
+        } else if (nil(getEditingPattern().getFactType())) {
             view.setOperatorLabelText(GuidedDecisionTableConstants.INSTANCE.pleaseSelectAPatternFirst());
-        } else if (nil(editingCol.getFactField())) {
+        } else if (nil(getEditingCol().getFactField())) {
             view.setOperatorLabelText(GuidedDecisionTableConstants.INSTANCE.pleaseChooseAFieldFirst());
-        } else if (nil(editingCol.getOperator())) {
+        } else if (getEditingCol().getOperator() == null) {
             view.setOperatorLabelText(GuidedDecisionTableConstants.INSTANCE.pleaseSelectAnOperator());
+        } else if (getEditingCol().getOperator().equals("")) {
+            view.setOperatorLabelText(GuidedDecisionTableConstants.INSTANCE.noOperator());
         } else {
-            view.setOperatorLabelText(HumanReadable.getOperatorDisplayName(editingCol.getOperator()));
+            view.setOperatorLabelText(HumanReadable.getOperatorDisplayName(getEditingCol().getOperator()));
         }
     }
 
@@ -504,12 +508,8 @@ public class ConditionPopup {
         final String[] displayOps = new String[filteredOps.size()];
         filteredOps.toArray(displayOps);
 
-        final CEPOperatorsDropdown box = new CEPOperatorsDropdown(displayOps,
-                                                                  editingCol);
+        final CEPOperatorsDropdown box = makeOperatorsDropdown(displayOps);
 
-        box.insertItem(GuidedDecisionTableConstants.INSTANCE.noOperator(),
-                       "",
-                       1);
         pop.addAttribute(GuidedDecisionTableConstants.INSTANCE.Operator(),
                          box);
 
@@ -536,6 +536,23 @@ public class ConditionPopup {
 
         view.enableFooter(false);
         pop.show();
+    }
+
+    CEPOperatorsDropdown makeOperatorsDropdown(final String[] displayOps) {
+        final CEPOperatorsDropdown box = makeCepOperatorsDropdown(displayOps);
+
+        box.insertItem(GuidedDecisionTableConstants.INSTANCE.noOperator(),
+                       "",
+                       0);
+
+        box.getBox().setSelectedIndex(getCurrentIndexFromList(getEditingCol().getOperator(),
+                                                              box.getBox()));
+        return box;
+    }
+
+    CEPOperatorsDropdown makeCepOperatorsDropdown(final String[] displayOps) {
+        return new CEPOperatorsDropdown(displayOps,
+                                        getEditingCol());
     }
 
     private boolean unique(String header) {

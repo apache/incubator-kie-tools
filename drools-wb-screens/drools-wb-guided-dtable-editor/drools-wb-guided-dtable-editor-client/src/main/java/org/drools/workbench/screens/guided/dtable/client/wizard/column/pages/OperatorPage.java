@@ -24,8 +24,8 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
@@ -37,7 +37,6 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
 import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils.nil;
@@ -91,7 +90,7 @@ public class OperatorPage extends BaseDecisionTableColumnPage<ConditionColumnPlu
 
     @Override
     public void isComplete(final Callback<Boolean> callback) {
-        boolean hasOperator = !nil(plugin().getFactField()) && !nil(editingCol().getOperator());
+        boolean hasOperator = !nil(plugin().getFactField()) && !plugin().operatorPlaceholder().equals(getOperator());
         boolean isComplete = hasOperator || isConstraintValuePredicate();
 
         if(!isComplete) {
@@ -138,7 +137,7 @@ public class OperatorPage extends BaseDecisionTableColumnPage<ConditionColumnPlu
     private void emptyOperatorsDropdown(final Consumer<IsWidget> widgetSupplier) {
         final ListBox listBox = newListBox();
 
-        listBox.addItem(translate(GuidedDecisionTableErraiConstants.OperatorPage_PleaseChoose));
+        listBox.addItem(plugin().operatorPlaceholder());
         listBox.getElement().setAttribute("disabled",
                                           "disabled");
 
@@ -153,22 +152,38 @@ public class OperatorPage extends BaseDecisionTableColumnPage<ConditionColumnPlu
         getOperatorCompletions(options -> {
             final String[] operatorsArray = filterOptionsForConstraintTypeLiteral(options);
             final CEPOperatorsDropdown dropdown = newCepOperatorsDropdown(operatorsArray);
+            final ListBox box = dropdown.getBox();
 
-            dropdown.insertItem(translate(GuidedDecisionTableErraiConstants.OperatorPage_NoOperator),
-                                "",
-                                1);
+            box.addChangeHandler((ChangeEvent valueChangeEvent) -> {
+                final String selected = box.getValue(box.getSelectedIndex());
 
-            dropdown.addValueChangeHandler(valueChangeEvent -> {
-                setOperator(valueChangeEvent.getValue().getValue());
+                setOperator(selected);
             });
 
             widgetSupplier.accept(dropdown);
         });
     }
 
-    CEPOperatorsDropdown newCepOperatorsDropdown(final String[] operatorsArray) {
+    private CEPOperatorsDropdown newCepOperatorsDropdown(final String[] operatorsArray) {
+        final CEPOperatorsDropdown dropdown = newCepOperatorsDropdown(operatorsArray,
+                                                                      editingCol());
+
+        dropdown.addPlaceholder(plugin().operatorPlaceholder(),
+                                plugin().operatorPlaceholder());
+        dropdown.insertItem(translate(GuidedDecisionTableErraiConstants.OperatorPage_NoOperator),
+                            "",
+                            1);
+        if (editingCol().getOperator().equals(plugin().operatorPlaceholder())) {
+            dropdown.getBox().setSelectedIndex(0);
+        }
+
+        return dropdown;
+    }
+
+    CEPOperatorsDropdown newCepOperatorsDropdown(final String[] operatorsArray,
+                                                 final ConditionCol52 col52) {
         return new CEPOperatorsDropdown(operatorsArray,
-                                        editingCol());
+                                        col52);
     }
 
     String[] filterOptionsForConstraintTypeLiteral(final String[] options) {

@@ -59,6 +59,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.table.pages.cell
 import org.drools.workbench.screens.guided.dtable.client.wizard.table.pages.cells.ConditionPatternCell;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
@@ -364,6 +365,10 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             private void doPopulateConditionDefinition(final String[] ops) {
                 final CEPOperatorsDropdown ddOperator = new CEPOperatorsDropdown(ops,
                                                                                  chosenConditionsSelection);
+
+                ddOperator.addPlaceholder(GuidedRuleEditorResources.CONSTANTS.pleaseChoose(),
+                                          "");
+
                 ddOperatorContainer.setWidget(ddOperator);
 
                 criteriaExtendedEntry.setVisible(presenter.getTableFormat() == GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);

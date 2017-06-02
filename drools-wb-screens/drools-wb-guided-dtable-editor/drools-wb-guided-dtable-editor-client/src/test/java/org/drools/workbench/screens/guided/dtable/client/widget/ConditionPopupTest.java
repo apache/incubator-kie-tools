@@ -36,6 +36,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.html.Text;
@@ -56,7 +57,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-@WithClassesToStub({Text.class, GuidedDecisionTableImageResources508.class, CEPWindowOperatorsDropdown.class})
+@WithClassesToStub({Text.class, GuidedDecisionTableImageResources508.class, CEPWindowOperatorsDropdown.class, CEPOperatorsDropdown.class})
 public class ConditionPopupTest {
 
     private static final String COLUMN_HEADER = "Some Column Header";
@@ -106,14 +107,15 @@ public class ConditionPopupTest {
                    false,
                    false);
 
-        popup.view = spy(new ConditionPopupView(popup){
+        popup.view = spy(new ConditionPopupView(popup) {
 
             @Override
-            protected Image getEditImage(){
+            protected Image getEditImage() {
                 return mock(Image.class);
             }
+
             @Override
-            protected Image getDisabledImage(){
+            protected Image getDisabledImage() {
                 return mock(Image.class);
             }
         });
@@ -131,9 +133,9 @@ public class ConditionPopupTest {
                                             pattern,
                                             column,
                                             isNew,
-                                            isReadOnly){
+                                            isReadOnly) {
             @Override
-            protected ConditionPopupView getWidgets(){
+            protected ConditionPopupView getWidgets() {
                 return mock(ConditionPopupView.class);
             }
         });
@@ -336,11 +338,16 @@ public class ConditionPopupTest {
                    false,
                    false);
 
-        popup.view = spy(new ConditionPopupView(popup){
+        popup.view = spy(new ConditionPopupView(popup) {
             @Override
-            protected Image getEditImage(){ return mock(Image.class); }
+            protected Image getEditImage() {
+                return mock(Image.class);
+            }
+
             @Override
-            protected Image getDisabledImage(){ return mock(Image.class); }
+            protected Image getDisabledImage() {
+                return mock(Image.class);
+            }
         });
 
         popup.applyChanges();
@@ -356,11 +363,16 @@ public class ConditionPopupTest {
                    false,
                    false);
 
-        popup.view = spy(new ConditionPopupView(popup){
+        popup.view = spy(new ConditionPopupView(popup) {
             @Override
-            protected Image getEditImage(){ return mock(Image.class); }
+            protected Image getEditImage() {
+                return mock(Image.class);
+            }
+
             @Override
-            protected Image getDisabledImage(){ return mock(Image.class); }
+            protected Image getDisabledImage() {
+                return mock(Image.class);
+            }
         });
 
         popup.applyChanges();
@@ -376,11 +388,16 @@ public class ConditionPopupTest {
                    false,
                    false);
 
-        popup.view = spy(new ConditionPopupView(popup){
+        popup.view = spy(new ConditionPopupView(popup) {
             @Override
-            protected Image getEditImage(){ return mock(Image.class); }
+            protected Image getEditImage() {
+                return mock(Image.class);
+            }
+
             @Override
-            protected Image getDisabledImage(){ return mock(Image.class); }
+            protected Image getDisabledImage() {
+                return mock(Image.class);
+            }
         });
 
         popup.applyChanges();
@@ -415,11 +432,16 @@ public class ConditionPopupTest {
                    false,
                    false);
 
-        popup.view = spy(new ConditionPopupView(popup){
+        popup.view = spy(new ConditionPopupView(popup) {
             @Override
-            protected Image getEditImage(){ return mock(Image.class); }
+            protected Image getEditImage() {
+                return mock(Image.class);
+            }
+
             @Override
-            protected Image getDisabledImage(){ return mock(Image.class); }
+            protected Image getDisabledImage() {
+                return mock(Image.class);
+            }
         });
 
         popup.applyChanges();
@@ -436,11 +458,16 @@ public class ConditionPopupTest {
                    false,
                    false);
 
-        popup.view = spy(new ConditionPopupView(popup){
+        popup.view = spy(new ConditionPopupView(popup) {
             @Override
-            protected Image getEditImage(){ return mock(Image.class); }
+            protected Image getEditImage() {
+                return mock(Image.class);
+            }
+
             @Override
-            protected Image getDisabledImage(){ return mock(Image.class); }
+            protected Image getDisabledImage() {
+                return mock(Image.class);
+            }
         });
 
         popup.applyChanges();
@@ -457,11 +484,16 @@ public class ConditionPopupTest {
                    false,
                    false);
 
-        popup.view = spy(new ConditionPopupView(popup){
+        popup.view = spy(new ConditionPopupView(popup) {
             @Override
-            protected Image getEditImage(){ return mock(Image.class); }
+            protected Image getEditImage() {
+                return mock(Image.class);
+            }
+
             @Override
-            protected Image getDisabledImage(){ return mock(Image.class); }
+            protected Image getDisabledImage() {
+                return mock(Image.class);
+            }
         });
 
         popup.applyChanges();
@@ -486,11 +518,16 @@ public class ConditionPopupTest {
                    true,
                    false);
 
-        popup.view = spy(new ConditionPopupView(popup){
+        popup.view = spy(new ConditionPopupView(popup) {
             @Override
-            protected Image getEditImage(){ return mock(Image.class); }
+            protected Image getEditImage() {
+                return mock(Image.class);
+            }
+
             @Override
-            protected Image getDisabledImage(){ return mock(Image.class); }
+            protected Image getDisabledImage() {
+                return mock(Image.class);
+            }
         });
 
         popup.applyChanges();
@@ -587,5 +624,100 @@ public class ConditionPopupTest {
                never()).doImageButtons();
         verify(pop,
                never()).hide();
+    }
+
+    @Test
+    public void testOperatorLabelWhenConstraintValueIsTypePredicate() {
+        when(popup.getEditingCol()).thenReturn(column);
+
+        column.setConstraintValueType(BaseSingleFieldConstraint.TYPE_PREDICATE);
+
+        popup.doOperatorLabel();
+
+        verify(popup.view).setOperatorLabelText(GuidedDecisionTableConstants.INSTANCE.notNeededForPredicate());
+    }
+
+    @Test
+    public void testOperatorLabelWhenFactTypeIsNil() {
+        when(popup.getEditingPattern()).thenReturn(pattern);
+
+        pattern.setFactType("");
+
+        popup.doOperatorLabel();
+
+        verify(popup.view).setOperatorLabelText(GuidedDecisionTableConstants.INSTANCE.pleaseSelectAPatternFirst());
+    }
+
+    @Test
+    public void testOperatorLabelWhenFactFieldIsNil() {
+        when(popup.getEditingCol()).thenReturn(column);
+
+        column.setFactField("");
+
+        popup.doOperatorLabel();
+
+        verify(popup.view).setOperatorLabelText(GuidedDecisionTableConstants.INSTANCE.pleaseChooseAFieldFirst());
+    }
+
+    @Test
+    public void testOperatorLabelWhenOperatorIsNull() {
+        when(popup.getEditingCol()).thenReturn(column);
+
+        column.setOperator(null);
+
+        popup.doOperatorLabel();
+
+        verify(popup.view).setOperatorLabelText(GuidedDecisionTableConstants.INSTANCE.pleaseSelectAnOperator());
+    }
+
+    @Test
+    public void testOperatorLabelWhenOperatorIsAHumanReadableValue() {
+        when(popup.getEditingCol()).thenReturn(column);
+
+        column.setOperator("==");
+
+        popup.doOperatorLabel();
+
+        verify(popup.view).setOperatorLabelText(HumanReadableConstants.INSTANCE.isEqualTo());
+    }
+
+    @Test
+    public void testMakeOperatorsDropdownWhenOperatorIsABlankValue() {
+        final CEPOperatorsDropdown cepOperatorsDropdown = mock(CEPOperatorsDropdown.class);
+        final ListBox listBox = mock(ListBox.class);
+        final String[] displayOps = {"", "value1", "value2"};
+
+        when(popup.getEditingCol()).thenReturn(column);
+        when(popup.makeCepOperatorsDropdown(displayOps)).thenReturn(cepOperatorsDropdown);
+        when(cepOperatorsDropdown.getBox()).thenReturn(listBox);
+
+        column.setOperator("");
+
+        final CEPOperatorsDropdown dropdown = popup.makeOperatorsDropdown(displayOps);
+
+        verify(listBox).setSelectedIndex(0);
+        assertEquals(cepOperatorsDropdown,
+                     dropdown);
+    }
+
+    @Test
+    public void testMakeOperatorsDropdownWhenOperatorIsNotABlankValue() {
+        final CEPOperatorsDropdown cepOperatorsDropdown = mock(CEPOperatorsDropdown.class);
+        final ListBox listBox = mock(ListBox.class);
+        final String[] displayOps = {"", "value1", "value2"};
+
+        when(popup.getEditingCol()).thenReturn(column);
+        when(popup.makeCepOperatorsDropdown(displayOps)).thenReturn(cepOperatorsDropdown);
+        when(listBox.getItemCount()).thenReturn(3);
+        when(listBox.getValue(2)).thenReturn("value2");
+        when(cepOperatorsDropdown.getBox()).thenReturn(listBox);
+
+        column.setOperator("value2");
+
+        final CEPOperatorsDropdown dropdown = popup.makeOperatorsDropdown(displayOps);
+
+        verify(listBox).setSelectedIndex(2);
+        assertEquals(cepOperatorsDropdown,
+                     dropdown);
     }
 }

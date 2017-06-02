@@ -49,49 +49,55 @@ public class CEPOperatorsDropdown extends Composite
         implements
         HasValueChangeHandlers<OperatorSelection> {
 
-    private String[] operators;
-    private Image btnAddCEPOperators;
-    private ListBox box;
-    private HorizontalPanel container = new HorizontalPanel();
-    private TextBox[] parameters = new TextBox[ 4 ];
-
-    protected int visibleParameterSet = 0;
-    protected List<Integer> parameterSets;
-    protected HasParameterizedOperator hop;
-
     //Parameter key to store the current parameter set (i.e. which parameters are visible)
     private static final String VISIBLE_PARAMETER_SET = "org.drools.workbench.models.commons.backend.rule.visibleParameterSet";
 
     //Parameter value defining the server-side class used to generate DRL for CEP operator parameters (key is in droolsjbpm-ide-common)
     private static final String CEP_OPERATOR_PARAMETER_GENERATOR = "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder";
 
-    public CEPOperatorsDropdown( String[] operators,
-                                 HasParameterizedOperator hop ) {
+    protected int visibleParameterSet = 0;
+
+    protected List<Integer> parameterSets;
+
+    protected HasParameterizedOperator hop;
+
+    private String[] operators;
+
+    private Image btnAddCEPOperators;
+
+    private ListBox box;
+
+    private HorizontalPanel container = new HorizontalPanel();
+
+    private TextBox[] parameters = new TextBox[4];
+
+    public CEPOperatorsDropdown(String[] operators,
+                                HasParameterizedOperator hop) {
         this.operators = operators;
         this.hop = hop;
 
         //Initialise parameter sets for operator
-        parameterSets = CEPOracle.getCEPOperatorParameterSets( hop.getOperator() );
+        parameterSets = CEPOracle.getCEPOperatorParameterSets(hop.getOperator());
 
         //Retrieve last "visible state"
-        String vps = hop.getParameter( VISIBLE_PARAMETER_SET );
-        if ( vps != null ) {
+        String vps = hop.getParameter(VISIBLE_PARAMETER_SET);
+        if (vps != null) {
             try {
-                visibleParameterSet = Integer.parseInt( vps );
-            } catch ( NumberFormatException nfe ) {
+                visibleParameterSet = Integer.parseInt(vps);
+            } catch (NumberFormatException nfe) {
             }
         }
 
-        for ( int i = 0; i < this.parameters.length; i++ ) {
-            parameters[ i ] = makeTextBox( i );
+        for (int i = 0; i < this.parameters.length; i++) {
+            parameters[i] = makeTextBox(i);
         }
 
         HorizontalPanel hp = new HorizontalPanel();
-        hp.setStylePrimaryName( GuidedRuleEditorResources.INSTANCE.css().container() );
-        hp.add( getDropDown() );
-        hp.add( getOperatorExtension() );
+        hp.setStylePrimaryName(GuidedRuleEditorResources.INSTANCE.css().container());
+        hp.add(getDropDown());
+        hp.add(getOperatorExtension());
 
-        initWidget( hp );
+        initWidget(hp);
     }
 
     /**
@@ -99,10 +105,10 @@ public class CEPOperatorsDropdown extends Composite
      * @param item
      * @param value
      */
-    public void addItem( String item,
-                         String value ) {
-        box.addItem( item,
-                     value );
+    public void addItem(String item,
+                        String value) {
+        box.addItem(item,
+                    value);
     }
 
     /**
@@ -111,12 +117,12 @@ public class CEPOperatorsDropdown extends Composite
      * @param value
      * @param index
      */
-    public void insertItem( String item,
-                            String value,
-                            int index ) {
-        box.insertItem( item,
-                        value,
-                        index );
+    public void insertItem(String item,
+                           String value,
+                           int index) {
+        box.insertItem(item,
+                       value,
+                       index);
     }
 
     /**
@@ -132,65 +138,64 @@ public class CEPOperatorsDropdown extends Composite
      * @param index
      * @return
      */
-    public String getValue( int index ) {
-        return box.getValue( index );
+    public String getValue(int index) {
+        return box.getValue(index);
     }
 
     //Additional widget for CEP operator parameters
     private Widget getOperatorExtension() {
-        container.setStylePrimaryName( GuidedRuleEditorResources.INSTANCE.css().container() );
+        container.setStylePrimaryName(GuidedRuleEditorResources.INSTANCE.css().container());
 
-        btnAddCEPOperators = new Image( GuidedRuleEditorResources.INSTANCE.images().clock() );
-        btnAddCEPOperators.setVisible( parameterSets.size() > 0 );
-        btnAddCEPOperators.addClickHandler( new ClickHandler() {
+        btnAddCEPOperators = new Image(GuidedRuleEditorResources.INSTANCE.images().clock());
+        btnAddCEPOperators.setVisible(parameterSets.size() > 0);
+        btnAddCEPOperators.addClickHandler(new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 visibleParameterSet++;
-                if ( visibleParameterSet == parameterSets.size() ) {
+                if (visibleParameterSet == parameterSets.size()) {
                     visibleParameterSet = 0;
                 }
-                hop.setParameter( VISIBLE_PARAMETER_SET,
-                                  Integer.toString( visibleParameterSet ) );
+                hop.setParameter(VISIBLE_PARAMETER_SET,
+                                 Integer.toString(visibleParameterSet));
                 displayParameters();
             }
+        });
 
-        } );
-
-        container.add( btnAddCEPOperators );
-        for ( int i = 0; i < this.parameters.length; i++ ) {
-            container.add( parameters[ i ] );
+        container.add(btnAddCEPOperators);
+        for (int i = 0; i < this.parameters.length; i++) {
+            container.add(parameters[i]);
         }
 
         return container;
     }
 
     //TextBox factory
-    private TextBox makeTextBox( final int index ) {
-        AbstractRestrictedEntryTextBox txt = new CEPTimeParameterTextBox( hop,
-                                                                          index );
+    private TextBox makeTextBox(final int index) {
+        AbstractRestrictedEntryTextBox txt = new CEPTimeParameterTextBox(hop,
+                                                                         index);
 
-        if ( parameterSets.size() == 0 ) {
-            txt.setVisible( false );
+        if (parameterSets.size() == 0) {
+            txt.setVisible(false);
         } else {
-            txt.setVisible( index < parameterSets.get( visibleParameterSet ) );
+            txt.setVisible(index < parameterSets.get(visibleParameterSet));
         }
 
         return txt;
     }
 
     //Hide\display the additional CEP widget is appropriate
-    private void operatorChanged( OperatorSelection selection ) {
+    private void operatorChanged(OperatorSelection selection) {
         String operator = selection.getValue();
-        if ( CEPOracle.isCEPOperator( operator ) ) {
-            container.setVisible( true );
-            btnAddCEPOperators.setVisible( true );
-            parameterSets = CEPOracle.getCEPOperatorParameterSets( operator );
-            hop.setParameter( SharedConstants.OPERATOR_PARAMETER_GENERATOR,
-                              CEP_OPERATOR_PARAMETER_GENERATOR );
+        if (CEPOracle.isCEPOperator(operator)) {
+            container.setVisible(true);
+            btnAddCEPOperators.setVisible(true);
+            parameterSets = CEPOracle.getCEPOperatorParameterSets(operator);
+            hop.setParameter(SharedConstants.OPERATOR_PARAMETER_GENERATOR,
+                             CEP_OPERATOR_PARAMETER_GENERATOR);
         } else {
             visibleParameterSet = 0;
-            container.setVisible( false );
-            btnAddCEPOperators.setVisible( false );
+            container.setVisible(false);
+            btnAddCEPOperators.setVisible(false);
             parameterSets = Collections.emptyList();
             hop.clearParameters();
         }
@@ -199,35 +204,42 @@ public class CEPOperatorsDropdown extends Composite
 
     //Display the appropriate number of parameters
     private void displayParameters() {
-        if ( parameterSets.size() == 0 ) {
+        if (parameterSets.size() == 0) {
 
             //All boxes are hidden if there are no parameter sets
-            for ( int i = 0; i < parameters.length; i++ ) {
-                parameters[ i ].setVisible( false );
+            for (int i = 0; i < parameters.length; i++) {
+                parameters[i].setVisible(false);
             }
         } else {
 
             //Display text boxes indexed less that the value of the current 
             //parameter set, initialising the parameter value if necessary 
             //and removing any excess parameter values
-            for ( int i = 0; i < parameters.length; i++ ) {
-                String key = Integer.toString( i );
-                boolean isVisible = i < parameterSets.get( visibleParameterSet );
-                if ( isVisible ) {
-                    String value = hop.getParameter( key );
-                    if ( value == null ) {
+            for (int i = 0; i < parameters.length; i++) {
+                String key = Integer.toString(i);
+                boolean isVisible = i < parameterSets.get(visibleParameterSet);
+                if (isVisible) {
+                    String value = hop.getParameter(key);
+                    if (value == null) {
                         value = "";
-                        hop.setParameter( key,
-                                          value );
+                        hop.setParameter(key,
+                                         value);
                     }
-                    parameters[ i ].setText( value );
-                    parameters[ i ].setVisible( true );
+                    parameters[i].setText(value);
+                    parameters[i].setVisible(true);
                 } else {
-                    hop.deleteParameter( key );
-                    parameters[ i ].setVisible( false );
+                    hop.deleteParameter(key);
+                    parameters[i].setVisible(false);
                 }
             }
         }
+    }
+
+    public void addPlaceholder(final String item,
+                               final String value) {
+        insertItem(item,
+                   value,
+                   0);
     }
 
     //Actual drop-down
@@ -237,46 +249,43 @@ public class CEPOperatorsDropdown extends Composite
         String selectedText = "";
         box = new ListBox();
 
-        box.addItem( GuidedRuleEditorResources.CONSTANTS.pleaseChoose(),
-                     "" );
-        for ( int i = 0; i < operators.length; i++ ) {
-            String op = operators[ i ];
-            box.addItem( HumanReadable.getOperatorDisplayName( op ),
-                         op );
-            if ( op.equals( hop.getOperator() ) ) {
+        for (int i = 0; i < operators.length; i++) {
+            String op = operators[i];
+            box.addItem(HumanReadable.getOperatorDisplayName(op),
+                        op);
+            if (op.equals(hop.getOperator())) {
                 selected = op;
-                selectedText = HumanReadable.getOperatorDisplayName( op );
-                box.setSelectedIndex( i + 1 );
+                selectedText = HumanReadable.getOperatorDisplayName(op);
+                box.setSelectedIndex(i);
             }
         }
 
         //Fire event to ensure parent Widgets correct their state depending on selection
         final HasValueChangeHandlers<OperatorSelection> source = this;
-        final OperatorSelection selection = new OperatorSelection( selected,
-                                                                   selectedText );
-        Scheduler.get().scheduleFinally( new Command() {
+        final OperatorSelection selection = new OperatorSelection(selected,
+                                                                  selectedText);
+        Scheduler.get().scheduleFinally(new Command() {
 
             public void execute() {
-                operatorChanged( selection );
-                ValueChangeEvent.fire( source,
-                                       selection );
+                operatorChanged(selection);
+                ValueChangeEvent.fire(source,
+                                      selection);
             }
-
-        } );
+        });
 
         //Signal parent Widget whenever a change happens
-        box.addChangeHandler( new ChangeHandler() {
+        box.addChangeHandler(new ChangeHandler() {
 
-            public void onChange( ChangeEvent event ) {
-                String selected = box.getValue( box.getSelectedIndex() );
-                String selectedText = box.getItemText( box.getSelectedIndex() );
-                OperatorSelection selection = new OperatorSelection( selected,
-                                                                     selectedText );
-                operatorChanged( selection );
-                ValueChangeEvent.fire( source,
-                                       selection );
+            public void onChange(ChangeEvent event) {
+                String selected = box.getValue(box.getSelectedIndex());
+                String selectedText = box.getItemText(box.getSelectedIndex());
+                OperatorSelection selection = new OperatorSelection(selected,
+                                                                    selectedText);
+                operatorChanged(selection);
+                ValueChangeEvent.fire(source,
+                                      selection);
             }
-        } );
+        });
 
         return box;
     }
@@ -284,9 +293,9 @@ public class CEPOperatorsDropdown extends Composite
     /**
      * Allow parent Widgets to register for events when the operator changes
      */
-    public HandlerRegistration addValueChangeHandler( ValueChangeHandler<OperatorSelection> handler ) {
-        return addHandler( handler,
-                           ValueChangeEvent.getType() );
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<OperatorSelection> handler) {
+        return addHandler(handler,
+                          ValueChangeEvent.getType());
     }
 
     public ListBox getBox() {

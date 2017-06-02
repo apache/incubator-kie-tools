@@ -189,9 +189,6 @@ public class GuidedDecisionTableErraiConstants {
     public static final String OperatorPage_NoOperator = "OperatorPage.NoOperator";
 
     @TranslationKey(defaultValue = "")
-    public static final String OperatorPage_PleaseChoose = "OperatorPage.PleaseChoose";
-
-    @TranslationKey(defaultValue = "")
     public static final String PatternToDeletePage_Pattern = "PatternToDeletePage.Pattern";
 
     @TranslationKey(defaultValue = "")

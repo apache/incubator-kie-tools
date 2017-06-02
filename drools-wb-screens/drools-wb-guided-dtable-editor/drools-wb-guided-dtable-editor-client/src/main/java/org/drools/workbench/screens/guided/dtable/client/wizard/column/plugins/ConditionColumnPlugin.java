@@ -57,6 +57,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.c
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.LimitedWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.PatternWrapper;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.ValueOptionsPageInitializer;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
@@ -190,7 +191,7 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
 
     void prepareValues() {
         if (constraintValue() == BaseSingleFieldConstraint.TYPE_PREDICATE) {
-            editingCol().setOperator(null);
+            editingCol().setOperator(operatorPlaceholder());
         }
 
         if (constraintValue() != BaseSingleFieldConstraint.TYPE_LITERAL) {
@@ -428,12 +429,14 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
         editingCol = newConditionColumn();
         constraintValue = BaseSingleFieldConstraint.TYPE_UNDEFINED;
         valueOptionsPageCompleted = Boolean.FALSE;
+
+        resetFieldAndOperator();
     }
 
     void resetFieldAndOperator() {
         editingCol.setFactField("");
         editingCol.setFieldType("");
-        editingCol.setOperator("");
+        editingCol.setOperator(operatorPlaceholder());
     }
 
     void setConstraintValueFieldAndUpdateEditingCol(int constraintValue) {
@@ -495,5 +498,9 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
 
     private Pattern52 emptyPattern() {
         return new Pattern52().clonePattern();
+    }
+
+    public String operatorPlaceholder() {
+        return GuidedRuleEditorResources.CONSTANTS.pleaseChoose();
     }
 }

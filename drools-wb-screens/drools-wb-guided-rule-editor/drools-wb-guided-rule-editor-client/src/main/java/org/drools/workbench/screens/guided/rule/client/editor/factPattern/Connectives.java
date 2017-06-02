@@ -49,10 +49,10 @@ public class Connectives {
     private final FactPattern pattern;
     private final Boolean isReadOnly;
 
-    public Connectives( RuleModeller modeller,
-                        EventBus eventBus,
-                        FactPattern pattern,
-                        Boolean isReadOnly ) {
+    public Connectives(RuleModeller modeller,
+                       EventBus eventBus,
+                       FactPattern pattern,
+                       Boolean isReadOnly) {
         this.pattern = pattern;
         this.modeller = modeller;
         this.eventBus = eventBus;
@@ -73,88 +73,86 @@ public class Connectives {
         return this.modeller.getDataModelOracle();
     }
 
-    public Widget connectives( final SingleFieldConstraint c ) {
+    public Widget connectives(final SingleFieldConstraint c) {
         final HorizontalPanel hp = new HorizontalPanel();
-        if ( c.getConnectives() != null && c.getConnectives().length > 0 ) {
-            hp.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
-            hp.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_CENTER );
-            for ( int i = 0; i < c.getConnectives().length; i++ ) {
+        if (c.getConnectives() != null && c.getConnectives().length > 0) {
+            hp.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+            hp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+            for (int i = 0; i < c.getConnectives().length; i++) {
                 final int index = i;
-                final ConnectiveConstraint con = c.getConnectives()[ i ];
-                connectiveOperatorDropDown( con,
-                                            new Callback<Widget>() {
-                                                @Override
-                                                public void callback( final Widget w ) {
-                                                    hp.add( w );
-                                                    hp.add( connectiveValueEditor( con ) );
+                final ConnectiveConstraint con = c.getConnectives()[i];
+                connectiveOperatorDropDown(con,
+                                           new Callback<Widget>() {
+                                               @Override
+                                               public void callback(final Widget w) {
+                                                   hp.add(w);
+                                                   hp.add(connectiveValueEditor(con));
 
-                                                    if ( !isReadOnly ) {
-                                                        Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
-                                                        clear.setAltText( GuidedRuleEditorResources.CONSTANTS.RemoveThisRestriction() );
-                                                        clear.setTitle( GuidedRuleEditorResources.CONSTANTS.RemoveThisRestriction() );
-                                                        clear.addClickHandler( createClickHandlerForClearImageButton( c,
-                                                                                                                      index ) );
-                                                        hp.add( clear );
-                                                    }
-                                                }
-                                            } );
-
+                                                   if (!isReadOnly) {
+                                                       Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
+                                                       clear.setAltText(GuidedRuleEditorResources.CONSTANTS.RemoveThisRestriction());
+                                                       clear.setTitle(GuidedRuleEditorResources.CONSTANTS.RemoveThisRestriction());
+                                                       clear.addClickHandler(createClickHandlerForClearImageButton(c,
+                                                                                                                   index));
+                                                       hp.add(clear);
+                                                   }
+                                               }
+                                           });
             }
         }
         return hp;
-
     }
 
-    private Widget connectiveValueEditor( final BaseSingleFieldConstraint con ) {
+    private Widget connectiveValueEditor(final BaseSingleFieldConstraint con) {
 
-        return new ConstraintValueEditor( con,
-                                          pattern.getConstraintList(),
-                                          this.modeller,
-                                          this.eventBus,
-                                          isReadOnly );
+        return new ConstraintValueEditor(con,
+                                         pattern.getConstraintList(),
+                                         this.modeller,
+                                         this.eventBus,
+                                         isReadOnly);
     }
 
-    private void connectiveOperatorDropDown( final ConnectiveConstraint cc,
-                                             final Callback<Widget> callback ) {
+    private void connectiveOperatorDropDown(final ConnectiveConstraint cc,
+                                            final Callback<Widget> callback) {
 
-        if ( !isReadOnly ) {
+        if (!isReadOnly) {
 
             final String factType = cc.getFactType();
             final String fieldName = cc.getFieldName();
 
-            this.getDataModelOracle().getConnectiveOperatorCompletions( factType,
-                                                                        fieldName,
-                                                                        new Callback<String[]>() {
-                                                                            @Override
-                                                                            public void callback( final String[] operators ) {
-                                                                                final CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
-                                                                                                                                         cc );
+            this.getDataModelOracle().getConnectiveOperatorCompletions(factType,
+                                                                       fieldName,
+                                                                       new Callback<String[]>() {
+                                                                           @Override
+                                                                           public void callback(final String[] operators) {
+                                                                               final CEPOperatorsDropdown w = new CEPOperatorsDropdown(operators,
+                                                                                                                                       cc);
+                                                                               w.addPlaceholder(GuidedRuleEditorResources.CONSTANTS.pleaseChoose(),
+                                                                                                "");
+                                                                               w.addValueChangeHandler(new ValueChangeHandler<OperatorSelection>() {
 
-                                                                                w.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
-
-                                                                                    public void onValueChange( ValueChangeEvent<OperatorSelection> event ) {
-                                                                                        OperatorSelection selection = event.getValue();
-                                                                                        String selected = selection.getValue();
-                                                                                        cc.setOperator( selected );
-                                                                                    }
-                                                                                } );
-                                                                                callback.callback( w );
-                                                                            }
-                                                                        } );
-
+                                                                                   public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
+                                                                                       OperatorSelection selection = event.getValue();
+                                                                                       String selected = selection.getValue();
+                                                                                       cc.setOperator(selected);
+                                                                                   }
+                                                                               });
+                                                                               callback.callback(w);
+                                                                           }
+                                                                       });
         } else {
-            final SmallLabel w = new SmallLabel( "<b>" + ( cc.getOperator() == null ? GuidedRuleEditorResources.CONSTANTS.pleaseChoose() : HumanReadable.getOperatorDisplayName( cc.getOperator() ) ) + "</b>" );
-            callback.callback( w );
+            final SmallLabel w = new SmallLabel("<b>" + (cc.getOperator() == null ? GuidedRuleEditorResources.CONSTANTS.pleaseChoose() : HumanReadable.getOperatorDisplayName(cc.getOperator())) + "</b>");
+            callback.callback(w);
         }
     }
 
-    private ClickHandler createClickHandlerForClearImageButton( final SingleFieldConstraint sfc,
-                                                                final int index ) {
+    private ClickHandler createClickHandlerForClearImageButton(final SingleFieldConstraint sfc,
+                                                               final int index) {
         return new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
-                if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisItem() ) ) {
-                    sfc.removeConnective( index );
+            public void onClick(ClickEvent event) {
+                if (Window.confirm(GuidedRuleEditorResources.CONSTANTS.RemoveThisItem())) {
+                    sfc.removeConnective(index);
                     modeller.refreshWidget();
                 }
             }

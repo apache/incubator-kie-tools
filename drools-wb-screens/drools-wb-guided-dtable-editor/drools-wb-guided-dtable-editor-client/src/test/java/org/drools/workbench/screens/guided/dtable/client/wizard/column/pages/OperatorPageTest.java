@@ -166,12 +166,16 @@ public class OperatorPageTest {
 
     @Test
     public void testOperatorDropdownWhenOperatorCanBeSet() {
+        final String operatorPlaceholder = "--- please choose ---";
+
         registerFakeProvider();
 
         when(translationService.format(GuidedDecisionTableErraiConstants.OperatorPage_NoOperator)).thenReturn("(no operator)");
         when(presenter.getDataModelOracle()).thenReturn(oracle);
         when(plugin.getFactField()).thenReturn("factField");
         when(plugin.editingCol()).thenReturn(editingCol);
+        when(plugin.operatorPlaceholder()).thenReturn(operatorPlaceholder);
+        when(editingCol.getOperator()).thenReturn(operatorPlaceholder);
 
         mockGetOperatorCompletionsToReturn(OperatorsOracle.STANDARD_OPERATORS);
 
@@ -182,28 +186,32 @@ public class OperatorPageTest {
 
             final CEPOperatorsDropdown operatorsDropdown = (CEPOperatorsDropdown) widget;
 
+            verify(operatorsDropdown).addPlaceholder(operatorPlaceholder,
+                                                     operatorPlaceholder);
+
             verify(operatorsDropdown).insertItem("(no operator)",
                                                  "",
                                                  1);
-            verify(operatorsDropdown).addValueChangeHandler(any());
         });
     }
 
     @Test
     public void testOperatorDropdownWhenOperatorCanNotBeSet() {
+        final String operatorPlaceholder = "--- please choose ---";
+
         final Element elementMock = mock(Element.class);
         final ListBox listBoxMock = mock(ListBox.class);
 
         when(listBoxMock.getElement()).thenReturn(elementMock);
         when(plugin.getFactField()).thenReturn("");
-        when(translationService.format(GuidedDecisionTableErraiConstants.OperatorPage_PleaseChoose)).thenReturn("Choose...");
+        when(plugin.operatorPlaceholder()).thenReturn(operatorPlaceholder);
 
         doReturn(listBoxMock).when(page).newListBox();
 
         page.operatorDropdown(widget -> {
             assertTrue(widget instanceof ListBox);
 
-            verify(listBoxMock).addItem("Choose...");
+            verify(listBoxMock).addItem(operatorPlaceholder);
             verify(elementMock).setAttribute("disabled",
                                              "disabled");
         });
@@ -288,8 +296,11 @@ public class OperatorPageTest {
     }
 
     @Test
-    public void testIsCompleteWhenOperatorIsNull() {
-        when(editingCol.getOperator()).thenReturn(null);
+    public void testIsCompleteWhenOperatorIsNotSelected() {
+        final String operatorPlaceholder = "--- please choose ---";
+
+        when(plugin.operatorPlaceholder()).thenReturn(operatorPlaceholder);
+        when(editingCol.getOperator()).thenReturn(operatorPlaceholder);
         when(plugin.getFactField()).thenReturn("factType");
 
         page.isComplete(Assert::assertFalse);
@@ -299,6 +310,9 @@ public class OperatorPageTest {
 
     @Test
     public void testIsCompleteWhenFactFieldAndOperatorAreNotNull() {
+        final String operatorPlaceholder = "--- please choose ---";
+
+        when(plugin.operatorPlaceholder()).thenReturn(operatorPlaceholder);
         when(editingCol.getOperator()).thenReturn("operator");
         when(plugin.getFactField()).thenReturn("factType");
 
@@ -330,7 +344,8 @@ public class OperatorPageTest {
 
             return spy(new CEPOperatorsDropdown(operators,
                                                 editingCol));
-        }).when(page).newCepOperatorsDropdown(any());
+        }).when(page).newCepOperatorsDropdown(any(),
+                                              any());
     }
 
     private void mockGetOperatorCompletionsToReturn(final String[] standardOperators) {

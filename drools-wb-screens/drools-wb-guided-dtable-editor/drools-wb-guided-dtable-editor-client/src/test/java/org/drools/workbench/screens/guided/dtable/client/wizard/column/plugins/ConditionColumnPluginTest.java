@@ -138,7 +138,7 @@ public class ConditionColumnPluginTest {
 
         plugin.prepareValues();
 
-        verify(editingCol).setOperator(null);
+        verify(editingCol).setOperator(plugin.operatorPlaceholder());
     }
 
     @Test
