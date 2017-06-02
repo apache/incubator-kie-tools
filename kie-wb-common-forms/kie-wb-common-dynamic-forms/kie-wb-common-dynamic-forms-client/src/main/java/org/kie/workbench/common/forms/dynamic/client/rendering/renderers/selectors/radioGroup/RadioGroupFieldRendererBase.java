@@ -20,7 +20,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selecto
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.RadioGroupBaseDefinition;
 
-public abstract class RadioGroupFieldRendererBase<F extends RadioGroupBaseDefinition<O>, O extends SelectorOption<T>, T>
-        extends SelectorFieldRenderer<F, O, T> {
+public abstract class RadioGroupFieldRendererBase<FIELD extends RadioGroupBaseDefinition<OPTION, TYPE>, OPTION extends SelectorOption<TYPE>, TYPE>
+        extends SelectorFieldRenderer<FIELD, OPTION, TYPE> {
 
 }

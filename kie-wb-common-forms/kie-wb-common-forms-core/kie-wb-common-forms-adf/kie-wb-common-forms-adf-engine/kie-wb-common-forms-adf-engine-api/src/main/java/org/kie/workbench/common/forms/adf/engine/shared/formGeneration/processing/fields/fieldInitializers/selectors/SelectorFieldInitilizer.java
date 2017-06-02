@@ -42,5 +42,11 @@ public class SelectorFieldInitilizer implements FieldInitializer<SelectorFieldBa
         if (dataProvider != null && !dataProvider.isEmpty()) {
             selectorFieldBaseDefinition.setDataProvider(dataProvider);
         }
+
+        String relatedField = fieldElement.getParams().get("relatedField");
+
+        if (relatedField != null) {
+            selectorFieldBaseDefinition.setRelatedField(relatedField);
+        }
     }
 }

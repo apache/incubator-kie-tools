@@ -30,11 +30,12 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SelectorFieldInitilizerTest {
+
+    private static final String RELATED_FIELD = "relatedField";
 
     private static final String DATA_PROVIDER = SelectorDataProvider.class.getName();
 
@@ -61,12 +62,20 @@ public class SelectorFieldInitilizerTest {
     public void testInitialize() {
         fieldElementParams.put(DATA_PROVIDER,
                                DATA_PROVIDER);
+
+        fieldElementParams.put(RELATED_FIELD,
+                               RELATED_FIELD);
+
         initializer.initialize(field,
                                fieldElement,
                                context);
 
-        verify(field).setDataProvider(any());
+        verify(field).setDataProvider(anyString());
+        verify(field).setRelatedField(anyString());
+
         assertEquals(DATA_PROVIDER,
                      field.getDataProvider());
+        assertEquals(RELATED_FIELD,
+                     field.getRelatedField());
     }
 }

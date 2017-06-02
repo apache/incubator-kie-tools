@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.forms.processing.engine.handling;
 
+import java.util.Collection;
+
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface FormField {
@@ -45,5 +47,5 @@ public interface FormField {
         return true;
     }
 
-    ;
+    Collection<FieldChangeListener> getChangeListeners();
 }

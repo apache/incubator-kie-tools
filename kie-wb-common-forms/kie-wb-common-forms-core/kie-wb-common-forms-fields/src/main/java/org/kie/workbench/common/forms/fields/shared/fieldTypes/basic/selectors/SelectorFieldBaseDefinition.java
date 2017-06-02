@@ -20,11 +20,17 @@ import java.util.List;
 import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.HasDefaultValue;
+import org.kie.workbench.common.forms.model.RefreshOnFieldChange;
 
-public abstract class SelectorFieldBaseDefinition<OPTION extends SelectorOption> extends AbstractFieldDefinition {
+public abstract class SelectorFieldBaseDefinition<OPTION extends SelectorOption<TYPE>, TYPE> extends AbstractFieldDefinition implements HasDefaultValue<TYPE>,
+                                                                                                                                        RefreshOnFieldChange {
 
     @SkipFormField
     protected String dataProvider = "";
+
+    @SkipFormField
+    protected String relatedField;
 
     public SelectorFieldBaseDefinition(String className) {
         super(className);
@@ -42,6 +48,16 @@ public abstract class SelectorFieldBaseDefinition<OPTION extends SelectorOption>
         this.dataProvider = dataProvider;
     }
 
+    @Override
+    public String getRelatedField() {
+        return relatedField;
+    }
+
+    @Override
+    public void setRelatedField(String relatedField) {
+        this.relatedField = relatedField;
+    }
+
     protected void doCopyFrom(FieldDefinition other) {
         if (other instanceof SelectorFieldBaseDefinition) {
             if ((standaloneClassName == null && other.getStandaloneClassName() == null) ||
@@ -49,6 +65,8 @@ public abstract class SelectorFieldBaseDefinition<OPTION extends SelectorOption>
                 SelectorFieldBaseDefinition otherSelector = (SelectorFieldBaseDefinition) other;
                 setOptions(otherSelector.getOptions());
                 setDataProvider(otherSelector.getDataProvider());
+                setDefaultValue((TYPE) otherSelector.getDefaultValue());
+                setRelatedField(otherSelector.getRelatedField());
             }
         }
     }

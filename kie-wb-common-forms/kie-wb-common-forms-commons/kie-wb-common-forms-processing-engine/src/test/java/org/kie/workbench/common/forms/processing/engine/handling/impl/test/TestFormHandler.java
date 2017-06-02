@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.processing.engine.handling.impl.mock;
+package org.kie.workbench.common.forms.processing.engine.handling.impl.test;
 
+import org.jboss.errai.databinding.client.BindableProxy;
+import org.jboss.errai.databinding.client.BindableProxyFactory;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandlerManager;
 import org.kie.workbench.common.forms.processing.engine.handling.FormValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.impl.FormHandlerImpl;
+import org.kie.workbench.common.forms.processing.engine.handling.impl.model.ModelProxy;
+import org.kie.workbench.common.forms.processing.engine.handling.impl.model.User;
+import org.kie.workbench.common.forms.processing.engine.handling.impl.model.UserProxy;
 
 public class TestFormHandler extends FormHandlerImpl {
 
@@ -36,5 +41,30 @@ public class TestFormHandler extends FormHandlerImpl {
     @Override
     protected DataBinder getBinderForModel(Object model) {
         return dataBinder;
+    }
+
+    @Override
+    public Object getModel() {
+        return ((ModelProxy)binder.getModel()).deepUnwrap();
+    }
+
+    @Override
+    protected Object readPropertyValue(BindableProxy proxy,
+                                       String fieldBinding) {
+        if (fieldBinding.indexOf(".") != -1) {
+            // Nested property
+
+            int separatorPosition = fieldBinding.indexOf(".");
+            String nestedModelName = fieldBinding.substring(0,
+                                                            separatorPosition);
+            String property = fieldBinding.substring(separatorPosition + 1);
+            Object nestedModel = proxy.get(nestedModelName);
+            if (nestedModel == null) {
+                return null;
+            }
+
+            return readPropertyValue(new UserProxy((User) nestedModel), property);
+        }
+        return proxy.get(fieldBinding);
     }
 }

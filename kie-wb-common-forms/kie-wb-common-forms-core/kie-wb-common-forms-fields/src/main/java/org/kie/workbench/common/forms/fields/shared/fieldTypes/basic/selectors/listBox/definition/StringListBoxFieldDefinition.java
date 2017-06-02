@@ -21,10 +21,13 @@ import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.StringSelectorOption;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 
 @Portable
 @Bindable
@@ -32,13 +35,23 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.S
         i18n = @I18nSettings(keyPreffix = "FieldProperties"),
         startElement = "label"
 )
-public class StringListBoxFieldDefinition extends ListBoxBaseDefinition<StringSelectorOption> {
+public class StringListBoxFieldDefinition extends ListBoxBaseDefinition<StringSelectorOption, String> {
 
     @FormField(
             labelKey = "selector.options",
             afterElement = "label"
     )
     protected List<StringSelectorOption> options = new ArrayList<>();
+
+    @SelectorDataProvider(type = SelectorDataProvider.ProviderType.CLIENT,
+            className = "org.kie.workbench.common.forms.editor.client.editor.dataProviders.SelectorOptionsProvider")
+    @FormField(
+            type = ListBoxFieldType.class,
+            labelKey = "defaultValue",
+            afterElement = "options",
+            settings = {@FieldParam(name = "relatedField", value = "options")}
+    )
+    protected String defaultValue;
 
     public StringListBoxFieldDefinition() {
         super(String.class.getName());
@@ -52,5 +65,15 @@ public class StringListBoxFieldDefinition extends ListBoxBaseDefinition<StringSe
     @Override
     public void setOptions(List<StringSelectorOption> options) {
         this.options = options;
+    }
+
+    @Override
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    @Override
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 }

@@ -19,25 +19,41 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.select
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.databinding.client.BindableListWrapper;
 import org.kie.workbench.common.forms.dynamic.client.config.ClientSelectorDataProviderManager;
+import org.kie.workbench.common.forms.dynamic.client.rendering.FieldDefinitionFieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.service.shared.BackendSelectorDataProviderService;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.SelectorDataProviderManager;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorFieldBaseDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
+import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeListener;
 
-public abstract class SelectorFieldRenderer<F extends SelectorFieldBaseDefinition, O extends SelectorOption<T>, T> extends FieldRenderer<F> {
+public abstract class SelectorFieldRenderer<FIELD extends SelectorFieldBaseDefinition<OPTION, TYPE>, OPTION extends SelectorOption<TYPE>, TYPE> extends FieldRenderer<FIELD> implements FieldDefinitionFieldRenderer<FIELD> {
 
     @Inject
     protected SelectorDataProviderManager clientProviderManager;
 
     @Inject
     protected Caller<BackendSelectorDataProviderService> backendSelectorDataProviderService;
+
+    @Override
+    public void init(FormRenderingContext renderingContext,
+                     FIELD field) {
+        super.init(renderingContext,
+                   field);
+        if (field.getRelatedField() != null) {
+            fieldChangeListeners.add(new FieldChangeListener(field.getRelatedField(),
+                                                             (fieldName, newValue) -> refreshSelectorOptions()));
+        }
+    }
 
     public void refreshSelectorOptions() {
         if (field.getDataProvider() != null && !field.getDataProvider().isEmpty()) {
@@ -59,27 +75,31 @@ public abstract class SelectorFieldRenderer<F extends SelectorFieldBaseDefinitio
         }
     }
 
-    public void refreshSelectorOptions(List<O> options) {
-        Map<T, String> optionsValues = new HashMap<>();
-        T defaultValue = null;
+    public void refreshSelectorOptions(List<OPTION> options) {
 
-        for (O option : options) {
+        if (options instanceof BindableListWrapper) {
+            options = ((BindableListWrapper) options).deepUnwrap();
+        }
+
+        Map<TYPE, String> optionsValues = new HashMap<>();
+
+        for (OPTION option : options) {
             optionsValues.put(option.getValue(),
                               option.getText());
-            if (option.isDefaultValue()) {
-                defaultValue = option.getValue();
-            }
         }
 
         refreshInput(optionsValues,
-                     defaultValue);
+                     field.getDefaultValue());
     }
 
-    public void refreshSelectorOptions(SelectorData<T> data) {
+    public void refreshSelectorOptions(SelectorData<TYPE> data) {
+
+        Optional<TYPE> selectedValue = Optional.ofNullable(data.getSelectedValue());
+
         refreshInput(data.getValues(),
-                     data.getSelectedValue());
+                     selectedValue.orElse(field.getDefaultValue()));
     }
 
-    protected abstract void refreshInput(Map<T, String> optionsValues,
-                                         T defaultValue);
+    protected abstract void refreshInput(Map<TYPE, String> optionsValues,
+                                         TYPE defaultValue);
 }

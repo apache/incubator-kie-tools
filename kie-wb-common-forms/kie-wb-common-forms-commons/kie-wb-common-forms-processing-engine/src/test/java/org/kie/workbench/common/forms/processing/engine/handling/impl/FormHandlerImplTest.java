@@ -28,7 +28,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
-import org.kie.workbench.common.forms.processing.engine.handling.impl.mock.TestFormHandler;
+import org.kie.workbench.common.forms.processing.engine.handling.impl.model.ModelProxy;
+import org.kie.workbench.common.forms.processing.engine.handling.impl.test.TestFormHandler;
 import org.mockito.Mock;
 
 import static org.mockito.Mockito.*;
@@ -44,13 +45,17 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
 
     protected FormHandlerImpl formHandler;
 
+    protected ModelProxy proxy;
+
     protected boolean checkBindings = false;
 
     @Before
     public void init() {
         super.init();
 
-        when(binder.getModel()).thenReturn(model);
+        proxy = spy(new ModelProxy(model));
+
+        when(binder.getModel()).thenReturn(proxy);
 
         when(binder.addPropertyChangeHandler(any())).thenReturn(unsubscribeHandle);
         when(binder.addPropertyChangeHandler(anyString(),
@@ -126,12 +131,10 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
 
         if (checkBindings) {
             verify(binder,
-                   times(formFieldProvider.getAll().size() - 1)).bind(anyObject(),
-                                                                      anyString());
-            verify(binder,
-                   times(1)).bind(anyObject(),
-                                  anyString(),
-                                  anyObject());
+                   times(formFieldProvider.getAll().size())).bind(anyObject(),
+                                                                  anyString(),
+                                                                  any(),
+                                                                  any());
         } else {
             verify(binder,
                    never()).bind(anyObject(),
@@ -162,8 +165,18 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
 
     protected void runCorrectValidationTest(boolean skipGetModel) {
         assertTrue(formHandler.validate());
+
         if (!skipGetModel) {
-            verify(binder).getModel();
+            int expectedTimes = 1;
+
+            if (formHandler.handlerHelper.supportsInputBinding()) {
+                expectedTimes += formFieldProvider.getAll().size();
+            }
+            verify(binder,
+                   times(expectedTimes)).getModel();
+            // checking if property is null
+            verify(proxy,
+                   times(expectedTimes - 1)).get(anyString());
         }
 
         assertTrue(formHandler.validate(VALUE_FIELD));
@@ -172,11 +185,6 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
         assertTrue(formHandler.validate(USER_BIRTHDAY_FIELD));
         assertTrue(formHandler.validate(USER_MARRIED_FIELD));
         assertTrue(formHandler.validate(USER_ADDRESS_FIELD));
-
-        if (!skipGetModel) {
-            verify(binder,
-                   times(formFieldProvider.getAll().size() + 1)).getModel();
-        }
     }
 
     @Test
@@ -205,7 +213,11 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
         assertFalse(formHandler.validate());
 
         if (!skipGetModel) {
-            verify(binder).getModel();
+            verify(binder,
+                   times(formFieldProvider.getAll().size() + 1)).getModel();
+            // checking if property is null
+            verify(proxy,
+                   times(formFieldProvider.getAll().size())).get(anyString());
         }
 
         assertFalse(formHandler.validate(VALUE_FIELD));
@@ -214,11 +226,6 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
         assertTrue(formHandler.validate(USER_BIRTHDAY_FIELD));
         assertTrue(formHandler.validate(USER_MARRIED_FIELD));
         assertFalse(formHandler.validate(USER_ADDRESS_FIELD));
-
-        if (!skipGetModel) {
-            verify(binder,
-                   times(formFieldProvider.getAll().size() + 1)).getModel();
-        }
     }
 
     @After

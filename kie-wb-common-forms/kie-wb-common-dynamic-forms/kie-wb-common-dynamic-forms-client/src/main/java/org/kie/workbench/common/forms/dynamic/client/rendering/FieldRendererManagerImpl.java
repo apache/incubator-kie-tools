@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -27,32 +28,59 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 @Dependent
 public class FieldRendererManagerImpl implements FieldRendererManager {
 
-    @Inject
     private ManagedInstance<FieldRenderer> renderers;
 
-    private static Map<String, FieldRenderer> availableRenderers = new HashMap<String, FieldRenderer>();
+    protected static boolean initialized = false;
 
-    static {
-        Collection<SyncBeanDef<FieldRenderer>> renderers = IOC.getBeanManager().lookupBeans(FieldRenderer.class);
-        for (SyncBeanDef<FieldRenderer> rendererDef : renderers) {
+    protected static Map<String, Class<? extends FieldRenderer>> availableRenderers = new HashMap<>();
+
+    protected static Map<Class<? extends FieldDefinition>, Class<? extends FieldRenderer>> fieldDefinitionRemderers = new HashMap<>();
+
+    @Inject
+    public FieldRendererManagerImpl(ManagedInstance<FieldRenderer> renderers) {
+        this.renderers = renderers;
+    }
+
+    @PostConstruct
+    public void init() {
+        if (!initialized) {
+            registerRenderers(IOC.getBeanManager().lookupBeans(FieldRenderer.class));
+            initialized = true;
+        }
+    }
+
+    protected void registerRenderers(Collection<SyncBeanDef<FieldRenderer>> renderers) {
+        PortablePreconditions.checkNotNull("renderers",
+                                           renderers);
+        renderers.forEach(rendererDef -> {
             FieldRenderer renderer = rendererDef.getInstance();
             if (renderer != null) {
-                availableRenderers.put(renderer.getSupportedCode(),
-                                       renderer);
+                if (renderer instanceof FieldDefinitionFieldRenderer) {
+                    fieldDefinitionRemderers.put(((FieldDefinitionFieldRenderer) renderer).getSupportedFieldDefinition(),
+                                                 (Class<? extends FieldRenderer>) rendererDef.getBeanClass());
+                } else {
+                    availableRenderers.put(renderer.getSupportedCode(),
+                                           (Class<? extends FieldRenderer>) rendererDef.getBeanClass());
+                }
             }
-        }
+        });
     }
 
     @Override
     public FieldRenderer getRendererForField(FieldDefinition fieldDefinition) {
-        FieldRenderer def = availableRenderers.get(fieldDefinition.getFieldType().getTypeName());
+        Class<? extends FieldRenderer> rendererClass = fieldDefinitionRemderers.get(fieldDefinition.getClass());
 
-        if (def != null) {
-            return renderers.select(def.getClass()).get();
+        if (rendererClass == null) {
+            rendererClass = availableRenderers.get(fieldDefinition.getFieldType().getTypeName());
+        }
+
+        if (rendererClass != null) {
+            return renderers.select(rendererClass).get();
         }
         return null;
     }

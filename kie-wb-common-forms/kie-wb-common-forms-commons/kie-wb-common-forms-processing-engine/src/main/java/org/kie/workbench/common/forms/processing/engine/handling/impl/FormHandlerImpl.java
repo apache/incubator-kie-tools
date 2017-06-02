@@ -19,14 +19,17 @@ package org.kie.workbench.common.forms.processing.engine.handling.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Assert;
+import org.jboss.errai.databinding.client.BindableProxy;
+import org.jboss.errai.databinding.client.BindableProxyFactory;
 import org.jboss.errai.databinding.client.PropertyChangeUnsubscribeHandle;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.jboss.errai.databinding.client.api.DataBinder;
-import org.jboss.errai.databinding.client.api.handler.property.PropertyChangeHandler;
+import org.jboss.errai.databinding.client.api.StateSync;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandlerManager;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
@@ -115,18 +118,25 @@ public class FormHandlerImpl<T> implements FormHandler<T>,
         formFields.add(formField);
 
         if (handlerHelper.supportsInputBinding() && formField.isBindable()) {
-            if (valueConverter == null) {
-                binder.bind(widget,
-                            formField.getFieldBinding());
-            } else {
-                binder.bind(widget,
-                            formField.getFieldBinding(),
-                            valueConverter);
-            }
+
+            BindableProxy proxy = (BindableProxy) binder.getModel();
+
+            Object modelValue = readPropertyValue(proxy,
+                                                  formField.getFieldBinding());
+
+            StateSync stateSync = Optional.ofNullable(modelValue).isPresent() ? StateSync.FROM_MODEL : StateSync.FROM_UI;
+
+            binder.bind(widget,
+                        formField.getFieldBinding(),
+                        valueConverter,
+                        stateSync);
         }
 
         fieldChangeManager.registerField(formField.getFieldName(),
                                          formField.isValidateOnChange());
+
+        formField.getChangeListeners().forEach(listener -> fieldChangeManager.addFieldChangeHandler(listener.getFieldToListen(),
+                                                                                                    listener.getChangeHandler()));
 
         /**
          * if field isn't bindable we cannot listen to field value changes.
@@ -144,11 +154,31 @@ public class FormHandlerImpl<T> implements FormHandler<T>,
         } else {
             PropertyChangeUnsubscribeHandle unsubscribeHandle = binder.addPropertyChangeHandler(
                     formField.getFieldBinding(),
-                    (PropertyChangeHandler) event -> fieldChangeManager.processFieldChange(fieldName,
-                                                                                           event.getNewValue(),
-                                                                                           binder.getModel()));
+                    event -> fieldChangeManager.processFieldChange(fieldName,
+                                                                   event.getNewValue(),
+                                                                   binder.getModel()));
             unsubscribeHandlers.add(unsubscribeHandle);
         }
+    }
+
+    protected Object readPropertyValue(BindableProxy proxy,
+                                     String fieldBinding) {
+        if (fieldBinding.indexOf(".") != -1) {
+            // Nested property
+
+            int separatorPosition = fieldBinding.indexOf(".");
+            String nestedModelName = fieldBinding.substring(0,
+                                                            separatorPosition);
+            String property = fieldBinding.substring(separatorPosition + 1);
+            Object nestedModel = proxy.get(nestedModelName);
+            if (nestedModel == null) {
+                return null;
+            }
+
+            return readPropertyValue((BindableProxy) BindableProxyFactory.getBindableProxy(nestedModel),
+                                     property);
+        }
+        return proxy.get(fieldBinding);
     }
 
     public void addFieldChangeHandler(FieldChangeHandler handler) {
@@ -225,11 +255,11 @@ public class FormHandlerImpl<T> implements FormHandler<T>,
         return formFields;
     }
 
-    private interface FormHandlerHelper<T> {
+    public interface FormHandlerHelper<T> {
 
-        boolean supportsInputBinding();
+        public boolean supportsInputBinding();
 
-        T getModel();
+        public T getModel();
     }
 
     protected class BoundBinderHelper<T> implements FormHandlerHelper {

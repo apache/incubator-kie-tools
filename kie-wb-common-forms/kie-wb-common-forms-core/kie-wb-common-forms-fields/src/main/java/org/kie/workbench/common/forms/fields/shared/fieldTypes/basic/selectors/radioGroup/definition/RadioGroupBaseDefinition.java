@@ -21,7 +21,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.S
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.type.RadioGroupFieldType;
 
-public abstract class RadioGroupBaseDefinition<OPTIONS extends SelectorOption<?>> extends SelectorFieldBaseDefinition<OPTIONS> {
+public abstract class RadioGroupBaseDefinition<OPTIONS extends SelectorOption<TYPE>, TYPE> extends SelectorFieldBaseDefinition<OPTIONS, TYPE> {
 
     public static final RadioGroupFieldType FIELD_TYPE = new RadioGroupFieldType();
 

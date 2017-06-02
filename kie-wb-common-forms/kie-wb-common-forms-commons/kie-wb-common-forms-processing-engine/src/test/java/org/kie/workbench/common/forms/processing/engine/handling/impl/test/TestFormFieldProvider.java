@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.processing.engine.handling.impl.mock;
+package org.kie.workbench.common.forms.processing.engine.handling.impl.test;
 
 import java.util.ArrayList;
 import java.util.Collection;

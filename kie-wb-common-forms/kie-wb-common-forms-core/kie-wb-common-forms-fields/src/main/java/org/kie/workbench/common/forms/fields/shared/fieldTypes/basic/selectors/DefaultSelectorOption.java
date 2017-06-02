@@ -43,21 +43,13 @@ public class DefaultSelectorOption<T> implements SelectorOption<Object> {
     )
     private String text;
 
-    @FormField(
-            labelKey = "defaultValue",
-            afterElement = "text"
-    )
-    private boolean defaultValue = false;
-
     public DefaultSelectorOption() {
     }
 
     public DefaultSelectorOption(@MapsTo("value") T value,
-                                 @MapsTo("text") String text,
-                                 @MapsTo("defaultValue") boolean defaultValue) {
+                                 @MapsTo("text") String text) {
         this.value = value;
         this.text = text;
-        this.defaultValue = defaultValue;
     }
 
     @Override
@@ -76,14 +68,5 @@ public class DefaultSelectorOption<T> implements SelectorOption<Object> {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    @Override
-    public boolean isDefaultValue() {
-        return defaultValue;
-    }
-
-    public void setDefaultValue(boolean defaultValue) {
-        this.defaultValue = defaultValue;
     }
 }

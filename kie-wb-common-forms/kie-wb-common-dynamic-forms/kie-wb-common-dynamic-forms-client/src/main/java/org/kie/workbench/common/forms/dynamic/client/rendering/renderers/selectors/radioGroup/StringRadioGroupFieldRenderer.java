@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.Radio;
-import org.gwtbootstrap3.client.ui.StringRadioGroup;
+import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.StringRadioGroup;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.StringSelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.StringRadioGroupFieldDefinition;
 
@@ -61,7 +61,7 @@ public class StringRadioGroupFieldRenderer extends RadioGroupFieldRendererBase<S
     }
 
     protected void refreshInput(Map<String, String> optionsValues,
-                                String defaultValue) {
+                                String selectedValue) {
         input.clear();
         for (String key : optionsValues.keySet()) {
             Radio radio;
@@ -73,10 +73,14 @@ public class StringRadioGroupFieldRenderer extends RadioGroupFieldRendererBase<S
                 radio = new Radio(field.getId(),
                                   text);
             }
-            radio.setValue(key.equals(defaultValue));
             radio.setFormValue(key);
             radio.setEnabled(!field.getReadOnly());
             input.add(radio);
+        }
+
+        if (optionsValues.containsKey(selectedValue)) {
+            input.setValue(selectedValue,
+                           true);
         }
     }
 
@@ -90,5 +94,10 @@ public class StringRadioGroupFieldRenderer extends RadioGroupFieldRendererBase<S
     @Override
     protected void setReadOnly(boolean readOnly) {
         input.getRadioChildren().forEach(radio -> radio.setEnabled(!readOnly));
+    }
+
+    @Override
+    public Class<StringRadioGroupFieldDefinition> getSupportedFieldDefinition() {
+        return StringRadioGroupFieldDefinition.class;
     }
 }

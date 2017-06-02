@@ -22,18 +22,18 @@ import java.util.List;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorFieldBaseDefinition;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.StringSelectorOption;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Portable
 @Bindable
-public class ComboBoxFieldDefinition<OPTIONS extends SelectorOption> extends SelectorFieldBaseDefinition<OPTIONS> {
+public class ComboBoxFieldDefinition extends SelectorFieldBaseDefinition<StringSelectorOption, String> {
 
     public static final ComboBoxFieldType FIELD_TYPE = new ComboBoxFieldType();
 
     private String defaultValue;
 
-    protected List<OPTIONS> options = new ArrayList<>();
+    protected List<StringSelectorOption> options = new ArrayList<>();
 
     public ComboBoxFieldDefinition() {
         super(String.class.getName());
@@ -44,21 +44,23 @@ public class ComboBoxFieldDefinition<OPTIONS extends SelectorOption> extends Sel
         return FIELD_TYPE;
     }
 
+    @Override
     public String getDefaultValue() {
         return defaultValue;
     }
 
+    @Override
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
     @Override
-    public void setOptions(List<OPTIONS> options) {
+    public void setOptions(List<StringSelectorOption> options) {
         this.options = options;
     }
 
     @Override
-    public List<OPTIONS> getOptions() {
+    public List<StringSelectorOption> getOptions() {
         return options;
     }
 

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -26,6 +28,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplaye
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeListener;
 
 public abstract class FieldRenderer<F extends FieldDefinition> {
 
@@ -33,11 +36,13 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
     protected F field;
     protected DefaultDynamicFormField formField = null;
     protected FormGroupDisplayer group;
+    protected List<FieldChangeListener> fieldChangeListeners = new ArrayList<>();
 
     public void init(FormRenderingContext renderingContext,
                      F field) {
         this.renderingContext = renderingContext;
         this.field = field;
+        fieldChangeListeners.clear();
     }
 
     public IsWidget renderWidget() {
@@ -83,6 +88,11 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
                 public boolean isContentValid() {
                     return FieldRenderer.this.isContentValid();
                 }
+
+                @Override
+                public Collection<FieldChangeListener> getChangeListeners() {
+                    return getFieldChangeListeners();
+                }
             };
 
             formField.setReadOnly(renderingContext.getRenderMode().equals(RenderMode.READ_ONLY_MODE));
@@ -120,6 +130,10 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
 
     protected boolean isContentValid() {
         return true;
+    }
+
+    public Collection<FieldChangeListener> getFieldChangeListeners() {
+        return fieldChangeListeners;
     }
 
     protected class FieldConfigStatus {

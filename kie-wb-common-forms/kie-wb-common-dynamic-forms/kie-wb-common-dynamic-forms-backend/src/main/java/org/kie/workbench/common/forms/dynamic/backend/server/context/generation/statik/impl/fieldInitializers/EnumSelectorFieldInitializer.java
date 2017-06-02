@@ -22,8 +22,9 @@ import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.DMOBasedTransformerContext;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.FieldSetting;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DefaultSelectorOption;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorFieldBaseDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Dependent
@@ -43,12 +44,11 @@ public class EnumSelectorFieldInitializer implements FieldInitializer<SelectorFi
             Enum[] enumValues = (Enum[]) Class.forName(setting.getType()).getEnumConstants();
 
             if (enumValues != null && (field.getOptions() == null || field.getOptions().isEmpty())) {
-                List<DefaultSelectorOption<Enum>> options = new ArrayList<>();
+                List<SelectorOption<Enum>> options = new ArrayList<>();
                 for (Enum enumConstant : enumValues) {
-                    DefaultSelectorOption<Enum> selectorOption = new DefaultSelectorOption<>(
+                    EnumSelectorOption selectorOption = new EnumSelectorOption(
                             enumConstant,
-                            enumConstant.toString(),
-                            false);
+                            enumConstant.toString());
 
                     options.add(selectorOption);
                 }

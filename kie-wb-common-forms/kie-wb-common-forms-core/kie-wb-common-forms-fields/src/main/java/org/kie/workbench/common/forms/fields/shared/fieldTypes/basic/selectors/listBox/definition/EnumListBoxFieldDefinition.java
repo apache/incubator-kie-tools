@@ -24,7 +24,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DefaultSelectorOption;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption;
 import org.kie.workbench.common.forms.model.FieldDataType;
 
 @Portable
@@ -33,25 +33,31 @@ import org.kie.workbench.common.forms.model.FieldDataType;
         i18n = @I18nSettings(keyPreffix = "FieldProperties"),
         startElement = "label"
 )
-public class EnumListBoxFieldDefinition extends ListBoxBaseDefinition<DefaultSelectorOption> {
+public class EnumListBoxFieldDefinition extends ListBoxBaseDefinition<EnumSelectorOption, Enum> {
 
     @FormField(
             labelKey = "selector.options",
             afterElement = "label"
     )
-    protected List<DefaultSelectorOption> options = new ArrayList<>();
+    protected List<EnumSelectorOption> options = new ArrayList<>();
+
+    @FormField(
+            labelKey = "defaultValue",
+            afterElement = "options"
+    )
+    protected Enum defaultValue;
 
     public EnumListBoxFieldDefinition() {
-        super(Object.class.getName());
+        super(Enum.class.getName());
     }
 
     @Override
-    public List<DefaultSelectorOption> getOptions() {
+    public List<EnumSelectorOption> getOptions() {
         return options;
     }
 
     @Override
-    public void setOptions(List<DefaultSelectorOption> options) {
+    public void setOptions(List<EnumSelectorOption> options) {
         this.options = options;
     }
 
@@ -60,5 +66,15 @@ public class EnumListBoxFieldDefinition extends ListBoxBaseDefinition<DefaultSel
         return new FieldDataType(standaloneClassName,
                                  false,
                                  true);
+    }
+
+    @Override
+    public Enum getDefaultValue() {
+        return defaultValue;
+    }
+
+    @Override
+    public void setDefaultValue(Enum defaultValue) {
+        this.defaultValue = defaultValue;
     }
 }

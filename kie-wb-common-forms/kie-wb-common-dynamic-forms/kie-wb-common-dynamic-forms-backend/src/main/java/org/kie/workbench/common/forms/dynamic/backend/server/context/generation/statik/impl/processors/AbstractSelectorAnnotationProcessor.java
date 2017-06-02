@@ -49,7 +49,6 @@ public abstract class AbstractSelectorAnnotationProcessor<FIELD extends Selector
                 StringSelectorOption selectorOption = new StringSelectorOption();
                 selectorOption.setValue(settingAnnotation.getParameters().get("value").toString());
                 selectorOption.setText(settingAnnotation.getParameters().get("text").toString());
-                selectorOption.setDefaultValue((Boolean) settingAnnotation.getParameters().get("isDefault"));
                 options.add(selectorOption);
             } else if (settingAnnotation.getQualifiedTypeName().equals(SelectorDataProvider.class.getName())) {
                 selectorProvider = settingAnnotation;

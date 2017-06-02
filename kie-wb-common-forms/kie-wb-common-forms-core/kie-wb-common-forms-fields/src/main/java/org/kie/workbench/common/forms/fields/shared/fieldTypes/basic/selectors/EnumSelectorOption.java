@@ -29,13 +29,13 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.layout.Layout;
 @Bindable
 @FormDefinition(
         i18n = @I18nSettings(keyPreffix = "FieldProperties.selector.options"),
-        layout = @Layout(value = {@Column, @Column}),
+        layout = @Layout({@Column, @Column}),
         startElement = "value"
 )
-public class StringSelectorOption implements SelectorOption<String> {
+public class EnumSelectorOption implements SelectorOption<Enum> {
 
     @FormField(labelKey = "value")
-    private String value;
+    private Enum value;
 
     @FormField(
             labelKey = "text",
@@ -43,21 +43,21 @@ public class StringSelectorOption implements SelectorOption<String> {
     )
     private String text;
 
-    public StringSelectorOption() {
+    public EnumSelectorOption() {
     }
 
-    public StringSelectorOption(@MapsTo("value") String value,
-                                @MapsTo("text") String text) {
+    public EnumSelectorOption(@MapsTo("value") Enum value,
+                              @MapsTo("text") String text) {
         this.value = value;
         this.text = text;
     }
 
     @Override
-    public String getValue() {
+    public Enum getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Enum value) {
         this.value = value;
     }
 

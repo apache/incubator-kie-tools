@@ -29,8 +29,8 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldDefinition;
 
 @Dependent
-public class ComboBoxFieldRenderer<F extends ComboBoxFieldDefinition, O extends StringSelectorOption>
-        extends SelectorFieldRenderer<F, O, String> {
+public class ComboBoxFieldRenderer
+        extends SelectorFieldRenderer<ComboBoxFieldDefinition, StringSelectorOption, String> {
 
     private ComboBoxWidgetView view;
 
@@ -87,5 +87,10 @@ public class ComboBoxFieldRenderer<F extends ComboBoxFieldDefinition, O extends 
     @Override
     protected void setReadOnly(boolean readOnly) {
         view.setReadOnly(readOnly);
+    }
+
+    @Override
+    public Class<ComboBoxFieldDefinition> getSupportedFieldDefinition() {
+        return ComboBoxFieldDefinition.class;
     }
 }
