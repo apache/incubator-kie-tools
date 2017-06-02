@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DeploymentVerifierTest {
 
     @Mock
@@ -65,7 +65,7 @@ public class DeploymentVerifierTest {
     @Mock
     private ProjectRepositories projectRepositories;
 
-    private Set< MavenRepositoryMetadata > repositories;
+    private Set<MavenRepositoryMetadata> repositories;
 
     @Mock
     private MavenRepositoryMetadata repositoryMetadata1;
@@ -76,10 +76,11 @@ public class DeploymentVerifierTest {
     private Exception exception;
 
     @Before
-    public void setUp( ) {
-        deploymentVerifier = new DeploymentVerifier( repositoryResolver, projectRepositoriesService );
-        when( project.getPom( ) ).thenReturn( pom );
-        when( pom.getGav( ) ).thenReturn( gav );
+    public void setUp() {
+        deploymentVerifier = new DeploymentVerifier(repositoryResolver,
+                                                    projectRepositoriesService);
+        when(project.getPom()).thenReturn(pom);
+        when(pom.getGav()).thenReturn(gav);
     }
 
     /**
@@ -87,10 +88,10 @@ public class DeploymentVerifierTest {
      * project version is a snapshot.
      */
     @Test
-    public void testVerifyAlreadyDeployedValidatedSNAPSHOT( ) {
-        prepareProjectIsDeployed( true );
-        when( gav.isSnapshot( ) ).thenReturn( true );
-        executeNonErrorCase( DeploymentMode.VALIDATED );
+    public void testVerifyAlreadyDeployedValidatedSNAPSHOT() {
+        prepareProjectIsDeployed(true);
+        when(gav.isSnapshot()).thenReturn(true);
+        executeNonErrorCase(DeploymentMode.VALIDATED);
     }
 
     /**
@@ -98,10 +99,10 @@ public class DeploymentVerifierTest {
      * project version is a snapshot.
      */
     @Test
-    public void testVerifyNonDeployedValidatedSNAPSHOT( ) {
-        prepareProjectIsDeployed( false );
-        when( gav.isSnapshot( ) ).thenReturn( true );
-        executeNonErrorCase( DeploymentMode.VALIDATED );
+    public void testVerifyNonDeployedValidatedSNAPSHOT() {
+        prepareProjectIsDeployed(false);
+        when(gav.isSnapshot()).thenReturn(true);
+        executeNonErrorCase(DeploymentMode.VALIDATED);
     }
 
     /**
@@ -109,18 +110,21 @@ public class DeploymentVerifierTest {
      * version is a non snapshot.
      */
     @Test
-    public void testVerifyAlreadyDeployedValidatedNonSNAPSHOT( ) {
-        prepareProjectIsDeployed( true );
-        when( gav.isSnapshot( ) ).thenReturn( false );
+    public void testVerifyAlreadyDeployedValidatedNonSNAPSHOT() {
+        prepareProjectIsDeployed(true);
+        when(gav.isSnapshot()).thenReturn(false);
         try {
-            deploymentVerifier.verifyWithException( project, DeploymentMode.VALIDATED );
-        } catch ( Exception e ) {
+            deploymentVerifier.verifyWithException(project,
+                                                   DeploymentMode.VALIDATED);
+        } catch (Exception e) {
             exception = e;
         }
-        assertNotNull( exception );
-        assertTrue( exception instanceof GAVAlreadyExistsException );
-        assertEquals( gav, ( ( GAVAlreadyExistsException ) exception ).getGAV( ) );
-        assertEquals( repositories, ( ( GAVAlreadyExistsException ) exception ).getRepositories( ) );
+        assertNotNull(exception);
+        assertTrue(exception instanceof GAVAlreadyExistsException);
+        assertEquals(gav,
+                     ((GAVAlreadyExistsException) exception).getGAV());
+        assertEquals(repositories,
+                     ((GAVAlreadyExistsException) exception).getRepositories());
     }
 
     /**
@@ -128,30 +132,32 @@ public class DeploymentVerifierTest {
      * version is a non snapshot.
      */
     @Test
-    public void testVerifyNonDeployedValidatedNonSNAPSHOT( ) {
-        prepareProjectIsDeployed( false );
-        when( gav.isSnapshot( ) ).thenReturn( true );
-        executeNonErrorCase( DeploymentMode.VALIDATED );
+    public void testVerifyNonDeployedValidatedNonSNAPSHOT() {
+        prepareProjectIsDeployed(false);
+        when(gav.isSnapshot()).thenReturn(true);
+        executeNonErrorCase(DeploymentMode.VALIDATED);
     }
 
-    private void executeNonErrorCase( DeploymentMode deploymentMode ) {
+    private void executeNonErrorCase(DeploymentMode deploymentMode) {
         try {
-            deploymentVerifier.verifyWithException( project, deploymentMode );
-        } catch ( Exception e ) {
+            deploymentVerifier.verifyWithException(project,
+                                                   deploymentMode);
+        } catch (Exception e) {
             exception = e;
         }
-        assertNull( exception );
+        assertNull(exception);
     }
 
-    private void prepareProjectIsDeployed( boolean isDeployed ) {
-        repositories = new HashSet<>( );
-        if ( isDeployed ) {
-            repositories.add( repositoryMetadata1 );
-            repositories.add( repositoryMetadata2 );
+    private void prepareProjectIsDeployed(boolean isDeployed) {
+        repositories = new HashSet<>();
+        if (isDeployed) {
+            repositories.add(repositoryMetadata1);
+            repositories.add(repositoryMetadata2);
         }
-        when( project.getRepositoriesPath( ) ).thenReturn( path );
-        when( projectRepositoriesService.load( path ) ).thenReturn( projectRepositories );
-        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ), any( MavenRepositoryMetadata[].class ) ) ).thenReturn( repositories );
+        when(project.getRepositoriesPath()).thenReturn(path);
+        when(projectRepositoriesService.load(path)).thenReturn(projectRepositories);
+        when(repositoryResolver.getRepositoriesResolvingArtifact(eq(gav),
+                                                                 eq(project),
+                                                                 any(MavenRepositoryMetadata[].class))).thenReturn(repositories);
     }
-
 }

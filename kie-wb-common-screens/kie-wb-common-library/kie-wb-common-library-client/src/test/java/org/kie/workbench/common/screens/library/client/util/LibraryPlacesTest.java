@@ -516,6 +516,7 @@ public class LibraryPlacesTest {
 
         verify(placeManager).goTo(eq(part),
                                   any(PanelDefinition.class));
+        verify(libraryPlaces).closeLibraryPlaces();
         verify(projectDetailEvent).fire(any(ProjectDetailEvent.class));
         verify(projectContextChangeEvent).fire(any(ProjectContextChangeEvent.class));
         verify(libraryPlaces).setupLibraryBreadCrumbsForProject(projectInfo);

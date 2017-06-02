@@ -40,13 +40,13 @@ public class DeploymentVerifier {
 
     private ProjectRepositoriesService projectRepositoriesService;
 
-    public DeploymentVerifier( ) {
+    public DeploymentVerifier() {
         //Empty constructor for Weld proxying
     }
 
     @Inject
-    public DeploymentVerifier( final ProjectRepositoryResolver repositoryResolver,
-                               final ProjectRepositoriesService projectRepositoriesService ) {
+    public DeploymentVerifier(final ProjectRepositoryResolver repositoryResolver,
+                              final ProjectRepositoriesService projectRepositoriesService) {
         this.repositoryResolver = repositoryResolver;
         this.projectRepositoriesService = projectRepositoriesService;
     }
@@ -58,19 +58,21 @@ public class DeploymentVerifier {
      * @param project the project to verify.
      * @param deploymentMode the deployment mode for doing the verification.
      */
-    public void verifyWithException( final Project project, DeploymentMode deploymentMode ) {
-        if ( DeploymentMode.VALIDATED.equals( deploymentMode ) ) {
+    public void verifyWithException(final Project project,
+                                    DeploymentMode deploymentMode) {
+        if (DeploymentMode.VALIDATED.equals(deploymentMode)) {
             // Check is the POM's GAV resolves to any pre-existing artifacts.
-            final GAV gav = project.getPom( ).getGav( );
-            if ( gav.isSnapshot( ) ) {
+            final GAV gav = project.getPom().getGav();
+            if (gav.isSnapshot()) {
                 return;
             }
-            final ProjectRepositories projectRepositories = projectRepositoriesService.load( ( ( KieProject ) project ).getRepositoriesPath( ) );
-            final Set< MavenRepositoryMetadata > repositories = repositoryResolver.getRepositoriesResolvingArtifact( gav,
-                    projectRepositories.filterByIncluded( ) );
-            if ( repositories.size( ) > 0 ) {
-                throw new GAVAlreadyExistsException( gav,
-                        repositories );
+            final ProjectRepositories projectRepositories = projectRepositoriesService.load(((KieProject) project).getRepositoriesPath());
+            final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact(gav,
+                                                                                                                  project,
+                                                                                                                  projectRepositories.filterByIncluded());
+            if (repositories.size() > 0) {
+                throw new GAVAlreadyExistsException(gav,
+                                                    repositories);
             }
         }
     }

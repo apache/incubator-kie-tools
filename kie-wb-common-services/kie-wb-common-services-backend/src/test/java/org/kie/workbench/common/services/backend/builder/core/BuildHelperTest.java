@@ -54,7 +54,7 @@ import org.uberfire.backend.vfs.Path;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class BuildHelperTest {
 
     private static final String GROUP_ID = "org.kie.workbench.common.services.builder.tests";
@@ -77,10 +77,10 @@ public class BuildHelperTest {
     private ProjectRepositoriesService projectRepositoriesService;
 
     @Mock
-    private Instance< PostBuildHandler > handlers;
+    private Instance<PostBuildHandler> handlers;
 
     @Mock
-    protected Instance< User > identity;
+    protected Instance<User> identity;
 
     @Mock
     protected User user;
@@ -113,7 +113,7 @@ public class BuildHelperTest {
     @Mock
     private ProjectRepositories projectRepositories;
 
-    private Set< MavenRepositoryMetadata > repositories;
+    private Set<MavenRepositoryMetadata> repositories;
 
     @Mock
     private MavenRepositoryMetadata repositoryMetadata1;
@@ -122,187 +122,230 @@ public class BuildHelperTest {
     private MavenRepositoryMetadata repositoryMetadata2;
 
     @BeforeClass
-    public static void setupSystemProperties( ) {
+    public static void setupSystemProperties() {
         //These are not needed for the tests
-        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
-                "false" );
-        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
-                "false" );
-        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
-                "true" );
+        System.setProperty("org.uberfire.nio.git.daemon.enabled",
+                           "false");
+        System.setProperty("org.uberfire.nio.git.ssh.enabled",
+                           "false");
+        System.setProperty("org.uberfire.sys.repo.monitor.disabled",
+                           "true");
     }
 
     @Before
-    public void setUp( ) throws Exception {
-        testFileSystem = new TestFileSystem( );
-        projectService = testFileSystem.getReference( KieProjectService.class );
-        pomService = testFileSystem.getReference( POMService.class );
-        cache = testFileSystem.getReference( LRUBuilderCache.class );
-        deploymentVerifier = new DeploymentVerifier( repositoryResolver, projectRepositoriesService );
-        buildHelper = spy( new BuildHelper( pomService,
-                m2RepoService,
-                projectService,
-                deploymentVerifier,
-                cache,
-                handlers,
-                identity ) );
+    public void setUp() throws Exception {
+        testFileSystem = new TestFileSystem();
+        projectService = testFileSystem.getReference(KieProjectService.class);
+        pomService = testFileSystem.getReference(POMService.class);
+        cache = testFileSystem.getReference(LRUBuilderCache.class);
+        deploymentVerifier = new DeploymentVerifier(repositoryResolver,
+                                                    projectRepositoriesService);
+        buildHelper = spy(new BuildHelper(pomService,
+                                          m2RepoService,
+                                          projectService,
+                                          deploymentVerifier,
+                                          cache,
+                                          handlers,
+                                          identity));
 
-        when( identity.get() ).thenReturn( user );
-        when( user.getIdentifier() ).thenReturn( "test-user" );
+        when(identity.get()).thenReturn(user);
+        when(user.getIdentifier()).thenReturn("test-user");
 
-        URL rootUrl = this.getClass( ).getResource( "/BuildHelperTest" );
-        rootPath = Paths.convert( testFileSystem.fileSystemProvider.getPath( rootUrl.toURI() ) );
+        URL rootUrl = this.getClass().getResource("/BuildHelperTest");
+        rootPath = Paths.convert(testFileSystem.fileSystemProvider.getPath(rootUrl.toURI()));
 
-        rootUrl = this.getClass( ).getResource( "/BuildHelperTestSnapshot" );
-        snapshotRootPath = Paths.convert( testFileSystem.fileSystemProvider.getPath( rootUrl.toURI() ) );
+        rootUrl = this.getClass().getResource("/BuildHelperTestSnapshot");
+        snapshotRootPath = Paths.convert(testFileSystem.fileSystemProvider.getPath(rootUrl.toURI()));
 
-        Iterator<PostBuildHandler> mockIterator = mock( Iterator.class );
-        when( handlers.iterator() ).thenReturn( mockIterator );
-        when ( mockIterator.hasNext() ).thenReturn( false );
+        Iterator<PostBuildHandler> mockIterator = mock(Iterator.class);
+        when(handlers.iterator()).thenReturn(mockIterator);
+        when(mockIterator.hasNext()).thenReturn(false);
     }
 
     @After
-    public void tearDown( ) throws Exception {
-        testFileSystem.tearDown( );
+    public void tearDown() throws Exception {
+        testFileSystem.tearDown();
     }
 
     @Test
-    public void testBuildAndDeployNonSnapshotNotDeployed( ) {
-        final GAV gav = new GAV( GROUP_ID, ARTIFACT_ID, VERSION );
-        prepareBuildAndDeploy( rootPath, gav, false );
+    public void testBuildAndDeployNonSnapshotNotDeployed() {
+        final GAV gav = new GAV(GROUP_ID,
+                                ARTIFACT_ID,
+                                VERSION);
+        prepareBuildAndDeploy(rootPath,
+                              gav,
+                              false);
 
-        buildHelper.buildAndDeploy( project );
+        buildHelper.buildAndDeploy(project);
 
-        verify( buildHelper,
-                times( 1 ) ).buildAndDeploy( eq( project ),
-                eq( DeploymentMode.VALIDATED ) );
-        verifyBuildAndDeploy( project, gav );
+        verify(buildHelper,
+               times(1)).buildAndDeploy(eq(project),
+                                        eq(DeploymentMode.VALIDATED));
+        verifyBuildAndDeploy(project,
+                             gav);
     }
 
     @Test
-    public void testBuildAndDeployNonSnapshotAlreadyDeployed( ) {
-        final GAV gav = new GAV( GROUP_ID, ARTIFACT_ID, VERSION );
-        prepareBuildAndDeploy( rootPath, gav, true );
+    public void testBuildAndDeployNonSnapshotAlreadyDeployed() {
+        final GAV gav = new GAV(GROUP_ID,
+                                ARTIFACT_ID,
+                                VERSION);
+        prepareBuildAndDeploy(rootPath,
+                              gav,
+                              true);
         Exception exception = null;
         try {
-            buildHelper.buildAndDeploy( project );
-        } catch ( Exception e ) {
+            buildHelper.buildAndDeploy(project);
+        } catch (Exception e) {
             exception = e;
         }
 
-        verify( buildHelper,
-                times( 1 ) ).buildAndDeploy( eq( project ),
-                eq( DeploymentMode.VALIDATED ) );
+        verify(buildHelper,
+               times(1)).buildAndDeploy(eq(project),
+                                        eq(DeploymentMode.VALIDATED));
 
-        assertNotNull( exception );
-        assertTrue( exception instanceof GAVAlreadyExistsException );
-        assertEquals( gav, ( ( GAVAlreadyExistsException ) exception ).getGAV() );
+        assertNotNull(exception);
+        assertTrue(exception instanceof GAVAlreadyExistsException);
+        assertEquals(gav,
+                     ((GAVAlreadyExistsException) exception).getGAV());
     }
 
     @Test
-    public void testBuildAndDeploySnapshot( ) {
-        final GAV gav = new GAV( GROUP_ID, ARTIFACT_ID, SNAPSHOT_VERSION );
-        prepareBuildAndDeploy( snapshotRootPath, gav );
+    public void testBuildAndDeploySnapshot() {
+        final GAV gav = new GAV(GROUP_ID,
+                                ARTIFACT_ID,
+                                SNAPSHOT_VERSION);
+        prepareBuildAndDeploy(snapshotRootPath,
+                              gav);
 
-        buildHelper.buildAndDeploy( project );
+        buildHelper.buildAndDeploy(project);
 
-        verify( buildHelper,
-                times( 1 ) ).buildAndDeploy( eq( project ),
-                eq( DeploymentMode.VALIDATED ) );
-        verifyBuildAndDeploySnapshot( project, gav );
+        verify(buildHelper,
+               times(1)).buildAndDeploy(eq(project),
+                                        eq(DeploymentMode.VALIDATED));
+        verifyBuildAndDeploySnapshot(project,
+                                     gav);
     }
 
     @Test
-    public void testBuildAndDeploySuppressHandlersNonSnapshot( ) {
-        final GAV gav = new GAV( GROUP_ID, ARTIFACT_ID, VERSION );
-        prepareBuildAndDeploy( rootPath, gav );
+    public void testBuildAndDeploySuppressHandlersNonSnapshot() {
+        final GAV gav = new GAV(GROUP_ID,
+                                ARTIFACT_ID,
+                                VERSION);
+        prepareBuildAndDeploy(rootPath,
+                              gav);
 
-        buildHelper.buildAndDeploy( project, true );
+        buildHelper.buildAndDeploy(project,
+                                   true);
 
-        verify( buildHelper,
-                times( 1 ) ).buildAndDeploy( eq( project ),
-                eq( true ),
-                eq( DeploymentMode.VALIDATED ) );
-        verifyBuildAndDeploy( project, gav );
+        verify(buildHelper,
+               times(1)).buildAndDeploy(eq(project),
+                                        eq(true),
+                                        eq(DeploymentMode.VALIDATED));
+        verifyBuildAndDeploy(project,
+                             gav);
     }
 
     @Test
-    public void testBuildAndDeploySuppressHandlersSnapshot( ) {
-        final GAV gav = new GAV( GROUP_ID, ARTIFACT_ID, SNAPSHOT_VERSION );
-        prepareBuildAndDeploy( snapshotRootPath, gav );
+    public void testBuildAndDeploySuppressHandlersSnapshot() {
+        final GAV gav = new GAV(GROUP_ID,
+                                ARTIFACT_ID,
+                                SNAPSHOT_VERSION);
+        prepareBuildAndDeploy(snapshotRootPath,
+                              gav);
 
-        buildHelper.buildAndDeploy( project, true );
+        buildHelper.buildAndDeploy(project,
+                                   true);
 
-        verify( buildHelper,
-                times( 1 ) ).buildAndDeploy( eq( project ),
-                eq( true ),
-                eq( DeploymentMode.VALIDATED ) );
-        verifyBuildAndDeploySnapshot( project, gav );
+        verify(buildHelper,
+               times(1)).buildAndDeploy(eq(project),
+                                        eq(true),
+                                        eq(DeploymentMode.VALIDATED));
+        verifyBuildAndDeploySnapshot(project,
+                                     gav);
     }
 
-    private void prepareBuildAndDeploy( Path rootPath, GAV gav ) {
-        prepareBuildAndDeploy( rootPath, gav, false );
+    private void prepareBuildAndDeploy(Path rootPath,
+                                       GAV gav) {
+        prepareBuildAndDeploy(rootPath,
+                              gav,
+                              false);
     }
 
-    private void prepareBuildAndDeploy( Path rootPath, GAV gav, boolean isDeployed ) {
-        project = projectService.resolveProject( rootPath );
+    private void prepareBuildAndDeploy(Path rootPath,
+                                       GAV gav,
+                                       boolean isDeployed) {
+        project = projectService.resolveProject(rootPath);
 
-        repositories = new HashSet<>( );
-        if ( isDeployed ) {
-            repositories.add( repositoryMetadata1 );
-            repositories.add( repositoryMetadata2 );
+        repositories = new HashSet<>();
+        if (isDeployed) {
+            repositories.add(repositoryMetadata1);
+            repositories.add(repositoryMetadata2);
         }
-        when( projectRepositoriesService.load( project.getRepositoriesPath() ) ).thenReturn( projectRepositories );
-        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ), any( MavenRepositoryMetadata[].class ) ) ).thenReturn( repositories );
+        when(projectRepositoriesService.load(project.getRepositoriesPath())).thenReturn(projectRepositories);
+        when(repositoryResolver.getRepositoriesResolvingArtifact(eq(gav),
+                                                                 eq(project),
+                                                                 any(MavenRepositoryMetadata[].class))).thenReturn(repositories);
     }
 
-    private void verifyBuildAndDeploy( KieProject project, GAV gav ) {
-        verify( projectRepositoriesService,
-                times( 1 ) ).load( any( Path.class ) );
-        verify( repositoryResolver, times( 1 ) ).getRepositoriesResolvingArtifact( eq( gav ), any( MavenRepositoryMetadata[].class ) );
-        verifyBuilder( project, gav );
+    private void verifyBuildAndDeploy(KieProject project,
+                                      GAV gav) {
+        verify(projectRepositoriesService,
+               times(1)).load(any(Path.class));
+        verify(repositoryResolver,
+               times(1)).getRepositoriesResolvingArtifact(eq(gav),
+                                                          eq(project),
+                                                          any(MavenRepositoryMetadata[].class));
+        verifyBuilder(project,
+                      gav);
     }
 
-    private void verifyBuildAndDeploySnapshot( KieProject project, GAV gav ) {
-        verify( projectRepositoriesService,
-                never( ) ).load( any( Path.class ) );
-        verify( repositoryResolver,
-                never( ) ).getRepositoriesResolvingArtifact( eq( gav ) );
-        verifyBuilder( project, gav );
+    private void verifyBuildAndDeploySnapshot(KieProject project,
+                                              GAV gav) {
+        verify(projectRepositoriesService,
+               never()).load(any(Path.class));
+        verify(repositoryResolver,
+               never()).getRepositoriesResolvingArtifact(eq(gav),
+                                                         eq(project));
+        verifyBuilder(project,
+                      gav);
     }
 
-    private void verifyBuilder( KieProject project, GAV gav ) {
-        Builder builder = cache.getBuilder( project );
-        assertNotNull( builder );
-        assertTrue( builder.isBuilt() );
-        verify( m2RepoService, times( 1 ) ).deployJar( any( InputStream.class ), eq( gav ) );
+    private void verifyBuilder(KieProject project,
+                               GAV gav) {
+        Builder builder = cache.getBuilder(project);
+        assertNotNull(builder);
+        assertTrue(builder.isBuilt());
+        verify(m2RepoService,
+               times(1)).deployJar(any(InputStream.class),
+                                   eq(gav));
     }
 
     @Test
-    public void testBuildThatDoesNotUpdateTheCache( ) throws Exception {
-        final Path path = path( );
+    public void testBuildThatDoesNotUpdateTheCache() throws Exception {
+        final Path path = path();
 
-        buildHelper.build( projectService.resolveProject( path ) );
+        buildHelper.build(projectService.resolveProject(path));
 
-        assertTrue( cachedFileSystemDoesNotChange( ) );
+        assertTrue(cachedFileSystemDoesNotChange());
     }
 
     @Test
-    public void testUpdatePackageResourceThatDoesNotUpdateTheCache( ) throws Exception {
-        final Path path = path( );
+    public void testUpdatePackageResourceThatDoesNotUpdateTheCache() throws Exception {
+        final Path path = path();
 
-        buildHelper.build( projectService.resolveProject( path ) );
-        buildHelper.updatePackageResource( path );
+        buildHelper.build(projectService.resolveProject(path));
+        buildHelper.updatePackageResource(path);
 
-        assertTrue( cachedFileSystemDoesNotChange( ) );
+        assertTrue(cachedFileSystemDoesNotChange());
     }
 
-    private Path path( ) throws URISyntaxException {
-        final URL urlToValidate = this.getClass( ).getResource( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
-        return Paths.convert( testFileSystem.fileSystemProvider.getPath( urlToValidate.toURI( ) ) );
+    private Path path() throws URISyntaxException {
+        final URL urlToValidate = this.getClass().getResource("/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl");
+        return Paths.convert(testFileSystem.fileSystemProvider.getPath(urlToValidate.toURI()));
     }
 
-    private String content( ) {
+    private String content() {
         return "package org.kie.workbench.common.services.builder.tests.test1\n" +
                 "\n" +
                 "rule R2\n" +
@@ -312,11 +355,12 @@ public class BuildHelperTest {
                 "end";
     }
 
-    private boolean cachedFileSystemDoesNotChange( ) throws URISyntaxException {
-        final Builder builder = cache.assertBuilder( projectService.resolveProject( path( ) ) );
-        final KieFileSystem fileSystem = builder.getKieFileSystem( );
-        final String fileContent = new String( fileSystem.read( "src/main/resources/rule2.drl" ), Charsets.UTF_8 );
+    private boolean cachedFileSystemDoesNotChange() throws URISyntaxException {
+        final Builder builder = cache.assertBuilder(projectService.resolveProject(path()));
+        final KieFileSystem fileSystem = builder.getKieFileSystem();
+        final String fileContent = new String(fileSystem.read("src/main/resources/rule2.drl"),
+                                              Charsets.UTF_8);
 
-        return fileContent.contains( "Bean" );
+        return fileContent.contains("Bean");
     }
 }

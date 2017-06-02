@@ -99,7 +99,6 @@ public class LibraryPlaces {
         add(PROJECT_DETAIL_SCREEN);
         add(ORGANIZATIONAL_UNITS_SCREEN);
         add(PROJECT_SETTINGS);
-        add(MESSAGES);
         add(PreferencesRootScreen.IDENTIFIER);
     }});
 
@@ -583,6 +582,7 @@ public class LibraryPlaces {
             }
 
             if (goToProject) {
+                closeLibraryPlaces();
                 hideDocks();
                 lastViewedProject = projectInfo.getProject();
                 if (fireProjectContextChangeEvent) {
