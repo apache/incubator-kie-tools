@@ -65,7 +65,7 @@ import com.google.gwt.json.client.JSONString;
  * @param <T>
  */
 
-public abstract class Shape <T extends Shape<T>> extends Node<T>implements IPrimitive<T>
+public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrimitive<T>
 {
     private ShapeType                 m_type;
 
@@ -104,7 +104,7 @@ public abstract class Shape <T extends Shape<T>> extends Node<T>implements IPrim
                         public void onImageElementLoad(final ImageElement elem)
                         {
                             attr.setFillGradient(new PatternGradient(elem, patg.getRepeat()));
-                            
+
                             batch();
                         }
 
@@ -398,16 +398,14 @@ public abstract class Shape <T extends Shape<T>> extends Node<T>implements IPrim
                         if (wide > 0)
                         {
                             final double high = bbox.getHeight();
-                            final double offset = getSelectionBoundsOffset();
 
                             if (high > 0)
                             {
                                 context.setFillColor(color);
 
-                                context.fillRect(bbox.getX() - offset,
-                                                 bbox.getY() - offset,
-                                                 wide + offset,
-                                                 high + offset);
+                                final double offset = getSelectionBoundsOffset();
+
+                                context.fillRect(bbox.getX() - offset, bbox.getY() - offset, wide + offset, high + offset);
                             }
                         }
                     }
@@ -557,8 +555,8 @@ public abstract class Shape <T extends Shape<T>> extends Node<T>implements IPrim
         {
             return false;
         }
-
-        double strokeOffset = 0;
+        double offset = 0;
+        
         if (context.isSelection())
         {
             color = getColorKey();
@@ -569,7 +567,7 @@ public abstract class Shape <T extends Shape<T>> extends Node<T>implements IPrim
             }
             context.save();
 
-            strokeOffset = getSelectionStrokeOffset();
+            offset = getSelectionStrokeOffset();
         }
         else
         {
@@ -579,7 +577,7 @@ public abstract class Shape <T extends Shape<T>> extends Node<T>implements IPrim
         }
         context.setStrokeColor(color);
 
-        context.setStrokeWidth(width + strokeOffset);
+        context.setStrokeWidth(width + offset);
 
         if (false == attr.hasExtraStrokeAttributes())
         {
@@ -1102,7 +1100,8 @@ public abstract class Shape <T extends Shape<T>> extends Node<T>implements IPrim
      * Gets the number of pixels that are used to increase
      * stroke size on the selection layer.
      */
-    public final double getSelectionStrokeOffset() {
+    public final double getSelectionStrokeOffset()
+    {
         return getAttributes().getSelectionStrokeOffset();
     }
 
@@ -1761,7 +1760,7 @@ public abstract class Shape <T extends Shape<T>> extends Node<T>implements IPrim
         return LienzoCore.STANDARD_TRANSFORMING_ATTRIBUTES;
     }
 
-    protected static abstract class ShapeFactory <S extends Shape<S>> extends NodeFactory<S>
+    protected static abstract class ShapeFactory<S extends Shape<S>>extends NodeFactory<S>
     {
         protected ShapeFactory(final ShapeType type)
         {

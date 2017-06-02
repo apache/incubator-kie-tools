@@ -84,6 +84,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2D.Point2DJSO;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.NodeType;
@@ -106,7 +107,7 @@ import com.google.gwt.json.client.JSONValue;
  * 
  * @param <T>
  */
-public abstract class Node <T extends Node<T>> implements IDrawable<T>
+public abstract class Node<T extends Node<T>> implements IDrawable<T>
 {
     private static final HashSet<Type<?>> ALL_EVENTS = new HashSet<Type<?>>();
 
@@ -165,7 +166,7 @@ public abstract class Node <T extends Node<T>> implements IDrawable<T>
     }
 
     /**
-     * Constructor used by deserialization code.
+     * Constructor used by de-serialization code.
      * 
      * @param type
      * @param node
@@ -390,7 +391,7 @@ public abstract class Node <T extends Node<T>> implements IDrawable<T>
     }
 
     /**
-     * Returns the Scena that this Node is on.
+     * Returns the Scene that this Node is on.
      * 
      * @return Scene
      */
@@ -522,12 +523,35 @@ public abstract class Node <T extends Node<T>> implements IDrawable<T>
         return p;
     }
 
+    @Override
+    public Point2D getComputedLocation()
+    {
+        final Point2D locn = new Point2D();
+
+        addParentsLocations(locn.getJSO());
+
+        return locn;
+    }
+
+    protected void addParentsLocations(final Point2DJSO locn)
+    {
+        final Node<?> node = getParent();
+
+        if (null != node)
+        {
+            node.addParentsLocations(locn);
+        }
+        locn.offset(m_attr.getX(), m_attr.getY());
+    }
+
     /**
      * Returns the absolute transform by concatenating the transforms
      * of all its ancestors from the Viewport down to this node's parent.
      * 
      * @return {@link Transform}
      */
+
+    @Override
     public Transform getAbsoluteTransform()
     {
         final Transform xfrm = new Transform();
@@ -656,17 +680,6 @@ public abstract class Node <T extends Node<T>> implements IDrawable<T>
             return new BoundingPoints(bbox);
         }
         return null;
-    }
-
-    public Transform getNodeTransform()
-    {
-        final Transform xfrm = getPossibleNodeTransform();
-
-        if (null != xfrm)
-        {
-            return xfrm;
-        }
-        return new Transform();
     }
 
     @Override
@@ -1051,7 +1064,7 @@ public abstract class Node <T extends Node<T>> implements IDrawable<T>
         return m_opts.hashCode();
     }
 
-    public static abstract class NodeFactory <N extends IJSONSerializable<N>> extends AbstractFactory<N>
+    public static abstract class NodeFactory<N extends IJSONSerializable<N>>extends AbstractFactory<N>
     {
         protected NodeFactory(final NodeType type)
         {

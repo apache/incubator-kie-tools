@@ -25,7 +25,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
-public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMultiPointShape<T> & IOffsetMultiPointShape<T>> extends AbstractMultiPointShape<T>implements IOffsetMultiPointShape<T>
+public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMultiPointShape<T> & IOffsetMultiPointShape<T>> extends AbstractMultiPointShape<T> implements IOffsetMultiPointShape<T>
 {
     protected AbstractOffsetMultiPointShape(final ShapeType type)
     {
@@ -70,7 +70,7 @@ public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMult
 
         return refresh();
     }
-    
+
     protected List<Attribute> getBoundingBoxAttributesComposed(final Attribute... compose)
     {
         return getBoundingBoxAttributesComposed(asAttributes(compose));
@@ -81,7 +81,7 @@ public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMult
         return asAttributes(attributes, Attribute.HEAD_OFFSET, Attribute.TAIL_OFFSET);
     }
 
-    protected static abstract class AbstractOffsetMultiPointShapeFactory<T extends AbstractOffsetMultiPointShape<T>> extends ShapeFactory<T>
+    protected static abstract class AbstractOffsetMultiPointShapeFactory<T extends AbstractOffsetMultiPointShape<T>>extends ShapeFactory<T>
     {
         protected AbstractOffsetMultiPointShapeFactory(final ShapeType type)
         {

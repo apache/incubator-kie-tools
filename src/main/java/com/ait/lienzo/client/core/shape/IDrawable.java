@@ -52,6 +52,7 @@ import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.tooling.nativetools.client.NObjectOnWire;
@@ -108,8 +109,12 @@ public interface IDrawable<T extends IDrawable<T>> extends NObjectOnWire, IJSONS
     public BoundingBox getBoundingBox();
 
     public BoundingPoints getBoundingPoints();
+    
+    public Point2D getComputedLocation();
 
     public Point2D getAbsoluteLocation();
+    
+    public Transform getAbsoluteTransform();
 
     public HandlerRegistration addAttributesChangedHandler(Attribute attribute, AttributesChangedHandler handler);
 
