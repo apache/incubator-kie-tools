@@ -66,7 +66,8 @@
             <b:FormLabel for="txtColumnHeader" addStyleNames="col-lg-4" text="{i18n.ColumnHeaderDescription}" showRequiredIndicator="true"/>
             <gwt:FlowPanel addStyleNames="col-lg-7">
               <b:TextBox ui:field="txtColumnHeader" enabled="false"/>
-              <b:HelpBlock ui:field="txtColumnHeaderHelp" text="{i18n.DecisionTableWizardIncompleteConditions}" visible="false"/>
+              <b:HelpBlock ui:field="txtColumnHeaderIncompleteConditionsHelp" text="{i18n.DecisionTableWizardIncompleteConditions}" visible="false"/>
+              <b:HelpBlock ui:field="txtColumnHeaderNameAlreadyInUseHelp" text="{i18n.DecisionTableWizardNameAlreadyInUse}" visible="false"/>
             </gwt:FlowPanel>
           </b:FormGroup>
 

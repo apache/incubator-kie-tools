@@ -95,7 +95,7 @@ public class ConditionCell extends AbstractCell<ConditionCol52> implements Requi
 
     private void appendHeader( final StringBuilder sb,
                                final ConditionCol52 condition ) {
-        if ( validator.isConditionHeaderValid( condition ) ) {
+        if ( validator.isConditionHeaderNotBlank(condition ) ) {
             sb.append( "[" );
             sb.append( condition.getHeader() );
             sb.append( "] " );

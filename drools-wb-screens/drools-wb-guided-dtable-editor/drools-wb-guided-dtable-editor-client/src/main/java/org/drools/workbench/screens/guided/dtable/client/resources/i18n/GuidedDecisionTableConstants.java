@@ -331,6 +331,8 @@ public interface GuidedDecisionTableConstants
 
     String DecisionTableWizardIncompleteConditions();
 
+    String DecisionTableWizardNameAlreadyInUse();
+
     String DecisionTableWizardPredicate();
 
     String DecisionTableWizardPredicateExpression();

@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
@@ -44,20 +45,20 @@ public class Validator {
     private Map<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> patternToActionInsertFactFieldsMap;
 
     public Validator() {
-        this( new ArrayList<CompositeColumn<? extends BaseColumn>>() );
+        this(new ArrayList<CompositeColumn<? extends BaseColumn>>());
     }
 
-    public Validator( List<CompositeColumn<? extends BaseColumn>> patterns ) {
+    public Validator(List<CompositeColumn<? extends BaseColumn>> patterns) {
         this.patternsConditions = patterns;
         this.patternsActions = new ArrayList<Pattern52>();
     }
 
-    public void addActionPattern( Pattern52 pattern ) {
-        this.patternsActions.add( pattern );
+    public void addActionPattern(Pattern52 pattern) {
+        this.patternsActions.add(pattern);
     }
 
-    public void removeActionPattern( Pattern52 pattern ) {
-        this.patternsActions.remove( pattern );
+    public void removeActionPattern(Pattern52 pattern) {
+        this.patternsActions.remove(pattern);
     }
 
     public boolean arePatternBindingsUnique() {
@@ -66,37 +67,37 @@ public class Validator {
 
         //Store Patterns by their binding
         Map<String, List<Pattern52>> bindings = new HashMap<String, List<Pattern52>>();
-        for ( CompositeColumn<? extends BaseColumn> cc : patternsConditions ) {
-            if ( cc instanceof Pattern52 ) {
+        for (CompositeColumn<? extends BaseColumn> cc : patternsConditions) {
+            if (cc instanceof Pattern52) {
                 Pattern52 p = (Pattern52) cc;
                 String binding = p.getBoundName();
-                if ( binding != null && !binding.equals( "" ) ) {
-                    List<Pattern52> ps = bindings.get( binding );
-                    if ( ps == null ) {
+                if (binding != null && !binding.equals("")) {
+                    List<Pattern52> ps = bindings.get(binding);
+                    if (ps == null) {
                         ps = new ArrayList<Pattern52>();
-                        bindings.put( binding,
-                                      ps );
+                        bindings.put(binding,
+                                     ps);
                     }
-                    ps.add( p );
+                    ps.add(p);
                 }
             }
         }
-        for ( Pattern52 p : patternsActions ) {
+        for (Pattern52 p : patternsActions) {
             String binding = p.getBoundName();
-            if ( binding != null && !binding.equals( "" ) ) {
-                List<Pattern52> ps = bindings.get( binding );
-                if ( ps == null ) {
+            if (binding != null && !binding.equals("")) {
+                List<Pattern52> ps = bindings.get(binding);
+                if (ps == null) {
                     ps = new ArrayList<Pattern52>();
-                    bindings.put( binding,
-                                  ps );
+                    bindings.put(binding,
+                                 ps);
                 }
-                ps.add( p );
+                ps.add(p);
             }
         }
 
         //Check if any bindings have multiple Patterns
-        for ( List<Pattern52> pws : bindings.values() ) {
-            if ( pws.size() > 1 ) {
+        for (List<Pattern52> pws : bindings.values()) {
+            if (pws.size() > 1) {
                 hasUniqueBindings = false;
                 break;
             }
@@ -104,24 +105,24 @@ public class Validator {
         return hasUniqueBindings;
     }
 
-    public boolean isPatternBindingUnique( Pattern52 pattern ) {
+    public boolean isPatternBindingUnique(Pattern52 pattern) {
         String binding = pattern.getBoundName();
-        if ( binding == null || binding.equals( "" ) ) {
+        if (binding == null || binding.equals("")) {
             return true;
         }
-        for ( CompositeColumn<? extends BaseColumn> cc : patternsConditions ) {
-            if ( cc instanceof Pattern52 ) {
+        for (CompositeColumn<? extends BaseColumn> cc : patternsConditions) {
+            if (cc instanceof Pattern52) {
                 Pattern52 p = (Pattern52) cc;
-                if ( p != pattern ) {
-                    if ( p.getBoundName() != null && p.getBoundName().equals( binding ) ) {
+                if (p != pattern) {
+                    if (p.getBoundName() != null && p.getBoundName().equals(binding)) {
                         return false;
                     }
                 }
             }
         }
-        for ( Pattern52 p : patternsActions ) {
-            if ( p != pattern ) {
-                if ( p.getBoundName() != null && p.getBoundName().equals( binding ) ) {
+        for (Pattern52 p : patternsActions) {
+            if (p != pattern) {
+                if (p.getBoundName() != null && p.getBoundName().equals(binding)) {
                     return false;
                 }
             }
@@ -129,138 +130,150 @@ public class Validator {
         return true;
     }
 
-    public boolean isPatternValid( Pattern52 p ) {
-        return !( p.getBoundName() == null || p.getBoundName().equals( "" ) );
+    public boolean isPatternValid(Pattern52 p) {
+        return !(p.getBoundName() == null || p.getBoundName().equals(""));
     }
 
-    public boolean isConditionValid( ConditionCol52 c ) {
-        return isConditionHeaderValid( c )
-                && isConditionOperatorValid( c )
-                && isConditionLimitedEntryValueValid( c );
+    public boolean isConditionValid(ConditionCol52 c) {
+        return isConditionHeaderNotBlank(c)
+                && isConditionHeaderUnique(c)
+                && isConditionOperatorValid(c)
+                && isConditionLimitedEntryValueValid(c);
     }
 
-    public boolean isConditionHeaderValid( ConditionCol52 c ) {
-        return !( c.getHeader() == null || c.getHeader().equals( "" ) );
+    public boolean isConditionHeaderNotBlank(final ConditionCol52 c) {
+        return !(c.getHeader() == null || c.getHeader().equals(""));
     }
 
-    public boolean isConditionOperatorValid( ConditionCol52 c ) {
-        if ( c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
+    public boolean isConditionHeaderUnique(final ConditionCol52 conditionCol52) {
+        final String header = Optional.ofNullable(conditionCol52.getHeader()).orElse("");
+
+        final long occurrences = patternsConditions
+                .stream()
+                .flatMap(compositeColumn -> compositeColumn.getChildColumns().stream())
+                .filter(b -> header.equals(b.getHeader()))
+                .count();
+
+        return occurrences == 1;
+    }
+
+    public boolean isConditionOperatorValid(ConditionCol52 c) {
+        if (c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE) {
             return true;
         }
-        return !( c.getOperator() == null || c.getOperator().equals( "" ) );
+        return !(c.getOperator() == null || c.getOperator().equals(""));
     }
 
-    public boolean isActionValid( ActionCol52 c ) {
-        return isActionHeaderValid( c );
+    public boolean isActionValid(ActionCol52 c) {
+        return isActionHeaderValid(c);
     }
 
-    public boolean isActionHeaderValid( ActionCol52 a ) {
-        return !( a.getHeader() == null || a.getHeader().equals( "" ) );
+    public boolean isActionHeaderValid(ActionCol52 a) {
+        return !(a.getHeader() == null || a.getHeader().equals(""));
     }
 
-    public void setPatternToActionSetFieldsMap( Map<Pattern52, List<ActionSetFieldCol52>> patternToActionSetFieldsMap ) {
+    public void setPatternToActionSetFieldsMap(Map<Pattern52, List<ActionSetFieldCol52>> patternToActionSetFieldsMap) {
         this.patternToActionSetFieldsMap = patternToActionSetFieldsMap;
     }
 
-    public boolean arePatternActionSetFieldsValid( Pattern52 p ) {
-        if ( patternToActionSetFieldsMap == null ) {
+    public boolean arePatternActionSetFieldsValid(Pattern52 p) {
+        if (patternToActionSetFieldsMap == null) {
             return true;
         }
-        List<ActionSetFieldCol52> actions = patternToActionSetFieldsMap.get( p );
-        if ( actions == null ) {
+        List<ActionSetFieldCol52> actions = patternToActionSetFieldsMap.get(p);
+        if (actions == null) {
             return true;
         }
-        for ( ActionSetFieldCol52 a : actions ) {
-            if ( !isActionValid( a ) ) {
+        for (ActionSetFieldCol52 a : actions) {
+            if (!isActionValid(a)) {
                 return false;
             }
         }
         return true;
     }
 
-    public void setPatternToActionInsertFactFieldsMap( Map<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> patternToActionInsertFactFieldsMap ) {
+    public void setPatternToActionInsertFactFieldsMap(Map<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> patternToActionInsertFactFieldsMap) {
         this.patternToActionInsertFactFieldsMap = patternToActionInsertFactFieldsMap;
     }
 
-    public boolean arePatternActionInsertFactFieldsValid( Pattern52 p ) {
-        if ( patternToActionInsertFactFieldsMap == null ) {
+    public boolean arePatternActionInsertFactFieldsValid(Pattern52 p) {
+        if (patternToActionInsertFactFieldsMap == null) {
             return true;
         }
-        List<ActionInsertFactCol52> actions = patternToActionInsertFactFieldsMap.get( p );
-        if ( actions == null ) {
+        List<ActionInsertFactCol52> actions = patternToActionInsertFactFieldsMap.get(p);
+        if (actions == null) {
             return true;
         }
-        for ( ActionInsertFactCol52 a : actions ) {
-            if ( !isActionValid( a ) ) {
+        for (ActionInsertFactCol52 a : actions) {
+            if (!isActionValid(a)) {
                 return false;
             }
         }
         return true;
     }
 
-    public boolean doesOperatorNeedValue( ConditionCol52 c ) {
+    public boolean doesOperatorNeedValue(ConditionCol52 c) {
         String operator = c.getOperator();
-        if ( operator == null || operator.equals( "" ) ) {
+        if (operator == null || operator.equals("")) {
             return false;
         }
-        return !( operator.equals( "== null" ) || operator.equals( "!= null" ) );
+        return !(operator.equals("== null") || operator.equals("!= null"));
     }
 
-    public boolean doesOperatorAcceptValueList( ConditionCol52 c ) {
+    public boolean doesOperatorAcceptValueList(ConditionCol52 c) {
         String operator = c.getOperator();
-        if ( operator == null || operator.equals( "" ) ) {
+        if (operator == null || operator.equals("")) {
             return false;
         }
-        return !( operator.equals( "== null" ) || operator.equals( "!= null" ) );
+        return !(operator.equals("== null") || operator.equals("!= null"));
     }
 
-    public boolean doesOperatorAcceptCommaSeparatedValues( ConditionCol52 c ) {
-        final List<String> ops = Arrays.asList( OperatorsOracle.EXPLICIT_LIST_OPERATORS );
-        return ops.contains( c.getOperator() );
+    public boolean doesOperatorAcceptCommaSeparatedValues(ConditionCol52 c) {
+        final List<String> ops = Arrays.asList(OperatorsOracle.EXPLICIT_LIST_OPERATORS);
+        return ops.contains(c.getOperator());
     }
 
-    public boolean isConditionLimitedEntryValueValid( ConditionCol52 c ) {
-        if ( !( c instanceof LimitedEntryConditionCol52 ) ) {
+    public boolean isConditionLimitedEntryValueValid(ConditionCol52 c) {
+        if (!(c instanceof LimitedEntryConditionCol52)) {
             return true;
         }
         LimitedEntryConditionCol52 lec = (LimitedEntryConditionCol52) c;
-        boolean doesOperatorNeedValue = doesOperatorNeedValue( lec );
-        boolean hasValue = hasValue( lec );
-        return ( doesOperatorNeedValue && hasValue ) || ( !doesOperatorNeedValue && !hasValue );
+        boolean doesOperatorNeedValue = doesOperatorNeedValue(lec);
+        boolean hasValue = hasValue(lec);
+        return (doesOperatorNeedValue && hasValue) || (!doesOperatorNeedValue && !hasValue);
     }
 
-    public boolean canPatternBeRemoved( final Pattern52 pattern ) {
-        List<ActionSetFieldCol52> actionSetFields = patternToActionSetFieldsMap.get( pattern );
-        return ( actionSetFields == null || actionSetFields.isEmpty() );
+    public boolean canPatternBeRemoved(final Pattern52 pattern) {
+        List<ActionSetFieldCol52> actionSetFields = patternToActionSetFieldsMap.get(pattern);
+        return (actionSetFields == null || actionSetFields.isEmpty());
     }
 
-    public boolean isTypeUsed( final String fqcn ) {
+    public boolean isTypeUsed(final String fqcn) {
         String simpleType = fqcn;
-        int dotIndex = simpleType.lastIndexOf( "." );
-        if ( dotIndex > 0 ) {
-            simpleType = simpleType.substring( dotIndex + 1 );
+        int dotIndex = simpleType.lastIndexOf(".");
+        if (dotIndex > 0) {
+            simpleType = simpleType.substring(dotIndex + 1);
         }
-        for ( CompositeColumn<? extends BaseColumn> cc : patternsConditions ) {
-            if ( cc instanceof Pattern52 ) {
+        for (CompositeColumn<? extends BaseColumn> cc : patternsConditions) {
+            if (cc instanceof Pattern52) {
                 Pattern52 p = (Pattern52) cc;
-                if ( p.getFactType().equals( simpleType ) ) {
+                if (p.getFactType().equals(simpleType)) {
                     return true;
                 }
             }
         }
-        for ( Pattern52 p : patternsActions ) {
-            if ( p.getFactType().equals( simpleType ) ) {
+        for (Pattern52 p : patternsActions) {
+            if (p.getFactType().equals(simpleType)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean hasValue( LimitedEntryConditionCol52 lec ) {
-        if ( lec.getValue() == null ) {
+    private boolean hasValue(LimitedEntryConditionCol52 lec) {
+        if (lec.getValue() == null) {
             return false;
         }
         return lec.getValue().hasValue();
     }
-
 }
