@@ -9,7 +9,6 @@ import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.WiresUtils;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectionControl;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -58,7 +57,7 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
     {
         final Node<?> node = (Node<?>) context.getNode();
         m_head = node == m_connector.getHeadConnection().getControl();
-        Point2D points = WiresUtils.getLocation(node);
+        Point2D points = node.getComputedLocation();
         m_startX = points.getX();
         m_startY = points.getY();
 
@@ -181,7 +180,7 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
                 if (control != null)
                 {
                     // If there is a control, snap to it
-                    Point2D absControl = WiresUtils.getLocation(control);
+                    Point2D absControl = control.getComputedLocation();
                     double targetX = absControl.getX();
                     double targetY = absControl.getY();
 

@@ -451,7 +451,7 @@ public class WiresShapeControlHandleList implements IControlHandleList
 
     private static double[] getAbsolute(final Group group)
     {
-        final Point2D p = WiresUtils.getLocation(group);
+        final Point2D p = group.getComputedLocation();
         return new double[] { p.getX(), p.getY() };
     }
 

@@ -19,7 +19,6 @@ package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.WiresUtils;
 import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingAndContainmentControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
@@ -70,7 +69,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
     public void dragStart(final DragContext context)
     {
 
-        final Point2D absShapeLoc = WiresUtils.getLocation(m_shape.getPath());
+        final Point2D absShapeLoc = m_shape.getPath().getComputedLocation();
         m_shapeStartX = absShapeLoc.getX();
         m_shapeStartY = absShapeLoc.getY();
 
