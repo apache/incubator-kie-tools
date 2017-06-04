@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.table.pages;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
@@ -43,7 +44,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.drools.workbench.screens.guided.dtable.client.wizard.table.pages.cells.DefaultPatternCell;
-import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
 import org.gwtbootstrap3.client.ui.Button;
@@ -53,6 +53,7 @@ import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.resources.WizardCellListResources;
 
@@ -60,21 +61,9 @@ import org.uberfire.ext.widgets.core.client.resources.WizardCellListResources;
  * An implementation of the Fact Patterns page
  */
 @Dependent
-public class FactPatternsPageViewImpl extends Composite
-        implements
-        FactPatternsPageView {
+public class FactPatternsPageViewImpl extends Composite implements FactPatternsPageView {
 
-    private Presenter presenter;
-
-    private Validator validator;
-
-    private Set<String> availableTypesSelections;
-    private MinimumWidthCellList<String> availableTypesWidget;
-
-    private List<Pattern52> chosenPatterns;
-    private Pattern52 chosenPatternSelection;
-    private Set<Pattern52> chosenPatternSelections;
-    private MinimumWidthCellList<Pattern52> chosenPatternWidget;
+    private static FactPatternsPageWidgetBinder uiBinder = GWT.create(FactPatternsPageWidgetBinder.class);
 
     @UiField
     ScrollPanel availableTypesContainer;
@@ -111,35 +100,43 @@ public class FactPatternsPageViewImpl extends Composite
 
     @UiField(provided = true)
     Button btnMoveUp = new Button() {{
-        setIcon( IconType.ANGLE_UP );
+        setIcon(IconType.ANGLE_UP);
     }};
 
     @UiField(provided = true)
     Button btnMoveDown = new Button() {{
-        setIcon( IconType.ANGLE_DOWN );
+        setIcon(IconType.ANGLE_DOWN);
     }};
+
+    private Presenter presenter;
+
+    private Validator validator;
+
+    private Set<String> availableTypesSelections;
+
+    private MinimumWidthCellList<String> availableTypesWidget;
+
+    private List<Pattern52> chosenPatterns;
+
+    private Pattern52 chosenPatternSelection;
+
+    private Set<Pattern52> chosenPatternSelections;
+
+    private MinimumWidthCellList<Pattern52> chosenPatternWidget;
 
     @Inject
     private DefaultPatternCell patternCell;
 
-    interface FactPatternsPageWidgetBinder
-            extends
-            UiBinder<Widget, FactPatternsPageViewImpl> {
-
-    }
-
-    private static FactPatternsPageWidgetBinder uiBinder = GWT.create( FactPatternsPageWidgetBinder.class );
-
     public FactPatternsPageViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @PostConstruct
     public void setup() {
-        this.availableTypesWidget = new MinimumWidthCellList<String>( new TextCell(),
-                                                                      WizardCellListResources.INSTANCE );
-        this.chosenPatternWidget = new MinimumWidthCellList<Pattern52>( patternCell,
-                                                                        WizardCellListResources.INSTANCE );
+        this.availableTypesWidget = new MinimumWidthCellList<String>(new TextCell(),
+                                                                     WizardCellListResources.INSTANCE);
+        this.chosenPatternWidget = new MinimumWidthCellList<Pattern52>(patternCell,
+                                                                       WizardCellListResources.INSTANCE);
         initialiseAvailableTypes();
         initialiseChosenPatterns();
         initialiseBinding();
@@ -149,275 +146,272 @@ public class FactPatternsPageViewImpl extends Composite
     }
 
     @Override
-    public void setValidator( final Validator validator ) {
+    public void setValidator(final Validator validator) {
         this.validator = validator;
-        this.patternCell.setValidator( validator );
+        this.patternCell.setValidator(validator);
     }
 
     private void initialiseAvailableTypes() {
-        availableTypesContainer.add( availableTypesWidget );
-        availableTypesWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        availableTypesWidget.setMinimumWidth( 270 );
+        availableTypesContainer.add(availableTypesWidget);
+        availableTypesWidget.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+        availableTypesWidget.setMinimumWidth(270);
 
-        final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoAvailablePatterns() );
-        lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
-        availableTypesWidget.setEmptyListWidget( lstEmpty );
+        final Label lstEmpty = new Label(GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoAvailablePatterns());
+        lstEmpty.setStyleName(WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem());
+        availableTypesWidget.setEmptyListWidget(lstEmpty);
 
         final MultiSelectionModel<String> selectionModel = new MultiSelectionModel<String>();
-        availableTypesWidget.setSelectionModel( selectionModel );
+        availableTypesWidget.setSelectionModel(selectionModel);
 
-        selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
+        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 
             @Override
-            public void onSelectionChange( final SelectionChangeEvent event ) {
+            public void onSelectionChange(final SelectionChangeEvent event) {
                 availableTypesSelections = selectionModel.getSelectedSet();
-                btnAdd.setEnabled( availableTypesSelections.size() > 0 );
+                btnAdd.setEnabled(availableTypesSelections.size() > 0);
             }
-
-        } );
+        });
     }
 
     private void initialiseChosenPatterns() {
-        chosenPatternsContainer.add( chosenPatternWidget );
-        chosenPatternWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        chosenPatternWidget.setMinimumWidth( 270 );
+        chosenPatternsContainer.add(chosenPatternWidget);
+        chosenPatternWidget.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+        chosenPatternWidget.setMinimumWidth(270);
 
-        final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoChosenPatterns() );
-        lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
-        chosenPatternWidget.setEmptyListWidget( lstEmpty );
+        final Label lstEmpty = new Label(GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoChosenPatterns());
+        lstEmpty.setStyleName(WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem());
+        chosenPatternWidget.setEmptyListWidget(lstEmpty);
 
         final MultiSelectionModel<Pattern52> selectionModel = new MultiSelectionModel<Pattern52>(System::identityHashCode);
-        chosenPatternWidget.setSelectionModel( selectionModel );
+        chosenPatternWidget.setSelectionModel(selectionModel);
 
-        selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
+        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 
             @Override
-            public void onSelectionChange( final SelectionChangeEvent event ) {
+            public void onSelectionChange(final SelectionChangeEvent event) {
                 chosenPatternSelections = selectionModel.getSelectedSet();
-                chosenTypesSelected( chosenPatternSelections );
+                chosenTypesSelected(chosenPatternSelections);
             }
 
-            private void chosenTypesSelected( final Set<Pattern52> ps ) {
-                btnRemove.setEnabled( true );
-                if ( ps.size() == 1 ) {
+            private void chosenTypesSelected(final Set<Pattern52> ps) {
+                btnRemove.setEnabled(true);
+                if (ps.size() == 1) {
                     chosenPatternSelection = ps.iterator().next();
-                    patternDefinition.setVisible( true );
+                    patternDefinition.setVisible(true);
                     validateBinding();
-                    txtBinding.setEnabled( true );
-                    txtBinding.setText( chosenPatternSelection.getBoundName() );
+                    txtBinding.setEnabled(true);
+                    txtBinding.setText(chosenPatternSelection.getBoundName());
 
-                    txtEntryPoint.setEnabled( true );
-                    txtEntryPoint.setText( chosenPatternSelection.getEntryPointName() );
+                    txtEntryPoint.setEnabled(true);
+                    txtEntryPoint.setText(chosenPatternSelection.getEntryPointName());
                     enableMoveUpButton();
                     enableMoveDownButton();
 
-                    presenter.isPatternEvent( chosenPatternSelection,
-                                              new Callback<Boolean>() {
-                                                  @Override
-                                                  public void callback( final Boolean result ) {
-                                                      if ( Boolean.TRUE.equals( result ) ) {
-                                                          ddCEPWindow.setCEPWindow( chosenPatternSelection );
-                                                          cepWindowContainer.setVisible( true );
-                                                      } else {
-                                                          cepWindowContainer.setVisible( false );
-                                                      }
-                                                  }
-                                              } );
-
+                    presenter.isPatternEvent(chosenPatternSelection,
+                                             new Callback<Boolean>() {
+                                                 @Override
+                                                 public void callback(final Boolean result) {
+                                                     if (Boolean.TRUE.equals(result)) {
+                                                         ddCEPWindow.setCEPWindow(chosenPatternSelection);
+                                                         cepWindowContainer.setVisible(true);
+                                                     } else {
+                                                         cepWindowContainer.setVisible(false);
+                                                     }
+                                                 }
+                                             });
                 } else {
                     chosenPatternSelection = null;
-                    patternDefinition.setVisible( false );
-                    txtBinding.setEnabled( false );
-                    txtBinding.setText( "" );
-                    txtEntryPoint.setEnabled( false );
-                    txtEntryPoint.setText( "" );
-                    btnMoveUp.setEnabled( false );
-                    btnMoveDown.setEnabled( false );
-                    cepWindowContainer.setVisible( false );
+                    patternDefinition.setVisible(false);
+                    txtBinding.setEnabled(false);
+                    txtBinding.setText("");
+                    txtEntryPoint.setEnabled(false);
+                    txtEntryPoint.setText("");
+                    btnMoveUp.setEnabled(false);
+                    btnMoveDown.setEnabled(false);
+                    cepWindowContainer.setVisible(false);
                 }
             }
-
-        } );
+        });
     }
 
     private void validateBinding() {
-        if ( validator.isPatternBindingUnique( chosenPatternSelection ) ) {
-            txtBindingHelp.setVisible( false );
-            bindingContainer.removeStyleName( ValidationState.ERROR.getCssName() );
+        if (validator.isPatternBindingUnique(chosenPatternSelection)) {
+            txtBindingHelp.setVisible(false);
+            bindingContainer.removeStyleName(ValidationState.ERROR.getCssName());
         } else {
-            txtBindingHelp.setVisible( true );
-            bindingContainer.addStyleName( ValidationState.ERROR.getCssName() );
+            txtBindingHelp.setVisible(true);
+            bindingContainer.addStyleName(ValidationState.ERROR.getCssName());
         }
     }
 
     private void enableMoveUpButton() {
-        if ( chosenPatterns == null || chosenPatternSelection == null ) {
-            btnMoveUp.setEnabled( false );
+        if (chosenPatterns == null || chosenPatternSelection == null) {
+            btnMoveUp.setEnabled(false);
             return;
         }
-        int index = chosenPatterns.indexOf( chosenPatternSelection );
-        btnMoveUp.setEnabled( index > 0 );
+        int index = chosenPatterns.indexOf(chosenPatternSelection);
+        btnMoveUp.setEnabled(index > 0);
     }
 
     private void enableMoveDownButton() {
-        if ( chosenPatterns == null || chosenPatternSelection == null ) {
-            btnMoveDown.setEnabled( false );
+        if (chosenPatterns == null || chosenPatternSelection == null) {
+            btnMoveDown.setEnabled(false);
             return;
         }
-        int index = chosenPatterns.indexOf( chosenPatternSelection );
-        btnMoveDown.setEnabled( index < chosenPatterns.size() - 1 );
+        int index = chosenPatterns.indexOf(chosenPatternSelection);
+        btnMoveDown.setEnabled(index < chosenPatterns.size() - 1);
     }
 
     private void initialiseBinding() {
-        txtBinding.addValueChangeHandler( new ValueChangeHandler<String>() {
+        txtBinding.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             @Override
-            public void onValueChange( final ValueChangeEvent<String> event ) {
+            public void onValueChange(final ValueChangeEvent<String> event) {
                 String binding = txtBinding.getText();
-                chosenPatternSelection.setBoundName( binding );
+                chosenPatternSelection.setBoundName(binding);
                 presenter.stateChanged();
                 validateBinding();
             }
-
-        } );
+        });
     }
 
     private void initialiseEntryPoint() {
-        txtEntryPoint.addValueChangeHandler( new ValueChangeHandler<String>() {
+        txtEntryPoint.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             @Override
-            public void onValueChange( final ValueChangeEvent<String> event ) {
-                if ( chosenPatternSelection == null ) {
+            public void onValueChange(final ValueChangeEvent<String> event) {
+                if (chosenPatternSelection == null) {
                     return;
                 }
-                chosenPatternSelection.setEntryPointName( event.getValue() );
+                chosenPatternSelection.setEntryPointName(event.getValue());
             }
-
-        } );
+        });
     }
 
     private void initialiseCEPWindow() {
-        ddCEPWindow.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
+        ddCEPWindow.addValueChangeHandler(new ValueChangeHandler<OperatorSelection>() {
 
             @Override
-            public void onValueChange( final ValueChangeEvent<OperatorSelection> event ) {
-                if ( chosenPatternSelection == null ) {
+            public void onValueChange(final ValueChangeEvent<OperatorSelection> event) {
+                if (chosenPatternSelection == null) {
                     return;
                 }
                 OperatorSelection selection = event.getValue();
                 String selected = selection.getValue();
-                chosenPatternSelection.getWindow().setOperator( selected );
+                chosenPatternSelection.getWindow().setOperator(selected);
             }
-
-        } );
+        });
     }
 
     private void initialiseShufflers() {
-        btnMoveUp.addClickHandler( new ClickHandler() {
+        btnMoveUp.addClickHandler(new ClickHandler() {
 
             @Override
-            public void onClick( final ClickEvent event ) {
-                int index = chosenPatterns.indexOf( chosenPatternSelection );
-                final Pattern52 p = chosenPatterns.remove( index );
-                chosenPatterns.add( index - 1,
-                                    p );
-                setChosenPatterns( chosenPatterns );
-                presenter.setConditionPatterns( chosenPatterns );
+            public void onClick(final ClickEvent event) {
+                int index = chosenPatterns.indexOf(chosenPatternSelection);
+                final Pattern52 p = chosenPatterns.remove(index);
+                chosenPatterns.add(index - 1,
+                                   p);
+                setChosenPatterns(chosenPatterns);
+                presenter.setConditionPatterns(chosenPatterns);
             }
-
-        } );
-        btnMoveDown.addClickHandler( new ClickHandler() {
+        });
+        btnMoveDown.addClickHandler(new ClickHandler() {
 
             @Override
-            public void onClick( final ClickEvent event ) {
-                int index = chosenPatterns.indexOf( chosenPatternSelection );
-                final Pattern52 p = chosenPatterns.remove( index );
-                chosenPatterns.add( index + 1,
-                                    p );
-                setChosenPatterns( chosenPatterns );
-                presenter.setConditionPatterns( chosenPatterns );
+            public void onClick(final ClickEvent event) {
+                int index = chosenPatterns.indexOf(chosenPatternSelection);
+                final Pattern52 p = chosenPatterns.remove(index);
+                chosenPatterns.add(index + 1,
+                                   p);
+                setChosenPatterns(chosenPatterns);
+                presenter.setConditionPatterns(chosenPatterns);
             }
-
-        } );
+        });
     }
 
     @Override
-    public void setAvailableFactTypes( final List<String> types ) {
-        availableTypesWidget.setRowCount( types.size(),
-                                          true );
-        availableTypesWidget.setRowData( types );
+    public void setAvailableFactTypes(final List<String> types) {
+        availableTypesWidget.setRowCount(types.size(),
+                                         true);
+        availableTypesWidget.setRowData(types);
     }
 
     @Override
-    public void setChosenPatterns( final List<Pattern52> types ) {
+    public void setChosenPatterns(final List<Pattern52> types) {
         chosenPatterns = types;
-        chosenPatternWidget.setRowCount( types.size(),
-                                         true );
-        chosenPatternWidget.setRowData( types );
+        chosenPatternWidget.setRowCount(types.size(),
+                                        true);
+        chosenPatternWidget.setRowData(types);
         enableMoveUpButton();
         enableMoveDownButton();
         presenter.stateChanged();
     }
 
     @Override
-    public void init( final FactPatternsPageView.Presenter presenter ) {
+    public void init(final FactPatternsPageView.Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setArePatternBindingsUnique( final boolean arePatternBindingsUnique ) {
+    public void setArePatternBindingsUnique(final boolean arePatternBindingsUnique) {
         chosenPatternWidget.redraw();
     }
 
     @UiHandler(value = "btnAdd")
-    public void btnAddClick( final ClickEvent event ) {
-        for ( String type : availableTypesSelections ) {
+    public void btnAddClick(final ClickEvent event) {
+        for (String type : availableTypesSelections) {
             final Pattern52 pattern = new Pattern52();
-            pattern.setFactType( type );
-            chosenPatterns.add( pattern );
+            pattern.setFactType(type);
+            chosenPatterns.add(pattern);
         }
-        setChosenPatterns( chosenPatterns );
-        presenter.setConditionPatterns( chosenPatterns );
+        setChosenPatterns(chosenPatterns);
+        presenter.setConditionPatterns(chosenPatterns);
         presenter.stateChanged();
     }
 
     @UiHandler(value = "btnRemove")
-    public void btnRemoveClick( final ClickEvent event ) {
+    public void btnRemoveClick(final ClickEvent event) {
         boolean allPatternsRemoved = true;
-        for ( Pattern52 pattern : chosenPatternSelections ) {
-            if ( !validator.canPatternBeRemoved( pattern ) ) {
+        for (final Pattern52 pattern : new ArrayList<Pattern52>(chosenPatternSelections)) {
+            if (!validator.canPatternBeRemoved(pattern)) {
                 allPatternsRemoved = false;
             } else {
-                chosenPatterns.remove( pattern );
-                chosenPatternSelections.remove( pattern );
+                chosenPatterns.remove(pattern);
+                chosenPatternSelections.remove(pattern);
 
                 //Raise an Event so ActionSetFieldPage can synchronise Patterns
-                presenter.signalRemovalOfPattern( pattern );
+                presenter.signalRemovalOfPattern(pattern);
             }
         }
-        if ( !allPatternsRemoved ) {
-            Window.alert( GuidedDecisionTableConstants.INSTANCE.UnableToDeletePatterns() );
+        if (!allPatternsRemoved) {
+            Window.alert(GuidedDecisionTableConstants.INSTANCE.UnableToDeletePatterns());
         }
 
-        setChosenPatterns( chosenPatterns );
-        presenter.setConditionPatterns( chosenPatterns );
+        setChosenPatterns(chosenPatterns);
+        presenter.setConditionPatterns(chosenPatterns);
         presenter.stateChanged();
 
-        txtBinding.setText( "" );
-        txtBinding.setEnabled( false );
-        txtEntryPoint.setText( "" );
-        txtEntryPoint.setEnabled( false );
-        btnRemove.setEnabled( isAPatternSelected() );
-        patternDefinition.setVisible( false );
+        txtBinding.setText("");
+        txtBinding.setEnabled(false);
+        txtEntryPoint.setText("");
+        txtEntryPoint.setEnabled(false);
+        btnRemove.setEnabled(isAPatternSelected());
+        patternDefinition.setVisible(false);
     }
 
     private boolean isAPatternSelected() {
-        for ( Pattern52 pattern : chosenPatterns ) {
-            if ( chosenPatternWidget.getSelectionModel().isSelected( pattern ) ) {
+        for (Pattern52 pattern : chosenPatterns) {
+            if (chosenPatternWidget.getSelectionModel().isSelected(pattern)) {
                 return true;
             }
         }
         return false;
     }
 
+    interface FactPatternsPageWidgetBinder
+            extends
+            UiBinder<Widget, FactPatternsPageViewImpl> {
+
+    }
 }
