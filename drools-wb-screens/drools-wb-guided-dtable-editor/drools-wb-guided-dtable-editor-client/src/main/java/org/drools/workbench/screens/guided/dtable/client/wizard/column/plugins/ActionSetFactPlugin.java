@@ -306,6 +306,11 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
     }
 
     @Override
+    public boolean isBindable() {
+        return false;
+    }
+
+    @Override
     public boolean doesOperatorAcceptValueList() {
         return true;
     }

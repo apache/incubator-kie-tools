@@ -54,4 +54,6 @@ public interface HasValueOptionsPage {
     void setBinding(final String binding);
 
     boolean doesOperatorNeedValue();
+
+    boolean isBindable();
 }

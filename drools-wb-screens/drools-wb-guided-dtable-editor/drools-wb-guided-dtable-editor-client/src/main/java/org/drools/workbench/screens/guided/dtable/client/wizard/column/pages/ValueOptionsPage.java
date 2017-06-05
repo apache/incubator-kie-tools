@@ -28,10 +28,10 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasValueOptionsPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.BaseDecisionTableColumnPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.DecisionTableColumnPlugin;
-import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.UberElement;
 
@@ -281,7 +281,11 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
     }
 
     boolean canSetupBinding() {
-        return isBindingEnabled() && plugin().constraintValue() == BaseSingleFieldConstraint.TYPE_LITERAL;
+        return isBindingEnabled() && isBindable();
+    }
+
+    private boolean isBindable() {
+        return plugin().isBindable();
     }
 
     private boolean canSetupValueList() {
@@ -326,7 +330,7 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         }
     }
 
-    private GuidedDecisionTable52.TableFormat tableFormat() {
+    GuidedDecisionTable52.TableFormat tableFormat() {
         return presenter.getModel().getTableFormat();
     }
 

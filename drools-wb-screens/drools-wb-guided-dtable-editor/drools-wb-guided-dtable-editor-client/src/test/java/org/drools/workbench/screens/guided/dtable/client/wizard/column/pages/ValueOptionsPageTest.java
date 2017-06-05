@@ -21,7 +21,6 @@ import java.util.HashMap;
 import com.google.gwt.junit.GWTMockUtilities;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -281,20 +280,20 @@ public class ValueOptionsPageTest {
     }
 
     @Test
-    public void testCanSetupBindingWhenBindingIsEnabledAndConstraintValueIsLiteral() throws Exception {
+    public void testCanSetupBindingWhenBindingIsEnabledAndIsNotBindable() throws Exception {
         page.enableBinding();
 
-        when(plugin.constraintValue()).thenReturn(BaseSingleFieldConstraint.TYPE_LITERAL);
+        when(plugin.isBindable()).thenReturn(false);
 
-        assertTrue(page.canSetupBinding());
+        assertFalse(page.canSetupBinding());
     }
 
     @Test
-    public void testCanSetupBindingWhenBindingIsEnabledAndConstraintValueIsNotLiteral() throws Exception {
+    public void testCanSetupBindingWhenBindingIsEnabledAndIsBindable() throws Exception {
         page.enableBinding();
 
-        when(plugin.constraintValue()).thenReturn(BaseSingleFieldConstraint.TYPE_PREDICATE);
+        when(plugin.isBindable()).thenReturn(true);
 
-        assertFalse(page.canSetupBinding());
+        assertTrue(page.canSetupBinding());
     }
 }

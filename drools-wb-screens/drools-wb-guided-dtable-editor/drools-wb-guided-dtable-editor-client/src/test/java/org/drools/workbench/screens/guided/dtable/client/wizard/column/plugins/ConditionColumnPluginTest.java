@@ -154,6 +154,19 @@ public class ConditionColumnPluginTest {
     }
 
     @Test
+    public void testPrepareValuesWhenConstraintValueIsNotLiteralAndTableFormatIsLimitedEntry() throws Exception {
+        doReturn(BaseSingleFieldConstraint.TYPE_UNDEFINED).when(plugin).constraintValue();
+        doReturn(GuidedDecisionTable52.TableFormat.LIMITED_ENTRY).when(model).getTableFormat();
+        doReturn(model).when(presenter).getModel();
+        doReturn(editingCol).when(plugin).editingCol();
+
+        plugin.prepareValues();
+
+        verify(editingCol,
+               never()).setBinding(null);
+    }
+
+    @Test
     public void testAppendColumn() throws Exception {
         final PatternWrapper patternWrapper = mock(PatternWrapper.class);
         final Pattern52 pattern52 = mock(Pattern52.class);
@@ -461,5 +474,27 @@ public class ConditionColumnPluginTest {
                      plugin.getAlreadyUsedColumnHeaders().size());
         assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("a"));
         assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("b"));
+    }
+
+    public void testIsBindableWhenTableIsAnExtendedEntry() {
+        doReturn(BaseSingleFieldConstraint.TYPE_UNDEFINED).when(plugin).constraintValue();
+        doReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY).when(model).getTableFormat();
+
+        assertFalse(plugin.isBindable());
+    }
+
+    @Test
+    public void testIsBindableWhenTableIsAnExtendedEntryAndConstraintValueIsTypeLiteral() {
+        doReturn(BaseSingleFieldConstraint.TYPE_LITERAL).when(plugin).constraintValue();
+        doReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY).when(model).getTableFormat();
+
+        assertTrue(plugin.isBindable());
+    }
+
+    @Test
+    public void testIsBindableWhenTableIsALimitedEntry() {
+        doReturn(GuidedDecisionTable52.TableFormat.LIMITED_ENTRY).when(model).getTableFormat();
+
+        assertTrue(plugin.isBindable());
     }
 }
