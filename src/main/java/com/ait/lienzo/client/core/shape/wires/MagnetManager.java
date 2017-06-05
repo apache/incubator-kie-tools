@@ -100,7 +100,7 @@ public class MagnetManager
         double top = box.getY();
         double bottom = top + box.getHeight();
 
-        final Point2D primLoc = WiresUtils.getLocation(primTarget);
+        final Point2D primLoc = primTarget.getComputedLocation();
         final Magnets magnets = new Magnets(this, list, wiresShape);
 
         for (Point2D p : points)
@@ -302,7 +302,7 @@ public class MagnetManager
         public void shapeMoved()
         {
             IPrimitive<?> prim = getPrimTarget();
-            Point2D absLoc = WiresUtils.getLocation(prim);
+            Point2D absLoc = prim.getComputedLocation();
             double x = absLoc.getX();
             double y = absLoc.getY();
             shapeMoved(x, y);

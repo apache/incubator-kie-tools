@@ -15,7 +15,6 @@ import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.shape.wires.MagnetManager;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
-import com.ait.lienzo.client.core.shape.wires.WiresUtils;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectionControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -241,7 +240,7 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
         double strokeWidth = line.getStrokeWidth();
         ctx.setStrokeWidth(strokeWidth);
 
-        Point2D absolutePos = WiresUtils.getLocation(m_connector.getLine());
+        Point2D absolutePos = m_connector.getLine().getComputedLocation();
         double offsetX = absolutePos.getX();
         double offsetY = absolutePos.getY();
 

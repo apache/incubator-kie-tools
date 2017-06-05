@@ -16,7 +16,6 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IDrawable;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.wires.AlignAndDistribute;
-import com.ait.lienzo.client.core.shape.wires.WiresUtils;
 import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -88,7 +87,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         m_leftOffset = group.getX() - m_box.getX();
         m_topOffset = group.getY() - m_box.getY();
 
-        Point2D absLoc = WiresUtils.getLocation(group);
+        Point2D absLoc = group.getComputedLocation();
 
         double left = absLoc.getX() + m_leftOffset;
         double right = left + m_box.getWidth();
@@ -262,7 +261,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         // circles xy are in centre, where as others are top left.
         // For this reason we must use getBoundingBox, which uses BoundingPoints underneath, when ensures the shape x/y is now top left.
         // However getBoundingBox here is still relative to parent, so must offset against parent absolute xy
-        Point2D absLoc = WiresUtils.getLocation(m_group);
+        Point2D absLoc = m_group.getComputedLocation();
 
         double left = absLoc.getX() + m_leftOffset;
         double right = left + m_box.getWidth();

@@ -125,7 +125,7 @@ public class WiresConnection extends AbstractControlHandle
         {
             magnet.addHandle(this);
 
-            Point2D absLoc = WiresUtils.getLocation(magnet.getControl());
+            Point2D absLoc = magnet.getControl().getComputedLocation();
 
             move(absLoc.getX(), absLoc.getY());
 
