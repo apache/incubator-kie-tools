@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -84,10 +83,9 @@ public abstract class AbstractProxyPopupDropDownListBox<C> implements ProxyPopup
     }
 
     @Override
-    public void setValue( final C value ) {
-        final List<String> convertedValues = new ArrayList<String>();
-        convertedValues.add( convertToString( value ) );
-        setDropDownData( DropDownData.create( (String[]) convertedValues.toArray() ) );
+    public void setValue(final C value) {
+        final String[] convertedValues = new String[]{convertToString(value)};
+        setDropDownData(DropDownData.create(convertedValues));
     }
 
     @Override

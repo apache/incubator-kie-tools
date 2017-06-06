@@ -44,13 +44,10 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.Menus;
 
 public abstract class KieEditor
         extends BaseEditor
         implements KieEditorWrapperView.KieEditorWrapperPresenter {
-
-    protected Menus menus;
 
     @Inject
     protected KieEditorWrapperView kieView;

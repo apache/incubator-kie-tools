@@ -19,7 +19,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
@@ -57,8 +56,6 @@ public abstract class KieTextEditorPresenter
 
     @Inject
     private PlaceManager placeManager;
-
-    protected Metadata metadata;
 
     @PostConstruct
     public void init() {

@@ -42,7 +42,6 @@ public class ProjectImportsServiceImpl
         extends KieService<ProjectImportsContent>
         implements ProjectImportsService {
 
-    protected IOService ioService;
     protected ProjectConfigurationContentHandler projectConfigurationContentHandler;
 
     public ProjectImportsServiceImpl() {

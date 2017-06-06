@@ -24,6 +24,10 @@
     <module>kie-wb-common-stunner</module>
   </modules>
 
+  <properties>
+    <findbugs.failOnViolation>true</findbugs.failOnViolation>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
