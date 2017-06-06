@@ -67,12 +67,19 @@ public class JsArray<T extends JavaScriptObject>extends JavaScriptObject
 
     public void set(int index, T value)
     {
+        if ((list.size() - 1) < index) {
+            setLength(index + 1);
+        }
         list.set(index, value);
     }
 
     public void setLength(int newLength)
     {
-        // Does not makes sense here.
+        if (list.size() < newLength) {
+            for (int i = list.size(); i < newLength; i++) {
+                push(null);
+            }
+        }
     }
 
     public T shift()
