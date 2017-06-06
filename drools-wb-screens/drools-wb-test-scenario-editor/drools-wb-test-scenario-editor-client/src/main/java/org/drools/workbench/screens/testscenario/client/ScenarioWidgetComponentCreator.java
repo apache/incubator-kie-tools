@@ -82,10 +82,10 @@ public class ScenarioWidgetComponentCreator {
                         scenario.getPackageName());
     }
 
-    Option makeRuleNameOption(final String text) {
+    Option makeRuleNameOption(final String simpleRuleName) {
         final Option o = GWT.create(Option.class);
-        o.setText(text);
-        o.setValue(text);
+        o.setText(simpleRuleName);
+        o.setValue(simpleRuleName);
         return o;
     }
 
