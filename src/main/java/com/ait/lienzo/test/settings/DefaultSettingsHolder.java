@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.test.settings;
 
-import com.ait.lienzo.test.stub.overlays.NArrayBaseJSO;
-import com.ait.lienzo.test.stub.overlays.Point2DArrayJSO;
 import com.ait.lienzo.test.translator.*;
 
 /**
