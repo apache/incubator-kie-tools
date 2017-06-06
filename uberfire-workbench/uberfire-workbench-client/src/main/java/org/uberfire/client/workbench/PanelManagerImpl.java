@@ -56,9 +56,11 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.debug.Debug;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
+import org.uberfire.workbench.model.CustomPanelDefinition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.impl.CustomPanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -308,7 +310,6 @@ public class PanelManagerImpl implements PanelManager {
             customContainer.remove(presenterToRemove.getPanelView().asWidget());
         } else {
             HTMLElement customHTMLElementContainer = customPanelsInsideHTMLElements.remove(toRemove);
-
             if (customHTMLElementContainer != null) {
                 DOMUtil.removeFromParent(presenterToRemove.getPanelView().asWidget());
             } else {
@@ -497,22 +498,23 @@ public class PanelManagerImpl implements PanelManager {
     }
 
     @Override
-    public PanelDefinition addCustomPanel(final HasWidgets container,
-                                          final String panelType) {
+    public CustomPanelDefinition addCustomPanel(final HasWidgets container,
+                                                final String panelType) {
         return addCustomPanelOnContainer(container,
-                                         panelType);
+                                         new CustomPanelDefinitionImpl(panelType,
+                                                                       container));
     }
 
     @Override
-    public PanelDefinition addCustomPanel(final HTMLElement container,
-                                          final String panelType) {
+    public CustomPanelDefinition addCustomPanel(final HTMLElement container,
+                                                final String panelType) {
         return addCustomPanelOnContainer(container,
-                                         panelType);
+                                         new CustomPanelDefinitionImpl(panelType,
+                                                                       container));
     }
 
-    private PanelDefinition addCustomPanelOnContainer(final Object container,
-                                                      final String panelType) {
-        PanelDefinition panelDef = new PanelDefinitionImpl(panelType);
+    private CustomPanelDefinition addCustomPanelOnContainer(final Object container,
+                                                            CustomPanelDefinitionImpl panelDef) {
         final WorkbenchPanelPresenter panelPresenter = beanFactory.newWorkbenchPanel(panelDef);
         Widget panelViewWidget = panelPresenter.getPanelView().asWidget();
         panelViewWidget.addAttachHandler(new CustomPanelCleanupHandler(panelPresenter));

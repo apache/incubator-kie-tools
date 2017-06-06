@@ -92,6 +92,7 @@ public interface PlaceManager {
      * {@link #closePlace(String)}, or {@link #closeAllPlaces()}
      * <li>by switching to another perspective, which has the side effect of closing all places
      * <li>by removing the activity's view from the DOM, either using the GWT Widget API, or by direct DOM manipulation.
+     * <li>by opening another place on the same container.
      * </ol>
      * @param place
      * @param addTo The container to add the widget's view to. Its corresponding DOM element must have a CSS

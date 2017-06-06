@@ -25,6 +25,7 @@ import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.CustomPanelDefinition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
@@ -116,8 +117,8 @@ public interface PanelManager {
      * @return the definition for the newly constructed panel. Never null. The panel's type will be {@code panelType};
      * its parent will be null; {@code isRoot()} will return false.
      */
-    PanelDefinition addCustomPanel(HasWidgets container,
-                                   String panelType);
+    CustomPanelDefinition addCustomPanel(HasWidgets container,
+                                         String panelType);
 
     /**
      * Creates an UberFire panel and installs its view in the given html element container.
@@ -132,8 +133,8 @@ public interface PanelManager {
      * @return the definition for the newly constructed panel. Never null. The panel's type will be {@code panelType};
      * its parent will be null; {@code isRoot()} will return false.
      */
-    PanelDefinition addCustomPanel(HTMLElement container,
-                                   String panelType);
+    CustomPanelDefinition addCustomPanel(HTMLElement container,
+                                         String panelType);
 
     /**
      * Removes the panel associated with the given definition, removing the panel's presenter and view from the
