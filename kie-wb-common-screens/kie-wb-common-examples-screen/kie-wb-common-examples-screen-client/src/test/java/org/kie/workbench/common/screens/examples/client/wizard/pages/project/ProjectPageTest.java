@@ -74,7 +74,7 @@ public class ProjectPageTest {
     @Spy
     private Event<WizardPageSelectedEvent> pageSelectedEvent = new EventSourceMock<WizardPageSelectedEvent>() {
         @Override
-        public void fire( final WizardPageSelectedEvent event ) {
+        public void fire(final WizardPageSelectedEvent event) {
             //Do nothing. Default implementation throws an exception.
         }
     };
@@ -82,7 +82,7 @@ public class ProjectPageTest {
     @Spy
     private Event<WizardPageStatusChangeEvent> pageStatusChangedEvent = new EventSourceMock<WizardPageStatusChangeEvent>() {
         @Override
-        public void fire( final WizardPageStatusChangeEvent event ) {
+        public void fire(final WizardPageStatusChangeEvent event) {
             //Do nothing. Default implementation throws an exception.
         }
     };
@@ -90,8 +90,8 @@ public class ProjectPageTest {
     @Mock
     private TranslationService translator;
 
-    private ExamplesService examplesService = mock( ExamplesService.class );
-    private Caller<ExamplesService> examplesServiceCaller = new CallerMock<ExamplesService>( examplesService );
+    private ExamplesService examplesService = mock(ExamplesService.class);
+    private Caller<ExamplesService> examplesServiceCaller = new CallerMock<ExamplesService>(examplesService);
 
     @Captor
     private ArgumentCaptor<List<ExampleProject>> projectsArgumentCaptor;
@@ -100,277 +100,328 @@ public class ProjectPageTest {
 
     private ExamplesWizardModel model;
 
-    private ExampleProject project1 = new ExampleProject( mock( Path.class ),
-                                                          "project1",
-                                                          "",
-                                                          Arrays.asList( "tag1", "tag2" ) );
-    private ExampleProject project2 = new ExampleProject( mock( Path.class ),
-                                                          "project2",
-                                                          "",
-                                                          Arrays.asList( "tag2", "tag3" ) );
+    private ExampleProject project1 = new ExampleProject(mock(Path.class),
+                                                         "project1",
+                                                         "",
+                                                         Arrays.asList("tag1",
+                                                                       "tag2"));
+    private ExampleProject project2 = new ExampleProject(mock(Path.class),
+                                                         "project2",
+                                                         "",
+                                                         Arrays.asList("tag2",
+                                                                       "tag3"));
 
     @Before
     public void setup() {
-        page = new ProjectPage( projectsView,
-                                noRepositoryURLView,
-                                fetchingRepositoryView,
-                                pageSelectedEvent,
-                                pageStatusChangedEvent,
-                                translator,
-                                examplesServiceCaller );
+        page = new ProjectPage(projectsView,
+                               noRepositoryURLView,
+                               fetchingRepositoryView,
+                               pageSelectedEvent,
+                               pageStatusChangedEvent,
+                               translator,
+                               examplesServiceCaller);
 
         model = new ExamplesWizardModel();
-        page.setModel( model );
+        page.setModel(model);
 
-        when( projectsView.asWidget() ).thenReturn( projectsViewWidget );
-        when( noRepositoryURLView.asWidget() ).thenReturn( noRepositoryURLViewWidget );
-        when( fetchingRepositoryView.asWidget() ).thenReturn( fetchingRepositoryViewWidget );
+        when(projectsView.asWidget()).thenReturn(projectsViewWidget);
+        when(noRepositoryURLView.asWidget()).thenReturn(noRepositoryURLViewWidget);
+        when(fetchingRepositoryView.asWidget()).thenReturn(fetchingRepositoryViewWidget);
     }
 
     @Test
     public void testInit() {
         page.init();
-        verify( projectsView,
-                times( 1 ) ).init( eq( page ) );
+        verify(projectsView,
+               times(1)).init(eq(page));
     }
 
     @Test
     public void testInitialise() {
         page.initialise();
-        verify( projectsView,
-                times( 1 ) ).initialise();
+        verify(projectsView,
+               times(1)).initialise();
     }
 
     @Test
     public void testDestroy() {
         page.destroy();
-        verify( projectsView,
-                times( 1 ) ).destroy();
+        verify(projectsView,
+               times(1)).destroy();
     }
 
     @Test
     public void testPrepareView_NoRepositorySelected() {
-        model.setSelectedRepository( null );
+        model.setSelectedRepository(null);
         page.prepareView();
 
-        assertEquals( noRepositoryURLViewWidget,
-                      page.asWidget() );
+        assertEquals(noRepositoryURLViewWidget,
+                     page.asWidget());
     }
 
     @Test
     public void testPrepareView_InvalidRepositorySelected() {
-        final ExampleRepository repository = new ExampleRepository( "cheese" );
-        repository.setUrlValid( false );
-        model.setSelectedRepository( repository );
+        final ExampleRepository repository = new ExampleRepository("cheese");
+        repository.setUrlValid(false);
+        model.setSelectedRepository(repository);
         page.prepareView();
 
-        assertEquals( noRepositoryURLViewWidget,
-                      page.asWidget() );
+        assertEquals(noRepositoryURLViewWidget,
+                     page.asWidget());
     }
 
     @Test
     public void testPrepareView_SameRepositorySelected() {
-        final ExampleRepository repository = new ExampleRepository( EXAMPLE_REPOSITORY );
-        model.setSourceRepository( repository );
-        model.setSelectedRepository( repository );
+        final ExampleRepository repository = new ExampleRepository(EXAMPLE_REPOSITORY);
+        model.setSourceRepository(repository);
+        model.setSelectedRepository(repository);
         page.prepareView();
 
-        assertEquals( projectsViewWidget,
-                      page.asWidget() );
+        assertEquals(projectsViewWidget,
+                     page.asWidget());
     }
 
     @Test
     public void testPrepareView_NewRepositorySelected() {
-        when( examplesService.getProjects( any( ExampleRepository.class ) ) ).thenReturn( new HashSet<ExampleProject>() {{
-            add( project1 );
-            add( project2 );
-        }} );
+        when(examplesService.getProjects(any(ExampleRepository.class))).thenReturn(new HashSet<ExampleProject>() {{
+            add(project1);
+            add(project2);
+        }});
 
-        final ExampleRepository repository = new ExampleRepository( EXAMPLE_REPOSITORY );
-        model.setSelectedRepository( repository );
+        final ExampleRepository repository = new ExampleRepository(EXAMPLE_REPOSITORY);
+        model.setSelectedRepository(repository);
         page.prepareView();
 
-        assertEquals( projectsViewWidget,
-                      page.asWidget() );
-        assertEquals( repository,
-                      model.getSourceRepository() );
-        assertTrue( model.getProjects().isEmpty() );
+        assertEquals(projectsViewWidget,
+                     page.asWidget());
+        assertEquals(repository,
+                     model.getSourceRepository());
+        assertTrue(model.getProjects().isEmpty());
 
-        verify( projectsView,
-                times( 1 ) ).setProjectsInRepository( projectsArgumentCaptor.capture() );
+        verify(projectsView,
+               times(1)).setProjectsInRepository(projectsArgumentCaptor.capture());
         final List<ExampleProject> sortedProjects = projectsArgumentCaptor.getValue();
-        assertNotNull( sortedProjects );
-        assertEquals( 2,
-                      sortedProjects.size() );
-        assertEquals( "project1",
-                      sortedProjects.get( 0 ).getName() );
-        assertEquals( "project2",
-                      sortedProjects.get( 1 ).getName() );
+        assertNotNull(sortedProjects);
+        assertEquals(2,
+                     sortedProjects.size());
+        assertEquals("project1",
+                     sortedProjects.get(0).getName());
+        assertEquals("project2",
+                     sortedProjects.get(1).getName());
 
-        verify( pageSelectedEvent,
-                times( 1 ) ).fire( any( WizardPageSelectedEvent.class ) );
+        verify(pageSelectedEvent,
+               times(1)).fire(any(WizardPageSelectedEvent.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testIsComplete_NoSelectedProjects() {
-        final Callback<Boolean> callback = mock( Callback.class );
-        page.isComplete( callback );
+        final Callback<Boolean> callback = mock(Callback.class);
+        page.isComplete(callback);
 
-        verify( callback,
-                times( 1 ) ).callback( eq( false ) );
+        verify(callback,
+               times(1)).callback(eq(false));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testIsComplete_SelectedProjects() {
-        model.addProject( new ExampleProject( mock( Path.class ),
-                                              "",
-                                              "",
-                                              Collections.EMPTY_LIST) );
-        final Callback<Boolean> callback = mock( Callback.class );
-        page.isComplete( callback );
+        model.addProject(new ExampleProject(mock(Path.class),
+                                            "",
+                                            "",
+                                            Collections.EMPTY_LIST));
+        final Callback<Boolean> callback = mock(Callback.class);
+        page.isComplete(callback);
 
-        verify( callback,
-                times( 1 ) ).callback( eq( true ) );
+        verify(callback,
+               times(1)).callback(eq(true));
     }
 
     @Test
     public void testAddProject() {
-        page.addProject( mock( ExampleProject.class ) );
-        assertEquals( 1,
-                      model.getProjects().size() );
-        verify( pageStatusChangedEvent,
-                times( 1 ) ).fire( any( WizardPageStatusChangeEvent.class ) );
+        page.addProject(mock(ExampleProject.class));
+        assertEquals(1,
+                     model.getProjects().size());
+        verify(pageStatusChangedEvent,
+               times(1)).fire(any(WizardPageStatusChangeEvent.class));
     }
 
     @Test
     public void testRemoveProject() {
-        final ExampleProject project = mock( ExampleProject.class );
-        model.addProject( project );
-        page.removeProject( project );
-        assertEquals( 0,
-                      model.getProjects().size() );
-        verify( pageStatusChangedEvent,
-                times( 1 ) ).fire( any( WizardPageStatusChangeEvent.class ) );
+        final ExampleProject project = mock(ExampleProject.class);
+        model.addProject(project);
+        page.removeProject(project);
+        assertEquals(0,
+                     model.getProjects().size());
+        verify(pageStatusChangedEvent,
+               times(1)).fire(any(WizardPageStatusChangeEvent.class));
     }
 
     @Test
     public void testIsProjectSelected_Selected() {
-        final ExampleProject project = mock( ExampleProject.class );
-        model.addProject( project );
+        final ExampleProject project = mock(ExampleProject.class);
+        model.addProject(project);
 
-        assertTrue( page.isProjectSelected( project ) );
+        assertTrue(page.isProjectSelected(project));
     }
 
     @Test
     public void testIsProjectSelected_NotSelected() {
-        final ExampleProject project = mock( ExampleProject.class );
+        final ExampleProject project = mock(ExampleProject.class);
 
-        assertFalse( page.isProjectSelected( project ) );
+        assertFalse(page.isProjectSelected(project));
     }
 
     @Test
     public void testAddTag_SingleTag() {
         initExampleProjects();
 
-        page.addTag( "tag1" );
+        page.addTag("tag1");
 
-        verify( projectsView,
-                times( 1 ) ).setProjectsInRepository( Arrays.asList( project1 ) );
-        verify( pageSelectedEvent,
-                times( 1 ) ).fire( any( WizardPageSelectedEvent.class ) );
+        verify(projectsView,
+               times(1)).setProjectsInRepository(Arrays.asList(project1));
+        verify(pageSelectedEvent,
+               times(1)).fire(any(WizardPageSelectedEvent.class));
     }
 
     private void initExampleProjects() {
-        when( examplesService.getProjects( any( ExampleRepository.class ) ) ).thenReturn( new HashSet<ExampleProject>() {{
-            add( project1 );
-            add( project2 );
-        }} );
+        when(examplesService.getProjects(any(ExampleRepository.class))).thenReturn(new HashSet<ExampleProject>() {{
+            add(project1);
+            add(project2);
+        }});
 
-        final ExampleRepository repository = new ExampleRepository( EXAMPLE_REPOSITORY );
-        model.setSelectedRepository( repository );
+        final ExampleRepository repository = new ExampleRepository(EXAMPLE_REPOSITORY);
+        model.setSelectedRepository(repository);
         page.prepareView();
 
-        Mockito.reset( projectsView, pageSelectedEvent );
+        Mockito.reset(projectsView,
+                      pageSelectedEvent);
     }
 
     @Test
     public void testAddTag_MultipleTags() {
         initExampleProjects();
 
-        page.addTag( "tag1" );
+        page.addTag("tag1");
 
-        Mockito.reset( projectsView, pageSelectedEvent );
+        Mockito.reset(projectsView,
+                      pageSelectedEvent);
 
-        page.addTag( "tag2" );
+        page.addTag("tag2");
 
-        verify( projectsView,
-                times( 1 ) ).setProjectsInRepository( Arrays.asList( project1 ) );
-        verify( pageSelectedEvent,
-                times( 1 ) ).fire( any( WizardPageSelectedEvent.class ) );
+        verify(projectsView,
+               times(1)).setProjectsInRepository(Arrays.asList(project1));
+        verify(pageSelectedEvent,
+               times(1)).fire(any(WizardPageSelectedEvent.class));
     }
 
     @Test
     public void testAddTag_NoProjectMatches() {
         initExampleProjects();
 
-        page.addTag( "nonMatchingTag" );
+        page.addTag("nonMatchingTag");
 
-        verify( projectsView,
-                times( 1 ) ).setProjectsInRepository( Collections.emptyList() );
-        verify( pageSelectedEvent,
-                times( 1 ) ).fire( any( WizardPageSelectedEvent.class ) );
+        verify(projectsView,
+               times(1)).setProjectsInRepository(Collections.emptyList());
+        verify(pageSelectedEvent,
+               times(1)).fire(any(WizardPageSelectedEvent.class));
     }
 
     @Test
     public void testAddTag_AllProjectsMatch() {
         initExampleProjects();
 
-        page.addTag( "tag2" );
+        page.addTag("tag2");
 
-        verify( projectsView,
-                times( 1 ) ).setProjectsInRepository( Arrays.asList( project1, project2 ) );
-        verify( pageSelectedEvent,
-                times( 1 ) ).fire( any( WizardPageSelectedEvent.class ) );
+        verify(projectsView,
+               times(1)).setProjectsInRepository(Arrays.asList(project1,
+                                                               project2));
+        verify(pageSelectedEvent,
+               times(1)).fire(any(WizardPageSelectedEvent.class));
+    }
+
+    @Test
+    public void testAddPartialTag_MultipleTags() {
+        initExampleProjects();
+
+        page.addTag("tag1");
+
+        Mockito.reset(projectsView,
+                      pageSelectedEvent);
+
+        page.addPartialTag("tag2");
+
+        verify(projectsView,
+               times(1)).setProjectsInRepository(Arrays.asList(project1));
+        verify(pageSelectedEvent,
+               times(1)).fire(any(WizardPageSelectedEvent.class));
+    }
+
+    @Test
+    public void testAddPartialTag_NoProjectMatches() {
+        initExampleProjects();
+
+        page.addPartialTag("nonMatchingTag");
+
+        verify(projectsView,
+               times(1)).setProjectsInRepository(Collections.emptyList());
+        verify(pageSelectedEvent,
+               times(1)).fire(any(WizardPageSelectedEvent.class));
+    }
+
+    @Test
+    public void testAddPartialTag_AllProjectsMatch() {
+        initExampleProjects();
+
+        page.addPartialTag("tag");
+
+        verify(projectsView,
+               times(1)).setProjectsInRepository(Arrays.asList(project1,
+                                                               project2));
+        verify(pageSelectedEvent,
+               times(1)).fire(any(WizardPageSelectedEvent.class));
     }
 
     @Test
     public void testRemoveTag_NonMatchingTag() {
         initExampleProjects();
 
-        page.addTag( "nonMatchingTag" );
+        page.addTag("nonMatchingTag");
 
-        verify( projectsView,
-                times( 1 ) ).setProjectsInRepository( Collections.emptyList() );
+        verify(projectsView,
+               times(1)).setProjectsInRepository(Collections.emptyList());
 
-        Mockito.reset( projectsView, pageSelectedEvent );
+        Mockito.reset(projectsView,
+                      pageSelectedEvent);
 
-        page.removeTag( "nonMatchingTag" );
+        page.removeTag("nonMatchingTag");
 
-        verify( projectsView,
-                times( 1 ) ).setProjectsInRepository( Arrays.asList( project1, project2 ) );
-        verify( pageSelectedEvent,
-                times( 1 ) ).fire( any( WizardPageSelectedEvent.class ) );
+        verify(projectsView,
+               times(1)).setProjectsInRepository(Arrays.asList(project1,
+                                                               project2));
+        verify(pageSelectedEvent,
+               times(1)).fire(any(WizardPageSelectedEvent.class));
     }
 
     @Test
     public void testRemoveTag_MatchingTag() {
         initExampleProjects();
 
-        page.addTag( "tag1" );
+        page.addTag("tag1");
 
-        verify( projectsView,
-                times( 1 ) ).setProjectsInRepository( Arrays.asList( project1 ) );
+        verify(projectsView,
+               times(1)).setProjectsInRepository(Arrays.asList(project1));
 
-        Mockito.reset( projectsView, pageSelectedEvent );
+        Mockito.reset(projectsView,
+                      pageSelectedEvent);
 
-        page.removeTag( "tag1" );
+        page.removeTag("tag1");
 
-        verify( projectsView,
-                times( 1 ) ).setProjectsInRepository( Arrays.asList( project1, project2 ) );
-        verify( pageSelectedEvent,
-                times( 1 ) ).fire( any( WizardPageSelectedEvent.class ) );
+        verify(projectsView,
+               times(1)).setProjectsInRepository(Arrays.asList(project1,
+                                                               project2));
+        verify(pageSelectedEvent,
+               times(1)).fire(any(WizardPageSelectedEvent.class));
     }
 
     @Test
@@ -379,10 +430,10 @@ public class ProjectPageTest {
 
         page.removeAllTags();
 
-        verify( projectsView,
-                times( 1 ) ).setProjectsInRepository( Arrays.asList( project1, project2 ) );
-        verify( pageSelectedEvent,
-                times( 1 ) ).fire( any( WizardPageSelectedEvent.class ) );
+        verify(projectsView,
+               times(1)).setProjectsInRepository(Arrays.asList(project1,
+                                                               project2));
+        verify(pageSelectedEvent,
+               times(1)).fire(any(WizardPageSelectedEvent.class));
     }
-
 }

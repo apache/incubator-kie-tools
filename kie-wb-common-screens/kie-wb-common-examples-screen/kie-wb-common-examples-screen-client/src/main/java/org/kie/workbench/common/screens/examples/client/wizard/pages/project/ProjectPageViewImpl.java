@@ -24,7 +24,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -58,7 +58,7 @@ public class ProjectPageViewImpl extends Composite implements ProjectPageView {
     Button searchButton;
 
     @DataField("tagList")
-    Element tagList = DOM.createElement( "ul" );
+    Element tagList = DOM.createElement("ul");
 
     @Inject
     @DataField("clear")
@@ -73,7 +73,7 @@ public class ProjectPageViewImpl extends Composite implements ProjectPageView {
     private ProjectPage presenter;
 
     @Override
-    public void init( final ProjectPage presenter ) {
+    public void init(final ProjectPage presenter) {
         this.presenter = presenter;
     }
 
@@ -83,82 +83,86 @@ public class ProjectPageViewImpl extends Composite implements ProjectPageView {
     }
 
     @Override
-    public void setProjectsInRepository( final List<ExampleProject> projects ) {
+    public void setProjectsInRepository(final List<ExampleProject> projects) {
         this.projects.removeAllChildren();
-        for ( ExampleProject project : projects ) {
-            final ProjectItemView w = makeProjectWidget( project );
-            this.projects.appendChild( w.asWidget().getElement() );
+        for (ExampleProject project : projects) {
+            final ProjectItemView w = makeProjectWidget(project);
+            this.projects.appendChild(w.asWidget().getElement());
         }
     }
 
     @Override
     public void destroy() {
         projects.removeAllChildren();
-        tagInput.setValue( "" );
+        tagInput.setValue("");
         tagList.removeAllChildren();
     }
 
-    private ProjectItemView makeProjectWidget( final ExampleProject project ) {
+    private ProjectItemView makeProjectWidget(final ExampleProject project) {
         final ProjectItemView projectItemView = projectItemViewInstance.get();
-        projectItemView.setProject( project, presenter.isProjectSelected( project ) );
-        projectItemView.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
+        projectItemView.setProject(project,
+                                   presenter.isProjectSelected(project));
+        projectItemView.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
-            public void onValueChange( final ValueChangeEvent<Boolean> event ) {
+            public void onValueChange(final ValueChangeEvent<Boolean> event) {
                 final boolean selected = event.getValue();
-                if ( selected ) {
-                    presenter.addProject( project );
+                if (selected) {
+                    presenter.addProject(project);
                 } else {
-                    presenter.removeProject( project );
+                    presenter.removeProject(project);
                 }
             }
-        } );
+        });
 
-        projectItemView.addMouseOverHandler( h -> {
+        projectItemView.addMouseOverHandler(h -> {
             final SafeHtmlBuilder shb = new SafeHtmlBuilder();
-            shb.appendEscaped( project.getDescription() );
-            projectDescription.setInnerSafeHtml( shb.toSafeHtml() );
-        } );
+            shb.appendEscaped(project.getDescription());
+            projectDescription.setInnerSafeHtml(shb.toSafeHtml());
+        });
 
-        projectItemView.addMouseOutHandler( h -> {
-            projectDescription.setInnerSafeHtml( new SafeHtmlBuilder().toSafeHtml() );
-        } );
+        projectItemView.addMouseOutHandler(h -> {
+            projectDescription.setInnerSafeHtml(new SafeHtmlBuilder().toSafeHtml());
+        });
         return projectItemView;
     }
 
     @EventHandler("searchButton")
-    private void onSearchButtonClicked( ClickEvent event ) {
-        createAndAddTag( false );
+    private void onSearchButtonClicked(ClickEvent event) {
+        createAndAddTag(false);
     }
 
     @EventHandler("tagInput")
-    private void onTagInputEnterPressed( KeyDownEvent event ) {
-        if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
-            createAndAddTag( true );
+    private void onTagInputEnterPressed(KeyUpEvent event) {
+        int keyCode = event.getNativeKeyCode();
+        if (keyCode == KeyCodes.KEY_ENTER) {
+            createAndAddTag(true);
+        } else {
+            presenter.addPartialTag(tagInput.getValue());
+            tagInput.focus();
         }
     }
 
-    private void createAndAddTag( boolean setTagInputFocus ) {
-        if ( tagInput.getValue() != null && !tagInput.getValue().isEmpty() ) {
+    private void createAndAddTag(boolean setTagInputFocus) {
+        if (tagInput.getValue() != null && !tagInput.getValue().isEmpty()) {
             TagItemView tag = tagItemViewInstance.get();
-            tag.setName( tagInput.getValue() );
+            tag.setName(tagInput.getValue());
             Node tagNode = tag.asWidget().getElement();
-            tag.addClickHandler( c -> {
-                tagList.removeChild( tagNode );
-                presenter.removeTag( tag.getName() );
-            } );
-            tagList.appendChild( tagNode );
-            presenter.addTag( tagInput.getValue() );
-            tagInput.setValue( "" );
-            if ( setTagInputFocus ) {
+            tag.addClickHandler(c -> {
+                tagList.removeChild(tagNode);
+                presenter.removeTag(tag.getName());
+            });
+            tagList.appendChild(tagNode);
+            presenter.addTag(tagInput.getValue());
+            tagInput.setValue("");
+            if (setTagInputFocus) {
                 tagInput.focus();
             }
         }
     }
 
     @EventHandler("clear")
-    private void onClearClicked( ClickEvent event ) {
+    private void onClearClicked(ClickEvent event) {
         tagList.removeAllChildren();
         presenter.removeAllTags();
     }
-
 }

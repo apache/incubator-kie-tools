@@ -62,16 +62,16 @@ public class ProjectPage extends BaseExamplesWizardPage implements ProjectPageVi
     }
 
     @Inject
-    public ProjectPage( final ProjectPageView projectsView,
-                        final NoRepositoryURLView noRepositoryURLView,
-                        final FetchRepositoryView fetchingRepositoryView,
-                        final Event<WizardPageSelectedEvent> pageSelectedEvent,
-                        final Event<WizardPageStatusChangeEvent> pageStatusChangedEvent,
-                        final TranslationService translator,
-                        final Caller<ExamplesService> examplesService ) {
-        super( translator,
-               examplesService,
-               pageStatusChangedEvent );
+    public ProjectPage(final ProjectPageView projectsView,
+                       final NoRepositoryURLView noRepositoryURLView,
+                       final FetchRepositoryView fetchingRepositoryView,
+                       final Event<WizardPageSelectedEvent> pageSelectedEvent,
+                       final Event<WizardPageStatusChangeEvent> pageStatusChangedEvent,
+                       final TranslationService translator,
+                       final Caller<ExamplesService> examplesService) {
+        super(translator,
+              examplesService,
+              pageStatusChangedEvent);
         this.projectsView = projectsView;
         this.noRepositoryURLView = noRepositoryURLView;
         this.fetchingRepositoryView = fetchingRepositoryView;
@@ -80,7 +80,7 @@ public class ProjectPage extends BaseExamplesWizardPage implements ProjectPageVi
 
     @PostConstruct
     public void init() {
-        projectsView.init( this );
+        projectsView.init(this);
     }
 
     @Override
@@ -99,73 +99,70 @@ public class ProjectPage extends BaseExamplesWizardPage implements ProjectPageVi
 
     @Override
     public String getTitle() {
-        return translator.format( ExamplesScreenConstants.ProjectPage_WizardSelectProjectPageTitle );
+        return translator.format(ExamplesScreenConstants.ProjectPage_WizardSelectProjectPageTitle);
     }
 
     @Override
     public void prepareView() {
         final ExampleRepository sourceRepository = model.getSourceRepository();
         final ExampleRepository selectedRepository = model.getSelectedRepository();
-        if ( !isRepositorySelected( selectedRepository ) ) {
+        if (!isRepositorySelected(selectedRepository)) {
             activeView = noRepositoryURLView;
-
-        } else if ( !selectedRepository.isUrlValid() ) {
+        } else if (!selectedRepository.isUrlValid()) {
             activeView = noRepositoryURLView;
-
-        } else if ( !selectedRepository.equals( sourceRepository ) ) {
+        } else if (!selectedRepository.equals(sourceRepository)) {
             activeView = fetchingRepositoryView;
-            fetchRepository( selectedRepository );
-
+            fetchRepository(selectedRepository);
         } else {
             activeView = projectsView;
         }
     }
 
-    private boolean isRepositorySelected( final ExampleRepository repository ) {
-        if ( repository == null ) {
+    private boolean isRepositorySelected(final ExampleRepository repository) {
+        if (repository == null) {
             return false;
         }
-        return ( !( repository.getUrl() == null || repository.getUrl().isEmpty() ) );
+        return (!(repository.getUrl() == null || repository.getUrl().isEmpty()));
     }
 
-    private void fetchRepository( final ExampleRepository selectedRepository ) {
-        examplesService.call( new RemoteCallback<Set<ExampleProject>>() {
-                                  @Override
-                                  public void callback( final Set<ExampleProject> projects ) {
-                                      activeView = projectsView;
-                                      model.getProjects().clear();
-                                      model.setSourceRepository( selectedRepository );
+    private void fetchRepository(final ExampleRepository selectedRepository) {
+        examplesService.call(new RemoteCallback<Set<ExampleProject>>() {
+                                 @Override
+                                 public void callback(final Set<ExampleProject> projects) {
+                                     activeView = projectsView;
+                                     model.getProjects().clear();
+                                     model.setSourceRepository(selectedRepository);
 
-                                      final List<ExampleProject> sortedProjects = sort( projects );
+                                     final List<ExampleProject> sortedProjects = sort(projects);
 
-                                      projectsView.setProjectsInRepository( sortedProjects );
-                                      exampleProjects = sortedProjects;
+                                     projectsView.setProjectsInRepository(sortedProjects);
+                                     exampleProjects = sortedProjects;
 
-                                      pageSelectedEvent.fire( new WizardPageSelectedEvent( ProjectPage.this ) );
-                                  }
-                              },
-                              new DefaultErrorCallback() {
-                                  @Override
-                                  public boolean error( final Message message,
-                                                        final Throwable throwable ) {
-                                      model.setSourceRepository( null );
-                                      model.getSelectedRepository().setUrlValid( false );
-                                      return super.error( message,
-                                                          throwable );
-                                  }
-                              } ).getProjects( selectedRepository );
+                                     pageSelectedEvent.fire(new WizardPageSelectedEvent(ProjectPage.this));
+                                 }
+                             },
+                             new DefaultErrorCallback() {
+                                 @Override
+                                 public boolean error(final Message message,
+                                                      final Throwable throwable) {
+                                     model.setSourceRepository(null);
+                                     model.getSelectedRepository().setUrlValid(false);
+                                     return super.error(message,
+                                                        throwable);
+                                 }
+                             }).getProjects(selectedRepository);
     }
 
-    private List<ExampleProject> sort( final Set<ExampleProject> projects ) {
-        final List<ExampleProject> sortedProjects = new ArrayList<ExampleProject>( projects );
-        Collections.sort( sortedProjects,
-                          new Comparator<ExampleProject>() {
-                              @Override
-                              public int compare( final ExampleProject o1,
-                                                  final ExampleProject o2 ) {
-                                  return o1.getName().compareTo( o2.getName() );
-                              }
-                          } );
+    private List<ExampleProject> sort(final Set<ExampleProject> projects) {
+        final List<ExampleProject> sortedProjects = new ArrayList<ExampleProject>(projects);
+        Collections.sort(sortedProjects,
+                         new Comparator<ExampleProject>() {
+                             @Override
+                             public int compare(final ExampleProject o1,
+                                                final ExampleProject o2) {
+                                 return o1.getName().compareTo(o2.getName());
+                             }
+                         });
         return sortedProjects;
     }
 
@@ -175,56 +172,63 @@ public class ProjectPage extends BaseExamplesWizardPage implements ProjectPageVi
     }
 
     @Override
-    public void isComplete( final Callback<Boolean> callback ) {
-        callback.callback( model.getProjects().size() > 0 );
+    public void isComplete(final Callback<Boolean> callback) {
+        callback.callback(model.getProjects().size() > 0);
     }
 
     @Override
-    public void addProject( final ExampleProject project ) {
-        model.addProject( project );
-        pageStatusChangedEvent.fire( new WizardPageStatusChangeEvent( this ) );
+    public void addProject(final ExampleProject project) {
+        model.addProject(project);
+        pageStatusChangedEvent.fire(new WizardPageStatusChangeEvent(this));
     }
 
     @Override
-    public void removeProject( final ExampleProject project ) {
-        model.removeProject( project );
-        pageStatusChangedEvent.fire( new WizardPageStatusChangeEvent( this ) );
+    public void removeProject(final ExampleProject project) {
+        model.removeProject(project);
+        pageStatusChangedEvent.fire(new WizardPageStatusChangeEvent(this));
     }
 
     @Override
-    public boolean isProjectSelected( ExampleProject project ) {
-        return model.getProjects().contains( project );
+    public boolean isProjectSelected(ExampleProject project) {
+        return model.getProjects().contains(project);
     }
 
     @Override
-    public void addTag( String tag ) {
-        tags.add( tag );
+    public void addTag(String tag) {
+        tags.add(tag);
 
-        updateProjectsInRepository();
+        updateProjectsInRepository(tags);
     }
 
     @Override
-    public void removeTag( String tag ) {
-        tags.remove( tag );
+    public void addPartialTag(final String tag) {
+        List<String> partialTags = new ArrayList<>(tags);
+        partialTags.add(tag);
 
-        updateProjectsInRepository();
+        updateProjectsInRepository(partialTags);
     }
 
-    private void updateProjectsInRepository() {
+    @Override
+    public void removeTag(String tag) {
+        tags.remove(tag);
+
+        updateProjectsInRepository(tags);
+    }
+
+    private void updateProjectsInRepository(final Collection<String> tags) {
         List<ExampleProject> resultList = exampleProjects.stream()
-                .filter( p -> tags.stream().allMatch( userTag -> p.getTags().stream().anyMatch( projectTag -> projectTag.toLowerCase().contains( userTag.toLowerCase() ) ) ) )
-                .sorted( (o1, o2) -> o1.getName().compareTo( o2.getName() ) )
-                .collect( Collectors.toList() );
+                .filter(p -> tags.stream().allMatch(userTag -> p.getTags().stream().anyMatch(projectTag -> projectTag.toLowerCase().contains(userTag.toLowerCase()))))
+                .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
+                .collect(Collectors.toList());
 
-        projectsView.setProjectsInRepository( resultList );
-        pageSelectedEvent.fire( new WizardPageSelectedEvent( ProjectPage.this ) );
+        projectsView.setProjectsInRepository(resultList);
+        pageSelectedEvent.fire(new WizardPageSelectedEvent(ProjectPage.this));
     }
 
     @Override
     public void removeAllTags() {
         tags.clear();
-        projectsView.setProjectsInRepository( exampleProjects );
-        pageSelectedEvent.fire( new WizardPageSelectedEvent( ProjectPage.this ) );
+        projectsView.setProjectsInRepository(exampleProjects);
+        pageSelectedEvent.fire(new WizardPageSelectedEvent(ProjectPage.this));
     }
-
 }
