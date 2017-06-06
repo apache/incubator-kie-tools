@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import javax.enterprise.event.Event;
+
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Test;
@@ -28,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.workbench.events.NewPerspectiveEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 import static org.junit.Assert.*;
@@ -38,6 +41,9 @@ public class ActivityBeansCacheTest {
 
     @Mock
     private SyncBeanManager iocManager;
+
+    @Mock
+    private Event<NewPerspectiveEvent> newPerspectiveEventEvent;
 
     @InjectMocks
     ActivityBeansCache cache;
@@ -178,5 +184,22 @@ public class ActivityBeansCacheTest {
                                    resource);
 
         assertTrue(cache.hasActivity(resource));
+    }
+
+    @Test
+    public void getPerspectiveActivities() {
+        SyncBeanDef mock1 = mock(SyncBeanDef.class);
+        when(mock1.getName()).thenReturn("perspective2");
+        when(mock1.isAssignableTo(PerspectiveActivity.class)).thenReturn(true);
+
+        SyncBeanDef mock2 = mock(SyncBeanDef.class);
+        when(mock2.getName()).thenReturn("screen");
+        when(mock2.getType()).thenReturn(WorkbenchScreenActivity.class);
+
+        cache.addNewPerspectiveActivity(mock1);
+        cache.addNewPerspectiveActivity(mock2);
+
+        List<SyncBeanDef<Activity>> perspectiveActivities = cache.getPerspectiveActivities();
+        assertEquals(perspectiveActivities.size(), 1);
     }
 }

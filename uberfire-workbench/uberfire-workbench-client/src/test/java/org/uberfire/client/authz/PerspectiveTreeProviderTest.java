@@ -19,14 +19,16 @@ package org.uberfire.client.authz;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.mvp.Activity;
+import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.resources.i18n.PermissionTreeI18n;
 import org.uberfire.security.authz.Permission;
@@ -43,7 +45,7 @@ import static org.mockito.Mockito.*;
 public class PerspectiveTreeProviderTest {
 
     @Mock
-    SyncBeanManager beanManager;
+    ActivityBeansCache activityBeansCache;
 
     @Mock
     PermissionTreeI18n i18n;
@@ -57,9 +59,9 @@ public class PerspectiveTreeProviderTest {
 
     @Before
     public void setUp() {
-        Collection<SyncBeanDef<PerspectiveActivity>> beanDefs = new ArrayList<>();
-        SyncBeanDef<PerspectiveActivity> bean1 = mock(SyncBeanDef.class);
-        SyncBeanDef<PerspectiveActivity> bean2 = mock(SyncBeanDef.class);
+        List<SyncBeanDef<Activity>> beanDefs = new ArrayList<>();
+        SyncBeanDef<Activity> bean1 = mock(SyncBeanDef.class);
+        SyncBeanDef<Activity> bean2 = mock(SyncBeanDef.class);
         PerspectiveActivity perspective1 = mock(PerspectiveActivity.class);
         PerspectiveActivity perspective2 = mock(PerspectiveActivity.class);
         when(bean1.getInstance()).thenReturn(perspective1);
@@ -68,10 +70,10 @@ public class PerspectiveTreeProviderTest {
         when(perspective2.getIdentifier()).thenReturn("Perspective2");
         beanDefs.add(bean1);
         beanDefs.add(bean2);
-        when(beanManager.lookupBeans(PerspectiveActivity.class)).thenReturn(beanDefs);
+        when(activityBeansCache.getPerspectiveActivities()).thenReturn(beanDefs);
 
         permissionManager = new DefaultPermissionManager();
-        provider = new PerspectiveTreeProvider(beanManager,
+        provider = new PerspectiveTreeProvider(activityBeansCache,
                                                permissionManager,
                                                i18n);
         provider.setRootNodeName("root");

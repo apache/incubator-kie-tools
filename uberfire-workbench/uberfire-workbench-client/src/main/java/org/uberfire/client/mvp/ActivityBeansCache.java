@@ -246,6 +246,16 @@ public class ActivityBeansCache {
         throw new EditorResourceTypeNotFound();
     }
 
+    public List<SyncBeanDef<Activity>> getPerspectiveActivities() {
+        List<SyncBeanDef<Activity>> results = new ArrayList<>();
+        for (SyncBeanDef<Activity> beanDef : activitiesById.values()) {
+            if (beanDef.isAssignableTo(PerspectiveActivity.class)) {
+                results.add(beanDef);
+            }
+        }
+        return results;
+    }
+
     Pair<Integer, List<String>> generateActivityMetaInfo(SyncBeanDef<Activity> activityBean) {
         return ActivityMetaInfo.generate(activityBean);
     }

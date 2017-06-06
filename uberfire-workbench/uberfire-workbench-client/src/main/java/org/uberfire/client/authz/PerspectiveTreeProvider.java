@@ -27,8 +27,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
+import org.uberfire.client.mvp.Activity;
+import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.resources.i18n.PermissionTreeI18n;
 import org.uberfire.security.Resource;
@@ -51,7 +52,7 @@ import static org.uberfire.client.authz.PerspectiveAction.UPDATE;
 @ApplicationScoped
 public class PerspectiveTreeProvider implements PermissionTreeProvider {
 
-    private SyncBeanManager iocManager;
+    private ActivityBeansCache activityBeansCache;
     private PermissionManager permissionManager;
     private PermissionTreeI18n i18n;
     private boolean active = true;
@@ -65,10 +66,10 @@ public class PerspectiveTreeProvider implements PermissionTreeProvider {
     }
 
     @Inject
-    public PerspectiveTreeProvider(SyncBeanManager iocManager,
+    public PerspectiveTreeProvider(ActivityBeansCache activityBeansCache,
                                    PermissionManager permissionManager,
                                    PermissionTreeI18n i18n) {
-        this.iocManager = iocManager;
+        this.activityBeansCache = activityBeansCache;
         this.permissionManager = permissionManager;
         this.i18n = i18n;
         this.resourceName = i18n.perspectiveResourceName();
@@ -169,10 +170,9 @@ public class PerspectiveTreeProvider implements PermissionTreeProvider {
     private List<PermissionNode> buildPerspectiveNodes(LoadOptions options) {
 
         List<PermissionNode> nodes = new ArrayList<>();
-        for (SyncBeanDef<PerspectiveActivity> beanDef : iocManager.lookupBeans(PerspectiveActivity.class)) {
-            PerspectiveActivity p = beanDef.getInstance();
-            if (match(p,
-                      options)) {
+        for (SyncBeanDef<Activity> beanDef : activityBeansCache.getPerspectiveActivities()) {
+            PerspectiveActivity p = (PerspectiveActivity) beanDef.getInstance();
+            if (match(p, options)) {
                 nodes.add(toPerspectiveNode(p));
             }
         }

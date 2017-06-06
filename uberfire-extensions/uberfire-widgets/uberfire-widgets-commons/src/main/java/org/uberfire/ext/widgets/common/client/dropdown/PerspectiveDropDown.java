@@ -27,7 +27,8 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.uberfire.client.mvp.Activity;
+import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
@@ -35,24 +36,20 @@ import org.uberfire.mvp.Command;
 @Dependent
 public class PerspectiveDropDown implements IsWidget {
 
-    SyncBeanManager iocManager;
+    ActivityBeansCache activityBeansCache;
     LiveSearchDropDown liveSearchDropDown;
     PerspectiveNameProvider perspectiveNameProvider;
     Set<String> perspectiveIdsExcluded;
     LiveSearchService searchService = (pattern, maxResults, callback) -> {
 
         List<String> result = new ArrayList<>();
-        for (SyncBeanDef<PerspectiveActivity> beanDef : iocManager.lookupBeans(PerspectiveActivity.class)) {
-            PerspectiveActivity p = beanDef.getInstance();
-            try {
-                if (perspectiveIdsExcluded == null || !perspectiveIdsExcluded.contains(p.getIdentifier())) {
-                    String name = getItemName(p);
-                    if (name.toLowerCase().contains(pattern.toLowerCase())) {
-                        result.add(name);
-                    }
+        for (SyncBeanDef<Activity> beanDef : activityBeansCache.getPerspectiveActivities()) {
+            String perspectiveName = beanDef.getName();
+            if (perspectiveIdsExcluded == null || !perspectiveIdsExcluded.contains(perspectiveName)) {
+                String name = getItemName(perspectiveName);
+                if (name.toLowerCase().contains(pattern.toLowerCase())) {
+                    result.add(name);
                 }
-            } finally {
-                iocManager.destroyBean(p);
             }
         }
 
@@ -65,9 +62,9 @@ public class PerspectiveDropDown implements IsWidget {
     };
 
     @Inject
-    public PerspectiveDropDown(SyncBeanManager iocManager,
+    public PerspectiveDropDown(ActivityBeansCache activityBeansCache,
                                LiveSearchDropDown liveSearchDropDown) {
-        this.iocManager = iocManager;
+        this.activityBeansCache = activityBeansCache;
         this.liveSearchDropDown = liveSearchDropDown;
         this.perspectiveNameProvider = null;
     }
@@ -94,8 +91,8 @@ public class PerspectiveDropDown implements IsWidget {
     }
 
     public PerspectiveActivity getDefaultPerspective() {
-        for (SyncBeanDef<PerspectiveActivity> beanDef : iocManager.lookupBeans(PerspectiveActivity.class)) {
-            PerspectiveActivity p = beanDef.getInstance();
+        for (SyncBeanDef beanDef : activityBeansCache.getPerspectiveActivities()) {
+            PerspectiveActivity p = (PerspectiveActivity) beanDef.getInstance();
             if (p.isDefault()) {
                 return p;
             }
@@ -108,8 +105,8 @@ public class PerspectiveDropDown implements IsWidget {
         if (selected == null) {
             return null;
         }
-        for (SyncBeanDef<PerspectiveActivity> beanDef : iocManager.lookupBeans(PerspectiveActivity.class)) {
-            PerspectiveActivity p = beanDef.getInstance();
+        for (SyncBeanDef beanDef : activityBeansCache.getPerspectiveActivities()) {
+            PerspectiveActivity p = (PerspectiveActivity) beanDef.getInstance();
             String name = getItemName(p);
             if (selected.equals(name)) {
                 return p;
