@@ -17,7 +17,6 @@
 package org.uberfire.ext.editor.commons.backend.service;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,6 +42,7 @@ import org.uberfire.ext.editor.commons.backend.service.restriction.LockRestricto
 import org.uberfire.ext.editor.commons.service.ValidationService;
 import org.uberfire.ext.editor.commons.service.restriction.PathOperationRestriction;
 import org.uberfire.ext.editor.commons.service.restrictor.CopyRestrictor;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mocks.FileSystemTestingUtils;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
@@ -58,8 +58,8 @@ public class CopyServiceImplTest {
 
     private static FileSystemTestingUtils fileSystemTestingUtils = new FileSystemTestingUtils();
     private final List<String> restrictedFileNames = new ArrayList<String>();
-    @Mock
-    private ResourceCopiedEventMock resourceCopiedEvent;
+    @Spy
+    private Event<ResourceCopiedEvent> resourceCopiedEvent = new EventSourceMock<>();
     @Mock
     private Instance<CopyRestrictor> copyRestrictorBeans;
     @Mock
@@ -94,6 +94,8 @@ public class CopyServiceImplTest {
         doReturn(Collections.EMPTY_LIST).when(pathNamingService).getResourceTypeDefinitions();
 
         mockCopyRestrictors();
+
+        doNothing().when(resourceCopiedEvent).fire(any(ResourceCopiedEvent.class));
     }
 
     @After
@@ -353,21 +355,4 @@ public class CopyServiceImplTest {
         when(copyService.getCopyRestrictors()).thenReturn(copyRestrictors);
     }
 
-    private class ResourceCopiedEventMock implements Event<ResourceCopiedEvent> {
-
-        @Override
-        public void fire(final ResourceCopiedEvent resourceCopiedEvent) {
-        }
-
-        @Override
-        public Event<ResourceCopiedEvent> select(final Annotation... annotations) {
-            return null;
-        }
-
-        @Override
-        public <U extends ResourceCopiedEvent> Event<U> select(final Class<U> aClass,
-                                                               final Annotation... annotations) {
-            return null;
-        }
-    }
 }
