@@ -62,6 +62,7 @@
     <version.org.webjars.bower.org.patternfly>3.18.1</version.org.webjars.bower.org.patternfly>
     <version.org.webjars.bower.google-code-prettify>1.0.4</version.org.webjars.bower.google-code-prettify>
     <version.org.webjars.bower.bootstrap-select>1.10.0</version.org.webjars.bower.bootstrap-select>
+    <version.org.webjars.bower.moment>2.14.1</version.org.webjars.bower.moment>
     <version.org.gwtbootstrap3>0.9.3</version.org.gwtbootstrap3>
 
     <version.org.jboss.byteman>3.0.6</version.org.jboss.byteman>

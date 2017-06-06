@@ -33,4 +33,7 @@ public interface PatternFlyClientBundle extends ClientBundle {
     @Source("org/uberfire/client/views/static/js/patternfly.min.js")
     TextResource patternFly();
 
+    @Source("org/uberfire/client/views/static/moment/moment-with-locales.min.js")
+    TextResource moment();
+
 }

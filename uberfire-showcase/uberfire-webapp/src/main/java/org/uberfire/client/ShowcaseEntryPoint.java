@@ -56,6 +56,7 @@ import org.uberfire.client.views.pfly.menu.MainBrand;
 import org.uberfire.client.views.pfly.menu.UserMenu;
 import org.uberfire.client.views.pfly.modal.Bs3Modal;
 import org.uberfire.client.views.pfly.modal.ErrorPopupView;
+import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
@@ -145,12 +146,18 @@ public class ShowcaseEntryPoint {
 
     @AfterInitialization
     public void startApp() {
+        PatternFlyBootstrapper.ensureMomentIsAvailable();
         hideLoadingPopup();
         GWT.log("PatternFly version: " + getPatternFlyVersion());
+        GWT.log("Loaded MomentJS using locale: " + getMomentLocale());
     }
 
     private native String getPatternFlyVersion()/*-{
         return $wnd.patternfly.version;
+    }-*/;
+
+    private native String getMomentLocale()/*-{
+        return $wnd.moment.locale();
     }-*/;
 
     private void setupMenu(@Observes final ApplicationReadyEvent event) {

@@ -183,6 +183,27 @@
               <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
+          <execution>
+            <id>unpack-moment</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.webjars.bower</groupId>
+                  <artifactId>moment</artifactId>
+                  <version>${version.org.webjars.bower.moment}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/moment</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -241,6 +262,24 @@
                   <directory>${project.build.directory}/bootstrap-select/META-INF/resources/webjars/bootstrap-select/${version.org.webjars.bower.bootstrap-select}/dist</directory>
                   <includes>
                     <include>**</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-moment-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static/moment</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/moment/META-INF/resources/webjars/moment/${version.org.webjars.bower.moment}/min/</directory>
+                  <includes>
+                    <include>moment-with-locales.min.js</include>
                   </includes>
                 </resource>
               </resources>

@@ -19,6 +19,8 @@ package org.uberfire.client.views.pfly.sys;
 import com.google.gwt.core.client.ScriptInjector;
 import org.gwtbootstrap3.client.GwtBootstrap3ClientBundle;
 
+import static org.uberfire.client.views.pfly.sys.MomentUtils.setMomentLocale;
+
 /**
  * Utilities for ensuring the PatternFly/BS3 system is working early enough that the app can start correctly.
  */
@@ -62,6 +64,15 @@ public class PatternFlyBootstrapper {
         }
     }
 
+    public static void ensureMomentIsAvailable() {
+        if (!isMomentLoaded()) {
+            ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.moment().getText())
+                    .setWindow(ScriptInjector.TOP_WINDOW)
+                    .inject();
+        }
+        setMomentLocale();
+    }
+
     /**
      * Checks to see if jQuery is already present.
      * @return true is jQuery is loaded, false otherwise.
@@ -84,6 +95,14 @@ public class PatternFlyBootstrapper {
      */
     private static native boolean isBootstrapSelectLoaded() /*-{
         return (typeof $wnd['Selectpicker'] !== 'undefined');
+    }-*/;
+
+    /**
+     * Checks to see if moment is already present.
+     * @return true is moment is loaded, false otherwise.
+     */
+    public static native boolean isMomentLoaded() /*-{
+        return (typeof $wnd['moment'] !== 'undefined');
     }-*/;
 
     /**
