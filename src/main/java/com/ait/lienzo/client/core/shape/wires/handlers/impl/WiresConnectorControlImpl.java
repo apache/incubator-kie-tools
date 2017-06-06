@@ -220,7 +220,7 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
 
     }
 
-    public HandlerRegistrationManager getM_HandlerRegistrationManager()
+    public HandlerRegistrationManager getHandlerRegistrationManager()
     {
         return m_HandlerRegistrationManager;
     }

@@ -20,6 +20,8 @@ package com.ait.lienzo.client.core.shape.wires;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
 import com.ait.lienzo.shared.core.types.Direction;
@@ -34,9 +36,11 @@ public class WiresConnection extends AbstractControlHandle
 
     private MultiPath                             m_endPath;
 
-    Point2D                                       m_point;
+    private Point2D                               m_point;
 
-    ArrowEnd                                      m_end;
+    private ArrowEnd                              m_end;
+
+    private boolean                               m_autoConnection;
 
     public WiresConnection(WiresConnector connector, MultiPath endPath, ArrowEnd end)
     {
@@ -112,6 +116,16 @@ public class WiresConnection extends AbstractControlHandle
     public WiresConnector getConnector()
     {
         return m_connector;
+    }
+
+    public boolean isAutoConnection()
+    {
+        return m_autoConnection;
+    }
+
+    public void setAutoConnection(boolean m_autoConnection)
+    {
+        this.m_autoConnection = m_autoConnection;
     }
 
     public WiresConnection setMagnet(final WiresMagnet magnet)

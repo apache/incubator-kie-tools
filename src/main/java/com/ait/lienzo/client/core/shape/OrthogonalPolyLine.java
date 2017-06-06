@@ -78,7 +78,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
         if (null != points)
         {
-            points = points.noAdjacentPoints();// this clones the points, so we are ok to mutate the elements (see tail/head offset)
+            points = points.copy();// this clones the points, so we are ok to mutate the elements (see tail/head offset)
 
             if (points.size() > 1)
             {
@@ -174,7 +174,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
     }
 
 
-    private static final Point2D correctEndWithOffset(double offset, Direction direction, final Point2D target)
+    public static final Point2D correctEndWithOffset(double offset, Direction direction, final Point2D target)
     {
         switch (direction)
         {

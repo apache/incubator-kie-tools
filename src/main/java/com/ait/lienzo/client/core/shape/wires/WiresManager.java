@@ -132,6 +132,7 @@ public final class WiresManager
 
             return true;
         }
+
     }
 
     public MagnetManager getMagnetManager()

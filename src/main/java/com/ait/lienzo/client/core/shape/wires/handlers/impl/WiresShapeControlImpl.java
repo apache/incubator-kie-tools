@@ -17,6 +17,9 @@
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
+import com.ait.lienzo.client.core.shape.wires.WiresConnection;
+import com.ait.lienzo.client.core.shape.wires.WiresConnector;
+import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
@@ -101,7 +104,8 @@ public class WiresShapeControlImpl implements WiresShapeControl
         }
 
         // Cancel the drag operation if docking or containment not allowed.
-        if (!allowed) {
+        if (!allowed)
+        {
             context.reset();
             return false;
         }
@@ -147,8 +151,27 @@ public class WiresShapeControlImpl implements WiresShapeControl
             }
         }
 
+        checkAutoConnections();
+
+
         return adjusted1 || adjusted2;
 
+    }
+
+    public void checkAutoConnections()
+    {
+        // started with 1, as 0 is center
+        for ( int i = 1, size0 = m_shape.getMagnets().size(); i < size0; i++ )
+        {
+            WiresMagnet m = m_shape.getMagnets().getMagnet(i);
+            for ( int j = 0, size1 = m.getConnectionsSize(); j < size1; j++ )
+            {
+                WiresConnection connection = m.getConnections().get(j);
+
+                WiresConnector connector = connection.getConnector();
+                connector.setAutoConnections();
+            }
+        }
     }
 
     @Override
