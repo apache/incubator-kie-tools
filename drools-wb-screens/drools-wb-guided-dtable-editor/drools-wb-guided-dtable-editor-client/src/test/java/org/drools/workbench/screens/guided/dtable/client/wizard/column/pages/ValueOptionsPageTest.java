@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 import java.util.HashMap;
 
 import com.google.gwt.junit.GWTMockUtilities;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
@@ -26,7 +27,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ConditionColumnPlugin;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.PatternWrapper;
@@ -72,9 +72,6 @@ public class ValueOptionsPageTest {
     private DTCellValue52 defaultValue;
 
     @Mock
-    private DTCellValueWidgetFactory factory;
-
-    @Mock
     private ValueOptionsPage.View view;
 
     @Mock
@@ -103,12 +100,18 @@ public class ValueOptionsPageTest {
         when(presenter.getDataModelOracle()).thenReturn(oracle);
         when(plugin.patternWrapper()).thenReturn(patternWrapper);
         when(plugin.editingCol()).thenReturn(editingCol);
+        when(plugin.getPresenter()).thenReturn(presenter);
+        when(plugin.editingPattern()).thenReturn(pattern52);
         when(page.plugin()).thenReturn(plugin);
+        when(model.getTableFormat()).thenReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
+
+        doCallRealMethod().when(plugin).defaultValueWidget();
     }
 
     @Test
     public void testNewDefaultValueWidget() throws Exception {
-        page.newDefaultValueWidget();
+        when(editingCol.getValueList()).thenReturn("a,b,c");
+        assertTrue(page.newDefaultValueWidget() instanceof ListBox);
 
         verify(plugin).defaultValueWidget();
     }
@@ -137,7 +140,7 @@ public class ValueOptionsPageTest {
 
     @Test
     public void testCanSetupCepOperatorsWhenItIsEnabledAndEditingPatternIsNull() throws Exception {
-        when(plugin.patternWrapper()).thenReturn(null);
+        when(plugin.editingPattern()).thenReturn(null);
 
         page.enableCepOperators();
 
@@ -295,5 +298,24 @@ public class ValueOptionsPageTest {
         when(plugin.isBindable()).thenReturn(true);
 
         assertTrue(page.canSetupBinding());
+    }
+
+    @Test
+    public void testValueListDisabledWhenEnumsPresent() throws Exception {
+        page.enableValueList();
+        when(pattern52.getFactType()).thenReturn("factType");
+        when(plugin.getFactType()).thenReturn("factType");
+        when(plugin.getFactField()).thenReturn("factField");
+        when(plugin.doesOperatorAcceptValueList()).thenReturn(true);
+        when(oracle.hasEnums("factType",
+                             "factField")).thenReturn(true);
+
+        page.prepareView();
+
+        verify(view,
+               never()).hideValueList();
+        verify(view).disableValueList();
+        verify(oracle).hasEnums("factType",
+                                "factField");
     }
 }

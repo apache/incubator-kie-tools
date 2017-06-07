@@ -15,8 +15,13 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table.utilities;
 
+import java.util.Arrays;
+
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
@@ -25,14 +30,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class ColumnUtilitiesTest {
 
     private static final String FACT_TYPE = "MyFactType";
@@ -123,6 +127,60 @@ public class ColumnUtilitiesTest {
         column.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         column.setOperator("<");
         assertFalse(ColumnUtilities.canAcceptOtherwiseValues(column));
+    }
+
+    @Test
+    public void testGetValueConditionColumn() throws Exception {
+        column.setFactField(FIELD_NAME);
+        column.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
+        column.setValueList("a,1,1.1, ,-1");
+        String[] valueList = utilities.getValueList(column);
+        assertEquals(2,
+                     valueList.length);
+        assertEquals("1",
+                     valueList[0]);
+        assertEquals("-1",
+                     valueList[1]);
+    }
+
+    @Test
+    public void testGetValueSetFieldColumn() throws Exception {
+        pattern.setFactType(FACT_TYPE);
+        pattern.setBoundName("$a");
+        when(model.getConditions()).thenReturn(Arrays.asList(pattern));
+
+        final ActionSetFieldCol52 column = new ActionSetFieldCol52();
+        column.setFactField(FIELD_NAME);
+        column.setBoundName("$a");
+        column.setValueList("a,1,1.1, ,-1");
+        when(oracle.getFieldType(FACT_TYPE,
+                                 FIELD_NAME)).thenReturn("Integer");
+
+        String[] valueList = utilities.getValueList(column);
+        assertEquals(2,
+                     valueList.length);
+        assertEquals("1",
+                     valueList[0]);
+        assertEquals("-1",
+                     valueList[1]);
+    }
+
+    @Test
+    public void testGetValueInsertFactColumn() throws Exception {
+        final ActionInsertFactCol52 column = new ActionInsertFactCol52();
+        column.setFactField(FIELD_NAME);
+        column.setFactType(FACT_TYPE);
+        column.setValueList("a,1,1.1, ,-1");
+        when(oracle.getFieldType(FACT_TYPE,
+                                 FIELD_NAME)).thenReturn(DataType.TYPE_NUMERIC_INTEGER);
+
+        String[] valueList = utilities.getValueList(column);
+        assertEquals(2,
+                     valueList.length);
+        assertEquals("1",
+                     valueList[0]);
+        assertEquals("-1",
+                     valueList[1]);
     }
 
     private void check() {

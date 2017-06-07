@@ -27,7 +27,6 @@ import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.file.Path;
 
@@ -38,46 +37,43 @@ public class TestScenarioFileIndexer extends AbstractFileIndexer {
     private DataModelService dataModelService;
 
     @Inject
-    protected KieProjectService projectService;
-
-    @Inject
     protected TestScenarioResourceTypeDefinition type;
 
     @Override
-    public boolean supportsPath( final Path path ) {
-        return type.accept( Paths.convert( path ) );
+    public boolean supportsPath(final Path path) {
+        return type.accept(Paths.convert(path));
     }
 
     @Override
-    public DefaultIndexBuilder fillIndexBuilder( final Path path ) throws Exception {
-        final String content = ioService.readAllString( path );
-        final Scenario model = ScenarioXMLPersistence.getInstance().unmarshal( content );
+    public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
+        final String content = ioService.readAllString(path);
+        final Scenario model = ScenarioXMLPersistence.getInstance().unmarshal(content);
 
-        final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
-        final Project project = projectService.resolveProject( Paths.convert( path ) );
-        final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
+        final ProjectDataModelOracle dmo = getProjectDataModelOracle(path);
+        final Project project = projectService.resolveProject(Paths.convert(path));
+        final Package pkg = projectService.resolvePackage(Paths.convert(path));
 
-        final DefaultIndexBuilder builder = new DefaultIndexBuilder( Paths.convert(path).getFileName(),
-                                                                     project,
-                                                                     pkg );
-        final TestScenarioIndexVisitor visitor = new TestScenarioIndexVisitor( dmo,
-                                                                               builder,
-                                                                               model );
+        final DefaultIndexBuilder builder = new DefaultIndexBuilder(Paths.convert(path).getFileName(),
+                                                                    project,
+                                                                    pkg);
+        final TestScenarioIndexVisitor visitor = new TestScenarioIndexVisitor(dmo,
+                                                                              builder,
+                                                                              model);
         visitor.visit();
 
-        addReferencedResourcesToIndexBuilder(builder, visitor);
+        addReferencedResourcesToIndexBuilder(builder,
+                                             visitor);
 
         return builder;
     }
 
     //Delegate resolution of package name to method to assist testing
-    protected String getPackageName( final Path path ) {
-        return projectService.resolvePackage( Paths.convert( path ) ).getPackageName();
+    protected String getPackageName(final Path path) {
+        return projectService.resolvePackage(Paths.convert(path)).getPackageName();
     }
 
     //Delegate resolution of DMO to method to assist testing
-    protected ProjectDataModelOracle getProjectDataModelOracle( final Path path ) {
-        return dataModelService.getProjectDataModel( Paths.convert( path ) );
+    protected ProjectDataModelOracle getProjectDataModelOracle(final Path path) {
+        return dataModelService.getProjectDataModel(Paths.convert(path));
     }
-
 }

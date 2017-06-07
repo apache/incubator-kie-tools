@@ -34,8 +34,8 @@ abstract class BaseWidgetFactory<T extends BaseDecisionTableColumnPlugin & HasVa
     }
 
     protected DTCellValueWidgetFactory factory() {
-        final GuidedDecisionTable52 model = getPlugin().presenter.getModel();
-        final AsyncPackageDataModelOracle oracle = getPlugin().presenter.getDataModelOracle();
+        final GuidedDecisionTable52 model = getPlugin().getPresenter().getModel();
+        final AsyncPackageDataModelOracle oracle = getPlugin().getPresenter().getDataModelOracle();
         final boolean allowEmptyValues = model.getTableFormat() == GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY;
 
         return DTCellValueWidgetFactory.getInstance(model,

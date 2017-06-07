@@ -16,17 +16,24 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget;
 
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.Mock;
 
 import java.util.HashMap;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DTCellValueWidgetFactoryTest {
@@ -34,16 +41,59 @@ public class DTCellValueWidgetFactoryTest {
     @Mock
     DTColumnConfig52 column;
 
+    @Mock
+    GuidedDecisionTable52 model;
+
+    @Mock
+    AsyncPackageDataModelOracle oracle;
+
+    ActionInsertFactCol52 insertFactCol52;
+
+    DTCellValue52 cellValue;
+
+    DTCellValueWidgetFactory factory;
+
     @Before
     public void setUp() throws Exception {
         ApplicationPreferences.setUp(new HashMap<String, String>() {{
             put(ApplicationPreferences.DATE_FORMAT,
                 "dd-MM-yyyy");
         }});
+
+        when(model.getTableFormat()).thenReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
+
+        factory = DTCellValueWidgetFactory.getInstance(model,
+                                                       oracle,
+                                                       false,
+                                                       false);
+
+        insertFactCol52 = new ActionInsertFactCol52();
+        cellValue = new DTCellValue52();
     }
 
     @Test
     public void testGetHideColumnIndicatorChecked() throws Exception {
         assertTrue(DTCellValueWidgetFactory.getHideColumnIndicator(column) instanceof HideColumnCheckBox);
+    }
+
+    @Test
+    public void testGetWidgetValueList() throws Exception {
+        insertFactCol52.setValueList("a,b,c");
+        Widget widget = factory.getWidget(insertFactCol52,
+                                          cellValue);
+
+        assertTrue(widget instanceof ListBox);
+    }
+
+    @Test
+    public void testGetWidgetEnums() throws Exception {
+        insertFactCol52.setFactType("Person");
+        insertFactCol52.setFactField("name");
+        when(oracle.hasEnums("Person",
+                             "name")).thenReturn(true);
+        Widget widget = factory.getWidget(insertFactCol52,
+                                          cellValue);
+
+        assertTrue(widget instanceof ListBox);
     }
 }

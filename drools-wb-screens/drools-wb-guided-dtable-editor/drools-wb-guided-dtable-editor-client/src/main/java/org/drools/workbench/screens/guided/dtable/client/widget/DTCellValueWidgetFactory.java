@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -158,62 +159,30 @@ public class DTCellValueWidgetFactory {
                             ConditionCol52 column,
                             DTCellValue52 value) {
 
+        final boolean isMultipleSelect = isExplicitListOperator(column.getOperator());
+
         //Check if the column has a "Value List" or an enumeration. Value List takes precedence
         if (columnUtilities.hasValueList(column)) {
             final String[] valueList = columnUtilities.getValueList(column);
-            return makeListBox(DropDownData.create(valueList),
-                               pattern,
-                               column,
-                               value);
+            return makeListBoxForColumn(DropDownData.create(valueList),
+                                        pattern,
+                                        column,
+                                        value,
+                                        isMultipleSelect);
         } else if (oracle.hasEnums(pattern.getFactType(),
                                    column.getFactField())) {
-            final LimitedEntryDropDownManager.Context context = new LimitedEntryDropDownManager.Context(pattern,
-                                                                                                        column);
-            final Map<String, String> currentValueMap = dropDownManager.getCurrentValueMap(context);
-            final DropDownData dd = oracle.getEnums(pattern.getFactType(),
-                                                    column.getFactField(),
-                                                    currentValueMap);
-            //No drop-down data defined
-            if (dd == null) {
-                return makeListBox(DropDownData.create(new String[0]),
-                                   pattern,
-                                   column,
-                                   value);
-            }
-            return makeListBox(dd,
-                               pattern,
-                               column,
-                               value);
+            return makeHasEnumsListBox(pattern,
+                                       column,
+                                       value,
+                                       isMultipleSelect,
+                                       column.getFactField(),
+                                       pattern.getFactType());
         }
 
         DataType.DataTypes type = columnUtilities.getTypeSafeType(pattern,
                                                                   column);
-        switch (type) {
-            case NUMERIC:
-                return makeNumericTextBox(value);
-            case NUMERIC_BIGDECIMAL:
-                return makeNumericBigDecimalTextBox(value);
-            case NUMERIC_BIGINTEGER:
-                return makeNumericBigIntegerTextBox(value);
-            case NUMERIC_BYTE:
-                return makeNumericByteTextBox(value);
-            case NUMERIC_DOUBLE:
-                return makeNumericDoubleTextBox(value);
-            case NUMERIC_FLOAT:
-                return makeNumericFloatTextBox(value);
-            case NUMERIC_INTEGER:
-                return makeNumericIntegerTextBox(value);
-            case NUMERIC_LONG:
-                return makeNumericLongTextBox(value);
-            case NUMERIC_SHORT:
-                return makeNumericShortTextBox(value);
-            case BOOLEAN:
-                return makeBooleanSelector(value);
-            case DATE:
-                return makeDateSelector(value);
-            default:
-                return makeTextBox(value);
-        }
+        return makeHasNoValuesAndEnumsWidget(type,
+                                             value);
     }
 
     /**
@@ -250,58 +219,25 @@ public class DTCellValueWidgetFactory {
         //Check if the column has a "Value List" or an enumeration. Value List takes precedence
         if (columnUtilities.hasValueList(column)) {
             final String[] valueList = columnUtilities.getValueList(column);
-            return makeListBox(DropDownData.create(valueList),
-                               pattern,
-                               column,
-                               value);
+            return makeListBoxForColumn(DropDownData.create(valueList),
+                                        pattern,
+                                        column,
+                                        value,
+                                        false);
         } else if (oracle.hasEnums(pattern.getFactType(),
                                    column.getFactField())) {
-            final LimitedEntryDropDownManager.Context context = new LimitedEntryDropDownManager.Context(pattern,
-                                                                                                        column);
-            final Map<String, String> currentValueMap = dropDownManager.getCurrentValueMap(context);
-            final DropDownData dd = oracle.getEnums(pattern.getFactType(),
-                                                    column.getFactField(),
-                                                    currentValueMap);
-            if (dd == null) {
-                return makeListBox(DropDownData.create(new String[0]),
-                                   pattern,
-                                   column,
-                                   value);
-            }
-            return makeListBox(dd,
-                               pattern,
-                               column,
-                               value);
+            return makeHasEnumsListBox(pattern,
+                                       column,
+                                       value,
+                                       false,
+                                       column.getFactField(),
+                                       pattern.getFactType());
         }
 
         DataType.DataTypes type = columnUtilities.getTypeSafeType(pattern,
                                                                   column);
-        switch (type) {
-            case NUMERIC:
-                return makeNumericTextBox(value);
-            case NUMERIC_BIGDECIMAL:
-                return makeNumericBigDecimalTextBox(value);
-            case NUMERIC_BIGINTEGER:
-                return makeNumericBigIntegerTextBox(value);
-            case NUMERIC_BYTE:
-                return makeNumericByteTextBox(value);
-            case NUMERIC_DOUBLE:
-                return makeNumericDoubleTextBox(value);
-            case NUMERIC_FLOAT:
-                return makeNumericFloatTextBox(value);
-            case NUMERIC_INTEGER:
-                return makeNumericIntegerTextBox(value);
-            case NUMERIC_LONG:
-                return makeNumericLongTextBox(value);
-            case NUMERIC_SHORT:
-                return makeNumericShortTextBox(value);
-            case BOOLEAN:
-                return makeBooleanSelector(value);
-            case DATE:
-                return makeDateSelector(value);
-            default:
-                return makeTextBox(value);
-        }
+        return makeHasNoValuesAndEnumsWidget(type,
+                                             value);
     }
 
     /**
@@ -317,27 +253,55 @@ public class DTCellValueWidgetFactory {
         //Check if the column has a "Value List" or an enumeration. Value List takes precedence
         if (columnUtilities.hasValueList(column)) {
             final String[] valueList = columnUtilities.getValueList(column);
-            return makeListBox(DropDownData.create(valueList),
-                               column,
-                               value);
+            return makeListBoxForColumn(DropDownData.create(valueList),
+                                        null,
+                                        column,
+                                        value,
+                                        false);
         } else if (oracle.hasEnums(column.getFactType(),
                                    column.getFactField())) {
-            final LimitedEntryDropDownManager.Context context = new LimitedEntryDropDownManager.Context(column);
-            final Map<String, String> currentValueMap = dropDownManager.getCurrentValueMap(context);
-            final DropDownData dd = oracle.getEnums(column.getFactType(),
-                                                    column.getFactField(),
-                                                    currentValueMap);
-            if (dd == null) {
-                return makeListBox(DropDownData.create(new String[0]),
-                                   column,
-                                   value);
-            }
-            return makeListBox(dd,
-                               column,
-                               value);
+            return makeHasEnumsListBox(null,
+                                       column,
+                                       value,
+                                       false,
+                                       column.getFactField(),
+                                       column.getFactType());
         }
 
         DataType.DataTypes type = columnUtilities.getTypeSafeType(column);
+        return makeHasNoValuesAndEnumsWidget(type,
+                                             value);
+    }
+
+    private ListBox makeHasEnumsListBox(Pattern52 pattern,
+                                        BaseColumn column,
+                                        DTCellValue52 value,
+                                        boolean isMultipleSelect,
+                                        String factField,
+                                        String factType) {
+        final LimitedEntryDropDownManager.Context context = new LimitedEntryDropDownManager.Context(pattern,
+                                                                                                    column);
+        final Map<String, String> currentValueMap = dropDownManager.getCurrentValueMap(context);
+        final DropDownData dd = oracle.getEnums(factType,
+                                                factField,
+                                                currentValueMap);
+        //No drop-down data defined
+        if (dd == null) {
+            return makeListBoxForColumn(DropDownData.create(new String[0]),
+                                        pattern,
+                                        column,
+                                        value,
+                                        isMultipleSelect);
+        }
+        return makeListBoxForColumn(dd,
+                                    pattern,
+                                    column,
+                                    value,
+                                    isMultipleSelect);
+    }
+
+    private Widget makeHasNoValuesAndEnumsWidget(DataType.DataTypes type,
+                                                 DTCellValue52 value) {
         switch (type) {
             case NUMERIC:
                 return makeNumericTextBox(value);
@@ -402,11 +366,11 @@ public class DTCellValueWidgetFactory {
         return lb;
     }
 
-    private ListBox makeListBox(final DropDownData dd,
-                                final Pattern52 basePattern,
-                                final ConditionCol52 baseCondition,
-                                final DTCellValue52 dcv) {
-        final boolean isMultipleSelect = isExplicitListOperator(baseCondition.getOperator());
+    private ListBox makeListBoxForColumn(final DropDownData dd,
+                                         final Pattern52 basePattern,
+                                         final BaseColumn baseCondition,
+                                         final DTCellValue52 dcv,
+                                         final boolean isMultipleSelect) {
         final ListBox lb = makeListBox(dd,
                                        isMultipleSelect,
                                        dcv);
@@ -462,92 +426,10 @@ public class DTCellValueWidgetFactory {
     }
 
     private ListBox makeListBox(final DropDownData dd,
-                                final Pattern52 basePattern,
-                                final ActionSetFieldCol52 baseAction,
-                                final DTCellValue52 value) {
-        final ListBox lb = makeListBox(dd,
-                                       value);
-
-        // Wire up update handler
-        lb.setEnabled(!isReadOnly);
-        if (!isReadOnly) {
-            lb.addChangeHandler(new ChangeHandler() {
-
-                public void onChange(ChangeEvent event) {
-                    int index = lb.getSelectedIndex();
-                    if (index > -1) {
-                        //Set base column value
-                        value.setStringValue(lb.getValue(index));
-
-                        //Update any dependent enumerations
-                        final LimitedEntryDropDownManager.Context context = new LimitedEntryDropDownManager.Context(basePattern,
-                                                                                                                    baseAction);
-                        Set<Integer> dependentColumnIndexes = dropDownManager.getDependentColumnIndexes(context);
-                        for (Integer iCol : dependentColumnIndexes) {
-                            BaseColumn column = model.getExpandedColumns().get(iCol);
-                            if (column instanceof LimitedEntryCol) {
-                                ((LimitedEntryCol) column).setValue(null);
-                            } else if (column instanceof DTColumnConfig52) {
-                                ((DTColumnConfig52) column).setDefaultValue(null);
-                            }
-                        }
-                    } else {
-                        value.setStringValue(null);
-                    }
-                }
-            });
-        }
-        return lb;
-    }
-
-    private ListBox makeListBox(final DropDownData dd,
-                                final ActionInsertFactCol52 baseAction,
-                                final DTCellValue52 value) {
-        final ListBox lb = makeListBox(dd,
-                                       value);
-
-        // Wire up update handler
-        lb.setEnabled(!isReadOnly);
-        if (!isReadOnly) {
-            lb.addChangeHandler(new ChangeHandler() {
-
-                public void onChange(ChangeEvent event) {
-                    int index = lb.getSelectedIndex();
-                    if (index > -1) {
-                        //Set base column value
-                        value.setStringValue(lb.getValue(index));
-
-                        //Update any dependent enumerations
-                        final LimitedEntryDropDownManager.Context context = new LimitedEntryDropDownManager.Context(baseAction);
-                        Set<Integer> dependentColumnIndexes = dropDownManager.getDependentColumnIndexes(context);
-                        for (Integer iCol : dependentColumnIndexes) {
-                            BaseColumn column = model.getExpandedColumns().get(iCol);
-                            if (column instanceof LimitedEntryCol) {
-                                ((LimitedEntryCol) column).setValue(null);
-                            } else if (column instanceof DTColumnConfig52) {
-                                ((DTColumnConfig52) column).setDefaultValue(null);
-                            }
-                        }
-                    } else {
-                        value.setStringValue(null);
-                    }
-                }
-            });
-        }
-        return lb;
-    }
-
-    private ListBox makeListBox(final DropDownData dd,
-                                final DTCellValue52 value) {
-        return makeListBox(dd,
-                           false,
-                           value);
-    }
-
-    private ListBox makeListBox(final DropDownData dd,
                                 final boolean isMultipleSelect,
                                 final DTCellValue52 value) {
-        final ListBox lb = new ListBox(isMultipleSelect);
+        final ListBox lb = new ListBox();
+        lb.setMultipleSelect(isMultipleSelect);
 
         final EnumDropDownUtilities utilities = new EnumDropDownUtilities() {
             @Override
@@ -589,24 +471,11 @@ public class DTCellValueWidgetFactory {
 
         // Wire up update handler
         tb.setEnabled(!isReadOnly);
-        if (!isReadOnly) {
-            tb.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-                public void onValueChange(ValueChangeEvent<String> event) {
-                    try {
-                        value.setNumericValue(new BigDecimal(event.getValue()));
-                    } catch (NumberFormatException nfe) {
-                        if (allowEmptyValues) {
-                            value.setNumericValue((BigDecimal) null);
-                            tb.setValue("");
-                        } else {
-                            value.setNumericValue(BigDecimal.ZERO);
-                            tb.setValue(BigDecimal.ZERO.toPlainString());
-                        }
-                    }
-                }
-            });
-        }
+        addNumericTextBoxChangeHandler(tb,
+                                       value,
+                                       (input -> new BigDecimal(input)),
+                                       (BigDecimal) null,
+                                       BigDecimal.ZERO);
         return tb;
     }
 
@@ -617,24 +486,11 @@ public class DTCellValueWidgetFactory {
 
         // Wire up update handler
         tb.setEnabled(!isReadOnly);
-        if (!isReadOnly) {
-            tb.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-                public void onValueChange(ValueChangeEvent<String> event) {
-                    try {
-                        value.setNumericValue(new BigDecimal(event.getValue()));
-                    } catch (NumberFormatException nfe) {
-                        if (allowEmptyValues) {
-                            value.setNumericValue((BigDecimal) null);
-                            tb.setValue("");
-                        } else {
-                            value.setNumericValue(BigDecimal.ZERO);
-                            tb.setValue(BigDecimal.ZERO.toPlainString());
-                        }
-                    }
-                }
-            });
-        }
+        addNumericTextBoxChangeHandler(tb,
+                                       value,
+                                       (input -> new BigDecimal(input)),
+                                       (BigDecimal) null,
+                                       BigDecimal.ZERO);
         return tb;
     }
 
@@ -645,24 +501,11 @@ public class DTCellValueWidgetFactory {
 
         // Wire up update handler
         tb.setEnabled(!isReadOnly);
-        if (!isReadOnly) {
-            tb.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-                public void onValueChange(ValueChangeEvent<String> event) {
-                    try {
-                        value.setNumericValue(new BigInteger(event.getValue()));
-                    } catch (NumberFormatException nfe) {
-                        if (allowEmptyValues) {
-                            value.setNumericValue((BigInteger) null);
-                            tb.setValue("");
-                        } else {
-                            value.setNumericValue(BigInteger.ZERO);
-                            tb.setValue(BigInteger.ZERO.toString());
-                        }
-                    }
-                }
-            });
-        }
+        addNumericTextBoxChangeHandler(tb,
+                                       value,
+                                       (input -> new BigInteger(input)),
+                                       (BigInteger) null,
+                                       BigInteger.ZERO);
         return tb;
     }
 
@@ -673,24 +516,11 @@ public class DTCellValueWidgetFactory {
 
         // Wire up update handler
         tb.setEnabled(!isReadOnly);
-        if (!isReadOnly) {
-            tb.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-                public void onValueChange(ValueChangeEvent<String> event) {
-                    try {
-                        value.setNumericValue(Byte.valueOf(event.getValue()));
-                    } catch (NumberFormatException nfe) {
-                        if (allowEmptyValues) {
-                            value.setNumericValue((Byte) null);
-                            tb.setValue("");
-                        } else {
-                            value.setNumericValue(Byte.valueOf("0"));
-                            tb.setValue("0");
-                        }
-                    }
-                }
-            });
-        }
+        addNumericTextBoxChangeHandler(tb,
+                                       value,
+                                       (input -> Byte.valueOf(input)),
+                                       (Byte) null,
+                                       new Byte("0"));
         return tb;
     }
 
@@ -701,24 +531,11 @@ public class DTCellValueWidgetFactory {
 
         // Wire up update handler
         tb.setEnabled(!isReadOnly);
-        if (!isReadOnly) {
-            tb.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-                public void onValueChange(ValueChangeEvent<String> event) {
-                    try {
-                        value.setNumericValue(new Double(event.getValue()));
-                    } catch (NumberFormatException nfe) {
-                        if (allowEmptyValues) {
-                            value.setNumericValue((Double) null);
-                            tb.setValue("");
-                        } else {
-                            value.setNumericValue(new Double("0"));
-                            tb.setValue("0");
-                        }
-                    }
-                }
-            });
-        }
+        addNumericTextBoxChangeHandler(tb,
+                                       value,
+                                       (input -> Double.valueOf(input)),
+                                       (Double) null,
+                                       new Double("0"));
         return tb;
     }
 
@@ -729,24 +546,11 @@ public class DTCellValueWidgetFactory {
 
         // Wire up update handler
         tb.setEnabled(!isReadOnly);
-        if (!isReadOnly) {
-            tb.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-                public void onValueChange(ValueChangeEvent<String> event) {
-                    try {
-                        value.setNumericValue(new Float(event.getValue()));
-                    } catch (NumberFormatException nfe) {
-                        if (allowEmptyValues) {
-                            value.setNumericValue((Float) null);
-                            tb.setValue("");
-                        } else {
-                            value.setNumericValue(new Float("0"));
-                            tb.setValue("0");
-                        }
-                    }
-                }
-            });
-        }
+        addNumericTextBoxChangeHandler(tb,
+                                       value,
+                                       (input -> Float.valueOf(input)),
+                                       (Float) null,
+                                       new Float("0"));
         return tb;
     }
 
@@ -757,24 +561,11 @@ public class DTCellValueWidgetFactory {
 
         // Wire up update handler
         tb.setEnabled(!isReadOnly);
-        if (!isReadOnly) {
-            tb.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-                public void onValueChange(ValueChangeEvent<String> event) {
-                    try {
-                        value.setNumericValue(Integer.valueOf(event.getValue()));
-                    } catch (NumberFormatException nfe) {
-                        if (allowEmptyValues) {
-                            value.setNumericValue((Integer) null);
-                            tb.setValue("");
-                        } else {
-                            value.setNumericValue(0);
-                            tb.setValue("0");
-                        }
-                    }
-                }
-            });
-        }
+        addNumericTextBoxChangeHandler(tb,
+                                       value,
+                                       (input -> Integer.valueOf(input)),
+                                       (Integer) null,
+                                       0);
         return tb;
     }
 
@@ -785,24 +576,12 @@ public class DTCellValueWidgetFactory {
 
         // Wire up update handler
         tb.setEnabled(!isReadOnly);
-        if (!isReadOnly) {
-            tb.addValueChangeHandler(new ValueChangeHandler<String>() {
+        addNumericTextBoxChangeHandler(tb,
+                                       value,
+                                       (input -> Long.valueOf(input)),
+                                       (Long) null,
+                                       0L);
 
-                public void onValueChange(ValueChangeEvent<String> event) {
-                    try {
-                        value.setNumericValue(Long.valueOf(event.getValue()));
-                    } catch (NumberFormatException nfe) {
-                        if (allowEmptyValues) {
-                            value.setNumericValue((Long) null);
-                            tb.setValue("");
-                        } else {
-                            value.setNumericValue(0L);
-                            tb.setValue("0");
-                        }
-                    }
-                }
-            });
-        }
         return tb;
     }
 
@@ -813,25 +592,37 @@ public class DTCellValueWidgetFactory {
 
         // Wire up update handler
         tb.setEnabled(!isReadOnly);
+        addNumericTextBoxChangeHandler(tb,
+                                       value,
+                                       (input -> Short.valueOf(input)),
+                                       (Short) null,
+                                       Short.valueOf("0"));
+        return tb;
+    }
+
+    private void addNumericTextBoxChangeHandler(final TextBox textBox,
+                                                final DTCellValue52 value,
+                                                final Function<String, ? extends Number> valueOf,
+                                                final Number emptyValue,
+                                                final Number zeroValue) {
         if (!isReadOnly) {
-            tb.addValueChangeHandler(new ValueChangeHandler<String>() {
+            textBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 
                 public void onValueChange(ValueChangeEvent<String> event) {
                     try {
-                        value.setNumericValue(Short.valueOf(event.getValue()));
+                        value.setNumericValue(valueOf.apply(event.getValue()));
                     } catch (NumberFormatException nfe) {
                         if (allowEmptyValues) {
-                            value.setNumericValue((Short) null);
-                            tb.setValue("");
+                            value.setNumericValue(emptyValue);
+                            textBox.setValue("");
                         } else {
-                            value.setNumericValue(Short.valueOf("0"));
-                            tb.setValue("0");
+                            value.setNumericValue(zeroValue);
+                            textBox.setValue("0");
                         }
                     }
                 }
             });
         }
-        return tb;
     }
 
     private TextBox makeTextBox(final DTCellValue52 value) {
