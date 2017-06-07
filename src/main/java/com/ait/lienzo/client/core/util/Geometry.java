@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.shape.BezierCurve;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.QuadraticCurve;
+import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
@@ -1077,6 +1078,24 @@ public final class Geometry
         return intersections;
     }
 
+    public static Point2D getPathIntersect(WiresConnection connection, MultiPath path, Point2D c, int pointIndex)
+    {
+        Point2DArray plist =  connection.getConnector().getLine().getPoint2DArray();
+
+        Point2D p = plist.get(pointIndex).copy();
+
+        Point2D offsetP = path.getComputedLocation();
+
+        p.offset(-offsetP.getX(), -offsetP.getY());
+
+        Set<Point2D>[] set    =  Geometry.getIntersects(path, new Point2DArray(c, p));
+        Point2DArray   points = Geometry.removeInnerPoints(c, set);
+
+        //Point2D intersectPoint = connection.getMagnet().getMagnets().getWiresShape().getGroup().getComputedLocation();
+        //return new Point2D(intersectPoint.getX() + points.get(pointIndex).getX(), intersectPoint.getY() + points.get(pointIndex).getY());
+        return points.get(1);
+    }
+
     public static void getCardinalIntersects(PathPartList path, Point2DArray cardinals, Set<Point2D>[] intersections)
     {
         Point2D center = cardinals.get(0);
@@ -1385,7 +1404,7 @@ public final class Geometry
         return nearest;
     }
 
-    private static Point2D findCenter(BoundingBox box)
+    public static Point2D findCenter(BoundingBox box)
     {
         return new Point2D(box.getX() + box.getWidth() / 2, box.getY() + box.getHeight() / 2);
     }

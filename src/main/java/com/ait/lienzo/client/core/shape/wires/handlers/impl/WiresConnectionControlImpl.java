@@ -71,13 +71,16 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
         m_initialAutoConnect = connection.isAutoConnection();
         connection.setAutoConnection(false); // set it to false while dragging
         m_initial_magnet = connection.getMagnet();
-        connection.setMagnet(null);
         if (null != m_initial_magnet)
         {
             m_magnets = connection.getMagnet().getMagnets();
             m_magnetsBacking = m_manager.getMagnetManager().drawMagnetsToBack(m_magnets, m_shape_color_map, m_magnet_color_map, scratch);
         }
 
+        // always null when drag start and reset the offsets (they may already be 0)
+        connection.setMagnet(null);
+        connection.setXOffset(0);
+        connection.setYOffset(0);
         String colorKey = BackingColorMapUtils.findColorAtPoint(m_shapesBacking, (int) m_startX, (int) m_startY);
         checkAllowAndShowMagnets(colorKey);
     }
@@ -94,13 +97,13 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
 
         WiresConnection connection = getConnection();
 
-        boolean accept = makeConnections();
-
+        boolean accept = makeAndUpdateSpecialConnections();
 
         if (!accept) {
             connection.setAutoConnection(m_initialAutoConnect);
             connection.setMagnet(m_initial_magnet);
-            m_connector.setAutoConnections(); // this will reset the other side, if it was an auto connection and it was moved
+            WiresConnector connector = connection.getConnector();
+            connector.updateForSpecialConnections();
         }
 
         if (m_magnets != null)
@@ -119,7 +122,7 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
         return accept;
     }
 
-    private boolean makeConnections()
+    private boolean makeAndUpdateSpecialConnections()
     {
         WiresConnection connection = getConnection();
         WiresShape shape = null;
@@ -210,11 +213,10 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
 
         if (accept)
         {
-
-
             // can be used during drag, as we know the current connection will have a null shape
             // this will cause the other side to be updated
-            accept = accept && m_connector.setAutoConnections(headS, tailS);
+            accept = accept && m_connector.updateForAutoConnections(headS, tailS);
+            m_connector.updateForCenterConnection();
         }
 
 
@@ -248,7 +250,7 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
 
         // can be used during drag, as we know the current connection will have a null shape
         // this will cause the other side to be updated
-        m_connector.setAutoConnections();
+        m_connector.updateForSpecialConnections();
 
         if (isAllowed)
         {

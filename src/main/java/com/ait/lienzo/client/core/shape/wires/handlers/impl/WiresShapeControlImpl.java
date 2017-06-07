@@ -110,6 +110,8 @@ public class WiresShapeControlImpl implements WiresShapeControl
             return false;
         }
 
+        updateSpecialConnections();
+
         return true;
     }
 
@@ -151,17 +153,17 @@ public class WiresShapeControlImpl implements WiresShapeControl
             }
         }
 
-        checkAutoConnections();
+        updateSpecialConnections();
 
 
         return adjusted1 || adjusted2;
 
     }
 
-    public void checkAutoConnections()
+    public void updateSpecialConnections()
     {
-        // started with 1, as 0 is center
-        for ( int i = 1, size0 = m_shape.getMagnets().size(); i < size0; i++ )
+        // start with 0, as we can have center connections too
+        for ( int i = 0, size0 = m_shape.getMagnets().size(); i < size0; i++ )
         {
             WiresMagnet m = m_shape.getMagnets().getMagnet(i);
             for ( int j = 0, size1 = m.getConnectionsSize(); j < size1; j++ )
@@ -169,7 +171,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
                 WiresConnection connection = m.getConnections().get(j);
 
                 WiresConnector connector = connection.getConnector();
-                connector.setAutoConnections();
+                connector.updateForSpecialConnections();
             }
         }
     }

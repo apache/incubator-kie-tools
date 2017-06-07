@@ -19,7 +19,6 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
 
-import com.ait.lienzo.client.core.event.AbstractNodeDragEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -28,12 +27,6 @@ import com.ait.lienzo.client.core.event.NodeDragStartEvent;
 import com.ait.lienzo.client.core.event.NodeDragStartHandler;
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
-import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
-import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
-import com.ait.lienzo.client.core.event.NodeMouseEnterEvent;
-import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
-import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
-import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
@@ -44,7 +37,9 @@ import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
+import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
@@ -262,7 +257,50 @@ public class WiresConnector
         return m_pointHandles;
     }
 
-    public boolean setAutoConnections()
+    public void updateForSpecialConnections()
+    {
+        updateForCenterConnection();
+        updateForAutoConnections();
+    }
+
+    public void updateForCenterConnection()
+    {
+        WiresConnection headC = getHeadConnection();
+        WiresConnection tailC = getTailConnection();
+
+        updateForCenterConnection(this, headC, 1);
+        updateForCenterConnection(this, tailC, getLine().getPoint2DArray().size()-2);
+    }
+
+    public static void updateForCenterConnection(WiresConnector connector, WiresConnection connection, int pointIndex)
+    {
+        if ( connection.getMagnet() != null && connection.getMagnet().getIndexer() == 0 )
+        {
+
+            MultiPath   path              = connection.getMagnet().getMagnets().getWiresShape().getPath();
+            BoundingBox box               = path.getBoundingBox();
+            Point2D c = Geometry.findCenter(box);
+            Point2D     intersectPoint    = Geometry.getPathIntersect(connection, path, c, pointIndex);
+            Direction   d                 = MagnetManager.getDirection(intersectPoint, box);
+
+            Point2D loc = path.getComputedLocation().copy();
+
+            connection.setXOffset(intersectPoint.getX()-c.getX());
+            connection.setYOffset(intersectPoint.getY()-c.getY());
+
+            if ( connector.getHeadConnection() == connection )
+            {
+                connector.getLine().setHeadDirection(d);
+            }
+            else
+            {
+                connector.getLine().setTailDirection(d);
+            }
+            connection.move(loc.getX() + c.getX(), loc.getY() + c.getY());
+        }
+    }
+
+    public boolean updateForAutoConnections()
     {
         // used when a connection is not being dragged
         WiresConnection headC = getHeadConnection();
@@ -271,9 +309,10 @@ public class WiresConnector
         WiresShape headS = (headC.getMagnet() != null ) ? headC.getMagnet().getMagnets().getWiresShape() : null;
         WiresShape tailS = (tailC.getMagnet() != null ) ? tailC.getMagnet().getMagnets().getWiresShape() : null;
 
-        return setAutoConnections(headS, tailS);
+        return updateForAutoConnections(headS, tailS);
     }
-    public boolean setAutoConnections(WiresShape headS, WiresShape tailS)
+
+    public boolean updateForAutoConnections(WiresShape headS, WiresShape tailS)
     {
         boolean accept = true;
 

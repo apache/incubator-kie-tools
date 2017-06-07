@@ -42,6 +42,10 @@ public class WiresConnection extends AbstractControlHandle
 
     private boolean                               m_autoConnection;
 
+    private double                                m_xOffset;
+
+    private double                                m_yOffset;
+
     public WiresConnection(WiresConnector connector, MultiPath endPath, ArrowEnd end)
     {
         m_connector = connector;
@@ -59,9 +63,9 @@ public class WiresConnection extends AbstractControlHandle
 
     public WiresConnection move(final double x, final double y)
     {
-        m_point.setX(x);
+        m_point.setX(x+m_xOffset);
 
-        m_point.setY(y);
+        m_point.setY(y+m_yOffset);
 
         m_line.refresh();
 
@@ -77,9 +81,9 @@ public class WiresConnection extends AbstractControlHandle
         }
         if (handle != null && handle.getControl() != null)
         {
-            handle.getControl().setX(x);
+            handle.getControl().setX(x+m_xOffset);
 
-            handle.getControl().setY(y);
+            handle.getControl().setY(y+m_yOffset);
         }
         if (m_line.getLayer() != null)
         {
@@ -128,6 +132,26 @@ public class WiresConnection extends AbstractControlHandle
         this.m_autoConnection = m_autoConnection;
     }
 
+    public double isXOffset()
+    {
+        return m_xOffset;
+    }
+
+    public void setXOffset(double m_xOffset)
+    {
+        this.m_xOffset = m_xOffset;
+    }
+
+    public double isYOffset()
+    {
+        return m_yOffset;
+    }
+
+    public void setYOffset(double m_yOffset)
+    {
+        this.m_yOffset = m_yOffset;
+    }
+
     public WiresConnection setMagnet(final WiresMagnet magnet)
     {
         if (m_magnet != null)
@@ -141,7 +165,7 @@ public class WiresConnection extends AbstractControlHandle
 
             Point2D absLoc = magnet.getControl().getComputedLocation();
 
-            move(absLoc.getX(), absLoc.getY());
+            move(absLoc.getX()+m_xOffset, absLoc.getY()+m_yOffset);
 
             if (m_end == ArrowEnd.TAIL)
             {
