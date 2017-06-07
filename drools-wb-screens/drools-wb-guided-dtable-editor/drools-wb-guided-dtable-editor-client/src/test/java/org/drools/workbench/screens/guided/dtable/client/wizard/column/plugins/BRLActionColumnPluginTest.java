@@ -215,4 +215,12 @@ public class BRLActionColumnPluginTest {
         assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("a"));
         assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("b"));
     }
+
+    @Test
+    public void testGetRuleModellerDescription() throws Exception {
+        plugin.getRuleModellerDescription();
+        verify(translationService).format(GuidedDecisionTableErraiConstants.RuleModellerPage_InsertAnActionBRLFragment);
+        verify(translationService,
+               never()).format(GuidedDecisionTableErraiConstants.RuleModellerPage_InsertAConditionBRLFragment);
+    }
 }

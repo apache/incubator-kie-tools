@@ -25,6 +25,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasRuleModellerPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.BaseDecisionTableColumnPage;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.BRLActionColumnPlugin;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.DecisionTableColumnPlugin;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
@@ -75,6 +76,7 @@ public class RuleModellerPage<T extends HasRuleModellerPage & DecisionTableColum
 
     private void setupRuleModeller() {
         view.setupRuleModellerWidget(ruleModeller());
+        view.setRuleModelerDescription(plugin().getRuleModellerDescription());
     }
 
     RuleModeller ruleModeller() {
@@ -137,5 +139,7 @@ public class RuleModellerPage<T extends HasRuleModellerPage & DecisionTableColum
     public interface View extends UberElement<RuleModellerPage> {
 
         void setupRuleModellerWidget(RuleModeller ruleModeller);
+
+        void setRuleModelerDescription(String description);
     }
 }

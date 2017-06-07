@@ -247,6 +247,11 @@ public class BRLConditionColumnPlugin extends BaseDecisionTableColumnPlugin impl
     }
 
     @Override
+    public String getRuleModellerDescription() {
+        return translate(GuidedDecisionTableErraiConstants.RuleModellerPage_InsertAConditionBRLFragment);
+    }
+
+    @Override
     public void setRuleModellerPageAsCompleted() {
         if (!isRuleModellerPageCompleted()) {
             setRuleModellerPageCompleted();

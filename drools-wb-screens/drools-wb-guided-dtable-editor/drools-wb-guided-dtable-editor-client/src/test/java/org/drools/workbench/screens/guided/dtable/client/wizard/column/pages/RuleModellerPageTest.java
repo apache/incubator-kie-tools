@@ -25,6 +25,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.BRLActionColumnPlugin;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.BRLConditionColumnPlugin;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Assert;
@@ -44,7 +45,10 @@ import static org.mockito.Mockito.*;
 public class RuleModellerPageTest {
 
     @Mock
-    private BRLActionColumnPlugin plugin;
+    private BRLActionColumnPlugin brlActionPlugin;
+
+    @Mock
+    private BRLConditionColumnPlugin brlConditionPlugin;
 
     @Mock
     private RuleModellerPage.View view;
@@ -59,8 +63,12 @@ public class RuleModellerPageTest {
     private GuidedDecisionTableView.Presenter presenter;
 
     @InjectMocks
-    private RuleModellerPage<BRLActionColumnPlugin> page = spy(new RuleModellerPage<BRLActionColumnPlugin>(view,
-                                                                                                           translationService));
+    private RuleModellerPage<BRLActionColumnPlugin> brlActionPage = spy(new RuleModellerPage<BRLActionColumnPlugin>(view,
+                                                                                                                    translationService));
+
+    @InjectMocks
+    private RuleModellerPage<BRLConditionColumnPlugin> brlConditionPage = spy(new RuleModellerPage<BRLConditionColumnPlugin>(view,
+                                                                                                                             translationService));
 
     @BeforeClass
     public static void setupPreferences() {
@@ -70,29 +78,30 @@ public class RuleModellerPageTest {
 
     @Before
     public void setup() {
-        when(page.plugin()).thenReturn(plugin);
+        when(brlActionPage.plugin()).thenReturn(brlActionPlugin);
+        when(brlConditionPage.plugin()).thenReturn(brlConditionPlugin);
     }
 
     @Test
     public void testIsCompleteWhenRuleModellerPageIsCompleted() throws Exception {
-        when(plugin.isRuleModellerPageCompleted()).thenReturn(true);
+        when(brlActionPlugin.isRuleModellerPageCompleted()).thenReturn(true);
 
-        page.isComplete(Assert::assertTrue);
+        brlActionPage.isComplete(Assert::assertTrue);
     }
 
     @Test
     public void testIsCompleteWhenRuleModellerPageIsNotCompleted() throws Exception {
-        when(plugin.isRuleModellerPageCompleted()).thenReturn(false);
+        when(brlActionPlugin.isRuleModellerPageCompleted()).thenReturn(false);
 
-        page.isComplete(Assert::assertFalse);
+        brlActionPage.isComplete(Assert::assertFalse);
     }
 
     @Test
     public void testRuleModeller() throws Exception {
-        when(plugin.tableFormat()).thenReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
+        when(brlActionPlugin.tableFormat()).thenReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
         when(presenter.getDataModelOracle()).thenReturn(mock(AsyncPackageDataModelOracle.class));
 
-        final RuleModeller ruleModeller = page.ruleModeller();
+        final RuleModeller ruleModeller = brlActionPage.ruleModeller();
 
         assertNotNull(ruleModeller);
     }
@@ -104,25 +113,41 @@ public class RuleModellerPageTest {
 
         when(translationService.format(errorKey)).thenReturn(errorMessage);
 
-        final String title = page.getTitle();
+        final String title = brlActionPage.getTitle();
 
         assertEquals(errorMessage,
                      title);
     }
 
     @Test
-    public void testPrepareView() throws Exception {
-        when(plugin.tableFormat()).thenReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
+    public void testPrepareViewBrlAction() throws Exception {
+        when(brlActionPlugin.tableFormat()).thenReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
 
-        page.prepareView();
+        brlActionPage.prepareView();
 
-        verify(view).init(page);
-        verify(page).markAsViewed();
+        verify(view).init(brlActionPage);
+        verify(view).setupRuleModellerWidget(any(RuleModeller.class));
+        verify(brlActionPage).markAsViewed();
+
+        verify(brlActionPlugin).getRuleModellerDescription();
+    }
+
+    @Test
+    public void testPrepareViewBrlCondition() throws Exception {
+        when(brlConditionPlugin.tableFormat()).thenReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
+
+        brlConditionPage.prepareView();
+
+        verify(view).init(brlConditionPage);
+        verify(view).setupRuleModellerWidget(any(RuleModeller.class));
+        verify(brlConditionPage).markAsViewed();
+
+        verify(brlConditionPlugin).getRuleModellerDescription();
     }
 
     @Test
     public void testAsWidget() {
-        final Widget contentWidget = page.asWidget();
+        final Widget contentWidget = brlActionPage.asWidget();
 
         assertEquals(contentWidget,
                      content);

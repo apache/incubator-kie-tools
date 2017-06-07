@@ -108,6 +108,12 @@ public class GuidedDecisionTableErraiConstants {
     public static final String PatternPage_Pattern = "PatternPage.Pattern";
 
     @TranslationKey(defaultValue = "")
+    public static final String RuleModellerPage_InsertAnActionBRLFragment = "RuleModellerPage.InsertAnActionBRLFragment";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuleModellerPage_InsertAConditionBRLFragment = "RuleModellerPage.InsertAConditionBRLFragment";
+
+    @TranslationKey(defaultValue = "")
     public static final String RuleModellerPage_RuleModeller = "RuleModellerPage.RuleModeller";
 
     @TranslationKey(defaultValue = "")

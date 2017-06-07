@@ -26,6 +26,8 @@ public interface HasRuleModellerPage {
 
     RuleModellerConfiguration getRuleModellerConfiguration();
 
+    String getRuleModellerDescription();
+
     void setRuleModellerPageAsCompleted();
 
     Boolean isRuleModellerPageCompleted();

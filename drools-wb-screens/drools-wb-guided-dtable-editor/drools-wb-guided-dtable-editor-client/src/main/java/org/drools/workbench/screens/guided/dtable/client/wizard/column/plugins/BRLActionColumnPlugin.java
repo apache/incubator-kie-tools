@@ -29,13 +29,11 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.visitors.RuleModelVisitor;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
@@ -54,8 +52,6 @@ import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVar
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
-
-import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils.nil;
 
 @Dependent
 public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin implements HasRuleModellerPage,
@@ -249,6 +245,11 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
                                              false,
                                              true,
                                              true);
+    }
+
+    @Override
+    public String getRuleModellerDescription() {
+        return translate(GuidedDecisionTableErraiConstants.RuleModellerPage_InsertAnActionBRLFragment);
     }
 
     @Override

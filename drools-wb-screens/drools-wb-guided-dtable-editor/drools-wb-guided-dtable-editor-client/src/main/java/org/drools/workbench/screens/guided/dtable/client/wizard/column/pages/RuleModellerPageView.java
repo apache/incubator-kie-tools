@@ -18,9 +18,12 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.BRLActionColumnPlugin;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Heading;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -35,11 +38,16 @@ public class RuleModellerPageView implements IsElement,
     @DataField("rule-modeller-container")
     private Div ruleModellerContainer;
 
+    @DataField("description-heading")
+    private Heading descriptionHeading;
+
     private RuleModellerPage page;
 
     @Inject
-    public RuleModellerPageView(final Div ruleModellerContainer) {
+    public RuleModellerPageView(final Div ruleModellerContainer,
+                                final @Named("h5") Heading descriptionHeading) {
         this.ruleModellerContainer = ruleModellerContainer;
+        this.descriptionHeading = descriptionHeading;
     }
 
     @Override
@@ -51,5 +59,10 @@ public class RuleModellerPageView implements IsElement,
     public void setupRuleModellerWidget(final RuleModeller ruleModeller) {
         addWidgetToContainer(ruleModeller,
                              ruleModellerContainer);
+    }
+
+    @Override
+    public void setRuleModelerDescription(String description) {
+        descriptionHeading.setTextContent(description);
     }
 }
