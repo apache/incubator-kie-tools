@@ -35,6 +35,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.rpc.SessionInfo;
@@ -48,7 +49,7 @@ public class NewProjectScreenTest {
 
     @Mock
     private LibraryService libraryService;
-    private Caller<LibraryService> libraryServiceCaller;
+    private CallerMock<LibraryService> libraryServiceCaller;
 
     @Mock
     private PlaceManager placeManager;
@@ -64,9 +65,6 @@ public class NewProjectScreenTest {
 
     @Mock
     private NewProjectScreen.View view;
-
-    @Mock
-    private TranslationService ts;
 
     private SessionInfo sessionInfo;
 
@@ -95,12 +93,15 @@ public class NewProjectScreenTest {
                                                     notificationEvent,
                                                     libraryPlaces,
                                                     view,
-                                                    ts,
                                                     sessionInfo,
                                                     newProjectEvent,
                                                     libraryPreferences));
 
         doReturn("baseUrl").when(newProjectScreen).getBaseURL();
+
+        doReturn("emptyNameMessage").when(view).getEmptyNameMessage();
+        doReturn("invalidNameMessage").when(view).getInvalidNameMessage();
+        doReturn("duplicatedProjectMessage").when(view).getDuplicatedProjectMessage();
 
         libraryInfo = new LibraryInfo("master",
                                       new ArrayList<>());
@@ -156,7 +157,24 @@ public class NewProjectScreenTest {
     }
 
     @Test
-    public void createProjectFailedTest() {
+    public void createProjectWithEmptyNameFailedTest() {
+        newProjectScreen.createProject("",
+                                       "description");
+
+        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(newProjectEvent,
+               never()).fire(any(NewProjectEvent.class));
+        verify(busyIndicatorView).hideBusyIndicator();
+        verify(notificationEvent).fire(new NotificationEvent(view.getEmptyNameMessage(),
+                                                             NotificationEvent.NotificationType.ERROR));
+        verify(libraryPlaces,
+               never()).goToProject(any(ProjectInfo.class));
+        verify(placeManager,
+               never()).closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
+    }
+
+    @Test
+    public void createProjectWithInvalidProjectNameTest() {
         doThrow(new RuntimeException()).when(libraryService).createProject(anyString(),
                                                                            any(),
                                                                            any(Repository.class),
@@ -170,10 +188,37 @@ public class NewProjectScreenTest {
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
         verify(busyIndicatorView).hideBusyIndicator();
-        verify(notificationEvent).fire(any(NotificationEvent.class));
+        verify(notificationEvent).fire(new NotificationEvent(view.getInvalidNameMessage(),
+                                                             NotificationEvent.NotificationType.ERROR));
         verify(libraryPlaces,
                never()).goToProject(any(ProjectInfo.class));
         verify(placeManager,
                never()).closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
     }
+
+    @Test
+    public void createProjectWithDuplicatedNameTest() {
+        doThrow(new FileAlreadyExistsException()).when(libraryService).createProject(anyString(),
+                                                                                     any(),
+                                                                                     any(Repository.class),
+                                                                                     anyString(),
+                                                                                     anyString());
+        doAnswer(invocationOnMock -> ((Throwable) invocationOnMock.getArguments()[0]).getCause() instanceof FileAlreadyExistsException)
+                .when(newProjectScreen).isDuplicatedProjectName(any());
+
+        newProjectScreen.createProject("projectName",
+                                       "description");
+
+        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(newProjectEvent,
+               never()).fire(any(NewProjectEvent.class));
+        verify(busyIndicatorView).hideBusyIndicator();
+        verify(notificationEvent).fire(new NotificationEvent(view.getDuplicatedProjectMessage(),
+                                                             NotificationEvent.NotificationType.ERROR));
+        verify(libraryPlaces,
+               never()).goToProject(any(ProjectInfo.class));
+        verify(placeManager,
+               never()).closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
+    }
+
 }

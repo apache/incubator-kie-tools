@@ -145,4 +145,19 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "Preferences")
     public static final String Preferences = "Preferences";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AdvancedImport = "AdvancedImport";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ImportProjects = "ImportProjects";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ImportExamples = "ImportExamples";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DuplicatedProjectValidation = "DuplicatedProjectValidation";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ProjectName = "ProjectName";
 }

@@ -21,16 +21,21 @@ import com.google.gwt.user.client.Event;
 import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.Input;
 import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.SinkNative;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 
 @Templated
 public class NewProjectView implements NewProjectScreen.View,
                                        IsElement {
 
     private NewProjectScreen presenter;
+
+    @Inject
+    private TranslationService ts;
 
     @Inject
     @DataField("project-name")
@@ -56,6 +61,33 @@ public class NewProjectView implements NewProjectScreen.View,
     @Override
     public void setProjectDescription(final String defaultProjectDescription) {
         this.projectDescription.setValue(defaultProjectDescription);
+    }
+
+    @Override
+    public String getCreatingProjectMessage() {
+        return ts.getTranslation(LibraryConstants.NewProjectScreen_Saving);
+    }
+
+    @Override
+    public String getProjectCreatedSuccessfullyMessage() {
+        return ts.getTranslation(LibraryConstants.ProjectCreated);
+    }
+
+    @Override
+    public String getEmptyNameMessage() {
+        return ts.format(LibraryConstants.EmptyFieldValidation,
+                         ts.getTranslation(LibraryConstants.ProjectName));
+    }
+
+    @Override
+    public String getInvalidNameMessage() {
+        return ts.format(LibraryConstants.InvalidFieldValidation,
+                         ts.getTranslation(LibraryConstants.ProjectName));
+    }
+
+    @Override
+    public String getDuplicatedProjectMessage() {
+        return ts.getTranslation(LibraryConstants.DuplicatedProjectValidation);
     }
 
     @SinkNative(Event.ONCLICK)

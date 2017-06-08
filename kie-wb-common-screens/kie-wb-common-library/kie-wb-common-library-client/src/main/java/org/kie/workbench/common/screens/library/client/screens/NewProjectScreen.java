@@ -24,12 +24,10 @@ import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
-import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -38,7 +36,9 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -48,6 +48,16 @@ public class NewProjectScreen {
     public interface View extends UberElement<NewProjectScreen> {
 
         void setProjectDescription(String defaultProjectDescription);
+
+        String getCreatingProjectMessage();
+
+        String getProjectCreatedSuccessfullyMessage();
+
+        String getEmptyNameMessage();
+
+        String getInvalidNameMessage();
+
+        String getDuplicatedProjectMessage();
     }
 
     private Caller<LibraryService> libraryService;
@@ -61,8 +71,6 @@ public class NewProjectScreen {
     private LibraryPlaces libraryPlaces;
 
     private View view;
-
-    private TranslationService ts;
 
     private SessionInfo sessionInfo;
 
@@ -79,7 +87,6 @@ public class NewProjectScreen {
                             final Event<NotificationEvent> notificationEvent,
                             final LibraryPlaces libraryPlaces,
                             final View view,
-                            final TranslationService ts,
                             final SessionInfo sessionInfo,
                             final Event<NewProjectEvent> newProjectEvent,
                             final LibraryPreferences libraryPreferences) {
@@ -89,7 +96,6 @@ public class NewProjectScreen {
         this.notificationEvent = notificationEvent;
         this.libraryPlaces = libraryPlaces;
         this.view = view;
-        this.ts = ts;
         this.sessionInfo = sessionInfo;
         this.newProjectEvent = newProjectEvent;
         this.libraryPreferences = libraryPreferences;
@@ -120,13 +126,33 @@ public class NewProjectScreen {
 
     public void createProject(final String projectName,
                               final String projectDescription) {
-        busyIndicatorView.showBusyIndicator(ts.getTranslation(LibraryConstants.NewProjectScreen_Saving));
-        libraryService.call(getSuccessCallback(),
-                            getErrorCallBack()).createProject(projectName,
-                                                              libraryPlaces.getSelectedOrganizationalUnit(),
-                                                              libraryPlaces.getSelectedRepository(),
-                                                              getBaseURL(),
-                                                              projectDescription);
+        busyIndicatorView.showBusyIndicator(view.getCreatingProjectMessage());
+
+        validateFields(projectName,
+                       projectDescription,
+                       () -> {
+                           libraryService.call(getSuccessCallback(),
+                                               getErrorCallBack()).createProject(projectName,
+                                                                                 libraryPlaces.getSelectedOrganizationalUnit(),
+                                                                                 libraryPlaces.getSelectedRepository(),
+                                                                                 getBaseURL(),
+                                                                                 projectDescription);
+                       });
+    }
+
+    private void validateFields(final String projectName,
+                                final String projectDescription,
+                                final Command successCallback) {
+        if (projectName == null || projectName.trim().isEmpty()) {
+            hideLoadingBox();
+            notificationEvent.fire(new NotificationEvent(view.getEmptyNameMessage(),
+                                                         NotificationEvent.NotificationType.ERROR));
+            return;
+        }
+
+        if (successCallback != null) {
+            successCallback.execute();
+        }
     }
 
     private RemoteCallback<KieProject> getSuccessCallback() {
@@ -144,11 +170,21 @@ public class NewProjectScreen {
     private ErrorCallback<?> getErrorCallBack() {
         return (o, throwable) -> {
             hideLoadingBox();
-            notificationEvent
-                    .fire(new NotificationEvent(ts.getTranslation(LibraryConstants.NewProjectScreen_Error),
-                                                NotificationEvent.NotificationType.ERROR));
+
+            if (isDuplicatedProjectName(throwable)) {
+                notificationEvent.fire(new NotificationEvent(view.getDuplicatedProjectMessage(),
+                                                             NotificationEvent.NotificationType.ERROR));
+                return false;
+            }
+
+            notificationEvent.fire(new NotificationEvent(view.getInvalidNameMessage(),
+                                                         NotificationEvent.NotificationType.ERROR));
             return false;
         };
+    }
+
+    boolean isDuplicatedProjectName(Throwable throwable) {
+        return throwable instanceof FileAlreadyExistsException;
     }
 
     String getBaseURL() {
@@ -167,7 +203,7 @@ public class NewProjectScreen {
     }
 
     private void notifySuccess() {
-        notificationEvent.fire(new NotificationEvent(ts.getTranslation(LibraryConstants.ProjectCreated),
+        notificationEvent.fire(new NotificationEvent(view.getProjectCreatedSuccessfullyMessage(),
                                                      NotificationEvent.NotificationType.SUCCESS));
     }
 
