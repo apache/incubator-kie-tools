@@ -196,27 +196,16 @@ public abstract class BaseEditor {
         concurrentUpdateSessionInfo = null;
     }
 
-    private void buildMenuBar() {
-        if (menuBuilder != null) {
-            menus = menuBuilder.build();
-        }
-    }
-
     protected void showVersions() {
 
     }
 
     /**
-     * If you want to customize the menu override this method.
+     * If you want to customize the menu content override this method.
      */
     protected void makeMenuBar() {
         if (menuItems.contains(SAVE)) {
-            menuBuilder.addSave(new Command() {
-                @Override
-                public void execute() {
-                    onSave();
-                }
-            });
+            menuBuilder.addSave(this::onSave);
         }
 
         if (menuItems.contains(COPY)) {
@@ -238,6 +227,17 @@ public abstract class BaseEditor {
         }
         if (menuItems.contains(HISTORY)) {
             menuBuilder.addNewTopLevelMenu(versionRecordManager.buildMenu());
+        }
+    }
+
+    /**
+     * If you want to customize the menu construction override this method. {@link BaseEditor#makeMenuBar()}
+     * should be used to add items to the {@link BasicFileMenuBuilder}. This method then instructs
+     * {@link BasicFileMenuBuilder#build()} to create the {@link Menus}
+     */
+    protected void buildMenuBar() {
+        if (menuBuilder != null) {
+            menus = menuBuilder.build();
         }
     }
 
