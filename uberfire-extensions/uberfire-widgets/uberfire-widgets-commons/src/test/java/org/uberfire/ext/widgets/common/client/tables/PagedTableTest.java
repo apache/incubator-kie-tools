@@ -34,13 +34,25 @@ public class PagedTableTest {
 
     @GwtMock
     AsyncDataProvider dataProvider;
-    private PagedTable pagedTable;
 
     @Test
     public void testSetDataProvider() throws Exception {
-        this.pagedTable = new PagedTable(5);
+    	PagedTable pagedTable = new PagedTable(5);
 
         pagedTable.setDataProvider(dataProvider);
         verify(dataProvider).addDataDisplay(pagedTable);
     }
+    
+    @Test
+    public void testDataGridHeight() throws Exception {
+    	final int PAGE_SIZE = 10;
+    	final int EXPECTED_HEIGHT_PX = (PAGE_SIZE * PagedTable.ROW_HEIGHT_PX) + PagedTable.HEIGHT_OFFSET_PX;
+    	PagedTable pagedTable = new PagedTable(PAGE_SIZE);
+    	pagedTable.dataGrid = spy(pagedTable.dataGrid);
+        
+        verify(pagedTable.dataGrid, times(0)).setHeight(anyString());
+        pagedTable.loadPageSizePreferences();
+        verify(pagedTable.dataGrid, times(1)).setHeight(eq(EXPECTED_HEIGHT_PX + "px"));
+    }
+    
 }

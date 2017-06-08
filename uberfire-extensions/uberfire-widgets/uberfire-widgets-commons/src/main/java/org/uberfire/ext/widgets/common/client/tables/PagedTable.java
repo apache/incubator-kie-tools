@@ -39,6 +39,8 @@ public class PagedTable<T>
         extends SimpleTable<T> {
 
     public static final int DEFAULT_PAGE_SIZE = 10;
+    public static final int ROW_HEIGHT_PX = 33;
+    public static final int HEIGHT_OFFSET_PX = 56;
     private static Binder uiBinder = GWT.create(Binder.class);
 
     @UiField
@@ -140,7 +142,8 @@ public class PagedTable<T>
         pageSize = getPageSizeStored();
         this.dataGrid.setPageSize(pageSize);
         this.pager.setPageSize(pageSize);
-        this.dataGrid.setHeight(((pageSize == 0 ? 1 : pageSize) * 30 + 10) + "px");
+        int height = ((pageSize <= 0 ? 1 : pageSize) * ROW_HEIGHT_PX) + HEIGHT_OFFSET_PX;
+        this.dataGrid.setHeight(height + "px");
     }
 
     public void createPageSizesListBox(int minPageSize,
