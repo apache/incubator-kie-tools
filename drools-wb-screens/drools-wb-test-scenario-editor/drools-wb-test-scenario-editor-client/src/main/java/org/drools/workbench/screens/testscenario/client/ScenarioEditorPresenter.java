@@ -214,8 +214,9 @@ public class ScenarioEditorPresenter
         return menus;
     }
 
+    @Override
     protected void makeMenuBar() {
-        menus = menuBuilder
+        fileMenuBuilder
                 .addSave(new Command() {
                     @Override
                     public void execute() {
@@ -229,8 +230,7 @@ public class ScenarioEditorPresenter
                 .addDelete(versionRecordManager.getPathToLatest())
                 .addNewTopLevelMenu(view.getRunScenarioMenuItem())
                 .addNewTopLevelMenu(view.getRunAllScenariosMenuItem())
-                .addNewTopLevelMenu(versionRecordManager.buildMenu())
-                .build();
+                .addNewTopLevelMenu(versionRecordManager.buildMenu());
     }
 
     private void ifFixturesSizeZeroThenAddExecutionTrace() {

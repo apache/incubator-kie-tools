@@ -59,10 +59,10 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
-import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.*;
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentUpdate;
 
 @Dependent
-@WorkbenchEditor(identifier = "DecisionTableXLSEditor", supportedTypes = { DecisionTableXLSResourceType.class, DecisionTableXLSXResourceType.class })
+@WorkbenchEditor(identifier = "DecisionTableXLSEditor", supportedTypes = {DecisionTableXLSResourceType.class, DecisionTableXLSXResourceType.class})
 public class DecisionTableXLSEditorPresenter
         extends KieEditor
         implements DecisionTableXLSEditorView.Presenter {
@@ -82,14 +82,14 @@ public class DecisionTableXLSEditorPresenter
     private DecisionTableXLSEditorView view;
 
     @Inject
-    public DecisionTableXLSEditorPresenter( final DecisionTableXLSEditorView baseView,
-                                            final DecisionTableXLSResourceType decisionTableXLSResourceType,
-                                            final DecisionTableXLSXResourceType decisionTableXLSXResourceType,
-                                            final BusyIndicatorView busyIndicatorView,
-                                            final Event<NotificationEvent> notification,
-                                            final ValidationPopup validationPopup,
-                                            final Caller<DecisionTableXLSService> decisionTableXLSService ) {
-        super( baseView );
+    public DecisionTableXLSEditorPresenter(final DecisionTableXLSEditorView baseView,
+                                           final DecisionTableXLSResourceType decisionTableXLSResourceType,
+                                           final DecisionTableXLSXResourceType decisionTableXLSXResourceType,
+                                           final BusyIndicatorView busyIndicatorView,
+                                           final Event<NotificationEvent> notification,
+                                           final ValidationPopup validationPopup,
+                                           final Caller<DecisionTableXLSService> decisionTableXLSService) {
+        super(baseView);
         view = baseView;
         this.decisionTableXLSResourceType = decisionTableXLSResourceType;
         this.decisionTableXLSXResourceType = decisionTableXLSXResourceType;
@@ -100,19 +100,19 @@ public class DecisionTableXLSEditorPresenter
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        ClientResourceType type = getType( path );
-        super.init( path,
-                    place,
-                    type );
-        view.init( this );
-        view.setupUploadWidget( type );
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
+        ClientResourceType type = getType(path);
+        super.init(path,
+                   place,
+                   type);
+        view.init(this);
+        view.setupUploadWidget(type);
     }
 
     @Override
     public void onUpload() {
-        if ( concurrentUpdateSessionInfo != null ) {
+        if (concurrentUpdateSessionInfo != null) {
             busyIndicatorView.hideBusyIndicator();
             showConcurrentUpdateError();
         } else {
@@ -121,41 +121,41 @@ public class DecisionTableXLSEditorPresenter
     }
 
     void submit() {
-        view.submit( versionRecordManager.getCurrentPath() );
+        view.submit(versionRecordManager.getCurrentPath());
         concurrentUpdateSessionInfo = null;
     }
 
     void showConcurrentUpdateError() {
-        newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
-                             concurrentUpdateSessionInfo.getIdentity(),
-                             new Command() {
-                                 @Override
-                                 public void execute() {
-                                     submit();
-                                 }
-                             },
-                             new Command() {
-                                 @Override
-                                 public void execute() {
-                                     //cancel?
-                                 }
-                             },
-                             new Command() {
-                                 @Override
-                                 public void execute() {
-                                     reload();
-                                     concurrentUpdateSessionInfo = null;
-                                 }
-                             }
-                           ).show();
+        newConcurrentUpdate(concurrentUpdateSessionInfo.getPath(),
+                            concurrentUpdateSessionInfo.getIdentity(),
+                            new Command() {
+                                @Override
+                                public void execute() {
+                                    submit();
+                                }
+                            },
+                            new Command() {
+                                @Override
+                                public void execute() {
+                                    //cancel?
+                                }
+                            },
+                            new Command() {
+                                @Override
+                                public void execute() {
+                                    reload();
+                                    concurrentUpdateSessionInfo = null;
+                                }
+                            }
+        ).show();
     }
 
-    ObservablePath.OnConcurrentUpdateEvent getConcurrentUpdateSessionInfo(){
+    ObservablePath.OnConcurrentUpdateEvent getConcurrentUpdateSessionInfo() {
         return this.concurrentUpdateSessionInfo;
     }
 
-    private ClientResourceType getType( ObservablePath path ) {
-        if ( decisionTableXLSXResourceType.accept( path ) ) {
+    private ClientResourceType getType(ObservablePath path) {
+        if (decisionTableXLSXResourceType.accept(path)) {
             return decisionTableXLSXResourceType;
         } else {
             return decisionTableXLSResourceType;
@@ -164,19 +164,19 @@ public class DecisionTableXLSEditorPresenter
 
     @Override
     protected void loadContent() {
-        decisionTableXLSService.call( getModelSuccessCallback(),
-                                      getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+        decisionTableXLSService.call(getModelSuccessCallback(),
+                                     getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
     }
 
     private RemoteCallback<DecisionTableXLSContent> getModelSuccessCallback() {
         return new RemoteCallback<DecisionTableXLSContent>() {
             @Override
-            public void callback( final DecisionTableXLSContent content ) {
-                resetEditorPages( content.getOverview() );
+            public void callback(final DecisionTableXLSContent content) {
+                resetEditorPages(content.getOverview());
                 addSourcePage();
 
-                view.setPath( versionRecordManager.getCurrentPath() );
-                view.setReadOnly( isReadOnly );
+                view.setPath(versionRecordManager.getCurrentPath());
+                view.setReadOnly(isReadOnly);
             }
         };
     }
@@ -186,12 +186,12 @@ public class DecisionTableXLSEditorPresenter
         decisionTableXLSService.call(
                 new RemoteCallback<String>() {
                     @Override
-                    public void callback( String source ) {
-                        updateSource( source );
+                    public void callback(String source) {
+                        updateSource(source);
                     }
                 },
                 getCouldNotGenerateSourceErrorCallback()
-                                    ).getSource( versionRecordManager.getCurrentPath() );
+        ).getSource(versionRecordManager.getCurrentPath());
     }
 
     @Override
@@ -199,45 +199,45 @@ public class DecisionTableXLSEditorPresenter
         return new Command() {
             @Override
             public void execute() {
-                decisionTableXLSService.call( new RemoteCallback<List<ValidationMessage>>() {
+                decisionTableXLSService.call(new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback( final List<ValidationMessage> results ) {
-                        if ( results == null || results.isEmpty() ) {
-                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                                                      NotificationEvent.NotificationType.SUCCESS ) );
+                    public void callback(final List<ValidationMessage> results) {
+                        if (results == null || results.isEmpty()) {
+                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                                                    NotificationEvent.NotificationType.SUCCESS));
                         } else {
-                            validationPopup.showMessages( results );
+                            validationPopup.showMessages(results);
                         }
                     }
-                } ).validate( versionRecordManager.getCurrentPath(),
-                              versionRecordManager.getCurrentPath() );
+                }).validate(versionRecordManager.getCurrentPath(),
+                            versionRecordManager.getCurrentPath());
             }
         };
     }
 
     @Override
     protected void makeMenuBar() {
-        menus = menuBuilder
-                .addCopy( versionRecordManager.getCurrentPath(),
-                          fileNameValidator )
-                .addRename( versionRecordManager.getPathToLatest(),
-                            fileNameValidator )
-                .addDelete( versionRecordManager.getPathToLatest() )
-                .addValidate( onValidate() )
-                .addNewTopLevelMenu( new MenuFactory.CustomMenuBuilder() {
+        fileMenuBuilder
+                .addCopy(versionRecordManager.getCurrentPath(),
+                         fileNameValidator)
+                .addRename(versionRecordManager.getPathToLatest(),
+                           fileNameValidator)
+                .addDelete(versionRecordManager.getPathToLatest())
+                .addValidate(onValidate())
+                .addNewTopLevelMenu(new MenuFactory.CustomMenuBuilder() {
 
-                    private Button button = new Button( DecisionTableXLSEditorConstants.INSTANCE.Convert() ) {{
-                        setSize( ButtonSize.SMALL );
-                        addClickHandler( new ClickHandler() {
+                    private Button button = new Button(DecisionTableXLSEditorConstants.INSTANCE.Convert()) {{
+                        setSize(ButtonSize.SMALL);
+                        addClickHandler(new ClickHandler() {
                             @Override
-                            public void onClick( final ClickEvent event ) {
+                            public void onClick(final ClickEvent event) {
                                 convert();
                             }
-                        } );
+                        });
                     }};
 
                     @Override
-                    public void push( MenuFactory.CustomMenuBuilder element ) {
+                    public void push(MenuFactory.CustomMenuBuilder element) {
                         //Nothing to do. We don't support nested menus
                     }
 
@@ -255,14 +255,13 @@ public class DecisionTableXLSEditorPresenter
                             }
 
                             @Override
-                            public void setEnabled( boolean enabled ) {
-                                button.setEnabled( enabled );
+                            public void setEnabled(boolean enabled) {
+                                button.setEnabled(enabled);
                             }
                         };
                     }
-                }.build() )
-                .addNewTopLevelMenu( versionRecordManager.buildMenu() )
-                .build();
+                }.build())
+                .addNewTopLevelMenu(versionRecordManager.buildMenu());
     }
 
     @OnClose
@@ -291,21 +290,19 @@ public class DecisionTableXLSEditorPresenter
     }
 
     private void convert() {
-        busyIndicatorView.showBusyIndicator( DecisionTableXLSEditorConstants.INSTANCE.Converting() );
-        decisionTableXLSService.call( new RemoteCallback<ConversionResult>() {
+        busyIndicatorView.showBusyIndicator(DecisionTableXLSEditorConstants.INSTANCE.Converting());
+        decisionTableXLSService.call(new RemoteCallback<ConversionResult>() {
             @Override
-            public void callback( final ConversionResult response ) {
+            public void callback(final ConversionResult response) {
                 busyIndicatorView.hideBusyIndicator();
-                if ( response.getMessages().size() > 0 ) {
+                if (response.getMessages().size() > 0) {
                     final PopupListWidget popup = new PopupListWidget();
-                    for ( ConversionMessage message : response.getMessages() ) {
-                        popup.addListItem( new ConversionMessageWidget( message ) );
+                    for (ConversionMessage message : response.getMessages()) {
+                        popup.addListItem(new ConversionMessageWidget(message));
                     }
                     popup.show();
                 }
             }
-        } ).convert( versionRecordManager.getCurrentPath() );
+        }).convert(versionRecordManager.getCurrentPath());
     }
-
-
 }

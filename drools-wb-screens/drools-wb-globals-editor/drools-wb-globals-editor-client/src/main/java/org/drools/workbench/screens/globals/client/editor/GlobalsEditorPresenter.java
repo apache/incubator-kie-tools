@@ -48,7 +48,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
-@WorkbenchEditor(identifier = "org.kie.guvnor.globals", supportedTypes = { GlobalResourceType.class }, priority = 101)
+@WorkbenchEditor(identifier = "org.kie.guvnor.globals", supportedTypes = {GlobalResourceType.class}, priority = 101)
 public class GlobalsEditorPresenter
         extends KieEditor {
 
@@ -75,62 +75,61 @@ public class GlobalsEditorPresenter
     }
 
     @Inject
-    public GlobalsEditorPresenter( final GlobalsEditorView baseView ) {
-        super( baseView );
+    public GlobalsEditorPresenter(final GlobalsEditorView baseView) {
+        super(baseView);
         this.view = baseView;
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        super.init( path,
-                    place,
-                    type );
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
+        super.init(path,
+                   place,
+                   type);
     }
 
     @Override
     protected void makeMenuBar() {
-        menus = menuBuilder
-                .addSave( versionRecordManager.newSaveMenuItem( this::onSave ) )
-                .addCopy( versionRecordManager.getCurrentPath(),
-                          fileNameValidator )
-                .addRename( versionRecordManager.getPathToLatest(),
-                            fileNameValidator )
-                .addDelete( this::onDelete )
-                .addValidate( onValidate() )
-                .addNewTopLevelMenu( versionRecordManager.buildMenu() )
-                .build();
+        fileMenuBuilder
+                .addSave(versionRecordManager.newSaveMenuItem(this::onSave))
+                .addCopy(versionRecordManager.getCurrentPath(),
+                         fileNameValidator)
+                .addRename(versionRecordManager.getPathToLatest(),
+                           fileNameValidator)
+                .addDelete(this::onDelete)
+                .addValidate(onValidate())
+                .addNewTopLevelMenu(versionRecordManager.buildMenu());
     }
 
     protected void loadContent() {
         view.showLoading();
-        globalsEditorService.call( getModelSuccessCallback(),
-                                   getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+        globalsEditorService.call(getModelSuccessCallback(),
+                                  getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
     }
 
     protected RemoteCallback<GlobalsEditorContent> getModelSuccessCallback() {
         return new RemoteCallback<GlobalsEditorContent>() {
 
             @Override
-            public void callback( final GlobalsEditorContent content ) {
+            public void callback(final GlobalsEditorContent content) {
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
-                if ( versionRecordManager.getCurrentPath() == null ) {
+                if (versionRecordManager.getCurrentPath() == null) {
                     return;
                 }
 
                 model = content.getModel();
 
-                resetEditorPages( content.getOverview() );
+                resetEditorPages(content.getOverview());
                 addSourcePage();
 
                 final List<String> fullyQualifiedClassNames = content.getFullyQualifiedClassNames();
 
-                view.setContent( content.getModel().getGlobals(),
-                                 fullyQualifiedClassNames,
-                                 isReadOnly,
-                                 content.getOverview().getMetadata().isGenerated() );
+                view.setContent(content.getModel().getGlobals(),
+                                fullyQualifiedClassNames,
+                                isReadOnly,
+                                content.getOverview().getMetadata().isGenerated());
 
-                createOriginalHash( model );
+                createOriginalHash(model);
                 view.hideBusyIndicator();
             }
         };
@@ -140,92 +139,93 @@ public class GlobalsEditorPresenter
         return new Command() {
             @Override
             public void execute() {
-                globalsEditorService.call( new RemoteCallback<List<ValidationMessage>>() {
+                globalsEditorService.call(new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback( final List<ValidationMessage> results ) {
-                        if ( results == null || results.isEmpty() ) {
-                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                                                      NotificationEvent.NotificationType.SUCCESS ) );
+                    public void callback(final List<ValidationMessage> results) {
+                        if (results == null || results.isEmpty()) {
+                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                                                    NotificationEvent.NotificationType.SUCCESS));
                         } else {
-                            validationPopup.showMessages( results );
+                            validationPopup.showMessages(results);
                         }
                     }
-                } ).validate( versionRecordManager.getCurrentPath(),
-                              model );
+                }).validate(versionRecordManager.getCurrentPath(),
+                            model);
             }
         };
     }
 
     @Override
     protected void save() {
-        validationService.call( ( validationMessages ) -> {
-            if ( ( (List<ValidationMessage>) validationMessages ).isEmpty() ) {
+        validationService.call((validationMessages) -> {
+            if (((List<ValidationMessage>) validationMessages).isEmpty()) {
                 showSavePopup();
             } else {
-                validationPopup.showSaveValidationMessages( () -> showSavePopup(),
-                                                            () -> {
-                                                            },
-                                                            (List<ValidationMessage>) validationMessages );
+                validationPopup.showSaveValidationMessages(() -> showSavePopup(),
+                                                           () -> {
+                                                           },
+                                                           (List<ValidationMessage>) validationMessages);
             }
-        } ).validateForSave( versionRecordManager.getCurrentPath(),
-                             model );
+        }).validateForSave(versionRecordManager.getCurrentPath(),
+                           model);
 
         concurrentUpdateSessionInfo = null;
     }
 
     private void showSavePopup() {
-        savePopUpPresenter.show( versionRecordManager.getCurrentPath(),
-                                 new ParameterizedCommand<String>() {
-                                     @Override
-                                     public void execute( final String commitMessage ) {
-                                         baseView.showSaving();
-                                         globalsEditorService.call( getSaveSuccessCallback( model.hashCode() ),
-                                                                    new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
-                                                                                                                             model,
-                                                                                                                             metadata,
-                                                                                                                             commitMessage );
-                                         concurrentUpdateSessionInfo = null;
-                                     }
-                                 } );
+        savePopUpPresenter.show(versionRecordManager.getCurrentPath(),
+                                new ParameterizedCommand<String>() {
+                                    @Override
+                                    public void execute(final String commitMessage) {
+                                        baseView.showSaving();
+                                        globalsEditorService.call(getSaveSuccessCallback(model.hashCode()),
+                                                                  new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                                                                       model,
+                                                                                                                       metadata,
+                                                                                                                       commitMessage);
+                                        concurrentUpdateSessionInfo = null;
+                                    }
+                                });
     }
 
     protected void onDelete() {
-        validationService.call( ( validationMessages ) -> {
-            if ( ( (List<ValidationMessage>) validationMessages ).isEmpty() ) {
-                showDeletePopup( getVersionRecordManager().getCurrentPath() );
+        validationService.call((validationMessages) -> {
+            if (((List<ValidationMessage>) validationMessages).isEmpty()) {
+                showDeletePopup(getVersionRecordManager().getCurrentPath());
             } else {
-                validationPopup.showDeleteValidationMessages( () -> showDeletePopup( versionRecordManager.getCurrentPath() ),
-                                                              () -> {},
-                                                              (List<ValidationMessage>) validationMessages );
+                validationPopup.showDeleteValidationMessages(() -> showDeletePopup(versionRecordManager.getCurrentPath()),
+                                                             () -> {
+                                                             },
+                                                             (List<ValidationMessage>) validationMessages);
             }
-        } ).validateForDelete( versionRecordManager.getCurrentPath() );
+        }).validateForDelete(versionRecordManager.getCurrentPath());
     }
 
-    private void showDeletePopup( final Path path ) {
-        deletePopUpPresenter.show( comment -> {
-            view.showBusyIndicator( CommonConstants.INSTANCE.Deleting() );
-            globalsEditorService.call( getDeleteSuccessCallback(),
-                                       new HasBusyIndicatorDefaultErrorCallback( view ) ).delete( path,
-                                                                                                  "delete" );
-        } );
+    private void showDeletePopup(final Path path) {
+        deletePopUpPresenter.show(comment -> {
+            view.showBusyIndicator(CommonConstants.INSTANCE.Deleting());
+            globalsEditorService.call(getDeleteSuccessCallback(),
+                                      new HasBusyIndicatorDefaultErrorCallback(view)).delete(path,
+                                                                                             "delete");
+        });
     }
 
     private RemoteCallback<Path> getDeleteSuccessCallback() {
         return response -> {
             view.hideBusyIndicator();
-            notification.fire( new NotificationEvent( org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
+            notification.fire(new NotificationEvent(org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants.INSTANCE.ItemDeletedSuccessfully()));
         };
     }
 
     @Override
     public void onSourceTabSelected() {
-        globalsEditorService.call( new RemoteCallback<String>() {
+        globalsEditorService.call(new RemoteCallback<String>() {
             @Override
-            public void callback( String source ) {
-                updateSource( source );
+            public void callback(String source) {
+                updateSource(source);
             }
-        } ).toSource( versionRecordManager.getCurrentPath(),
-                      model );
+        }).toSource(versionRecordManager.getCurrentPath(),
+                    model);
     }
 
     @WorkbenchPartView
@@ -240,7 +240,7 @@ public class GlobalsEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose( model );
+        return super.mayClose(model);
     }
 
     @WorkbenchPartTitleDecoration
