@@ -18,10 +18,15 @@ package org.kie.workbench.common.services.refactoring.backend.server.query.respo
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
-import org.kie.workbench.common.services.refactoring.model.query.RefactoringStringPageRow;
+import org.kie.workbench.common.services.refactoring.model.query.RefactoringRuleNamePageRow;
+import org.kie.workbench.common.services.refactoring.model.query.RefactoringRuleNamePageRow.RuleName;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KProperty;
@@ -34,53 +39,74 @@ public class RuleNameResponseBuilder
         implements ResponseBuilder {
 
     @Override
-    public PageResponse<RefactoringPageRow> buildResponse( final int pageSize,
-                                                           final int startRow,
-                                                           final List<KObject> kObjects ) {
+    public PageResponse<RefactoringPageRow> buildResponse(final int pageSize,
+                                                          final int startRow,
+                                                          final List<KObject> kObjects) {
         final int hits = kObjects.size();
         final PageResponse<RefactoringPageRow> response = new PageResponse<RefactoringPageRow>();
-        final List<RefactoringPageRow> result = buildResponse( kObjects );
-        response.setTotalRowSize( hits );
-        response.setPageRowList( result );
-        response.setTotalRowSizeExact( true );
-        response.setStartRowIndex( startRow );
-        response.setLastPage( (pageSize * startRow + 2) >= hits );
+        final List<RefactoringPageRow> result = buildResponse(kObjects);
+        response.setTotalRowSize(hits);
+        response.setPageRowList(result);
+        response.setTotalRowSizeExact(true);
+        response.setStartRowIndex(startRow);
+        response.setLastPage((pageSize * startRow + 2) >= hits);
 
         return response;
     }
 
     @Override
-    public List<RefactoringPageRow> buildResponse( final List<KObject> kObjects ) {
+    public List<RefactoringPageRow> buildResponse(final List<KObject> kObjects) {
         //Both "child" rule and "parent" rule (when one extends another) are stored
         //in the index. We therefore need to build a set of unique Rule Names
-        final List<RefactoringPageRow> result = new ArrayList<RefactoringPageRow>( kObjects.size() );
-        final Set<String> uniqueRuleNames = new HashSet<String>();
+        final List<RefactoringPageRow> result = new ArrayList<RefactoringPageRow>(kObjects.size());
+        final Set<RuleName> uniqueRuleNames = new HashSet<>();
         for (final KObject kObject : kObjects) {
-            final Set<String> ruleNames = getRuleNamesFromKObject( kObject );
-            uniqueRuleNames.addAll( ruleNames );
+            final Set<RuleName> ruleNames = getRuleNamesFromKObject(kObject);
+            uniqueRuleNames.addAll(ruleNames);
         }
 
-        for (String ruleName : uniqueRuleNames) {
-            final RefactoringStringPageRow row = new RefactoringStringPageRow();
-            row.setValue( ruleName );
-            result.add( row );
+        for (RuleName ruleName : uniqueRuleNames) {
+            final RefactoringRuleNamePageRow row = new RefactoringRuleNamePageRow();
+            row.setValue(ruleName);
+            result.add(row);
         }
 
         return result;
     }
 
-    private Set<String> getRuleNamesFromKObject( final KObject kObject ) {
+    private Set<RuleName> getRuleNamesFromKObject(final KObject kObject) {
         //Some resources (e.g. Decision Tables etc) contain multiple rule names so add them all
-        final Set<String> ruleNames = new HashSet<String>();
-        if ( kObject == null ) {
+        final Set<RuleName> ruleNames = new HashSet<>();
+        if (kObject == null) {
             return ruleNames;
         }
-        for (KProperty property : kObject.getProperties()) {
-            if ( property.getName().equals( ResourceType.RULE.toString() ) ) {
-                ruleNames.add( property.getValue().toString() );
-            }
-        }
+
+        //Extract KProperties
+        final Set<KProperty<?>> kProperties = StreamSupport
+                .stream(kObject.getProperties().spliterator(),
+                        false)
+                .collect(Collectors.toSet());
+
+        //Get Package Name (all Rules for a single Index entry *should* be in a single Package)
+        final Optional<KProperty<?>> packageName = kProperties
+                .stream()
+                .filter((kp) -> kp.getName().equals(PackageNameIndexTerm.TERM))
+                .findFirst();
+
+        //Assign Rules to packages
+        packageName
+                .flatMap((pkg) -> Optional.of(pkg.getValue().toString()))
+                .ifPresent((pkgName) -> kProperties
+                        .stream()
+                        .filter((kp) -> kp.getName().equals(ResourceType.RULE.toString()))
+                        .forEach((r) -> ruleNames.add(new RuleName(r.getValue()
+                                                                           .toString()
+                                                                           .replace(pkgName,
+                                                                                    "")
+                                                                           .replaceFirst("\\.",
+                                                                                         ""),
+                                                                   pkgName))));
+
         return ruleNames;
     }
-
 }

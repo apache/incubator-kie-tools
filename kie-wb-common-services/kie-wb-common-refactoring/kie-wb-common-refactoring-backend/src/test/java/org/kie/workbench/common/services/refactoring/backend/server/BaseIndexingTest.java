@@ -16,10 +16,6 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server;
 
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
@@ -28,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-
 import javax.enterprise.inject.Instance;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -39,10 +34,14 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQ
 import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
+import org.kie.workbench.common.services.refactoring.model.query.RefactoringRuleNamePageRow.RuleName;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> extends IndexingTest<T> {
 
@@ -145,6 +144,21 @@ public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> extends
             }
         }
         fail("Response does not contain expected Rule Name '" + ruleName + "'.");
+    }
+
+    protected void assertResponseContains(final List<RefactoringPageRow> rows,
+                                          final String simpleRuleName,
+                                          final String packageName) {
+        for (RefactoringPageRow row : rows) {
+            final RuleName r = (RuleName) row.getValue();
+            final String rowRuleName = r.getSimpleRuleName();
+            final String rowPackageName = r.getPackageName();
+
+            if (rowRuleName.equals(simpleRuleName) && rowPackageName.equals(packageName)) {
+                return;
+            }
+        }
+        fail("Response does not contain expected Rule Name '" + simpleRuleName + "' in package '" + packageName + "'.");
     }
 
     protected void addTestFile(final String projectName,

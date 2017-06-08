@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -32,6 +31,7 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.valueterm
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValuePackageNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
+import org.kie.workbench.common.services.refactoring.model.query.RefactoringRuleNamePageRow;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
@@ -42,46 +42,53 @@ import org.uberfire.backend.vfs.Path;
 public class RuleNameServiceImpl
         implements RuleNamesService {
 
-    @Inject
     private RefactoringQueryService queryService;
-
-    @Inject
     private KieProjectService projectService;
 
-    @Override
-    public Collection<String> getRuleNames( final Path path,
-                                            final String packageName ) {
-        final Project project = projectService.resolveProject( path );
+    public RuleNameServiceImpl() {
+        //CDI proxy
+    }
 
-        if ( project == null ) {
+    @Inject
+    public RuleNameServiceImpl(final RefactoringQueryService queryService,
+                               final KieProjectService projectService) {
+        this.queryService = queryService;
+        this.projectService = projectService;
+    }
+
+    @Override
+    public Collection<String> getRuleNames(final Path path,
+                                           final String packageName) {
+        final Project project = projectService.resolveProject(path);
+
+        if (project == null) {
             return Collections.emptyList();
         } else {
             return queryRuleNames(
                     packageName,
-                    project.getRootPath().toURI() );
+                    project.getRootPath().toURI());
         }
     }
 
-    private List<String> queryRuleNames( final String packageName,
-                                         final String projectPath ) {
+    private List<String> queryRuleNames(final String packageName,
+                                        final String projectPath) {
 
         //Query for Rule Names
-        final List<RefactoringPageRow> results = queryService.query( FindRulesByProjectQuery.NAME,
-                                                                     new HashSet<ValueIndexTerm>() {{
-                                                                         add( new ValueProjectRootPathIndexTerm( projectPath ) );
-                                                                         add( new ValuePackageNameIndexTerm( packageName ) );
-                                                                     }} );
+        final List<RefactoringPageRow> results = queryService.query(FindRulesByProjectQuery.NAME,
+                                                                    new HashSet<ValueIndexTerm>() {{
+                                                                        add(new ValueProjectRootPathIndexTerm(projectPath));
+                                                                        add(new ValuePackageNameIndexTerm(packageName));
+                                                                    }});
 
-        return convertToRuleNames( results );
+        return convertToRuleNames(results);
     }
 
-    private List<String> convertToRuleNames( List<RefactoringPageRow> results ) {
+    private List<String> convertToRuleNames(List<RefactoringPageRow> results) {
         final List<String> ruleNames = new ArrayList<String>();
-        for ( RefactoringPageRow row : results ) {
-            ruleNames.add( (String) row.getValue() );
+        for (RefactoringPageRow row : results) {
+            ruleNames.add(((RefactoringRuleNamePageRow.RuleName) row.getValue()).getSimpleRuleName());
         }
-        Collections.sort( ruleNames );
+        Collections.sort(ruleNames);
         return ruleNames;
     }
-
 }

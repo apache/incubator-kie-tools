@@ -15,13 +15,6 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.query.findrules;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -41,11 +34,14 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.valueterm
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
-import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.paging.PageResponse;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class FindRulesByProjectQueryValidIndexTermsTest
         extends BaseIndexingTest<TestDrlFileTypeDefinition> {
@@ -100,6 +96,8 @@ public class FindRulesByProjectQueryValidIndexTermsTest
                     "drl3.drl");
         addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
                     "drl4.drl");
+        addTestFile(BaseIndexingTest.TEST_PROJECT_ROOT,
+                    "drl5.drl");
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
@@ -120,7 +118,8 @@ public class FindRulesByProjectQueryValidIndexTermsTest
                 assertEquals(1,
                              response.getPageRowList().size());
                 assertResponseContains(response.getPageRowList(),
-                                       "noPackage");
+                                       "noPackage",
+                                       "");
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
                 fail("Unable to query: " + e.getMessage());
@@ -141,16 +140,23 @@ public class FindRulesByProjectQueryValidIndexTermsTest
             try {
                 final PageResponse<RefactoringPageRow> response = service.query(request);
                 assertNotNull(response);
-                assertEquals(4,
+                assertEquals(5,
                              response.getPageRowList().size());
                 assertResponseContains(response.getPageRowList(),
-                                       TEST_PACKAGE_NAME + ".myRule");
+                                       "myRule",
+                                       "org.kie.workbench.mock.package");
                 assertResponseContains(response.getPageRowList(),
-                                       TEST_PACKAGE_NAME + ".myRule2");
+                                       "myRule2",
+                                       "org.kie.workbench.mock.package");
                 assertResponseContains(response.getPageRowList(),
-                                       TEST_PACKAGE_NAME + ".myRule3");
+                                       "myRule3",
+                                       "org.kie.workbench.mock.package");
                 assertResponseContains(response.getPageRowList(),
-                                       "noPackage");
+                                       "my.Rule4",
+                                       "org.kie.workbench.mock.package");
+                assertResponseContains(response.getPageRowList(),
+                                       "noPackage",
+                                       "");
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
                 fail("Unable to query: " + e.getMessage());
@@ -169,12 +175,17 @@ public class FindRulesByProjectQueryValidIndexTermsTest
             try {
                 final PageResponse<RefactoringPageRow> response = service.query(request);
                 assertNotNull(response);
-                assertEquals(2,
+                assertEquals(3,
                              response.getPageRowList().size());
                 assertResponseContains(response.getPageRowList(),
-                                       TEST_PACKAGE_NAME + ".myRule");
+                                       "myRule",
+                                       "org.kie.workbench.mock.package");
                 assertResponseContains(response.getPageRowList(),
-                                       TEST_PACKAGE_NAME + ".myRule2");
+                                       "myRule2",
+                                       "org.kie.workbench.mock.package");
+                assertResponseContains(response.getPageRowList(),
+                                       "my.Rule4",
+                                       "org.kie.workbench.mock.package");
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
                 fail("Unable to query: " + e.getMessage());
@@ -196,7 +207,8 @@ public class FindRulesByProjectQueryValidIndexTermsTest
                 assertEquals(1,
                              response.getPageRowList().size());
                 assertResponseContains(response.getPageRowList(),
-                                       TEST_PACKAGE_NAME + ".myRule3");
+                                       "myRule3",
+                                       "org.kie.workbench.mock.package");
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
                 fail("Unable to query: " + e.getMessage());
