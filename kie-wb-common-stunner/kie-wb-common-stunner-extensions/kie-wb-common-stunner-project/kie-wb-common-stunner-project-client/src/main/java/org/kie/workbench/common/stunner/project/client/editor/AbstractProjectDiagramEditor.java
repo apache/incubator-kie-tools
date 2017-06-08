@@ -314,8 +314,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         sessionValidateCommand.listen(() -> validateItem.setEnabled(sessionValidateCommand.isEnabled()));
         final MenuItem refreshItem = menuItemsBuilder.newRefreshItem(AbstractProjectDiagramEditor.this::menu_refresh);
         sessionRefreshCommand.listen(() -> refreshItem.setEnabled(sessionRefreshCommand.isEnabled()));
+
         // Build the menu.
-        menuBuilder
+        fileMenuBuilder
                 // Specific Stunner toolbar items.
                 .addNewTopLevelMenu(clearItem)
                 .addNewTopLevelMenu(clearStatesItem)
@@ -327,9 +328,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 .addNewTopLevelMenu(validateItem)
                 .addNewTopLevelMenu(refreshItem);
         if (menuItemsBuilder.isDevItemsEnabled()) {
-            menuBuilder.addNewTopLevelMenu(menuItemsBuilder.newDevItems());
+            fileMenuBuilder.addNewTopLevelMenu(menuItemsBuilder.newDevItems());
         }
-        menus = menuBuilder
+        fileMenuBuilder
                 // Project editor menus.
                 .addSave(versionRecordManager.newSaveMenuItem(() -> onSave()))
                 .addCopy(versionRecordManager.getCurrentPath(),
@@ -337,9 +338,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 .addRename(versionRecordManager.getPathToLatest(),
                            fileNameValidator)
                 .addDelete(versionRecordManager.getPathToLatest())
-                .addNewTopLevelMenu(versionRecordManager.buildMenu())
-                // Build the menu.
-                .build();
+                .addNewTopLevelMenu(versionRecordManager.buildMenu());
     }
 
     private void validate(final Command callback) {

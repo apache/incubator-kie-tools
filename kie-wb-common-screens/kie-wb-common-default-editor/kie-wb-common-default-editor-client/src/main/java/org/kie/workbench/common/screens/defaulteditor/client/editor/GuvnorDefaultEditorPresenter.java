@@ -45,7 +45,7 @@ import org.uberfire.workbench.model.menu.Menus;
  * A text based editor for Domain Specific Language definitions
  */
 @Dependent
-@WorkbenchEditor(identifier = "GuvnorDefaultFileEditor", supportedTypes = { AnyResourceType.class }, priority = -1)
+@WorkbenchEditor(identifier = "GuvnorDefaultFileEditor", supportedTypes = {AnyResourceType.class}, priority = -1)
 public class GuvnorDefaultEditorPresenter
         extends KieEditor {
 
@@ -64,29 +64,29 @@ public class GuvnorDefaultEditorPresenter
     private DefaultFileNameValidator fileNameValidator;
 
     @Inject
-    public GuvnorDefaultEditorPresenter( final GuvnorDefaultEditorView baseView ) {
-        super( baseView );
+    public GuvnorDefaultEditorPresenter(final GuvnorDefaultEditorView baseView) {
+        super(baseView);
         view = baseView;
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        super.init( path,
-                    place,
-                    new AnyResourceType() );
-        view.onStartup( path );
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
+        super.init(path,
+                   place,
+                   new AnyResourceType());
+        view.onStartup(path);
     }
 
+    @Override
     protected void makeMenuBar() {
-        menus = menuBuilder
-                .addCopy( versionRecordManager.getCurrentPath(),
-                          fileNameValidator )
-                .addRename( versionRecordManager.getCurrentPath(),
-                            fileNameValidator )
-                .addDelete( versionRecordManager.getCurrentPath() )
-                .addNewTopLevelMenu( versionRecordManager.buildMenu() )
-                .build();
+        fileMenuBuilder
+                .addCopy(versionRecordManager.getCurrentPath(),
+                         fileNameValidator)
+                .addRename(versionRecordManager.getCurrentPath(),
+                           fileNameValidator)
+                .addDelete(versionRecordManager.getCurrentPath())
+                .addNewTopLevelMenu(versionRecordManager.buildMenu());
     }
 
     @WorkbenchMenu
@@ -112,15 +112,15 @@ public class GuvnorDefaultEditorPresenter
     @Override
     protected void loadContent() {
         view.showLoading();
-        defaultEditorService.call( getLoadSuccessCallback(),
-                                   getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+        defaultEditorService.call(getLoadSuccessCallback(),
+                                  getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
     }
 
     private RemoteCallback<DefaultEditorContent> getLoadSuccessCallback() {
         return new RemoteCallback<DefaultEditorContent>() {
             @Override
-            public void callback( final DefaultEditorContent content ) {
-                resetEditorPages( content.getOverview() );
+            public void callback(final DefaultEditorContent content) {
+                resetEditorPages(content.getOverview());
                 view.hideBusyIndicator();
             }
         };
@@ -135,5 +135,4 @@ public class GuvnorDefaultEditorPresenter
     protected Command onValidate() {
         return null;
     }
-
 }

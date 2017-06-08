@@ -59,42 +59,42 @@ public abstract class KieTextEditorPresenter
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     @Inject
-    public KieTextEditorPresenter( final KieTextEditorView baseView ) {
-        super( baseView );
+    public KieTextEditorPresenter(final KieTextEditorView baseView) {
+        super(baseView);
         view = baseView;
     }
 
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
         //This causes loadContent() to be called (which for this sub-class loads the Overview not the Text/XML etc)
-        super.init( path,
-                    place,
-                    new TextResourceType() );
+        super.init(path,
+                   place,
+                   new TextResourceType());
 
         //This causes the view's content (Text/XML etc) to be loaded, after which we need to get the original HashCode to support "dirty" content
-        view.onStartup( path );
-        view.setReadOnly( isReadOnly );
+        view.onStartup(path);
+        view.setReadOnly(isReadOnly);
     }
 
+    @Override
     protected void makeMenuBar() {
-        menus = menuBuilder
-                .addSave( versionRecordManager.newSaveMenuItem( new Command() {
+        fileMenuBuilder
+                .addSave(versionRecordManager.newSaveMenuItem(new Command() {
                     @Override
                     public void execute() {
                         onSave();
                     }
-                } ) )
-                .addCopy( versionRecordManager.getCurrentPath(),
-                          fileNameValidator )
-                .addRename( versionRecordManager.getPathToLatest(),
-                            fileNameValidator )
-                .addDelete( versionRecordManager.getPathToLatest() )
-                .addNewTopLevelMenu( versionRecordManager.buildMenu() )
-                .build();
+                }))
+                .addCopy(versionRecordManager.getCurrentPath(),
+                         fileNameValidator)
+                .addRename(versionRecordManager.getPathToLatest(),
+                           fileNameValidator)
+                .addDelete(versionRecordManager.getPathToLatest())
+                .addNewTopLevelMenu(versionRecordManager.buildMenu());
     }
 
     @Override
@@ -105,34 +105,34 @@ public abstract class KieTextEditorPresenter
 
     @Override
     protected void loadContent() {
-        defaultEditorService.call( getLoadSuccessCallback(),
-                                   getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+        defaultEditorService.call(getLoadSuccessCallback(),
+                                  getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
     }
 
     private RemoteCallback<DefaultEditorContent> getLoadSuccessCallback() {
         return new RemoteCallback<DefaultEditorContent>() {
             @Override
-            public void callback( final DefaultEditorContent content ) {
-                resetEditorPages( content.getOverview() );
+            public void callback(final DefaultEditorContent content) {
+                resetEditorPages(content.getOverview());
                 metadata = content.getOverview().getMetadata();
-                view.onStartup( versionRecordManager.getCurrentPath() );
-                view.setReadOnly( isReadOnly );
+                view.onStartup(versionRecordManager.getCurrentPath());
+                view.setReadOnly(isReadOnly);
             }
         };
     }
 
     //This is called after the View's content has been loaded
     public void onAfterViewLoaded() {
-        setOriginalHash( view.getContent().hashCode() );
+        setOriginalHash(view.getContent().hashCode());
     }
 
     @Override
-    protected void save( String commitMessage ) {
-        defaultEditorService.call( getSaveSuccessCallback( view.getContent().hashCode() ),
-                                   new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).save( versionRecordManager.getCurrentPath(),
-                                                                                                         view.getContent(),
-                                                                                                         metadata,
-                                                                                                         commitMessage );
+    protected void save(String commitMessage) {
+        defaultEditorService.call(getSaveSuccessCallback(view.getContent().hashCode()),
+                                  new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).save(versionRecordManager.getCurrentPath(),
+                                                                                                    view.getContent(),
+                                                                                                    metadata,
+                                                                                                    commitMessage);
     }
 
     @WorkbenchMenu
@@ -157,7 +157,7 @@ public abstract class KieTextEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose( view.getContent().hashCode() );
+        return super.mayClose(view.getContent().hashCode());
     }
 
     /**
@@ -168,5 +168,4 @@ public abstract class KieTextEditorPresenter
     public AceEditorMode getAceEditorMode() {
         return AceEditorMode.TEXT;
     }
-
 }

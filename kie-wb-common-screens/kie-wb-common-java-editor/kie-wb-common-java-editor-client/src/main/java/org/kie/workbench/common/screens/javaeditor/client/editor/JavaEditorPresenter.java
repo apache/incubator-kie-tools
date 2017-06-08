@@ -53,8 +53,9 @@ public class JavaEditorPresenter
 
     @OnStartup
     public void init(final Path path,
-            final PlaceRequest place) {
-        init(path, place);
+                     final PlaceRequest place) {
+        init(path,
+             place);
     }
 
     @WorkbenchPartTitle
@@ -83,9 +84,7 @@ public class JavaEditorPresenter
 
     @Override
     protected void makeMenuBar() {
-        menus = menuBuilder
-                .addNewTopLevelMenu(versionRecordManager.buildMenu())
-                .build();
+        menuBuilder.addNewTopLevelMenu(versionRecordManager.buildMenu());
     }
 
     @WorkbenchPartView
@@ -97,5 +96,4 @@ public class JavaEditorPresenter
     protected Command onValidate() {
         return null;
     }
-
 }

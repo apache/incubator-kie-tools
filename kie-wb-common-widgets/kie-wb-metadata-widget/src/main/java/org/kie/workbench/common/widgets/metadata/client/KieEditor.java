@@ -40,8 +40,6 @@ import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -56,7 +54,7 @@ public abstract class KieEditor
     protected OverviewWidgetPresenter overviewWidget;
 
     @Inject
-    protected FileMenuBuilder menuBuilder;
+    protected FileMenuBuilder fileMenuBuilder;
 
     @Inject
     protected ProjectContext workbenchContext;
@@ -78,180 +76,178 @@ public abstract class KieEditor
     private ViewDRLSourceWidget sourceWidget;
 
     //The default implementation delegates to the HashCode comparison in BaseEditor
-    private final MayCloseHandler DEFAULT_MAY_CLOSE_HANDLER = new MayCloseHandler() {
-
-        @Override
-        public boolean mayClose( final Object object ) {
-            if ( object != null ) {
-                return KieEditor.this.mayClose( object.hashCode() );
-            } else {
-                return true;
-            }
-        }
-
-    };
-    //This implementation always permits closure as something went wrong loading the Editor's content
-    private final MayCloseHandler EXCEPTION_MAY_CLOSE_HANDLER = new MayCloseHandler() {
-        @Override
-        public boolean mayClose( final Object object ) {
+    private final MayCloseHandler DEFAULT_MAY_CLOSE_HANDLER = (object) -> {
+        if (object != null) {
+            return KieEditor.this.mayClose(object.hashCode());
+        } else {
             return true;
         }
     };
+    //This implementation always permits closure as something went wrong loading the Editor's content
+    private final MayCloseHandler EXCEPTION_MAY_CLOSE_HANDLER = (object) -> true;
 
     private MayCloseHandler mayCloseHandler = DEFAULT_MAY_CLOSE_HANDLER;
 
     protected KieEditor() {
     }
 
-    protected KieEditor( final KieEditorView baseView ) {
-        super( baseView );
+    protected KieEditor(final KieEditorView baseView) {
+        super(baseView);
     }
 
-    protected void init( final ObservablePath path,
-                         final PlaceRequest place,
-                         final ClientResourceType type ) {
-        this.init( path,
-                   place,
-                   type,
-                   true );
+    protected void init(final ObservablePath path,
+                        final PlaceRequest place,
+                        final ClientResourceType type) {
+        this.init(path,
+                  place,
+                  type,
+                  true);
     }
 
-    protected void init( final ObservablePath path,
-                         final PlaceRequest place,
-                         final ClientResourceType type,
-                         final boolean addFileChangeListeners ) {
-        this.init( path,
+    protected void init(final ObservablePath path,
+                        final PlaceRequest place,
+                        final ClientResourceType type,
+                        final boolean addFileChangeListeners) {
+        this.init(path,
+                  place,
+                  type,
+                  addFileChangeListeners,
+                  true);
+    }
+
+    @Override
+    protected void init(final ObservablePath path,
+                        final PlaceRequest place,
+                        final ClientResourceType type,
+                        final MenuItems... menuItems) {
+        this.init(path,
+                  place,
+                  type,
+                  true,
+                  false,
+                  menuItems);
+    }
+
+    @Override
+    protected void init(final ObservablePath path,
+                        final PlaceRequest place,
+                        final ClientResourceType type,
+                        final boolean addFileChangeListeners,
+                        final boolean displayShowMoreVersions,
+                        final MenuItems... menuItems) {
+        kieView.setPresenter(this);
+        super.init(path,
                    place,
                    type,
                    addFileChangeListeners,
-                   true );
+                   displayShowMoreVersions,
+                   menuItems);
     }
 
     @Override
-    protected void init( final ObservablePath path,
-                         final PlaceRequest place,
-                         final ClientResourceType type,
-                         final MenuItems... menuItems ) {
-        this.init( path, place, type, true, false, menuItems );
-    }
-
-    @Override
-    protected void init( final ObservablePath path,
-                         final PlaceRequest place,
-                         final ClientResourceType type,
-                         final boolean addFileChangeListeners,
-                         final boolean displayShowMoreVersions,
-                         final MenuItems... menuItems ) {
-        kieView.setPresenter( this );
-        super.init( path, place, type, addFileChangeListeners, displayShowMoreVersions, menuItems );
-    }
-
     protected void showVersions() {
         selectOverviewTab();
         overviewWidget.showVersionsTab();
     }
 
-    protected void createOriginalHash( Object object ) {
-        if ( object != null ) {
-            setOriginalHash( object.hashCode() );
+    protected void createOriginalHash(Object object) {
+        if (object != null) {
+            setOriginalHash(object.hashCode());
         }
     }
 
     @Override
-    public void setOriginalHash( Integer originalHash ) {
-        super.setOriginalHash( originalHash );
+    public void setOriginalHash(Integer originalHash) {
+        super.setOriginalHash(originalHash);
         overviewWidget.resetDirty();
     }
 
-    public boolean mayClose( Object object ) {
-        return mayCloseHandler.mayClose( object );
+    public boolean mayClose(Object object) {
+        return mayCloseHandler.mayClose(object);
     }
 
     protected CommandDrivenErrorCallback getNoSuchFileExceptionErrorCallback() {
-        return new CommandDrivenErrorCallback( baseView,
-                                               new CommandBuilder()
-                                                       .addNoSuchFileException( baseView,
-                                                                                kieView.getMultiPage(),
-                                                                                menus )
-                                                       .addFileSystemNotFoundException( baseView,
-                                                                                        kieView.getMultiPage(),
-                                                                                        menus )
-                                                       .build()
+        return new CommandDrivenErrorCallback(baseView,
+                                              new CommandBuilder()
+                                                      .addNoSuchFileException(baseView,
+                                                                              kieView.getMultiPage(),
+                                                                              menus)
+                                                      .addFileSystemNotFoundException(baseView,
+                                                                                      kieView.getMultiPage(),
+                                                                                      menus)
+                                                      .build()
         ) {
             @Override
-            public boolean error( final Message message,
-                                  final Throwable throwable ) {
+            public boolean error(final Message message,
+                                 final Throwable throwable) {
                 mayCloseHandler = EXCEPTION_MAY_CLOSE_HANDLER;
-                return super.error( message,
-                                    throwable );
+                return super.error(message,
+                                   throwable);
             }
         };
     }
 
     protected CommandDrivenErrorCallback getCouldNotGenerateSourceErrorCallback() {
-        return new CommandDrivenErrorCallback( baseView,
-                                               new CommandBuilder()
-                                                       .addSourceCodeGenerationFailedException( baseView,
-                                                                                                sourceWidget )
-                                                       .build()
+        return new CommandDrivenErrorCallback(baseView,
+                                              new CommandBuilder()
+                                                      .addSourceCodeGenerationFailedException(baseView,
+                                                                                              sourceWidget)
+                                                      .build()
         );
     }
 
     protected void addSourcePage() {
-        sourceWidget = GWT.create( ViewDRLSourceWidget.class );
-        kieView.addSourcePage( sourceWidget );
+        sourceWidget = GWT.create(ViewDRLSourceWidget.class);
+        kieView.addSourcePage(sourceWidget);
     }
 
-    protected void addPage( Page page ) {
-        kieView.addPage( page );
+    protected void addPage(Page page) {
+        kieView.addPage(page);
     }
 
-    protected void resetEditorPages( final Overview overview ) {
+    protected void resetEditorPages(final Overview overview) {
 
-        this.overviewWidget.setContent( overview, versionRecordManager.getPathToLatest() );
+        this.overviewWidget.setContent(overview,
+                                       versionRecordManager.getPathToLatest());
         this.metadata = overview.getMetadata();
 
         kieView.clear();
 
-        kieView.addMainEditorPage( baseView );
+        kieView.addMainEditorPage(baseView);
 
-        kieView.addOverviewPage( overviewWidget,
-                                 new com.google.gwt.user.client.Command() {
-                                     @Override
-                                     public void execute() {
-                                         overviewWidget.refresh( versionRecordManager.getVersion() );
-                                     }
-                                 } );
-
+        kieView.addOverviewPage(overviewWidget,
+                                () -> overviewWidget.refresh(versionRecordManager.getVersion()));
     }
 
     protected void OnClose() {
         kieView.clear();
     }
 
-    protected void addImportsTab( IsWidget importsWidget ) {
-        kieView.addImportsTab( importsWidget );
+    protected void addImportsTab(IsWidget importsWidget) {
+        kieView.addImportsTab(importsWidget);
     }
 
     /**
      * If you want to customize the menu override this method.
      */
+    @Override
     protected void makeMenuBar() {
-        menus = menuBuilder
-                .addSave( versionRecordManager.newSaveMenuItem( new Command() {
-                    @Override
-                    public void execute() {
-                        onSave();
-                    }
-                } ) )
-                .addCopy( versionRecordManager.getCurrentPath(),
-                          fileNameValidator )
-                .addRename( versionRecordManager.getPathToLatest(),
-                            fileNameValidator )
-                .addDelete( versionRecordManager.getPathToLatest() )
-                .addValidate( onValidate() )
-                .addNewTopLevelMenu( versionRecordManager.buildMenu() )
-                .build();
+        fileMenuBuilder
+                .addSave(versionRecordManager.newSaveMenuItem(this::onSave))
+                .addCopy(versionRecordManager.getCurrentPath(),
+                         fileNameValidator)
+                .addRename(versionRecordManager.getPathToLatest(),
+                           fileNameValidator)
+                .addDelete(versionRecordManager.getPathToLatest())
+                .addValidate(onValidate())
+                .addNewTopLevelMenu(versionRecordManager.buildMenu());
+    }
+
+    @Override
+    protected void buildMenuBar() {
+        if (fileMenuBuilder != null) {
+            menus = fileMenuBuilder.build();
+        }
     }
 
     protected boolean isEditorTabSelected() {
@@ -266,8 +262,8 @@ public abstract class KieEditor
         return kieView.getSelectedTabIndex();
     }
 
-    public void setSelectedTab( int index ) {
-        kieView.setSelectedTab( index );
+    public void setSelectedTab(int index) {
+        kieView.setSelectedTab(index);
     }
 
     protected void selectOverviewTab() {
@@ -278,34 +274,34 @@ public abstract class KieEditor
         kieView.selectEditorTab();
     }
 
-    protected void updateSource( String source ) {
-        sourceWidget.setContent( source );
+    protected void updateSource(String source) {
+        sourceWidget.setContent(source);
     }
 
     public IsWidget getWidget() {
         return kieView.asWidget();
     }
 
-    public void onRepositoryRemoved( final @Observes RepositoryRemovedEvent event ) {
-        if ( event.getRepository() == null ) {
+    public void onRepositoryRemoved(final @Observes RepositoryRemovedEvent event) {
+        if (event.getRepository() == null) {
             return;
         }
-        if ( workbenchContext == null ) {
+        if (workbenchContext == null) {
             return;
         }
-        if ( workbenchContext.getActiveRepository() == null ) {
+        if (workbenchContext.getActiveRepository() == null) {
             return;
         }
-        if ( workbenchContext.getActiveRepository().equals( event.getRepository() ) ) {
-            for ( MenuItem mi : menus.getItemsMap().values() ) {
-                mi.setEnabled( false );
+        if (workbenchContext.getActiveRepository().equals(event.getRepository())) {
+            for (MenuItem mi : menus.getItemsMap().values()) {
+                mi.setEnabled(false);
             }
         }
     }
 
     @Override
-    public boolean mayClose( Integer currentHash ) {
-        if ( this.isDirty( currentHash ) || overviewWidget.isDirty() ) {
+    public boolean mayClose(Integer currentHash) {
+        if (this.isDirty(currentHash) || overviewWidget.isDirty()) {
             return this.baseView.confirmClose();
         } else {
             return true;
@@ -314,42 +310,41 @@ public abstract class KieEditor
 
     @Override
     protected void save() {
-        savePopUpPresenter.show( versionRecordManager.getCurrentPath(),
-                                   new ParameterizedCommand<String>() {
-                                       @Override
-                                       public void execute( final String commitMessage ) {
-                                           baseView.showSaving();
-                                           save( commitMessage );
-                                           concurrentUpdateSessionInfo = null;
-                                       }
-                                   } );
+        savePopUpPresenter.show(versionRecordManager.getCurrentPath(),
+                                (commitMessage) -> {
+                                    baseView.showSaving();
+                                    save(commitMessage);
+                                    concurrentUpdateSessionInfo = null;
+                                });
         concurrentUpdateSessionInfo = null;
     }
 
-    protected void save( final String commitMessage ) {
+    protected void save(final String commitMessage) {
 
     }
 
+    @Override
     public void onOverviewSelected() {
     }
 
+    @Override
     public void onSourceTabSelected() {
     }
 
     /**
      * Overwrite this if you want to do something special when the editor tab is selected.
      */
+    @Override
     public void onEditTabSelected() {
     }
 
+    @Override
     public void onEditTabUnselected() {
     }
 
     //Handler for MayClose requests
     private interface MayCloseHandler {
 
-        boolean mayClose( final Object object );
-
+        boolean mayClose(final Object object);
     }
-
 }

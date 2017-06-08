@@ -27,10 +27,8 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
-import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.kie.workbench.common.forms.editor.client.type.FormDefinitionResourceType;
@@ -211,7 +209,7 @@ public class FormEditorPresenter extends KieEditor {
 
     @Override
     protected void makeMenuBar() {
-        menus = menuBuilder
+        fileMenuBuilder
                 .addSave(versionRecordManager.newSaveMenuItem(new Command() {
                     @Override
                     public void execute() {
@@ -223,13 +221,12 @@ public class FormEditorPresenter extends KieEditor {
                 .addRename(versionRecordManager.getPathToLatest(),
                            fileNameValidator)
                 .addDelete(versionRecordManager.getPathToLatest())
-                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                .addNewTopLevelMenu(versionRecordManager.buildMenu());
                 /*.addCommand( "PREVIEW",
                              () -> {
                                  synchronizeFormLayout();
                                  IOC.getBeanManager().lookupBean( PreviewFormPresenter.class ).newInstance().preview( getRenderingContext() );
                              } )*/
-                .build();
     }
 
     public LayoutTemplate getFormTemplate() {
