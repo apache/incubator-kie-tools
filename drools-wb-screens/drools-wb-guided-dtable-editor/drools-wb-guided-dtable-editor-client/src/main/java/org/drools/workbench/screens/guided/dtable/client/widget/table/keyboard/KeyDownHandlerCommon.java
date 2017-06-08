@@ -57,6 +57,7 @@ public class KeyDownHandlerCommon implements KeyDownHandler {
                 gridCell.flush();
                 moveSelection(keyCode,
                               isShiftKeyDown);
+                e.preventDefault();
 
             case KeyCodes.KEY_ESCAPE:
                 gridCell.destroyResources();

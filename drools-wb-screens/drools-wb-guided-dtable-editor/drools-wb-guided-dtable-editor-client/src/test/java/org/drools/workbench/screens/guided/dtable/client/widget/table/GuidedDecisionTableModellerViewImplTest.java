@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.dev.util.collect.HashMap;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -55,7 +56,7 @@ public class GuidedDecisionTableModellerViewImplTest {
     FlowPanel flowPanel;
 
     @Mock
-    GridLienzoPanel gridPanel;
+    GridLienzoPanel mockGridPanel;
 
     @Mock
     DefaultGridLayer gridLayer;
@@ -261,6 +262,17 @@ public class GuidedDecisionTableModellerViewImplTest {
         verify(attributeConfigWidget).add(any(AttributeColumnConfigRowView.class));
     }
 
+    @Test
+    public void testAddKeyDownHandlerAttachesToEditor() {
+        //Ensure nobody thinks its a good idea to attach to the RootPanel at some time in the future!
+        //See https://issues.jboss.org/browse/GUVNOR-3146
+        final KeyDownHandler handler = mock(KeyDownHandler.class);
+
+        view.addKeyDownHandler(handler);
+
+        verify(mockGridPanel).addKeyDownHandler(eq(handler));
+    }
+
     private AttributeCol52 attributeColumn() {
         final AttributeCol52 attributeCol52 = mock(AttributeCol52.class);
         final DTCellValue52 defaultValue = mock(DTCellValue52.class);
@@ -274,7 +286,7 @@ public class GuidedDecisionTableModellerViewImplTest {
     class GuidedDecisionTableModellerViewImplFake extends GuidedDecisionTableModellerViewImpl {
 
         public GuidedDecisionTableModellerViewImplFake() {
-            /* do nothing */
+            this.gridPanel = mockGridPanel;
         }
 
         DefaultGridLayer defaultGridLayer() {

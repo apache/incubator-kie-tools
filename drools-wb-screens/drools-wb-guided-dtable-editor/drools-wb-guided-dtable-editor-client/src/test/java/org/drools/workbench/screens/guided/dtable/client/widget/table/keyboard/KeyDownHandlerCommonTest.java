@@ -44,6 +44,7 @@ public class KeyDownHandlerCommonTest extends BaseKeyDownHandlerTest {
         handler.onKeyDown(e);
 
         verify(gridCell).flush();
+        verify(e).preventDefault();
         verifyCommonActions();
     }
 

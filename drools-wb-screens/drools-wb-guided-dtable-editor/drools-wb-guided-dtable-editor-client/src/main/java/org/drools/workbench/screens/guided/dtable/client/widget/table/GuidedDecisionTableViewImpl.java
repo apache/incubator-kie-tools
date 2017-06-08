@@ -151,8 +151,8 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
         //Clip Caption Group
         final BoundingBox bb = new BoundingBox(0,
                                                0,
-                                               captionWidth,
-                                               HEADER_CAPTION_HEIGHT);
+                                               captionWidth + border.getStrokeWidth(),
+                                               HEADER_CAPTION_HEIGHT + 0.5);
         final IPathClipper clipper = getPathClipper(bb);
         g.setPathClipper(clipper);
         clipper.setActive(true);
