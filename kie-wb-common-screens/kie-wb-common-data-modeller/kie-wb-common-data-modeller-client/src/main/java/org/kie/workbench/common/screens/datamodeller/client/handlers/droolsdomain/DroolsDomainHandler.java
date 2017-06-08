@@ -21,7 +21,6 @@ import javax.enterprise.context.ApplicationScoped;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ResourceOptions;
-import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
 @ApplicationScoped
 public class DroolsDomainHandler implements DomainHandler {
@@ -48,11 +47,5 @@ public class DroolsDomainHandler implements DomainHandler {
     @Override
     public void postCommandProcessing(DataModelCommand command) {
         //no post command processing for this domain.
-    }
-
-    @Override
-    public boolean isDomainSpecificProperty(ObjectProperty objectProperty) {
-        // no specific object properties defined for this domain
-        return false;
     }
 }

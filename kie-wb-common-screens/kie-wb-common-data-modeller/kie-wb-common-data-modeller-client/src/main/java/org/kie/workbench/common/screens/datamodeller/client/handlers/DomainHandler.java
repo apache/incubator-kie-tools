@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.datamodeller.client.handlers;
 
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ResourceOptions;
-import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
 public interface DomainHandler {
 
@@ -29,6 +28,4 @@ public interface DomainHandler {
     ResourceOptions getResourceOptions(boolean newInstance);
 
     void postCommandProcessing(DataModelCommand command);
-
-    boolean isDomainSpecificProperty(ObjectProperty objectProperty);
 }

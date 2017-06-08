@@ -16,43 +16,53 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.editor;
 
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
-import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.screens.datamodeller.validation.DataObjectValidationService;
+import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.uberfire.mvp.Command;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DataObjectBrowserViewImplTest {
 
+    @Mock
+    private DataObjectValidationService dataObjectValidationService;
+
+    @Mock
+    private ValidationPopup validationPopup;
+
+    private DataObjectBrowserViewImpl view;
+
+    @Before
+    public void setUp() {
+        this.view = new DataObjectBrowserViewImpl(
+                validationPopup);
+    }
+
     @Test
-    public void isRemoveButtonEnabled() {
-        DataObjectBrowserViewImpl view = new DataObjectBrowserViewImpl();
+    public void showValidationPopupForDeletion() {
+        List<ValidationMessage> validationMessages = Collections.EMPTY_LIST;
+        Command yesCommand = () -> {};
+        Command noCommand = () -> {};
 
-        ObjectProperty objectProperty = mock(ObjectProperty.class);
+        view.showValidationPopupForDeletion(validationMessages,
+                                            yesCommand,
+                                            noCommand);
 
-        DomainHandler matchingHandler = mock(DomainHandler.class);
-        when(matchingHandler.isDomainSpecificProperty(objectProperty)).thenReturn(true);
-
-        DomainHandler nonMatchingHandler = mock(DomainHandler.class);
-        when(nonMatchingHandler.isDomainSpecificProperty(objectProperty)).thenReturn(false);
-
-        view.setDomainHandlers(Arrays.asList(matchingHandler,
-                                             nonMatchingHandler));
-
-        assertFalse(view.isRemoveButtonEnabled(objectProperty));
-
-        view.setDomainHandlers(Arrays.asList(matchingHandler));
-
-        assertFalse(view.isRemoveButtonEnabled(objectProperty));
-
-        view.setDomainHandlers(Arrays.asList(nonMatchingHandler));
-
-        assertTrue(view.isRemoveButtonEnabled(objectProperty));
+        verify(validationPopup,
+               Mockito.times(1)).showDeleteValidationMessages(
+                yesCommand,
+                noCommand,
+                validationMessages);
     }
 }

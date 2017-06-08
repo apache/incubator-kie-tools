@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -55,6 +56,7 @@ import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelec
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
+import org.kie.workbench.common.screens.datamodeller.validation.DataObjectValidationService;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
@@ -70,7 +72,7 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 @Dependent
 public class DataObjectBrowser
         implements IsWidget,
-        DataObjectBrowserView.Presenter {
+                   DataObjectBrowserView.Presenter {
 
     protected DataModelCommandBuilder commandBuilder;
 
@@ -78,13 +80,15 @@ public class DataObjectBrowser
 
     protected DataModelerContext context;
 
-    protected ListDataProvider<ObjectProperty> dataProvider = new ListDataProvider<ObjectProperty>( new ArrayList<ObjectProperty>( ) );
+    protected ListDataProvider<ObjectProperty> dataProvider = new ListDataProvider<ObjectProperty>(new ArrayList<ObjectProperty>());
 
     protected ValidatorService validatorService;
 
     protected DomainHandlerRegistry handlerRegistry;
 
     protected Caller<DataModelerService> modelerService;
+
+    protected Caller<DataObjectValidationService> dataObjectValidationService;
 
     protected Event<DataModelerEvent> dataModelerEvent;
 
@@ -101,20 +105,22 @@ public class DataObjectBrowser
     protected boolean readonly = true;
 
     @Inject
-    public DataObjectBrowser( DomainHandlerRegistry handlerRegistry,
-            DataModelCommandBuilder commandBuilder,
-            Caller<DataModelerService> modelerService,
-            ValidatorService validatorService,
-            Event<DataModelerEvent> dataModelerEvent,
-            Event<DataModelerWorkbenchContextChangeEvent> dataModelerWBContextEvent,
-            Event<LockRequiredEvent> lockRequiredEvent,
-            PlaceManager placeManager,
-            NewFieldPopup newFieldPopup,
-            DataObjectBrowserView view ) {
+    public DataObjectBrowser(DomainHandlerRegistry handlerRegistry,
+                             DataModelCommandBuilder commandBuilder,
+                             Caller<DataModelerService> modelerService,
+                             Caller<DataObjectValidationService> dataObjectValidationService,
+                             ValidatorService validatorService,
+                             Event<DataModelerEvent> dataModelerEvent,
+                             Event<DataModelerWorkbenchContextChangeEvent> dataModelerWBContextEvent,
+                             Event<LockRequiredEvent> lockRequiredEvent,
+                             PlaceManager placeManager,
+                             NewFieldPopup newFieldPopup,
+                             DataObjectBrowserView view) {
 
         this.handlerRegistry = handlerRegistry;
         this.commandBuilder = commandBuilder;
         this.modelerService = modelerService;
+        this.dataObjectValidationService = dataObjectValidationService;
         this.validatorService = validatorService;
         this.dataModelerEvent = dataModelerEvent;
         this.dataModelerWBContextEvent = dataModelerWBContextEvent;
@@ -123,47 +129,47 @@ public class DataObjectBrowser
         this.newFieldPopup = newFieldPopup;
         this.view = view;
 
-        view.init( this );
-        view.setTableHeight( DataObjectBrowserHelper.calculateTableHeight( 0 ) );
-        view.setDataProvider( dataProvider );
+        view.init(this);
+        view.setTableHeight(DataObjectBrowserHelper.calculateTableHeight(0));
+        view.setDataProvider(dataProvider);
     }
 
     @PostConstruct
     protected void init() {
 
-        setReadonly( true );
-        newFieldPopup.addPopupHandler( new NewFieldPopupView.NewFieldPopupHandler() {
+        setReadonly(true);
+        newFieldPopup.addPopupHandler(new NewFieldPopupView.NewFieldPopupHandler() {
             @Override
-            public void onCreate( String fieldName,
-                    String fieldLabel,
-                    String type,
-                    boolean multiple ) {
-                onCreateNewProperty( dataObject,
-                        DataModelerUtils.unCapitalize( fieldName ),
-                        fieldLabel,
-                        type,
-                        multiple,
-                        true );
+            public void onCreate(String fieldName,
+                                 String fieldLabel,
+                                 String type,
+                                 boolean multiple) {
+                onCreateNewProperty(dataObject,
+                                    DataModelerUtils.unCapitalize(fieldName),
+                                    fieldLabel,
+                                    type,
+                                    multiple,
+                                    true);
             }
 
             @Override
-            public void onCreateAndContinue( String fieldName,
-                    String fieldLabel,
-                    String type,
-                    boolean multiple ) {
-                onCreateNewProperty( dataObject,
-                        DataModelerUtils.unCapitalize( fieldName ),
-                        fieldLabel,
-                        type,
-                        multiple,
-                        false );
+            public void onCreateAndContinue(String fieldName,
+                                            String fieldLabel,
+                                            String type,
+                                            boolean multiple) {
+                onCreateNewProperty(dataObject,
+                                    DataModelerUtils.unCapitalize(fieldName),
+                                    fieldLabel,
+                                    type,
+                                    multiple,
+                                    false);
             }
 
             @Override
             public void onCancel() {
                 newFieldPopup.hide();
             }
-        } );
+        });
     }
 
     @Override
@@ -175,177 +181,206 @@ public class DataObjectBrowser
         return context;
     }
 
-    public void setContext( DataModelerContext context ) {
+    public void setContext(DataModelerContext context) {
         this.context = context;
-        if ( context != null ) {
-            setDataObject( context.getDataObject() );
-            setReadonly( context.isReadonly() );
+        if (context != null) {
+            setDataObject(context.getDataObject());
+            setReadonly(context.isReadonly());
         } else {
-            setReadonly( true );
+            setReadonly(true);
         }
     }
 
-    private void onCreateNewProperty( final DataObject dataObject,
-            final String propertyName,
-            final String propertyLabel,
-            final String propertyType,
-            final Boolean isMultiple,
-            final boolean closePopup ) {
-        if ( dataObject != null ) {
-            validatorService.isValidIdentifier( propertyName, new ValidatorCallback() {
-                @Override
-                public void onFailure() {
-                    newFieldPopup.setErrorMessage( Constants.INSTANCE.validation_error_invalid_object_attribute_identifier( propertyName ) );
-                }
+    private void onCreateNewProperty(final DataObject dataObject,
+                                     final String propertyName,
+                                     final String propertyLabel,
+                                     final String propertyType,
+                                     final Boolean isMultiple,
+                                     final boolean closePopup) {
+        if (dataObject != null) {
+            validatorService.isValidIdentifier(propertyName,
+                                               new ValidatorCallback() {
+                                                   @Override
+                                                   public void onFailure() {
+                                                       newFieldPopup.setErrorMessage(Constants.INSTANCE.validation_error_invalid_object_attribute_identifier(propertyName));
+                                                   }
 
-                @Override
-                public void onSuccess() {
-                    validatorService.isUniqueAttributeName( propertyName, dataObject, new ValidatorWithReasonCallback() {
+                                                   @Override
+                                                   public void onSuccess() {
+                                                       validatorService.isUniqueAttributeName(propertyName,
+                                                                                              dataObject,
+                                                                                              new ValidatorWithReasonCallback() {
 
-                        @Override
-                        public void onFailure() {
-                            showFailure( ValidatorService.MANAGED_PROPERTY_EXISTS );
-                        }
+                                                                                                  @Override
+                                                                                                  public void onFailure() {
+                                                                                                      showFailure(ValidatorService.MANAGED_PROPERTY_EXISTS);
+                                                                                                  }
 
-                        @Override
-                        public void onFailure( String reason ) {
-                            showFailure( reason );
-                        }
+                                                                                                  @Override
+                                                                                                  public void onFailure(String reason) {
+                                                                                                      showFailure(reason);
+                                                                                                  }
 
-                        private void showFailure( String reason ) {
-                            if ( ValidatorService.UN_MANAGED_PROPERTY_EXISTS.equals( reason ) ) {
-                                ObjectProperty unmanagedProperty = getDataObject().getUnManagedProperty( propertyName );
-                                newFieldPopup.setErrorMessage( Constants.INSTANCE.validation_error_object_un_managed_attribute_already_exists( unmanagedProperty.getName(), unmanagedProperty.getClassName() ) );
-                            } else {
-                                newFieldPopup.setErrorMessage( Constants.INSTANCE.validation_error_object_attribute_already_exists( propertyName ) );
-                            }
-                        }
+                                                                                                  private void showFailure(String reason) {
+                                                                                                      if (ValidatorService.UN_MANAGED_PROPERTY_EXISTS.equals(reason)) {
+                                                                                                          ObjectProperty unmanagedProperty = getDataObject().getUnManagedProperty(propertyName);
+                                                                                                          newFieldPopup.setErrorMessage(Constants.INSTANCE.validation_error_object_un_managed_attribute_already_exists(unmanagedProperty.getName(),
+                                                                                                                                                                                                                       unmanagedProperty.getClassName()));
+                                                                                                      } else {
+                                                                                                          newFieldPopup.setErrorMessage(Constants.INSTANCE.validation_error_object_attribute_already_exists(propertyName));
+                                                                                                      }
+                                                                                                  }
 
-                        @Override
-                        public void onSuccess() {
-                            if ( propertyType != null && !"".equals( propertyType ) && !UIUtil.NOT_SELECTED.equals( propertyType ) ) {
+                                                                                                  @Override
+                                                                                                  public void onSuccess() {
+                                                                                                      if (propertyType != null && !"".equals(propertyType) && !UIUtil.NOT_SELECTED.equals(propertyType)) {
 
-                                boolean multiple = isMultiple && !getContext().getHelper().isPrimitiveType( propertyType ); //extra check
-                                addNewProperty( getDataObject(), propertyName, propertyLabel, propertyType, multiple );
-                                if ( closePopup ) {
-                                    newFieldPopup.hide();
-                                } else {
-                                    newFieldPopup.resetInput();
-                                }
-
-                            } else {
-                                newFieldPopup.setErrorMessage( Constants.INSTANCE.validation_error_missing_object_attribute_type() );
-                            }
-                        }
-                    } );
-                }
-            } );
+                                                                                                          boolean multiple = isMultiple && !getContext().getHelper().isPrimitiveType(propertyType); //extra check
+                                                                                                          addNewProperty(getDataObject(),
+                                                                                                                         propertyName,
+                                                                                                                         propertyLabel,
+                                                                                                                         propertyType,
+                                                                                                                         multiple);
+                                                                                                          if (closePopup) {
+                                                                                                              newFieldPopup.hide();
+                                                                                                          } else {
+                                                                                                              newFieldPopup.resetInput();
+                                                                                                          }
+                                                                                                      } else {
+                                                                                                          newFieldPopup.setErrorMessage(Constants.INSTANCE.validation_error_missing_object_attribute_type());
+                                                                                                      }
+                                                                                                  }
+                                                                                              });
+                                                   }
+                                               });
         }
     }
 
-    void setDataObject( DataObject dataObject ) {
+    void setDataObject(DataObject dataObject) {
         this.dataObject = dataObject;
-        setObjectSelectorLabel( dataObject );
+        setObjectSelectorLabel(dataObject);
 
-        List<ObjectProperty> dataObjectProperties = ( dataObject != null ) ?
-                DataModelerUtils.getManagedProperties( dataObject ) : Collections.<ObjectProperty>emptyList();
+        List<ObjectProperty> dataObjectProperties = (dataObject != null) ?
+                DataModelerUtils.getManagedProperties(dataObject) : Collections.<ObjectProperty>emptyList();
 
         ArrayList<ObjectProperty> sortBuffer = new ArrayList<ObjectProperty>();
-        if ( dataObject != null ) {
-            sortBuffer.addAll( dataObjectProperties );
+        if (dataObject != null) {
+            sortBuffer.addAll(dataObjectProperties);
         }
 
-        Collections.sort( sortBuffer, new ObjectPropertyComparator( "name", true ) );
+        Collections.sort(sortBuffer,
+                         new ObjectPropertyComparator("name",
+                                                      true));
 
-        adjustTableSize( sortBuffer.size() );
+        adjustTableSize(sortBuffer.size());
         dataProvider.getList().clear();
-        dataProvider.getList().addAll( sortBuffer );
+        dataProvider.getList().addAll(sortBuffer);
         view.redrawTable();
     }
 
-    private void adjustTableSize( int rows ) {
-        int height = DataObjectBrowserHelper.calculateTableHeight( rows );
+    private void adjustTableSize(int rows) {
+        int height = DataObjectBrowserHelper.calculateTableHeight(rows);
         int currentHeight = view.getTableHeight();
-        if ( height != currentHeight ) {
-            view.setTableHeight( height );
+        if (height != currentHeight) {
+            view.setTableHeight(height);
         }
     }
 
-    private void addNewProperty( DataObject dataObject,
-            final String propertyName,
-            final String propertyLabel,
-            final String propertyType,
-            final Boolean isMultiple ) {
+    private void addNewProperty(DataObject dataObject,
+                                final String propertyName,
+                                final String propertyLabel,
+                                final String propertyType,
+                                final Boolean isMultiple) {
 
         AddPropertyCommand command = commandBuilder.buildAddPropertyCommand(
                 getContext(),
                 DataModelerEvent.DATA_OBJECT_BROWSER,
-                dataObject, propertyName, propertyLabel,
-                propertyType, isMultiple );
+                dataObject,
+                propertyName,
+                propertyLabel,
+                propertyType,
+                isMultiple);
 
         command.execute();
         ObjectProperty property = command.getProperty();
 
-        adjustTableSize( dataProvider.getList().size() + 1 );
-        dataProvider.getList().add( property );
-        view.setSelectedRow( property, true );
+        adjustTableSize(dataProvider.getList().size() + 1);
+        dataProvider.getList().add(property);
+        view.setSelectedRow(property,
+                            true);
 
-        executePostCommandProcessing( command );
+        executePostCommandProcessing(command);
     }
 
-    public void onDeleteProperty( final ObjectProperty objectProperty,
-            final int index ) {
-        checkUsagesAndDeleteDataObjectProperty( objectProperty, index );
+    @Override
+    public void onDeleteProperty(final ObjectProperty objectProperty,
+                                 final int index) {
+        dataObjectValidationService.call(checkMessages -> {
+            if (((List<ValidationMessage>) checkMessages).isEmpty()) {
+                checkUsagesAndDeleteDataObjectProperty(objectProperty,
+                                                       index);
+            } else {
+                view.showValidationPopupForDeletion((List<ValidationMessage>) checkMessages,
+                                                    () -> checkUsagesAndDeleteDataObjectProperty(objectProperty,
+                                                                                                 index),
+                                                    () -> {
+                                                    });
+            }
+        }).validateObjectPropertyDeletion(dataObject,
+                                          objectProperty);
     }
 
-    private void deleteProperty( final ObjectProperty objectProperty,
-            final int index ) {
-        if ( dataObject != null ) {
-            adjustTableSize( dataProvider.getList().size() -1 );
-            dataObject.getProperties().remove( objectProperty );
+    private void deleteProperty(final ObjectProperty objectProperty,
+                                final int index) {
+        if (dataObject != null) {
+            adjustTableSize(dataProvider.getList().size() - 1);
+            dataObject.getProperties().remove(objectProperty);
 
-            dataProvider.getList().remove( index );
+            dataProvider.getList().remove(index);
             dataProvider.flush();
             dataProvider.refresh();
 
-            getContext().getHelper().dataObjectUnReferenced( objectProperty.getClassName(), dataObject.getClassName() );
-            notifyFieldDeleted( objectProperty );
-            if ( dataProvider.getList().size() == 0 ) {
-                context.setObjectProperty( null );
+            getContext().getHelper().dataObjectUnReferenced(objectProperty.getClassName(),
+                                                            dataObject.getClassName());
+            notifyFieldDeleted(objectProperty);
+            if (dataProvider.getList().size() == 0) {
+                context.setObjectProperty(null);
                 notifyObjectSelected();
             } else {
-                int nextSelectedRow = index > 0 ? ( index - 1 ) : 0;
-                view.setSelectedRow( dataProvider.getList().get( nextSelectedRow ), true );
+                int nextSelectedRow = index > 0 ? (index - 1) : 0;
+                view.setSelectedRow(dataProvider.getList().get(nextSelectedRow),
+                                    true);
             }
         }
     }
 
-    private void checkUsagesAndDeleteDataObjectProperty( final ObjectProperty objectProperty,
-            final int index ) {
+    private void checkUsagesAndDeleteDataObjectProperty(final ObjectProperty objectProperty,
+                                                final int index) {
 
         final String className = dataObject.getClassName();
         final String fieldName = objectProperty.getName();
 
-        if ( getContext() != null ) {
+        if (getContext() != null) {
 
             final Path currentPath = getContext().getEditorModelContent() != null ? getContext().getEditorModelContent().getPath() : null;
 
-            modelerService.call( new RemoteCallback<List<Path>>() {
+            modelerService.call(new RemoteCallback<List<Path>>() {
 
                 @Override
-                public void callback( List<Path> paths ) {
+                public void callback(List<Path> paths) {
 
-                    if ( paths != null && paths.size() > 0 ) {
+                    if (paths != null && paths.size() > 0) {
                         //If usages for this field were detected in project assets
                         //show the confirmation message to the user.
 
                         view.showUsagesPopupForDeletion(
-                                Constants.INSTANCE.modelEditor_confirm_deletion_of_used_field( objectProperty.getName() ),
+                                Constants.INSTANCE.modelEditor_confirm_deletion_of_used_field(objectProperty.getName()),
                                 paths,
                                 new Command() {
                                     @Override
                                     public void execute() {
-                                        deleteProperty( objectProperty, index );
+                                        deleteProperty(objectProperty,
+                                                       index);
                                     }
                                 },
                                 new Command() {
@@ -355,20 +390,24 @@ public class DataObjectBrowser
                                     }
                                 }
                         );
-
                     } else {
                         //no usages, just proceed with the deletion.
-                        deleteProperty( objectProperty, index );
+                        deleteProperty(objectProperty,
+                                       index);
                     }
                 }
-            } ).findFieldUsages( currentPath, className, fieldName );
+            }).findFieldUsages(currentPath,
+                               className,
+                               fieldName);
         }
     }
 
-    private void setObjectSelectorLabel( DataObject dataObject ) {
-        String label = dataObject != null ? DataModelerUtils.getDataObjectFullLabel( dataObject, false ) : "";
+    private void setObjectSelectorLabel(DataObject dataObject) {
+        String label = dataObject != null ? DataModelerUtils.getDataObjectFullLabel(dataObject,
+                                                                                    false) : "";
         String title = dataObject != null ? dataObject.getClassName() : "";
-        view.setObjectSelectorLabel( label, title );
+        view.setObjectSelectorLabel(label,
+                                    title);
     }
 
     public DataModel getDataModel() {
@@ -379,26 +418,26 @@ public class DataObjectBrowser
         return dataObject;
     }
 
-    public void onSelectPropertyType( ObjectProperty property ) {
-        DataObject dataObject = getDataModel().getDataObject( property.getClassName() );
-        if ( dataObject != null ) {
-            openDataObject( dataObject );
+    public void onSelectPropertyType(ObjectProperty property) {
+        DataObject dataObject = getDataModel().getDataObject(property.getClassName());
+        if (dataObject != null) {
+            openDataObject(dataObject);
         }
     }
 
-    private void setReadonly( boolean readonly ) {
+    private void setReadonly(boolean readonly) {
         this.readonly = readonly;
-        view.setReadonly( readonly );
+        view.setReadonly(readonly);
     }
 
     public boolean isReadonly() {
         return readonly;
     }
 
-    private void executePostCommandProcessing( DataModelCommand command ) {
+    private void executePostCommandProcessing(DataModelCommand command) {
         List<DomainHandler> handlers = handlerRegistry.getDomainHandlers();
-        for ( DomainHandler handler : handlers ) {
-            handler.postCommandProcessing( command );
+        for (DomainHandler handler : handlers) {
+            handler.postCommandProcessing(command);
         }
     }
 
@@ -409,87 +448,92 @@ public class DataObjectBrowser
     @Override
     public void onSelectCurrentDataObject() {
         ObjectProperty currentSelection = view.getSelectedRow();
-        if ( currentSelection != null ) {
+        if (currentSelection != null) {
             //If we are about to go to the data object editor
             //and a row was selected we must un-select it.
-            view.setSelectedRow( currentSelection, false );
+            view.setSelectedRow(currentSelection,
+                                false);
         }
-        context.setObjectProperty( null );
+        context.setObjectProperty(null);
         notifyObjectSelected();
     }
 
     @Override
     public void onNewProperty() {
-        lockRequiredEvent.fire( new LockRequiredEvent() );
-        if ( getContext() != null ) {
-            newFieldPopup.init( getContext() );
+        lockRequiredEvent.fire(new LockRequiredEvent());
+        if (getContext() != null) {
+            newFieldPopup.init(getContext());
             newFieldPopup.show();
         }
     }
 
     @Override
-    public void onSelectProperty( ObjectProperty selectedProperty ) {
-        if ( selectedProperty != null ) {
-            context.setObjectProperty( selectedProperty );
+    public void onSelectProperty(ObjectProperty selectedProperty) {
+        if (selectedProperty != null) {
+            context.setObjectProperty(selectedProperty);
             notifyFieldSelected();
         }
     }
 
     @Override
-    public void onSortByName( boolean ascending ) {
-        sortTable( new ObjectPropertyComparator( "name", ascending ) );
+    public void onSortByName(boolean ascending) {
+        sortTable(new ObjectPropertyComparator("name",
+                                               ascending));
     }
 
     @Override
-    public void onSortByLabel( boolean ascending ) {
-        sortTable( new ObjectPropertyComparator( "label", ascending ) );
+    public void onSortByLabel(boolean ascending) {
+        sortTable(new ObjectPropertyComparator("label",
+                                               ascending));
     }
 
     @Override
-    public void onSortByType( boolean ascending ) {
-        sortTable( new ObjectPropertyComparator( "className", ascending ) );
+    public void onSortByType(boolean ascending) {
+        sortTable(new ObjectPropertyComparator("className",
+                                               ascending));
     }
 
-    private void sortTable( Comparator<ObjectProperty> comparator ) {
-        Collections.sort( dataProvider.getList(), comparator );
+    private void sortTable(Comparator<ObjectProperty> comparator) {
+        Collections.sort(dataProvider.getList(),
+                         comparator);
     }
 
     @Override
-    public String getPropertyTypeDisplayValue( ObjectProperty property ) {
+    public String getPropertyTypeDisplayValue(ObjectProperty property) {
         String displayName = property.getClassName();
 
-        if ( property.isBaseType() ) {
-            displayName = DataModelerUtils.extractClassName( displayName );
+        if (property.isBaseType()) {
+            displayName = DataModelerUtils.extractClassName(displayName);
         } else {
-            String label = getContext().getHelper().getObjectLabelByClassName( displayName );
-            if ( label != null && !"".equals( label ) ) {
+            String label = getContext().getHelper().getObjectLabelByClassName(displayName);
+            if (label != null && !"".equals(label)) {
                 displayName = label;
             }
         }
 
-        if ( property.isMultiple() ) {
+        if (property.isMultiple()) {
             displayName += " [" + Constants.INSTANCE.objectBrowser_typeLabelMultiple() + "]";
         }
         return displayName;
     }
 
     @Override
-    public boolean isSelectablePropertyType( ObjectProperty property ) {
+    public boolean isSelectablePropertyType(ObjectProperty property) {
 
         return !property.isBaseType() &&
-                !getDataObject().getClassName().equals( property.getClassName() ) &&
-                !getDataModel().isExternal( property.getClassName() );
+                !getDataObject().getClassName().equals(property.getClassName()) &&
+                !getDataModel().isExternal(property.getClassName());
     }
 
-    private void onDataObjectChange( @Observes DataObjectChangeEvent event ) {
-        if ( event.isFromContext( context != null ? context.getContextId() : null ) ) {
-            if ( event.getChangeType() == ChangeType.CLASS_NAME_CHANGE ||
+    private void onDataObjectChange(@Observes DataObjectChangeEvent event) {
+        if (event.isFromContext(context != null ? context.getContextId() : null)) {
+            if (event.getChangeType() == ChangeType.CLASS_NAME_CHANGE ||
                     event.getChangeType() == ChangeType.PACKAGE_NAME_CHANGE ||
                     event.getChangeType() == ChangeType.OBJECT_NAME_CHANGE ||
-                    MainDomainAnnotations.LABEL_ANNOTATION.equals( event.getAnnotationClassName() )
+                    MainDomainAnnotations.LABEL_ANNOTATION.equals(event.getAnnotationClassName())
                     ) {
 
-                setObjectSelectorLabel( dataObject );
+                setObjectSelectorLabel(dataObject);
 
                 // For self references: in case name or package changes redraw properties table
                 dataProvider.refresh();
@@ -498,19 +542,19 @@ public class DataObjectBrowser
         }
     }
 
-    private void onDataObjectPropertyChange( @Observes DataObjectFieldChangeEvent event ) {
-        if ( event.isFromContext( context != null ? context.getContextId() : null ) ) {
+    private void onDataObjectPropertyChange(@Observes DataObjectFieldChangeEvent event) {
+        if (event.isFromContext(context != null ? context.getContextId() : null)) {
 
-            if ( event.getChangeType() == ChangeType.FIELD_NAME_CHANGE ||
+            if (event.getChangeType() == ChangeType.FIELD_NAME_CHANGE ||
                     event.getChangeType() == ChangeType.FIELD_TYPE_CHANGE ||
                     event.getChangeType() == ChangeType.FIELD_ANNOTATION_VALUE_CHANGE ||
                     event.getChangeType() == ChangeType.FIELD_ANNOTATION_ADD_CHANGE ||
-                    event.getChangeType() == ChangeType.FIELD_ANNOTATION_REMOVE_CHANGE ) {
+                    event.getChangeType() == ChangeType.FIELD_ANNOTATION_REMOVE_CHANGE) {
 
                 List<ObjectProperty> props = dataProvider.getList();
-                for ( int i = 0; i < props.size(); i++ ) {
-                    if ( event.getCurrentField() == props.get( i ) ) {
-                        view.redrawRow( i );
+                for (int i = 0; i < props.size(); i++) {
+                    if (event.getCurrentField() == props.get(i)) {
+                        view.redrawRow(i);
                         break;
                     }
                 }
@@ -518,67 +562,75 @@ public class DataObjectBrowser
         }
     }
 
-    private void onDataObjectFieldCreated( @Observes DataObjectFieldCreatedEvent event ) {
-        if ( event.isFromContext( context != null ? context.getContextId() : null ) &&
-                !DataModelerEvent.DATA_OBJECT_BROWSER.equals( event.getSource() ) ) {
-            setDataObject( dataObject );
+    private void onDataObjectFieldCreated(@Observes DataObjectFieldCreatedEvent event) {
+        if (event.isFromContext(context != null ? context.getContextId() : null) &&
+                !DataModelerEvent.DATA_OBJECT_BROWSER.equals(event.getSource())) {
+            setDataObject(dataObject);
         }
     }
 
-    void onDataObjectFieldDeleted( @Observes DataObjectFieldDeletedEvent event ) {
-        if ( event.isFromContext( context != null ? context.getContextId() : null ) &&
-                !DataModelerEvent.DATA_OBJECT_BROWSER.equals( event.getSource() ) ) {
-            setDataObject( dataObject );
+    void onDataObjectFieldDeleted(@Observes DataObjectFieldDeletedEvent event) {
+        if (event.isFromContext(context != null ? context.getContextId() : null) &&
+                !DataModelerEvent.DATA_OBJECT_BROWSER.equals(event.getSource())) {
+            setDataObject(dataObject);
         }
     }
 
-    private void notifyFieldDeleted( ObjectProperty deletedProperty ) {
-        DataObjectFieldDeletedEvent dataObjectFieldDeletedEvent = new DataObjectFieldDeletedEvent( getContext().getContextId(), DataModelerEvent.DATA_OBJECT_BROWSER, getDataObject(), deletedProperty );
-        dataModelerEvent.fire( dataObjectFieldDeletedEvent );
+    private void notifyFieldDeleted(ObjectProperty deletedProperty) {
+        DataObjectFieldDeletedEvent dataObjectFieldDeletedEvent = new DataObjectFieldDeletedEvent(getContext().getContextId(),
+                                                                                                  DataModelerEvent.DATA_OBJECT_BROWSER,
+                                                                                                  getDataObject(),
+                                                                                                  deletedProperty);
+        dataModelerEvent.fire(dataObjectFieldDeletedEvent);
     }
 
     private void notifyObjectSelected() {
-        dataModelerWBContextEvent.fire( new DataModelerWorkbenchContextChangeEvent() );
-        dataModelerEvent.fire( new DataObjectSelectedEvent( getContext().getContextId(), DataModelerEvent.DATA_MODEL_BROWSER, getDataObject() ) );
-
+        dataModelerWBContextEvent.fire(new DataModelerWorkbenchContextChangeEvent());
+        dataModelerEvent.fire(new DataObjectSelectedEvent(getContext().getContextId(),
+                                                          DataModelerEvent.DATA_MODEL_BROWSER,
+                                                          getDataObject()));
     }
 
     private void notifyFieldSelected() {
-        dataModelerWBContextEvent.fire( new DataModelerWorkbenchContextChangeEvent() );
-        dataModelerEvent.fire( new DataObjectFieldSelectedEvent( getContext().getContextId(), DataModelerEvent.DATA_MODEL_BROWSER, getDataObject(), context.getObjectProperty() ) );
+        dataModelerWBContextEvent.fire(new DataModelerWorkbenchContextChangeEvent());
+        dataModelerEvent.fire(new DataObjectFieldSelectedEvent(getContext().getContextId(),
+                                                               DataModelerEvent.DATA_MODEL_BROWSER,
+                                                               getDataObject(),
+                                                               context.getObjectProperty()));
     }
 
-    private void openDataObject( final DataObject dataObject ) {
-        final Path objectPath = getContext().getDataObjectPath( dataObject.getClassName() );
-        if ( objectPath != null ) {
-            view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Loading() );
-            modelerService.call( new RemoteCallback<Boolean>() {
-                @Override
-                public void callback( Boolean exists ) {
-                    view.hideBusyIndicator();
-                    if ( Boolean.TRUE.equals( exists ) ) {
-                        placeManager.goTo( new PathPlaceRequest( objectPath ) );
-                    } else {
-                        view.showYesNoCancelPopup( CommonConstants.INSTANCE.Warning(),
-                                Constants.INSTANCE.objectBrowser_message_file_not_exists_or_renamed( objectPath.toURI() ),
-                                new Command() {
+    private void openDataObject(final DataObject dataObject) {
+        final Path objectPath = getContext().getDataObjectPath(dataObject.getClassName());
+        if (objectPath != null) {
+            view.showBusyIndicator(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Loading());
+            modelerService.call(new RemoteCallback<Boolean>() {
                                     @Override
-                                    public void execute() {
-                                        //do nothing.
+                                    public void callback(Boolean exists) {
+                                        view.hideBusyIndicator();
+                                        if (Boolean.TRUE.equals(exists)) {
+                                            placeManager.goTo(new PathPlaceRequest(objectPath));
+                                        } else {
+                                            view.showYesNoCancelPopup(CommonConstants.INSTANCE.Warning(),
+                                                                      Constants.INSTANCE.objectBrowser_message_file_not_exists_or_renamed(objectPath.toURI()),
+                                                                      new Command() {
+                                                                          @Override
+                                                                          public void execute() {
+                                                                              //do nothing.
+                                                                          }
+                                                                      },
+                                                                      CommonConstants.INSTANCE.Close(),
+                                                                      ButtonType.WARNING,
+                                                                      null,
+                                                                      null,
+                                                                      null,
+                                                                      null,
+                                                                      null,
+                                                                      null
+                                            );
+                                        }
                                     }
                                 },
-                                CommonConstants.INSTANCE.Close(),
-                                ButtonType.WARNING,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null
-                        );
-                    }
-                }
-            }, new DataModelerErrorCallback( CommonConstants.INSTANCE.ExceptionNoSuchFile0( objectPath.toURI() ) ) ).exists( objectPath );
+                                new DataModelerErrorCallback(CommonConstants.INSTANCE.ExceptionNoSuchFile0(objectPath.toURI()))).exists(objectPath);
         }
     }
 
@@ -591,15 +643,15 @@ public class DataObjectBrowser
          */
         public static final int MAX_ROWS = 15;
 
-        public static final int MAX_TABLE_HEIGHT = ( MAX_ROWS + 1 ) * ROW_HEIGHT;
+        public static final int MAX_TABLE_HEIGHT = (MAX_ROWS + 1) * ROW_HEIGHT;
 
         public static final int MIN_TABLE_HEIGHT = 3 * ROW_HEIGHT;
 
-        public static int calculateTableHeight( int rows ) {
+        public static int calculateTableHeight(int rows) {
             int height;
-            if ( rows >= MAX_ROWS ) {
+            if (rows >= MAX_ROWS) {
                 height = MAX_TABLE_HEIGHT;
-            } else if ( rows == 0 ) {
+            } else if (rows == 0) {
                 height = MIN_TABLE_HEIGHT;
             } else {
                 height = (rows + 1) * ROW_HEIGHT;
@@ -607,6 +659,5 @@ public class DataObjectBrowser
             }
             return height;
         }
-
     }
 }

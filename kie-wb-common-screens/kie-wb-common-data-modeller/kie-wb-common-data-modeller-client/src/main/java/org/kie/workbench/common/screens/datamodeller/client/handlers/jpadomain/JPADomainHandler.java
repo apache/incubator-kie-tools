@@ -103,10 +103,4 @@ public class JPADomainHandler implements DomainHandler {
                 objectProperty.getAnnotation(JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_MANY) != null ||
                 objectProperty.getAnnotation(JPADomainAnnotations.JAVAX_PERSISTENCE_ELEMENT_COLLECTION) != null;
     }
-
-    @Override
-    public boolean isDomainSpecificProperty(ObjectProperty objectProperty) {
-        // no specific object properties defined for this domain
-        return false;
-    }
 }

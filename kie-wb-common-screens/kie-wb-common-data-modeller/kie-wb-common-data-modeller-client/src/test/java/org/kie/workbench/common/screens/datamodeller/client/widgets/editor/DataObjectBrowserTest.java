@@ -17,11 +17,15 @@
 package org.kie.workbench.common.screens.datamodeller.client.widgets.editor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.enterprise.event.Event;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
@@ -29,29 +33,36 @@ import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerW
 import org.kie.workbench.common.screens.datamodeller.client.widgets.DomainEditorBaseTest;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
+import org.kie.workbench.common.screens.datamodeller.validation.DataObjectValidationService;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class DataObjectBrowserTest
         extends DomainEditorBaseTest {
 
     @Mock
+    private DataObjectValidationService dataObjectValidationService;
+
+    @Mock
     DataObjectBrowserView view;
 
-    Event<DataModelerWorkbenchContextChangeEvent> dataModelerWBContextEvent = mock( EventSourceMock.class );
+    Event<DataModelerWorkbenchContextChangeEvent> dataModelerWBContextEvent = mock(EventSourceMock.class);
 
-    Event<LockRequiredEvent> lockRequiredEvent = mock( EventSourceMock.class );
+    Event<LockRequiredEvent> lockRequiredEvent = mock(EventSourceMock.class);
 
     @Mock
     PlaceManager placeManager;
@@ -64,22 +75,23 @@ public class DataObjectBrowserTest
     @Mock
     Path dummyPath;
 
-    Event<DataModelerEvent> dataModelerEvent = mock( EventSourceMock.class );
+    Event<DataModelerEvent> dataModelerEvent = mock(EventSourceMock.class);
 
     protected DataObjectBrowser createBrowser() {
 
-        newFieldPopup = new NewFieldPopup( newFieldPopupView );
+        newFieldPopup = new NewFieldPopup(newFieldPopupView);
 
-        DataObjectBrowser objectBrowser = new DataObjectBrowser( handlerRegistry,
-                commandBuilder,
-                modelerServiceCaller,
-                validatorService,
-                dataModelerEvent,
-                dataModelerWBContextEvent,
-                lockRequiredEvent,
-                placeManager,
-                newFieldPopup,
-                view );
+        DataObjectBrowser objectBrowser = new DataObjectBrowser(handlerRegistry,
+                                                                commandBuilder,
+                                                                modelerServiceCaller,
+                                                                new CallerMock<>(dataObjectValidationService),
+                                                                validatorService,
+                                                                dataModelerEvent,
+                                                                dataModelerWBContextEvent,
+                                                                lockRequiredEvent,
+                                                                placeManager,
+                                                                newFieldPopup,
+                                                                view);
 
         //emulate the @PostConstruct method invocation.
         objectBrowser.init();
@@ -93,10 +105,13 @@ public class DataObjectBrowserTest
         DataObjectBrowser objectBrowser = createBrowser();
         DataModelerContext context = createContext();
 
-        objectBrowser.setContext( context );
+        objectBrowser.setContext(context);
 
-        verify( view, times( 1 ) ).setReadonly( context.isReadonly() );
-        verify( view, times( 1 ) ).setObjectSelectorLabel( "TestObject1Label (TestObject1)", context.getDataObject().getClassName() );
+        verify(view,
+               times(1)).setReadonly(context.isReadonly());
+        verify(view,
+               times(1)).setObjectSelectorLabel("TestObject1Label (TestObject1)",
+                                                context.getDataObject().getClassName());
     }
 
     @Test
@@ -107,47 +122,55 @@ public class DataObjectBrowserTest
 
         //the dataObject has fields: field1, field2 and field3
         DataObject dataObject = context.getDataObject();
-        ObjectProperty objectProperty = dataObject.getProperty( "field3" );
+        ObjectProperty objectProperty = dataObject.getProperty("field3");
         int count = dataObject.getProperties().size();
 
-        context.getEditorModelContent().setPath( dummyPath );
+        context.getEditorModelContent().setPath(dummyPath);
 
-        objectBrowser.setContext( context );
+        objectBrowser.setContext(context);
 
-        when( modelerService.findFieldUsages( dummyPath, dataObject.getClassName(), objectProperty.getName() ) )
-                .thenReturn( new ArrayList<Path>() );
+        when(modelerService.findFieldUsages(dummyPath,
+                                            dataObject.getClassName(),
+                                            objectProperty.getName()))
+                .thenReturn(new ArrayList<Path>());
 
         //field3 is on position 2 by construction.
-        objectBrowser.onDeleteProperty( objectProperty, 2 );
+        objectBrowser.onDeleteProperty(objectProperty,
+                                       2);
 
         //if field3 was removed, then field2 should have been selected.
-        verify( view ).setSelectedRow( dataObject.getProperty( "field2" ), true );
+        verify(view).setSelectedRow(dataObject.getProperty("field2"),
+                                    true);
         //an even should have been fired with the notification of the just removed property.
-        verify( dataModelerEvent, times( 1 ) ).fire( any( DataModelerEvent.class ) );
-        verify( view, times( 1 ) ).setTableHeight(
-                DataObjectBrowser.DataObjectBrowserHelper.calculateTableHeight( count ) );
-        verify( view, times( 2 ) ).setTableHeight(
-                DataObjectBrowser.DataObjectBrowserHelper.calculateTableHeight( count - 1 ) );
+        verify(dataModelerEvent,
+               times(1)).fire(any(DataModelerEvent.class));
+        verify(view,
+               times(1)).setTableHeight(
+                DataObjectBrowser.DataObjectBrowserHelper.calculateTableHeight(count));
+        verify(view,
+               times(2)).setTableHeight(
+                DataObjectBrowser.DataObjectBrowserHelper.calculateTableHeight(count - 1));
         //the dataObject should now have one less property.
 
-        assertEquals( ( count - 1 ), dataObject.getProperties().size() );
+        assertEquals((count - 1),
+                     dataObject.getProperties().size());
     }
 
     @Test
-    public void addValidPropertyAndContinueTest( ) {
-        addValidPropertyTest( true );
+    public void addValidPropertyAndContinueTest() {
+        addValidPropertyTest(true);
     }
 
     @Test
-    public void addValidPropertyAndCloseTest( ) {
-        addValidPropertyTest( false );
+    public void addValidPropertyAndCloseTest() {
+        addValidPropertyTest(false);
     }
 
-    private void addValidPropertyTest( boolean createAndContinue ) {
+    private void addValidPropertyTest(boolean createAndContinue) {
 
         DataObjectBrowser objectBrowser = createBrowser();
         DataModelerContext context = createContext();
-        objectBrowser.setContext( context );
+        objectBrowser.setContext(context);
 
         //the dataObject has fields: field1, field2 and field3
         DataObject dataObject = context.getDataObject();
@@ -156,35 +179,45 @@ public class DataObjectBrowserTest
         objectBrowser.onNewProperty();
 
         //check the new field popup is shown
-        verify( newFieldPopupView, times( 1 ) ).show();
+        verify(newFieldPopupView,
+               times(1)).show();
 
         //emulate the user data entering in the new field popup
-        when( newFieldPopupView.getFieldName() ).thenReturn( "field4" );
-        when( newFieldPopupView.getSelectedType() ).thenReturn( "java.lang.String" );
-        when( newFieldPopupView.getIsMultiple() ).thenReturn( false );
+        when(newFieldPopupView.getFieldName()).thenReturn("field4");
+        when(newFieldPopupView.getSelectedType()).thenReturn("java.lang.String");
+        when(newFieldPopupView.getIsMultiple()).thenReturn(false);
 
         //emulate that the provided field name is correct
-        Map<String, Boolean> validationResult = new HashMap<String, Boolean>(  );
-        validationResult.put( "field4", true );
-        when( validationService.evaluateJavaIdentifiers( new String[] { "field4" } ) ).thenReturn( validationResult );
+        Map<String, Boolean> validationResult = new HashMap<String, Boolean>();
+        validationResult.put("field4",
+                             true);
+        when(validationService.evaluateJavaIdentifiers(new String[]{"field4"})).thenReturn(validationResult);
 
         //emulate the user pressing the create button in the new field popup
         newFieldPopup.onCreate();
 
         //the new field popup should have been closed and the new property shoud have been added o the data object.
-        ObjectProperty expectedProperty = new ObjectPropertyImpl( "field4", "java.lang.String", false );
+        ObjectProperty expectedProperty = new ObjectPropertyImpl("field4",
+                                                                 "java.lang.String",
+                                                                 false);
 
-        if ( createAndContinue ) {
-            verify( newFieldPopupView, times( 1 ) ).clear();
+        if (createAndContinue) {
+            verify(newFieldPopupView,
+                   times(1)).clear();
         } else {
-            verify( newFieldPopupView, times( 1 ) ).hide();
+            verify(newFieldPopupView,
+                   times(1)).hide();
         }
-        verify( view, times( 1 ) ).setTableHeight(
-                DataObjectBrowser.DataObjectBrowserHelper.calculateTableHeight( 3 ) );
-        verify( view, times( 1 ) ).setTableHeight(
-                DataObjectBrowser.DataObjectBrowserHelper.calculateTableHeight( 4 ) );
-        assertEquals( 4, dataObject.getProperties().size() );
-        assertEquals( expectedProperty, dataObject.getProperties().get( 3 ) );
+        verify(view,
+               times(1)).setTableHeight(
+                DataObjectBrowser.DataObjectBrowserHelper.calculateTableHeight(3));
+        verify(view,
+               times(1)).setTableHeight(
+                DataObjectBrowser.DataObjectBrowserHelper.calculateTableHeight(4));
+        assertEquals(4,
+                     dataObject.getProperties().size());
+        assertEquals(expectedProperty,
+                     dataObject.getProperties().get(3));
     }
 
     @Test
@@ -192,7 +225,7 @@ public class DataObjectBrowserTest
 
         DataObjectBrowser objectBrowser = createBrowser();
         DataModelerContext context = createContext();
-        objectBrowser.setContext( context );
+        objectBrowser.setContext(context);
 
         //the dataObject has fields: field1, field2 and field3
         DataObject dataObject = context.getDataObject();
@@ -201,27 +234,32 @@ public class DataObjectBrowserTest
         objectBrowser.onNewProperty();
 
         //check the new field popup is shown
-        verify( newFieldPopupView, times( 1 ) ).show();
+        verify(newFieldPopupView,
+               times(1)).show();
 
         //emulate the user data entering in the new field popup
-        when( newFieldPopupView.getFieldName() ).thenReturn( "field4" );
-        when( newFieldPopupView.getSelectedType() ).thenReturn( "java.lang.String" );
-        when( newFieldPopupView.getIsMultiple() ).thenReturn( false );
+        when(newFieldPopupView.getFieldName()).thenReturn("field4");
+        when(newFieldPopupView.getSelectedType()).thenReturn("java.lang.String");
+        when(newFieldPopupView.getIsMultiple()).thenReturn(false);
 
         //emulate that the provided field name is NOT correct
-        Map<String, Boolean> validationResult = new HashMap<String, Boolean>(  );
-        validationResult.put( "field4", false );
-        when( validationService.evaluateJavaIdentifiers( new String[] { "field4" } ) ).thenReturn( validationResult );
+        Map<String, Boolean> validationResult = new HashMap<String, Boolean>();
+        validationResult.put("field4",
+                             false);
+        when(validationService.evaluateJavaIdentifiers(new String[]{"field4"})).thenReturn(validationResult);
 
         //emulate the user pressing the create button in the new field popup
         newFieldPopup.onCreate();
 
         //the error message should have been set
-        verify( newFieldPopupView, times( 1 ) ).setErrorMessage( anyString() );
-        verify( view, times( 1 ) ).setTableHeight(
-                DataObjectBrowser.DataObjectBrowserHelper.calculateTableHeight( 3 ) );
+        verify(newFieldPopupView,
+               times(1)).setErrorMessage(anyString());
+        verify(view,
+               times(1)).setTableHeight(
+                DataObjectBrowser.DataObjectBrowserHelper.calculateTableHeight(3));
         //no property should have been added.
-        assertEquals( 3, dataObject.getProperties().size() );
+        assertEquals(3,
+                     dataObject.getProperties().size());
     }
 
     @Test
@@ -229,7 +267,7 @@ public class DataObjectBrowserTest
         DataObjectBrowser dataObjectBrowser = spy(createBrowser());
         DataModelerContext context = createContext();
         context.setContextId("contextId");
-        dataObjectBrowser.setContext( context );
+        dataObjectBrowser.setContext(context);
 
         DataObject dataObject = mock(DataObject.class);
         dataObjectBrowser.setDataObject(dataObject);
@@ -241,6 +279,57 @@ public class DataObjectBrowserTest
 
         dataObjectBrowser.onDataObjectFieldDeleted(event);
 
-        verify(dataObjectBrowser, times(1)).setDataObject(dataObject);
+        verify(dataObjectBrowser,
+               times(1)).setDataObject(dataObject);
+    }
+
+    @Test
+    public void safeObjectPropertyDeleteEmptyValidationMessages() {
+        DataObjectBrowser dataObjectBrowser = createBrowser();
+
+        DataObjectImpl dataObject = new DataObjectImpl("test",
+                                                       "DataObject");
+        dataObjectBrowser.setDataObject(dataObject);
+
+        ObjectProperty objectProperty = new ObjectPropertyImpl("safeField",
+                                                               Integer.class.getName(),
+                                                               false);
+
+        when(dataObjectValidationService.validateObjectPropertyDeletion(dataObject,
+                                                                        objectProperty)).thenReturn(Collections.emptyList());
+
+        dataObjectBrowser.onDeleteProperty(objectProperty,
+                                           0);
+
+        verify(view,
+               never()).showValidationPopupForDeletion(anyListOf(ValidationMessage.class),
+                                                       any(Command.class),
+                                                       any(Command.class));
+    }
+
+    @Test
+    public void safeObjectPropertyDeleteHasValidationMessages() {
+        DataObjectBrowser dataObjectBrowser = createBrowser();
+
+        DataObjectImpl dataObject = new DataObjectImpl("test",
+                                                       "DataObject");
+        dataObjectBrowser.setDataObject(dataObject);
+
+        ObjectProperty objectProperty = new ObjectPropertyImpl("safeField",
+                                                               Integer.class.getName(),
+                                                               false);
+
+        List<ValidationMessage> validationMessages = Arrays.asList(new ValidationMessage());
+        when(dataObjectValidationService.validateObjectPropertyDeletion(dataObject,
+                                                                        objectProperty)).thenReturn(validationMessages);
+
+        dataObjectBrowser.onDeleteProperty(objectProperty,
+                                           0);
+
+        verify(view,
+               times(1)).showValidationPopupForDeletion(anyListOf(ValidationMessage.class),
+                                                        any(Command.class),
+                                                        any(Command.class)
+        );
     }
 }

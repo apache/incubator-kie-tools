@@ -19,7 +19,9 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.editor;
 import java.util.List;
 
 import com.google.gwt.view.client.ListDataProvider;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
@@ -28,69 +30,76 @@ import org.uberfire.mvp.Command;
 
 public interface DataObjectBrowserView
         extends UberView<DataObjectBrowserView.Presenter>,
-        HasBusyIndicator {
+                HasBusyIndicator {
 
     interface Presenter {
 
-        void onSelectCurrentDataObject( );
+        void onSelectCurrentDataObject();
 
-        void onSelectPropertyType( ObjectProperty property );
+        void onSelectPropertyType(ObjectProperty property);
 
-        void onDeleteProperty( final ObjectProperty objectProperty, final int index );
+        void onDeleteProperty(final ObjectProperty objectProperty,
+                              final int index);
 
-        void onSelectProperty( ObjectProperty selectedProperty );
+        void onSelectProperty(ObjectProperty selectedProperty);
 
         void onNewProperty();
 
-        void onSortByName( boolean ascending );
+        void onSortByName(boolean ascending);
 
-        void onSortByLabel( boolean ascending );
+        void onSortByLabel(boolean ascending);
 
-        void onSortByType( boolean ascending );
+        void onSortByType(boolean ascending);
 
-        String getPropertyTypeDisplayValue( ObjectProperty property );
+        String getPropertyTypeDisplayValue(ObjectProperty property);
 
-        boolean isSelectablePropertyType( ObjectProperty property );
+        boolean isSelectablePropertyType(ObjectProperty property);
 
+        DataObject getDataObject();
     }
 
-    void setDataProvider( ListDataProvider<ObjectProperty> dataProvider );
+    void setDataProvider(ListDataProvider<ObjectProperty> dataProvider);
 
     ObjectProperty getSelectedRow();
 
-    void setSelectedRow( ObjectProperty objectProperty, boolean select );
+    void setSelectedRow(ObjectProperty objectProperty,
+                        boolean select);
 
-    void redrawRow( int row );
+    void redrawRow(int row);
 
     void redrawTable();
 
-    void setReadonly( boolean readonly );
+    void setReadonly(boolean readonly);
 
-    void enableNewPropertyAction( boolean enable );
+    void enableNewPropertyAction(boolean enable);
 
-    void enableDeleteRowAction( boolean enable );
+    void enableDeleteRowAction(boolean enable);
 
-    void setObjectSelectorLabel( String label, String title );
+    void setObjectSelectorLabel(String label,
+                                String title);
 
-    void setTableHeight( int height );
+    void setTableHeight(int height);
 
-    int getTableHeight( );
+    int getTableHeight();
 
-    void showYesNoCancelPopup( final String title,
-            final String content,
-            final Command yesCommand,
-            final String yesButtonText,
-            final ButtonType yesButtonType,
-            final Command noCommand,
-            final String noButtonText,
-            final ButtonType noButtonType,
-            final Command cancelCommand,
-            final String cancelButtonText,
-            final ButtonType cancelButtonType );
+    void showYesNoCancelPopup(final String title,
+                              final String content,
+                              final Command yesCommand,
+                              final String yesButtonText,
+                              final ButtonType yesButtonType,
+                              final Command noCommand,
+                              final String noButtonText,
+                              final ButtonType noButtonType,
+                              final Command cancelCommand,
+                              final String cancelButtonText,
+                              final ButtonType cancelButtonType);
 
-    void showUsagesPopupForDeletion( final String message,
-            final List<Path> usedByFiles,
-            final Command yesCommand,
-            final Command cancelCommand );
+    void showUsagesPopupForDeletion(final String message,
+                                    final List<Path> usedByFiles,
+                                    final Command yesCommand,
+                                    final Command cancelCommand);
 
+    void showValidationPopupForDeletion(final List<ValidationMessage> validationMessages,
+                                        final Command yesCommand,
+                                        final Command cancelCommand);
 }
