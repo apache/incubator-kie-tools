@@ -25,6 +25,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.ResizeComposite;
+import org.uberfire.client.util.CSSLocatorsUtils;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.workbench.model.PartDefinition;
 
@@ -48,6 +49,7 @@ public class StaticFocusedResizePanel
                 }
             }
         });
+        container.getElement().addClassName(CSSLocatorsUtils.buildLocator("qe", "static-workbench-panel-view"));
     }
 
     public void setPart(final WorkbenchPartPresenter.View part) {

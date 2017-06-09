@@ -47,6 +47,7 @@ public class SingleSideDockItem
         this.selectCommand = selectCommand;
         initWidget(uiBinder.createAndBindUi(this));
         createButtom();
+        setupCSSLocators(dock);
     }
 
     private void createButtom() {

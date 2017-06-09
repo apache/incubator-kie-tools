@@ -30,6 +30,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.util.CSSLocatorsUtils;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
@@ -72,6 +73,7 @@ public class StaticWorkbenchPanelView
         Layouts.setToFillParent(panel);
 
         initWidget(panel);
+
     }
 
     // override is for unit test: super.getWidget() returns a new mock every time

@@ -54,6 +54,7 @@ public class SideDockItem
         this.deselectCommand = deselectCommand;
         initWidget(uiBinder.createAndBindUi(this));
         createButton();
+        setupCSSLocators(dock);
     }
 
     void createButton() {

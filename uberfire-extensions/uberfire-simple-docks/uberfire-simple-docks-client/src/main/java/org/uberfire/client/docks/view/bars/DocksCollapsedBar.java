@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.docks.view.items.AbstractDockItem;
 import org.uberfire.client.docks.view.items.SingleSideDockItem;
 import org.uberfire.client.resources.WebAppResource;
+import org.uberfire.client.util.CSSLocatorsUtils;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -56,6 +57,13 @@ public class DocksCollapsedBar
         } else {
             docksBarPanel.addStyleName(CSS.CSS().gradientBottomTop());
         }
+        setupCSSLocators(position);
+    }
+
+    private void setupCSSLocators(UberfireDockPosition position) {
+
+        docksBarPanel.addStyleName(CSSLocatorsUtils.buildLocator("qe-docks-bar",
+                                                                 position.getShortName()));
     }
 
     public void addDock(final UberfireDock dock,

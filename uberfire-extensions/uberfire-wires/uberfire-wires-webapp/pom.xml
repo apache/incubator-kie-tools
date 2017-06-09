@@ -458,7 +458,7 @@
           <strict>true</strict>
           <localWorkers>1</localWorkers>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
-          <extraJvmArgs>-Xmx2g -Xms512m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
+          <extraJvmArgs>-Xmx4g -Xms512m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
           <module>org.uberfire.ext.wires.WiresShowcase</module>
           <logLevel>INFO</logLevel>
           <noServer>false</noServer>

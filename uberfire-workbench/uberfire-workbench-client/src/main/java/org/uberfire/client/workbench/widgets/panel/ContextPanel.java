@@ -61,6 +61,7 @@ public class ContextPanel extends Composite {
             this.widget.getElement().getStyle().setFloat(Style.Float.LEFT);
             this.widget.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
             this.style = this.widget.getElement().getClassName();
+
             container.clear();
             container.add(widget);
         } else {

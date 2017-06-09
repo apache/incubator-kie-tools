@@ -166,6 +166,8 @@ public class ListBarWidgetImplTest {
         verify(listBar,
                never()).selectPart(part);
         verify(listBar.titleDropDown).addPart(view);
+        verify(listBar).setupCSSLocators(any(),
+                                         any());
     }
 
     @Test

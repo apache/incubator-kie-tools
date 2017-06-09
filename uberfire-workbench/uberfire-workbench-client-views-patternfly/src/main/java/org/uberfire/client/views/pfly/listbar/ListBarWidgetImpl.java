@@ -56,6 +56,7 @@ import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.menu.AuthFilterMenuVisitor;
 import org.uberfire.client.util.Layouts;
+import org.uberfire.client.util.CSSLocatorsUtils;
 import org.uberfire.client.views.pfly.maximize.MaximizeToggleButton;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
@@ -219,6 +220,8 @@ public class ListBarWidgetImpl
         parts.add(partDefinition);
 
         final FlowPanel panel = new FlowPanel();
+        setupCSSLocators(view,
+                         panel);
         Layouts.setToFillParent(panel);
         panel.add(view);
         content.add(panel);
@@ -235,6 +238,14 @@ public class ListBarWidgetImpl
 
         resizePanelBody();
         scheduleResize();
+    }
+
+    void setupCSSLocators(WorkbenchPartPresenter.View view,
+                                  FlowPanel panel) {
+        if (view.getPresenter() != null || view.getPresenter().getTitle() != null) {
+            panel.getElement().addClassName(CSSLocatorsUtils.buildLocator("qe-list-bar-content",
+                                                                          view.getPresenter().getTitle()));
+        }
     }
 
     @Override

@@ -35,6 +35,7 @@ import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.client.docks.view.menu.MenuBuilder;
 import org.uberfire.client.resources.WebAppResource;
+import org.uberfire.client.util.CSSLocatorsUtils;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -60,6 +61,13 @@ public class DocksExpandedBar
     public DocksExpandedBar(UberfireDockPosition position) {
         initWidget(uiBinder.createAndBindUi(this));
         this.position = position;
+        setupCSSLocators(position);
+    }
+
+    private void setupCSSLocators(UberfireDockPosition position) {
+
+        getElement().addClassName(CSSLocatorsUtils.buildLocator("qe-docks-bar-expanded",
+                                                                position.getShortName()));
     }
 
     @Override

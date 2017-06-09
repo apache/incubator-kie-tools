@@ -25,6 +25,7 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.html.Span;
+import org.uberfire.client.util.CSSLocatorsUtils;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -131,5 +132,11 @@ public abstract class AbstractDockItem extends Composite {
 
     public void setupDnD() {
 
+    }
+
+    void setupCSSLocators(UberfireDock dock) {
+        getElement().addClassName(CSSLocatorsUtils.buildLocator("qe-docks-item",
+                                                                dock.getDockPosition().getShortName(),
+                                                                dock.getIdentifier()));
     }
 }

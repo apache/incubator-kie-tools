@@ -30,6 +30,8 @@ import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.uberfire.client.util.CSSLocatorsUtils;
+import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 
 public class SideDockItemFocused
@@ -46,6 +48,13 @@ public class SideDockItemFocused
         add(uiBinder.createAndBindUi(this));
         removeStyleName("gwt-PopupPanel");
         createButton(parent);
+        setupCSSLocators(parent.getDock());
+    }
+
+    private void setupCSSLocators(UberfireDock dock) {
+        getElement().addClassName(CSSLocatorsUtils.buildLocator("qe-docks-bar-expanded",
+                                                                dock.getDockPosition().getShortName(),
+                                                                dock.getIdentifier()));
     }
 
     void createButton(final SideDockItem parent) {

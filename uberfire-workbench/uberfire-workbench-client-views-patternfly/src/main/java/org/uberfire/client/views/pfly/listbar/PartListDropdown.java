@@ -45,6 +45,7 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.html.Span;
 import org.gwtbootstrap3.client.ui.html.Text;
+import org.uberfire.client.util.CSSLocatorsUtils;
 import org.uberfire.client.views.pfly.dropdown.ListDropdown;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.dnd.DragArea;
@@ -159,6 +160,8 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
                                              final IsWidget titleDecoration) {
         final SpanElement spanElement = Document.get().createSpanElement();
         spanElement.addClassName("uf-listbar-panel-header-title-text");
+        spanElement.addClassName(CSSLocatorsUtils.buildLocator("qe-list-bar-header",
+                                                               title));
         final String titleWidget = (titleDecoration instanceof Image) ? titleDecoration.toString() : "";
         spanElement.setInnerHTML(titleWidget + " " + title.replaceAll(" ",
                                                                       "\u00a0"));
