@@ -634,6 +634,7 @@
   </profiles>
 
   <modules>
+    <module>uberfire-maven-utils</module>
     <module>uberfire-archetype</module>
     <module>uberfire-bom</module>
     <module>uberfire-commons</module>

@@ -89,6 +89,30 @@
         Each module should declare it's direct dependencies and possibly overwrite scope/optional.
         Always declare the sources jar too and optionally the test-jar.
       -->
+      <!-- Maven Utils -->
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-maven-support</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-maven-support</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-maven-integrations</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-maven-integrations</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
       <!-- Showcase WebApp -->
       <dependency>
         <groupId>org.uberfire</groupId>
