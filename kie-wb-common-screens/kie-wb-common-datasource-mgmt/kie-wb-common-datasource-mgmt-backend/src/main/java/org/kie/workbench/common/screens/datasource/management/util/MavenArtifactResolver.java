@@ -25,11 +25,11 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
+import org.appformer.maven.integration.embedder.MavenProjectLoader;
 import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
-import org.kie.scanner.embedder.MavenProjectLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

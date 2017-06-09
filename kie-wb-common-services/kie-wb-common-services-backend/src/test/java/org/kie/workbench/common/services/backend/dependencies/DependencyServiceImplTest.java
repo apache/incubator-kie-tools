@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.appformer.maven.integration.DependencyDescriptor;
+import org.appformer.maven.integration.MavenRepository;
 import org.eclipse.aether.artifact.Artifact;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
@@ -30,8 +32,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.builder.ReleaseId;
-import org.kie.scanner.DependencyDescriptor;
-import org.kie.scanner.MavenRepository;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;

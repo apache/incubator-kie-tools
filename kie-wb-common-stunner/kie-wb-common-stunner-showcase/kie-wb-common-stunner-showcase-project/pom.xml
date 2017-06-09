@@ -76,6 +76,11 @@
     <!-- Uberfire. -->
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-maven-support</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-service-api</artifactId>
     </dependency>
 
@@ -1129,6 +1134,7 @@
           <compileSourcesArtifacts>
 
             <!-- UberFire. -->
+            <compileSourcesArtifact>org.uberfire:uberfire-maven-support</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-io</compileSourcesArtifact>

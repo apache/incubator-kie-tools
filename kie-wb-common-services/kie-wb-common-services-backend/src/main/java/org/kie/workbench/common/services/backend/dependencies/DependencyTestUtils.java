@@ -17,9 +17,9 @@ package org.kie.workbench.common.services.backend.dependencies;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.appformer.maven.integration.DependencyDescriptor;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
-import org.kie.scanner.DependencyDescriptor;
 
 public class DependencyTestUtils {
 

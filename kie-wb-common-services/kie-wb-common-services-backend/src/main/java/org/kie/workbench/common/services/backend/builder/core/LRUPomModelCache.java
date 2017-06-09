@@ -20,7 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Named;
 
-import org.drools.compiler.kproject.xml.PomModel;
+import org.appformer.maven.support.PomModel;
 import org.guvnor.common.services.backend.cache.LRUCache;
 import org.guvnor.common.services.builder.ObservablePOMFile;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;

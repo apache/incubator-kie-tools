@@ -122,8 +122,8 @@
       <artifactId>drools-workbench-models-datamodel-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-ci</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-maven-support</artifactId>
     </dependency>
 
     <!-- guvnor -->    

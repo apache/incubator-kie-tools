@@ -26,13 +26,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.enterprise.context.ApplicationScoped;
 
+import org.appformer.maven.integration.MavenRepository;
 import org.eclipse.aether.artifact.Artifact;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Repository;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.scanner.MavenRepository;
 import org.kie.workbench.common.services.shared.dependencies.DependencyService;
 import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencies;
 import org.kie.workbench.common.services.shared.dependencies.NormalEnhancedDependency;
