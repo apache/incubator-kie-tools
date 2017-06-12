@@ -25,7 +25,7 @@ package org.uberfire.ext.editor.commons.client.file.exports;
  * Builtin content export types supported :
  * - <code>@Inject FileExport<TextContent></code>
  * - <code>@Inject FileExport<ImageDataUriContent></code>
- * - <code>@Inject FileExport<PdfContent></code>
+ * - <code>@Inject FileExport<PdfDocument></code>
  * @@param T The supported content type.
  */
 public interface FileExport<T> {

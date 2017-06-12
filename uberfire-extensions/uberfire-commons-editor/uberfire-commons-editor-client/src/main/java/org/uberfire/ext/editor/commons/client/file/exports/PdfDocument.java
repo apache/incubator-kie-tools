@@ -19,18 +19,27 @@ package org.uberfire.ext.editor.commons.client.file.exports;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.uberfire.ext.editor.commons.file.exports.PdfExportPreferences;
+
 /**
  * The pdf document's content model.
  */
-public final class PdfContent {
+public final class PdfDocument {
 
     private final List<PdfEntry> entries = new LinkedList<>();
+    private final PdfExportPreferences settings;
 
-    public static PdfContent create() {
-        return new PdfContent();
+    /**
+     * Factory method that allows custom PDF document's settings.
+     * It creates a new PDF document instance using the specified settings.
+     * @return A new PDF document instance.
+     */
+    public static PdfDocument create(final PdfExportPreferences settings) {
+        return new PdfDocument(settings);
     }
 
-    private PdfContent() {
+    private PdfDocument(PdfExportPreferences settings) {
+        this.settings = settings;
     }
 
     /**
@@ -67,6 +76,10 @@ public final class PdfContent {
                               y,
                               width,
                               height));
+    }
+
+    public PdfExportPreferences getSettings() {
+        return settings;
     }
 
     List<PdfEntry> getPdfEntries() {

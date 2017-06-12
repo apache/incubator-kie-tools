@@ -66,10 +66,10 @@ public class FileExportScriptInjector {
     private String getJsPdfSource() {
         final String jsPdfScript = FileExportResources.INSTANCE.jsPdf().getText();
         final String jsPdfNsObject = buildNamespaceObject(NS + "JsPdf");
-        return jsPdfNsObject + " = function() {" + "\n" +
+        return jsPdfNsObject + " = function(settings) {" + "\n" +
                 jsPdfScript + "\n" +
                 "var saveAs = " + NS + "JsFileSaver.saveAs; " +
-                "return new jsPDF();};";
+                "return new jsPDF(settings);};";
     }
 
     private static void inject(final String raw) {

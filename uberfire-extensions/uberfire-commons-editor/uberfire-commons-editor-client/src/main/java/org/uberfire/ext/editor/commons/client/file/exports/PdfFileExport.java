@@ -17,18 +17,20 @@
 package org.uberfire.ext.editor.commons.client.file.exports;
 
 import org.uberfire.ext.editor.commons.client.file.exports.jso.JsPdf;
+import org.uberfire.ext.editor.commons.client.file.exports.jso.JsPdfSettings;
+import org.uberfire.ext.editor.commons.file.exports.PdfExportPreferences;
 
-public class PdfFileExport implements FileExport<PdfContent> {
+public class PdfFileExport implements FileExport<PdfDocument> {
 
     @Override
-    public void export(final PdfContent content,
+    public void export(final PdfDocument content,
                        final String fileName) {
         export(content,
                fileName,
-               JsPdf.create());
+               createNewDocument(content));
     }
 
-    void export(final PdfContent content,
+    void export(final PdfDocument content,
                 final String fileName,
                 final JsPdf jsFileExport) {
         content.getPdfEntries()
@@ -38,14 +40,14 @@ public class PdfFileExport implements FileExport<PdfContent> {
     }
 
     private void processEntry(final JsPdf jsFileExport,
-                              final PdfContent.PdfEntry entry) {
-        if (entry instanceof PdfContent.Text) {
-            final PdfContent.Text text = (PdfContent.Text) entry;
+                              final PdfDocument.PdfEntry entry) {
+        if (entry instanceof PdfDocument.Text) {
+            final PdfDocument.Text text = (PdfDocument.Text) entry;
             jsFileExport.text(text.getText(),
                               text.getX(),
                               text.getY());
-        } else if (entry instanceof PdfContent.Image) {
-            final PdfContent.Image image = (PdfContent.Image) entry;
+        } else if (entry instanceof PdfDocument.Image) {
+            final PdfDocument.Image image = (PdfDocument.Image) entry;
             jsFileExport.addImage(image.getToDataURL(),
                                   image.getImgType(),
                                   image.getX(),
@@ -53,5 +55,16 @@ public class PdfFileExport implements FileExport<PdfContent> {
                                   image.getWidth(),
                                   image.getHeight());
         }
+    }
+
+    private static JsPdf createNewDocument(final PdfDocument content) {
+        final PdfExportPreferences settings = content.getSettings();
+        final String orientation = settings.getOrientation().name().toLowerCase();
+        final String unit = settings.getUnit().name().toLowerCase();
+        final String format = settings.getFormat().name().toLowerCase();
+        final JsPdfSettings jsPdfSettings = JsPdfSettings.create(orientation,
+                                                                 unit,
+                                                                 format);
+        return JsPdf.create(jsPdfSettings);
     }
 }

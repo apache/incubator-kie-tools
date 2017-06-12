@@ -56,10 +56,10 @@ public class FileExportScriptInjectorTest {
                              "fileSaver\n" +
                              "return saveAs(blob, fileName);};\n" +
                              jsPdfNsObject +
-                             " = function() {\n" +
+                             " = function(settings) {\n" +
                              "jsPdf\n" +
                              "var saveAs = org.uberfire.ext.editor.commons.client.file.exports.jso.JsFileSaver.saveAs; " +
-                             "return new jsPDF();};" + "\n",
+                             "return new jsPDF(settings);};" + "\n",
                      script);
     }
 

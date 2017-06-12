@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.editor.commons.client.file.exports.jso;
 
+import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsType;
 
@@ -29,11 +30,16 @@ public class JsPdf {
 
     /**
      * Factory method for JsPdf.
+     * @param settings The settings for the new document's.
      * @return A new JsPdf instance.
      */
     @JsOverlay
-    public static final JsPdf create() {
-        return new JsPdf();
+    public static final JsPdf create(JsPdfSettings settings) {
+        return new JsPdf(settings);
+    }
+
+    @JsConstructor
+    public JsPdf(JsPdfSettings settings) {
     }
 
     /**

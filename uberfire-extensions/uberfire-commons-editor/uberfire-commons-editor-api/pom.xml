@@ -47,6 +47,14 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-nio2-model</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-processors</artifactId>
+    </dependency>
   </dependencies>
 
 </project>

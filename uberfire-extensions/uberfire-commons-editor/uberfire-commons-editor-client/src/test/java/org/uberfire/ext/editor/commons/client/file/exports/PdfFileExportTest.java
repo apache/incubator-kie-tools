@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.ext.editor.commons.client.file.exports.jso.JsPdf;
+import org.uberfire.ext.editor.commons.file.exports.PdfExportPreferences;
 
 import static org.mockito.Mockito.*;
 
@@ -29,14 +30,16 @@ import static org.mockito.Mockito.*;
 public class PdfFileExportTest {
 
     private PdfFileExport tested;
-    private PdfContent content;
+    private PdfDocument content;
 
     @Mock
     private JsPdf fileExport;
 
     @Before
     public void setup() {
-        content = PdfContent.create();
+        content = PdfDocument.create(PdfExportPreferences.create(PdfExportPreferences.Orientation.PORTRAIT,
+                                                                 PdfExportPreferences.Unit.MM,
+                                                                 PdfExportPreferences.Format.A4));
         tested = new PdfFileExport();
     }
 
