@@ -360,8 +360,7 @@ public class BookmarkableUrlHelper {
 
     public static String registerOpenedDock(String currentBookmarkableURLStatus,
                                             UberfireDock targetDock) {
-        if (!isNotBlank(currentBookmarkableURLStatus)
-                || null == targetDock) {
+        if (targetDock == null) {
             return currentBookmarkableURLStatus;
         }
         final String id = getDockId(targetDock);

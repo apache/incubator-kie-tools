@@ -567,6 +567,17 @@ public class BookmarkableUrlHelperTest extends TestCase {
         assertEquals(expected, url);
     }
 
+    @Test
+    public void testOpenADockWithEmptyBookmark() {
+        UberfireDock dock1 = createUberfireDockForTest("dock",
+                                                       "perspective");
+        String url = BookmarkableUrlHelper.registerOpenedDock("",
+                                                       dock1);
+        assertEquals("[Wdock,]", url);
+
+    }
+
+
     /**
      * Get a dock for the test
      * @param dockName
@@ -583,5 +594,7 @@ public class BookmarkableUrlHelperTest extends TestCase {
                 perspectiveName);
 
         return dock;
+
+
     }
 }
