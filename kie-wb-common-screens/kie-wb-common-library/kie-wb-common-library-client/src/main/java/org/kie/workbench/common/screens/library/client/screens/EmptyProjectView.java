@@ -26,9 +26,9 @@ import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.screens.library.client.widgets.AssetsActionsWidget;
-import org.kie.workbench.common.screens.library.client.widgets.ProjectActionsWidget;
-import org.kie.workbench.common.screens.library.client.widgets.ResourceHandlerWidget;
+import org.kie.workbench.common.screens.library.client.widgets.project.AssetsActionsWidget;
+import org.kie.workbench.common.screens.library.client.widgets.project.NewAssetHandlerWidget;
+import org.kie.workbench.common.screens.library.client.widgets.project.ProjectActionsWidget;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 
 @Templated
@@ -38,7 +38,7 @@ public class EmptyProjectView implements EmptyProjectScreen.View,
     private EmptyProjectScreen presenter;
 
     @Inject
-    private ManagedInstance<ResourceHandlerWidget> resourceHandlerWidgets;
+    private ManagedInstance<NewAssetHandlerWidget> resourceHandlerWidgets;
 
     @Inject
     private ProjectsDetailScreen projectsDetailScreen;
@@ -95,11 +95,11 @@ public class EmptyProjectView implements EmptyProjectScreen.View,
 
     @Override
     public void addResourceHandler(final NewResourceHandler newResourceHandler) {
-        final ResourceHandlerWidget resourceHandlerWidget = resourceHandlerWidgets.get();
-        resourceHandlerWidget.init(newResourceHandler.getDescription(),
+        final NewAssetHandlerWidget newAssetHandlerWidget = resourceHandlerWidgets.get();
+        newAssetHandlerWidget.init(newResourceHandler.getDescription(),
                                    newResourceHandler.getIcon(),
                                    newResourceHandler.getCommand(presenter.getNewResourcePresenter()));
-        resourceHandlerContainer.appendChild(resourceHandlerWidget.getElement());
+        resourceHandlerContainer.appendChild(newAssetHandlerWidget.getElement());
     }
 
     @EventHandler("browse-more-types")

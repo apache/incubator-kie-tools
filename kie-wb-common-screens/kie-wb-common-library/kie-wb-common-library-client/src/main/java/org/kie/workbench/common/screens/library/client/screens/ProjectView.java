@@ -30,9 +30,9 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.SinkNative;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.widgets.AssetItemWidget;
-import org.kie.workbench.common.screens.library.client.widgets.AssetsActionsWidget;
-import org.kie.workbench.common.screens.library.client.widgets.ProjectActionsWidget;
+import org.kie.workbench.common.screens.library.client.widgets.project.AssetItemWidget;
+import org.kie.workbench.common.screens.library.client.widgets.project.AssetsActionsWidget;
+import org.kie.workbench.common.screens.library.client.widgets.project.ProjectActionsWidget;
 import org.uberfire.mvp.Command;
 
 @Templated

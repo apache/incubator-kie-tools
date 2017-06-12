@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.library.client.widgets;
+package org.kie.workbench.common.screens.library.client.widgets.project;
 
 import javax.inject.Inject;
 
@@ -23,6 +23,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.screens.library.client.widgets.common.MenuResourceHandlerWidget;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 
 @Templated

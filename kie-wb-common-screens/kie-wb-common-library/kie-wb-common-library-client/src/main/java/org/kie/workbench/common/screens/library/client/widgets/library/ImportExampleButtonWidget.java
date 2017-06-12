@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.library.client.widgets;
+package org.kie.workbench.common.screens.library.client.widgets.library;
 
 import javax.inject.Inject;
 
@@ -31,11 +31,12 @@ public class ImportExampleButtonWidget implements IsElement {
     @DataField("import-example")
     Button importExample;
 
-    public void init( final String name,
-                      final String description,
-                      final Command onClick ) {
-        importExample.setTextContent( name );
-        importExample.setAttribute( "title", description );
-        importExample.setOnclick( event -> onClick.execute() );
+    public void init(final String name,
+                     final String description,
+                     final Command onClick) {
+        importExample.setTextContent(name);
+        importExample.setAttribute("title",
+                                   description);
+        importExample.setOnclick(event -> onClick.execute());
     }
 }

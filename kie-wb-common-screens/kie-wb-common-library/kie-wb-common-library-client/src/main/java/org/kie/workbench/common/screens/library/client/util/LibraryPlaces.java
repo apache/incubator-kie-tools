@@ -50,7 +50,7 @@ import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.widgets.LibraryToolbarPresenter;
+import org.kie.workbench.common.screens.library.client.widgets.library.LibraryToolbarPresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.uberfire.backend.vfs.ObservablePath;

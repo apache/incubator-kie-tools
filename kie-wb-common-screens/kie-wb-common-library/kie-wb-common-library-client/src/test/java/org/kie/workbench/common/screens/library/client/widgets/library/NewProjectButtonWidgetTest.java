@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.library.client.widgets;
+package org.kie.workbench.common.screens.library.client.widgets.library;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.library.client.util.ExamplesUtils;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.widgets.client.handlers.NewProjectHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
@@ -27,9 +32,6 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -52,17 +54,24 @@ public class NewProjectButtonWidgetTest {
     @Mock
     private LibraryPlaces libraryPlaces;
 
+    @Mock
+    private ProjectController projectController;
+
+    @Mock
+    private ExamplesUtils examplesUtils;
+
     private NewProjectButtonWidget presenter;
 
     @Before
     public void setup() {
-        doReturn(true).when(newDefaultProjectHandler).canCreate();
+        doReturn(true).when(projectController).canCreateProjects();
 
         presenter = spy(new NewProjectButtonWidget(view,
-                newProjectHandlers,
-                newDefaultProjectHandler,
-                newResourcePresenter,
-                libraryPlaces));
+                                                   newProjectHandlers,
+                                                   newDefaultProjectHandler,
+                                                   newResourcePresenter,
+                                                   libraryPlaces,
+                                                   projectController));
     }
 
     @Test
@@ -80,10 +89,17 @@ public class NewProjectButtonWidgetTest {
 
         presenter.init();
 
-        verify(view, times(1)).addNewProjectHandler(anyString(), any(Command.class));
-        verify(view, times(2)).addNewProjectHandler(anyString(), any(NewProjectHandler.class));
-        verify(view).addNewProjectHandler(anyString(), any(Command.class));
-        verify(view).addNewProjectHandler(anyString(), eq(newDefaultProjectHandler));
-        verify(view).addNewProjectHandler(anyString(), eq(otherNewProjectHandler1));
+        verify(view,
+               times(1)).addOption(anyString(),
+                                   any(Command.class));
+        verify(view,
+               times(2)).addOption(anyString(),
+                                   any(NewProjectHandler.class));
+        verify(view).addOption(anyString(),
+                               any(Command.class));
+        verify(view).addOption(anyString(),
+                               eq(newDefaultProjectHandler));
+        verify(view).addOption(anyString(),
+                               eq(otherNewProjectHandler1));
     }
 }

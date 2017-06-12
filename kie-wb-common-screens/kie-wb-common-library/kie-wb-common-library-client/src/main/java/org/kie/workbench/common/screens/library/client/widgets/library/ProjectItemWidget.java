@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.screens.library.client.widgets;
+package org.kie.workbench.common.screens.library.client.widgets.library;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -47,16 +47,16 @@ public class ProjectItemWidget implements IsElement {
 
     private String project;
 
-    public void init( final String project,
-                      final Command details,
-                      final Command select ) {
+    public void init(final String project,
+                     final Command details,
+                     final Command select) {
         this.project = project;
-        this.projectName.setTextContent( project );
-        this.projectName.setOnclick( e -> {
+        this.projectName.setTextContent(project);
+        this.projectName.setOnclick(e -> {
             e.stopImmediatePropagation();
             select.execute();
-        } );
-        projectListItem.setOnclick( e -> details.execute() );
+        });
+        projectListItem.setOnclick(e -> details.execute());
     }
 
     public String getProject() {
@@ -64,10 +64,10 @@ public class ProjectItemWidget implements IsElement {
     }
 
     public void select() {
-        projectListItem.getClassList().add( "selected" );
+        projectListItem.getClassList().add("selected");
     }
 
     public void unselect() {
-        projectListItem.getClassList().remove( "selected" );
+        projectListItem.getClassList().remove("selected");
     }
 }

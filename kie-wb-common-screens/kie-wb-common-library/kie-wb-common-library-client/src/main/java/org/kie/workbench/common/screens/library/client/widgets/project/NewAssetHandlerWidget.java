@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.library.client.widgets;
+package org.kie.workbench.common.screens.library.client.widgets.project;
 
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.dom.Button;
-import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Node;
@@ -32,7 +30,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.mvp.Command;
 
 @Templated
-public class ResourceHandlerWidget implements IsElement {
+public class NewAssetHandlerWidget implements IsElement {
 
     @Inject
     @DataField
@@ -46,19 +44,19 @@ public class ResourceHandlerWidget implements IsElement {
     @DataField
     Div icon;
 
-    public void init( final String title,
-                      final IsWidget iconWidget,
-                      final Command onClick ) {
-        text.setTextContent( title );
+    public void init(final String title,
+                     final IsWidget iconWidget,
+                     final Command onClick) {
+        text.setTextContent(title);
 
-        if ( iconWidget != null ) {
-            HTMLElement assetIconHtml = TemplateUtil.<HTMLElement>nativeCast(iconWidget.asWidget().getElement() );
-            final Node clonedAssetIconHtml = assetIconHtml.cloneNode(true );
-            this.icon.appendChild( clonedAssetIconHtml );
+        if (iconWidget != null) {
+            HTMLElement assetIconHtml = TemplateUtil.<HTMLElement>nativeCast(iconWidget.asWidget().getElement());
+            final Node clonedAssetIconHtml = assetIconHtml.cloneNode(true);
+            this.icon.appendChild(clonedAssetIconHtml);
         }
 
-        if ( onClick != null ) {
-            button.setOnclick( e -> onClick.execute() );
+        if (onClick != null) {
+            button.setOnclick(e -> onClick.execute());
         }
     }
 }

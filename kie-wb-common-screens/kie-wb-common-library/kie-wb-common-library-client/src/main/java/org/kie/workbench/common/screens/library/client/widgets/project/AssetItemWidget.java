@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.library.client.widgets;
+package org.kie.workbench.common.screens.library.client.widgets.project;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -63,31 +63,31 @@ public class AssetItemWidget implements IsElement {
     @DataField("asset-created-date")
     Span assetCreatedDate;
 
-    public void init( final String name,
-                      final String path,
-                      final String type,
-                      final IsWidget icon,
-                      final String lastModifiedDate,
-                      final String createdDate,
-                      final Command details,
-                      final Command select ) {
-        if ( icon != null ) {
-            HTMLElement assetIconHtml = TemplateUtil.<HTMLElement>nativeCast( icon.asWidget().getElement() );
-            final Node clonedAssetIconHtml = assetIconHtml.cloneNode( true );
-            this.assetIcon.appendChild( clonedAssetIconHtml );
+    public void init(final String name,
+                     final String path,
+                     final String type,
+                     final IsWidget icon,
+                     final String lastModifiedDate,
+                     final String createdDate,
+                     final Command details,
+                     final Command select) {
+        if (icon != null) {
+            HTMLElement assetIconHtml = TemplateUtil.<HTMLElement>nativeCast(icon.asWidget().getElement());
+            final Node clonedAssetIconHtml = assetIconHtml.cloneNode(true);
+            this.assetIcon.appendChild(clonedAssetIconHtml);
         }
 
-        this.assetName.setTextContent( name );
-        this.assetName.setOnclick( e -> {
+        this.assetName.setTextContent(name);
+        this.assetName.setOnclick(e -> {
             e.stopImmediatePropagation();
             select.execute();
-        } );
+        });
 
-        this.assetPath.setTextContent( path );
-        this.assetType.setTextContent( type );
-        this.assetLastModifiedDate.setTextContent( lastModifiedDate );
-        this.assetCreatedDate.setTextContent( createdDate );
+        this.assetPath.setTextContent(path);
+        this.assetType.setTextContent(type);
+        this.assetLastModifiedDate.setTextContent(lastModifiedDate);
+        this.assetCreatedDate.setTextContent(createdDate);
 
-        assetContainer.setOnclick( e -> details.execute() );
+        assetContainer.setOnclick(e -> details.execute());
     }
 }

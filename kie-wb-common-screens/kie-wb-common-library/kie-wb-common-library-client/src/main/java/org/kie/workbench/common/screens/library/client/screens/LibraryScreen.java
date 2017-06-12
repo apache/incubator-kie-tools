@@ -28,14 +28,12 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
-import org.kie.workbench.common.screens.library.client.util.ExamplesUtils;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -59,10 +57,6 @@ public class LibraryScreen {
         void clearFilterText();
 
         void setFilterName(String name);
-
-        void addProjectToImport(ExampleProject exampleProject);
-
-        void clearImportProjectsContainer();
     }
 
     private View view;
@@ -75,8 +69,6 @@ public class LibraryScreen {
 
     private Caller<LibraryService> libraryService;
 
-    private ExamplesUtils examplesUtils;
-
     private ProjectController projectController;
 
     List<Project> projects;
@@ -87,14 +79,12 @@ public class LibraryScreen {
                          final LibraryPlaces libraryPlaces,
                          final Event<ProjectDetailEvent> projectDetailEvent,
                          final Caller<LibraryService> libraryService,
-                         final ExamplesUtils examplesUtils,
                          final ProjectController projectController) {
         this.view = view;
         this.placeManager = placeManager;
         this.libraryPlaces = libraryPlaces;
         this.projectDetailEvent = projectDetailEvent;
         this.libraryService = libraryService;
-        this.examplesUtils = examplesUtils;
         this.projectController = projectController;
     }
 
@@ -142,21 +132,6 @@ public class LibraryScreen {
         projects.stream().forEach(p -> view.addProject(p.getProjectName(),
                                                        detailsCommand(p),
                                                        selectCommand(p)));
-    }
-
-    public void importProject(final ExampleProject exampleProject) {
-        if (userCanCreateProjects()) {
-            examplesUtils.importProject(exampleProject);
-        }
-    }
-
-    public void updateImportProjects() {
-        examplesUtils.getExampleProjects(exampleProjects -> {
-            view.clearImportProjectsContainer();
-            for (ExampleProject exampleProject : exampleProjects) {
-                view.addProjectToImport(exampleProject);
-            }
-        });
     }
 
     public void filterUpdate(@Observes final FilterUpdateEvent event) {

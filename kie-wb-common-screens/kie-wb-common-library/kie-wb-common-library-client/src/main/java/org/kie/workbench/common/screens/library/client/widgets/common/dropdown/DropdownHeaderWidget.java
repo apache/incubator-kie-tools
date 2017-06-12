@@ -14,28 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.library.client.widgets;
+package org.kie.workbench.common.screens.library.client.widgets.common.dropdown;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.Anchor;
+import org.jboss.errai.common.client.dom.ListItem;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.mvp.Command;
 
 @Templated
-public class ImportExampleListItemWidget implements IsElement {
+public class DropdownHeaderWidget implements IsElement {
 
     @Inject
-    @DataField("import-example")
-    Anchor importExample;
+    @DataField("dropdown-header")
+    private ListItem header;
 
-    public void init( final String name,
-                      final String description,
-                      final Command onClick ) {
-        importExample.setTextContent( name );
-        importExample.setAttribute( "title", description );
-        importExample.setOnclick( event -> onClick.execute() );
+    public void init(final String title) {
+        header.setTextContent(title);
     }
 }

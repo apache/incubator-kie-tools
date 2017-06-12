@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.library.client.widgets;
+package org.kie.workbench.common.screens.library.client.widgets.common;
 
 import javax.inject.Inject;
 
@@ -31,12 +31,12 @@ public class MenuResourceHandlerWidget implements IsElement {
     @DataField
     Anchor link;
 
-    public void init( final String title,
-                      final Command onClick ) {
-        link.setTextContent( title );
+    public void init(final String title,
+                     final Command onClick) {
+        link.setTextContent(title);
 
-        if ( onClick != null ) {
-            link.setOnclick( e -> onClick.execute() );
+        if (onClick != null) {
+            link.setOnclick(e -> onClick.execute());
         }
     }
 }

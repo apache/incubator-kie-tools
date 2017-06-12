@@ -38,7 +38,9 @@ public class EmptyLibraryScreen {
 
         void addProjectToImport(ExampleProject exampleProject);
 
-        void clearImportProjectsContainer();
+        void clearImportExamplesButtonsContainer();
+
+        void clearImportExamplesContainer();
     }
 
     private View view;
@@ -69,9 +71,13 @@ public class EmptyLibraryScreen {
         view.init(this);
         view.setup(user.getIdentifier());
         examplesUtils.getExampleProjects(exampleProjects -> {
-            view.clearImportProjectsContainer();
-            for (ExampleProject exampleProject : exampleProjects) {
-                view.addProjectToImport(exampleProject);
+            if (exampleProjects != null && !exampleProjects.isEmpty()) {
+                view.clearImportExamplesButtonsContainer();
+                for (ExampleProject exampleProject : exampleProjects) {
+                    view.addProjectToImport(exampleProject);
+                }
+            } else {
+                view.clearImportExamplesContainer();
             }
         });
     }

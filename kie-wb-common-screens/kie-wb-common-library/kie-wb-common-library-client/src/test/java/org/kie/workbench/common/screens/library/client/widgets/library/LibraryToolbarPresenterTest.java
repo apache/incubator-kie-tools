@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.screens.library.client.widgets;
+package org.kie.workbench.common.screens.library.client.widgets.library;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,6 @@ import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferenc
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mocks.CallerMock;
@@ -176,7 +175,7 @@ public class LibraryToolbarPresenterTest {
     @Test
     public void updateSelectedRepositoryFailedTest() {
         presenter.init(callback);
-        Mockito.reset(view);
+        reset(view);
 
         doReturn(false).when(placeManager).closeAllPlacesOrNothing();
         doReturn("repository2").when(view).getSelectedRepository();
@@ -190,7 +189,7 @@ public class LibraryToolbarPresenterTest {
     @Test
     public void updateSelectedRepositorySucceededTest() {
         presenter.init(callback);
-        Mockito.reset(view);
+        reset(view);
 
         doReturn(true).when(placeManager).closeAllPlacesOrNothing();
         doReturn("repository2").when(view).getSelectedRepository();
@@ -221,7 +220,7 @@ public class LibraryToolbarPresenterTest {
         selectedRepositoryBranches.add("dev");
 
         presenter.init(callback);
-        Mockito.reset(view);
+        reset(view);
 
         doReturn(true).when(placeManager).closeAllPlacesOrNothing();
         doReturn("repository1").when(view).getSelectedRepository();
@@ -244,7 +243,7 @@ public class LibraryToolbarPresenterTest {
     @Test
     public void setSelectedInfoTest() {
         presenter.init(callback);
-        Mockito.reset(view);
+        reset(view);
 
         doReturn(true).when(placeManager).closeAllPlacesOrNothing();
         doReturn("repository2").when(view).getSelectedRepository();

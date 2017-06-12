@@ -77,18 +77,33 @@ public class EmptyLibraryScreenTest {
             final ParameterizedCommand<Set<ExampleProject>> callback = (ParameterizedCommand<Set<ExampleProject>>) invocationOnMock.getArguments()[0];
             callback.execute(exampleProjects);
             return null;
-        }).when(examplesUtils).getExampleProjects(any(ParameterizedCommand.class));
+        }).when(examplesUtils).getExampleProjects(any());
 
         emptyLibraryScreen.setup();
 
         verify(view).init(emptyLibraryScreen);
         verify(view).setup("user");
-        verify(view).clearImportProjectsContainer();
+        verify(view).clearImportExamplesButtonsContainer();
 
         verify(view,
                times(2)).addProjectToImport(any(ExampleProject.class));
         verify(view).addProjectToImport(exampleProject1);
         verify(view).addProjectToImport(exampleProject2);
+    }
+
+    @Test
+    public void setupWithoutExamplesTest() {
+        doAnswer(invocationOnMock -> {
+            final ParameterizedCommand<Set<ExampleProject>> callback = (ParameterizedCommand<Set<ExampleProject>>) invocationOnMock.getArguments()[0];
+            callback.execute(null);
+            return null;
+        }).when(examplesUtils).getExampleProjects(any());
+
+        emptyLibraryScreen.setup();
+
+        verify(view).init(emptyLibraryScreen);
+        verify(view).setup("user");
+        verify(view).clearImportExamplesContainer();
     }
 
     @Test

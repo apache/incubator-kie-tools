@@ -37,25 +37,24 @@ public class ProjectsDetailScreenTest {
 
     @Before
     public void setup() {
-        projectsDetail = new ProjectsDetailScreen( view );
+        projectsDetail = new ProjectsDetailScreen(view);
     }
 
     @Test
     public void testUpdate() throws Exception {
-        final POM pom = mock( POM.class );
-        when( pom.getDescription() ).thenReturn( "desc" );
+        final POM pom = mock(POM.class);
+        when(pom.getDescription()).thenReturn("desc");
 
-        final Project project = mock( Project.class );
-        doReturn( pom ).when( project ).getPom();
+        final Project project = mock(Project.class);
+        doReturn(pom).when(project).getPom();
 
-        final ProjectInfo projectInfo = mock( ProjectInfo.class );
-        when( projectInfo.getProject() ).thenReturn( project );
+        final ProjectInfo projectInfo = mock(ProjectInfo.class);
+        when(projectInfo.getProject()).thenReturn(project);
 
-        ProjectDetailEvent event = new ProjectDetailEvent( projectInfo );
+        ProjectDetailEvent event = new ProjectDetailEvent(projectInfo);
 
-        projectsDetail.update( event );
+        projectsDetail.update(event);
 
-        verify( view ).update( "desc" );
-
+        verify(view).update("desc");
     }
 }

@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.library.client.widgets;
+package org.kie.workbench.common.screens.library.client.widgets.library;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
@@ -32,13 +33,17 @@ public class NewProjectButtonWidget {
 
     public interface View extends UberElement<NewProjectButtonWidget> {
 
-        void addNewProjectHandler(String description,
-                                  NewProjectHandler newProjectHandler);
+        void clearDropdown();
 
-        void addNewProjectHandler(String description,
-                                  Command command);
+        void addOption(String description,
+                       NewProjectHandler newProjectHandler);
+
+        void addOption(String description,
+                       Command command);
 
         void addHeader(String title);
+
+        void addSeparator();
 
         String getDefaultProjectHeaderTitle();
 
@@ -59,38 +64,48 @@ public class NewProjectButtonWidget {
 
     private LibraryPlaces libraryPlaces;
 
+    private ProjectController projectController;
+
     @Inject
     public NewProjectButtonWidget(final View view,
                                   final ManagedInstance<NewProjectHandler> newProjectHandlers,
                                   final org.kie.workbench.common.screens.projecteditor.client.handlers.NewProjectHandler newDefaultProjectHandler,
                                   final NewResourcePresenter newResourcePresenter,
-                                  final LibraryPlaces libraryPlaces) {
+                                  final LibraryPlaces libraryPlaces,
+                                  final ProjectController projectController) {
         this.view = view;
         this.newProjectHandlers = newProjectHandlers;
         this.newDefaultProjectHandler = newDefaultProjectHandler;
         this.newResourcePresenter = newResourcePresenter;
         this.libraryPlaces = libraryPlaces;
+        this.projectController = projectController;
     }
 
     @PostConstruct
     public void init() {
         view.init(this);
+        initNewProjectDropdown();
+    }
 
-        view.addHeader(view.getDefaultProjectHeaderTitle());
+    private void initNewProjectDropdown() {
+        if (projectController.canCreateProjects()) {
+            view.clearDropdown();
 
-        if (newDefaultProjectHandler.canCreate()) {
+            view.addHeader(view.getDefaultProjectHeaderTitle());
+
             addNewProjectHandler(view.getQuickSetupDescription(),
                                  () -> libraryPlaces.goToNewProject());
             addNewProjectHandler(view.getAdvancedSetupDescription(),
                                  newDefaultProjectHandler);
-        }
 
-        view.addHeader(view.getOtherProjectsHeaderTitle());
+            view.addSeparator();
+            view.addHeader(view.getOtherProjectsHeaderTitle());
 
-        for (NewProjectHandler newProjectHandler : getNewProjectHandlers()) {
-            if (!ResourceUtils.isDefaultProjectHandler(newProjectHandler) && newProjectHandler.canCreate()) {
-                addNewProjectHandler(newProjectHandler.getDescription(),
-                                     newProjectHandler);
+            for (NewProjectHandler newProjectHandler : getNewProjectHandlers()) {
+                if (!ResourceUtils.isDefaultProjectHandler(newProjectHandler) && newProjectHandler.canCreate()) {
+                    addNewProjectHandler(newProjectHandler.getDescription(),
+                                         newProjectHandler);
+                }
             }
         }
     }
@@ -108,18 +123,14 @@ public class NewProjectButtonWidget {
             }
         });
 
-        view.addNewProjectHandler(description,
-                                  newProjectHandler);
+        view.addOption(description,
+                       newProjectHandler);
     }
 
     private void addNewProjectHandler(final String description,
                                       final Command command) {
-        view.addNewProjectHandler(description,
-                                  command);
-    }
-
-    public void openImportWizard() {
-        libraryPlaces.goToImportProjectWizard();
+        view.addOption(description,
+                       command);
     }
 
     public NewResourcePresenter getNewResourcePresenter() {

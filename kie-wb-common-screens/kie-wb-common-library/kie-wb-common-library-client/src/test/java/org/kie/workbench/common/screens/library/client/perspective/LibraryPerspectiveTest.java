@@ -15,8 +15,6 @@
  */
 package org.kie.workbench.common.screens.library.client.perspective;
 
-import javax.enterprise.event.Event;
-
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;

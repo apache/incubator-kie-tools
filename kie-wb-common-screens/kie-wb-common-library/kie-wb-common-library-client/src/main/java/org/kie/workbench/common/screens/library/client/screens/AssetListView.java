@@ -35,7 +35,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.SinkNative;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.screens.library.client.widgets.AssetItemWidget;
+import org.kie.workbench.common.screens.library.client.widgets.project.AssetItemWidget;
 
 @Templated
 public class AssetListView

@@ -16,9 +16,7 @@
 package org.kie.workbench.common.screens.library.client.screens;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
@@ -28,20 +26,17 @@ import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
-import org.kie.workbench.common.screens.library.client.util.ExamplesUtils;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -66,15 +61,9 @@ public class LibraryScreenTest {
     private Caller<LibraryService> libraryServiceCaller;
 
     @Mock
-    private ExamplesUtils examplesUtils;
-
-    @Mock
     private ProjectController projectController;
 
     private LibraryScreen libraryScreen;
-
-    private ExampleProject exampleProject1;
-    private ExampleProject exampleProject2;
 
     private Project project1;
     private Project project2;
@@ -84,25 +73,11 @@ public class LibraryScreenTest {
     public void setup() {
         libraryServiceCaller = new CallerMock<>(libraryService);
 
-        exampleProject1 = mock(ExampleProject.class);
-        exampleProject2 = mock(ExampleProject.class);
-
-        final Set<ExampleProject> exampleProjects = new HashSet<>();
-        exampleProjects.add(exampleProject1);
-        exampleProjects.add(exampleProject2);
-
-        doAnswer(invocationOnMock -> {
-            final ParameterizedCommand<Set<ExampleProject>> callback = (ParameterizedCommand<Set<ExampleProject>>) invocationOnMock.getArguments()[0];
-            callback.execute(exampleProjects);
-            return null;
-        }).when(examplesUtils).getExampleProjects(any(ParameterizedCommand.class));
-
         libraryScreen = spy(new LibraryScreen(view,
                                               placeManager,
                                               libraryPlaces,
                                               projectDetailEvent,
                                               libraryServiceCaller,
-                                              examplesUtils,
                                               projectController));
 
         project1 = mock(Project.class);
@@ -153,39 +128,6 @@ public class LibraryScreenTest {
                times(1)).addProject(eq("project3Name"),
                                     any(Command.class),
                                     any(Command.class));
-    }
-
-    @Test
-    public void canImportProjectTest() {
-        final ExampleProject exampleProject = mock(ExampleProject.class);
-
-        libraryScreen.importProject(exampleProject);
-
-        verify(examplesUtils).importProject(exampleProject);
-    }
-
-    @Test
-    public void cannotImportProjectTest() {
-        doReturn(false).when(projectController).canCreateProjects();
-
-        final ExampleProject exampleProject = mock(ExampleProject.class);
-
-        libraryScreen.importProject(exampleProject);
-
-        verify(examplesUtils,
-               never()).importProject(exampleProject);
-    }
-
-    @Test
-    public void updateImportProjectsTest() {
-        libraryScreen.updateImportProjects();
-
-        verify(view).clearImportProjectsContainer();
-
-        verify(view,
-               times(2)).addProjectToImport(any(ExampleProject.class));
-        verify(view).addProjectToImport(exampleProject1);
-        verify(view).addProjectToImport(exampleProject2);
     }
 
     @Test

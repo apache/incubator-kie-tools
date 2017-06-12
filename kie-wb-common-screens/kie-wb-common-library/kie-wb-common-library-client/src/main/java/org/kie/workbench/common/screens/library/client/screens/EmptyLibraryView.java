@@ -31,8 +31,9 @@ import org.jboss.errai.ui.shared.api.annotations.SinkNative;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.widgets.ImportExampleButtonWidget;
-import org.kie.workbench.common.screens.library.client.widgets.NewProjectButtonWidget;
+import org.kie.workbench.common.screens.library.client.widgets.library.ImportExampleButtonWidget;
+import org.kie.workbench.common.screens.library.client.widgets.library.ImportProjectButtonWidget;
+import org.kie.workbench.common.screens.library.client.widgets.library.NewProjectButtonWidget;
 
 @Templated
 public class EmptyLibraryView implements EmptyLibraryScreen.View,
@@ -50,21 +51,28 @@ public class EmptyLibraryView implements EmptyLibraryScreen.View,
     private NewProjectButtonWidget newProjectButtonWidget;
 
     @Inject
+    private ImportProjectButtonWidget importProjectButtonWidget;
+
+    @Inject
     @Named("h1")
     @DataField
     private Heading welcome;
 
     @Inject
-    @DataField("import-container")
-    private Div importContainer;
+    @DataField("import-examples-container")
+    private Div importExamplesContainer;
+
+    @Inject
+    @DataField("import-examples-buttons-container")
+    private Div importExamplesButtonsContainer;
 
     @Inject
     @DataField("new-project-link")
     Anchor newProjectLink;
 
     @Inject
-    @DataField("new-project-button-container")
-    Div newProjectButtonContainer;
+    @DataField("create-project-container")
+    Div createProjectContainer;
 
     @Inject
     @DataField("projects-container")
@@ -78,9 +86,11 @@ public class EmptyLibraryView implements EmptyLibraryScreen.View,
     @Override
     public void setup(String username) {
         welcome.setInnerHTML(ts.getTranslation(LibraryConstants.EmptyLibraryView_Welcome) + " " + username + ".");
-        newProjectButtonContainer.appendChild(newProjectButtonWidget.getView().getElement());
-        if (!presenter.userCanCreateProjects()) {
-            projectsContainer.setHidden(true);
+        if (presenter.userCanCreateProjects()) {
+            createProjectContainer.appendChild(newProjectButtonWidget.getView().getElement());
+            createProjectContainer.appendChild(importProjectButtonWidget.getView().getElement());
+        } else {
+            projectsContainer.setTextContent("");
         }
     }
 
@@ -91,12 +101,17 @@ public class EmptyLibraryView implements EmptyLibraryScreen.View,
                                  exampleProject.getDescription(),
                                  () -> presenter.importProject(exampleProject));
 
-        importContainer.appendChild(importExampleButton.getElement());
+        importExamplesButtonsContainer.appendChild(importExampleButton.getElement());
     }
 
     @Override
-    public void clearImportProjectsContainer() {
-        importContainer.setInnerHTML("");
+    public void clearImportExamplesButtonsContainer() {
+        importExamplesButtonsContainer.setInnerHTML("");
+    }
+
+    @Override
+    public void clearImportExamplesContainer() {
+        importExamplesContainer.setInnerHTML("");
     }
 
     @SinkNative(Event.ONCLICK)
