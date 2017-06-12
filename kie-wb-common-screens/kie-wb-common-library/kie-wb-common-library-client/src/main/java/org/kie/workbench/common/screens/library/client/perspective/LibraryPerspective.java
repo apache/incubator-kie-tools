@@ -27,6 +27,7 @@ import org.kie.workbench.common.widgets.client.search.SearchBehavior;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
+import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
@@ -93,6 +94,11 @@ public class LibraryPerspective {
             callback = () -> libraryPlaces.goToLibrary();
         }
         libraryPlaces.refresh(callback);
+    }
+
+    @OnClose
+    public void onClose() {
+        libraryPlaces.hideDocks();
     }
 
     public PanelDefinition getRootPanel() {

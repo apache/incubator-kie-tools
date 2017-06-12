@@ -62,4 +62,11 @@ public class LibraryPerspectiveTest {
         verify(contextualSearch).setPerspectiveSearchBehavior(eq(LibraryPlaces.LIBRARY_PERSPECTIVE),
                                                               any());
     }
+
+    @Test
+    public void libraryHidesDocksOnCloseTest() {
+        perspective.onClose();
+
+        verify(libraryPlaces).hideDocks();
+    }
 }
