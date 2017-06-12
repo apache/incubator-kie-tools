@@ -38,8 +38,6 @@ public class TaskFormGenerationTest extends BPMNFormGenerationTest<TaskFormModel
                                      List<JBPMVariable> variables) {
         return new TaskFormModel(modelId,
                                  modelId,
-                                 modelId,
-                                 modelId,
                                  variables);
     }
 

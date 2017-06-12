@@ -179,9 +179,7 @@ public class JBPMFormModelCreationPresenterTest {
         taskVariables.add(taskVariable);
 
         taskFormModel = new TaskFormModel("hiring",
-                                          "task",
-                                          "HR Interview",
-                                          "HRInterview-taskform",
+                                          "HRInterview",
                                           taskVariables);
         processTasks.add(taskFormModel);
 
@@ -206,9 +204,7 @@ public class JBPMFormModelCreationPresenterTest {
         taskVariables.add(taskVariable);
 
         taskFormModel = new TaskFormModel("hiring",
-                                          "task",
-                                          "Tech Interview",
-                                          "TechInterview-taskform",
+                                          "TechInterview",
                                           taskVariables);
         processTasks.add(taskFormModel);
 

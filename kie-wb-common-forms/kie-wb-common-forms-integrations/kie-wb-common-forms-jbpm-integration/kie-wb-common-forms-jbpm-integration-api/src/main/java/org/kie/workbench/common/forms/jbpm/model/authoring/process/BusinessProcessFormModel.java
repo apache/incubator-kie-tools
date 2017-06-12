@@ -27,29 +27,18 @@ import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
 @Portable
 public class BusinessProcessFormModel extends AbstractJBPMFormModel {
 
-    protected String processId;
-
     protected String processName;
 
     public BusinessProcessFormModel(@MapsTo("processId") String processId,
                                     @MapsTo("processName") String processName,
                                     @MapsTo("variables") List<JBPMVariable> variables) {
-        super(variables);
-        this.processId = processId;
+        super(processId, variables);
         this.processName = processName;
     }
 
     @Override
     public String getName() {
         return "process";
-    }
-
-    public String getProcessId() {
-        return processId;
-    }
-
-    public void setProcessId(String processId) {
-        this.processId = processId;
     }
 
     public String getProcessName() {
@@ -62,7 +51,7 @@ public class BusinessProcessFormModel extends AbstractJBPMFormModel {
 
     @Override
     public String getFormName() {
-        return processId + BPMNVariableUtils.TASK_FORM_SUFFIX;
+        return getProcessId() + BPMNVariableUtils.TASK_FORM_SUFFIX;
     }
 
     @Override

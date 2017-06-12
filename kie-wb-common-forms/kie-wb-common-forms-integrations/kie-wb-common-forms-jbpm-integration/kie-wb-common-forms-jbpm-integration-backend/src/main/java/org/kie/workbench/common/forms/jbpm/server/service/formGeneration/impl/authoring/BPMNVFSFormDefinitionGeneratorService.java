@@ -25,6 +25,7 @@ import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.kie.workbench.common.forms.commons.layout.FormLayoutTemplateGenerator;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerManager;
+import org.kie.workbench.common.forms.editor.service.backend.util.UIDGenerator;
 import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
 import org.kie.workbench.common.forms.editor.type.FormResourceTypeDefinition;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.AbstractBPMNFormGeneratorService;
@@ -104,7 +105,7 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
         } else {
             form = new FormDefinition(context.getFormModel());
 
-            form.setId(context.getFormModel().getName());
+            form.setId(UIDGenerator.generateUID());
 
             form.setName(context.getSource().getFileName());
 

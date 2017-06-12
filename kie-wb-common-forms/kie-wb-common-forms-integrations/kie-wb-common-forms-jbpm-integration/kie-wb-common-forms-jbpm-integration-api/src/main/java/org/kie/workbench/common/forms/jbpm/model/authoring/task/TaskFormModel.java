@@ -27,24 +27,13 @@ import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
 @Portable
 public class TaskFormModel extends AbstractJBPMFormModel {
 
-    protected String processId;
-
-    protected String taskId;
-
-    protected String taskName;
-
-    protected String formName;
+    private String taskName;
 
     public TaskFormModel(@MapsTo("processId") String processId,
-                         @MapsTo("taskId") String taskId,
                          @MapsTo("taskName") String taskName,
-                         @MapsTo("formName") String formName,
                          @MapsTo("variables") List<JBPMVariable> variables) {
-        super(variables);
-        this.processId = processId;
-        this.taskId = taskId;
+        super(processId, variables);
         this.taskName = taskName;
-        setFormName(formName);
     }
 
     @Override
@@ -52,40 +41,13 @@ public class TaskFormModel extends AbstractJBPMFormModel {
         return "task";
     }
 
-    public String getProcessId() {
-        return processId;
-    }
-
-    public void setProcessId(String processId) {
-        this.processId = processId;
-    }
-
-    public String getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
-
     public String getTaskName() {
         return taskName;
     }
 
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
-    }
-
     @Override
     public String getFormName() {
-        return formName;
-    }
-
-    public void setFormName(String formName) {
-        if(!formName.endsWith(BPMNVariableUtils.TASK_FORM_SUFFIX)) {
-            formName += BPMNVariableUtils.TASK_FORM_SUFFIX;
-        }
-        this.formName = formName;
+        return taskName + BPMNVariableUtils.TASK_FORM_SUFFIX;
     }
 
     @Override
@@ -102,24 +64,15 @@ public class TaskFormModel extends AbstractJBPMFormModel {
         if (!processId.equals(that.processId)) {
             return false;
         }
-        if (!taskId.equals(that.taskId)) {
-            return false;
-        }
-        if (!taskName.equals(that.taskName)) {
-            return false;
-        }
-        return formName.equals(that.formName);
+
+        return taskName.equals(that.taskName);
     }
 
     @Override
     public int hashCode() {
         int result = processId.hashCode();
         result = ~~result;
-        result = 31 * result + taskId.hashCode();
-        result = ~~result;
         result = 31 * result + taskName.hashCode();
-        result = ~~result;
-        result = 31 * result + formName.hashCode();
         result = ~~result;
         return result;
     }

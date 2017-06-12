@@ -23,7 +23,6 @@ import java.util.Map;
 import org.eclipse.bpmn2.Definitions;
 import org.jbpm.simulation.util.BPMN2Utils;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.forms.jbpm.model.authoring.AbstractJBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
@@ -41,6 +40,10 @@ public class BPMNFormModelGeneratorImplTest {
             BPMN2_SUFFIX = ".bpmn2",
             PROCESS_WITHOUT_VARIABLES_NAME = "process-without-variables",
             PROCESS_WITH_ALL_VARIABLES_NAME = "process-with-all-possible-variables",
+            PROCESS_WITH_SHARED_FORMS_NAME = "process-with-tasks-sharing-forms",
+            PROCESS_WITH_SHARED_FORMS_WRONG_MAPPINGS_NAME = "process-with-tasks-sharing-forms-with-wrong-mapping",
+            PROCESS_WITH_SHARED_FORMS_ID = "myProject.processTaskSharedForms",
+            PROCESS_WITH_SHARED_FORMS_WRONG_MAPPINGS_ID = "myProject.processTaskSharedFormsWrongMappings",
             PROCESS_WITH_ALL_VARIABLES_ID = PROJECT_NAME + "." + PROCESS_WITH_ALL_VARIABLES_NAME,
             DATA_OBJECT_TYPE = "com.myteam.myproject.Person", // Selected from list of known data object types in Designer variable editor
             CUSTOM_TYPE = "com.test.MyType"; //Entered into the variable type declaration as naked String
@@ -83,7 +86,9 @@ public class BPMNFormModelGeneratorImplTest {
 
     private static Definitions
             processWithoutVariablesDefinitions,
-            processWithAllVariablesDefinitions;
+            processWithAllVariablesDefinitions,
+            processWithSharedForms,
+            processWithSharedFormsWrongMappings;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -91,6 +96,8 @@ public class BPMNFormModelGeneratorImplTest {
 
         processWithoutVariablesDefinitions = BPMN2Utils.getDefinitions(BPMNFormModelGeneratorImplTest.class.getResourceAsStream(RESOURCES_PATH + PROCESS_WITHOUT_VARIABLES_NAME + BPMN2_SUFFIX));
         processWithAllVariablesDefinitions = BPMN2Utils.getDefinitions(BPMNFormModelGeneratorImplTest.class.getResourceAsStream(RESOURCES_PATH + PROCESS_WITH_ALL_VARIABLES_NAME + BPMN2_SUFFIX));
+        processWithSharedForms = BPMN2Utils.getDefinitions(BPMNFormModelGeneratorImplTest.class.getResourceAsStream(RESOURCES_PATH + PROCESS_WITH_SHARED_FORMS_NAME + BPMN2_SUFFIX));
+        processWithSharedFormsWrongMappings = BPMN2Utils.getDefinitions(BPMNFormModelGeneratorImplTest.class.getResourceAsStream(RESOURCES_PATH + PROCESS_WITH_SHARED_FORMS_WRONG_MAPPINGS_NAME + BPMN2_SUFFIX));
     }
 
     @Test
@@ -132,7 +139,7 @@ public class BPMNFormModelGeneratorImplTest {
                                       EXPECTED_PROCESS_VARIABLES);
 
         List<TaskFormModel> taskFormModels = generator.generateTaskFormModels(processWithAllVariablesDefinitions);
-        final int EXPECTED_NUMBER_OF_HUMAN_TASKS = 7;
+        final int EXPECTED_NUMBER_OF_HUMAN_TASKS = 5; // taskOnlyWithOutputs-taskform, emptyTask-taskform, taskOnlyWithInputs-taskform, taskWithDifferentInputsAndOutputs-taskform, taskWithTheSameInputsAndOutputs-taskform
         assertEquals("Forms should be generated for all human tasks including tasks in subprocesses and swimlanes",
                      EXPECTED_NUMBER_OF_HUMAN_TASKS,
                      taskFormModels.size());
@@ -148,17 +155,14 @@ public class BPMNFormModelGeneratorImplTest {
                                                                       TASK_ID);
         assertTaskFormModelIsCorrect(taskFormModel,
                                      PROCESS_WITH_ALL_VARIABLES_ID,
-                                     TASK_ID,
                                      TASK_NAME);
         assertTrue(taskFormModel.getVariables().isEmpty());
     }
 
-    @Ignore("Currently failing because of JBPM-5977")
     @Test
     public void testCorrectTaskFormModelIsGeneratedForTaskWithDifferentInputsAndOutputsInAdHocSubprocess() {
         final String
-                AD_HOC_SUBPROCESS_ID = "_D3B8EE8F-5402-408D-815D-FFE1BAD943D9",
-                TASK_ID = "_AFD1A863-57C6-46EB-A85D-0ADB1E21FA13",
+                TASK_ID = "_D3B8EE8F-5402-408D-815D-FFE1BAD943D9",
                 TASK_NAME = "taskWithDifferentInputsAndOutputs";
         final Map<String, String> EXPECTED_TASK_VARIABLES = new HashMap<String, String>() {{
             putAll(EXPECTED_INPUT_VARIABLES);
@@ -168,8 +172,7 @@ public class BPMNFormModelGeneratorImplTest {
         TaskFormModel taskFormModel = generator.generateTaskFormModel(processWithAllVariablesDefinitions,
                                                                       TASK_ID);
         assertTaskFormModelIsCorrect(taskFormModel,
-                                     AD_HOC_SUBPROCESS_ID,
-                                     TASK_ID,
+                                     PROCESS_WITH_ALL_VARIABLES_ID,
                                      TASK_NAME);
         assertJBPMVariablesAreCorrect(taskFormModel,
                                       EXPECTED_TASK_VARIABLES);
@@ -200,7 +203,6 @@ public class BPMNFormModelGeneratorImplTest {
                                                                       TASK_ID);
         assertTaskFormModelIsCorrect(taskFormModel,
                                      PROCESS_WITH_ALL_VARIABLES_ID,
-                                     TASK_ID,
                                      TASK_NAME);
         assertJBPMVariablesAreCorrect(taskFormModel,
                                       EXPECTED_TASK_VARIABLES);
@@ -214,28 +216,133 @@ public class BPMNFormModelGeneratorImplTest {
                                                                       TASK_ID);
         assertTaskFormModelIsCorrect(taskFormModel,
                                      PROCESS_WITH_ALL_VARIABLES_ID,
-                                     TASK_ID,
                                      TASK_NAME);
         assertJBPMVariablesAreCorrect(taskFormModel,
                                       EXPECTED_INPUT_VARIABLES);
     }
 
-    @Ignore("Currently failing because of JBPM-5977")
     @Test
     public void testCorrectTaskFormModelIsGeneratedForTaskThatContainsOnlyOutputsInEmbeddedSubprocess() {
         final String
-                EMBEDDED_SUBPROCESS_ID = "_6E36848C-E302-40DB-B05B-53A3136D114A",
                 TASK_ID = "_9E9EAE16-F9F4-49D0-854D-0D2C8CB9382F",
                 TASK_NAME = "taskOnlyWithOutputs";
 
         TaskFormModel taskFormModel = generator.generateTaskFormModel(processWithAllVariablesDefinitions,
                                                                       TASK_ID);
         assertTaskFormModelIsCorrect(taskFormModel,
-                                     EMBEDDED_SUBPROCESS_ID,
-                                     TASK_ID,
+                                     PROCESS_WITH_ALL_VARIABLES_ID,
                                      TASK_NAME);
         assertJBPMVariablesAreCorrect(taskFormModel,
                                       EXPECTED_OUTPUT_VARIABLES);
+    }
+
+    @Test
+    public void testGenerateTaskFormModelForTaskWithSharedForm() {
+        final String[] TASK_IDS = new String[]{"_77BDDEC9-0D5E-4C46-8AD6-1B528836A22B", "_C976E341-8E35-42C7-B878-67049CE63E5F", "_27F23135-87E9-47C5-9B97-DA793699E8CF"};
+        final String TASK_NAME = "task";
+
+        TaskFormModel[] generatedModels = new TaskFormModel[TASK_IDS.length];
+
+        for (int i = 0; i < TASK_IDS.length; i++) {
+            generatedModels[i] = generator.generateTaskFormModel(processWithSharedForms,
+                                                                 TASK_IDS[i]);
+            assertNotNull(generatedModels[i]);
+            assertTaskFormModelIsCorrect(generatedModels[i],
+                                         PROCESS_WITH_SHARED_FORMS_ID,
+                                         TASK_NAME);
+            checkExpectedMergedFormVariables(generatedModels[i]);
+        }
+    }
+
+    @Test
+    public void testGenerateAllTaskFormModelForTasksWithSharedForm() {
+        final String TASK_NAME = "task";
+
+        final int EXPECTED_MODELS = 2;
+
+        List<TaskFormModel> generatedModels = generator.generateTaskFormModels(processWithSharedForms);
+
+        assertNotNull(generatedModels);
+
+        assertEquals(EXPECTED_MODELS,
+                     generatedModels.size());
+
+        for (TaskFormModel formModel : generatedModels) {
+            assertNotNull(formModel);
+            assertEquals(PROCESS_WITH_SHARED_FORMS_ID,
+                         formModel.getProcessId());
+            assertNotNull(formModel.getVariables());
+            assertFalse(formModel.getVariables().isEmpty());
+            if (formModel.getFormName().equals(TASK_NAME + BPMNVariableUtils.TASK_FORM_SUFFIX)) {
+                checkExpectedMergedFormVariables(formModel);
+            }
+        }
+    }
+
+    @Test
+    public void testGenerateTaskFormModelForTaskWithSharedFormWithWrongMappings() {
+
+        final String[] TASK_IDS = new String[]{"_77BDDEC9-0D5E-4C46-8AD6-1B528836A22B", "_C976E341-8E35-42C7-B878-67049CE63E5F", "_27F23135-87E9-47C5-9B97-DA793699E8CF"};
+
+        int count = 0;
+
+        for (int i = 0; i < TASK_IDS.length; i++) {
+            try {
+                generator.generateTaskFormModel(processWithSharedFormsWrongMappings,
+                                                TASK_IDS[i]);
+
+                fail("We shouldn't be here, the form generation should break!");
+            } catch (Exception ex) {
+                count++;
+            }
+        }
+
+        assertEquals(TASK_IDS.length,
+                     count);
+    }
+
+    @Test
+    public void testGenerateAllTaskFormModelForTasksWithSharedFormWithWrongMappings() {
+        final String TASK_NAME = "task";
+
+        final int EXPECTED_MODELS = 1;
+
+        List<TaskFormModel> generatedModels = generator.generateTaskFormModels(processWithSharedFormsWrongMappings);
+
+        assertNotNull(generatedModels);
+
+        assertEquals(EXPECTED_MODELS,
+                     generatedModels.size());
+
+        for (TaskFormModel formModel : generatedModels) {
+            assertNotNull(formModel);
+            assertEquals(PROCESS_WITH_SHARED_FORMS_WRONG_MAPPINGS_ID,
+                         formModel.getProcessId());
+            assertNotNull(formModel.getVariables());
+            assertFalse(formModel.getVariables().isEmpty());
+            assertNotEquals(TASK_NAME + BPMNVariableUtils.TASK_FORM_SUFFIX,
+                            formModel.getFormName());
+        }
+    }
+
+    protected void checkExpectedMergedFormVariables(TaskFormModel formModel) {
+        final Map<String, String> EXPECTED_TYPES = new HashMap<>();
+        EXPECTED_TYPES.put("name",
+                           String.class.getName());
+        EXPECTED_TYPES.put("lastName",
+                           String.class.getName());
+        EXPECTED_TYPES.put("age",
+                           Integer.class.getName());
+        EXPECTED_TYPES.put("married",
+                           Boolean.class.getName());
+
+        assertEquals(EXPECTED_TYPES.size(),
+                     formModel.getVariables().size());
+        for (JBPMVariable variable : formModel.getVariables()) {
+            assertNotNull(EXPECTED_TYPES.get(variable.getName()));
+            assertEquals(EXPECTED_TYPES.get(variable.getName()),
+                         variable.getType());
+        }
     }
 
     private void assertProcessFormModelFieldsAreCorrect(BusinessProcessFormModel formModel,
@@ -260,14 +367,10 @@ public class BPMNFormModelGeneratorImplTest {
 
     private void assertTaskFormModelIsCorrect(TaskFormModel taskFormModel,
                                               String processId,
-                                              String taskId,
                                               String taskName) {
         assertEquals(processId,
                      taskFormModel.getProcessId());
-        assertEquals(taskId,
-                     taskFormModel.getTaskId());
-        assertEquals(taskName,
-                     taskFormModel.getTaskName());
+
         final String EXPECTED_FORM_NAME = taskName + BPMNVariableUtils.TASK_FORM_SUFFIX;
         assertEquals(EXPECTED_FORM_NAME,
                      taskFormModel.getFormName());

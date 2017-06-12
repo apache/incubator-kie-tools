@@ -26,6 +26,9 @@ public interface Constants {
     @TranslationKey(defaultValue = "Start Process Form")
     public static final String JBPMFormModelCreationViewImplStartProcessForm = "JBPMFormModelCreationViewImpl.StartProcessForm";
 
+    @TranslationKey(defaultValue = "Form for Task {0} ({1})")
+    public static final String JBPMFormModelCreationViewImplTaskName = "JBPMFormModelCreationViewImpl.TaskName";
+
     @TranslationKey(defaultValue = "There's no process or task selected")
     public static final String InvalidFormModel = "JBPMFormModelCreationPresenter.InvalidFormModel";
 }

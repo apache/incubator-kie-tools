@@ -20,9 +20,7 @@ import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.editor.backend.indexing.FormModelVisitor;
 import org.kie.workbench.common.forms.editor.backend.indexing.FormModelVisitorProvider;
-import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
-import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 
 @Dependent
@@ -42,9 +40,7 @@ public class TaskFormModelVisitor extends FormModelVisitor<TaskFormModel> implem
     public void index(TaskFormModel formModel) {
         addResourceReference(formModel.getProcessId(),
                              ResourceType.BPMN2);
-        addResourceReference(formModel.getName(),
-                             ResourceType.BPMN2_NAME);
-        addSharedReference(formModel.getTaskId(),
-                           PartType.TASK_NAME);
+        formModel.getVariables().forEach(jbpmVariable -> addResourceReference(jbpmVariable.getType(),
+                                                                              ResourceType.JAVA));
     }
 }

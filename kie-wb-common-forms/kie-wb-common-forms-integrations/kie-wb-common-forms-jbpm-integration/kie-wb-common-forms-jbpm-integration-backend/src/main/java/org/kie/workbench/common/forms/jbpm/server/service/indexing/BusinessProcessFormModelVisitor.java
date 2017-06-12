@@ -42,5 +42,7 @@ public class BusinessProcessFormModelVisitor extends FormModelVisitor<BusinessPr
                              ResourceType.BPMN2);
         addResourceReference(formModel.getProcessName(),
                              ResourceType.BPMN2_NAME);
+        formModel.getVariables().forEach(jbpmVariable -> addResourceReference(jbpmVariable.getType(),
+                                                                              ResourceType.JAVA));
     }
 }
