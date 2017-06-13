@@ -35,10 +35,8 @@ public class TreeItemTest {
 
     public static final String ROOT_VALUE = "rootValue";
     public static final String ROOT_LABEL = "rootLabel";
-
     public static final String CONTAINER_VALUE = "containerValue";
     public static final String CONTAINER_LABEL = "containerLabel";
-
     public static final String ITEM_VALUE = "itemValue";
     public static final String ITEM_LABEL = "itemLabel";
 
@@ -47,6 +45,7 @@ public class TreeItemTest {
 
     @Mock
     private FlowPanel content;
+
     @Mock
     private FlowPanel treeContainer;
 
@@ -61,10 +60,8 @@ public class TreeItemTest {
     public void setup() {
         final Element element = mock(Element.class);
         when(content.getElement()).thenReturn(element);
-
         final Style style = mock(Style.class);
         when(element.getStyle()).thenReturn(style);
-
         testedRoot = new TreeItem(TreeItem.Type.ROOT,
                                   ROOT_VALUE,
                                   ROOT_LABEL,
@@ -93,7 +90,6 @@ public class TreeItemTest {
                      testedRoot.getLabel());
         assertEquals(ROOT_VALUE,
                      testedRoot.getUuid());
-
         assertEquals(TreeItem.State.CLOSE,
                      testedContainer.getState());
         assertEquals(TreeItem.Type.CONTAINER,
@@ -102,7 +98,6 @@ public class TreeItemTest {
                      testedContainer.getLabel());
         assertEquals(CONTAINER_VALUE,
                      testedContainer.getUuid());
-
         assertEquals(TreeItem.State.NONE,
                      testedItem.getState());
         assertEquals(TreeItem.Type.ITEM,
@@ -123,7 +118,7 @@ public class TreeItemTest {
         verify(childTreeItem,
                times(1)).setTree(eq(tree));
         verify(childTreeItem,
-               times(1)).setParent(eq(testedRoot));
+               times(1)).setParentItem(eq(testedRoot));
         verify(content,
                times(1)).add(eq(childTreeItem));
     }
@@ -138,7 +133,7 @@ public class TreeItemTest {
         verify(childTreeContainer,
                times(1)).setTree(eq(tree));
         verify(childTreeContainer,
-               times(1)).setParent(eq(testedRoot));
+               times(1)).setParentItem(eq(testedRoot));
         verify(content,
                times(1)).add(eq(childTreeContainer));
     }
@@ -147,23 +142,18 @@ public class TreeItemTest {
     public void testAddItemToContainer() {
         final TreeItem childTreeContainer = mock(TreeItem.class);
         when(childTreeContainer.getType()).thenReturn(TreeItem.Type.CONTAINER);
-
         final TreeItem childTreeItem = mock(TreeItem.class);
         when(childTreeItem.getType()).thenReturn(TreeItem.Type.ITEM);
-
         final TreeItem treeItem1 = testedRoot.addItem(childTreeContainer);
-
         final TreeItem treeItem2 = testedContainer.addItem(treeItem1);
-
         assertEquals(treeItem1,
                      childTreeContainer);
         assertEquals(treeItem2,
                      treeItem1);
-
         verify(childTreeContainer,
                times(1)).setTree(eq(tree));
         verify(childTreeContainer,
-               times(1)).setParent(eq(testedRoot));
+               times(1)).setParentItem(eq(testedRoot));
         verify(content,
                times(2)).add(treeItem2);
         verify(treeItem1,
@@ -202,5 +192,35 @@ public class TreeItemTest {
         testedRoot.removeItem(item);
         verify(content,
                times(1)).remove(eq(item));
+    }
+
+    @Test
+    public void testRemoveItemFromParent() {
+        final TreeItem childTreeContainer = mock(TreeItem.class);
+        when(childTreeContainer.getType()).thenReturn(TreeItem.Type.CONTAINER);
+        final TreeItem childTreeItem = mock(TreeItem.class);
+        when(childTreeItem.getType()).thenReturn(TreeItem.Type.ITEM);
+        testedRoot.addItem(childTreeContainer);
+        testedRoot.removeItem(childTreeContainer);
+        verify(content,
+               times(1)).remove(eq(childTreeContainer));
+    }
+
+    @Test
+    public void testGetItemByUuid() {
+        final TreeItem treeItemTest = testedRoot.getItemByUuid(ROOT_VALUE);
+        assertEquals(treeItemTest,
+                     testedRoot);
+    }
+
+    @Test
+    public void testGetItemByUuidChildren() {
+        final TreeItem item = mock(TreeItem.class);
+        when(item.getItemByUuid(ITEM_VALUE)).thenReturn(item);
+        when(content.getWidgetCount()).thenReturn(1);
+        when(content.getWidget(eq(0))).thenReturn(item);
+        final TreeItem treeItemTest = testedRoot.getItemByUuid(ITEM_VALUE);
+        assertEquals(treeItemTest,
+                     item);
     }
 }

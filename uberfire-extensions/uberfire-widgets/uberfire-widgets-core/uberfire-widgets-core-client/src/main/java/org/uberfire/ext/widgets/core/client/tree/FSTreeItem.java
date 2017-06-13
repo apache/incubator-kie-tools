@@ -78,7 +78,6 @@ public class FSTreeItem extends TreeItem<FSTreeItem> {
 
     public FSTreeItem addItem(final FSType type,
                               final String value) {
-
         final FSTreeItem treeItem = new FSTreeItem(type,
                                                    value);
         super.addItem(treeItem);

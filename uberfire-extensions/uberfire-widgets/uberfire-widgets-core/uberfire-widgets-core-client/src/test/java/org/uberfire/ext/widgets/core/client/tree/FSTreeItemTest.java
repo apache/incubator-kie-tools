@@ -130,7 +130,7 @@ public class FSTreeItemTest {
         verify(childTreeItem,
                times(1)).setTree(eq(tree));
         verify(childTreeItem,
-               times(1)).setParent(eq(testedRoot));
+               times(1)).setParentItem(eq(testedRoot));
         verify(content,
                times(1)).add(eq(childTreeItem));
     }
@@ -145,7 +145,7 @@ public class FSTreeItemTest {
         verify(childTreeContainer,
                times(1)).setTree(eq(tree));
         verify(childTreeContainer,
-               times(1)).setParent(eq(testedRoot));
+               times(1)).setParentItem(eq(testedRoot));
         verify(content,
                times(1)).add(eq(childTreeContainer));
     }
@@ -170,7 +170,7 @@ public class FSTreeItemTest {
         verify(childTreeContainer,
                times(1)).setTree(eq(tree));
         verify(childTreeContainer,
-               times(1)).setParent(eq(testedRoot));
+               times(1)).setParentItem(eq(testedRoot));
         verify(content,
                times(2)).add(treeItem2);
         verify(treeItem1,

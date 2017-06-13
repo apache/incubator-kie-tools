@@ -39,7 +39,7 @@ public class TreeItem<I extends TreeItem> extends Composite {
     protected FlowPanel content;
     private Tree<I> tree;
     private Object userObject;
-    private TreeItem parent;
+    private I parentItem;
     private State state;
     private String label;
     private String uuid;
@@ -121,7 +121,6 @@ public class TreeItem<I extends TreeItem> extends Composite {
                 initWidget(folder);
             }
         } else if (type.equals(Type.ITEM)) {
-            //this.item = new FlowPanel();
             this.state = State.NONE;
             this.item = contentProvider.get();
             item.setStylePrimaryName(TreeNavigatorResources.INSTANCE.css().treeItem());
@@ -163,6 +162,20 @@ public class TreeItem<I extends TreeItem> extends Composite {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public I getItemByUuid(final String uuid) {
+        if (getUuid().equals(uuid)) {
+            return (I) this;
+        }
+        final I[] selectedItem = (I[]) new TreeItem[1];
+        getChildren().forEach(c -> {
+            if (selectedItem[0] == null) {
+                selectedItem[0] = (I) c.getItemByUuid(uuid);
+            }
+        });
+        return selectedItem[0];
+    }
+
     private void updateSelected() {
         tree.onSelection((I) this,
                          true);
@@ -191,20 +204,18 @@ public class TreeItem<I extends TreeItem> extends Composite {
         if (notFolder()) {
             return;
         }
-
         if (!this.state.equals(state)) {
             this.state = state;
             updateState(state);
-
             if (fireEvents && tree != null) {
                 tree.fireStateChanged((I) this,
                                       state);
             }
         }
-        if (propagateParent && parent != null) {
-            parent.setState(state,
-                            true,
-                            false);
+        if (propagateParent && parentItem != null) {
+            parentItem.setState(state,
+                                true,
+                                false);
         }
     }
 
@@ -226,31 +237,37 @@ public class TreeItem<I extends TreeItem> extends Composite {
 
     @SuppressWarnings("unchecked")
     public I addItem(final I item) {
-
+        checkContainerType();
         content.add(item);
         item.setTree(tree);
-        item.setParent(this);
-
+        item.setParentItem(this);
         return item;
     }
 
+    private void checkContainerType() {
+        if (null == content) {
+            throw new IllegalStateException("This tree item instance is not a container.");
+        }
+    }
+
     @SuppressWarnings("unchecked")
-    public TreeItem addItem(final Type type,
-                            final String value,
-                            final String label,
-                            final IsWidget icon) {
+    public I addItem(final Type type,
+                     final String value,
+                     final String label,
+                     final IsWidget icon) {
         final I child = makeChild(type,
-                                         value,
-                                         label,
-                                         icon);
+                                  value,
+                                  label,
+                                  icon);
         addItem(child);
         return child;
     }
 
+    @SuppressWarnings("unchecked")
     private I makeChild(final Type type,
-                               final String value,
-                               final String label,
-                               final IsWidget icon) {
+                        final String value,
+                        final String label,
+                        final IsWidget icon) {
         return (I) new TreeItem(type,
                                 value,
                                 label,
@@ -258,31 +275,29 @@ public class TreeItem<I extends TreeItem> extends Composite {
     }
 
     public void removeItems() {
+        checkContainerType();
         content.clear();
     }
 
     public int getChildCount() {
-        return content.getWidgetCount();
+        return null != content ? content.getWidgetCount() : 0;
     }
 
     @SuppressWarnings("unchecked")
     public I getChild(final int i) {
+        checkContainerType();
         if (i + 1 > content.getWidgetCount()) {
             return null;
         }
-        return (I)content.getWidget(i);
+        return (I) content.getWidget(i);
     }
 
     public Iterable<I> getChildren() {
-        return () -> new TreeItemIterator(content);
+        return () -> new TreeItemIterator<I>(content);
     }
 
     void setTree(final Tree<I> tree) {
         this.tree = tree;
-    }
-
-    void setParent(final TreeItem<I> parent) {
-        this.parent = parent;
     }
 
     void updateState(final State state) {
@@ -291,7 +306,6 @@ public class TreeItem<I extends TreeItem> extends Composite {
         if (tree == null) {
             return;
         }
-
         switch (state) {
             case OPEN:
                 onOpenState();
@@ -311,9 +325,9 @@ public class TreeItem<I extends TreeItem> extends Composite {
 
     @SuppressWarnings("unchecked")
     public void remove() {
-        if (parent != null) {
+        if (parentItem != null) {
             // If this item has a parent, remove self from it.
-            parent.removeItem(this);
+            parentItem.removeItem(this);
         } else if (tree != null) {
             // If the item has no parent, but is in the Tree, it must be a top-level
             // element.
@@ -322,6 +336,7 @@ public class TreeItem<I extends TreeItem> extends Composite {
     }
 
     public void removeItem(final I treeItem) {
+        checkContainerType();
         content.remove(treeItem);
     }
 
@@ -358,8 +373,16 @@ public class TreeItem<I extends TreeItem> extends Composite {
         }
     }
 
+    public TreeItem getParentItem() {
+        return parentItem;
+    }
+
+    void setParentItem(final I parent) {
+        this.parentItem = parent;
+    }
+
     public boolean isEmpty() {
-        return content.getWidgetCount() == 0;
+        return null == content || content.getWidgetCount() == 0;
     }
 
     IsWidget getIconWidget() {
@@ -368,6 +391,23 @@ public class TreeItem<I extends TreeItem> extends Composite {
 
     FlowPanel getContent() {
         return content;
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof TreeItem)) {
+            return false;
+        }
+        TreeItem that = (TreeItem) other;
+        return getUuid().equals(that.getUuid());
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
     }
 
     public enum Type {

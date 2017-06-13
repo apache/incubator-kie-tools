@@ -94,10 +94,20 @@ public class Tree<T extends TreeItem> extends Composite implements HasSelectionH
         return item;
     }
 
+    @SuppressWarnings("unchecked")
+    public T getItemByUuid(String uuid) {
+        final T item[] = (T[]) new TreeItem[1];
+        getItems().forEach(i -> {
+            if (item[0] == null) {
+                item[0] = (T) i.getItemByUuid(uuid);
+            }
+        });
+        return item[0];
+    }
+
     public T getItem(int index) {
         T item = null;
         Iterator<T> itemIter = getItems().iterator();
-
         int idx = 0;
         while (itemIter.hasNext()) {
             T treeItem = itemIter.next();
@@ -128,7 +138,6 @@ public class Tree<T extends TreeItem> extends Composite implements HasSelectionH
             curSelection.setSelected(false);
         }
         curSelection = item;
-
         if (curSelection != null) {
             // Select the item and fire the selection event.
             curSelection.setSelected(true);

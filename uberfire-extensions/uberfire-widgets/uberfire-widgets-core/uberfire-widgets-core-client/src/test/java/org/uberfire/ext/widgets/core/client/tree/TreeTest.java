@@ -75,6 +75,50 @@ public class TreeTest {
     }
 
     @Test
+    public void testGetItemByUuuid() {
+        final TreeItem item1 = mock(TreeItem.class);
+        when(item1.getUuid()).thenReturn("test");
+        when(item1.getItemByUuid("test")).thenReturn(item1);
+        when(container.getWidgetCount()).thenReturn(1);
+        when(container.getWidget(eq(0))).thenReturn(item1);
+
+        testedTree.addItem(item1);
+        verify(container,
+               times(1)).add(eq(item1));
+        assertEquals(testedTree.getItem(0),
+                     item1);
+
+        TreeItem item = testedTree.getItemByUuid("test");
+        assertEquals(item1,
+                     item);
+    }
+
+    @Test
+    public void testGetItemByUuuidWithParent() {
+        final TreeItem item1 = mock(TreeItem.class);
+        when(item1.getUuid()).thenReturn("test");
+        when(item1.getItemByUuid("test")).thenReturn(item1);
+        final TreeItem parent = mock(TreeItem.class);
+        when(parent.getUuid()).thenReturn("parent");
+        when(parent.getChild(0)).thenReturn(item1);
+        when(parent.getChildCount()).thenReturn(1);
+        when(parent.getItemByUuid("parent")).thenReturn(parent);
+        when(container.getWidgetCount()).thenReturn(1);
+        when(container.getWidget(eq(0))).thenReturn(item1);
+
+        testedTree.addItem(parent);
+
+        verify(container,
+               times(1)).add(eq(parent));
+        assertEquals(testedTree.getItem(0),
+                     item1);
+
+        TreeItem item = testedTree.getItemByUuid("test");
+        assertEquals(item1,
+                     item);
+    }
+
+    @Test
     public void testRemoveItem() {
         final TreeItem item1 = mock(TreeItem.class);
         when(container.getWidgetCount()).thenReturn(1);
