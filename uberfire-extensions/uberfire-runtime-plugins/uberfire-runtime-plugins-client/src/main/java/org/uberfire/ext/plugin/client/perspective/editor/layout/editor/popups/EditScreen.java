@@ -53,6 +53,7 @@ public class EditScreen
     public static String PROPERTY_EDITOR_KEY = "EditScreen";
     private static Binder uiBinder = GWT.create(Binder.class);
     private final ModalConfigurationContext configContext;
+    private Command cleanupPlaceRequest;
     protected List<String> availableWorkbenchScreensIds = new ArrayList<String>();
     @UiField
     TextBox key;
@@ -68,9 +69,11 @@ public class EditScreen
     private Map<String, String> lastParametersSaved = new HashMap<String, String>();
 
     public EditScreen(ModalConfigurationContext configContext,
-                      List<String> availableWorkbenchScreensIds) {
+                      List<String> availableWorkbenchScreensIds,
+                      Command cleanupPlaceRequest) {
         this.availableWorkbenchScreensIds = availableWorkbenchScreensIds;
         this.configContext = configContext;
+        this.cleanupPlaceRequest = cleanupPlaceRequest;
         setTitle(CommonConstants.INSTANCE.EditComponent());
         setBody(uiBinder.createAndBindUi(EditScreen.this));
         propertyEditor.handle(generateEvent(generateScreenSettingsCategory()));
@@ -91,6 +94,24 @@ public class EditScreen
             )
         );
         addHiddenHandler();
+    }
+
+    private void cleanupPlaceRequest() {
+        if (shouldICleanupPlaceRequest()) {
+            cleanupPlaceRequest.execute();
+        }
+    }
+
+    boolean shouldICleanupPlaceRequest() {
+        return oldPlaceName() != null && oldPlaceName() != currentPlaceName();
+    }
+
+    String currentPlaceName() {
+        return configContext.getComponentProperty(PLACE_NAME_PARAMETER);
+    }
+
+    String oldPlaceName() {
+        return lastParametersSaved.get(PLACE_NAME_PARAMETER);
     }
 
     private void saveOriginalState() {
@@ -134,7 +155,7 @@ public class EditScreen
         buttonPressed = ButtonPressed.OK;
 
         // Make sure a default screen is set before finish
-        if (configContext.getComponentProperty(PLACE_NAME_PARAMETER) == null) {
+        if (currentPlaceName() == null) {
             if (!availableWorkbenchScreensIds.isEmpty()) {
                 configContext.setComponentProperty(PLACE_NAME_PARAMETER,
                                                    availableWorkbenchScreensIds.get(0));
@@ -144,9 +165,11 @@ public class EditScreen
                 configContext.configurationCancelled();
             }
         } else {
+
             configContext.configurationFinished();
         }
 
+        cleanupPlaceRequest();
         hide();
     }
 

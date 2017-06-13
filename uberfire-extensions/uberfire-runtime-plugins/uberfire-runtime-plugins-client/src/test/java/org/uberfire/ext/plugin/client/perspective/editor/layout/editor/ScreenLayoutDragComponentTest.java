@@ -17,27 +17,40 @@
 package org.uberfire.ext.plugin.client.perspective.editor.layout.editor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.ActivityBeansInfo;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
+import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.ext.plugin.event.NewPluginRegistered;
 import org.uberfire.ext.plugin.event.PluginUnregistered;
 import org.uberfire.ext.plugin.model.PluginType;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import static org.jgroups.util.Util.assertEquals;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ScreenLayoutDragComponentTest {
 
     private ScreenLayoutDragComponent screenLayoutDragComponent;
 
     private ActivityBeansInfo activityBeansInfo;
 
+    @Mock
+    private PlaceManager placeManager;
+
     @Before
     public void setup() {
-        screenLayoutDragComponent = spy(new ScreenLayoutDragComponent());
+        screenLayoutDragComponent = spy(new ScreenLayoutDragComponent(placeManager));
 
         activityBeansInfo = spy(new ActivityBeansInfo());
 
@@ -98,5 +111,42 @@ public class ScreenLayoutDragComponentTest {
                                                                               PluginType.SCREEN));
         assertEquals(3,
                      screenLayoutDragComponent.getAvailableWorkbenchScreensIds().size());
+    }
+
+    @Test
+    public void removeCurrentWidgetTest() {
+        RenderingContext renderingContext = mock(RenderingContext.class);
+        LayoutComponent t = new LayoutComponent();
+        t.addProperty(ScreenLayoutDragComponent.PLACE_NAME_PARAMETER,
+                      "dora");
+
+        when(renderingContext.getComponent()).thenReturn(t);
+
+        screenLayoutDragComponent.removeCurrentWidget(renderingContext);
+
+        verify(placeManager).closePlace(any(DefaultPlaceRequest.class));
+    }
+
+    @Test
+    public void buildPlaceRequestTest() {
+        Map<String, String> properties = new HashMap<>();
+        properties.put(ScreenLayoutDragComponent.PLACE_NAME_PARAMETER,
+                       "dora");
+        properties.put("dora1",
+                       "dora1");
+        DefaultPlaceRequest defaultPlaceRequest = screenLayoutDragComponent.buildPlaceRequest(properties);
+
+        assertEquals("dora",
+                     defaultPlaceRequest.getIdentifier());
+        assertEquals(2,
+                     defaultPlaceRequest.getParameters().size());
+    }
+
+    @Test
+    public void createCleanupPlaceRequestTest() {
+        DefaultPlaceRequest dora = new DefaultPlaceRequest("dora");
+        screenLayoutDragComponent.createCleanupPlaceRequest(dora).execute();
+
+        verify(placeManager).closePlace(dora);
     }
 }

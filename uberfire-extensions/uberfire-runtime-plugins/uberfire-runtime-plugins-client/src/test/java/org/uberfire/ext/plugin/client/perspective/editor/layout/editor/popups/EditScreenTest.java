@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -36,6 +37,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -50,6 +52,8 @@ public class EditScreenTest {
 
     private ModalHiddenHandler modalHiddenHandler;
 
+    private Command cleanupPlaceRequest;
+
     @Before
     public void setup() {
         GwtMockito.useProviderForType(SimpleEventBus.class,
@@ -61,7 +65,9 @@ public class EditScreenTest {
                                       });
 
         ctx = mock(ModalConfigurationContext.class);
-        editScreen = spy(new EditScreenFake(ctx));
+        cleanupPlaceRequest = mock(Command.class);
+        editScreen = spy(new EditScreenFake(ctx,
+                                            cleanupPlaceRequest));
 
         when(editScreen.addHiddenHandler(Mockito.any(ModalHiddenHandler.class))).thenAnswer(new Answer() {
             public Object answer(InvocationOnMock aInvocation) throws Throwable {
@@ -84,6 +90,7 @@ public class EditScreenTest {
         verify(editScreen.getConfigContext(),
                never()).configurationCancelled();
         verify(editScreen.getConfigContext()).configurationFinished();
+        verify(cleanupPlaceRequest).execute();
     }
 
     @Test
@@ -109,6 +116,24 @@ public class EditScreenTest {
                never()).configurationFinished();
     }
 
+    @Test
+    public void shouldICleanupPlaceRequestTest() {
+        EditScreen edit = spy(new EditScreen(mock(ModalConfigurationContext.class),
+                                             new ArrayList<>(),
+                                             () -> {
+                                             }));
+
+        assertFalse(edit.shouldICleanupPlaceRequest());
+
+        when(edit.oldPlaceName()).thenReturn("some");
+        when(edit.currentPlaceName()).thenReturn("some");
+        assertFalse(edit.shouldICleanupPlaceRequest());
+
+        when(edit.oldPlaceName()).thenReturn("some");
+        when(edit.currentPlaceName()).thenReturn("another");
+        assertTrue(edit.shouldICleanupPlaceRequest());
+    }
+
     private List<String> getScreensId() {
         List<String> availableWorkbenchScreensIds = new ArrayList<String>();
         availableWorkbenchScreensIds.add("screen");
@@ -118,13 +143,20 @@ public class EditScreenTest {
 
     private class EditScreenFake extends EditScreen {
 
-        public EditScreenFake(ModalConfigurationContext ctx) {
+        public EditScreenFake(ModalConfigurationContext ctx,
+                              Command cleanupPlaceRequest) {
             super(ctx,
-                  getScreensId());
+                  getScreensId(),
+                  cleanupPlaceRequest);
         }
 
         public void realAddHiddenHandler() {
             super.addHiddenHandler();
+        }
+
+        @Override
+        boolean shouldICleanupPlaceRequest() {
+            return true;
         }
 
         @Override

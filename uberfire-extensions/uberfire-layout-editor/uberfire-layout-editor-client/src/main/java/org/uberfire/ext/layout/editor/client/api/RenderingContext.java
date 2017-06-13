@@ -32,6 +32,10 @@ public class RenderingContext {
         this.container = container;
     }
 
+    public RenderingContext(LayoutComponent component) {
+        this.component = component;
+    }
+
     public LayoutComponent getComponent() {
         return component;
     }

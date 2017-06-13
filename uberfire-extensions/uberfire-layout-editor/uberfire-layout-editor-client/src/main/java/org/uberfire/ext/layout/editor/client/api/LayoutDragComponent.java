@@ -44,4 +44,13 @@ public interface LayoutDragComponent {
      * @param ctx The context for the component being rendered
      */
     IsWidget getShowWidget(RenderingContext ctx);
+
+    /**
+     * A command called before the widget was removed from layout.
+     * This is usually used for cleanup tasks.
+     * @param ctx The context for the component being rendered
+     */
+    default void removeCurrentWidget(RenderingContext ctx){
+    }
+
 }

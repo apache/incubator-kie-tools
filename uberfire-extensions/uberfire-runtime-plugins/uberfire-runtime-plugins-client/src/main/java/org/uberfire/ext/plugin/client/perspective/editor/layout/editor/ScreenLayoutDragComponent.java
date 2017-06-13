@@ -17,16 +17,15 @@
 package org.uberfire.ext.plugin.client.perspective.editor.layout.editor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.Modal;
@@ -53,9 +52,13 @@ public class ScreenLayoutDragComponent implements PerspectiveEditorDragComponent
 
     public static final String PLACE_NAME_PARAMETER = "Place Name";
     protected List<String> availableWorkbenchScreensIds = new ArrayList<String>();
-    @Inject
     private PlaceManager placeManager;
     private ModalConfigurationContext configContext;
+
+    @Inject
+    public ScreenLayoutDragComponent(PlaceManager placeManager) {
+        this.placeManager = placeManager;
+    }
 
     @PostConstruct
     public void setup() {
@@ -73,42 +76,53 @@ public class ScreenLayoutDragComponent implements PerspectiveEditorDragComponent
     }
 
     @Override
+    public void removeCurrentWidget(RenderingContext ctx) {
+        DefaultPlaceRequest place = buildPlaceRequest(ctx.getComponent().getProperties());
+        if (place != null) {
+            placeManager.closePlace(place);
+        }
+    }
+
+    @Override
     public IsWidget getShowWidget(RenderingContext ctx) {
 
         FlowPanel panel = GWT.create(FlowPanel.class);
         panel.asWidget().getElement().addClassName("uf-perspective-col");
         panel.asWidget().getElement().addClassName("screen dnd component");
-        Map<String, String> properties = extractScreenProperties(ctx);
+        DefaultPlaceRequest place = buildPlaceRequest(ctx.getComponent().getProperties());
+        if (place == null) {
+            return null;
+        }
+        placeManager.goTo(place,
+                          panel);
+        return panel;
+    }
+
+    DefaultPlaceRequest buildPlaceRequest(Map<String, String> properties) {
 
         String placeName = properties.get(PLACE_NAME_PARAMETER);
         if (placeName == null) {
             return null;
         }
 
-        placeManager.goTo(new DefaultPlaceRequest(placeName,
-                                                  properties),
-                          panel);
-        return panel;
-    }
-
-    private Map<String, String> extractScreenProperties(RenderingContext ctx) {
-        Map<String, String> properties = ctx.getComponent().getProperties();
-        Map<String, String> newProperties = new HashMap<>();
-        for (String key : properties.keySet()) {
-            newProperties.put(key,
-                              properties.get(key));
-        }
-        //TODO probably UF bug on insert and remove a screen in the same perspective
-        newProperties.put("random",
-                          "" + (new Random().nextLong()));
-        return newProperties;
+        DefaultPlaceRequest place = new DefaultPlaceRequest(placeName,
+                                                            properties,
+                                                            false);
+        return place;
     }
 
     @Override
     public Modal getConfigurationModal(ModalConfigurationContext ctx) {
         this.configContext = ctx;
         return new EditScreen(ctx,
-                              availableWorkbenchScreensIds);
+                              availableWorkbenchScreensIds,
+                              createCleanupPlaceRequest(buildPlaceRequest(ctx.getComponentProperties())));
+    }
+
+    Command createCleanupPlaceRequest(DefaultPlaceRequest placeToClose) {
+        return () -> {
+            placeManager.closePlace(placeToClose);
+        };
     }
 
     public void observeEditComponentEventFromPropertyEditor(@Observes PropertyEditorChangeEvent event) {

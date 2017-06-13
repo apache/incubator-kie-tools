@@ -32,6 +32,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
+import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
 import org.uberfire.ext.layout.editor.client.infra.ContainerResizeEvent;
 import org.uberfire.ext.layout.editor.client.infra.DragComponentEndEvent;
@@ -77,13 +78,13 @@ public class ComponentColumnView
     @DataField
     private Div right;
     @Inject
-    @DataField
-    private Div content;
-    @Inject
     @DataField("content-area")
     private Div contentArea;
     @Inject
-    private KebabWidget kebabWidget;
+    KebabWidget kebabWidget;
+    @Inject
+    @DataField
+    Div content;
     @Inject
     private Document document;
     private ColumnDrop.Orientation contentDropOrientation;
@@ -133,7 +134,7 @@ public class ComponentColumnView
                     heightSize);
     }
 
-    private void setupOnResize() {
+    void setupOnResize() {
         document.getBody().setOnresize(event -> calculateWidth());
     }
 
@@ -142,11 +143,18 @@ public class ComponentColumnView
     }
 
     private void setupKebabWidget() {
-        kebabWidget.init(() -> presenter.remove(),
+        kebabWidget.init(() -> {
+                             removeCurrentWidget();
+                             presenter.remove();
+                         },
                          () -> presenter.edit());
     }
 
-    private void setupEvents() {
+    void removeCurrentWidget() {
+        helper.getLayoutDragComponent().removeCurrentWidget(new RenderingContext(presenter.getLayoutComponent()));
+    }
+
+    void setupEvents() {
         setupLeftEvents();
         setupRightEvents();
         setupColUpEvents();
@@ -495,6 +503,7 @@ public class ComponentColumnView
     @Override
     public void clearContent() {
         removeAllChildren(content);
+        removeCurrentWidget();
     }
 
     @Override
