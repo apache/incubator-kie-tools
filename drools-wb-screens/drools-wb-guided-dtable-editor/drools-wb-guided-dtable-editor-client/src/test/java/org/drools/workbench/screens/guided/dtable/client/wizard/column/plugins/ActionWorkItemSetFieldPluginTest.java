@@ -17,17 +17,23 @@
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.workitems.PortableFloatParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
@@ -40,6 +46,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.Wor
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.ActionWorkItemWrapper;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.PatternWrapper;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -54,6 +61,9 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub(BRLRuleModel.class)
 public class ActionWorkItemSetFieldPluginTest {
+
+    @Mock
+    private BiConsumer<String, String> biConsumer;
 
     @Mock
     private GuidedDecisionTableView.Presenter presenter;
@@ -72,6 +82,9 @@ public class ActionWorkItemSetFieldPluginTest {
 
     @Mock
     private ActionWorkItemWrapper editingWrapper;
+
+    @Mock
+    PatternWrapper patternWrapper;
 
     @Mock
     private TranslationService translationService;
@@ -411,4 +424,56 @@ public class ActionWorkItemSetFieldPluginTest {
         assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("a"));
         assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("b"));
     }
+
+    @Test
+    @Ignore("Reproducer for: GUVNOR-3170")
+    public void testForEachWorkItemStringField() throws Exception {
+        setUpWorkItemDefinitions();
+        when(oracle.getFieldClassName("Person", "factField")).thenReturn("java.lang.String");
+
+        plugin.forEachWorkItem(biConsumer);
+
+        verify(biConsumer, times(2)).accept(anyString(), anyString());
+        verify(biConsumer).accept("StringWorkItem - StringResult", "FirstWorkItemStringResult");
+        verify(biConsumer).accept("FloatWorkItem - FloatResult", "SecondWorkItemFloatResult");
+    }
+
+    @Test
+    public void testForEachWorkItemFloatField() throws Exception {
+        setUpWorkItemDefinitions();
+        when(oracle.getFieldClassName("Person", "factField")).thenReturn("java.lang.Float");
+
+        plugin.forEachWorkItem(biConsumer);
+
+        verify(biConsumer, times(1)).accept(anyString(), anyString());
+        verify(biConsumer).accept("FloatWorkItem - FloatResult", "SecondWorkItemFloatResult");
+    }
+
+    private void setUpWorkItemDefinitions() {
+        final ActionWorkItemCol52 firstWorkItem = new ActionWorkItemCol52();
+        final PortableWorkDefinition firstWorkItemDefinition = new PortableWorkDefinition();
+        final PortableParameterDefinition firstParameterDefinition = new PortableStringParameterDefinition();
+        firstParameterDefinition.setName("StringResult");
+        firstWorkItemDefinition.setResults(Collections.singleton(firstParameterDefinition));
+        firstWorkItemDefinition.setName("StringWorkItem");
+        firstWorkItemDefinition.setDisplayName("FirstWorkItem");
+        firstWorkItem.setWorkItemDefinition(firstWorkItemDefinition);
+
+        final ActionWorkItemCol52 secondWorkItem = new ActionWorkItemCol52();
+        final PortableWorkDefinition secondWorkItemDefinition = new PortableWorkDefinition();
+        final PortableParameterDefinition secondParameterDefinition = new PortableFloatParameterDefinition();
+        secondParameterDefinition.setName("FloatResult");
+        secondWorkItemDefinition.setResults(Collections.singleton(secondParameterDefinition));
+        secondWorkItemDefinition.setName("FloatWorkItem");
+        secondWorkItemDefinition.setDisplayName("SecondWorkItem");
+        secondWorkItem.setWorkItemDefinition(secondWorkItemDefinition);
+
+        when(patternWrapper.getFactType()).thenReturn("Person");
+        when(plugin.patternWrapper()).thenReturn(patternWrapper);
+        when(editingWrapper.getFactField()).thenReturn("factField");
+        when(presenter.getDataModelOracle()).thenReturn(oracle);
+        when(presenter.getModel()).thenReturn(model);
+        when(model.getActionCols()).thenReturn(Arrays.asList(firstWorkItem, secondWorkItem));
+    }
+
 }
