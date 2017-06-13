@@ -48,4 +48,11 @@ public class GraphUtilsTest {
         boolean hasChildren = GraphUtils.hasChildren(graphInstance.startNode);
         assertFalse(hasChildren);
     }
+
+    @Test
+    public void countChildrenTest() {
+        Long countChildren = GraphUtils.countChildren(graphInstance.parentNode);
+        assertEquals(Long.valueOf(3),
+                     countChildren);
+    }
 }

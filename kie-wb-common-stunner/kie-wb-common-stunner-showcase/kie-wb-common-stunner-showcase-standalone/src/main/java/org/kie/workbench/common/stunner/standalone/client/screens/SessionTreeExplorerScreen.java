@@ -110,6 +110,7 @@ public class SessionTreeExplorerScreen extends AbstractSessionScreen {
     @Override
     protected void doCloseSession() {
         treeExplorer.clear();
+        treeExplorer.destroy();
         view.showEmptySession();
     }
 

@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.client.widgets.explorer.tree;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +24,6 @@ import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.AbstractChildrenTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
@@ -35,7 +33,6 @@ import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class TreeExplorerTest {
@@ -85,15 +82,24 @@ public class TreeExplorerTest {
     }
 
     @Test
-    public void testClear(){
+    public void testClear() {
         testedTree.clear();
         verify(view,
                times(1)).clear();
     }
 
     @Test
+    public void testDestroy() {
+        testedTree.destroy();
+        verify(view,
+               times(1)).destroy();
+    }
+
+    @Test
     public void testShow() {
         testedTree.show(canvasHandler);
-        verify(childrenTraverseProcessor,times(1)).traverse(eq(graph),any(AbstractChildrenTraverseCallback.class));
+        verify(childrenTraverseProcessor,
+               times(1)).traverse(eq(graph),
+                                  any(AbstractChildrenTraverseCallback.class));
     }
 }

@@ -62,13 +62,11 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 @WorkbenchScreen(identifier = ProjectDiagramExplorerScreen.SCREEN_ID)
 public class ProjectDiagramExplorerScreen {
 
-    private static Logger LOGGER = Logger.getLogger(ProjectDiagramExplorerScreen.class.getName());
-
     public static final String SCREEN_ID = "ProjectDiagramExplorerScreen";
     public static final String TITLE = "Explore";
     public static final int PREVIEW_WIDTH = 350;
     public static final int PREVIEW_HEIGHT = 175;
-
+    private static Logger LOGGER = Logger.getLogger(ProjectDiagramExplorerScreen.class.getName());
     private final AbstractClientSessionManager clientSessionManager;
     private final TreeExplorer treeExplorer;
     private final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory;
@@ -79,15 +77,6 @@ public class ProjectDiagramExplorerScreen {
     private SessionPreview<AbstractClientSession, Diagram> sessionPreview;
     private PlaceRequest placeRequest;
     private String title = TITLE;
-
-    public interface View extends IsWidget {
-
-        View setPreviewWidget(final IsWidget widget);
-
-        View setExplorerWidget(final IsWidget widget);
-
-        View clear();
-    }
 
     protected ProjectDiagramExplorerScreen() {
         this(null,
@@ -222,6 +211,7 @@ public class ProjectDiagramExplorerScreen {
 
     private void clearExplorer() {
         treeExplorer.clear();
+        treeExplorer.destroy();
     }
 
     private void clearPreview() {
@@ -257,5 +247,14 @@ public class ProjectDiagramExplorerScreen {
         errorPopupPresenter.showMessage(s);
         LOGGER.log(Level.SEVERE,
                    s);
+    }
+
+    public interface View extends IsWidget {
+
+        View setPreviewWidget(final IsWidget widget);
+
+        View setExplorerWidget(final IsWidget widget);
+
+        View clear();
     }
 }
