@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DataBinderEditorTest;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.mvp.Command;
 
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
@@ -44,25 +45,23 @@ public class StaticDataBinderEditorTest extends DataBinderEditorTest<StaticDataB
         editor.setUp();
         verify(view).init(editor);
 
-        editor.init(helper);
+        editor.init(helper,
+                    NAME,
+                    mock(Command.class));
 
         verify(view).clear();
 
         verify(view,
                times(fields.size() + 1)).addModelField(anyString(),
-                                                   anyBoolean());
-        verify(helper,
-               times(fields.size())).getCurrentField();
-        verify(fieldDefinition,
-               times(fields.size())).getBinding();
+                                                       anyBoolean());
 
         fields.forEach(field -> {
             verify(view).addModelField(field,
-                                       FIELD_BINDING.endsWith(field));
+                                       NAME.equals(field));
         });
 
-        editor.onBindingChange(NAME);
-        verify(helper).onFieldBindingChange(NAME);
+        editor.onBindingChange();
+        verify(editor.onChangeCallback).execute();
 
         editor.getElement();
         verify(view).getElement();

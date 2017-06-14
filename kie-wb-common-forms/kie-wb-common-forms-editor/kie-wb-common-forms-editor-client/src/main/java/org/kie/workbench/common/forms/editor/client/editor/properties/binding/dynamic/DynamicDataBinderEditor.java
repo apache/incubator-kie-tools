@@ -24,6 +24,7 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.forms.editor.client.editor.properties.FieldPropertiesRendererHelper;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DataBindingEditor;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DynamicFormModel;
+import org.uberfire.mvp.Command;
 
 @DynamicFormModel
 @Dependent
@@ -32,7 +33,7 @@ public class DynamicDataBinderEditor implements DataBindingEditor,
 
     private DynamicDataBinderEditorView view;
 
-    private FieldPropertiesRendererHelper helper;
+    protected Command onChangeCallback;
 
     @Inject
     public DynamicDataBinderEditor(DynamicDataBinderEditorView view) {
@@ -45,14 +46,15 @@ public class DynamicDataBinderEditor implements DataBindingEditor,
     }
 
     @Override
-    public void init(FieldPropertiesRendererHelper helper) {
-        this.helper = helper;
+    public void init(FieldPropertiesRendererHelper helper,
+                     String binding,
+                     Command onChangeCallback) {
 
         view.clear();
 
-        String binding = helper.getCurrentField().getBinding();
+        this.onChangeCallback = onChangeCallback;
 
-        if(binding == null) {
+        if (binding == null) {
             binding = "";
         }
 
@@ -60,8 +62,15 @@ public class DynamicDataBinderEditor implements DataBindingEditor,
     }
 
     @Override
-    public void onBindingChange(String binding) {
-        helper.onFieldBindingChange(binding);
+    public String getBinding() {
+        return view.getFieldBinding();
+    }
+
+    @Override
+    public void onBindingChange() {
+        if (onChangeCallback != null) {
+            onChangeCallback.execute();
+        }
     }
 
     @Override

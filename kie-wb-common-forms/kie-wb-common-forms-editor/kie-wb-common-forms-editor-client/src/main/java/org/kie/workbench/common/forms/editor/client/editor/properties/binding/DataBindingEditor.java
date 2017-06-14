@@ -18,8 +18,13 @@ package org.kie.workbench.common.forms.editor.client.editor.properties.binding;
 
 import org.jboss.errai.common.client.api.IsElement;
 import org.kie.workbench.common.forms.editor.client.editor.properties.FieldPropertiesRendererHelper;
+import org.uberfire.mvp.Command;
 
 public interface DataBindingEditor extends IsElement {
 
-    void init(FieldPropertiesRendererHelper helper);
+    void init(FieldPropertiesRendererHelper helper,
+              String binding,
+              Command onChangeCallback);
+
+    String getBinding();
 }

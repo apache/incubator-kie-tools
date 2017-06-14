@@ -24,6 +24,7 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.forms.editor.client.editor.properties.FieldPropertiesRendererHelper;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DataBindingEditor;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.StaticFormModel;
+import org.uberfire.mvp.Command;
 
 @StaticFormModel
 @Dependent
@@ -34,7 +35,7 @@ public class StaticDataBinderEditor implements DataBindingEditor,
 
     private boolean hasSelectedValue;
 
-    private FieldPropertiesRendererHelper helper;
+    protected Command onChangeCallback;
 
     @Inject
     public StaticDataBinderEditor(StaticDataBinderEditorView view) {
@@ -47,16 +48,20 @@ public class StaticDataBinderEditor implements DataBindingEditor,
     }
 
     @Override
-    public void init(FieldPropertiesRendererHelper helper) {
-        this.helper = helper;
+    public void init(FieldPropertiesRendererHelper helper,
+                     String binding,
+                     Command onChangeCallback) {
+
         view.clear();
+
+        this.onChangeCallback = onChangeCallback;
 
         hasSelectedValue = false;
 
         helper.getAvailableModelFields().forEach(property -> {
             if (property != null) {
 
-                boolean isSelected = property.equals(helper.getCurrentField().getBinding());
+                boolean isSelected = property.equals(binding);
 
                 view.addModelField(property,
                                    isSelected);
@@ -72,8 +77,15 @@ public class StaticDataBinderEditor implements DataBindingEditor,
     }
 
     @Override
-    public void onBindingChange(String binding) {
-        helper.onFieldBindingChange(binding);
+    public String getBinding() {
+        return view.getFieldBinding();
+    }
+
+    @Override
+    public void onBindingChange() {
+        if (onChangeCallback != null) {
+            onChangeCallback.execute();
+        }
     }
 
     @Override

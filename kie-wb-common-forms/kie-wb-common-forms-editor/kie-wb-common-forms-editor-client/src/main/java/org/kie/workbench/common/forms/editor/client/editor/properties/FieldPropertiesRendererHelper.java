@@ -35,9 +35,13 @@ public interface FieldPropertiesRendererHelper {
 
     void onClose();
 
-    void onFieldTypeChange(String newType);
+    void onPressOk(FieldDefinition fieldCopy);
 
-    void onFieldBindingChange(String newBinding);
+    FieldDefinition onFieldTypeChange(FieldDefinition field,
+                                      String newType);
+
+    FieldDefinition onFieldBindingChange(FieldDefinition field,
+                                         String newBinding);
 
     Path getPath();
 }

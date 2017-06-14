@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.forms.editor.client.editor.properties;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -23,17 +24,16 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Modal;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DataBindingEditor;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DynamicFormModel;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.StaticFormModel;
-import org.kie.workbench.common.forms.editor.service.shared.FieldPropertiesService;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.model.DynamicModel;
+import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
+import org.kie.workbench.common.forms.service.FieldManager;
 
 @Dependent
 public class FieldPropertiesRenderer implements IsWidget {
@@ -51,25 +51,29 @@ public class FieldPropertiesRenderer implements IsWidget {
 
     private FieldPropertiesRendererView view;
 
-    private Caller<FieldPropertiesService> propertiesService;
-
     private DynamicFormModelGenerator dynamicFormModelGenerator;
 
     private DataBindingEditor staticDataBindingEditor;
 
     private DataBindingEditor dynamicDataBindingEditor;
 
+    protected FieldDefinition fieldCopy;
+
+    protected FieldPropertiesRendererHelper helper;
+
+    private FieldManager fieldManager;
+
     @Inject
     public FieldPropertiesRenderer(FieldPropertiesRendererView view,
-                                   Caller<FieldPropertiesService> propertiesService,
                                    DynamicFormModelGenerator dynamicFormModelGenerator,
                                    @StaticFormModel DataBindingEditor staticDataBindingEditor,
-                                   @DynamicFormModel DataBindingEditor dynamicDataBindingEditor) {
+                                   @DynamicFormModel DataBindingEditor dynamicDataBindingEditor,
+                                   FieldManager fieldManager) {
         this.view = view;
-        this.propertiesService = propertiesService;
         this.dynamicFormModelGenerator = dynamicFormModelGenerator;
         this.staticDataBindingEditor = staticDataBindingEditor;
         this.dynamicDataBindingEditor = dynamicDataBindingEditor;
+        this.fieldManager = fieldManager;
     }
 
     @PostConstruct
@@ -78,35 +82,64 @@ public class FieldPropertiesRenderer implements IsWidget {
     }
 
     public void render(final FieldPropertiesRendererHelper helper) {
+        this.helper = helper;
+        this.fieldCopy = resetFieldCopy(helper.getCurrentField());
+        render();
+    }
 
-        FormRenderingContext context = dynamicFormModelGenerator.getContextForModel(helper.getCurrentField());
+    protected void render() {
+        FormRenderingContext context = dynamicFormModelGenerator.getContextForModel(fieldCopy);
         if (context != null) {
             FormEditorRenderingContext renderingContext = new FormEditorRenderingContext(helper.getPath());
             renderingContext.setRootForm(context.getRootForm());
             renderingContext.getAvailableForms().putAll(context.getAvailableForms());
-            renderingContext.setModel(helper.getCurrentField());
+            renderingContext.setModel(fieldCopy);
             doRender(helper,
                      renderingContext);
-        } else {
-            propertiesService.call(new RemoteCallback<FormEditorRenderingContext>() {
-                @Override
-                public void callback(FormEditorRenderingContext renderingContext) {
-                    renderingContext.setModel(helper.getCurrentField());
-                    renderingContext.setParentContext(helper.getCurrentRenderingContext());
-
-                    doRender(helper,
-                             renderingContext);
-                }
-            }).getFieldPropertiesRenderingContext(helper.getCurrentField(),
-                                                  helper.getPath());
         }
+    }
+
+    public FieldDefinition resetFieldCopy(final FieldDefinition originalField) {
+        fieldCopy = fieldManager.getDefinitionByFieldType(originalField.getFieldType());
+        fieldCopy.copyFrom(originalField);
+        fieldCopy.setId(originalField.getId());
+        fieldCopy.setName(originalField.getName());
+        return fieldCopy;
+    }
+
+    public void onPressOk() {
+
+        // apply the changes to the current field
+        List<FieldDefinition> fields = helper.getCurrentRenderingContext().getRootForm().getFields();
+        fields.remove(helper.getCurrentField());
+        fields.add(fieldCopy);
+
+        helper.onPressOk(fieldCopy);
+    }
+
+    public void onPressCancel() {
+        helper.onClose();
+    }
+
+    public void onFieldTypeChange(final String typeCode) {
+        fieldCopy = helper.onFieldTypeChange(fieldCopy,
+                                             typeCode);
+        render();
+    }
+
+    public void onFieldBindingChange(final String bindingExpression) {
+        fieldCopy = helper.onFieldBindingChange(fieldCopy,
+                                                bindingExpression);
+        render();
     }
 
     protected void doRender(FieldPropertiesRendererHelper helper,
                             FormEditorRenderingContext context) {
         FormModel roodFormModel = helper.getCurrentRenderingContext().getRootForm().getModel();
-        DataBindingEditor editor = roodFormModel instanceof DynamicModel ? dynamicDataBindingEditor : staticDataBindingEditor;
-        editor.init(helper);
+        final DataBindingEditor editor = roodFormModel instanceof DynamicModel ? dynamicDataBindingEditor : staticDataBindingEditor;
+        editor.init(helper,
+                    fieldCopy.getBinding(),
+                    () -> onFieldBindingChange(editor.getBinding()));
         view.render(helper,
                     context,
                     editor);

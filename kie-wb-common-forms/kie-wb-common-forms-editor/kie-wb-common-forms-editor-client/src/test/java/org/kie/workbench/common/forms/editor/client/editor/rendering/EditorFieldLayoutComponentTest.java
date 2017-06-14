@@ -32,32 +32,34 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRendererMana
 import org.kie.workbench.common.forms.editor.client.editor.FormEditorHelper;
 import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorContextRequest;
 import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorContextResponse;
+import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorSyncPaletteEvent;
 import org.kie.workbench.common.forms.editor.client.editor.properties.FieldPropertiesRenderer;
+import org.kie.workbench.common.forms.editor.client.editor.properties.FieldPropertiesRendererHelper;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.service.FieldManager;
 import org.mockito.Mock;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
-import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
-import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class EditorFieldLayoutComponentTest {
 
-    public static String ANOTHER_BINDING = "antherField";
+    public static final String BINDING_FIRSTNAME = "firstName";
+
+    public static final String BINDING_LASTNAME = "lastName";
 
     @Mock
     private ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents;
@@ -82,10 +84,7 @@ public class EditorFieldLayoutComponentTest {
     protected EventSourceMock<FormEditorContextRequest> fieldRequest;
 
     @Mock
-    protected EventSourceMock<ComponentDropEvent> fieldDroppedEvent;
-
-    @Mock
-    protected EventSourceMock<ComponentRemovedEvent> fieldRemovedEvent;
+    protected EventSourceMock<FormEditorSyncPaletteEvent> syncPaletteEvent;
 
     @Mock
     protected FieldRendererManager fieldRendererManager;
@@ -100,6 +99,9 @@ public class EditorFieldLayoutComponentTest {
     protected FormEditorRenderingContext context;
 
     @Mock
+    protected FieldManager fieldManager;
+
+    @Mock
     protected FormDefinition formDefinition;
 
     protected FieldDefinition fieldDefinition;
@@ -110,6 +112,8 @@ public class EditorFieldLayoutComponentTest {
     private Widget widget;
 
     private RenderingContext ctx;
+
+    private FieldPropertiesRendererHelper propertiesRendererHelper;
 
     private EditorFieldLayoutComponent editorFieldLayoutComponent;
 
@@ -157,13 +161,16 @@ public class EditorFieldLayoutComponentTest {
         editorFieldLayoutComponent = spy(new EditorFieldLayoutComponent(propertiesRenderer,
                                                                         layoutDragComponentHelper,
                                                                         fieldRequest,
-                                                                        fieldDroppedEvent,
-                                                                        fieldRemovedEvent) {
+                                                                        fieldManager,
+                                                                        syncPaletteEvent) {
             {
                 fieldRendererManager = EditorFieldLayoutComponentTest.this.fieldRendererManager;
                 translationService = EditorFieldLayoutComponentTest.this.translationService;
             }
         });
+
+        editorFieldLayoutComponent.initPropertiesConfig();
+        propertiesRendererHelper = spy(editorFieldLayoutComponent.getPropertiesRendererHelper());
     }
 
     @Test
@@ -191,17 +198,21 @@ public class EditorFieldLayoutComponentTest {
 
         editorFieldLayoutComponent.getShowWidget(ctx);
 
-        verify(editorFieldLayoutComponent, times(1)).getEditionContext(layoutComponent.getProperties());
+        verify(editorFieldLayoutComponent,
+               times(1)).getEditionContext(layoutComponent.getProperties());
 
-        verify(fieldRequest, times(1)).fire(any());
+        verify(fieldRequest,
+               times(1)).fire(any());
 
-        verify(editorFieldLayoutComponent, times(1)).init(context,
-                                                fieldDefinition);
-        verify(fieldRenderer, times(1)).init(context,
-                                   fieldDefinition);
-        verify(fieldRenderer, times(2)).renderWidget();
+        verify(editorFieldLayoutComponent,
+               times(1)).init(context,
+                              fieldDefinition);
+        verify(fieldRenderer,
+               times(1)).init(context,
+                              fieldDefinition);
+        verify(fieldRenderer,
+               times(2)).renderWidget();
     }
-
 
     @Test
     public void testReceivingWrongContextResponses() {
@@ -211,19 +222,23 @@ public class EditorFieldLayoutComponentTest {
                                                                                  EditorFieldLayoutComponent.FIELD_ID,
                                                                                  formEditorHelper));
 
-        verify(editorFieldLayoutComponent, times(1)).init(context,
-                                                fieldDefinition);
-        verify(fieldRenderer, times(1)).init(context,
-                                   fieldDefinition);
+        verify(editorFieldLayoutComponent,
+               times(1)).init(context,
+                              fieldDefinition);
+        verify(fieldRenderer,
+               times(1)).init(context,
+                              fieldDefinition);
 
         editorFieldLayoutComponent.onFieldResponse(new FormEditorContextResponse(EditorFieldLayoutComponent.FORM_ID,
                                                                                  "",
                                                                                  formEditorHelper));
 
-        verify(editorFieldLayoutComponent, times(1)).init(context,
-                                                          fieldDefinition);
-        verify(fieldRenderer, times(1)).init(context,
-                                             fieldDefinition);
+        verify(editorFieldLayoutComponent,
+               times(1)).init(context,
+                              fieldDefinition);
+        verify(fieldRenderer,
+               times(1)).init(context,
+                              fieldDefinition);
     }
 
     @Test
@@ -234,10 +249,12 @@ public class EditorFieldLayoutComponentTest {
                                                                                  EditorFieldLayoutComponent.FIELD_ID,
                                                                                  formEditorHelper));
 
-        verify(editorFieldLayoutComponent, never()).init(context,
-                                                          fieldDefinition);
-        verify(fieldRenderer, never()).init(context,
-                                             fieldDefinition);
+        verify(editorFieldLayoutComponent,
+               never()).init(context,
+                             fieldDefinition);
+        verify(fieldRenderer,
+               never()).init(context,
+                             fieldDefinition);
     }
 
     @Test
@@ -280,54 +297,6 @@ public class EditorFieldLayoutComponentTest {
     }
 
     @Test
-    public void testSwitchToFieldType() {
-        testOpenFieldProperties();
-
-        editorFieldLayoutComponent.switchToFieldType(TextAreaFieldType.NAME);
-
-        verify(formEditorHelper).switchToFieldType(fieldDefinition, TextAreaFieldType.NAME);
-        verify(propertiesRenderer, times(2)).render(any());
-        verify(fieldRendererManager,
-               times(2)).getRendererForField(any());
-        verify(fieldRenderer,
-               times(2)).renderWidget();
-    }
-
-    @Test
-    public void testSwitchToDifferentField() {
-        testOpenFieldProperties();
-
-        editorFieldLayoutComponent.switchToField(ANOTHER_BINDING);
-
-        verify(formEditorHelper).switchToField(fieldDefinition, ANOTHER_BINDING);
-
-        verify(fieldRemovedEvent).fire(any());
-        verify(fieldDroppedEvent).fire(any());
-        verify(propertiesRenderer, times(2)).render(any());
-
-        verify(fieldRenderer, times(2)).init(any(), any());
-        verify(fieldRenderer,
-               times(2)).renderWidget();
-    }
-
-    @Test
-    public void testSwitchToSameField() {
-        testOpenFieldProperties();
-
-        editorFieldLayoutComponent.switchToField(fieldDefinition.getBinding());
-
-        verify(formEditorHelper, never()).switchToField(any(), anyString());
-
-        verify(fieldRemovedEvent, never()).fire(any());
-        verify(fieldDroppedEvent,never()).fire(any());
-        verify(propertiesRenderer, times(1)).render(any());
-
-        verify(fieldRenderer, times(1)).init(any(), any());
-        verify(fieldRenderer,
-               times(1)).renderWidget();
-    }
-
-    @Test
     public void testHardCodedDragAndDropMethods() {
         editorFieldLayoutComponent.setSettingValue(EditorFieldLayoutComponent.FORM_ID,
                                                    formDefinition.getId());
@@ -345,12 +314,229 @@ public class EditorFieldLayoutComponentTest {
     }
 
     protected void verifyDragAndDropMethods() {
-        assertEquals(2, editorFieldLayoutComponent.getSettingsKeys().length);
-        assertEquals(formDefinition.getId(), editorFieldLayoutComponent.getSettingValue(EditorFieldLayoutComponent.FORM_ID));
-        assertEquals(fieldDefinition.getId(), editorFieldLayoutComponent.getSettingValue(EditorFieldLayoutComponent.FIELD_ID));
+        assertEquals(2,
+                     editorFieldLayoutComponent.getSettingsKeys().length);
+        assertEquals(formDefinition.getId(),
+                     editorFieldLayoutComponent.getSettingValue(EditorFieldLayoutComponent.FORM_ID));
+        assertEquals(fieldDefinition.getId(),
+                     editorFieldLayoutComponent.getSettingValue(EditorFieldLayoutComponent.FIELD_ID));
 
         Map<String, String> settings = editorFieldLayoutComponent.getMapSettings();
-        assertEquals(formDefinition.getId(), settings.get(EditorFieldLayoutComponent.FORM_ID));
-        assertEquals(fieldDefinition.getId(), settings.get(EditorFieldLayoutComponent.FIELD_ID));
+        assertEquals(formDefinition.getId(),
+                     settings.get(EditorFieldLayoutComponent.FORM_ID));
+        assertEquals(fieldDefinition.getId(),
+                     settings.get(EditorFieldLayoutComponent.FIELD_ID));
+    }
+
+    @Test
+    public void testOnFieldTypeChange() {
+
+        FieldDefinition newField = mock(FieldDefinition.class);
+        when(fieldManager.getDefinitionByFieldTypeName(anyString())).thenReturn(newField);
+        FieldDefinition result = propertiesRendererHelper.onFieldTypeChange(fieldDefinition,
+                                                                            "RadioGroup");
+
+        verify(newField).copyFrom(fieldDefinition);
+        verify(newField).setId(fieldDefinition.getId());
+        verify(newField).setName(fieldDefinition.getName());
+        assertSame(newField,
+                   result);
+    }
+
+    @Test
+    public void testOnFieldBindingChange() {
+
+        editorFieldLayoutComponent.setSettingValue(EditorFieldLayoutComponent.FORM_ID,
+                                                   EditorFieldLayoutComponent.FORM_ID);
+        editorFieldLayoutComponent.setSettingValue(EditorFieldLayoutComponent.FIELD_ID,
+                                                   EditorFieldLayoutComponent.FIELD_ID);
+        editorFieldLayoutComponent.onFieldResponse(new FormEditorContextResponse(EditorFieldLayoutComponent.FORM_ID,
+                                                                                 EditorFieldLayoutComponent.FIELD_ID,
+                                                                                 formEditorHelper));
+        propertiesRendererHelper.onFieldBindingChange(fieldDefinition,
+                                                      BINDING_FIRSTNAME);
+        verify(formEditorHelper).switchToField(fieldDefinition,
+                                               BINDING_FIRSTNAME);
+    }
+
+    @Test
+    public void testOnPressOk() {
+        testOnPressOk(false,
+                      false);
+    }
+
+    @Test
+    public void testOnPressOkBinded() {
+        testOnPressOk(true,
+                      false);
+    }
+
+    @Test
+    public void testOnPressOkWithContext() {
+        testOnPressOk(false,
+                      true);
+    }
+
+    @Test
+    public void testOnPressOkBindedWithContext() {
+        testOnPressOk(true,
+                      true);
+    }
+
+    protected void testOnPressOk(boolean binded,
+                                 boolean withConfigContext) {
+        FieldDefinition fieldCopy = setupFormEditorHelper();
+        ModalConfigurationContext ctx = mock(ModalConfigurationContext.class);
+
+        if (binded) {
+            when(fieldCopy.getBinding()).thenReturn(BINDING_FIRSTNAME);
+        }
+        if (withConfigContext) {
+            when(ctx.getComponentProperties()).thenReturn(mock(Map.class));
+            editorFieldLayoutComponent.getConfigurationModal(ctx);
+        }
+
+        editorFieldLayoutComponent.onPressOk(fieldCopy);
+
+        assertSame(fieldCopy,
+                   editorFieldLayoutComponent.getField());
+        verify(syncPaletteEvent).fire(any());
+        verify(formEditorHelper,
+               binded ? times(1) : times(0)).removeAvailableField(any());
+        verify(ctx,
+               withConfigContext ? times(1) : times(0)).configurationFinished();
+    }
+
+    @Test
+    public void testHelperOnPressOk() {
+        FieldDefinition fieldCopy = setupFormEditorHelper();
+        propertiesRendererHelper.onPressOk(fieldCopy);
+        verify(editorFieldLayoutComponent).onPressOk(fieldCopy);
+    }
+
+    protected FieldDefinition setupFormEditorHelper() {
+        FieldDefinition newField = mock(FieldDefinition.class);
+        when(newField.getId()).thenReturn(EditorFieldLayoutComponent.FIELD_ID);
+        when(fieldManager.getDefinitionByFieldTypeName(anyString())).thenReturn(newField);
+        FieldDefinition fieldCopy = propertiesRendererHelper.onFieldTypeChange(fieldDefinition,
+                                                                               "RadioGroup");
+        editorFieldLayoutComponent.setSettingValue(EditorFieldLayoutComponent.FORM_ID,
+                                                   EditorFieldLayoutComponent.FORM_ID);
+        editorFieldLayoutComponent.setSettingValue(EditorFieldLayoutComponent.FIELD_ID,
+                                                   EditorFieldLayoutComponent.FIELD_ID);
+        editorFieldLayoutComponent.onFieldResponse(new FormEditorContextResponse(EditorFieldLayoutComponent.FORM_ID,
+                                                                                 EditorFieldLayoutComponent.FIELD_ID,
+                                                                                 formEditorHelper));
+        return fieldCopy;
+    }
+
+    @Test
+    public void testHelperGetCurrentField() {
+        FieldDefinition result = propertiesRendererHelper.getCurrentField();
+        assertSame(editorFieldLayoutComponent.getField(),
+                   result);
+    }
+
+    @Test
+    public void testHelperOnClose() {
+        propertiesRendererHelper.onClose();
+        assertFalse(editorFieldLayoutComponent.showProperties);
+    }
+
+    @Test
+    public void testHelperOnCloseWithContext() {
+        ModalConfigurationContext ctx = mock(ModalConfigurationContext.class);
+        when(ctx.getComponentProperties()).thenReturn(mock(Map.class));
+        testDroppingNewField();
+        editorFieldLayoutComponent.getConfigurationModal(ctx);
+
+        propertiesRendererHelper.onClose();
+
+        assertFalse(editorFieldLayoutComponent.showProperties);
+        verify(ctx).configurationCancelled();
+    }
+
+    @Test
+    public void testIsBindingChangeBothSame() {
+        testIsBindingChange(BINDING_FIRSTNAME,
+                            BINDING_FIRSTNAME,
+                            true);
+    }
+
+    @Test
+    public void testIsBindingChangeBothNull() {
+        testIsBindingChange(null,
+                            null,
+                            false);
+    }
+
+    @Test
+    public void testIsBindingChangeBothEmpty() {
+        testIsBindingChange("",
+                            "",
+                            false);
+    }
+
+    @Test
+    public void testIsBindingChangeNullEmpty() {
+        testIsBindingChange(null,
+                            "",
+                            false);
+    }
+
+    @Test
+    public void testIsBindingChangeEmptyNull() {
+        testIsBindingChange("",
+                            null,
+                            false);
+    }
+
+    @Test
+    public void testIsBindingChangeEmptyPopulated() {
+        testIsBindingChange("",
+                            BINDING_FIRSTNAME,
+                            true);
+    }
+
+    @Test
+    public void testIsBindingChangeNullPopulated() {
+        testIsBindingChange(null,
+                            BINDING_FIRSTNAME,
+                            true);
+    }
+
+    @Test
+    public void testIsBindingChangePopulatedEmpty() {
+        testIsBindingChange(BINDING_FIRSTNAME,
+                            "",
+                            true);
+    }
+
+    @Test
+    public void testIsBindingChangePopulatedNull() {
+        testIsBindingChange(BINDING_FIRSTNAME,
+                            null,
+                            true);
+    }
+
+    @Test
+    public void testIsBindingChangeBothPopulated() {
+        testIsBindingChange(BINDING_FIRSTNAME,
+                            BINDING_LASTNAME,
+                            true);
+    }
+
+    protected void testIsBindingChange(String oldFieldBinding,
+                                       String newFieldBinding,
+                                       boolean expectedChange) {
+        FieldDefinition oldField = new TextBoxFieldDefinition();
+        oldField.setBinding(oldFieldBinding);
+        FieldDefinition newField = new TextBoxFieldDefinition();
+        newField.setBinding(newFieldBinding);
+
+        boolean isChange = editorFieldLayoutComponent.isBindingChange(oldField,
+                                                                      newField);
+        assertEquals(expectedChange,
+                     isChange);
     }
 }

@@ -22,7 +22,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.gwtbootstrap3.client.ui.ListBox;
@@ -37,7 +36,7 @@ import org.kie.workbench.common.forms.editor.client.editor.properties.binding.Da
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
-import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 @Dependent
 @Templated
@@ -72,26 +71,23 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
         this.translationService = translationService;
     }
 
-    protected void closeModal() {
-        if (formRenderer.isValid()) {
-            helper.onClose();
-            modal.hide();
-        }
-    }
-
     @PostConstruct
     protected void init() {
 
         modal = new BaseModal();
         modal.setClosable(false);
         modal.setBody(this);
-        modal.add(new ModalFooterOKButton(new Command() {
-            @Override
-            public void execute() {
-                closeModal();
-            }
-        }));
-
+        modal.add(new ModalFooterOKCancelButtons(
+                () -> {
+                    if (formRenderer.isValid()) {
+                        presenter.onPressOk();
+                        modal.hide();
+                    }
+                },
+                () -> {
+                    presenter.onPressCancel();
+                    modal.hide();
+                }));
         formContent.add(formRenderer);
     }
 
@@ -132,6 +128,6 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
 
     @EventHandler("fieldType")
     public void onTypeChange(ChangeEvent event) {
-        helper.onFieldTypeChange(fieldType.getSelectedValue());
+        presenter.onFieldTypeChange(fieldType.getSelectedValue());
     }
 }

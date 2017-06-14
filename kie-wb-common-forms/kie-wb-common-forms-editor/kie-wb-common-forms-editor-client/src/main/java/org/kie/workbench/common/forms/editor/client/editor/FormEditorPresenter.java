@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.forms.editor.client.editor;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
@@ -29,6 +31,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
+import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorSyncPaletteEvent;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.kie.workbench.common.forms.editor.client.type.FormDefinitionResourceType;
@@ -45,7 +48,6 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
 import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditor;
@@ -269,24 +271,6 @@ public class FormEditorPresenter extends KieEditor {
         layoutEditor.addDraggableComponentGroup(group);
     }
 
-    public void onDropComponent(@Observes ComponentDropEvent event) {
-        if (editorContext == null || editorContext.getContent() == null) {
-            return;
-        }
-
-        String formId = event.getComponent().getProperties().get(FieldLayoutComponent.FORM_ID);
-
-        if (editorContext.getFormDefinition().getId().equals(formId)) {
-            String fieldId = event.getComponent().getProperties().get(FieldLayoutComponent.FIELD_ID);
-
-            FieldDefinition field = editorContext.getDroppedField(fieldId);
-            if (field != null && editorContext.getContent().getModelProperties().contains(field.getBinding())) {
-                layoutEditor.removeDraggableGroupComponent(getFormDefinition().getModel().getName(),
-                                                           field.getId());
-            }
-        }
-    }
-
     public void onRemoveComponent(@Observes ComponentRemovedEvent event) {
         if (editorContext == null || editorContext.getContent() == null) {
             return;
@@ -296,20 +280,53 @@ public class FormEditorPresenter extends KieEditor {
 
         if (editorContext.getFormDefinition().getId().equals(formId)) {
             String fieldId = event.getLayoutComponent().getProperties().get(FieldLayoutComponent.FIELD_ID);
-            FieldDefinition field = editorContext.removeField(fieldId,
-                                                              true);
-            if (field != null && editorContext.getContent().getModelProperties().contains(field.getBinding())) {
-                EditorFieldLayoutComponent layoutFieldComponent = editorFieldLayoutComponents.get();
-                if (layoutFieldComponent != null) {
-                    layoutFieldComponent.setDisabled(true);
-                    layoutFieldComponent.init(editorContext.getRenderingContext(),
-                                              field);
-                    layoutEditor
-                            .addDraggableComponentToGroup(getFormDefinition().getModel().getName(),
+            editorContext.removeField(fieldId,
+                                      true);
+            onSyncPalette(formId);
+        }
+    }
+
+    protected void removeAllDraggableGroupComponent(Collection<FieldDefinition> fields) {
+        String groupId = getFormDefinition().getModel().getName();
+        Iterator<FieldDefinition> it = fields.iterator();
+        while (it.hasNext()) {
+            FieldDefinition field = it.next();
+            if (layoutEditor.hasDraggableGroupComponent(groupId,
+                                                        field.getId())) {
+                layoutEditor.removeDraggableGroupComponent(groupId,
+                                                           field.getId());
+            }
+        }
+    }
+
+    protected void addAllDraggableGroupComponent(Collection<FieldDefinition> fields) {
+        Iterator<FieldDefinition> it = fields.iterator();
+        while (it.hasNext()) {
+            FieldDefinition field = it.next();
+            EditorFieldLayoutComponent layoutFieldComponent = editorFieldLayoutComponents.get();
+
+            if (layoutFieldComponent != null) {
+                layoutFieldComponent.init(editorContext.getRenderingContext(),
+                                          field);
+                layoutEditor.addDraggableComponentToGroup(getFormDefinition().getModel().getName(),
                                                           field.getId(),
                                                           layoutFieldComponent);
-                }
             }
+        }
+    }
+
+    public void onSyncPalette(@Observes FormEditorSyncPaletteEvent event) {
+        onSyncPalette(event.getFormId());
+    }
+
+    public void onSyncPalette(String formId) {
+        if (editorContext == null || editorContext.getContent() == null) {
+            return;
+        }
+        if (editorContext.getFormDefinition().getId().equals(formId)) {
+            removeAllDraggableGroupComponent(getFormDefinition().getFields());
+            removeAllDraggableGroupComponent(editorContext.getAvailableFields().values());
+            addAllDraggableGroupComponent(editorContext.getAvailableFields().values());
         }
     }
 

@@ -55,6 +55,11 @@ public class DynamicDataBinderEditorViewImpl implements DynamicDataBinderEditorV
 
     @EventHandler("binding")
     public void onChange(@ForEvent("change") Event event) {
-        presenter.onBindingChange(binding.getValue());
+        presenter.onBindingChange();
+    }
+
+    @Override
+    public String getFieldBinding() {
+        return binding.getValue();
     }
 }

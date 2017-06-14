@@ -27,8 +27,6 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.apache.deltaspike.core.util.StringUtils;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -358,6 +356,14 @@ public class FormEditorHelperTest {
         formEditorHelper.getDroppedField(marriedField.getFieldType().getTypeName());
         verify(eventMock,
                times(1)).fire(any());
+    }
+
+    @Test
+    public void testRemoveAvailableField() {
+        formEditorHelper.addAvailableField(nameField);
+        assertTrue(formEditorHelper.getAvailableFields().containsKey(nameField.getId()));
+        formEditorHelper.removeAvailableField(nameField);
+        assertFalse(formEditorHelper.getAvailableFields().containsKey(nameField.getId()));
     }
 
     protected void initFields() {

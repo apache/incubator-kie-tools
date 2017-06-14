@@ -68,6 +68,11 @@ public class StaticDataBinderEditorViewImpl implements StaticDataBinderEditorVie
 
     @EventHandler("bindings")
     public void onChange(@ForEvent("change") Event event) {
-        presenter.onBindingChange(bindings.getValue());
+        presenter.onBindingChange();
+    }
+
+    @Override
+    public String getFieldBinding() {
+        return bindings.getValue();
     }
 }

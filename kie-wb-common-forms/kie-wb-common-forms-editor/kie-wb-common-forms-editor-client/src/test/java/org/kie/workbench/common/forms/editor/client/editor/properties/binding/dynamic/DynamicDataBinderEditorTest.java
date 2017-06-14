@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DataBinderEditorTest;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.mvp.Command;
 
 import static org.mockito.Mockito.*;
 
@@ -42,14 +43,16 @@ public class DynamicDataBinderEditorTest extends DataBinderEditorTest<DynamicDat
         editor.setUp();
         verify(view).init(editor);
 
-        editor.init(helper);
+        editor.init(helper,
+                    FIELD_BINDING,
+                    mock(Command.class));
 
         verify(view).clear();
 
         verify(view).setFieldBinding(FIELD_BINDING);
 
-        editor.onBindingChange(NAME);
-        verify(helper).onFieldBindingChange(NAME);
+        editor.onBindingChange();
+        verify(editor.onChangeCallback).execute();
 
         editor.getElement();
         verify(view).getElement();

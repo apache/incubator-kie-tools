@@ -54,7 +54,7 @@ public class FormEditorHelper {
 
     private FormModelerContent content;
 
-    private Map<String, FieldDefinition> availableFields = new HashMap<String, FieldDefinition>();
+    private Map<String, FieldDefinition> availableFields = new HashMap<>();
 
     private List<EditorFieldLayoutComponent> fieldLayoutComponents;
 
@@ -103,8 +103,14 @@ public class FormEditorHelper {
     }
 
     public void addAvailableField(FieldDefinition field) {
-        availableFields.put(field.getId(),
-                            field);
+        if (content.getModelProperties().contains(field.getBinding())) {
+            availableFields.put(field.getId(),
+                                field);
+        }
+    }
+
+    public void removeAvailableField(FieldDefinition field) {
+        availableFields.remove(field.getId());
     }
 
     public FieldDefinition getDroppedField(String fieldId) {
@@ -152,8 +158,7 @@ public class FormEditorHelper {
             if (field.getId().equals(fieldId)) {
                 it.remove();
                 if (addToAvailables && content.getModelProperties().contains(field.getBinding())) {
-                    availableFields.put(field.getId(),
-                                        field);
+                    addAvailableField(field);
                 }
                 return field;
             }
@@ -196,14 +201,11 @@ public class FormEditorHelper {
     public FieldDefinition switchToField(FieldDefinition originalField,
                                          String bindingExpression) {
 
-        if (content.getDefinition().getFieldByBinding(bindingExpression) != null) {
-            return null;
-        }
-
         FieldDefinition resultField = fieldManager.getDefinitionByFieldTypeName(originalField.getFieldType().getTypeName());
 
-        if (bindingExpression == null || bindingExpression.equals("")) {
+        if (bindingExpression == null || bindingExpression.equals("") || content.getDefinition().getFieldByBinding(bindingExpression) != null) {
             resultField.setName(generateUnbindedFieldName(resultField));
+            resultField.setBinding("");
         } else {
             // Search if there's an available field with the specified binding
             for (Iterator<FieldDefinition> it = availableFields.values().iterator(); it.hasNext(); ) {
@@ -212,17 +214,14 @@ public class FormEditorHelper {
 
                     // Check types if we are binding a fields on dynamicModel && change field type if needed
                     if (content.getDefinition().getModel() instanceof DynamicModel && !resultField.getFieldType().equals(availableField.getFieldType())) {
-                        resultField = fieldManager.getFieldFromProvider(availableField.getFieldType().getTypeName(), availableField.getFieldTypeInfo());
+                        resultField = fieldManager.getFieldFromProvider(availableField.getFieldType().getTypeName(),
+                                                                        availableField.getFieldTypeInfo());
                     }
 
                     resultField.setId(availableField.getId());
                     resultField.setName(availableField.getName());
 
                     resultField.copyFrom(availableField);
-
-                    content.getDefinition().getFields().add(resultField);
-
-                    it.remove();
 
                     return resultField;
                 }
@@ -233,14 +232,13 @@ public class FormEditorHelper {
         resultField.copyFrom(originalField);
         resultField.setBinding(bindingExpression);
 
-        if(resultField.getName() == null) {
+        if (resultField.getName() == null) {
             String name = bindingExpression;
-            if(name == null || name.isEmpty()) {
+            if (name == null || name.isEmpty()) {
                 name = generateUnbindedFieldName(resultField);
             }
             resultField.setName(name);
         }
-        content.getDefinition().getFields().add(resultField);
 
         return resultField;
     }
@@ -256,8 +254,6 @@ public class FormEditorHelper {
 
         removeField(field.getId(),
                     false);
-
-        content.getDefinition().getFields().add(resultDefinition);
 
         return resultDefinition;
     }

@@ -22,11 +22,13 @@ public interface StaticDataBinderEditorView extends UberElement<StaticDataBinder
 
     interface Presenter {
 
-        void onBindingChange(String newBinding);
+        void onBindingChange();
     }
 
     void clear();
 
     void addModelField(String property,
                        boolean selected);
+
+    String getFieldBinding();
 }
