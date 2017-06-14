@@ -225,6 +225,7 @@ public final class WiresManager
 
     public void deregister(final WiresConnector connector)
     {
+        connector.removeFromLayer();
         final String uuid = connector.uuid();
         removeHandlers(uuid);
         connector.destroy();
@@ -312,7 +313,7 @@ public final class WiresManager
         }
     }
 
-    NFastArrayList<WiresConnector> getConnectorList()
+    public NFastArrayList<WiresConnector> getConnectorList()
     {
         return m_connectorList;
     }

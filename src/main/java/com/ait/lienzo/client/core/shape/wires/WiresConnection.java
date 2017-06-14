@@ -132,7 +132,7 @@ public class WiresConnection extends AbstractControlHandle
         this.m_autoConnection = m_autoConnection;
     }
 
-    public double isXOffset()
+    public double getXOffset()
     {
         return m_xOffset;
     }
@@ -142,7 +142,7 @@ public class WiresConnection extends AbstractControlHandle
         this.m_xOffset = m_xOffset;
     }
 
-    public double isYOffset()
+    public double getYOffset()
     {
         return m_yOffset;
     }
@@ -194,6 +194,16 @@ public class WiresConnection extends AbstractControlHandle
         m_connector.setDraggable();
 
         return this;
+    }
+
+    public Point2D getPoint()
+    {
+        return m_point;
+    }
+
+    public void setPoint(Point2D point)
+    {
+        this.m_point = point;
     }
 
     public WiresMagnet getMagnet()

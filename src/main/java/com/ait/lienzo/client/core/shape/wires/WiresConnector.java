@@ -45,10 +45,10 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
 public class WiresConnector
 {
-    interface WiresConnectorHandler extends NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler, NodeMouseClickHandler
+    public interface WiresConnectorHandler extends NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler, NodeMouseClickHandler
     {
 
-        WiresConnectorControl getControl();
+        public WiresConnectorControl getControl();
 
     }
 
@@ -69,6 +69,8 @@ public class WiresConnector
     private Group                                 m_group;
 
     private IConnectionAcceptor                   m_connectionAcceptor = IConnectionAcceptor.ALL;
+
+    private WiresConnectorHandler                 m_wiresConnectorHandler;
 
     public WiresConnector(AbstractDirectionalMultiPointShape<?> line, MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator)
     {
@@ -141,6 +143,13 @@ public class WiresConnector
         m_registrationManager.register(group.addNodeDragMoveHandler(handler));
 
         m_registrationManager.register(group.addNodeDragEndHandler(handler));
+
+        m_wiresConnectorHandler = handler;
+    }
+
+    public WiresConnectorHandler getWiresConnectorHandler()
+    {
+        return m_wiresConnectorHandler;
     }
 
     public void destroy()
@@ -359,24 +368,90 @@ public class WiresConnector
             return null;
         }
 
-        BoundingBox headBox = (headS != null ) ? headS.getGroup().getBoundingPoints().getBoundingBox() : null;
-        BoundingBox tailBox = ( tailS != null ) ? tailS.getGroup().getBoundingPoints().getBoundingBox() : null;
+        WiresMagnet[] magnets;
+        BoundingBox headBox = (headS != null) ? headS.getGroup().getBoundingPoints().getBoundingBox() : null;
+        BoundingBox tailBox = (tailS != null) ? tailS.getGroup().getBoundingPoints().getBoundingBox() : null;
 
-        WiresMagnet[] magets;
-
-        if ( headBox != null && tailBox != null && !headBox.overlaps(tailBox) )
+        if ( getLine().getPoint2DArray().size() > 2 )
         {
-            magets = getMagnetsNonOverlappedShapes(headC, tailC, headS, tailS, headBox, tailBox);
+            magnets = getMagnetsWithMidPoint(headC, tailC, headS, tailS, headBox, tailBox);
         }
         else
         {
-            magets = getMagnetsOverlappedShapesOrNoShape(headC, tailC, headS, tailS, headBox, tailBox);
+            if (headBox != null && tailBox != null && !headBox.overlaps(tailBox))
+            {
+                magnets = getMagnetsNonOverlappedShapes(headS, tailS, headBox, tailBox);
+            }
+            else
+            {
+                magnets = getMagnetsOverlappedShapesOrNoShape(headC, tailC, headS, tailS, headBox, tailBox);
+            }
         }
 
-        return magets;
+        return magnets;
     }
 
-    private WiresMagnet[] getMagnetsNonOverlappedShapes(WiresConnection headC, WiresConnection tailC, WiresShape headS, WiresShape tailS, BoundingBox headBox, BoundingBox tailBox)
+    private WiresMagnet[] getMagnetsWithMidPoint(WiresConnection headC, WiresConnection tailC, WiresShape headS, WiresShape tailS, BoundingBox headBox, BoundingBox tailBox)
+    {
+        // make BB's of 1 Point2D, then we can reuse existing code.
+        Point2D pAfterHead = getLine().getPoint2DArray().get(1);
+        Point2D pBeforeTail = getLine().getPoint2DArray().get(getLine().getPoint2DArray().size()-2);
+
+        BoundingBox firstBB = new BoundingBox(pAfterHead, pAfterHead);
+        BoundingBox lastBB = new BoundingBox(pBeforeTail, pBeforeTail);
+
+        WiresMagnet headM;
+        WiresMagnet tailM;
+        if (headBox != null && !headBox.overlaps(firstBB))
+        {
+            WiresMagnet[] magnets = getMagnetsNonOverlappedShapes(headS, null, headBox, firstBB);
+            headM = magnets[0];
+
+        }
+        else
+        {
+            WiresMagnet[] headMagnets = getMagnets(headC, headS);
+            headM = getShortestMagnetToPoint(pAfterHead, headMagnets);
+        }
+
+        if (tailBox != null && !tailBox.overlaps(lastBB))
+        {
+            WiresMagnet[] magnets = getMagnetsNonOverlappedShapes(null, tailS, lastBB, tailBox);
+            tailM = magnets[1];
+        }
+        else
+        {
+            WiresMagnet[] tailMagnets = getMagnets(tailC, tailS);
+            tailM = getShortestMagnetToPoint(pAfterHead, tailMagnets);
+        }
+
+        return new WiresMagnet[] {headM, tailM};
+    }
+
+    private WiresMagnet getShortestMagnetToPoint(Point2D point, WiresMagnet[] magnets)
+    {
+        double shortest = Double.MAX_VALUE;
+        WiresMagnet shortestM = null;
+
+        // Start at 1, as we don't include the center
+        for (int i = 1, size0 = magnets.length; i < size0; i++)
+        {
+            WiresMagnet m = magnets[i];
+            if (m != null)
+            {
+                double distance = point.distance(m.getControl().getComputedLocation());
+                if (distance < shortest)
+                {
+                    shortest = distance;
+                    shortestM = m;
+                }
+            }
+        }
+
+        return shortestM;
+    }
+
+    private WiresMagnet[] getMagnetsNonOverlappedShapes(WiresShape headS, WiresShape tailS, BoundingBox headBox, BoundingBox tailBox)
     {
         // There is no shape overlap.
         // If one box is in the corner of the other box, then use nearest corner connections
@@ -551,14 +626,14 @@ public class WiresConnector
         // ony set the side if it's auto connect, else null
 
         WiresMagnet headM = null;
-        if ( getHeadConnection().isAutoConnection())
+        if ( headS != null && getHeadConnection().isAutoConnection())
         {
            headM = headS.getMagnets().getMagnet(headMagnetIndex);
         }
 
 
         WiresMagnet tailM = null;
-        if ( getTailConnection().isAutoConnection())
+        if ( tailS != null && getTailConnection().isAutoConnection())
         {
             tailM = tailS.getMagnets().getMagnet(tailMagnetIndex);
         }

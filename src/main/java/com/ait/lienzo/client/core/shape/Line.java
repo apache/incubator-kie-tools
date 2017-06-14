@@ -48,7 +48,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
 
     /**
      * Constructor. Creates an instance of a line.
-     * 
+     *
      * @param x1 first point X coordinate
      * @param y1 first point Y coordinate
      * @param x2 second point X coordinate
@@ -87,7 +87,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
 
     /**
      * Draws this line
-     * 
+     *
      * @param context
      */
     @Override
@@ -149,7 +149,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
 
     /**
      * Gets the end-points of this line.
-     * 
+     *
      * @return Point2DArray
      */
     public Point2DArray getPoints()
@@ -158,9 +158,9 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
     }
 
     /**
-     * Sets the end-points of this line.  
+     * Sets the end-points of this line.
      * The points should be a 2-element {@link Point2DArray}
-     * 
+     *
      * @param points
      * @return this Line
      */
@@ -218,7 +218,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
 
     /**
      * Draws a dashed line instead of a solid one for the shape.
-     * 
+     *
      * @param context
      * @param x
      * @param y

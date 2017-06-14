@@ -43,9 +43,11 @@ import static com.ait.lienzo.shared.core.types.Direction.*;
  */
 public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<OrthogonalPolyLine>
 {
-    private Point2D m_headOffsetPoint;
+    private Point2D      m_headOffsetPoint;
 
-    private Point2D m_tailOffsetPoint;
+    private Point2D      m_tailOffsetPoint;
+
+    private Point2DArray m_computedPoint2DArray;
 
     public OrthogonalPolyLine(final Point2D start, final Point2D... points)
     {
@@ -106,9 +108,11 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                     list.M(m_headOffsetPoint.getX(), m_headOffsetPoint.getY());
                     final double radius = getCornerRadius();
 
+                    m_computedPoint2DArray =  Point2DArray.fromNFastDoubleArrayJSO(opoint);
+
                     if (radius > 0)
                     {
-                        Geometry.drawArcJoinedLines(list, Point2DArray.fromNFastDoubleArrayJSO(opoint), radius);
+                        Geometry.drawArcJoinedLines(list, m_computedPoint2DArray, radius);
                     }
                     else
                     {
@@ -124,6 +128,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 }
             }
         }
+        m_computedPoint2DArray = null;
         return false;
     }
 
@@ -735,26 +740,26 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 // But at the moment not entirely sure how to do that, so fixing sympton that than cause (mdp).
                 return;
             }
-            else if (x == x1 || y == y1)
-            {
-                if ( buffer.size() > 2 )
-                {
-                    double x2 = buffer.get(buffer.size()-4);
-                    double y2 = buffer.get(buffer.size()-3);
-                    if ( x == x1 && x == x2 )
-                    {
-                        buffer.set(buffer.size()-1, y);
-                        return;
-
-                    }
-                    else
-                    if ( y == y1 && y == y2 )
-                    {
-                        buffer.set(buffer.size()-2, x);
-                        return;
-                    }
-                }
-            }
+//            else if (x == x1 || y == y1)
+//            {
+//                if ( buffer.size() > 2 )
+//                {
+//                    double x2 = buffer.get(buffer.size()-4);
+//                    double y2 = buffer.get(buffer.size()-3);
+//                    if ( x == x1 && x == x2 )
+//                    {
+//                        buffer.set(buffer.size()-1, y);
+//                        return;
+//
+//                    }
+//                    else
+//                    if ( y == y1 && y == y2 )
+//                    {
+//                        buffer.set(buffer.size()-2, x);
+//                        return;
+//                    }
+//                }
+//            }
         }
 
         buffer.push(x, y);
@@ -832,6 +837,11 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
     public Point2DArray getPoint2DArray()
     {
         return getControlPoints();
+    }
+
+    public Point2DArray getComputedPoint2DArray()
+    {
+        return m_computedPoint2DArray;
     }
 
     @Override

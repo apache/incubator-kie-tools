@@ -153,40 +153,47 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
                 connection.setAutoConnection(false);
             }
         }
-
-
-        // shape can be null, to see if a connection can be unconnected to a magnet
-        boolean accept;
-        WiresShape headS;
-        WiresShape tailS;
-        if (m_head)
-        {
-            accept = m_connector.getConnectionAcceptor().headConnectionAllowed(connection, shape);
-            headS = shape;
-            tailS = (m_connector.getTailConnection().getMagnet() != null ) ? m_connector.getTailConnection().getMagnet().getMagnets().getWiresShape() : null;
-        }
-        else
-        {
-            accept = m_connector.getConnectionAcceptor().tailConnectionAllowed(connection, shape);
-            headS = (m_connector.getHeadConnection().getMagnet() != null ) ? m_connector.getHeadConnection().getMagnet().getMagnets().getWiresShape() : null;
-            tailS = shape;
-        }
-
-        if ( accept )
-        {
-            accept = accept && acceptMagnetAndUpdateAutoConnection(connection, headS, tailS);
-            if (!accept)
-            {
-                throw new RuntimeException("This should never happen, acceptors should not fail if the alled passed. Added for defensive programming checking");
-            }
-        }
+        boolean accept = allowedMagnetAndUpdateAutoConnections(connection, m_head, shape, m_current_magnet, true);
 
         return accept;
 
     }
 
-    private boolean acceptMagnetAndUpdateAutoConnection(WiresConnection connection, WiresShape headS, WiresShape tailS)
+    public static boolean allowedMagnetAndUpdateAutoConnections(WiresConnection connection, boolean isHead, WiresShape shape, WiresMagnet currentMagnet, boolean applyAccept)
     {
+        WiresConnector connector = connection.getConnector();
+        // shape can be null, to see if a connection can be unconnected to a magnet
+        boolean accept;
+        WiresShape headS;
+        WiresShape tailS;
+        if (isHead)
+        {
+            accept = connector.getConnectionAcceptor().headConnectionAllowed(connection, shape);
+            headS = shape;
+            tailS = (connector.getTailConnection().getMagnet() != null ) ? connector.getTailConnection().getMagnet().getMagnets().getWiresShape() : null;
+        }
+        else
+        {
+            accept = connector.getConnectionAcceptor().tailConnectionAllowed(connection, shape);
+            headS = (connector.getHeadConnection().getMagnet() != null ) ? connector.getHeadConnection().getMagnet().getMagnets().getWiresShape() : null;
+            tailS = shape;
+        }
+
+        if ( applyAccept && accept )
+        {
+            accept = accept && acceptMagnetAndUpdateAutoConnection(connection, isHead, headS, tailS, currentMagnet);
+            if (!accept)
+            {
+                throw new RuntimeException("This should never happen, acceptors should not fail if the alled passed. Added for defensive programming checking");
+            }
+        }
+        return accept;
+    }
+
+    public static  boolean acceptMagnetAndUpdateAutoConnection(WiresConnection connection, boolean isHead, WiresShape headS, WiresShape tailS, WiresMagnet currentMagnet)
+    {
+        WiresConnector connector = connection.getConnector();
+
         boolean accept = true;
 
         // Only set the current magnet, if auto connection is false
@@ -194,20 +201,20 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
         {
             // m_current_magnet could also be null, and it's seeing if that's accepted
             // technically all connections have been checked and allowed, but for consistency and notifications will be rechecked via acceptor
-            if (m_head)
+            if (isHead)
             {
-                accept = accept && m_connector.getConnectionAcceptor().acceptHead(connection, m_current_magnet);
+                accept = accept && connector.getConnectionAcceptor().acceptHead(connection, currentMagnet);
             }
             else
             {
-                accept = accept && m_connector.getConnectionAcceptor().acceptTail(connection, m_current_magnet);
+                accept = accept && connector.getConnectionAcceptor().acceptTail(connection, currentMagnet);
             }
 
             if ( accept )
             {
                 // Set the magnet on the current connection
                 // magnet could also be null
-                connection.setMagnet(m_current_magnet);
+                connection.setMagnet(currentMagnet);
             }
         }
 
@@ -215,8 +222,8 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
         {
             // can be used during drag, as we know the current connection will have a null shape
             // this will cause the other side to be updated
-            accept = accept && m_connector.updateForAutoConnections(headS, tailS);
-            m_connector.updateForCenterConnection();
+            accept = accept && connector.updateForAutoConnections(headS, tailS);
+            connector.updateForCenterConnection();
         }
 
 

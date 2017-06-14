@@ -127,10 +127,10 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
     public void addControlPoint(final double x, final double y)
     {
 
-        m_connector.destroyPointHandles();
+        hideControlPoints();
         Point2DArray oldPoints = m_connector.getLine().getPoint2DArray();
 
-        int pointIndex = getIndexForSelectedSegment((int) x, (int) y, oldPoints);
+        int pointIndex = getIndexForSelectedSegment(m_connector, (int) x, (int) y, oldPoints);
         if (pointIndex > 0)
         {
             Point2D point = new Point2D(x, y);
@@ -149,7 +149,6 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
         }
 
         showPointHandles();
-
     }
 
     @Override
@@ -216,7 +215,7 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
             m_HandlerRegistrationManager.destroy();
         }
         m_HandlerRegistrationManager = null;
-        m_connector.getPointHandles().hide();
+        m_connector.destroyPointHandles();
 
     }
 
@@ -225,11 +224,11 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
         return m_HandlerRegistrationManager;
     }
 
-    private int getIndexForSelectedSegment(final int mouseX, final int mouseY, final Point2DArray oldPoints)
+    public static int getIndexForSelectedSegment(final WiresConnector connector, final int mouseX, final int mouseY, final Point2DArray oldPoints)
     {
         NFastStringMap<Integer> colorMap = new NFastStringMap<Integer>();
 
-        AbstractDirectionalMultiPointShape<?> line = m_connector.getLine();
+        AbstractDirectionalMultiPointShape<?> line = connector.getLine();
         ScratchPad scratch = line.getScratchPad();
         scratch.clear();
         PathPartList path = line.getPathPartList();
@@ -240,7 +239,7 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
         double strokeWidth = line.getStrokeWidth();
         ctx.setStrokeWidth(strokeWidth);
 
-        Point2D absolutePos = m_connector.getLine().getComputedLocation();
+        Point2D absolutePos = connector.getLine().getComputedLocation();
         double offsetX = absolutePos.getX();
         double offsetY = absolutePos.getY();
 
@@ -341,7 +340,7 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
             }
         }
 
-        BoundingBox box = m_connector.getLine().getBoundingBox();
+        BoundingBox box = connector.getLine().getBoundingBox();
 
         // Keep the ImageData small by clipping just the visible line area
         // But remember the mouse must be offset for this clipped area.
@@ -352,7 +351,7 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
         return null != color ? colorMap.get(color) : -1;
     }
 
-    private void showPointHandles()
+    public void showPointHandles()
     {
         if (m_HandlerRegistrationManager == null)
         {
