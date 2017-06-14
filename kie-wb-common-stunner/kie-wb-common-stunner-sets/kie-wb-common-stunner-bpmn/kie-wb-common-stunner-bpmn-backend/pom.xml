@@ -351,6 +351,13 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- jbpm simulation -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>jbpm-simulation</artifactId>
+      <scope>test</scope>
+    </dependency>
+
 
   </dependencies>
 

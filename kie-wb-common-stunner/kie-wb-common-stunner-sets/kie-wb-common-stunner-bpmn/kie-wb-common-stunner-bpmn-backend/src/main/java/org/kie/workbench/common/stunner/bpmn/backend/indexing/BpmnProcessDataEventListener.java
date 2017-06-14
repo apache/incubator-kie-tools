@@ -141,7 +141,8 @@ public class BpmnProcessDataEventListener
             signals = (Set<String>) data;
         } else if ("Messages".equals(name)) {
             Map<String, Message> builderMessagesMap = (Map<String, Message>) data;
-            messages = builderMessagesMap.keySet();
+            //JDK-6750650 - cant serialize the keySet itself - so copy is needed
+            messages = new HashSet(builderMessagesMap.keySet());
         }
     }
 
