@@ -18,13 +18,19 @@ package org.appformer.maven.integration;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
+import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.providers.http.HttpWagon;
+import org.appformer.maven.integration.embedder.MavenSettings;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.eclipse.aether.ConfigurationProperties;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
@@ -39,7 +45,6 @@ import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.eclipse.aether.transport.wagon.WagonProvider;
 import org.eclipse.aether.util.repository.DefaultProxySelector;
-import org.appformer.maven.integration.embedder.MavenSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,14 +114,48 @@ public class Aether {
         DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
         session.setLocalRepositoryManager( system.newLocalRepositoryManager( session, localRepo ) );
         session.setOffline( offline );
-        if (!settings.getProxies().isEmpty()) {
-            DefaultProxySelector proxySelector = new DefaultProxySelector();
-            for (org.apache.maven.settings.Proxy proxy : settings.getProxies()) {
-                proxySelector.add( new Proxy( proxy.getProtocol(), proxy.getHost(), proxy.getPort()), proxy.getNonProxyHosts() );
-            }
-            session.setProxySelector( proxySelector );
-        }
+        configureProxiesOnSession( settings, session );
+        configureHttpHeadersOnSession( settings, session );
         return session;
+    }
+
+    private void configureProxiesOnSession( Settings settings, DefaultRepositorySystemSession session ) {
+        List<org.apache.maven.settings.Proxy> proxies = settings.getProxies();
+        if (proxies == null || proxies.isEmpty()) {
+            return;
+        }
+
+        DefaultProxySelector proxySelector = new DefaultProxySelector();
+        for (org.apache.maven.settings.Proxy proxy : proxies) {
+            proxySelector.add( new Proxy( proxy.getProtocol(), proxy.getHost(), proxy.getPort()), proxy.getNonProxyHosts() );
+        }
+        session.setProxySelector( proxySelector );
+    }
+
+    private void configureHttpHeadersOnSession( Settings settings, DefaultRepositorySystemSession session ) {
+        List<Server> servers = settings.getServers();
+        if (servers == null || servers.isEmpty()) {
+            return;
+        }
+
+        for (Server server : servers) {
+            if (server.getConfiguration() instanceof Xpp3Dom ) {
+                Xpp3Dom configDom = (Xpp3Dom) server.getConfiguration();
+                if (configDom != null) {
+                    Xpp3Dom headersConfiguration = configDom.getChild("httpHeaders");
+                    if (headersConfiguration != null) {
+                        Xpp3Dom[] properties = headersConfiguration.getChildren();
+                        if (properties != null && properties.length > 0) {
+                            HashMap<String, String> httpHeaders = new HashMap<>();
+                            for (Xpp3Dom property : properties) {
+                                httpHeaders.put(property.getChild("name").getValue(), property.getChild("value").getValue());
+                            }
+                            session.setConfigProperty( ConfigurationProperties.HTTP_HEADERS + "." + server.getId(), httpHeaders );
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private RemoteRepository newCentralRepository() {
