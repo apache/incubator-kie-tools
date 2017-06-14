@@ -68,8 +68,8 @@ public class PlaceHistoryHandler {
 
         final HandlerRegistration historyReg =
                 historian.addValueChangeHandler(event -> {
-                        String token = event.getValue();
-                        handleHistoryToken(token);
+                    //Temporarily disabled until https://issues.jboss.org/browse/AF-523 is ready
+//                    handleHistoryToken(event.getValue());
                 });
 
         return () -> {
