@@ -20,6 +20,7 @@ import org.drools.workbench.services.verifier.api.client.index.keys.IndexKey;
 import org.drools.workbench.services.verifier.api.client.index.keys.Key;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKey;
 import org.drools.workbench.services.verifier.api.client.index.keys.UpdatableKey;
+import org.drools.workbench.services.verifier.api.client.index.keys.Value;
 import org.drools.workbench.services.verifier.api.client.index.matchers.ComparableMatchers;
 import org.drools.workbench.services.verifier.api.client.index.matchers.UUIDMatchers;
 import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
@@ -39,12 +40,11 @@ public class Rule
 
     private UpdatableKey<Rule> indexKey;
 
-
-    public Rule( final Integer rowNumber,
-                 final AnalyzerConfiguration configuration ) {
-        this.indexKey = new UpdatableKey<>( IndexKey.INDEX_ID,
-                                            rowNumber );
-        this.uuidKey = configuration.getUUID( this );
+    public Rule(final Integer rowNumber,
+                final AnalyzerConfiguration configuration) {
+        this.indexKey = new UpdatableKey<>(IndexKey.INDEX_ID,
+                                           rowNumber);
+        this.uuidKey = configuration.getUUID(this);
     }
 
     public static Matchers uuid() {
@@ -52,7 +52,7 @@ public class Rule
     }
 
     public static ComparableMatchers index() {
-        return new ComparableMatchers( IndexKey.INDEX_ID );
+        return new ComparableMatchers(IndexKey.INDEX_ID);
     }
 
     public static KeyDefinition[] keyDefinitions() {
@@ -79,7 +79,7 @@ public class Rule
     }
 
     @Override
-    public int compareTo( final Rule rule ) {
+    public int compareTo(final Rule rule) {
         return 0;
     }
 
@@ -101,35 +101,35 @@ public class Rule
     }
 
     @Override
-    public void setIndex( final int index ) {
-        if ( indexKey.getSingleValue()
-                .equals( index ) ) {
+    public void setIndex(final int index) {
+        if (indexKey.getSingleValue()
+                .equals(new Value(index))) {
             return;
         } else {
 
             final UpdatableKey<Rule> oldKey = indexKey;
 
-            final UpdatableKey<Rule> newKey = new UpdatableKey<>( IndexKey.INDEX_ID,
-                                                                  index );
+            final UpdatableKey<Rule> newKey = new UpdatableKey<>(IndexKey.INDEX_ID,
+                                                                 index);
             indexKey = newKey;
 
-            oldKey.update( newKey,
-                           this );
+            oldKey.update(newKey,
+                          this);
         }
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         final Rule rule = (Rule) o;
 
-        if ( !uuidKey.equals( rule.uuidKey ) ) {
+        if (!uuidKey.equals(rule.uuidKey)) {
             return false;
         }
 

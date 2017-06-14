@@ -16,6 +16,10 @@
   <name>Drools Workbench</name>
   <description>Drools Workbench</description>
 
+  <properties>
+    <findbugs.failOnViolation>true</findbugs.failOnViolation>
+  </properties>
+
   <repositories>
     <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
     <repository>

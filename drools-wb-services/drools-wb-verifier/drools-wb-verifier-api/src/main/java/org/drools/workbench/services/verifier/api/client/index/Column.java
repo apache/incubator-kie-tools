@@ -20,6 +20,7 @@ import org.drools.workbench.services.verifier.api.client.index.keys.IndexKey;
 import org.drools.workbench.services.verifier.api.client.index.keys.Key;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKey;
 import org.drools.workbench.services.verifier.api.client.index.keys.UpdatableKey;
+import org.drools.workbench.services.verifier.api.client.index.keys.Value;
 import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
 import org.drools.workbench.services.verifier.api.client.maps.util.HasIndex;
 import org.drools.workbench.services.verifier.api.client.maps.util.HasKeys;
@@ -33,17 +34,17 @@ public class Column
 
     private UpdatableKey<Column> indexKey;
 
-    public Column( final int columnIndex,
-                   final AnalyzerConfiguration configuration ) {
-        PortablePreconditions.checkNotNull( "columnIndex",
-                                            columnIndex );
-        this.indexKey = new UpdatableKey<>( IndexKey.INDEX_ID,
-                                            columnIndex );
-        this.uuidKey = configuration.getUUID( this );
+    public Column(final int columnIndex,
+                  final AnalyzerConfiguration configuration) {
+        PortablePreconditions.checkNotNull("columnIndex",
+                                           columnIndex);
+        this.indexKey = new UpdatableKey<>(IndexKey.INDEX_ID,
+                                           columnIndex);
+        this.uuidKey = configuration.getUUID(this);
     }
 
     public static Matchers index() {
-        return new Matchers( IndexKey.INDEX_ID );
+        return new Matchers(IndexKey.INDEX_ID);
     }
 
     public static KeyDefinition[] keyDefinitions() {
@@ -51,7 +52,6 @@ public class Column
                 UUIDKey.UNIQUE_UUID,
                 IndexKey.INDEX_ID
         };
-
     }
 
     @Override
@@ -73,20 +73,19 @@ public class Column
     }
 
     @Override
-    public void setIndex( final int index ) {
-        if ( indexKey.getSingleValue()
-                .equals( index ) ) {
+    public void setIndex(final int index) {
+        if (indexKey.getSingleValue()
+                .equals(new Value(index))) {
             return;
         } else {
 
             final UpdatableKey<Column> oldKey = indexKey;
-            final UpdatableKey<Column> newKey = new UpdatableKey<>( IndexKey.INDEX_ID,
-                                                                    index );
+            final UpdatableKey<Column> newKey = new UpdatableKey<>(IndexKey.INDEX_ID,
+                                                                   index);
             indexKey = newKey;
 
-            oldKey.update( newKey,
-                           this );
+            oldKey.update(newKey,
+                          this);
         }
-
     }
 }
