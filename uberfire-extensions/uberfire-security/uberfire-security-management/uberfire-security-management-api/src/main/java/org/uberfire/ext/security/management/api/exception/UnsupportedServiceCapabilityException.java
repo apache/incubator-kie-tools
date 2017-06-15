@@ -36,4 +36,9 @@ public class UnsupportedServiceCapabilityException extends SecurityManagementExc
     public Capability getCapability() {
         return capability;
     }
+
+    @Override
+    public String getMessage() {
+        return "Capability [" + capability + "] not supported";
+    }
 }

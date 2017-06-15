@@ -54,16 +54,16 @@ public class ClientUserSystemManagerTest {
     private static final String ATTRIBUTE_USER_EMAIL = "user.email";
 
     @Mock
-    ErrorPopupPresenter errorPopupPresenter;
+    private ErrorPopupPresenter errorPopupPresenter;
     @Mock
-    UserManagerService userManagerService;
+    private UserManagerService userManagerService;
     @Mock
-    GroupManagerService groupsManagerService;
+    private GroupManagerService groupsManagerService;
     @Mock
-    RoleManagerService rolesManagerService;
-    Caller<UserManagerService> usersManagerServiceCaller;
-    Caller<GroupManagerService> groupsManagerServiceCaller;
-    Caller<RoleManagerService> rolesManagerServiceCaller;
+    private RoleManagerService rolesManagerService;
+    private Caller<UserManagerService> usersManagerServiceCaller;
+    private Caller<GroupManagerService> groupsManagerServiceCaller;
+    private Caller<RoleManagerService> rolesManagerServiceCaller;
 
     private ClientUserSystemManager tested;
 
@@ -80,6 +80,7 @@ public class ClientUserSystemManagerTest {
         tested = spy(new ClientUserSystemManager(usersManagerServiceCaller,
                                                  groupsManagerServiceCaller,
                                                  rolesManagerServiceCaller,
+                                                 new ClientSecurityExceptionMessageResolver(),
                                                  errorPopupPresenter));
     }
 
@@ -127,9 +128,9 @@ public class ClientUserSystemManagerTest {
 
     @Test
     public void testShowError() {
-        tested.showError("error-message");
+        tested.showError(new RuntimeException());
         verify(errorPopupPresenter,
-               times(1)).showMessage("error-message");
+               times(1)).showMessage(anyString());
     }
 
     private UserManagerSettings getUserSettings() {

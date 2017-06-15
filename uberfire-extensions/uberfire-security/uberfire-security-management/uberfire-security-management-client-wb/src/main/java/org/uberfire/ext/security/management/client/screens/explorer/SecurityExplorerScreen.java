@@ -30,6 +30,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
+import org.uberfire.ext.security.management.client.ClientSecurityExceptionMessageResolver;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWorkbenchConstants;
 import org.uberfire.ext.security.management.client.screens.editor.GroupEditorScreen;
@@ -57,25 +58,41 @@ public class SecurityExplorerScreen {
 
     public static final String SCREEN_ID = "SecurityExplorerScreen";
 
+    public static final String ACTIVE_TAB = "activeTab";
+
     public static final String ROLES_TAB = "RolesTab";
 
     public static final String GROUPS_TAB = "GroupsTab";
 
     public static final String USERS_TAB = "UsersTab";
+
+    private final View view;
+    private final RolesExplorer rolesExplorer;
+    private final GroupsExplorer groupsExplorer;
+    private final UsersExplorer usersExplorer;
+    private final ErrorPopupPresenter errorPopupPresenter;
+    private final PlaceManager placeManager;
+    private final ClientUserSystemManager userSystemManager;
+    private final ClientSecurityExceptionMessageResolver exceptionMessageResolver;
+
     @Inject
-    View view;
-    @Inject
-    RolesExplorer rolesExplorer;
-    @Inject
-    GroupsExplorer groupsExplorer;
-    @Inject
-    UsersExplorer usersExplorer;
-    @Inject
-    ErrorPopupPresenter errorPopupPresenter;
-    @Inject
-    PlaceManager placeManager;
-    @Inject
-    ClientUserSystemManager userSystemManager;
+    public SecurityExplorerScreen(final View view,
+                                  final RolesExplorer rolesExplorer,
+                                  final GroupsExplorer groupsExplorer,
+                                  final UsersExplorer usersExplorer,
+                                  final ErrorPopupPresenter errorPopupPresenter,
+                                  final PlaceManager placeManager,
+                                  final ClientUserSystemManager userSystemManager,
+                                  final ClientSecurityExceptionMessageResolver exceptionMessageResolver) {
+        this.view = view;
+        this.rolesExplorer = rolesExplorer;
+        this.groupsExplorer = groupsExplorer;
+        this.usersExplorer = usersExplorer;
+        this.errorPopupPresenter = errorPopupPresenter;
+        this.placeManager = placeManager;
+        this.userSystemManager = userSystemManager;
+        this.exceptionMessageResolver = exceptionMessageResolver;
+    }
 
     @WorkbenchPartTitle
     public String getTitle() {
@@ -102,7 +119,7 @@ public class SecurityExplorerScreen {
 
     @OnStartup
     public void onStartup(final PlaceRequest placeRequest) {
-        final String activeTab = placeRequest.getParameter("activeTab",
+        final String activeTab = placeRequest.getParameter(ACTIVE_TAB,
                                                            ROLES_TAB);
 
         userSystemManager.waitForInitialization(() -> {
@@ -185,13 +202,12 @@ public class SecurityExplorerScreen {
                                                   params));
     }
 
-    void onErrorEvent(@Observes final OnErrorEvent onErrorEvent) {
+    void onErrorEvent(@Observes final OnErrorEvent event) {
         checkNotNull("event",
-                     onErrorEvent);
-        final Throwable cause = onErrorEvent.getCause();
-        final String message = onErrorEvent.getMessage();
-        final String m = message != null ? message : cause.getMessage();
-        errorPopupPresenter.showMessage(m);
+                     event);
+        exceptionMessageResolver
+                .consumeExceptionMessage(event.getException(),
+                                         errorPopupPresenter::showMessage);
     }
 
     public interface View extends UberView<SecurityExplorerScreen> {

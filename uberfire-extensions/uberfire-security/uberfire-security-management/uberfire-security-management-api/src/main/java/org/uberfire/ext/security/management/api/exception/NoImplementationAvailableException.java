@@ -27,4 +27,9 @@ public class NoImplementationAvailableException extends SecurityManagementExcept
 
     public NoImplementationAvailableException() {
     }
+
+    @Override
+    public String getMessage() {
+        return "No user/group security management provider available";
+    }
 }

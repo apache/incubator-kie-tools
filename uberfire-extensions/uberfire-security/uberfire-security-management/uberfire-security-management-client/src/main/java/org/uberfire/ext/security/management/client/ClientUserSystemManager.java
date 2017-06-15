@@ -41,12 +41,10 @@ import org.uberfire.ext.security.management.api.RoleManager;
 import org.uberfire.ext.security.management.api.UserManager;
 import org.uberfire.ext.security.management.api.UserManagerSettings;
 import org.uberfire.ext.security.management.api.UserSystemManager;
-import org.uberfire.ext.security.management.api.exception.NoImplementationAvailableException;
 import org.uberfire.ext.security.management.api.service.GroupManagerService;
 import org.uberfire.ext.security.management.api.service.RoleManagerService;
 import org.uberfire.ext.security.management.api.service.UserManagerService;
 import org.uberfire.ext.security.management.api.validation.EntityValidator;
-import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementClientConstants;
 import org.uberfire.ext.security.management.client.validation.ClientGroupValidator;
 import org.uberfire.ext.security.management.client.validation.ClientRoleValidator;
 import org.uberfire.ext.security.management.client.validation.ClientUserValidator;
@@ -56,7 +54,6 @@ import org.uberfire.mvp.Command;
 /**
  * <p>The main client side manager for the user management stuff.</p>
  * <p>
- * Note: No full role management support yet.
  * @since 0.8.0
  */
 @ApplicationScoped
@@ -71,24 +68,22 @@ public class ClientUserSystemManager implements UserSystemManager {
     /**
      * The service caller for the Users Manager.
      */
-    private Caller<UserManagerService> usersManagerService;
+    private final Caller<UserManagerService> usersManagerService;
     /**
      * The service caller for the Groups Manager.
      */
-    private Caller<GroupManagerService> groupsManagerService;
+    private final Caller<GroupManagerService> groupsManagerService;
     /**
      * The service caller for the Users Manager.
      */
-    private Caller<RoleManagerService> rolesManagerService;
+    private final Caller<RoleManagerService> rolesManagerService;
+    private final ClientSecurityExceptionMessageResolver exceptionMessageResolver;
     private boolean isActive;
     protected final ErrorCallback<Message> loadErrorCallback = new ErrorCallback<Message>() {
         @Override
         public boolean error(final Message message,
                              final Throwable throwable) {
-            if (!(throwable instanceof NoImplementationAvailableException)) {
-                // If no user management services, do not complain. Just complain for service errors, if specified.
-                showError(throwable);
-            }
+            showError(throwable);
             ClientUserSystemManager.this.isActive = false;
             return false;
         }
@@ -98,22 +93,19 @@ public class ClientUserSystemManager implements UserSystemManager {
     public ClientUserSystemManager(final Caller<UserManagerService> usersManagerService,
                                    final Caller<GroupManagerService> groupsManagerService,
                                    final Caller<RoleManagerService> rolesManagerService,
+                                   final ClientSecurityExceptionMessageResolver exceptionMessageResolver,
                                    final ErrorPopupPresenter errorPopupPresenter) {
         this.usersManagerService = usersManagerService;
         this.groupsManagerService = groupsManagerService;
         this.rolesManagerService = rolesManagerService;
+        this.exceptionMessageResolver = exceptionMessageResolver;
         this.errorPopupPresenter = errorPopupPresenter;
         this.isActive = false;
     }
 
     @AfterInitialization
     public void initCache() {
-        initializeCache(new Command() {
-                            @Override
-                            public void execute() {
-                                ClientUserSystemManager.this.isActive = true;
-                            }
-                        },
+        initializeCache(() -> ClientUserSystemManager.this.isActive = true,
                         loadErrorCallback);
     }
 
@@ -257,13 +249,9 @@ public class ClientUserSystemManager implements UserSystemManager {
     public void waitForInitialization(final Command command) {
         if (null != command) {
             initializeCache(command,
-                            new ErrorCallback<Message>() {
-                                @Override
-                                public boolean error(Message message,
-                                                     Throwable throwable) {
-                                    command.execute();
-                                    return false;
-                                }
+                            (message, throwable) -> {
+                                command.execute();
+                                return false;
                             });
         }
     }
@@ -279,18 +267,13 @@ public class ClientUserSystemManager implements UserSystemManager {
     private void initializeCache(final Command command,
                                  final ErrorCallback<Message> errorCallback) {
         // Load user & group management providers' settings.
-        loadUserSettings(new Command() {
-                             @Override
-                             public void execute() {
-                                 loadGroupSettings(new Command() {
-                                                       @Override
-                                                       public void execute() {
-                                                           command.execute();
-                                                       }
-                                                   },
-                                                   errorCallback);
-                             }
-                         },
+        loadUserSettings(() -> loadGroupSettings(new Command() {
+                                                     @Override
+                                                     public void execute() {
+                                                         command.execute();
+                                                     }
+                                                 },
+                                                 errorCallback),
                          errorCallback);
     }
 
@@ -338,12 +321,8 @@ public class ClientUserSystemManager implements UserSystemManager {
         }
     }
 
-    protected void showError(final Throwable throwable) {
-        final String msg = throwable.getCause() != null ? throwable.getCause().getMessage() : throwable.getMessage();
-        showError(UsersManagementClientConstants.INSTANCE.userSystemManagerInitializationError() + " ( " + msg + " ) ");
-    }
-
-    protected void showError(final String message) {
-        errorPopupPresenter.showMessage(message);
+    void showError(final Throwable throwable) {
+        exceptionMessageResolver.consumeExceptionMessage(throwable,
+                                                         errorPopupPresenter::showMessage);
     }
 }

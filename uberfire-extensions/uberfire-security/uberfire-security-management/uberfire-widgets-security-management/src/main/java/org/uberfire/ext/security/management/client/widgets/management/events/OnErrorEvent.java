@@ -24,35 +24,21 @@ import org.uberfire.workbench.events.UberFireEvent;
  */
 public class OnErrorEvent extends ContextualEvent implements UberFireEvent {
 
-    private Throwable cause;
-    private String message;
+    private Throwable exception;
 
-    public OnErrorEvent(Object context) {
+    public OnErrorEvent(final Object context,
+                        final Throwable exception) {
         super(context);
+        this.exception = exception;
     }
 
-    public OnErrorEvent(Object context,
-                        Throwable cause) {
-        super(context);
-        this.cause = cause;
-    }
-
-    public OnErrorEvent(Object context,
-                        String message) {
-        super(context);
-        this.message = message;
-    }
-
-    public Throwable getCause() {
-        return cause;
-    }
-
-    public String getMessage() {
-        return message;
+    public Throwable getException() {
+        return exception;
     }
 
     @Override
     public String toString() {
-        return "ErrorEvent [context=" + getContext() + "]";
+        return "ErrorEvent [context=" + getContext() + "," +
+                "exception=" + exception + "]";
     }
 }

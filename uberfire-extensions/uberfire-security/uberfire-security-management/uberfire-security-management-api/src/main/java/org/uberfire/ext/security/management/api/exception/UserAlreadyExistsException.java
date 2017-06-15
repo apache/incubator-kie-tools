@@ -20,18 +20,25 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * <p>Exception for user system management when the group is not found.</p>
+ * <p>Exception for user system management when the entity to create already exists.</p>
  * @since 0.8.0
  */
+@SuppressWarnings("serial")
 @Portable
-public class GroupNotFoundException extends EntityNotFoundException {
+public class UserAlreadyExistsException extends SecurityManagementException {
 
-    public GroupNotFoundException(@MapsTo("identifier") String identifier) {
-        super(identifier);
+    private String identifier;
+
+    public UserAlreadyExistsException(@MapsTo("identifier") String identifier) {
+        this.identifier = identifier;
+    }
+
+    public String getUserId() {
+        return identifier;
     }
 
     @Override
     public String getMessage() {
-        return "Group [" + getIdentifier() + "] not found";
+        return "User [" + identifier + " already exists";
     }
 }

@@ -243,14 +243,9 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
         return contextualEvent != null && contextualEvent.getContext() != null && contextualEvent.getContext().equals(context);
     }
 
-    protected void showError(final Throwable throwable) {
-        final String msg = throwable != null ? throwable.getMessage() : UsersManagementWidgetsConstants.INSTANCE.genericError();
-        showError(msg);
-    }
-
-    protected void showError(final String message) {
+    void showError(final Throwable throwable) {
         errorEvent.fire(new OnErrorEvent(BaseRoleEditorWorkflow.this,
-                                         message));
+                                         throwable));
     }
 
     protected void checkDirty(final Command callback) {

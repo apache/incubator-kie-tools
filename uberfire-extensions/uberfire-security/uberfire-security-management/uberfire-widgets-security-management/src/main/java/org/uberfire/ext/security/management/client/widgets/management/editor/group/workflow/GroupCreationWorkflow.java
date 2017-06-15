@@ -31,7 +31,9 @@ import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.Group;
 import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
+import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
+import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementClientConstants;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
 import org.uberfire.ext.security.management.client.widgets.management.CreateEntity;
 import org.uberfire.ext.security.management.client.widgets.management.editor.group.GroupUsersAssignment;
@@ -180,21 +182,16 @@ public class GroupCreationWorkflow implements IsWidget {
                 loadingBox.hide();
 
                 // Registered role found with this identifier, so name is not valid.
-                errorEvent.fire(new OnErrorEvent(GroupCreationWorkflow.this,
-                                                 UsersManagementWidgetsConstants.INSTANCE.alreadyExistRegisteredRole()));
+                showErrorMessage(UsersManagementClientConstants.INSTANCE.roleAlreadyExists());
                 createEntity.setErrorState();
             } else {
 
-                userSystemManager.groups(new RemoteCallback<Group>() {
-                                             @Override
-                                             public void callback(final Group o) {
-                                                 loadingBox.hide();
+                userSystemManager.groups(o -> {
+                                             loadingBox.hide();
 
-                                                 // Group found, so name is not valid.
-                                                 errorEvent.fire(new OnErrorEvent(GroupCreationWorkflow.this,
-                                                                                  UsersManagementWidgetsConstants.INSTANCE.groupAlreadyExists()));
-                                                 createEntity.setErrorState();
-                                             }
+                                             // Group found, so name is not valid.
+                                             showErrorMessage(UsersManagementClientConstants.INSTANCE.groupAlreadyExists());
+                                             createEntity.setErrorState();
                                          },
                                          new ErrorCallback<Message>() {
                                              @Override
@@ -264,7 +261,7 @@ public class GroupCreationWorkflow implements IsWidget {
         final boolean isEmptyUsersAllowed = userSystemManager.getGroupManagerSettings().allowEmpty();
         final boolean isEmpty = users == null || users.isEmpty();
         if (!isEmptyUsersAllowed && isEmpty) {
-            showError(UsersManagementWidgetsConstants.INSTANCE.groupMustHaveAtLeastOneUser());
+            showErrorMessage(UsersManagementWidgetsConstants.INSTANCE.groupMustHaveAtLeastOneUser());
             showUsersAssignment(name);
         } else {
             loadingBox.show();
@@ -293,13 +290,12 @@ public class GroupCreationWorkflow implements IsWidget {
         onCreateGroupEvent.fire(new CreateGroupEvent(name));
     }
 
-    protected void showError(final Throwable throwable) {
-        final String msg = throwable != null ? throwable.getMessage() : UsersManagementWidgetsConstants.INSTANCE.genericError();
-        showError(msg);
+    void showErrorMessage(final String message) {
+        showError(new SecurityManagementException(message));
     }
 
-    protected void showError(final String message) {
+    void showError(final Throwable throwable) {
         errorEvent.fire(new OnErrorEvent(GroupCreationWorkflow.this,
-                                         message));
+                                         throwable));
     }
 }

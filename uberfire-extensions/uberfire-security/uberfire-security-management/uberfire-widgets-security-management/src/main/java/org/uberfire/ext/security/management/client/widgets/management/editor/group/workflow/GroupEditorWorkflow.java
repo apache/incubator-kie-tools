@@ -289,10 +289,9 @@ public class GroupEditorWorkflow implements IsWidget {
         loadingBox.hide();
     }
 
-    protected void showError(final Throwable throwable) {
-        final String msg = throwable != null ? throwable.getMessage() : UsersManagementWidgetsConstants.INSTANCE.genericError();
+    void showError(final Throwable throwable) {
         errorEvent.fire(new OnErrorEvent(GroupEditorWorkflow.this,
-                                         msg));
+                                         throwable));
     }
 
     // Event observers

@@ -33,6 +33,7 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
 import org.uberfire.ext.security.management.client.widgets.management.events.ChangePasswordEvent;
@@ -76,6 +77,7 @@ public class ChangePassword implements IsWidget {
     Event<ChangePasswordEvent> changePasswordEvent;
     String username = null;
     ChangePasswordCallback callback;
+
     @Inject
     public ChangePassword(final ClientUserSystemManager userSystemManager,
                           final Event<NotificationEvent> workbenchNotification,
@@ -133,7 +135,7 @@ public class ChangePassword implements IsWidget {
                                    final String p2) {
         final boolean valid = p1 != null && p1.equals(p2);
         if (!valid) {
-            showError(UsersManagementWidgetsConstants.INSTANCE.passwordsNotMatch());
+            showErrorMessage(UsersManagementWidgetsConstants.INSTANCE.passwordsNotMatch());
         }
         return valid;
     }
@@ -169,12 +171,12 @@ public class ChangePassword implements IsWidget {
                                 },
                                 new ErrorCallback<Message>() {
                                     @Override
-                                    public boolean error(Message message,
-                                                         Throwable throwable) {
+                                    public boolean error(final Message message,
+                                                         final Throwable throwable) {
                                         if (throwable != null) {
-                                            showError("[ERROR] ChangePassword - Throwable: " + throwable.getMessage());
+                                            showError(throwable);
                                         } else {
-                                            showError("[ERROR] ChangePassword - Message: " + message.getSubject());
+                                            showErrorMessage(message.getSubject());
                                         }
 
                                         // Run the callback when backend request completed.
@@ -190,9 +192,13 @@ public class ChangePassword implements IsWidget {
                                                   newPassword);
     }
 
-    protected void showError(final String message) {
+    void showErrorMessage(final String message) {
+        showError(new SecurityManagementException(message));
+    }
+
+    void showError(final Throwable throwable) {
         errorEvent.fire(new OnErrorEvent(ChangePassword.this,
-                                         message));
+                                         throwable));
     }
     
     
@@ -206,6 +212,7 @@ public class ChangePassword implements IsWidget {
 
         void onError(final Throwable throwable);
     }
+
     ;
 
     public interface View extends UberView<ChangePassword> {

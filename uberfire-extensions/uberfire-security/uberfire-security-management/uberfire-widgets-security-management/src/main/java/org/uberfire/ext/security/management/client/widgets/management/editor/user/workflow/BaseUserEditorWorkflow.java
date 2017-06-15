@@ -351,13 +351,8 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
     }
 
     protected void showError(final Throwable throwable) {
-        final String msg = throwable != null ? throwable.getMessage() : UsersManagementWidgetsConstants.INSTANCE.genericError();
-        showError(msg);
-    }
-
-    protected void showError(final String message) {
         errorEvent.fire(new OnErrorEvent(BaseUserEditorWorkflow.this,
-                                         message));
+                                         throwable));
     }
 
     protected void checkDirty(final Command callback) {

@@ -284,14 +284,9 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
     }
 
     protected void showError(final Throwable throwable) {
-        final String msg = throwable != null ? throwable.getMessage() : UsersManagementWidgetsConstants.INSTANCE.genericError();
-        showError(msg);
-    }
-
-    protected void showError(final String message) {
         hideLoadingView();
         errorEvent.fire(new OnErrorEvent(AbstractEntityExplorer.this,
-                                         message));
+                                         throwable));
     }
 
     public void clear() {

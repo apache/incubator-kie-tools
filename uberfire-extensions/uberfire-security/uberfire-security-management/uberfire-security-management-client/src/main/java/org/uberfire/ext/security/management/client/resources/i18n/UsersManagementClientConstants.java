@@ -31,4 +31,20 @@ public interface UsersManagementClientConstants extends ConstantsWithLookup {
     String group_validation_nameNotEmpty();
 
     String userSystemManagerInitializationError();
+
+    String noUserSystemManagerActive();
+
+    String unsupportedCapability();
+
+    String userAlreadyExists();
+
+    String groupAlreadyExists();
+
+    String roleAlreadyExists();
+
+    String entityNotFound();
+
+    String userNotFound();
+
+    String groupNotFound();
 }

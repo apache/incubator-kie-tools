@@ -127,7 +127,7 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
 
     @Test
     public void testShowError() {
-        tested.showError("error1");
+        tested.showErrorMessage("error1");
         verify(errorEvent,
                times(1)).fire(any(OnErrorEvent.class));
     }

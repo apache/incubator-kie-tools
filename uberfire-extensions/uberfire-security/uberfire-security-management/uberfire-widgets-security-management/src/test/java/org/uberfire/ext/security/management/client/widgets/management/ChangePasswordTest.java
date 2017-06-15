@@ -74,7 +74,7 @@ public class ChangePasswordTest extends AbstractSecurityManagementTest {
     @Test
     public void testShowError() throws Exception {
         String error = "error1";
-        presenter.showError(error);
+        presenter.showErrorMessage(error);
         verify(view,
                times(0)).clear();
         verify(view,

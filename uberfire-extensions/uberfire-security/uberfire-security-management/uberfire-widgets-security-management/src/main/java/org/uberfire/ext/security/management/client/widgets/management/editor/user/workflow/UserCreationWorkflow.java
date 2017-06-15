@@ -26,8 +26,8 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.ext.security.management.api.exception.EntityAlreadyExistsException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
+import org.uberfire.ext.security.management.api.exception.UserAlreadyExistsException;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.editor.user.UserEditorDriver;
@@ -154,7 +154,7 @@ public class UserCreationWorkflow extends BaseUserEditorWorkflow {
 
                             @Override
                             public void invalid(final SecurityManagementException exception) {
-                                showError(exception.getMessage());
+                                showError(exception);
                                 createEntity.setErrorState();
                             }
 
@@ -256,8 +256,7 @@ public class UserCreationWorkflow extends BaseUserEditorWorkflow {
                                     public void callback(User o) {
                                         // User found, so identifier is not valid.
                                         hideLoadingBox();
-                                        callback.invalid(new EntityAlreadyExistsException(identifier,
-                                                                                          UsersManagementWidgetsConstants.INSTANCE.userAlreadyExists()));
+                                        callback.invalid(new UserAlreadyExistsException(identifier));
                                     }
                                 },
                                 new ErrorCallback<Message>() {

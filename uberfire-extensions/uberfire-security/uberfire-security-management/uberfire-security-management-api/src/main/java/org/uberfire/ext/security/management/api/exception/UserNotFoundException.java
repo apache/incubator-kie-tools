@@ -24,20 +24,14 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @since 0.8.0
  */
 @Portable
-public class UserNotFoundException extends SecurityManagementException {
-
-    private String identifier;
+public class UserNotFoundException extends EntityNotFoundException {
 
     public UserNotFoundException(@MapsTo("identifier") String identifier) {
-        this.identifier = identifier;
-    }
-
-    public String getIdentifier() {
-        return identifier;
+        super(identifier);
     }
 
     @Override
     public String getMessage() {
-        return "User [" + identifier + "] not found";
+        return "User [" + getIdentifier() + "] not found";
     }
 }

@@ -48,6 +48,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.api.UserManager;
+import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
 import org.uberfire.ext.security.management.client.widgets.management.events.CreateUserAttributeEvent;
@@ -117,8 +118,9 @@ public class UserAttributesEditor implements IsWidget,
                            final String value) {
             if (value == null) {
                 // Attribute is mandatory and cannot be removed.
-                errorEvent.fire(new OnErrorEvent(UserAttributesEditor.this,
-                                                 UsersManagementWidgetsConstants.INSTANCE.attributeIsMandatory()));
+                errorEvent
+                        .fire(new OnErrorEvent(UserAttributesEditor.this,
+                                               new SecurityManagementException(UsersManagementWidgetsConstants.INSTANCE.attributeIsMandatory())));
             } else {
                 confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(),
                                 UsersManagementWidgetsConstants.INSTANCE.ensureRemoveAttribute(),

@@ -90,12 +90,6 @@ public interface UsersManagementWidgetsConstants extends Messages {
 
     String add();
 
-    String userAlreadyExists();
-
-    String groupAlreadyExists();
-
-    String alreadyExistRegisteredRole();
-
     String confirmAction();
 
     String ensureRemoveUser();

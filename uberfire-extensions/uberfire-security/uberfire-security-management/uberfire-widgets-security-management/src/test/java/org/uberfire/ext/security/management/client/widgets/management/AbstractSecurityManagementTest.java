@@ -37,6 +37,7 @@ import org.uberfire.ext.security.management.api.UserManager;
 import org.uberfire.ext.security.management.api.service.GroupManagerService;
 import org.uberfire.ext.security.management.api.service.RoleManagerService;
 import org.uberfire.ext.security.management.api.service.UserManagerService;
+import org.uberfire.ext.security.management.client.ClientSecurityExceptionMessageResolver;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
@@ -62,6 +63,8 @@ public abstract class AbstractSecurityManagementTest {
     protected RoleManagerService rolesManagerService;
     @Mock
     protected ErrorPopupPresenter errorPopupPresenter;
+    @Mock
+    protected ClientSecurityExceptionMessageResolver exceptionMessageResolver;
     protected Caller<UserManagerService> usersManagerServiceCaller;
     protected Caller<GroupManagerService> groupsManagerServiceCaller;
     protected Caller<RoleManagerService> rolesManagerServiceCaller;
@@ -75,6 +78,7 @@ public abstract class AbstractSecurityManagementTest {
         userSystemManager = spy(new ClientUserSystemManager(usersManagerServiceCaller,
                                                             groupsManagerServiceCaller,
                                                             rolesManagerServiceCaller,
+                                                            exceptionMessageResolver,
                                                             errorPopupPresenter));
         doAnswer(new Answer<User>() {
             @Override
