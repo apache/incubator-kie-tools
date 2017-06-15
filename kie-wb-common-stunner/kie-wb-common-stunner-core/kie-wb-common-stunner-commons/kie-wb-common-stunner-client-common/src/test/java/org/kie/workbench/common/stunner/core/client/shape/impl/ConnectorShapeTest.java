@@ -59,7 +59,6 @@ public class ConnectorShapeTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         shapeView = spy(new ConnectorViewStub());
-        when(shapeStateHelper.save(any(Predicate.class))).thenReturn(shapeStateHelper);
         this.tested = new ConnectorShape(shapeDef,
                                          shapeView,
                                          shapeStateHelper);
@@ -70,7 +69,7 @@ public class ConnectorShapeTest {
     public void testApplyState() {
         tested.applyState(ShapeState.NONE);
         verify(shapeStateHelper,
-               times(1)).save(any(Predicate.class));
+               never()).save(any(Predicate.class));
         verify(shapeStateHelper,
                times(1)).applyState(eq(ShapeState.NONE));
     }

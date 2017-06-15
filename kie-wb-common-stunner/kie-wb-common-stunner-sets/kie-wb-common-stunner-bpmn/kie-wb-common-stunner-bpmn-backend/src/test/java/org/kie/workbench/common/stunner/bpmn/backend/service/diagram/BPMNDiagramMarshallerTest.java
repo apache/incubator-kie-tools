@@ -49,6 +49,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
@@ -125,7 +126,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-// TODO: Use Archillian to avoid all that CDI mockings.
 @RunWith(MockitoJUnitRunner.class)
 public class BPMNDiagramMarshallerTest {
 
@@ -147,6 +147,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_PROCESSPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processProperties.bpmn";
     private static final String BPMN_BUSINESSRULETASKRULEFLOWGROUP = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/businessRuleTask.bpmn";
     private static final String BPMN_REUSABLE_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/reusableSubprocessCalledElement.bpmn";
+    private static final String BPMN_EMBEDDED_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/embeddedSubprocess.bpmn";
     private static final String BPMN_SCRIPTTASK = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/scriptTask.bpmn";
     private static final String BPMN_USERTASKASSIGNEES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskAssignees.bpmn";
     private static final String BPMN_USERTASKPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskProperties.bpmn";
@@ -1287,7 +1288,6 @@ public class BPMNDiagramMarshallerTest {
                      0.1d);
     }
 
-
     private ViewConnector getInEdgeViewConnector(Node node) {
         List<Edge> edges = node.getInEdges();
         if (edges != null) {
@@ -1325,6 +1325,24 @@ public class BPMNDiagramMarshallerTest {
             }
         }
         return null;
+    }
+
+    @Test
+    public void testUnmarshallEmbeddedSubprocess() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EMBEDDED_SUBPROCESS);
+        EmbeddedSubprocess subprocess = null;
+        Iterator<Element> it = nodesIterator(diagram);
+        while (it.hasNext()) {
+            Element element = it.next();
+            if (element.getContent() instanceof View) {
+                Object oDefinition = ((View) element.getContent()).getDefinition();
+                if (oDefinition instanceof EmbeddedSubprocess) {
+                    subprocess = (EmbeddedSubprocess) oDefinition;
+                    break;
+                }
+            }
+        }
+        assertNotNull(subprocess);
     }
 
     @Test
@@ -1557,6 +1575,20 @@ public class BPMNDiagramMarshallerTest {
                                                            " ");
         assertTrue(flatResult.contains("<drools:metaData name=\"elementname\"> <drools:metaValue><![CDATA[my subprocess]]></drools:metaValue> </drools:metaData>"));
         assertTrue(flatResult.contains("<drools:metaData name=\"customAsync\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
+    }
+
+    @Test
+    public void testMarshallEmbeddedSubprocess() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EMBEDDED_SUBPROCESS);
+        assertDiagram(diagram,
+                      10);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      9,
+                      7);
+
+        assertTrue(result.contains("<bpmn2:subProcess id=\"_C3EBE7F1-8E57-4BB1-B380-40BB02E9464E\" "));
     }
 
     @Test

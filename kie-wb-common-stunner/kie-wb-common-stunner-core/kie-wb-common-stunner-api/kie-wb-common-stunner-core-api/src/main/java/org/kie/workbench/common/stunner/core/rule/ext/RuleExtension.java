@@ -37,7 +37,7 @@ import org.kie.workbench.common.stunner.core.rule.Rule;
  * @See {@link org.kie.workbench.common.stunner.core.rule.annotation.RuleExtension}
  */
 @Portable
-public final class RuleExtension implements Rule {
+public class RuleExtension implements Rule {
 
     private final String name;
     private final String id;

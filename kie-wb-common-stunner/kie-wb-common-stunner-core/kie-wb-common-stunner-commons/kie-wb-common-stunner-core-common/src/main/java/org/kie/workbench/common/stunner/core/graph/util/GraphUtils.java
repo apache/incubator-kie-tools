@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Logger;
+import java.util.function.BiPredicate;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -35,9 +36,9 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public class GraphUtils {
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
-    private static Logger LOGGER = Logger.getLogger(GraphUtils.class.getName());
+public class GraphUtils {
 
     public static Object getProperty(final DefinitionManager definitionManager,
                                      final Element<? extends Definition> element,
@@ -156,6 +157,43 @@ public class GraphUtils {
                 .findAny()
                 .map(Edge::getSourceNode)
                 .orElse(null);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Optional<Element<?>> getParentByDefinitionId(final DefinitionManager definitionManager,
+                                                               final Node<?, ? extends Edge> candidate,
+                                                               final String parentDefId) {
+        checkNotNull("candidate",
+                     candidate);
+        checkNotNull("parentDefId",
+                     parentDefId);
+        Element<?> p = getParent(candidate);
+        while (p instanceof Node
+                && p.getContent() instanceof Definition) {
+            final String cID = getElementDefinitionId(definitionManager,
+                                                      p);
+            if (parentDefId.equals(cID)) {
+                return Optional.of(p);
+            }
+            p = getParent((Node<?, ? extends Edge>) p);
+        }
+        return Optional.empty();
+    }
+
+    public static class HasParentPredicate implements BiPredicate<Node<?, ? extends Edge>, Element<?>> {
+
+        @Override
+        public boolean test(final Node<?, ? extends Edge> candidate,
+                            final Element<?> parent) {
+            if (null != candidate) {
+                Element<?> p = getParent(candidate);
+                while (p instanceof Node && !p.equals(parent)) {
+                    p = getParent((Node<?, ? extends Edge>) p);
+                }
+                return null != p;
+            }
+            return false;
+        }
     }
 
     public static Point2D getPosition(final View element) {

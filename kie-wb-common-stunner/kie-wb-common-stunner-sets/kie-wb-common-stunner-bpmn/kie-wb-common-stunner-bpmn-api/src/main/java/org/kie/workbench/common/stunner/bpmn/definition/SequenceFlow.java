@@ -35,6 +35,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ti
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
+import org.kie.workbench.common.stunner.core.rule.annotation.RuleExtension;
+import org.kie.workbench.common.stunner.core.rule.ext.impl.ConnectorParentsMatchHandler;
 
 @Portable
 @Bindable
@@ -55,6 +57,12 @@ import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 @EdgeOccurrences(role = "messageflow_start", type = EdgeOccurrences.EdgeType.OUTGOING, max = 1)
 // A single outgoing sequence flows for event types that can be docked (boundary) such as Intermediate Timer Event
 @EdgeOccurrences(role = "IntermediateEventOnActivityBoundary", type = EdgeOccurrences.EdgeType.OUTGOING, max = 1)
+// Sequence flows cannot exceed bounds when any of the nodes are in an embedded subprocess context.
+@RuleExtension(handler = ConnectorParentsMatchHandler.class,
+        typeArguments = {EmbeddedSubprocess.class},
+        arguments = {"Sequence flow connectors cannot exceed the embbedded subprocess' bounds. " +
+                "Both source and target nodes must be in same parent process."})
+
 @FormDefinition(
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED

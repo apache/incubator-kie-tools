@@ -42,7 +42,6 @@ public class ShapeImplTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        when(shapeStateHelper.save(any(Predicate.class))).thenReturn(shapeStateHelper);
         this.view = spy(new ShapeViewExtStub());
         this.tested = new ShapeImpl<ShapeView>(view,
                                                shapeStateHelper);
@@ -70,7 +69,7 @@ public class ShapeImplTest {
     public void testApplyState() {
         tested.applyState(ShapeState.NONE);
         verify(shapeStateHelper,
-               times(1)).save(any(Predicate.class));
+               never()).save(any(Predicate.class));
         verify(shapeStateHelper,
                times(1)).applyState(eq(ShapeState.NONE));
     }

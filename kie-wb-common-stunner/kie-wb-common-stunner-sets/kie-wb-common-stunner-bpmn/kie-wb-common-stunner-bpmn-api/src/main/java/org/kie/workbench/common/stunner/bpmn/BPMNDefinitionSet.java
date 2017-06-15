@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
@@ -65,6 +66,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
                 ParallelGateway.class,
                 ExclusiveDatabasedGateway.class,
                 ReusableSubprocess.class,
+                EmbeddedSubprocess.class,
                 SequenceFlow.class
         },
         builder = BPMNDefinitionSet.BPMNDefinitionSetBuilder.class

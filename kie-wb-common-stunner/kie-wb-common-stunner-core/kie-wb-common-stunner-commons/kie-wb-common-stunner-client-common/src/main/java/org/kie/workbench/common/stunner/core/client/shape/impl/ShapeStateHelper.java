@@ -24,8 +24,8 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
 
-    public static final double ACTIVE_STROKE_WIDTH = 1d;
-    public static final double ACTIVE_STROKE_ALPHA = 1d;
+    static final double ACTIVE_STROKE_WIDTH_PCT = 1d;
+    static final double ACTIVE_STROKE_ALPHA = 1d;
 
     /*
         The following instance members:
@@ -68,6 +68,7 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
     public ShapeStateHelper save(final Predicate<ShapeState> stateFilter) {
         if (stateFilter.test(this.state)) {
             this.strokeWidth = getShapeView().getStrokeWidth();
+            this.activeStrokeWidth = strokeWidth + (strokeWidth * ACTIVE_STROKE_WIDTH_PCT);
             this.strokeAlpha = getShapeView().getStrokeAlpha();
             this.strokeColor = getShapeView().getStrokeColor();
         }
@@ -99,7 +100,7 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
     protected void applyActiveState(final String color) {
         getShapeView().setStrokeColor(color);
         getShapeView().setStrokeWidth(getActiveStrokeWidth());
-        getShapeView().setStrokeAlpha(ACTIVE_STROKE_ALPHA);
+        getShapeView().setStrokeAlpha(getActiveStrokeAlpha());
     }
 
     protected void applyNoneState(final String color,
@@ -112,18 +113,21 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
 
     protected void init() {
         this.state = ShapeState.NONE;
-        this.activeStrokeWidth = ACTIVE_STROKE_WIDTH;
+        this.activeStrokeWidth = 1;
         this.strokeWidth = 1;
         this.strokeAlpha = 1;
     }
 
-    protected double getActiveStrokeWidth() {
-        //return activeStrokeWidth;
-        return strokeWidth + (strokeWidth * activeStrokeWidth);
-    }
-
     protected S getShape() {
         return shape;
+    }
+
+    protected double getActiveStrokeWidth() {
+        return activeStrokeWidth;
+    }
+
+    protected static double getActiveStrokeAlpha() {
+        return ACTIVE_STROKE_ALPHA;
     }
 
     private void applySelectedState() {

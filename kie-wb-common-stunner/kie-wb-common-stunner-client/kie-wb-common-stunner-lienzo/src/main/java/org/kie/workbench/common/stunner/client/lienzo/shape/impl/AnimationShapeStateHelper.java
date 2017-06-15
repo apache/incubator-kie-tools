@@ -38,7 +38,7 @@ public class AnimationShapeStateHelper<V extends ShapeView, S extends Shape<V>> 
     protected void applyActiveState(final String color) {
         runAnimation(color,
                      getActiveStrokeWidth(),
-                     ACTIVE_STROKE_ALPHA);
+                     getActiveStrokeAlpha());
     }
 
     /**

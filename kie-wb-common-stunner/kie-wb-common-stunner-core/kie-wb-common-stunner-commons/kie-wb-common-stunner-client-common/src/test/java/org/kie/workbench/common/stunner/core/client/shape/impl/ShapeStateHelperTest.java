@@ -85,7 +85,7 @@ public class ShapeStateHelperTest {
         verify(shapeView,
                times(1)).setStrokeColor(eq(state.getColor()));
         verify(shapeView,
-               times(1)).setStrokeWidth(eq(STROKE_WIDTH_0 + (ShapeStateHelper.ACTIVE_STROKE_WIDTH * STROKE_WIDTH_0)));
+               times(1)).setStrokeWidth(eq(STROKE_WIDTH_0 + (ShapeStateHelper.ACTIVE_STROKE_WIDTH_PCT * STROKE_WIDTH_0)));
         verify(shapeView,
                times(1)).setStrokeAlpha(eq(ShapeStateHelper.ACTIVE_STROKE_ALPHA));
     }

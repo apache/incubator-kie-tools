@@ -71,7 +71,6 @@ public class ShapeImpl<V extends ShapeView>
     @Override
     public void applyState(final ShapeState shapeState) {
         shapeStateHelper
-                .save(ShapeState.NONE::equals)
                 .applyState(shapeState);
     }
 

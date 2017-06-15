@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.Categories;
+import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
@@ -48,6 +49,7 @@ import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 @ApplicationScoped
 public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactory {
 
+    @SuppressWarnings("unchecked")
     private final static Map<String, IconResource> CATEGORY_RERNDERERS_SETTINGS = new HashMap<String, IconResource>() {{
         put(Categories.ACTIVITIES,
             new IconResource(BPMNImageResources.INSTANCE.categoryActivity()));
@@ -61,6 +63,7 @@ public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactor
             new IconResource(BPMNImageResources.INSTANCE.categorySequence()));
     }};
 
+    @SuppressWarnings("unchecked")
     private final static Map<String, IconResource> DEFINITION_RERNDERERS_SETTINGS = new HashMap<String, IconResource>() {{
         put(NoneTask.class.getName(),
             new IconResource(BPMNImageResources.INSTANCE.taskUser()));
@@ -92,6 +95,8 @@ public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactor
             new IconResource(BPMNImageResources.INSTANCE.sequenceFlow()));
         put(ReusableSubprocess.class.getName(),
             new IconResource(BPMNImageResources.INSTANCE.subProcessReusable()));
+        put(EmbeddedSubprocess.class.getName(),
+            new IconResource(BPMNImageResources.INSTANCE.subProcessEmbedded()));
     }};
 
     protected BpmnBS3PaletteViewFactory() {

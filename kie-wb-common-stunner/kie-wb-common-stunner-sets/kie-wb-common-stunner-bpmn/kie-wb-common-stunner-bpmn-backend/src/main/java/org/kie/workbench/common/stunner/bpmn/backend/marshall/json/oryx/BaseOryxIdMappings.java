@@ -26,6 +26,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
@@ -154,6 +155,8 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 "timecycle");
             put(TimeCycleLanguage.class,
                 "timecyclelanguage");
+            put(EmbeddedSubprocess.class,
+                "Subprocess");
             put(AdHoc.class,
                 "adhocprocess");
             put(ProcessInstanceDescription.class,
@@ -280,6 +283,12 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 reusableSubprocessPropertiesMap);
             reusableSubprocessPropertiesMap.put(AssignmentsInfo.class,
                                                 "assignmentsinfo");
+
+            Map<Class<?>, String> embeddedSubprocessPropertiesMap = new HashMap<Class<?>, String>();
+            put(EmbeddedSubprocess.class,
+                embeddedSubprocessPropertiesMap);
+            embeddedSubprocessPropertiesMap.put(ProcessVariables.class,
+                                                "vardefs");
 
             Map<Class<?>, String> exclusiveDatabasedGatewayPropertiesMap = new HashMap<Class<?>, String>();
             put(ExclusiveDatabasedGateway.class,

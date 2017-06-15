@@ -21,6 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.BPMNDiagramShapeDef;
+import org.kie.workbench.common.stunner.bpmn.client.shape.def.EmbeddedSubprocessShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.EndEventShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.GatewayShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.IntermediateTimerEventShapeDef;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.client.shape.def.StartEventShapeDef
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.TaskShapeDef;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
@@ -113,6 +115,8 @@ public class BPMNSVGShapeFactory
                                     new LaneShapeDef());
         svgShapeFactory.addShapeDef(ReusableSubprocess.class,
                                     new ReusableSubprocessShapeDef());
+        svgShapeFactory.addShapeDef(EmbeddedSubprocess.class,
+                                    new EmbeddedSubprocessShapeDef());
         svgShapeFactory.addShapeDef(NoneTask.class,
                                     new TaskShapeDef());
         svgShapeFactory.addShapeDef(EndNoneEvent.class,
