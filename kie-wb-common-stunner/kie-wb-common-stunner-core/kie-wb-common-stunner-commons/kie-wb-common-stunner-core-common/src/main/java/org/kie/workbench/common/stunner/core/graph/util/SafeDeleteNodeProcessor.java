@@ -16,10 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.graph.util;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -27,7 +30,6 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
-import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.AbstractChildrenTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
@@ -38,9 +40,9 @@ public class SafeDeleteNodeProcessor {
 
     public interface Callback {
 
-        void deleteIncomingConnection(final Edge<? extends View<?>, Node> edge);
+        void deleteCandidateConnector(final Edge<? extends View<?>, Node> edge);
 
-        void deleteOutgoingConnection(final Edge<? extends View<?>, Node> edge);
+        void deleteConnector(final Edge<? extends View<?>, Node> edge);
 
         void removeChild(final Element<?> parent,
                          final Node<?, Edge> candidate);
@@ -48,9 +50,12 @@ public class SafeDeleteNodeProcessor {
         void removeDock(final Node<?, Edge> parent,
                         final Node<?, Edge> candidate);
 
+        void deleteCandidateNode(final Node<?, Edge> node);
+
         void deleteNode(final Node<?, Edge> node);
     }
 
+    private final Set<String> processedConnectors = new HashSet<String>();
     private final Node<Definition<?>, Edge> candidate;
     private final Graph graph;
     private final ChildrenTraverseProcessor childrenTraverseProcessor;
@@ -66,6 +71,7 @@ public class SafeDeleteNodeProcessor {
     @SuppressWarnings("unchecked")
     public void run(final Callback callback) {
         final Stack<Node<View, Edge>> nodes = new Stack<Node<View, Edge>>();
+        processedConnectors.clear();
         childrenTraverseProcessor
                 .setRootUUID(candidate.getUUID())
                 .traverse(graph,
@@ -88,31 +94,47 @@ public class SafeDeleteNodeProcessor {
                           });
         // Process delete for children nodes.
         nodes.forEach(node -> processNode(node,
-                                          callback));
+                                          callback,
+                                          false));
         // Process candidate's delete.
         processNode(candidate,
-                    callback);
+                    callback,
+                    true);
     }
 
     @SuppressWarnings("unchecked")
-    private void processNode(Node<?, Edge> node,
-                             final Callback callback) {
+    private void processNode(final Node<?, Edge> node,
+                             final Callback callback,
+                             final boolean candidate) {
         log("Deleting node [" + node.getUUID() + "]");
-        node.getOutEdges().stream()
+        Stream.concat(node.getOutEdges().stream(),
+                      node.getInEdges().stream())
                 .filter(e -> e.getContent() instanceof View)
-                .forEach(callback::deleteOutgoingConnection);
-        node.getInEdges().stream()
-                .filter(e -> e.getContent() instanceof View)
-                .forEach(callback::deleteIncomingConnection);
-        node.getInEdges().stream()
-                .filter(e -> e.getContent() instanceof Dock)
-                .forEach(e -> callback.removeDock(e.getSourceNode(),
-                                                  node));
+                .forEach(e -> deleteConnector(callback,
+                                              e,
+                                              candidate));
         node.getInEdges().stream()
                 .filter(e -> e.getContent() instanceof Child)
                 .forEach(e -> callback.removeChild(e.getSourceNode(),
                                                    node));
-        callback.deleteNode(node);
+        if (candidate) {
+            callback.deleteCandidateNode(node);
+        } else {
+            callback.deleteNode(node);
+        }
+    }
+
+    private void deleteConnector(final Callback callback,
+                                 final Edge<? extends View<?>, Node> edge,
+                                 final boolean candidate) {
+        if (!processedConnectors.contains(edge.getUUID())) {
+            if (candidate) {
+                callback.deleteCandidateConnector(edge);
+            } else {
+                callback.deleteConnector(edge);
+            }
+            processedConnectors.add(edge.getUUID());
+        }
     }
 
     private void log(final String message) {

@@ -17,10 +17,15 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
@@ -55,8 +60,6 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
 
     @NonPortable
     public interface SafeDeleteNodeCommandCallback extends SafeDeleteNodeProcessor.Callback {
-
-        void deleteEdge(final Edge<? extends View<?>, Node> edge);
 
         void setEdgeTargetNode(final Node<?, Edge> targetNode,
                                final Edge<? extends View<?>, Node> candidate);
@@ -94,20 +97,17 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                                     candidate)
                 .run(new SafeDeleteNodeProcessor.Callback() {
 
+                    private final Set<String> processedConnectors = new HashSet<String>();
+
                     @Override
-                    public void deleteIncomingConnection(final Edge<? extends View<?>, Node> edge) {
-                        log("IN SetConnectionTargetNodeCommand [edge=" + edge.getUUID() + "]");
-                        addCommand(new SetConnectionTargetNodeCommand(null,
-                                                                      edge));
-                        safeDeleteCallback.ifPresent(c -> c.deleteIncomingConnection(edge));
+                    public void deleteCandidateConnector(final Edge<? extends View<?>, Node> edge) {
+                        // This command will delete candidate's connectors once deleting the candidate node,
+                        // as it potentially performs the connectors shortcut operation.
                     }
 
                     @Override
-                    public void deleteOutgoingConnection(final Edge<? extends View<?>, Node> edge) {
-                        log("OUT SetConnectionSourceNodeCommand [edge=" + edge.getUUID() + "]");
-                        addCommand(new SetConnectionSourceNodeCommand(null,
-                                                                      edge));
-                        safeDeleteCallback.ifPresent(c -> c.deleteOutgoingConnection(edge));
+                    public void deleteConnector(final Edge<? extends View<?>, Node> edge) {
+                        doDeleteConnector(edge);
                     }
 
                     @Override
@@ -133,45 +133,32 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                     }
 
                     @Override
+                    public void deleteCandidateNode(final Node<?, Edge> node) {
+                        processCandidateConnectors();
+                        deleteNode(node);
+                    }
+
+                    @Override
                     public void deleteNode(final Node<?, Edge> node) {
                         log("DeregisterNodeCommand [node=" + node.getUUID() + "]");
-                        if (isTheCandidate(node)) {
-                            processCandidateConnectorShortcut();
-                        }
                         addCommand(new DeregisterNodeCommand(node));
                         safeDeleteCallback.ifPresent(c -> c.deleteNode(node));
                     }
 
-                    private boolean isTheCandidate(final Node<?, Edge> node) {
-                        return null != node && node.equals(candidate);
-                    }
-
-                    private void processCandidateConnectorShortcut() {
-                        // Check if the in/out candidate connectors can be shortcut.
-                        final long inConnectors = countViewConnectors(candidate.getInEdges());
-                        final long outConnectors = countViewConnectors(candidate.getOutEdges());
-                        final boolean isShortcut = 1 == inConnectors && 1 == outConnectors;
-                        if (isShortcut) {
-                            final Edge<? extends ViewConnector<?>, Node> in = getViewConnector(candidate.getInEdges());
-                            final Edge<? extends ViewConnector<?>, Node> out = getViewConnector(candidate.getOutEdges());
+                    private void processCandidateConnectors() {
+                        if (hasSingleIncomingEdge()
+                                .and(hasSingleOutgoingEdge())
+                                .test(candidate)) {
+                            final Edge<? extends ViewConnector<?>, Node> in = getViewConnector().apply(candidate.getInEdges());
+                            final Edge<? extends ViewConnector<?>, Node> out = getViewConnector().apply(candidate.getOutEdges());
                             shortcut(in,
                                      out);
+                        } else {
+                            Stream.concat(candidate.getInEdges().stream(),
+                                          candidate.getOutEdges().stream())
+                                    .filter(e -> e.getContent() instanceof ViewConnector)
+                                    .forEach(this::deleteConnector);
                         }
-                    }
-
-                    private long countViewConnectors(final List<Edge> edgeList) {
-                        return edgeList
-                                .stream()
-                                .filter(e -> e.getContent() instanceof ViewConnector)
-                                .count();
-                    }
-
-                    private Edge getViewConnector(final List<Edge> edgeList) {
-                        return edgeList
-                                .stream()
-                                .filter(e -> e.getContent() instanceof ViewConnector)
-                                .findAny()
-                                .get();
                     }
 
                     private void shortcut(final Edge<? extends ViewConnector<?>, Node> in,
@@ -179,13 +166,22 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                         final ViewConnector<?> outContent = out.getContent();
                         final Node targetNode = out.getTargetNode();
                         addCommand(new DeleteConnectorCommand(out));
-                        safeDeleteCallback.ifPresent(c -> c.deleteEdge(out));
+                        safeDeleteCallback.ifPresent(c -> c.deleteCandidateConnector(out));
                         addCommand(new SetConnectionTargetNodeCommand(targetNode,
                                                                       in,
                                                                       outContent.getTargetMagnet().orElse(null),
                                                                       true));
                         safeDeleteCallback.ifPresent(c -> c.setEdgeTargetNode(targetNode,
                                                                               in));
+                    }
+
+                    private void doDeleteConnector(final Edge<? extends View<?>, Node> edge) {
+                        if (!processedConnectors.contains(edge.getUUID())) {
+                            log("IN DoDeleteConnector [edge=" + edge.getUUID() + "]");
+                            addCommand(new DeleteConnectorCommand(edge));
+                            safeDeleteCallback.ifPresent(c -> c.deleteConnector(edge));
+                            processedConnectors.add(edge.getUUID());
+                        }
                     }
                 });
 
@@ -238,6 +234,29 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
 
     private boolean hasRules(final GraphCommandExecutionContext context) {
         return null != context.getRuleManager();
+    }
+
+    private static Predicate<Node<Definition<?>, Edge>> hasSingleIncomingEdge() {
+        return node -> 1 == countViewConnectors().apply(node.getInEdges());
+    }
+
+    private static Predicate<Node<Definition<?>, Edge>> hasSingleOutgoingEdge() {
+        return node -> 1 == countViewConnectors().apply(node.getOutEdges());
+    }
+
+    private static Function<List<Edge>, Long> countViewConnectors() {
+        return edges -> edges
+                .stream()
+                .filter(e -> e.getContent() instanceof ViewConnector)
+                .count();
+    }
+
+    private static Function<List<Edge>, Edge> getViewConnector() {
+        return edges -> edges
+                .stream()
+                .filter(e -> e.getContent() instanceof ViewConnector)
+                .findAny()
+                .get();
     }
 
     @Override

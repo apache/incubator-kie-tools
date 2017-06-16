@@ -21,7 +21,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
-import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
@@ -55,9 +54,13 @@ public class SafeDeleteNodeProcessorTest {
                                                   graphHolder.graph,
                                                   graphHolder.startNode);
         tested.run(callback);
-        verifyDeleteStartNode();
         verify(callback,
-               never()).deleteIncomingConnection(any(Edge.class));
+               times(1)).deleteCandidateConnector(eq(graphHolder.edge1));
+        verify(callback,
+               times(1)).removeChild(eq(graphHolder.parentNode),
+                                     eq(graphHolder.startNode));
+        verify(callback,
+               times(1)).deleteCandidateNode(eq(graphHolder.startNode));
         verify(callback,
                never()).removeDock(any(Node.class),
                                    any(Node.class));
@@ -70,7 +73,15 @@ public class SafeDeleteNodeProcessorTest {
                                                   graphHolder.graph,
                                                   graphHolder.intermNode);
         tested.run(callback);
-        verifyDeleteIntermediateNode();
+        verify(callback,
+               times(1)).deleteCandidateConnector(eq(graphHolder.edge1));
+        verify(callback,
+               times(1)).deleteCandidateConnector(eq(graphHolder.edge2));
+        verify(callback,
+               times(1)).removeChild(eq(graphHolder.parentNode),
+                                     eq(graphHolder.intermNode));
+        verify(callback,
+               times(1)).deleteCandidateNode(eq(graphHolder.intermNode));
         verify(callback,
                never()).removeDock(any(Node.class),
                                    any(Node.class));
@@ -83,9 +94,13 @@ public class SafeDeleteNodeProcessorTest {
                                                   graphHolder.graph,
                                                   graphHolder.endNode);
         tested.run(callback);
-        verifyDeleteEndNode();
         verify(callback,
-               never()).deleteOutgoingConnection(any(Edge.class));
+               times(1)).deleteCandidateConnector(eq(graphHolder.edge2));
+        verify(callback,
+               times(1)).removeChild(eq(graphHolder.parentNode),
+                                     eq(graphHolder.endNode));
+        verify(callback,
+               times(1)).deleteCandidateNode(eq(graphHolder.endNode));
         verify(callback,
                never()).removeDock(any(Node.class),
                                    any(Node.class));
@@ -98,50 +113,30 @@ public class SafeDeleteNodeProcessorTest {
                                                   graphHolder.graph,
                                                   graphHolder.parentNode);
         tested.run(callback);
-        verifyDeleteEndNode();
-        verifyDeleteIntermediateNode();
-        verifyDeleteStartNode();
-        verifyDeleteParentNode();
-    }
-
-    @SuppressWarnings("unchecked")
-    private void verifyDeleteStartNode() {
         verify(callback,
-               times(1)).deleteOutgoingConnection(eq(graphHolder.edge1));
-        verify(callback,
-               times(1)).removeChild(eq(graphHolder.parentNode),
-                                     eq(graphHolder.startNode));
-        verify(callback,
-               times(1)).deleteNode(eq(graphHolder.startNode));
-    }
-
-    @SuppressWarnings("unchecked")
-    private void verifyDeleteIntermediateNode() {
-        verify(callback,
-               times(1)).deleteIncomingConnection(eq(graphHolder.edge1));
-        verify(callback,
-               times(1)).deleteOutgoingConnection(eq(graphHolder.edge2));
-        verify(callback,
-               times(1)).removeChild(eq(graphHolder.parentNode),
-                                     eq(graphHolder.intermNode));
-        verify(callback,
-               times(1)).deleteNode(eq(graphHolder.intermNode));
-    }
-
-    @SuppressWarnings("unchecked")
-    private void verifyDeleteEndNode() {
-        verify(callback,
-               times(1)).deleteIncomingConnection(eq(graphHolder.edge2));
+               times(1)).deleteConnector(eq(graphHolder.edge2));
         verify(callback,
                times(1)).removeChild(eq(graphHolder.parentNode),
                                      eq(graphHolder.endNode));
         verify(callback,
                times(1)).deleteNode(eq(graphHolder.endNode));
-    }
-
-    @SuppressWarnings("unchecked")
-    private void verifyDeleteParentNode() {
         verify(callback,
-               times(1)).deleteNode(eq(graphHolder.parentNode));
+               times(1)).deleteConnector(eq(graphHolder.edge1));
+        verify(callback,
+               times(1)).deleteConnector(eq(graphHolder.edge2));
+        verify(callback,
+               times(1)).removeChild(eq(graphHolder.parentNode),
+                                     eq(graphHolder.intermNode));
+        verify(callback,
+               times(1)).deleteNode(eq(graphHolder.intermNode));
+        verify(callback,
+               times(1)).deleteConnector(eq(graphHolder.edge1));
+        verify(callback,
+               times(1)).removeChild(eq(graphHolder.parentNode),
+                                     eq(graphHolder.startNode));
+        verify(callback,
+               times(1)).deleteNode(eq(graphHolder.startNode));
+        verify(callback,
+               times(1)).deleteCandidateNode(eq(graphHolder.parentNode));
     }
 }

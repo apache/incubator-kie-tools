@@ -70,19 +70,13 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
     private class CanvasDeleteProcessor implements SafeDeleteNodeCommand.SafeDeleteNodeCommandCallback {
 
         @Override
-        public void deleteIncomingConnection(final Edge<? extends View<?>, Node> edge) {
-            deleteConnector(edge);
+        public void deleteCandidateConnector(final Edge<? extends View<?>, Node> connector) {
+            doDeleteConnector(connector);
         }
 
         @Override
-        public void deleteOutgoingConnection(final Edge<? extends View<?>, Node> edge) {
-            deleteConnector(edge);
-        }
-
-        @Override
-        public void deleteEdge(final Edge<? extends View<?>, Node> candidate) {
-            log("DeleteCanvasConnectorCommand [candidate=" + candidate.getUUID() + "]");
-            getCommand().addCommand(new DeleteCanvasConnectorCommand(candidate));
+        public void deleteConnector(final Edge<? extends View<?>, Node> connector) {
+            doDeleteConnector(connector);
         }
 
         @Override
@@ -107,14 +101,23 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
         }
 
         @Override
+        public void deleteCandidateNode(final Node<?, Edge> node) {
+            doDeleteNode(node);
+        }
+
+        @Override
         public void deleteNode(final Node<?, Edge> node) {
+            doDeleteNode(node);
+        }
+
+        private void doDeleteNode(final Node<?, Edge> node) {
             log("DeleteCanvasNodeCommand [node=" + node.getUUID() + "]");
             getCommand().addCommand(new DeleteCanvasNodeCommand(node));
         }
 
-        private void deleteConnector(final Edge<? extends View<?>, Node> connector) {
-            log("SetCanvasConnectionCommand [connector=" + connector.getUUID() + "]");
-            getCommand().addCommand(new SetCanvasConnectionCommand(connector));
+        private void doDeleteConnector(final Edge<? extends View<?>, Node> connector) {
+            log("DeleteCanvasConnectorCommand [connector=" + connector.getUUID() + "]");
+            getCommand().addCommand(new DeleteCanvasConnectorCommand(connector));
         }
     }
 
