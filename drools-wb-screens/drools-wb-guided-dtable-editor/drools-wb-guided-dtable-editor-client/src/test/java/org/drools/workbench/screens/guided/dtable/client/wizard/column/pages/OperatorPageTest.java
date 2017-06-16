@@ -93,6 +93,9 @@ public class OperatorPageTest {
     private SimplePanel content;
 
     @Mock
+    private ListBox listBox;
+
+    @Mock
     private EventSourceMock<WizardPageStatusChangeEvent> eventSourceMock;
 
     @InjectMocks
@@ -173,26 +176,37 @@ public class OperatorPageTest {
         when(translationService.format(GuidedDecisionTableErraiConstants.OperatorPage_NoOperator)).thenReturn("(no operator)");
         when(presenter.getDataModelOracle()).thenReturn(oracle);
         when(plugin.getFactField()).thenReturn("factField");
-        when(plugin.editingCol()).thenReturn(editingCol);
         when(plugin.operatorPlaceholder()).thenReturn(operatorPlaceholder);
-        when(editingCol.getOperator()).thenReturn(operatorPlaceholder);
+        when(editingCol.getOperator()).thenReturn("");
 
         mockGetOperatorCompletionsToReturn(OperatorsOracle.STANDARD_OPERATORS);
-
         spyOperatorsDropdown();
+        mockListBox(operatorPlaceholder,
+                    "",
+                    "equal to");
 
         page.operatorDropdown(widget -> {
             assertTrue(widget instanceof CEPOperatorsDropdown);
 
-            final CEPOperatorsDropdown operatorsDropdown = (CEPOperatorsDropdown) widget;
+            final CEPOperatorsDropdown dropdown = (CEPOperatorsDropdown) widget;
+            verify(listBox).setSelectedIndex(1);
+            verify(listBox).addChangeHandler(any());
 
-            verify(operatorsDropdown).addPlaceholder(operatorPlaceholder,
-                                                     operatorPlaceholder);
+            verify(dropdown).addPlaceholder(operatorPlaceholder,
+                                            operatorPlaceholder);
 
-            verify(operatorsDropdown).insertItem("(no operator)",
-                                                 "",
-                                                 1);
+            verify(dropdown).insertItem("(no operator)",
+                                        "",
+                                        1);
         });
+    }
+
+    private void mockListBox(final String... items) {
+        when(listBox.getItemCount()).thenReturn(items.length);
+
+        for (int i = 0; i < items.length; i++) {
+            when(listBox.getValue(i)).thenReturn(items[i]);
+        }
     }
 
     @Test
@@ -292,7 +306,8 @@ public class OperatorPageTest {
 
         page.isComplete(Assert::assertFalse);
         verify(view).showOperatorWarning();
-        verify(view, never()).hideOperatorWarning();
+        verify(view,
+               never()).hideOperatorWarning();
     }
 
     @Test
@@ -305,7 +320,8 @@ public class OperatorPageTest {
 
         page.isComplete(Assert::assertFalse);
         verify(view).showOperatorWarning();
-        verify(view, never()).hideOperatorWarning();
+        verify(view,
+               never()).hideOperatorWarning();
     }
 
     @Test
@@ -317,7 +333,8 @@ public class OperatorPageTest {
         when(plugin.getFactField()).thenReturn("factType");
 
         page.isComplete(Assert::assertTrue);
-        verify(view, never()).showOperatorWarning();
+        verify(view,
+               never()).showOperatorWarning();
         verify(view).hideOperatorWarning();
     }
 
@@ -338,12 +355,17 @@ public class OperatorPageTest {
     }
 
     private void spyOperatorsDropdown() {
+        doNothing().when(listBox).setSelectedIndex(anyInt());
+
         doAnswer(answer -> {
             final Object firstArgument = answer.getArguments()[0];
             final String[] operators = (String[]) firstArgument;
+            final CEPOperatorsDropdown dropdown = spy(new CEPOperatorsDropdown(operators,
+                                                                               editingCol));
 
-            return spy(new CEPOperatorsDropdown(operators,
-                                                editingCol));
+            when(dropdown.getBox()).thenReturn(listBox);
+
+            return dropdown;
         }).when(page).newCepOperatorsDropdown(any(),
                                               any());
     }

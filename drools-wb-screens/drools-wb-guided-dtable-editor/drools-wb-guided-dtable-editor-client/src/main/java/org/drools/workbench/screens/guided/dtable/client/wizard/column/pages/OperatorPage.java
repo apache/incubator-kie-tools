@@ -39,6 +39,7 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
+import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils.getCurrentIndexFromList;
 import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils.nil;
 
 @Dependent
@@ -93,7 +94,7 @@ public class OperatorPage extends BaseDecisionTableColumnPage<ConditionColumnPlu
         boolean hasOperator = !nil(plugin().getFactField()) && !plugin().operatorPlaceholder().equals(getOperator());
         boolean isComplete = hasOperator || isConstraintValuePredicate();
 
-        if(!isComplete) {
+        if (!isComplete) {
             view.showOperatorWarning();
         } else {
             view.hideOperatorWarning();
@@ -153,12 +154,11 @@ public class OperatorPage extends BaseDecisionTableColumnPage<ConditionColumnPlu
             final String[] operatorsArray = filterOptionsForConstraintTypeLiteral(options);
             final CEPOperatorsDropdown dropdown = newCepOperatorsDropdown(operatorsArray);
             final ListBox box = dropdown.getBox();
+            final int currentValueIndex = getCurrentIndexFromList(getOperator(),
+                                                                  box);
 
-            box.addChangeHandler((ChangeEvent valueChangeEvent) -> {
-                final String selected = box.getValue(box.getSelectedIndex());
-
-                setOperator(selected);
-            });
+            box.addChangeHandler((ChangeEvent valueChangeEvent) -> setOperator(box.getValue(box.getSelectedIndex())));
+            box.setSelectedIndex(currentValueIndex);
 
             widgetSupplier.accept(dropdown);
         });
@@ -173,9 +173,6 @@ public class OperatorPage extends BaseDecisionTableColumnPage<ConditionColumnPlu
         dropdown.insertItem(translate(GuidedDecisionTableErraiConstants.OperatorPage_NoOperator),
                             "",
                             1);
-        if (editingCol().getOperator().equals(plugin().operatorPlaceholder())) {
-            dropdown.getBox().setSelectedIndex(0);
-        }
 
         return dropdown;
     }
