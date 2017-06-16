@@ -116,6 +116,12 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
         return result;
     }
 
+    public JBPMBpmn2ResourceImpl marshallToBpmn2Resource(final Diagram<Graph, Metadata> diagram) throws IOException {
+        final Bpmn2Marshaller marshaller = new Bpmn2Marshaller(definitionManager,
+                                                               oryxManager);
+        return marshaller.marshallToBpmn2Resource(diagram);
+    }
+
     @Override
     public Graph unmarshall(final Metadata metadata,
                             final InputStream inputStream) throws IOException {

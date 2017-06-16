@@ -19,12 +19,30 @@ package org.kie.workbench.common.stunner.bpmn.backend.service.diagram;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.DataInput;
+import org.eclipse.bpmn2.DataInputAssociation;
+import org.eclipse.bpmn2.DataOutput;
+import org.eclipse.bpmn2.DataOutputAssociation;
+import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.ExtensionAttributeValue;
+import org.eclipse.bpmn2.FlowElement;
+import org.eclipse.bpmn2.InputOutputSpecification;
+import org.eclipse.bpmn2.ItemAwareElement;
+import org.eclipse.bpmn2.ItemDefinition;
+import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.Property;
+import org.eclipse.bpmn2.RootElement;
+import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl;
+import org.eclipse.emf.ecore.util.FeatureMap;
+import org.jboss.drools.MetaDataType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +51,7 @@ import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeMode
 import org.kie.workbench.common.stunner.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.backend.BPMNDiagramMarshaller;
+import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceImpl;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder.BPMNGraphObjectBuilderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxIdMappings;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
@@ -1404,52 +1423,130 @@ public class BPMNDiagramMarshallerTest {
     @Test
     public void testMarshallProcessVariables() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_PROCESSVARIABLES);
+        JBPMBpmn2ResourceImpl resource = tested.marshallToBpmn2Resource(diagram);
+
         String result = tested.marshall(diagram);
         assertDiagram(result,
                       1,
                       7,
                       7);
-        assertTrue(result.contains("<bpmn2:itemDefinition id=\"_employeeItem\" structureRef=\"java.lang.String\"/>"));
-        assertTrue(result.contains("<bpmn2:itemDefinition id=\"_reasonItem\" structureRef=\"java.lang.String\"/>"));
-        assertTrue(result.contains("<bpmn2:itemDefinition id=\"_performanceItem\" structureRef=\"java.lang.String\"/>"));
-        assertTrue(result.contains("<bpmn2:property id=\"employee\" itemSubjectRef=\"_employeeItem\"/>"));
-        assertTrue(result.contains("<bpmn2:property id=\"reason\" itemSubjectRef=\"_reasonItem\"/>"));
-        assertTrue(result.contains("<bpmn2:property id=\"performance\" itemSubjectRef=\"_performanceItem\"/>"));
+
+        Definitions definitions = (Definitions) resource.getContents().get(0);
+        assertNotNull(definitions);
+        List<RootElement> rootElements = definitions.getRootElements();
+        assertNotNull(rootElements);
+
+        assertNotNull(getItemDefinition(rootElements,
+                                        "_employeeItem",
+                                        "java.lang.String"));
+        assertNotNull(getItemDefinition(rootElements,
+                                        "_reasonItem",
+                                        "java.lang.String"));
+        assertNotNull(getItemDefinition(rootElements,
+                                        "_performanceItem",
+                                        "java.lang.String"));
+
+        Process process = getProcess(definitions);
+        assertNotNull(process);
+        List<Property> properties = process.getProperties();
+        assertNotNull(properties);
+        assertNotNull(getProcessProperty(properties,
+                                        "employee",
+                                        "_employeeItem"));
+        assertNotNull(getProcessProperty(properties,
+                                         "reason",
+                                         "_reasonItem"));
+        assertNotNull(getProcessProperty(properties,
+                                         "performance",
+                                         "_performanceItem"));
     }
 
     @Test
     public void testMarshallProcessProperties() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_PROCESSPROPERTIES);
+        JBPMBpmn2ResourceImpl resource = tested.marshallToBpmn2Resource(diagram);
+
         String result = tested.marshall(diagram);
         assertDiagram(result,
                       1,
                       3,
                       2);
-        assertTrue(result.contains("bpmn2:process id=\"JDLProj.BPSimple\" drools:adHoc=\"true\" drools:packageName=\"org.jbpm\" drools:version=\"1.0\" name=\"BPSimple\" isExecutable=\"true\""));
-        assertTrue(result.contains("<drools:metaValue><![CDATA[This is the\n" +
-                                           "Process\n" +
-                                           "Instance\n" +
-                                           "Description]]></drools:metaValue>"));
-        assertTrue(result.contains("<![CDATA[This is a\n" +
-                                           "simple\n" +
-                                           "process]]></bpmn2:documentation>"));
-    }
 
+        Definitions definitions = (Definitions) resource.getContents().get(0);
+        assertNotNull(definitions);
+        Process process = getProcess(definitions);
+        assertNotNull(process);
+
+        assertEquals("JDLProj.BPSimple",
+                     process.getId());
+        assertEquals("BPSimple",
+                     process.getName());
+        assertTrue(process.isIsExecutable());
+        assertEquals("true",
+                     getProcessPropertyValue(process,
+                                             "adHoc"));
+        assertEquals("org.jbpm",
+                     getProcessPropertyValue(process,
+                                             "packageName"));
+        assertEquals("1.0",
+                     getProcessPropertyValue(process,
+                                             "version"));
+        assertNotNull(process.getDocumentation());
+        assertFalse(process.getDocumentation().isEmpty());
+        assertEquals("<![CDATA[This is a\nsimple\nprocess]]>",
+                     process.getDocumentation().get(0).getText());
+        assertEquals("<![CDATA[This is the\nProcess\nInstance\nDescription]]>",
+                     getProcessExtensionValue(process,
+                                              "customDescription"));
+    }
     @Test
     public void testMarshallUserTaskAssignments() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_USERTASKASSIGNMENTS);
+        JBPMBpmn2ResourceImpl resource = tested.marshallToBpmn2Resource(diagram);
+
         String result = tested.marshall(diagram);
         assertDiagram(result,
                       1,
                       7,
                       7);
-        assertTrue(result.contains("<bpmn2:dataInput id=\"_6063D302-9D81-4C86-920B-E808A45377C2_reasonInputX\" drools:dtype=\"com.test.Reason\" itemSubjectRef=\"__6063D302-9D81-4C86-920B-E808A45377C2_reasonInputXItem\" name=\"reason\"/>"));
-        assertTrue(result.contains("<bpmn2:dataOutput id=\"_6063D302-9D81-4C86-920B-E808A45377C2_performanceOutputX\" drools:dtype=\"Object\" itemSubjectRef=\"__6063D302-9D81-4C86-920B-E808A45377C2_performanceOutputXItem\" name=\"performance\"/>"));
-        assertTrue(result.contains("<bpmn2:dataOutput id=\"_6063D302-9D81-4C86-920B-E808A45377C2_performanceOutputX\" drools:dtype=\"Object\" itemSubjectRef=\"__6063D302-9D81-4C86-920B-E808A45377C2_performanceOutputXItem\" name=\"performance\"/>"));
-        assertTrue(result.contains("<bpmn2:sourceRef>reason</bpmn2:sourceRef>"));
-        assertTrue(result.contains("<bpmn2:targetRef>_6063D302-9D81-4C86-920B-E808A45377C2_reasonInputX</bpmn2:targetRef>"));
-        assertTrue(result.contains("<bpmn2:sourceRef>_6063D302-9D81-4C86-920B-E808A45377C2_performanceOutputX</bpmn2:sourceRef>"));
-        assertTrue(result.contains("<bpmn2:targetRef>performance</bpmn2:targetRef>"));
+
+        Definitions definitions = (Definitions) resource.getContents().get(0);
+        assertNotNull(definitions);
+        Process process = getProcess(definitions);
+        assertNotNull(process);
+        org.eclipse.bpmn2.UserTask userTask = (org.eclipse.bpmn2.UserTask) getNamedFlowElement(process,
+                                                                                               org.eclipse.bpmn2.UserTask.class,
+                                                                                               "Self Evaluation");
+        assertNotNull(userTask);
+        DataInput dataInput = (DataInput) getDataInput(userTask,
+                                                       "reason");
+        validateDataInputOrOutput(dataInput,
+                                  "_reasonInputX",
+                                  "com.test.Reason",
+                                  "_reasonInputXItem");
+        DataOutput dataOutput = (DataOutput) getDataOutput(userTask,
+                                                           "performance");
+        validateDataInputOrOutput(dataOutput,
+                                  "_performanceOutputX",
+                                  "Object",
+                                  "_performanceOutputXItem");
+
+        ItemAwareElement sourceRef = getDataInputAssociationSourceRef(userTask,
+                                                                      "reason");
+        assertNotNull(sourceRef);
+
+        ItemAwareElement targetRef = getDataInputAssociationTargetRef(userTask,
+                                                                      "_reasonInputX");
+        assertNotNull(targetRef);
+
+        sourceRef = getDataOutputAssociationSourceRef(userTask,
+                                                      "_performanceOutputX");
+        assertNotNull(sourceRef);
+
+        targetRef = getDataOutputAssociationTargetRef(userTask,
+                                                      "performance");
+        assertNotNull(targetRef);
+
     }
 
     @Test
@@ -1877,4 +1974,197 @@ public class BPMNDiagramMarshallerTest {
         }
         return count;
     }
+
+    private Process getProcess(Definitions definitions) {
+        Object o = Arrays.stream(definitions.getRootElements().toArray())
+                .filter(x -> Process.class.isInstance(x))
+                .findFirst()
+                .orElse(null);
+        return (Process) o;
+    }
+
+    private ItemDefinition getItemDefinition(List<RootElement> rootElements,
+                                             String id,
+                                             String structureRef) {
+        for (RootElement rootElement : rootElements) {
+            if (id.equals(rootElement.getId()) && rootElement instanceof ItemDefinition) {
+                ItemDefinition itemDefinition = (ItemDefinition) rootElement;
+                if (structureRef.equals(itemDefinition.getStructureRef())) {
+                    return itemDefinition;
+                } else {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    private Property getProcessProperty(List<Property> properties,
+                                        String id,
+                                        String itemSubjectRef) {
+        for (Property property : properties) {
+            if (id.equals(property.getId())) {
+                if (itemSubjectRef.equals(property.getItemSubjectRef().getId())) {
+                    return property;
+                } else {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    private String getProcessPropertyValue(Process process,
+                                           String propertyName) {
+        Iterator<FeatureMap.Entry> iter = process.getAnyAttribute().iterator();
+        while (iter.hasNext()) {
+            FeatureMap.Entry entry = iter.next();
+            if (propertyName.equals(entry.getEStructuralFeature().getName())) {
+                return entry.getValue().toString();
+            }
+        }
+        return null;
+    }
+
+    private String getProcessExtensionValue(Process process,
+                                            String propertyName) {
+        List<ExtensionAttributeValue> extensionValues = process.getExtensionValues();
+        for (ExtensionAttributeValue extensionValue : extensionValues) {
+            FeatureMap featureMap = extensionValue.getValue();
+            for (int i = 0; i < featureMap.size(); i++) {
+                EStructuralFeatureImpl.SimpleFeatureMapEntry featureMapEntry = (EStructuralFeatureImpl.SimpleFeatureMapEntry) featureMap.get(i);
+                MetaDataType featureMapValue = (MetaDataType) featureMapEntry.getValue();
+                if (propertyName.equals(featureMapValue.getName())) {
+                    return featureMapValue.getMetaValue();
+                }
+            }
+        }
+        return "";
+    }
+
+    private Object getNamedFlowElement(Process process,
+                                       Class cls,
+                                       String name) {
+        List<FlowElement> flowElements = process.getFlowElements();
+        for (FlowElement flowElement : flowElements) {
+            if (cls.isInstance(flowElement) && name.equals(flowElement.getName())) {
+                return flowElement;
+            }
+        }
+        return null;
+    }
+
+    private DataInput getDataInput(Activity activity,
+                                   String name) {
+        InputOutputSpecification ioSpecification = activity.getIoSpecification();
+        if (ioSpecification != null) {
+            List<DataInput> dataInputs = ioSpecification.getDataInputs();
+            if (dataInputs != null) {
+                return Arrays.stream(dataInputs.toArray(new DataInput[dataInputs.size()]))
+                        .filter(dataInput -> name.equals(dataInput.getName()))
+                        .findFirst()
+                        .orElse(null);
+            }
+        }
+
+        return null;
+    }
+
+    private DataOutput getDataOutput(Activity activity,
+                                     String name) {
+        InputOutputSpecification ioSpecification = activity.getIoSpecification();
+        if (ioSpecification != null) {
+            List<DataOutput> dataOutputs = ioSpecification.getDataOutputs();
+            if (dataOutputs != null) {
+                return Arrays.stream(dataOutputs.toArray(new DataOutput[dataOutputs.size()]))
+                        .filter(dataOutput -> name.equals(dataOutput.getName()))
+                        .findFirst()
+                        .orElse(null);
+            }
+        }
+        return null;
+    }
+
+    private void validateDataInputOrOutput(ItemAwareElement itemAwareElement,
+                                           String idSuffix,
+                                           String dataType,
+                                           String itemSubjectRefSuffix) {
+        assertNotNull(itemAwareElement);
+
+        assertTrue(itemAwareElement.getId().endsWith(idSuffix));
+        ItemDefinition itemDefinition = itemAwareElement.getItemSubjectRef();
+        assertNotNull(itemDefinition);
+        assertTrue(itemDefinition.getStructureRef().equals(dataType));
+        assertTrue(itemDefinition.getId().endsWith(itemSubjectRefSuffix));
+    }
+
+    private ItemAwareElement getDataInputAssociationSourceRef(Activity activity,
+                                                              String id) {
+        List<DataInputAssociation> dataInputAssociations = activity.getDataInputAssociations();
+        if (dataInputAssociations != null) {
+            for (DataInputAssociation dataInputAssociation : dataInputAssociations) {
+                List<ItemAwareElement> sourceRef = dataInputAssociation.getSourceRef();
+                if (sourceRef != null && !sourceRef.isEmpty()) {
+                    ItemAwareElement result = Arrays.stream(sourceRef.toArray(new ItemAwareElement[sourceRef.size()]))
+                            .filter(itemAwareElement -> id.equals(itemAwareElement.getId()))
+                            .findFirst()
+                            .orElse(null);
+                    if (result != null) {
+                        return result;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private ItemAwareElement getDataInputAssociationTargetRef(Activity activity,
+                                                              String idSuffix) {
+        List<DataInputAssociation> dataInputAssociations = activity.getDataInputAssociations();
+        if (dataInputAssociations != null) {
+            for (DataInputAssociation dataInputAssociation : dataInputAssociations) {
+                ItemAwareElement targetRef = dataInputAssociation.getTargetRef();
+                if (targetRef != null && targetRef.getId().endsWith(idSuffix)) {
+                    return targetRef;
+                }
+            }
+        }
+        return null;
+    }
+
+    private ItemAwareElement getDataOutputAssociationSourceRef(Activity activity,
+                                                               String idSuffix) {
+        List<DataOutputAssociation> dataOutputAssociations = activity.getDataOutputAssociations();
+        if (dataOutputAssociations != null) {
+            for (DataOutputAssociation dataOutputAssociation : dataOutputAssociations) {
+                List<ItemAwareElement> sourceRef = dataOutputAssociation.getSourceRef();
+                if (sourceRef != null && !sourceRef.isEmpty()) {
+                    ItemAwareElement result = Arrays.stream(sourceRef.toArray(new ItemAwareElement[sourceRef.size()]))
+                            .filter(itemAwareElement -> itemAwareElement.getId().endsWith(idSuffix))
+                            .findFirst()
+                            .orElse(null);
+                    if (result != null) {
+                        return result;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private ItemAwareElement getDataOutputAssociationTargetRef(Activity activity,
+                                                               String id) {
+        List<DataOutputAssociation> dataOutputAssociations = activity.getDataOutputAssociations();
+        if (dataOutputAssociations != null) {
+            for (DataOutputAssociation dataOutputAssociation : dataOutputAssociations) {
+                ItemAwareElement targetRef = dataOutputAssociation.getTargetRef();
+                if (targetRef != null && id.equals(targetRef.getId())) {
+                    return targetRef;
+                }
+            }
+        }
+        return null;
+    }
+
+
 }

@@ -45,15 +45,19 @@ public class Bpmn2Marshaller extends Bpmn2JsonUnmarshaller {
     }
 
     public String marshall(final Diagram<Graph, Metadata> diagram) throws IOException {
-        DroolsFactoryImpl.init();
-        BpsimFactoryImpl.init();
-        BPMN2JsonParser parser = createParser(diagram);
-        JBPMBpmn2ResourceImpl res = (JBPMBpmn2ResourceImpl) super.unmarshall(parser,
-                                                                             null);
+        JBPMBpmn2ResourceImpl res = marshallToBpmn2Resource(diagram);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         res.save(outputStream,
                  new HashMap<>());
         return StringEscapeUtils.unescapeHtml4(outputStream.toString("UTF-8"));
+    }
+
+    public JBPMBpmn2ResourceImpl marshallToBpmn2Resource(final Diagram<Graph, Metadata> diagram) throws IOException {
+        DroolsFactoryImpl.init();
+        BpsimFactoryImpl.init();
+        BPMN2JsonParser parser = createParser(diagram);
+        return (JBPMBpmn2ResourceImpl) super.unmarshall(parser,
+                                                        null);
     }
 
     private BPMN2JsonParser createParser(final Diagram<Graph, Metadata> diagram) {
