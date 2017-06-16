@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.client.lienzo.components.toolbox.builde
 
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.components.toolbox.LienzoToolbox;
 import org.kie.workbench.common.stunner.client.lienzo.components.toolbox.LienzoToolboxButtonGrid;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;

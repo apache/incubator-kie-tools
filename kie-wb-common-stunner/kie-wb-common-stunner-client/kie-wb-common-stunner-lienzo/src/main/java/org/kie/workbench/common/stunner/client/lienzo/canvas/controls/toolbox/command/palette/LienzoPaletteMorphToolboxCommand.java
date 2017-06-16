@@ -22,7 +22,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.Shape;
-import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.AbstractLienzoGlyphItemsPalette;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.LienzoGlyphsHoverPalette;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.LienzoPalette;

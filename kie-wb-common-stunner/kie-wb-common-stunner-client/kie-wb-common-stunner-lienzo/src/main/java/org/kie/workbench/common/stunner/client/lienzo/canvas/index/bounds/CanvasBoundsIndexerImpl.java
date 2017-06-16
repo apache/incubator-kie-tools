@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.index.bounds;
 
 import javax.enterprise.context.Dependent;
 
-import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoLayerUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;

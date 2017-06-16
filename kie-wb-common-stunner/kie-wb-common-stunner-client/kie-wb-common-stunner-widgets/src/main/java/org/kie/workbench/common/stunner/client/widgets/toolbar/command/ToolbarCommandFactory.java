@@ -33,9 +33,15 @@ public class ToolbarCommandFactory {
     private final ManagedInstance<RedoToolbarCommand> redoCommand;
     private final ManagedInstance<ValidateToolbarCommand> validateCommand;
     private final ManagedInstance<RefreshToolbarCommand> refreshCommand;
+    private final ManagedInstance<ExportToPngToolbarCommand> exportToPngToolbarCommand;
+    private final ManagedInstance<ExportToJpgToolbarCommand> exportToJpgToolbarCommand;
+    private final ManagedInstance<ExportToPdfToolbarCommand> exportToPdfToolbarCommand;
 
     protected ToolbarCommandFactory() {
         this(null,
+             null,
+             null,
+             null,
              null,
              null,
              null,
@@ -55,7 +61,10 @@ public class ToolbarCommandFactory {
                                  final ManagedInstance<UndoToolbarCommand> undoCommand,
                                  final ManagedInstance<RedoToolbarCommand> redoCommand,
                                  final ManagedInstance<ValidateToolbarCommand> validateCommand,
-                                 final ManagedInstance<RefreshToolbarCommand> refreshCommand) {
+                                 final ManagedInstance<RefreshToolbarCommand> refreshCommand,
+                                 final ManagedInstance<ExportToPngToolbarCommand> exportToPngToolbarCommand,
+                                 final ManagedInstance<ExportToJpgToolbarCommand> exportToJpgToolbarCommand,
+                                 final ManagedInstance<ExportToPdfToolbarCommand> exportToPdfToolbarCommand) {
         this.clearStatesCommand = clearStatesCommand;
         this.visitGraphCommand = visitGraphCommand;
         this.switchGridCommand = switchGridCommand;
@@ -65,6 +74,9 @@ public class ToolbarCommandFactory {
         this.redoCommand = redoCommand;
         this.validateCommand = validateCommand;
         this.refreshCommand = refreshCommand;
+        this.exportToPngToolbarCommand = exportToPngToolbarCommand;
+        this.exportToJpgToolbarCommand = exportToJpgToolbarCommand;
+        this.exportToPdfToolbarCommand = exportToPdfToolbarCommand;
     }
 
     public ClearStatesToolbarCommand newClearStatesCommand() {
@@ -101,5 +113,17 @@ public class ToolbarCommandFactory {
 
     public RefreshToolbarCommand newRefreshCommand() {
         return refreshCommand.get();
+    }
+
+    public ExportToPngToolbarCommand newExportToPngToolbarCommand() {
+        return exportToPngToolbarCommand.get();
+    }
+
+    public ExportToJpgToolbarCommand newExportToJpgToolbarCommand() {
+        return exportToJpgToolbarCommand.get();
+    }
+
+    public ExportToPdfToolbarCommand newExportToPdfToolbarCommand() {
+        return exportToPdfToolbarCommand.get();
     }
 }

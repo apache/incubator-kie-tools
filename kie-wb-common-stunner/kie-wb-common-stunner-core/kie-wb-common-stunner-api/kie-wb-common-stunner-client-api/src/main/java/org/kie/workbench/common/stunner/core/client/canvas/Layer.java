@@ -35,12 +35,25 @@ public interface Layer<T, S, A> extends HasEventHandlers<T, A> {
 
     String toDataURL();
 
-    String toDataURL(final int x,
-                     final int y,
-                     final int width,
-                     final int height);
+    String toDataURL(final URLDataType type);
 
     void onAfterDraw(Command callback);
 
     void destroy();
+
+    public enum URLDataType {
+        PNG("image/png"),
+        JPG("image/jpeg");
+
+        private final String mimeType;
+
+        URLDataType(final String mimeType) {
+            this.mimeType = mimeType;
+        }
+
+        public String getMimeType() {
+            return mimeType;
+        }
+
+    }
 }

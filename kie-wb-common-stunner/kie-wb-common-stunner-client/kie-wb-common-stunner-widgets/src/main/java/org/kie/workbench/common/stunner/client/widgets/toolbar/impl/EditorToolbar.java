@@ -21,6 +21,9 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarView;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearStatesToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.DeleteSelectionToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToJpgToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToPdfToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToPngToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.RedoToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.RefreshToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.SwitchGridToolbarCommand;
@@ -56,6 +59,9 @@ public class EditorToolbar extends AbstractToolbar<AbstractClientFullSession> {
         addCommand(commandFactory.newRedoCommand());
         addCommand(commandFactory.newValidateCommand());
         addCommand(commandFactory.newRefreshCommand());
+        addCommand(commandFactory.newExportToPngToolbarCommand());
+        addCommand(commandFactory.newExportToJpgToolbarCommand());
+        addCommand(commandFactory.newExportToPdfToolbarCommand());
     }
 
     @Override
@@ -97,5 +103,17 @@ public class EditorToolbar extends AbstractToolbar<AbstractClientFullSession> {
 
     public RefreshToolbarCommand getRefreshToolbarCommand() {
         return (RefreshToolbarCommand) getCommand(8);
+    }
+
+    public ExportToPngToolbarCommand getExportToPngToolbarCommand() {
+        return (ExportToPngToolbarCommand) getCommand(9);
+    }
+
+    public ExportToJpgToolbarCommand getExportToJpgToolbarCommand() {
+        return (ExportToJpgToolbarCommand) getCommand(10);
+    }
+
+    public ExportToPdfToolbarCommand getExportToPdfToolbarCommand() {
+        return (ExportToPdfToolbarCommand) getCommand(11);
     }
 }

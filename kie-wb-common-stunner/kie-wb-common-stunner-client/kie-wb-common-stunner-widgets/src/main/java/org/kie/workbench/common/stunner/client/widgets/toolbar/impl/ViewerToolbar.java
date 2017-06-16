@@ -19,6 +19,9 @@ package org.kie.workbench.common.stunner.client.widgets.toolbar.impl;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarView;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearStatesToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToJpgToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToPdfToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToPngToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.SwitchGridToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ToolbarCommandFactory;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.VisitGraphToolbarCommand;
@@ -44,6 +47,9 @@ public class ViewerToolbar extends AbstractToolbar<AbstractClientReadOnlySession
         addCommand(commandFactory.newVisitGraphCommand());
         addCommand(commandFactory.newClearStatesCommand());
         addCommand(commandFactory.newSwitchGridCommand());
+        addCommand(commandFactory.newExportToPngToolbarCommand());
+        addCommand(commandFactory.newExportToJpgToolbarCommand());
+        addCommand(commandFactory.newExportToPdfToolbarCommand());
     }
 
     @Override
@@ -61,5 +67,17 @@ public class ViewerToolbar extends AbstractToolbar<AbstractClientReadOnlySession
 
     public SwitchGridToolbarCommand getSwitchGridToolbarCommand() {
         return (SwitchGridToolbarCommand) getCommand(2);
+    }
+
+    public ExportToPngToolbarCommand getExportToPngToolbarCommand() {
+        return (ExportToPngToolbarCommand) getCommand(3);
+    }
+
+    public ExportToJpgToolbarCommand getExportToJpgToolbarCommand() {
+        return (ExportToJpgToolbarCommand) getCommand(4);
+    }
+
+    public ExportToPdfToolbarCommand getExportToPdfToolbarCommand() {
+        return (ExportToPdfToolbarCommand) getCommand(5);
     }
 }

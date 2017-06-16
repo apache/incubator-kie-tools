@@ -17,9 +17,9 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import javax.enterprise.context.Dependent;
 
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasHighlightVisitor;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.util.CanvasHighlightVisitor;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 

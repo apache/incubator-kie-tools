@@ -29,6 +29,7 @@
   <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
   <inherits name="org.uberfire.ext.security.management.UberfireSecurityManagementWorkbench"/>
   <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
+  <inherits name="org.uberfire.preferences.UberfirePreferencesClient"/>
 
   <!-- Stunner.-->
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>

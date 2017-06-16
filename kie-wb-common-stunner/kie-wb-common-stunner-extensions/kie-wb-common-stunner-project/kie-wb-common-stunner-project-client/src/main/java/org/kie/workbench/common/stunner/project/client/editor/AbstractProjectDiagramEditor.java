@@ -38,6 +38,9 @@ import org.kie.workbench.common.stunner.core.client.session.command.ClientSessio
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToJpgSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPdfSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RefreshSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
@@ -48,7 +51,6 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGr
 import org.kie.workbench.common.stunner.core.client.session.event.OnSessionErrorEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
-import org.kie.workbench.common.stunner.core.client.util.ClientSessionUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
@@ -92,7 +94,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private final ClientProjectDiagramService projectDiagramServices;
     private final SessionManager sessionManager;
     private final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory;
-    private final ClientSessionUtils sessionUtils;
     private final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder;
 
     private final ClearStatesSessionCommand sessionClearStatesCommand;
@@ -104,6 +105,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private final RedoSessionCommand sessionRedoCommand;
     private final ValidateSessionCommand sessionValidateCommand;
     private final RefreshSessionCommand sessionRefreshCommand;
+    private final ExportToPngSessionCommand sessionExportImagePNGCommand;
+    private final ExportToJpgSessionCommand sessionExportImageJPGCommand;
+    private final ExportToPdfSessionCommand sessionExportPDFCommand;
 
     protected SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter;
 
@@ -119,7 +123,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                         final ClientProjectDiagramService projectDiagramServices,
                                         final SessionManager sessionManager,
                                         final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
-                                        final ClientSessionUtils sessionUtils,
                                         final SessionCommandFactory sessionCommandFactory,
                                         final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder) {
         super(view);
@@ -131,7 +134,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.projectDiagramServices = projectDiagramServices;
         this.sessionManager = sessionManager;
         this.sessionPresenterFactory = sessionPresenterFactory;
-        this.sessionUtils = sessionUtils;
         this.menuItemsBuilder = menuItemsBuilder;
         this.sessionClearStatesCommand = sessionCommandFactory.newClearStatesCommand();
         this.sessionVisitGraphCommand = sessionCommandFactory.newVisitGraphCommand();
@@ -142,6 +144,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.sessionRedoCommand = sessionCommandFactory.newRedoCommand();
         this.sessionValidateCommand = sessionCommandFactory.newValidateCommand();
         this.sessionRefreshCommand = sessionCommandFactory.newRefreshSessionCommand();
+        this.sessionExportImagePNGCommand = sessionCommandFactory.newExportToPngSessionCommand();
+        this.sessionExportImageJPGCommand = sessionCommandFactory.newExportToJpgSessionCommand();
+        this.sessionExportPDFCommand = sessionCommandFactory.newExportToPdfSessionCommand();
     }
 
     protected abstract int getCanvasWidth();
@@ -267,12 +272,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     protected void save(final String commitMessage) {
         super.save(commitMessage);
         showLoadingViews();
-        // Obtain diagram's image data before saving.
-        final String thumbData = sessionUtils.canvasToImageData(getSession());
         // Update diagram's image data as thumbnail.
         final CanvasHandler canvasHandler = getSession().getCanvasHandler();
         final Diagram diagram = canvasHandler.getDiagram();
-        diagram.getMetadata().setThumbData(thumbData);
         // Perform update operation remote call.
         projectDiagramServices.saveOrUpdate(versionRecordManager.getCurrentPath(),
                                             getDiagram(),
@@ -314,6 +316,13 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         sessionValidateCommand.listen(() -> validateItem.setEnabled(sessionValidateCommand.isEnabled()));
         final MenuItem refreshItem = menuItemsBuilder.newRefreshItem(AbstractProjectDiagramEditor.this::menu_refresh);
         sessionRefreshCommand.listen(() -> refreshItem.setEnabled(sessionRefreshCommand.isEnabled()));
+        final MenuItem exportsItem = menuItemsBuilder.newExportsItem(AbstractProjectDiagramEditor.this::export_imagePNG,
+                                                                     AbstractProjectDiagramEditor.this::export_imageJPG,
+                                                                     AbstractProjectDiagramEditor.this::export_imagePDF);
+        sessionExportImagePNGCommand.listen(() -> exportsItem.setEnabled(sessionExportImagePNGCommand.isEnabled()));
+        sessionExportImageJPGCommand.listen(() -> exportsItem.setEnabled(sessionExportImageJPGCommand.isEnabled()));
+        sessionExportPDFCommand.listen(() -> exportsItem.setEnabled(sessionExportPDFCommand.isEnabled()));
+
 
         // Build the menu.
         fileMenuBuilder
@@ -326,7 +335,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 .addNewTopLevelMenu(undoItem)
                 .addNewTopLevelMenu(redoItem)
                 .addNewTopLevelMenu(validateItem)
-                .addNewTopLevelMenu(refreshItem);
+                .addNewTopLevelMenu(refreshItem)
+                .addNewTopLevelMenu(exportsItem);
         if (menuItemsBuilder.isDevItemsEnabled()) {
             fileMenuBuilder.addNewTopLevelMenu(menuItemsBuilder.newDevItems());
         }
@@ -399,6 +409,18 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 showError(error);
             }
         });
+    }
+
+    private void export_imagePNG() {
+        sessionExportImagePNGCommand.execute();
+    }
+
+    private void export_imageJPG() {
+        sessionExportImageJPGCommand.execute();
+    }
+
+    private void export_imagePDF() {
+        sessionExportPDFCommand.execute();
     }
 
     private void menu_validate() {
@@ -474,6 +496,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.sessionRedoCommand.bind(getSession());
         this.sessionValidateCommand.bind(getSession());
         this.sessionRefreshCommand.bind(getSession());
+        this.sessionExportImagePNGCommand.bind(getSession());
+        this.sessionExportImageJPGCommand.bind(getSession());
+        this.sessionExportPDFCommand.bind(getSession());
     }
 
     void unbindCommands() {
@@ -486,6 +511,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.sessionRedoCommand.unbind();
         this.sessionValidateCommand.unbind();
         this.sessionRefreshCommand.unbind();
+        this.sessionExportImagePNGCommand.unbind();
+        this.sessionExportImageJPGCommand.unbind();
+        this.sessionExportPDFCommand.unbind();
     }
 
     private void pauseSession() {

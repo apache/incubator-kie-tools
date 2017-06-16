@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.lienzo;
+package org.kie.workbench.common.stunner.client.lienzo.canvas;
 
 import javax.enterprise.context.Dependent;
 
@@ -25,7 +25,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.DataURLType;
-import org.kie.workbench.common.stunner.client.lienzo.canvas.util.LienzoImageDataUtils;
+import org.kie.workbench.common.stunner.client.lienzo.Lienzo;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractLayer;
@@ -103,15 +103,12 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
     }
 
     @Override
-    public String toDataURL(final int x,
-                            final int y,
-                            final int width,
-                            final int height) {
-        return LienzoImageDataUtils.toImageData(getLienzoLayer(),
-                                                x,
-                                                y,
-                                                width,
-                                                height);
+    public String toDataURL(final URLDataType type) {
+        switch (type) {
+            case JPG:
+                return layer.toDataURL(DataURLType.JPG);
+        }
+        return layer.toDataURL(DataURLType.PNG);
     }
 
     @Override

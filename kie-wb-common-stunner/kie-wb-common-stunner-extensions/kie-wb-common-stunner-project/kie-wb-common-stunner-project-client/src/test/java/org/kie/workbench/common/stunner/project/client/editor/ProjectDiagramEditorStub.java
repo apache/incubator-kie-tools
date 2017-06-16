@@ -23,7 +23,6 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
-import org.kie.workbench.common.stunner.core.client.util.ClientSessionUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.uberfire.client.mvp.PlaceManager;
@@ -43,7 +42,6 @@ class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResour
                                     ClientProjectDiagramService projectDiagramServices,
                                     SessionManager sessionManager,
                                     SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
-                                    ClientSessionUtils sessionUtils,
                                     SessionCommandFactory sessionCommandFactory,
                                     ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder) {
         super(view,
@@ -55,7 +53,6 @@ class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResour
               projectDiagramServices,
               sessionManager,
               sessionPresenterFactory,
-              sessionUtils,
               sessionCommandFactory,
               menuItemsBuilder);
     }

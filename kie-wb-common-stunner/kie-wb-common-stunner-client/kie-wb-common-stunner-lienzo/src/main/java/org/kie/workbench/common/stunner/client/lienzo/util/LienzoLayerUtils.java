@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.client.lienzo.util;
 
 import com.ait.lienzo.client.core.shape.Shape;
-import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 
 public class LienzoLayerUtils {

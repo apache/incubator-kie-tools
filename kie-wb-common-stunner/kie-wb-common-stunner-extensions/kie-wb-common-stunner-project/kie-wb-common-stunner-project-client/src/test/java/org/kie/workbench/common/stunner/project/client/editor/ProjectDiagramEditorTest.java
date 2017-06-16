@@ -38,7 +38,6 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGr
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ClientFullSessionImpl;
-import org.kie.workbench.common.stunner.core.client.util.ClientSessionUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.mockito.Mock;
@@ -94,8 +93,6 @@ public class ProjectDiagramEditorTest {
     @Mock
     SessionPresenter presenter;
     @Mock
-    ClientSessionUtils sessionUtils;
-    @Mock
     SessionCommandFactory sessionCommandFactory;
     @Mock
     ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder;
@@ -148,7 +145,6 @@ public class ProjectDiagramEditorTest {
                                                    projectDiagramServices,
                                                    clientSessionManager,
                                                    presenterFactory,
-                                                   sessionUtils,
                                                    sessionCommandFactory,
                                                    menuItemsBuilder);
     }

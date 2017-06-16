@@ -24,8 +24,10 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
@@ -158,6 +160,43 @@ public class ProjectDiagramEditorMenuItemsBuilder {
             setTitle("Refresh");
             addClickHandler(clickEvent -> ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm(command));
         }};
+    }
+
+    public MenuItem newExportsItem(final Command exportPNGCommand,
+                                   final Command exportJPGCommand,
+                                   final Command exportPDFCommand) {
+        final DropDownMenu menu = new DropDownMenu() {{
+            setPull(Pull.RIGHT);
+        }};
+        menu.add(new AnchorListItem("Export to PNG") {{
+            setIcon(IconType.FILE_IMAGE_O);
+            setIconPosition(IconPosition.LEFT);
+            setTitle("Export to PNG");
+            addClickHandler(event -> exportPNGCommand.execute());
+        }});
+        menu.add(new AnchorListItem("Export to JPG") {{
+            setIcon(IconType.FILE_IMAGE_O);
+            setIconPosition(IconPosition.LEFT);
+            setTitle("Export to JPG");
+            addClickHandler(event -> exportJPGCommand.execute());
+        }});
+        menu.add(new AnchorListItem("Export to PDF") {{
+            setIcon(IconType.FILE_PDF_O);
+            setIconPosition(IconPosition.LEFT);
+            setTitle("Export to PDF");
+            addClickHandler(event -> exportPDFCommand.execute());
+        }});
+        final IsWidget group = new ButtonGroup() {{
+            add(new Button() {{
+                setToggleCaret(true);
+                setDataToggle(Toggle.DROPDOWN);
+                setIcon(IconType.IMAGE);
+                setSize(ButtonSize.SMALL);
+                setTitle("Export diagram");
+            }});
+            add(menu);
+        }};
+        return buildItem(group);
     }
 
     public MenuItem newValidateItem(final Command command) {

@@ -33,9 +33,15 @@ public class SessionCommandFactory {
     private final ManagedInstance<RedoSessionCommand> redoCommand;
     private final ManagedInstance<ValidateSessionCommand> validateCommand;
     private final ManagedInstance<RefreshSessionCommand> refreshSessionCommand;
+    private final ManagedInstance<ExportToPngSessionCommand> exportImagePNGSessionCommand;
+    private final ManagedInstance<ExportToJpgSessionCommand> exportImageJPGSessionCommand;
+    private final ManagedInstance<ExportToPdfSessionCommand> exportPDFSessionCommand;
 
     protected SessionCommandFactory() {
         this(null,
+             null,
+             null,
+             null,
              null,
              null,
              null,
@@ -55,7 +61,10 @@ public class SessionCommandFactory {
                                  final ManagedInstance<UndoSessionCommand> undoCommand,
                                  final ManagedInstance<RedoSessionCommand> redoCommand,
                                  final ManagedInstance<ValidateSessionCommand> validateCommand,
-                                 final ManagedInstance<RefreshSessionCommand> refreshSessionCommand) {
+                                 final ManagedInstance<RefreshSessionCommand> refreshSessionCommand,
+                                 final ManagedInstance<ExportToPngSessionCommand> exportImageSessionCommand,
+                                 final ManagedInstance<ExportToJpgSessionCommand> exportImageJPGSessionCommand,
+                                 final ManagedInstance<ExportToPdfSessionCommand> exportPDFSessionCommand) {
         this.clearStatesCommand = clearStatesCommand;
         this.visitGraphCommand = visitGraphCommand;
         this.switchGridCommand = switchGridCommand;
@@ -65,6 +74,9 @@ public class SessionCommandFactory {
         this.redoCommand = redoCommand;
         this.validateCommand = validateCommand;
         this.refreshSessionCommand = refreshSessionCommand;
+        this.exportImagePNGSessionCommand = exportImageSessionCommand;
+        this.exportImageJPGSessionCommand = exportImageJPGSessionCommand;
+        this.exportPDFSessionCommand = exportPDFSessionCommand;
     }
 
     public ClearStatesSessionCommand newClearStatesCommand() {
@@ -101,5 +113,17 @@ public class SessionCommandFactory {
 
     public RefreshSessionCommand newRefreshSessionCommand() {
         return refreshSessionCommand.get();
+    }
+
+    public ExportToPngSessionCommand newExportToPngSessionCommand() {
+        return exportImagePNGSessionCommand.get();
+    }
+
+    public ExportToJpgSessionCommand newExportToJpgSessionCommand() {
+        return exportImageJPGSessionCommand.get();
+    }
+
+    public ExportToPdfSessionCommand newExportToPdfSessionCommand() {
+        return exportPDFSessionCommand.get();
     }
 }
