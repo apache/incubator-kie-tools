@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -23,6 +24,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.LinearGradient;
@@ -51,6 +53,32 @@ public class Text extends Shape<Text>
 
     private static final NFastStringMap<NFastDoubleArrayJSO> OFFSCACHE = new NFastStringMap<NFastDoubleArrayJSO>();
 
+    private final DrawString STROKE = new DrawString() {
+        @Override
+        public void draw(Context2D context, String s,
+                         int lineNum) {
+            context.beginPath();
+
+            context.strokeText(s, 0, measure(context).getHeight() * lineNum);
+
+            context.closePath();
+
+        }
+    };
+
+    private final DrawString FILL = new DrawString() {
+        @Override
+        public void draw(Context2D context,
+                         String s,
+                         int lineNum) {
+            context.fillText(s, 0, measure(context).getHeight() * lineNum);
+        }
+    };
+
+    private BoundingBox wrapBoundaries;
+    private TextAlign alignment;
+    private LinePlacement linePlacement;
+
     /**
      * Constructor. Creates an instance of text.
      * 
@@ -59,6 +87,7 @@ public class Text extends Shape<Text>
     public Text(String text)
     {
         super(ShapeType.TEXT);
+        wrapBoundaries = null;
 
         final LienzoCore globals = LienzoCore.get();
 
@@ -79,6 +108,7 @@ public class Text extends Shape<Text>
     public Text(String text, String family, double size)
     {
         super(ShapeType.TEXT);
+        wrapBoundaries = null;
 
         final LienzoCore globals = LienzoCore.get();
 
@@ -108,6 +138,7 @@ public class Text extends Shape<Text>
     public Text(String text, String family, String style, double size)
     {
         super(ShapeType.TEXT);
+        wrapBoundaries = null;
 
         final LienzoCore globals = LienzoCore.get();
 
@@ -138,7 +169,29 @@ public class Text extends Shape<Text>
     @Override
     public BoundingBox getBoundingBox()
     {
-        return getBoundingBox(getText(), getFontSize(), getFontStyle(), getFontFamily(), getTextUnit(), getTextBaseLine(), getTextAlign());
+        if (null == wrapBoundaries) {
+            return getBoundingBoxForString(getText());
+        }
+        double width = wrapBoundaries.getWidth();
+        int numOfLines = 1;
+        String[] words = getText().split(" ");
+        String nextLine = words[0];
+        for (int i = 1; i < words.length; i++) {
+            if (getBoundingBoxForString(nextLine + words[i]).getWidth() <= wrapBoundaries.getWidth())
+            {
+                nextLine = nextLine + " " + words[i];
+            }
+            else {
+                nextLine = words[i];
+                numOfLines++;
+            }
+        }
+        double height = getBoundingBoxForString("Mg").getHeight() * numOfLines;
+        return new BoundingBox().addX(0).addX(width).addY(0).addY(height);
+    }
+
+    private BoundingBox getBoundingBoxForString(String string) {
+        return getBoundingBox(string, getFontSize(), getFontStyle(), getFontFamily(), getTextUnit(), getTextBaseLine(), getTextAlign());
     }
 
     private static final native NFastDoubleArrayJSO getTextOffsets(CanvasPixelArray data, int wide, int high, int base)
@@ -344,20 +397,39 @@ public class Text extends Shape<Text>
 
                         final double high = size.getHeight();
 
-                        context.fillTextWithGradient(attr.getText(), 0, 0, 0, 0, wide + (wide / 6), high + (high / 6), color);
+                        drawString(context,
+                                   attr,
+                                   new DrawString() {
+                                       @Override
+                                       public void draw(Context2D context,
+                                                        String s,
+                                                        int lineNum) {
+                                           context.fillTextWithGradient(s, 0, measure(context).getHeight() * lineNum, 0, 0, wide + (wide / 6), high + (high / 6), color);
+                                       }
+                                   });
+
                     }
                     else
                     {
                         final Layer layer = getLayer();
 
-                        context.fillTextWithGradient(attr.getText(), 0, 0, 0, 0, layer.getWidth(), layer.getHeight(), color);
+                        drawString(context,
+                                   attr,
+                                   new DrawString() {
+                                       @Override
+                                       public void draw(Context2D context,
+                                                        String s,
+                                                        int lineNum) {
+                                           context.fillTextWithGradient(s, 0, measure(context).getHeight() * lineNum, 0,0, layer.getWidth(), layer.getHeight(), color);
+                                       }
+                                   });
                     }
                 }
                 else
                 {
                     context.setFillColor(color);
 
-                    context.fillText(attr.getText(), 0, 0);
+                    drawString(context,attr,FILL);
                 }
                 context.restore();
 
@@ -381,7 +453,7 @@ public class Text extends Shape<Text>
             {
                 context.setFillColor(fill);
 
-                context.fillText(attr.getText(), 0, 0);
+                drawString(context,attr,FILL);
                 
                 context.restore();
 
@@ -399,7 +471,7 @@ public class Text extends Shape<Text>
                     {
                         context.setFillGradient(grad.asLinearGradient());
 
-                        context.fillText(attr.getText(), 0, 0);
+                        drawString(context,attr,FILL);
 
                         context.restore();
 
@@ -409,7 +481,7 @@ public class Text extends Shape<Text>
                     {
                         context.setFillGradient(grad.asRadialGradient());
 
-                        context.fillText(attr.getText(), 0, 0);
+                        drawString(context,attr,FILL);
 
                         context.restore();
 
@@ -419,7 +491,7 @@ public class Text extends Shape<Text>
                     {
                         context.setFillGradient(grad.asPatternGradient());
 
-                        context.fillText(attr.getText(), 0, 0);
+                        drawString(context,attr,FILL);
 
                         context.restore();
 
@@ -441,13 +513,92 @@ public class Text extends Shape<Text>
             {
                 doApplyShadow(context, attr);
             }
-            context.beginPath();
 
-            context.strokeText(attr.getText(), 0, 0);
-
-            context.closePath();
-
+            drawString(context, attr, STROKE);
             context.restore();
+        }
+    }
+
+    private static final native void log(String msg)/*-{
+        console.log(msg);
+    }-*/;
+
+    private void drawString(final Context2D context, final Attributes attr, DrawString drawCommand)
+    {
+        if (null != wrapBoundaries) {
+            String[] words = attr.getText().split(" ");
+            String nextLine = words[0];
+            int numOfLines = 1;
+            ArrayList<String> lines = new ArrayList<>();
+            for (int i = 1; i < words.length; i++) {
+                if (getBoundingBoxForString(nextLine + words[i]).getWidth() <= wrapBoundaries.getWidth())
+                {
+                    nextLine = nextLine + " " + words[i];
+                }
+                else {
+                    lines.add(nextLine);
+                    nextLine = words[i];
+                    numOfLines++;
+                }
+            }
+            lines.add(nextLine);
+            for (int i = 0; i < lines.size(); i++){
+                String line = lines.get(i);
+                int toPad = (int)Math.round((wrapBoundaries.getWidth() - getBoundingBoxForString(line).getWidth())/getBoundingBoxForString(" ").getWidth());
+                line = padString(line, line.length() + toPad, ' ', alignment);
+                switch (linePlacement)
+                {
+                    case TOP:
+                    case BOTTOM:
+                    case CENTER:
+                        drawCommand.draw(context,line,i);
+                        break;
+                }
+            }
+        }
+        else {
+            drawCommand.draw(context,attr.getText(),0);
+        }
+    }
+
+    private String padString(String string, int targetSize, char padChar, TextAlign where) {
+        if (string.length() >= targetSize) {
+            return string;
+        }
+
+        int toPad = targetSize - string.length();
+        StringBuilder buffer = new StringBuilder(targetSize);
+        switch (where) {
+            case START:
+            case LEFT:
+                for (int i = 0; i < toPad; i++) {
+                    buffer.append(padChar);
+                }
+                buffer.append(string);
+                return buffer.toString();
+
+            case END:
+            case RIGHT:
+                buffer.append(string);
+                for (int i = 0; i < toPad; i++) {
+                    buffer.append(padChar);
+                }
+                return buffer.toString();
+
+            case CENTER:
+                int leftPad = toPad / 2;
+                int rightPad = toPad - leftPad;
+                for (int i = 0; i < leftPad; i++) {
+                    buffer.append(padChar);
+                }
+                buffer.append(string);
+                for (int i = 0; i < rightPad; i++) {
+                    buffer.append(padChar);
+                }
+                return buffer.toString();
+
+            default:
+                return string;
         }
     }
 
@@ -671,6 +822,41 @@ public class Text extends Shape<Text>
         return asAttributes(Attribute.TEXT, Attribute.FONT_SIZE, Attribute.FONT_STYLE, Attribute.FONT_FAMILY, Attribute.TEXT_UNIT, Attribute.TEXT_ALIGN, Attribute.TEXT_BASELINE);
     }
 
+    public BoundingBox getWrapBoundaries() {
+        return wrapBoundaries;
+    }
+
+    public Text setWrapBoundaries(BoundingBox boundaries, LayoutContainer.Layout layout) {
+        wrapBoundaries = boundaries;
+        switch (layout)
+        {
+            case TOP:
+                linePlacement = LinePlacement.TOP;
+                alignment = TextAlign.CENTER;
+                break;
+
+            case LEFT:
+                linePlacement = LinePlacement.CENTER;
+                alignment = TextAlign.LEFT;
+                break;
+
+            case RIGHT:
+                linePlacement = LinePlacement.CENTER;
+                alignment = TextAlign.RIGHT;
+                break;
+
+            case BOTTOM:
+                linePlacement = LinePlacement.BOTTOM;
+                alignment = TextAlign.CENTER;
+                break;
+
+            case CENTER:
+                linePlacement = LinePlacement.CENTER;
+                alignment = TextAlign.CENTER;
+        }
+        return this;
+    }
+
     public static class TextFactory extends ShapeFactory<Text>
     {
         public TextFactory()
@@ -697,5 +883,16 @@ public class Text extends Shape<Text>
         {
             return new Text(node, ctx);
         }
+    }
+
+    private interface DrawString {
+        void draw(Context2D c, String s, int lineNum);
+    }
+
+    private enum LinePlacement
+    {
+        TOP,
+        CENTER,
+        BOTTOM
     }
 }
