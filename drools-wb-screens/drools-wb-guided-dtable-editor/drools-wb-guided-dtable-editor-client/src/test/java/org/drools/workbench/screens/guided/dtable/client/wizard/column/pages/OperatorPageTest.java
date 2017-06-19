@@ -168,6 +168,28 @@ public class OperatorPageTest {
     }
 
     @Test
+    public void testOperatorPlaceholderSelectedWhenNothingSelectedPreviously() {
+        registerFakeProvider();
+
+        when(plugin.getFactField()).thenReturn("factField");
+        when(plugin.operatorPlaceholder()).thenReturn("please choose");
+
+        mockGetOperatorCompletionsToReturn(OperatorsOracle.STANDARD_OPERATORS);
+
+        spyOperatorsDropdown();
+        mockListBox("please choose",
+                    "equal to");
+
+        page.operatorDropdown(widget -> {
+            assertTrue(widget instanceof CEPOperatorsDropdown);
+
+            final CEPOperatorsDropdown operatorsDropdown = (CEPOperatorsDropdown) widget;
+
+            verify(operatorsDropdown.getBox()).setSelectedIndex(0);
+        });
+    }
+
+    @Test
     public void testOperatorDropdownWhenOperatorCanBeSet() {
         final String operatorPlaceholder = "--- please choose ---";
 
