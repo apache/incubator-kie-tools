@@ -77,6 +77,9 @@
   <!-- Uberfire Apps-->
   <inherits name="org.uberfire.ext.apps.UberfireAppsClient"/>
 
+  <!-- Dashbuilder -->
+  <inherits name="org.dashbuilder.DashbuilderClientAll"/>
+
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/drools-workbench.css'/>
 
