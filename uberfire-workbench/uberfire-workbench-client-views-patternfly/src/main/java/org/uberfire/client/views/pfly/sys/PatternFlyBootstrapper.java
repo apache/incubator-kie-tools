@@ -73,6 +73,15 @@ public class PatternFlyBootstrapper {
         setMomentLocale();
     }
 
+    public static void ensureBootstrapDateRangePickerIsAvailable() {
+        ensureMomentIsAvailable();
+        if (!isBootstrapDateRangePickerLoaded()) {
+            ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.bootstrapDateRangePicker().getText())
+                    .setWindow(ScriptInjector.TOP_WINDOW)
+                    .inject();
+        }
+    }
+
     /**
      * Checks to see if jQuery is already present.
      * @return true is jQuery is loaded, false otherwise.
@@ -95,6 +104,14 @@ public class PatternFlyBootstrapper {
      */
     private static native boolean isBootstrapSelectLoaded() /*-{
         return (typeof $wnd['Selectpicker'] !== 'undefined');
+    }-*/;
+
+    /**
+     * Checks to see if bootstrap-daterangepicker is already present.
+     * @return true is bootstrap-daterangepicker is loaded, false otherwise.
+     */
+    private static native boolean isBootstrapDateRangePickerLoaded() /*-{
+        return (typeof $wnd['DateRangePicker'] !== 'undefined');
     }-*/;
 
     /**

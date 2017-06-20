@@ -36,4 +36,6 @@ public interface PatternFlyClientBundle extends ClientBundle {
     @Source("org/uberfire/client/views/static/moment/moment-with-locales.min.js")
     TextResource moment();
 
+    @Source("org/uberfire/client/views/static/bootstrap-daterangepicker/daterangepicker.js")
+    TextResource bootstrapDateRangePicker();
 }

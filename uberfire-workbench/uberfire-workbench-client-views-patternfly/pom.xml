@@ -204,6 +204,27 @@
               <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
+          <execution>
+            <id>unpack-bootstrap-daterangepicker</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.webjars.bower</groupId>
+                  <artifactId>bootstrap-daterangepicker</artifactId>
+                  <version>${version.org.webjars.bower.bootstrap-daterangepicker}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/bootstrap-daterangepicker</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -280,6 +301,25 @@
                   <directory>${project.build.directory}/moment/META-INF/resources/webjars/moment/${version.org.webjars.bower.moment}/min/</directory>
                   <includes>
                     <include>moment-with-locales.min.js</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-bootstrap-daterangepicker-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static/bootstrap-daterangepicker</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/bootstrap-daterangepicker/META-INF/resources/webjars/bootstrap-daterangepicker/${version.org.webjars.bower.bootstrap-daterangepicker}/</directory>
+                  <includes>
+                    <include>daterangepicker.css</include>
+                    <include>daterangepicker.js</include>
                   </includes>
                 </resource>
               </resources>

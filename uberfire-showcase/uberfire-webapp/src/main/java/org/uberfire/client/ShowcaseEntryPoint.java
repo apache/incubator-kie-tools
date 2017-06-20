@@ -147,6 +147,7 @@ public class ShowcaseEntryPoint {
     @AfterInitialization
     public void startApp() {
         PatternFlyBootstrapper.ensureMomentIsAvailable();
+        PatternFlyBootstrapper.ensureBootstrapDateRangePickerIsAvailable();
         hideLoadingPopup();
         GWT.log("PatternFly version: " + getPatternFlyVersion());
         GWT.log("Loaded MomentJS using locale: " + getMomentLocale());
