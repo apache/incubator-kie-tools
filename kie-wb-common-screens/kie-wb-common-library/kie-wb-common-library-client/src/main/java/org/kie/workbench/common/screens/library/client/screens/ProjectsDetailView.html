@@ -15,14 +15,34 @@
   -->
 
 <div class="project-detail library">
+
+    <!-- Description card -->
     <div class="card-pf">
         <div class="card-pf-heading">
             <h2 class="card-pf-title">
-                <span data-i18n-key="DescriptionTitle">
-                </span>
+                <span data-i18n-key="DescriptionTitle"></span>
             </h2>
         </div>
-        <div id="description" class="card-pf-body">
+        <div data-field="descriptionDiv" class="card-pf-body">
+        </div>
+    </div>
+    <!-- Metrics card -->
+    <div class="card-pf" data-field="metricsDiv">
+        <div class="card-pf-heading">
+            <h2 class="card-pf-title">
+                <span data-i18n-key="MetricsTitle"></span>
+            </h2>
+        </div>
+        <div class="card-pf-body">
+            <label class="label-title" data-i18n-key="ContributionsOverTime"></label>
+            <div data-field="contributionsDiv">
+            </div>
+        </div>
+        <div class="card-pf-footer">
+            <a href="#" class="card-pf-link-with-icon" data-field="viewAllAnchor">
+                <span class="fa fa-external-link-square"></span>
+                <span data-i18n-key="ViewAll"></span>
+            </a>
         </div>
     </div>
 </div>

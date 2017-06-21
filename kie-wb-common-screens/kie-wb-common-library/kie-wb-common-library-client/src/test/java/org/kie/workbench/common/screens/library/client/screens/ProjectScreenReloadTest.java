@@ -48,6 +48,7 @@ public class ProjectScreenReloadTest
 
         projectScreen = new ProjectScreen(view,
                                           libraryPlaces,
+                                          mock(ProjectsDetailScreen.class),
                                           ts,
                                           new CallerMock<>(libraryService),
                                           assetClassifier,

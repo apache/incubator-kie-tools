@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Input;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -96,23 +97,22 @@ public class ProjectView
         this.presenter = presenter;
         assetsActionsWidget.init();
         projectActionsWidget.init(presenter::goToSettings);
-        filterText.setAttribute("placeholder",
-                                ts.getTranslation(LibraryConstants.FilterByName));
-        detailsContainer.appendChild(projectsDetailScreen.getView().getElement());
+        filterText.setAttribute("placeholder", ts.getTranslation(LibraryConstants.FilterByName));
         assetsToolbar.appendChild(assetsActionsWidget.getView().getElement());
         projectToolbar.appendChild(projectActionsWidget.getView().getElement());
         assetListContainer.appendChild(assetList.getElement());
-        assetList.addChangeHandler(new Command() {
-            @Override
-            public void execute() {
-                presenter.onReload();
-            }
-        });
+        assetList.addChangeHandler(presenter::onReload);
     }
 
     @Override
     public void setProjectName(final String projectName) {
         projectNameContainer.setTextContent(projectName);
+    }
+
+    @Override
+    public void setProjectDetails(org.jboss.errai.common.client.api.IsElement element) {
+        DOMUtil.removeAllChildren(detailsContainer);
+        detailsContainer.appendChild(element.getElement());
     }
 
     @Override

@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.library.client.screens;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.api.IsElement;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
@@ -44,6 +45,8 @@ public class EmptyProjectScreen {
 
         void setProjectName(String projectName);
 
+        void setProjectDetails(IsElement element);
+
         void addResourceHandler(NewResourceHandler newResourceHandler);
     }
 
@@ -59,6 +62,8 @@ public class EmptyProjectScreen {
 
     private NewResourceHandler uploadHandler;
 
+    private ProjectsDetailScreen projectsDetailScreen;
+
     ProjectInfo projectInfo;
 
     @Inject
@@ -66,12 +71,14 @@ public class EmptyProjectScreen {
                               final ResourceUtils resourceUtils,
                               final NewResourcePresenter newResourcePresenter,
                               final PlaceManager placeManager,
-                              final LibraryPlaces libraryPlaces) {
+                              final LibraryPlaces libraryPlaces,
+                              final ProjectsDetailScreen projectsDetailScreen) {
         this.view = view;
         this.resourceUtils = resourceUtils;
         this.newResourcePresenter = newResourcePresenter;
         this.placeManager = placeManager;
         this.libraryPlaces = libraryPlaces;
+        this.projectsDetailScreen = projectsDetailScreen;
     }
 
     public void onStartup(@Observes final ProjectDetailEvent projectDetailEvent) {
@@ -88,7 +95,9 @@ public class EmptyProjectScreen {
             }
         });
 
+        this.projectsDetailScreen.setMetricsEnabled(false);
         view.setProjectName(projectInfo.getProject().getProjectName());
+        view.setProjectDetails(projectsDetailScreen.getView());
         placeManager.closePlace(LibraryPlaces.LIBRARY_SCREEN);
     }
 

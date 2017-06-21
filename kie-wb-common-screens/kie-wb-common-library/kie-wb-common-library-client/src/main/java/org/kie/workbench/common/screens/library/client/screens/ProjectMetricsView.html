@@ -1,0 +1,83 @@
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="container-fluid pm-container">
+    <div class="row">
+        <div class="col-md-12">
+            <label class="label-title" data-field="headerTitle"></label>
+        </div>
+    </div>
+    <div class="row" id="row1">
+        <div class="col-md-4">
+            <div class="card-pf">
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">
+                        <span data-i18n-key="CommitsPerAuthor"></span>
+                        <div data-field="topContribSelectorDiv" style="float: right; margin-top: -10px;">
+                        </div>
+                    </h2>
+                </div>
+                <div class="card-pf-body">
+                    <div data-field="commitsPerAuthorDiv">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-pf">
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">
+                        <span data-i18n-key="ContributionHistory"></span>
+                    </h2>
+                </div>
+                <div class="card-pf-body">
+                    <div data-field="commitsOverTimeDiv">
+                    </div>
+                    <div data-field="dateSelectorDiv">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="row2">
+        <div class="col-md-8 card-pf">
+            <div class="card-pf-heading">
+                <h2 class="card-pf-title">
+                    <span data-i18n-key="PerYearQuarterWeek"></span>
+                </h2>
+            </div>
+            <div class="card-pf-body">
+                <div class="pm-time-div" data-field="commitsByYearDiv">
+                </div>
+                <div class="pm-time-div" data-field="commitsByQuarterDiv">
+                </div>
+                <div class="pm-time-div" data-field="commitsByDayDiv">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="row3">
+        <div class="col-md-8 card-pf">
+            <div class="card-pf-heading">
+                <h2 class="card-pf-title">
+                    <span data-i18n-key="AllCommitsHeader"></span>
+                </h2>
+            </div>
+            <div class="card-pf-body" data-field="commitsAllDiv">
+            </div>
+        </div>
+    </div>
+</div>

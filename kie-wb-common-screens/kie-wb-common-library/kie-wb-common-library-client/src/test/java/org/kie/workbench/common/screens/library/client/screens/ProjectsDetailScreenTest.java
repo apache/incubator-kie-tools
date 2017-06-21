@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.screens.library.client.screens;
 
+import org.dashbuilder.displayer.client.Displayer;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.junit.Before;
@@ -22,6 +23,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
+import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.kie.workbench.common.screens.library.client.util.ProjectMetricsFactory;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -33,28 +36,54 @@ public class ProjectsDetailScreenTest {
     @Mock
     private ProjectsDetailScreen.View view;
 
+    @Mock
+    private ProjectMetricsFactory projectMetricsFactory;
+
+    @Mock
+    private LibraryPlaces libraryPlaces;
+
+    @Mock
+    private Displayer contributionsDisplayer;
+
+    @Mock
+    private POM pom;
+
+    @Mock
+    private Project project;
+
+    @Mock
+    private ProjectInfo projectInfo;
+
+    private ProjectDetailEvent projectDetailEvent;
     private ProjectsDetailScreen projectsDetail;
 
     @Before
     public void setup() {
-        projectsDetail = new ProjectsDetailScreen(view);
+        when(pom.getDescription()).thenReturn("desc");
+        doReturn(pom).when(project).getPom();
+        when(projectInfo.getProject() ).thenReturn(project);
+        when(projectMetricsFactory.lookupCommitsOverTimeDisplayer_small(any())).thenReturn(contributionsDisplayer);
+
+        projectDetailEvent = new ProjectDetailEvent(projectInfo);
+        projectsDetail = new ProjectsDetailScreen(view, projectMetricsFactory, libraryPlaces);
+        projectsDetail.update(projectDetailEvent);
+    }
+
+    @Test
+    public void testInit() throws Exception {
+        verify(view).init(projectsDetail);
+    }
+
+    @Test
+    public void testViewMetrics() throws Exception {
+        projectsDetail.gotoProjectMetrics();
+        verify(libraryPlaces).goToProjectMetrics(projectInfo);
     }
 
     @Test
     public void testUpdate() throws Exception {
-        final POM pom = mock(POM.class);
-        when(pom.getDescription()).thenReturn("desc");
-
-        final Project project = mock(Project.class);
-        doReturn(pom).when(project).getPom();
-
-        final ProjectInfo projectInfo = mock(ProjectInfo.class);
-        when(projectInfo.getProject()).thenReturn(project);
-
-        ProjectDetailEvent event = new ProjectDetailEvent(projectInfo);
-
-        projectsDetail.update(event);
-
-        verify(view).update("desc");
+        verify(view).updateDescription("desc");
+        verify(view).updateContributionsMetric(contributionsDisplayer);
+        verify(contributionsDisplayer ).draw();
     }
 }

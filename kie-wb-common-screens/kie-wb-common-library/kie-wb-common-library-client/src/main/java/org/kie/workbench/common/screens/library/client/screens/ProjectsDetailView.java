@@ -17,9 +17,15 @@ package org.kie.workbench.common.screens.library.client.screens;
 
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import org.dashbuilder.displayer.client.Displayer;
+import org.jboss.errai.common.client.dom.Anchor;
+import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Node;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
@@ -30,16 +36,43 @@ public class ProjectsDetailView implements ProjectsDetailScreen.View,
 
     @Inject
     @DataField
-    Div description;
+    Div descriptionDiv;
+
+    @Inject
+    @DataField
+    Div metricsDiv;
+
+    @Inject
+    @DataField
+    Div contributionsDiv;
+
+    @Inject
+    @DataField
+    Anchor viewAllAnchor;
 
     @Override
-    public void init( ProjectsDetailScreen presenter ) {
+    public void init(ProjectsDetailScreen presenter) {
         this.presenter = presenter;
-
     }
 
     @Override
-    public void update( String description ) {
-        this.description.setTextContent( description );
+    public void updateDescription(String description) {
+        descriptionDiv.setTextContent(description);
+    }
+
+    @Override
+    public void updateContributionsMetric(Displayer metric) {
+        DOMUtil.removeAllChildren(contributionsDiv);
+        contributionsDiv.appendChild((Node) metric.asWidget().getElement());
+    }
+
+    @Override
+    public void setMetricsEnabled(boolean enabled) {
+        metricsDiv.setHidden(!enabled);
+    }
+
+    @EventHandler("viewAllAnchor")
+    public void onViewAllAnchor(ClickEvent clickEvent) {
+        presenter.gotoProjectMetrics();
     }
 }

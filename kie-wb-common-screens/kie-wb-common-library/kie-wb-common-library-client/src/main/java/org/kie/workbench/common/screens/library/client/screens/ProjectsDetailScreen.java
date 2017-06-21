@@ -19,35 +19,58 @@ package org.kie.workbench.common.screens.library.client.screens;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.dashbuilder.displayer.client.Displayer;
 import org.guvnor.common.services.project.model.POM;
+import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
+import org.kie.workbench.common.screens.library.client.util.ProjectMetricsFactory;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElement;
+import org.uberfire.lifecycle.OnClose;
 
 @WorkbenchScreen(identifier = LibraryPlaces.PROJECT_DETAIL_SCREEN)
 public class ProjectsDetailScreen {
 
     public interface View extends UberElement<ProjectsDetailScreen> {
 
-        void update( String description );
+        void updateDescription(String description );
 
+        void updateContributionsMetric(Displayer metric);
+
+        void setMetricsEnabled(boolean enabled);
     }
 
     private View view;
+    private ProjectMetricsFactory projectMetricsFactory;
+    private LibraryPlaces libraryPlaces;
+    private ProjectInfo projectInfo;
+    private Displayer commitsDisplayer;
 
     @Inject
-    public ProjectsDetailScreen( final View view ) {
+    public ProjectsDetailScreen(final View view,
+                                final ProjectMetricsFactory projectMetricsFactory,
+                                final LibraryPlaces libraryPlaces) {
         this.view = view;
+        this.projectMetricsFactory = projectMetricsFactory;
+        this.libraryPlaces = libraryPlaces;
+        this.view.init(this);
     }
 
     public void update( @Observes final ProjectDetailEvent event ) {
-        final POM pom = event.getProjectInfo().getProject().getPom();
-        if ( pom != null && pom.getDescription() != null ) {
-            view.update( pom.getDescription() );
+        this.projectInfo = event.getProjectInfo();
+
+        // Update the description
+        final POM pom = projectInfo.getProject().getPom();
+        if (pom != null && pom.getDescription() != null) {
+            view.updateDescription(pom.getDescription());
         }
+        // Update the metrics card
+        commitsDisplayer = projectMetricsFactory.lookupCommitsOverTimeDisplayer_small(projectInfo);
+        commitsDisplayer.draw();
+        view.updateContributionsMetric(commitsDisplayer);
     }
 
     @WorkbenchPartTitle
@@ -58,5 +81,22 @@ public class ProjectsDetailScreen {
     @WorkbenchPartView
     public UberElement<ProjectsDetailScreen> getView() {
         return view;
+    }
+
+    @OnClose
+    public void dispose() {
+        if (commitsDisplayer != null) {
+            commitsDisplayer.close();
+        }
+    }
+
+    public void setMetricsEnabled(boolean enabled) {
+        view.setMetricsEnabled(enabled);
+    }
+
+    public void gotoProjectMetrics() {
+        if (projectInfo != null) {
+            libraryPlaces.goToProjectMetrics(projectInfo);
+        }
     }
 }

@@ -48,6 +48,7 @@ import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
+import org.kie.workbench.common.screens.library.client.events.ProjectMetricsEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.widgets.library.LibraryToolbarPresenter;
@@ -84,6 +85,7 @@ public class LibraryPlaces {
     public static final String EMPTY_PROJECT_SCREEN = "EmptyProjectScreen";
     public static final String PROJECT_SCREEN = "ProjectScreen";
     public static final String PROJECT_DETAIL_SCREEN = "ProjectsDetailScreen";
+    public static final String PROJECT_METRICS_SCREEN = "ProjectMetricsScreen";
     public static final String ORGANIZATIONAL_UNITS_SCREEN = "LibraryOrganizationalUnitsScreen";
     public static final String PROJECT_SETTINGS = "projectScreen";
     public static final String PROJECT_EXPLORER = "org.kie.guvnor.explorer";
@@ -96,6 +98,7 @@ public class LibraryPlaces {
         add(LIBRARY_SCREEN);
         add(EMPTY_PROJECT_SCREEN);
         add(PROJECT_SCREEN);
+        add(PROJECT_METRICS_SCREEN);
         add(PROJECT_DETAIL_SCREEN);
         add(ORGANIZATIONAL_UNITS_SCREEN);
         add(PROJECT_SETTINGS);
@@ -107,6 +110,8 @@ public class LibraryPlaces {
     private TranslationService ts;
 
     private Event<ProjectDetailEvent> projectDetailEvent;
+
+    private Event<ProjectMetricsEvent> projectMetricsEvent;
 
     private Event<AssetDetailEvent> assetDetailEvent;
 
@@ -154,6 +159,7 @@ public class LibraryPlaces {
     public LibraryPlaces(final UberfireBreadcrumbs breadcrumbs,
                          final TranslationService ts,
                          final Event<ProjectDetailEvent> projectDetailEvent,
+                         final Event<ProjectMetricsEvent> projectMetricsEvent,
                          final Event<AssetDetailEvent> assetDetailEvent,
                          final ResourceUtils resourceUtils,
                          final Caller<LibraryService> libraryService,
@@ -174,6 +180,7 @@ public class LibraryPlaces {
         this.breadcrumbs = breadcrumbs;
         this.ts = ts;
         this.projectDetailEvent = projectDetailEvent;
+        this.projectMetricsEvent = projectMetricsEvent;
         this.assetDetailEvent = assetDetailEvent;
         this.resourceUtils = resourceUtils;
         this.libraryService = libraryService;
@@ -453,6 +460,22 @@ public class LibraryPlaces {
                                   () -> goToProject(projectInfo));
     }
 
+    public void setupLibraryBreadCrumbsForProjectMetrics(final ProjectInfo projectInfo) {
+        breadcrumbs.clearBreadcrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                  translationUtils.getOrganizationalUnitAliasInPlural(),
+                                  () -> goToOrganizationalUnits());
+        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                  getSelectedOrganizationalUnit().getName(),
+                                  () -> goToLibrary());
+        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                  projectInfo.getProject().getProjectName(),
+                                  () -> goToProject(projectInfo));
+        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                  translationUtils.getProjectMetrics(),
+                                  () -> goToProjectMetrics(projectInfo));
+    }
+
     public void setupLibraryBreadCrumbsForAsset(final ProjectInfo projectInfo,
                                                 final Path path) {
         String assetName;
@@ -603,6 +626,15 @@ public class LibraryPlaces {
                 }
             }
         }).hasAssets(projectInfo.getProject());
+    }
+
+    public void goToProjectMetrics(final ProjectInfo projectInfo) {
+        final PlaceRequest metricsScreen = new DefaultPlaceRequest(LibraryPlaces.PROJECT_METRICS_SCREEN);
+        final PartDefinitionImpl part = new PartDefinitionImpl(metricsScreen);
+        part.setSelectable(false);
+        placeManager.goTo(part, libraryPerspective.getRootPanel());
+        setupLibraryBreadCrumbsForProjectMetrics(projectInfo);
+        projectMetricsEvent.fire(new ProjectMetricsEvent(projectInfo));
     }
 
     public void goToAsset(final ProjectInfo projectInfo,

@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import org.jboss.errai.common.client.dom.Anchor;
+import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
@@ -39,9 +40,6 @@ public class EmptyProjectView implements EmptyProjectScreen.View,
 
     @Inject
     private ManagedInstance<NewAssetHandlerWidget> resourceHandlerWidgets;
-
-    @Inject
-    private ProjectsDetailScreen projectsDetailScreen;
 
     @Inject
     private ProjectActionsWidget projectActionsWidget;
@@ -81,7 +79,6 @@ public class EmptyProjectView implements EmptyProjectScreen.View,
     public void init(final EmptyProjectScreen presenter) {
         this.presenter = presenter;
         resourceHandlerContainer.setTextContent("");
-        detailsContainer.appendChild(projectsDetailScreen.getView().getElement());
         assetsActionsWidget.init();
         projectActionsWidget.init(presenter::goToSettings);
         assetsToolbar.appendChild(assetsActionsWidget.getView().getElement());
@@ -91,6 +88,12 @@ public class EmptyProjectView implements EmptyProjectScreen.View,
     @Override
     public void setProjectName(final String projectName) {
         projectNameContainer.setTextContent(projectName);
+    }
+
+    @Override
+    public void setProjectDetails(org.jboss.errai.common.client.api.IsElement element) {
+        DOMUtil.removeAllChildren(detailsContainer);
+        detailsContainer.appendChild(element.getElement());
     }
 
     @Override

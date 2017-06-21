@@ -61,6 +61,9 @@ public class EmptyProjectScreenTest {
     @Mock
     private LibraryPlaces libraryPlaces;
 
+    @Mock
+    private ProjectsDetailScreen projectsDetailScreen;
+
     private EmptyProjectScreen emptyProjectScreen;
 
     @Before
@@ -69,7 +72,8 @@ public class EmptyProjectScreenTest {
                                                         resourceUtils,
                                                         newResourcePresenter,
                                                         placeManager,
-                                                        libraryPlaces));
+                                                        libraryPlaces,
+                                                        projectsDetailScreen));
     }
 
     @Test

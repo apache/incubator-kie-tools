@@ -26,6 +26,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.ext.uberfire.social.activities.client.widgets.utils.SocialDateFormatter;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
@@ -61,6 +62,8 @@ public class ProjectScreen {
 
         void setProjectName(final String projectName);
 
+        void setProjectDetails(final IsElement element);
+
         void clearAssets();
 
         void addAsset(final String assetName,
@@ -91,6 +94,7 @@ public class ProjectScreen {
 
     private View view;
     private LibraryPlaces libraryPlaces;
+    private ProjectsDetailScreen projectsDetailScreen;
     private TranslationService ts;
     private Caller<LibraryService> libraryService;
     private Classifier assetClassifier;
@@ -106,6 +110,7 @@ public class ProjectScreen {
     @Inject
     public ProjectScreen(final View view,
                          final LibraryPlaces libraryPlaces,
+                         final ProjectsDetailScreen projectsDetailScreen,
                          final TranslationService ts,
                          final Caller<LibraryService> libraryService,
                          final Classifier assetClassifier,
@@ -113,6 +118,7 @@ public class ProjectScreen {
                          final BusyIndicatorView busyIndicatorView) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
+        this.projectsDetailScreen = projectsDetailScreen;
         this.ts = ts;
         this.libraryService = libraryService;
         this.assetClassifier = assetClassifier;
@@ -124,6 +130,7 @@ public class ProjectScreen {
         this.projectInfo = projectDetailEvent.getProjectInfo();
         loadProjectInfo();
         view.setProjectName(projectInfo.getProject().getProjectName());
+        view.setProjectDetails(projectsDetailScreen.getView());
     }
 
     public void refreshOnFocus(@Observes final PlaceGainFocusEvent placeGainFocusEvent) {

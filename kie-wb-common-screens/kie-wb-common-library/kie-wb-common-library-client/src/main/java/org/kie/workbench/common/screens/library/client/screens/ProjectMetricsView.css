@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2014 Red Hat, Inc. and/or its affiliates.
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.screens.contributors.model;
 
-/**
- * Columns of a contributors dataset.
- */
-public interface ContributorsDataSetColumns {
+.pm-container {
+    background-color: #f5f5f5;
+}
+.pm-container #row1 {
+    margin-left: -10px;
+}
 
-    String COLUMN_ORG = "organization";
-    String COLUMN_URI = "uri";
-    String COLUMN_REPO = "repository";
-    String COLUMN_PROJECT = "project";
-    String COLUMN_AUTHOR = "author";
-    String COLUMN_MSG = "message";
-    String COLUMN_DATE = "date";
+.pm-container #row2 {
+    margin-left: 10px;
+}
 
+.pm-container #row3 {
+    margin-left: 10px;
+}
 
+.pm-time-div {
+    float: left;
+    margin-right: 70px;
+}
+
+.pm-container .label-title {
+    font-size: large;
+    font-weight: 500;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.pm-container .card-pf-title {
+    font-size: 12px;
+    font-weight: 600;
 }

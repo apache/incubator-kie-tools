@@ -42,6 +42,7 @@ import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
+import org.kie.workbench.common.screens.library.client.events.ProjectMetricsEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.widgets.library.LibraryToolbarPresenter;
 import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
@@ -82,6 +83,9 @@ public class LibraryPlacesTest {
 
     @Mock
     private Event<ProjectDetailEvent> projectDetailEvent;
+
+    @Mock
+    private Event<ProjectMetricsEvent> projectMetricsEvent;
 
     @Mock
     private Event<AssetDetailEvent> assetDetailEvent;
@@ -155,6 +159,7 @@ public class LibraryPlacesTest {
         libraryPlaces = spy(new LibraryPlaces(breadcrumbs,
                                               ts,
                                               projectDetailEvent,
+                                              projectMetricsEvent,
                                               assetDetailEvent,
                                               resourceUtils,
                                               libraryServiceCaller,
@@ -523,6 +528,38 @@ public class LibraryPlacesTest {
         verify(placeManager).closeAllPlacesOrNothing();
     }
 
+    @Test
+    public void goToProjectMetricsTest() {
+        final PlaceRequest projectScreen = new DefaultPlaceRequest(LibraryPlaces.PROJECT_METRICS_SCREEN);
+        final PartDefinitionImpl part = new PartDefinitionImpl(projectScreen);
+        part.setSelectable(false);
+        final ProjectInfo projectInfo = new ProjectInfo(activeOrganizationalUnit,
+                                                        activeRepository,
+                                                        activeBranch,
+                                                        activeProject);
+
+        libraryPlaces.goToProjectMetrics(projectInfo);
+
+        verify(placeManager).goTo(eq(part), any(PanelDefinition.class));
+        verify(projectMetricsEvent).fire(any(ProjectMetricsEvent.class));
+        verify(libraryPlaces).setupLibraryBreadCrumbsForProjectMetrics(projectInfo);
+    }
+
+    @Test
+    public void closeLibraryPlacesTest() {
+        libraryPlaces.closeLibraryPlaces();
+        verify(placeManager).closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
+        verify(placeManager).closePlace(LibraryPlaces.EMPTY_LIBRARY_SCREEN);
+        verify(placeManager).closePlace(LibraryPlaces.LIBRARY_SCREEN);
+        verify(placeManager).closePlace(LibraryPlaces.EMPTY_PROJECT_SCREEN);
+        verify(placeManager).closePlace(LibraryPlaces.PROJECT_SCREEN);
+        verify(placeManager).closePlace(LibraryPlaces.PROJECT_METRICS_SCREEN);
+        verify(placeManager).closePlace(LibraryPlaces.PROJECT_DETAIL_SCREEN);
+        verify(placeManager).closePlace(LibraryPlaces.ORGANIZATIONAL_UNITS_SCREEN);
+        verify(placeManager).closePlace(LibraryPlaces.PROJECT_SETTINGS);
+        verify(placeManager).closePlace(PreferencesRootScreen.IDENTIFIER);
+
+    }
     @Test
     public void goToSameProjectTest() {
         final ProjectInfo projectInfo = new ProjectInfo(activeOrganizationalUnit,

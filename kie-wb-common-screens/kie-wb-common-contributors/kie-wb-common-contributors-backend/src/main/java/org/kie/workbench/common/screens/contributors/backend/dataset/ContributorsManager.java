@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -34,8 +35,10 @@ import org.dashbuilder.dataset.DataSetFactory;
 import org.dashbuilder.dataset.DataSetGenerator;
 import org.dashbuilder.dataset.def.DataColumnDef;
 import org.dashbuilder.dataset.def.DataSetDef;
+import org.dashbuilder.dataset.def.DataSetDefFactory;
 import org.dashbuilder.dataset.def.DataSetDefRegistry;
 import org.dashbuilder.dataset.events.DataSetStaleEvent;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -43,9 +46,12 @@ import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryService;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.commons.services.cdi.Startup;
+import org.uberfire.ext.editor.commons.backend.version.VersionRecordService;
 import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
@@ -72,7 +78,10 @@ public class ContributorsManager implements DataSetGenerator {
     protected OrganizationalUnitService organizationalUnitService;
 
     @Inject
-    protected RepositoryService repositoryService;
+    protected KieProjectService projectService;
+
+    @Inject
+    protected VersionRecordService recordService;
 
     @Inject
     protected Event<DataSetStaleEvent> dataSetStaleEvent;
@@ -85,12 +94,14 @@ public class ContributorsManager implements DataSetGenerator {
     /**
      * The GIT contributors data set definition
      */
-    protected DataSetDef dataSetdef = DataSetFactory.newBeanDataSetDef()
+    protected DataSetDef dataSetdef = DataSetDefFactory.newBeanDataSetDef()
             .uuid(GIT_CONTRIB)
             .name("GIT Contributors")
             .generatorClass(ContributorsManager.class.getName())
             .label(COLUMN_ORG)
             .label(COLUMN_REPO)
+            .label(COLUMN_PROJECT)
+            .label(COLUMN_URI)
             .label(COLUMN_AUTHOR)
             .text(COLUMN_MSG)
             .date(COLUMN_DATE)
@@ -113,7 +124,6 @@ public class ContributorsManager implements DataSetGenerator {
 
     @Override
     public DataSet buildDataSet(Map<String, String> params) {
-
         DataSetBuilder dsBuilder = DataSetFactory.newDataSetBuilder();
         for (DataColumnDef columnDef : dataSetdef.getColumns()) {
             dsBuilder.column(columnDef.getId(), columnDef.getColumnType());
@@ -129,18 +139,25 @@ public class ContributorsManager implements DataSetGenerator {
             } else {
                 for (Repository repo : repoList) {
                     String repoAlias = repo.getAlias();
-                    List<VersionRecord> recordList = repositoryService.getRepositoryHistoryAll(repoAlias);
+                    Set<Project> repoProjects = projectService.getAllProjects(repo, repo.getDefaultBranch());
 
-                    if (recordList.isEmpty()) {
-                        dsBuilder.row(org, repoAlias, null, "Empty repository", null);
-                    } else {
-                        for (VersionRecord record : recordList) {
-                            String alias = record.author();
-                            String author = authorMappings.getProperty(alias);
-                            if (author == null) author = alias;
-                            String msg = record.comment();
-                            Date date = record.date();
-                            dsBuilder.row(org, repoAlias, author, msg, date);
+                    for (Project project : repoProjects) {
+                        String projectName = project.getProjectName();
+                        Path projectRoot = Paths.convert(project.getRootPath());
+                        List<VersionRecord> recordList = recordService.loadVersionRecords(projectRoot);
+
+                        if (recordList.isEmpty()) {
+                            dsBuilder.row(org, repoAlias, null, "Empty repository", null);
+                        } else {
+                            for (VersionRecord record : recordList) {
+                                String alias = record.author();
+                                String uri = record.uri();
+                                String author = authorMappings.getProperty(alias);
+                                author = author == null ? alias : author;
+                                String msg = record.comment();
+                                Date date = record.date();
+                                dsBuilder.row(org, repoAlias, projectName, uri, author, msg, date);
+                            }
                         }
                     }
                 }

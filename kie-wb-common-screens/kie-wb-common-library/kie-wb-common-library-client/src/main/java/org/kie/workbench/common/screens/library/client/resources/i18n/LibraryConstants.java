@@ -161,4 +161,45 @@ public class LibraryConstants {
     @TranslationKey(defaultValue = "")
     public static final String ProjectName = "ProjectName";
     
+    @TranslationKey(defaultValue = "")
+    public static final String ProjectMetrics = "ProjectMetrics";
+
+    @TranslationKey(defaultValue = "")
+    public static final String MetricsTitle = "MetricsTitle";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Metrics = "Metrics";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Date = "Date";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Years = "Years";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Quarters = "Quarters";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DayOfWeek = "DayOfWeek";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NumberOfCommits = "NumberOfCommits";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Assets = "Assets";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NumberOfAssets = "NumberOfAssets";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Author = "Author";
+
+    @TranslationKey(defaultValue = "")
+    public static final String URI = "URI";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Message = "Message";
+
+    @TranslationKey(defaultValue = "")
+    public static final String TopContributor = "TopContributor";
 }
