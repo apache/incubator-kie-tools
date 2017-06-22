@@ -20,20 +20,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.view.client.AsyncDataProvider;
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class ProjectClassListTest {
 
-    @Mock
+    @GwtMock
     private ProjectClassListView view;
 
     @Mock
@@ -42,39 +45,48 @@ public class ProjectClassListTest {
     private ProjectClassList presenter;
 
     ClassRow classRow1 = new ClassRow() {
-        @Override public String getClassName() {
+        @Override
+        public String getClassName() {
             return "Class1";
         }
 
-        @Override public void setClassName( String className ) {
+        @Override
+        public void setClassName(String className) {
 
         }
     };
 
     ClassRow classRow2 = new ClassRow() {
-        @Override public String getClassName() {
+        @Override
+        public String getClassName() {
             return "Class2";
         }
 
-        @Override public void setClassName( String className ) {
+        @Override
+        public void setClassName(String className) {
 
         }
     };
 
     @Before
     public void setup() {
-        presenter = new ProjectClassList( view );
-        presenter.addLoadClassesHandler( mockLoadClassesHandler );
-        verify( view, times( 1 ) ).setPresenter( any( ProjectClassList.class ) );
-        verify( view, times( 1 ) ).setDataProvider( any( AsyncDataProvider.class ) );
+        presenter = new ProjectClassList(view);
+        presenter.addLoadClassesHandler(mockLoadClassesHandler);
+        verify(view,
+               times(1)).setPresenter(any(ProjectClassList.class));
+        verify(view,
+               times(1)).setDataProvider(any(AsyncDataProvider.class));
     }
 
     @Test
     public void testOnLoadClassesWithNoResult() {
-        verify( mockLoadClassesHandler, times( 0 ) ).onLoadClasses();
+        verify(mockLoadClassesHandler,
+               times(0)).onLoadClasses();
         presenter.onLoadClasses();
-        verify( mockLoadClassesHandler, times( 1 ) ).onLoadClasses();
-        verify( view, times( 0 ) ).redraw();
+        verify(mockLoadClassesHandler,
+               times(1)).onLoadClasses();
+        verify(view,
+               times(0)).redraw();
     }
 
     @Test
@@ -84,22 +96,23 @@ public class ProjectClassListTest {
             @Override
             public void onLoadClasses() {
                 List<ClassRow> classes = new ArrayList<ClassRow>();
-                classes.add( classRow1 );
-                classes.add( classRow2 );
-                presenter.setClasses( classes );
+                classes.add(classRow1);
+                classes.add(classRow2);
+                presenter.setClasses(classes);
             }
 
             @Override
-            public void onLoadClass( String className ) {
+            public void onLoadClass(String className) {
 
             }
         };
-        presenter.addLoadClassesHandler( handler );
+        presenter.addLoadClassesHandler(handler);
         presenter.onLoadClasses();
 
-        verify( view, times( 1 ) ).redraw();
+        verify(view,
+               times(1)).redraw();
 
-        assertEquals( presenter.getClasses().size(), 2 );
+        assertThat(presenter.getClasses()).hasSize(2);
     }
 
     @Test
@@ -109,33 +122,67 @@ public class ProjectClassListTest {
             @Override
             public void onLoadClasses() {
                 List<ClassRow> classes = new ArrayList<ClassRow>();
-                classes.add( classRow1 );
-                classes.add( classRow2 );
-                presenter.setClasses( classes );
+                classes.add(classRow1);
+                classes.add(classRow2);
+                presenter.setClasses(classes);
             }
 
             @Override
-            public void onLoadClass( String className ) {
+            public void onLoadClass(String className) {
 
             }
         };
-        presenter.addLoadClassesHandler( handler );
+        presenter.addLoadClassesHandler(handler);
         presenter.onLoadClasses();
 
-        verify( view, times( 1 ) ).redraw();
+        verify(view,
+               times(1)).redraw();
 
-        assertEquals( presenter.getClasses().size(), 2 );
+        assertThat(presenter.getClasses()).hasSize(2);
 
-        presenter.onRemoveClass( classRow1 );
-        verify( view, times( 2 ) ).redraw();
-        assertEquals( presenter.getClasses().size(), 1 );
-        assertEquals( false, presenter.getClasses().contains( classRow1 ) );
+        presenter.onRemoveClass(classRow1);
+        verify(view,
+               times(2)).redraw();
+        assertThat(presenter.getClasses()).hasSize(1);
+        assertThat(presenter.getClasses()).doesNotContain(classRow1);
 
-        presenter.onRemoveClass( classRow2 );
-        verify( view, times( 3 ) ).redraw();
-        assertEquals( presenter.getClasses().size(), 0 );
-        assertEquals( false, presenter.getClasses().contains( classRow2 ) );
-
+        presenter.onRemoveClass(classRow2);
+        verify(view,
+               times(3)).redraw();
+        assertThat(presenter.getClasses()).hasSize(0);
     }
 
+    @Test
+    public void testOnLoadClassWithNoClass() {
+        when(view.getNewClassName()).thenReturn(null);
+
+        presenter.onLoadClass();
+
+        verify(view).setNewClassHelpMessage(null);
+        verify(view).setNewClassHelpMessage(Constants.INSTANCE.project_class_list_class_name_empty_message());
+    }
+
+    @Test
+    public void testOnLoadClassWithClassAndNotNullHandler() {
+        when(view.getNewClassName()).thenReturn("NewClassName");
+
+        presenter.onLoadClass();
+
+        verify(mockLoadClassesHandler).onLoadClass("NewClassName");
+    }
+
+    @Test
+    public void testOnLoadClassWithClassAndNullHandler() {
+        when(view.getNewClassName()).thenReturn("NewClassName");
+        presenter.addLoadClassesHandler(null);
+
+        assertThat(presenter.getClasses()).isNull();
+
+        presenter.onLoadClass();
+
+        assertThat(presenter.getClasses()).hasSize(1);
+        assertThat(presenter.getClasses().get(0).getClassName()).isEqualTo("NewClassName");
+        verify(view,
+               times(1)).redraw();
+    }
 }
