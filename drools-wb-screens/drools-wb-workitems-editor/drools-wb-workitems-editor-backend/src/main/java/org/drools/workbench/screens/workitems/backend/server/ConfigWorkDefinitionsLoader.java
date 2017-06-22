@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
-import org.drools.core.process.core.WorkDefinition;
+import org.jbpm.process.core.WorkDefinition;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;

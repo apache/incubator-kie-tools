@@ -24,7 +24,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.core.process.core.WorkDefinition;
+import org.jbpm.process.core.WorkDefinition;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.backend.file.FileExtensionFilter;
 import org.uberfire.io.IOService;

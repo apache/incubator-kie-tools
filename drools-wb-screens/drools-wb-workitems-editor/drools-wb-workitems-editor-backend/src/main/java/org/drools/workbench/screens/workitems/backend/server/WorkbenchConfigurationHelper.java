@@ -42,8 +42,8 @@ public class WorkbenchConfigurationHelper {
                                                                        WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS,
                                                                        "" );
         group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_DEFINITION,
-                                                                 "import org.drools.core.process.core.datatype.impl.type.StringDataType;\n" +
-                                                                         "import org.drools.core.process.core.datatype.impl.type.ObjectDataType;\n" +
+                                                                 "import org.jbpm.process.core.datatype.impl.type.StringDataType;\n" +
+                                                                         "import org.jbpm.process.core.datatype.impl.type.ObjectDataType;\n" +
                                                                          "\n" +
                                                                          "[\n" +
                                                                          "  [\n" +

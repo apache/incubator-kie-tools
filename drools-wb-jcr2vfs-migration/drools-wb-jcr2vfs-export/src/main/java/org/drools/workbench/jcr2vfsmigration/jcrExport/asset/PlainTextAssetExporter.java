@@ -40,7 +40,7 @@ public class PlainTextAssetExporter
             content = content.replaceAll("org.drools.guvnor.client.modeldriven.dt.TemplateModel","rule");
         }
         if (AssetFormats.WORKITEM_DEFINITION.equals(format)){
-            content = content.replaceAll("org.drools.process.core.","org.drools.core.process.core.");
+            content = content.replaceAll("org.drools.process.core.","org.jbpm.process.core.");
         }
 
         return new PlainTextAsset( exportContext.getJcrAssetItem().getName(),

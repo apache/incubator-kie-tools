@@ -81,21 +81,21 @@ public class WorkItemDefinitionElementsBrowser extends Composite implements HasW
         }} );
         importsList.addItem( WorkItemsEditorConstants.INSTANCE.ChooseImportClass() );
         importsList.addItem( "BooleanDataType",
-                             "import org.drools.core.process.core.datatype.impl.type.BooleanDataType;" );
+                             "import org.jbpm.process.core.datatype.impl.type.BooleanDataType;" );
         importsList.addItem( "EnumDataType",
-                             "import org.drools.core.process.core.datatype.impl.type.EnumDataType;" );
+                             "import org.jbpm.process.core.datatype.impl.type.EnumDataType;" );
         importsList.addItem( "FloatDataType",
-                             "import org.drools.core.process.core.datatype.impl.type.FloatDataType;" );
+                             "import org.jbpm.process.core.datatype.impl.type.FloatDataType;" );
         importsList.addItem( "IntegerDataType",
-                             "import org.drools.core.process.core.datatype.impl.type.IntegerDataType;" );
+                             "import org.jbpm.process.core.datatype.impl.type.IntegerDataType;" );
         importsList.addItem( "ListDataType",
-                             "import org.drools.core.process.core.datatype.impl.type.ListDataType;" );
+                             "import org.jbpm.process.core.datatype.impl.type.ListDataType;" );
         importsList.addItem( "ObjectDataType",
-                             "import org.drools.core.process.core.datatype.impl.type.ObjectDataType;" );
+                             "import org.jbpm.process.core.datatype.impl.type.ObjectDataType;" );
         importsList.addItem( "StringDataType",
-                             "import org.drools.core.process.core.datatype.impl.type.StringDataType;" );
+                             "import org.jbpm.process.core.datatype.impl.type.StringDataType;" );
         importsList.addItem( "UndefinedDataType",
-                             "import org.drools.core.process.core.datatype.impl.type.UndefinedDataType;" );
+                             "import org.jbpm.process.core.datatype.impl.type.UndefinedDataType;" );
 
         importsList.setVisibleItemCount( 9 );
         importsList.setSelectedIndex( 0 );

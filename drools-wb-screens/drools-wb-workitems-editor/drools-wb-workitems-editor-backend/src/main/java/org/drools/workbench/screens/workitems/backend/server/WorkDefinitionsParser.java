@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.process.core.ParameterDefinition;
-import org.drools.core.process.core.WorkDefinition;
-import org.drools.core.process.core.datatype.DataType;
-import org.drools.core.process.core.impl.ParameterDefinitionImpl;
+import org.jbpm.process.core.ParameterDefinition;
+import org.jbpm.process.core.WorkDefinition;
+import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.process.core.impl.ParameterDefinitionImpl;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.mvel2.MVEL;

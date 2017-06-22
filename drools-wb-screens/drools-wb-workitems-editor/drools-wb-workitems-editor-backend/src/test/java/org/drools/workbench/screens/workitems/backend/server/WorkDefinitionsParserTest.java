@@ -16,7 +16,7 @@
 package org.drools.workbench.screens.workitems.backend.server;
 
 
-import org.drools.core.process.core.WorkDefinition;
+import org.jbpm.process.core.WorkDefinition;
 import org.junit.Test;
 import org.mvel2.CompileException;
 
