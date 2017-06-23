@@ -15,7 +15,8 @@
  */
 package org.uberfire.ext.widgets.core.client;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
+import javax.annotation.PostConstruct;
+
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.ext.widgets.core.client.resources.TreeNavigatorResources;
 import org.uberfire.ext.widgets.core.client.resources.WizardResources;
@@ -26,7 +27,7 @@ import org.uberfire.ext.widgets.core.client.resources.WizardResources;
 @EntryPoint
 public class CoreEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         //Ensure CSS has been loaded
         WizardResources.INSTANCE.css().ensureInjected();

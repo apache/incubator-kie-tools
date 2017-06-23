@@ -16,23 +16,24 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.generator;
 
+import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_QUALIFIERS;
+
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.exporter.SingletonBeanDef;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
@@ -47,12 +48,13 @@ import org.uberfire.ext.plugin.model.LayoutEditorModel;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
 
-import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_QUALIFIERS;
-
 @EntryPoint
 public class PerspectiveEditorGenerator {
 
-    private SyncBeanManagerImpl beanManager;
+    @Inject
+    private SyncBeanManager beanManager;
+
+    @Inject
     private ActivityBeansCache activityBeansCache;
 
     @Inject
@@ -65,12 +67,6 @@ public class PerspectiveEditorGenerator {
     private Caller<LayoutServices> layoutServices;
 
     @PostConstruct
-    public void setup() {
-        beanManager = (SyncBeanManagerImpl) IOC.getBeanManager();
-        activityBeansCache = beanManager.lookupBean(ActivityBeansCache.class).getInstance();
-    }
-
-    @AfterInitialization
     public void loadPerspectives() {
         pluginServices.call(new RemoteCallback<Collection<LayoutEditorModel>>() {
             @Override
@@ -136,9 +132,9 @@ public class PerspectiveEditorGenerator {
         PerspectiveEditorScreenActivity activity = new PerspectiveEditorScreenActivity(perspective,
                                                                                        layoutGenerator);
 
-        final Set<Annotation> qualifiers = new HashSet<Annotation>(Arrays.asList(DEFAULT_QUALIFIERS));
+        final Set<Annotation> qualifiers = new HashSet<>(Arrays.asList(DEFAULT_QUALIFIERS));
         final SingletonBeanDef<PerspectiveEditorScreenActivity, PerspectiveEditorScreenActivity> beanDef =
-                new SingletonBeanDef<PerspectiveEditorScreenActivity, PerspectiveEditorScreenActivity>(
+                new SingletonBeanDef<>(
                         activity,
                         PerspectiveEditorScreenActivity.class,
                         qualifiers,

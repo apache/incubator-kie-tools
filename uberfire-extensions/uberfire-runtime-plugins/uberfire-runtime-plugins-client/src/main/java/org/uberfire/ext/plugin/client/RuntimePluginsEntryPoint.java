@@ -16,16 +16,19 @@
 
 package org.uberfire.ext.plugin.client;
 
+import static com.google.gwt.core.client.ScriptInjector.TOP_WINDOW;
+import static org.uberfire.workbench.model.ActivityResourceType.EDITOR;
+import static org.uberfire.workbench.model.ActivityResourceType.PERSPECTIVE;
+import static org.uberfire.workbench.model.ActivityResourceType.POPUP;
+import static org.uberfire.workbench.model.ActivityResourceType.SCREEN;
+
 import java.util.Collection;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.ScriptInjector;
-import com.google.gwt.dom.client.StyleInjector;
-import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
@@ -48,11 +51,8 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.menu.MenuFactory;
 
-import static com.google.gwt.core.client.ScriptInjector.TOP_WINDOW;
-import static org.uberfire.workbench.model.ActivityResourceType.EDITOR;
-import static org.uberfire.workbench.model.ActivityResourceType.PERSPECTIVE;
-import static org.uberfire.workbench.model.ActivityResourceType.POPUP;
-import static org.uberfire.workbench.model.ActivityResourceType.SCREEN;
+import com.google.gwt.core.client.ScriptInjector;
+import com.google.gwt.dom.client.StyleInjector;
 
 @EntryPoint
 @Bundle("resources/i18n/Constants.properties")
@@ -64,9 +64,6 @@ public class RuntimePluginsEntryPoint {
 
     @Inject
     private Caller<PluginServices> pluginServices;
-
-    @Inject
-    private ClientMessageBus bus;
 
     @Inject
     private WorkbenchMenuBar menubar;
@@ -81,10 +78,6 @@ public class RuntimePluginsEntryPoint {
     public void init() {
         WebAppResource.INSTANCE.CSS().ensureInjected();
         workbench.addStartupBlocker(RuntimePluginsEntryPoint.class);
-    }
-
-    @AfterInitialization
-    public void setup() {
         pluginServices.call(new RemoteCallback<Collection<RuntimePlugin>>() {
             @Override
             public void callback(Collection<RuntimePlugin> response) {

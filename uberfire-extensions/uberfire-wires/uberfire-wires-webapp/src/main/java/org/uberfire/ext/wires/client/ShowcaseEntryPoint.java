@@ -15,14 +15,11 @@
  */
 package org.uberfire.ext.wires.client;
 
+import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelMenu;
+
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.google.gwt.animation.client.Animation;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.RootPanel;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
@@ -35,7 +32,11 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelMenu;
+import com.google.gwt.animation.client.Animation;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * GWT's Entry-point for Wires
@@ -59,7 +60,7 @@ public class ShowcaseEntryPoint {
         $wnd.location = url;
     }-*/;
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         setupMenu();
         setupSettings();

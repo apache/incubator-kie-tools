@@ -66,7 +66,6 @@ public class WorkbenchBackendEntryPointTest {
             }
         }).when(workbenchServices).isWorkbenchOnCluster(any(ParameterizedCommand.class));
 
-        workbenchBackendEntryPoint.postConstruct();
         workbenchBackendEntryPoint.init();
 
         final ArgumentCaptor<BusLifecycleListener> captor = ArgumentCaptor.forClass(BusLifecycleListener.class);
@@ -123,7 +122,6 @@ public class WorkbenchBackendEntryPointTest {
             }
         }).when(workbenchServices).isWorkbenchOnCluster(any(ParameterizedCommand.class));
 
-        workbenchBackendEntryPoint.postConstruct();
         workbenchBackendEntryPoint.init();
 
         final ArgumentCaptor<BusLifecycleListener> captor = ArgumentCaptor.forClass(BusLifecycleListener.class);

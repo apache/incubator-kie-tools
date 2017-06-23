@@ -16,10 +16,10 @@
 
 package org.uberfire.security.client;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.backend.authz.AuthorizationService;
 import org.uberfire.security.authz.AuthorizationPolicy;
@@ -34,7 +34,7 @@ public class SecurityEntryPoint {
     @Inject
     private PermissionManager permissionManager;
 
-    @AfterInitialization
+    @PostConstruct
     public void init() {
         authorizationService.call(
                 (AuthorizationPolicy p) -> {

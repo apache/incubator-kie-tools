@@ -17,10 +17,11 @@
 package org.uberfire.client.exporter;
 
 import java.util.Collection;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -32,7 +33,7 @@ public class UberfireJSAPIExporter {
     @Inject
     Event<UberfireJSAPIReadyEvent> jsapiReadyEvent;
 
-    @AfterInitialization
+    @PostConstruct
     public void export() {
         Collection<SyncBeanDef<UberfireJSExporter>> jsAPIs = IOC.getBeanManager().lookupBeans(UberfireJSExporter.class);
         for (SyncBeanDef<UberfireJSExporter> bean : jsAPIs) {

@@ -15,14 +15,15 @@
  */
 package org.uberfire.ext.widgets.table.client;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
+import javax.annotation.PostConstruct;
+
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.ext.widgets.table.client.resources.UFTableResources;
 
 @EntryPoint
 public class TableEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         UFTableResources.INSTANCE.CSS().ensureInjected();
     }

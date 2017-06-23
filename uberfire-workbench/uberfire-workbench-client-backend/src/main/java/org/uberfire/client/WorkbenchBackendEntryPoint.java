@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.client.api.BusLifecycleAdapter;
 import org.jboss.errai.bus.client.api.BusLifecycleEvent;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.slf4j.Logger;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
@@ -58,18 +57,8 @@ public class WorkbenchBackendEntryPoint {
         this.errorPopupPresenter = errorPopupPresenter;
     }
 
-    @AfterInitialization
-    public void init() {
-        workbenchServices.isWorkbenchOnCluster(new ParameterizedCommand<Boolean>() {
-            @Override
-            public void execute(final Boolean parameter) {
-                isWorkbenchOnCluster = !(parameter == null || parameter.equals(Boolean.FALSE));
-            }
-        });
-    }
-
     @PostConstruct
-    public void postConstruct() {
+    public void init() {
         bus.addLifecycleListener(new BusLifecycleAdapter() {
             @Override
             public void busOnline(final BusLifecycleEvent e) {
@@ -87,6 +76,12 @@ public class WorkbenchBackendEntryPoint {
                     errorPopupPresenter.showMessage("You've been disconnected.");
                 }
                 showedError = true;
+            }
+        });
+        workbenchServices.isWorkbenchOnCluster(new ParameterizedCommand<Boolean>() {
+            @Override
+            public void execute(final Boolean parameter) {
+                isWorkbenchOnCluster = !(parameter == null || parameter.equals(Boolean.FALSE));
             }
         });
     }

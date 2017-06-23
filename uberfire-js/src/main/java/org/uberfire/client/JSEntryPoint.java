@@ -16,19 +16,20 @@
 
 package org.uberfire.client;
 
+import static com.google.gwt.core.client.ScriptInjector.TOP_WINDOW;
+
 import java.util.Collection;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.ScriptInjector;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.plugin.RuntimePluginsServiceProxy;
 import org.uberfire.client.workbench.Workbench;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static com.google.gwt.core.client.ScriptInjector.TOP_WINDOW;
+import com.google.gwt.core.client.ScriptInjector;
 
 @EntryPoint
 @EnabledByProperty(value = "uberfire.plugin.mode.active", negated = true)
@@ -43,10 +44,6 @@ public class JSEntryPoint {
     @PostConstruct
     public void init() {
         workbench.addStartupBlocker(JSEntryPoint.class);
-    }
-
-    @AfterInitialization
-    public void setup() {
         runtimePluginsService.listFrameworksContent(new ParameterizedCommand<Collection<String>>() {
             @Override
             public void execute(final Collection<String> response) {

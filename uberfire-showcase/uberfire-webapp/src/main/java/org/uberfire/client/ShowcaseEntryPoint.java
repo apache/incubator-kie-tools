@@ -15,24 +15,25 @@
  */
 package org.uberfire.client;
 
-import java.util.*;
+import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelCustomMenu;
+import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelMenu;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import com.google.common.collect.Sets;
-import com.google.gwt.animation.client.Animation;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.html.Text;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
@@ -52,6 +53,7 @@ import org.uberfire.client.perspectives.SimplePerspectiveNoContext;
 import org.uberfire.client.resources.AppResource;
 import org.uberfire.client.screen.JSWorkbenchScreenActivity;
 import org.uberfire.client.screens.popup.SimplePopUp;
+import org.uberfire.client.views.pfly.PatternFlyEntryPoint;
 import org.uberfire.client.views.pfly.menu.MainBrand;
 import org.uberfire.client.views.pfly.menu.UserMenu;
 import org.uberfire.client.views.pfly.modal.Bs3Modal;
@@ -69,8 +71,15 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelCustomMenu;
-import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelMenu;
+import com.google.common.collect.Sets;
+import com.google.gwt.animation.client.Animation;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * GWT's Entry-point for Uberfire-showcase
@@ -109,6 +118,8 @@ public class ShowcaseEntryPoint {
     private SearchMenuBuilder searchMenuBuilder;
     @Inject
     private ErrorPopupView errorPopupView;
+    @Inject
+    private PatternFlyEntryPoint pflyEntryPoint;
 
     public static List<MenuItem> getScreens() {
         final List<MenuItem> screens = new ArrayList<>();
@@ -144,22 +155,14 @@ public class ShowcaseEntryPoint {
         return screens;
     }
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         PatternFlyBootstrapper.ensureMomentIsAvailable();
         PatternFlyBootstrapper.ensureBootstrapDateRangePickerIsAvailable();
         hideLoadingPopup();
-        GWT.log("PatternFly version: " + getPatternFlyVersion());
-        GWT.log("Loaded MomentJS using locale: " + getMomentLocale());
+        GWT.log("PatternFly version: " + pflyEntryPoint.getPatternFlyVersion());
+        GWT.log("Loaded MomentJS using locale: " + pflyEntryPoint.getMomentLocale());
     }
-
-    private native String getPatternFlyVersion()/*-{
-        return $wnd.patternfly.version;
-    }-*/;
-
-    private native String getMomentLocale()/*-{
-        return $wnd.moment.locale();
-    }-*/;
 
     private void setupMenu(@Observes final ApplicationReadyEvent event) {
         final PerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
@@ -219,7 +222,7 @@ public class ShowcaseEntryPoint {
     }
 
     private List<MenuItem> getPerspectives() {
-        final List<MenuItem> perspectives = new ArrayList<MenuItem>();
+        final List<MenuItem> perspectives = new ArrayList<>();
         for (final PerspectiveActivity perspective : getPerspectiveActivities()) {
             if (SimplePerspectiveNoContext.SIMPLE_PERSPECTIVE_NO_CONTEXT.equals(perspective.getIdentifier())) {
                 continue;
@@ -265,7 +268,7 @@ public class ShowcaseEntryPoint {
         }
 
         //Sort Perspective Providers so they're always in the same sequence!
-        List<PerspectiveActivity> sortedActivities = new ArrayList<PerspectiveActivity>(activities);
+        List<PerspectiveActivity> sortedActivities = new ArrayList<>(activities);
         Collections.sort(sortedActivities,
                          new Comparator<PerspectiveActivity>() {
 

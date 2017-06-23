@@ -16,10 +16,12 @@
 package org.uberfire.client.workbench;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -107,8 +109,8 @@ public class Workbench {
     /**
      * List of classes who want to do stuff (often server communication) before the workbench shows up.
      */
-    private final Set<Class<?>> startupBlockers = new HashSet<Class<?>>();
-    private final Set<String> headersToKeep = new HashSet<String>();
+    private final Set<Class<?>> startupBlockers = new HashSet<>();
+    private final Set<String> headersToKeep = new HashSet<>();
     /**
      * This indirection exists so we can ignore spurious WindowCloseEvents in IE10.
      * In all other cases, the {@link WorkbenchCloseHandler} simply executes whatever command we pass it.
@@ -156,7 +158,7 @@ public class Workbench {
      */
     public void addStartupBlocker(Class<?> responsibleParty) {
         startupBlockers.add(responsibleParty);
-        System.out.println(responsibleParty.getName() + " is blocking workbench startup.");
+        logger.info(responsibleParty.getName() + " is blocking workbench startup.");
     }
 
     /**
@@ -172,20 +174,24 @@ public class Workbench {
      */
     public void removeStartupBlocker(Class<?> responsibleParty) {
         if (startupBlockers.remove(responsibleParty)) {
-            System.out.println(responsibleParty.getName() + " is no longer blocking startup.");
+            logger.info(responsibleParty.getName() + " is no longer blocking startup.");
         } else {
-            System.out.println(responsibleParty.getName() + " tried to unblock startup, but it wasn't blocking to begin with!");
+            logger.info(responsibleParty.getName() + " tried to unblock startup, but it wasn't blocking to begin with!");
         }
         startIfNotBlocked();
     }
 
     // package-private so tests can call in
-    @AfterInitialization
     void startIfNotBlocked() {
-        System.out.println(startupBlockers.size() + " workbench startup blockers remain.");
+        logger.info(startupBlockers.size() + " workbench startup blockers remain.");
         if (startupBlockers.isEmpty()) {
             bootstrap();
         }
+    }
+
+    @AfterInitialization
+    private void afterInit() {
+        removeStartupBlocker(Workbench.class);
     }
 
     @PostConstruct
@@ -193,13 +199,11 @@ public class Workbench {
         layout = layoutSelection.get();
         WorkbenchResources.INSTANCE.CSS().ensureInjected();
 
-        isStandaloneMode = Window.Location.getParameterMap().containsKey("standalone");
-
-        for (final Map.Entry<String, List<String>> parameter : Window.Location.getParameterMap().entrySet()) {
-            if (parameter.getKey().equals("header")) {
-                headersToKeep.addAll(parameter.getValue());
-            }
-        }
+        Map<String, List<String>> windowParamMap = Window.Location.getParameterMap();
+        isStandaloneMode = windowParamMap.containsKey("standalone");
+        List<String> headers = windowParamMap.getOrDefault("header", Collections.emptyList());
+        headersToKeep.addAll(headers);
+        addStartupBlocker(Workbench.class);
     }
 
     private void bootstrap() {

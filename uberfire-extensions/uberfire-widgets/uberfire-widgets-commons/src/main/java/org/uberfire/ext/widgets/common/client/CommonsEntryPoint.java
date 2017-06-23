@@ -15,7 +15,8 @@
  */
 package org.uberfire.ext.widgets.common.client;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
+import javax.annotation.PostConstruct;
+
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.ext.widgets.common.client.resources.CommonResources;
 
@@ -25,7 +26,7 @@ import org.uberfire.ext.widgets.common.client.resources.CommonResources;
 @EntryPoint
 public class CommonsEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         //Ensure CSS has been loaded
         CommonResources.INSTANCE.CSS().ensureInjected();

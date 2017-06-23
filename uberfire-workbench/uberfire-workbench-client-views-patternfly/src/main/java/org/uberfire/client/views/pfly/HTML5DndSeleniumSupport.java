@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package org.uberfire.client.exporter;
+package org.uberfire.client.views.pfly;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
-@ApplicationScoped
+import org.jboss.errai.ioc.client.api.EntryPoint;
+
 /**
  * This class is developed to provide an temporary HTML5 DnD API for Selenium.
  * Unfortunately, Selenium lack of support for HTML5 DnD.
@@ -27,10 +29,17 @@ import javax.enterprise.context.ApplicationScoped;
  * Usage: $('#origin').simulateDragDrop({ dropTarget: '#target'});
  *
  */
-public class HTML5DndSeleniumSupport implements UberfireJSExporter {
+@EntryPoint
+public class HTML5DndSeleniumSupport {
 
-    @Override
-    public void export() {
+    /*
+     * Ensures that JQuery is loaded before this runs.
+     */
+    @Inject
+    private PatternFlyEntryPoint entryPoint;
+
+    @PostConstruct
+    public void init() {
         prepareDnd(this);
     }
 

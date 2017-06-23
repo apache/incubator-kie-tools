@@ -21,12 +21,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import org.jboss.errai.common.client.dom.Element;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.PlaceManager;
@@ -75,7 +76,7 @@ public class UberfireBreadcrumbs {
         updateView();
     }
 
-    @AfterInitialization
+    @PostConstruct
     public void createBreadcrumbs() {
         uberfireBreadcrumbsContainer.init(getView().getElement());
     }

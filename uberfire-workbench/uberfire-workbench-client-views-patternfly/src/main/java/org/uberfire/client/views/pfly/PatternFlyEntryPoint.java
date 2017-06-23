@@ -30,4 +30,12 @@ public class PatternFlyEntryPoint {
     public void init() {
         PatternFlyBootstrapper.ensurePatternFlyIsAvailable();
     }
+
+    public native String getPatternFlyVersion()/*-{
+        return $wnd.patternfly.version;
+    }-*/;
+
+    public native String getMomentLocale()/*-{
+        return $wnd.moment.locale();
+    }-*/;
 }

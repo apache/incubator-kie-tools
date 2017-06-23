@@ -25,13 +25,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
-import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.Path;
@@ -46,7 +47,7 @@ import static java.util.Collections.sort;
 /**
  *
  */
-@EntryPoint
+@ApplicationScoped
 @EnabledByProperty(value = "uberfire.plugin.mode.active", negated = true)
 public class ActivityBeansCache {
 

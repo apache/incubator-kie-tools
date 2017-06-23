@@ -16,11 +16,11 @@
 
 package org.uberfire.ext.plugin.client.config;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.ext.plugin.service.PluginServices;
 
@@ -32,7 +32,7 @@ public class PluginConfigService {
 
     private String mediaServletURI;
 
-    @AfterInitialization
+    @PostConstruct
     public void init() {
         pluginServices.call(new RemoteCallback<String>() {
             @Override

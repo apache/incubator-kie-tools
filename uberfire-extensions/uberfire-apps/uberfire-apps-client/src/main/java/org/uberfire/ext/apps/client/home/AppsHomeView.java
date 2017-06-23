@@ -17,7 +17,16 @@
 package org.uberfire.ext.apps.client.home;
 
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Breadcrumbs;
+import org.uberfire.ext.apps.api.Directory;
+import org.uberfire.ext.apps.api.DirectoryBreadcrumb;
+import org.uberfire.ext.apps.client.home.components.TilesApp;
+import org.uberfire.mvp.ParameterizedCommand;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -27,13 +36,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.AnchorListItem;
-import org.gwtbootstrap3.client.ui.Breadcrumbs;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.uberfire.ext.apps.api.Directory;
-import org.uberfire.ext.apps.api.DirectoryBreadcrumb;
-import org.uberfire.ext.apps.client.home.components.TilesApp;
-import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
 public class AppsHomeView extends Composite implements AppsHomePresenter.View {
@@ -49,7 +51,7 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
     FlowPanel dirContent;
     private AppsHomePresenter presenter;
 
-    @AfterInitialization
+    @PostConstruct
     public void initialize() {
         initWidget(uiBinder.createAndBindUi(this));
     }
