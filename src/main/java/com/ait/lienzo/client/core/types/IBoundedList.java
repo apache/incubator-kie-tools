@@ -14,19 +14,13 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.client.core.shape.guides;
+package com.ait.lienzo.client.core.types;
 
-import com.ait.lienzo.client.core.shape.IPrimitive;
-
-public interface IGuidePrimitive<T extends IGuidePrimitive<T>> extends IPrimitive<T>
+public interface IBoundedList<T> extends Iterable<T>
 {
-    public T hide();
-
-    public T show(double x, double y);
-
-    public boolean isShowing();
-
-    public int getAutoHideTime();
-
-    public T setAutoHideTime(int time);
+    public int size();
+    
+    public T get(int index);
+    
+    public boolean isEmpty();
 }

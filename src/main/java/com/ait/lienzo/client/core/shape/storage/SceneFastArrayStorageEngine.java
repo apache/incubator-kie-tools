@@ -24,7 +24,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.google.gwt.json.client.JSONObject;
 
-public class SceneFastArrayStorageEngine extends AbstractFastArrayStorageEngine<Layer>implements IJSONSerializable<SceneFastArrayStorageEngine>
+public class SceneFastArrayStorageEngine extends AbstractFastArrayStorageEngine<Layer> implements IJSONSerializable<SceneFastArrayStorageEngine>
 {
     public SceneFastArrayStorageEngine()
     {

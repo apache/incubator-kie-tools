@@ -94,14 +94,14 @@ public class HueImageDataFilter extends AbstractValueImageDataFilter<HueImageDat
     	 for (var y = 0; y < h; y++) {
             for (var x = 0; x < w; x++) {
                 var p = (y * w + x) * 4;
-                var hsv = fops.RGBtoHSV(data[  p  ], data[p + 1], data[p + 2]);
+                var hsv = fops.RGBtoHSV(data[p], data[p + 1], data[p + 2]);
                 hsv[0] += value;
                 while(hsv[0] < 0) {
                     hsv[0] += 360;
                 }
-                var rgb = fops.HSVtoRGB(hsv[0] ,hsv[1], hsv[2]);
+                var rgb = fops.HSVtoRGB(hsv[0], hsv[1], hsv[2]);
                 for(var i = 0; i < 3; i++) {
-                    data[p + i] = rgb[i];
+                    data[p+i] = rgb[i];
                 }
             }   
         }

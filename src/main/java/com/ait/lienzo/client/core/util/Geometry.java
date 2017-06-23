@@ -114,9 +114,9 @@ public final class Geometry
 
         double miny = Double.MAX_VALUE;
 
-        double maxx = Double.MIN_VALUE;
+        double maxx = -Double.MAX_VALUE;
 
-        double maxy = Double.MIN_VALUE;
+        double maxy = -Double.MAX_VALUE;
 
         final NFastDoubleArrayJSO xval = NFastDoubleArrayJSO.make();
 
@@ -1377,7 +1377,7 @@ public final class Geometry
     private static Point2D getProjection(Point2D center, Point2D intersection, double length)
     {
         Point2D unit = intersection.sub(center).unit();
-        
+
         return center.add(unit.mul(length));
     }
 }

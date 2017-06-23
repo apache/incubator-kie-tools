@@ -16,9 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
@@ -26,12 +24,13 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
+import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
 public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilterChain> implements ImageDataFilterable<ImageDataFilterChain>
 {
-    private ArrayList<ImageDataFilter<?>> m_filters = new ArrayList<ImageDataFilter<?>>();
+    private NFastArrayList<ImageDataFilter<?>> m_filters = new NFastArrayList<ImageDataFilter<?>>();
 
     public ImageDataFilterChain()
     {
@@ -274,7 +273,7 @@ public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilte
     @Override
     public Collection<ImageDataFilter<?>> getFilters()
     {
-        return Collections.unmodifiableCollection(m_filters);
+        return m_filters.toList();
     }
 
     @Override

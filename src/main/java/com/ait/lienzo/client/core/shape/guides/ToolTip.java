@@ -37,7 +37,7 @@ import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 
-public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip>implements IGuidePrimitive<ToolTip>
+public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePrimitive<ToolTip>
 {
     private static final String FONT_FAMILY     = "Verdana";
 

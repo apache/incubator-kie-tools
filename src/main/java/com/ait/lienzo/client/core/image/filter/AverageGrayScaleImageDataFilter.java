@@ -68,12 +68,9 @@ public class AverageGrayScaleImageDataFilter extends AbstractImageDataFilter<Ave
 
     private final native void filter_(JavaScriptObject data, int length)
     /*-{
-    	for (var i = 0; i < length; i += 4) {
-    		var v = (((data[  i  ] + data[i + 1] + data[i + 2]) / 3.0) + 0.5) | 0;
-    		data[  i  ] = v;
-    		data[i + 1] = v;
-    		data[i + 2] = v;
-    	}
+		for (var i = 0; i < length; i += 4) {
+			data[i] = data[i + 1] = data[i + 2] = (((data[i] + data[i + 1] + data[i + 2]) / 3.0) + 0.5) | 0;
+		}
     }-*/;
 
     @Override

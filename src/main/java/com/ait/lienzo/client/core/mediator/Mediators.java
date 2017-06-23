@@ -16,11 +16,12 @@
 
 package com.ait.lienzo.client.core.mediator;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.NFastArrayListIterator;
+import com.ait.lienzo.client.widget.LienzoPanel;
+import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
@@ -58,13 +59,13 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public final class Mediators implements Iterable<IMediator>
 {
-    private final Viewport             m_viewport;
+    private final Viewport                  m_viewport;
 
-    private int                        m_size      = 0;
+    private int                             m_size      = 0;
 
-    private boolean                    m_enabled   = true;
+    private boolean                         m_enabled   = true;
 
-    private final ArrayList<IMediator> m_mediators = new ArrayList<IMediator>();
+    private final NFastArrayList<IMediator> m_mediators = new NFastArrayList<IMediator>();
 
     public Mediators(final Viewport viewport)
     {
@@ -73,7 +74,7 @@ public final class Mediators implements Iterable<IMediator>
 
     public void push(final IMediator mediator)
     {
-        add(0, mediator);
+        m_mediators.push(mediator);
     }
 
     public IMediator pop()
@@ -82,7 +83,7 @@ public final class Mediators implements Iterable<IMediator>
         {
             return null;
         }
-        final IMediator last = m_mediators.remove(0);
+        final IMediator last = m_mediators.shift();
 
         m_size = m_mediators.size();
 
@@ -97,7 +98,7 @@ public final class Mediators implements Iterable<IMediator>
             {
                 ((AbstractMediator) mediator).setViewport(m_viewport);
             }
-            m_mediators.add(index, mediator);
+            m_mediators.splice(index, 0, mediator);
 
             m_size = m_mediators.size();
         }
@@ -105,7 +106,9 @@ public final class Mediators implements Iterable<IMediator>
 
     public boolean remove(final IMediator mediator)
     {
-        final boolean removed = m_mediators.remove(mediator);
+        final boolean removed = m_mediators.contains(mediator);
+
+        m_mediators.remove(mediator);
 
         m_size = m_mediators.size();
 
@@ -142,6 +145,6 @@ public final class Mediators implements Iterable<IMediator>
     @Override
     public Iterator<IMediator> iterator()
     {
-        return Collections.unmodifiableList(m_mediators).iterator();
+        return new NFastArrayListIterator<IMediator>(m_mediators);
     }
 }

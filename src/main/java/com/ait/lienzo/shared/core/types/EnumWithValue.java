@@ -18,14 +18,15 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.ait.tooling.common.api.types.IStringValued;
 
 public interface EnumWithValue extends IStringValued
 {
-    public static final class EnumStringMap<T extends EnumWithValue>extends HashMap<String, T>
+    public static final class EnumStringMap<T extends EnumWithValue> extends LinkedHashMap<String, T>
     {
         private static final long serialVersionUID = -8637592993705769824L;
 
@@ -67,6 +68,11 @@ public interface EnumWithValue extends IStringValued
         public List<T> getValues()
         {
             return new ArrayList<T>(values());
+        }
+        
+        public Iterator<T> iterator()
+        {
+            return getValues().iterator();
         }
     }
 

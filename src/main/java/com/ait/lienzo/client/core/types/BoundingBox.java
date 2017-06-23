@@ -28,7 +28,7 @@ public final class BoundingBox
 
     public BoundingBox()
     {
-        this(Double.MAX_VALUE, Double.MAX_VALUE, Double.MIN_VALUE, Double.MIN_VALUE);
+        this(Double.MAX_VALUE, Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE);
     }
 
     public BoundingBox(final BoundingBox bbox)
@@ -68,7 +68,7 @@ public final class BoundingBox
 
         final double maxx = m_jso.getMaxX();
 
-        if ((maxx <= minx) || (maxx == Double.MIN_VALUE) || (minx == Double.MAX_VALUE))
+        if ((maxx <= minx) || (maxx == -Double.MAX_VALUE) || (minx == Double.MAX_VALUE))
         {
             return false;
         }
@@ -76,7 +76,7 @@ public final class BoundingBox
 
         final double maxy = m_jso.getMaxY();
 
-        if ((maxy <= miny) || (maxy == Double.MIN_VALUE) || (miny == Double.MAX_VALUE))
+        if ((maxy <= miny) || (maxy == -Double.MAX_VALUE) || (miny == Double.MAX_VALUE))
         {
             return false;
         }

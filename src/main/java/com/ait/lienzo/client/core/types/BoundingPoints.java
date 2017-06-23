@@ -117,6 +117,6 @@ public final class BoundingPoints implements Iterable<Point2D>
     @Override
     public final Iterator<Point2D> iterator()
     {
-        return getPoints().iterator();
+        return m_array.iterator();
     }
 }

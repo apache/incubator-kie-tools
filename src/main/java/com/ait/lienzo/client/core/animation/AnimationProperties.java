@@ -16,9 +16,13 @@
 
 package com.ait.lienzo.client.core.animation;
 
+import java.util.Iterator;
+
+import com.ait.lienzo.client.core.types.BoundedListIterator;
+import com.ait.lienzo.client.core.types.IBoundedList;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
-public class AnimationProperties
+public class AnimationProperties implements IBoundedList<AnimationProperty>
 {
     private final NFastArrayList<AnimationProperty> m_properties = new NFastArrayList<AnimationProperty>();
 
@@ -46,11 +50,13 @@ public class AnimationProperties
         }
     }
 
+    @Override
     public final int size()
     {
         return m_properties.size();
     }
 
+    @Override
     public final AnimationProperty get(final int i)
     {
         if ((i < 0) || (i >= m_properties.size()))
@@ -67,5 +73,17 @@ public class AnimationProperties
             m_properties.add(property);
         }
         return this;
+    }
+
+    @Override
+    public final Iterator<AnimationProperty> iterator()
+    {
+        return new BoundedListIterator<AnimationProperty>(this);
+    }
+
+    @Override
+    public final boolean isEmpty()
+    {
+        return m_properties.isEmpty();
     }
 }

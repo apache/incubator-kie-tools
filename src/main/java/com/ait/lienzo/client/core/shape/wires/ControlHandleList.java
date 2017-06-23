@@ -17,28 +17,29 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import java.util.Collections;
 import java.util.Iterator;
 
 import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.types.NFastArrayListIterator;
 import com.ait.tooling.common.api.types.Activatable;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
 public class ControlHandleList extends Activatable implements IControlHandleList
 {
-    private final NFastArrayList<IControlHandle> m_chlist = new NFastArrayList<IControlHandle>();
-
     private final HandlerRegistrationManager     m_manage = new HandlerRegistrationManager();
 
-    private final IPrimitive<?>                        m_shape;
+    private final NFastArrayList<IControlHandle> m_chlist = new NFastArrayList<IControlHandle>();
+
+    private final IPrimitive<?>                  m_shape;
 
     private boolean                              m_visible;
 
     public ControlHandleList(final IPrimitive<?> shape)
     {
         super(true);
+
         m_shape = shape;
     }
 
@@ -51,11 +52,11 @@ public class ControlHandleList extends Activatable implements IControlHandleList
     @Override
     public final boolean isEmpty()
     {
-        return (0 == m_chlist.size());
+        return (size() > 0);
     }
 
     @Override
-    public IControlHandle getHandle(int index)
+    public IControlHandle getHandle(final int index)
     {
         return m_chlist.get(index);
     }
@@ -63,7 +64,7 @@ public class ControlHandleList extends Activatable implements IControlHandleList
     @Override
     public final boolean contains(final IControlHandle handle)
     {
-        if ((null != handle) && (m_chlist.size() > 0))
+        if ((null != handle) && (false == isEmpty()))
         {
             return m_chlist.contains(handle);
         }
@@ -73,7 +74,7 @@ public class ControlHandleList extends Activatable implements IControlHandleList
     @Override
     public final void add(final IControlHandle handle)
     {
-        if (false == contains(handle))
+        if ((null != handle) && (false == contains(handle)))
         {
             m_chlist.add(handle);
         }
@@ -82,7 +83,7 @@ public class ControlHandleList extends Activatable implements IControlHandleList
     @Override
     public final void remove(final IControlHandle handle)
     {
-        if (contains(handle))
+        if ((null != handle) && (contains(handle)))
         {
             m_chlist.remove(handle);
         }
@@ -97,29 +98,30 @@ public class ControlHandleList extends Activatable implements IControlHandleList
 
         hide();
 
-        for ( int i = 0; i < size; i++ ) {
-            final IControlHandle handle = m_chlist.get( i );
+        for (int i = 0; i < size; i++)
+        {
+            final IControlHandle handle = m_chlist.get(i);
 
-            if ( null != handle ) {
+            if (null != handle)
+            {
                 handle.destroy();
             }
         }
-
         m_chlist.clear();
 
-        batch();
+        m_shape.batch();
     }
 
     @Override
     public void show()
     {
-        showOn( getParent() );
+        showOn(m_shape.getLayer());
     }
 
     @Override
     public void hide()
     {
-        if ( m_visible && null != m_shape.getLayer() )
+        if ((isVisible()) && (null != m_shape.getLayer()))
         {
             int totl = 0;
 
@@ -131,7 +133,7 @@ public class ControlHandleList extends Activatable implements IControlHandleList
 
                 if (null != handle)
                 {
-                    IPrimitive<?> prim = handle.getControl();
+                    final IPrimitive<?> prim = handle.getControl();
 
                     if (null != prim)
                     {
@@ -142,22 +144,24 @@ public class ControlHandleList extends Activatable implements IControlHandleList
                 }
             }
             m_visible = false;
-            if ( totl > 0 )
+
+            if (totl > 0)
             {
-                batch();
+                m_shape.batch();
             }
         }
     }
 
     @Override
-    public boolean isVisible() {
+    public boolean isVisible()
+    {
         return m_visible;
     }
 
     @Override
     public final Iterator<IControlHandle> iterator()
     {
-        return Collections.unmodifiableList(m_chlist.toList()).iterator();
+        return new NFastArrayListIterator<IControlHandle>(m_chlist);
     }
 
     @Override
@@ -166,12 +170,10 @@ public class ControlHandleList extends Activatable implements IControlHandleList
         return m_manage;
     }
 
-    void showOn( IContainer<?, IPrimitive<?>> container )
+    void showOn(final IContainer<?, IPrimitive<?>> container)
     {
-
-        if ( null != container && !m_visible )
+        if ((null != container) && (false == isVisible()))
         {
-
             int totl = 0;
 
             final int size = size();
@@ -182,37 +184,24 @@ public class ControlHandleList extends Activatable implements IControlHandleList
 
                 if (null != handle)
                 {
-                    IPrimitive<?> prim = handle.getControl();
+                    final IPrimitive<?> prim = handle.getControl();
 
                     if (null != prim)
                     {
-                        container.add( prim );
+                        container.add(prim);
+
                         totl++;
                     }
                 }
             }
-
             m_visible = true;
 
             if (totl > 0)
             {
                 container.moveToTop();
-                batch();
 
+                m_shape.batch();
             }
         }
-
     }
-
-    protected IContainer<?, IPrimitive<?>> getParent() {
-        return m_shape.getLayer();
-    }
-
-
-    private void batch() {
-        if ( null != m_shape.getLayer() ) {
-            m_shape.getLayer().batch();
-        }
-    }
-
 }

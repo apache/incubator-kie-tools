@@ -72,12 +72,12 @@ public class ExposureImageDataFilter extends AbstractValueTableImageDataFilter<E
     }
 
     private final native FilterTableArray getTable_(double value)
-    /*-{        
-        var table = [];
-        for(var i = 0; i < 256; i++) {
-            table[i] = (255 * (1 - Math.exp(-(i / 255) * value))) | 0;
-        }
-        return table;
+    /*-{
+		var table = [];
+		for (var i = 0; i < 256; i++) {
+			table[i] = (255 * (1 - Math.exp(-(i / 255) * value))) | 0;
+		}
+		return table;
     }-*/;
 
     @Override

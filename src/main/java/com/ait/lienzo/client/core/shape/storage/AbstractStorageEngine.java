@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.storage;
 
-import java.util.Collections;
 import java.util.Iterator;
 
 import com.ait.lienzo.client.core.shape.json.AbstractFactory;
@@ -24,6 +23,7 @@ import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.NFastArrayListIterator;
 import com.ait.tooling.nativetools.client.NObjectJSO;
 import com.ait.tooling.nativetools.client.collection.MetaData;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
@@ -134,13 +134,13 @@ public abstract class AbstractStorageEngine<M> implements IStorageEngine<M>
     @Override
     public Iterator<M> iterator(final BoundingBox bounds)
     {
-        return Collections.unmodifiableList(getChildren(bounds).toList()).iterator();
+        return new NFastArrayListIterator<M>(getChildren(bounds));
     }
 
     @Override
     public Iterator<M> iterator()
     {
-        return Collections.unmodifiableList(getChildren().toList()).iterator();
+        return new NFastArrayListIterator<M>(getChildren());
     }
 
     protected static abstract class AbstractStorageEngineFactory<S extends IJSONSerializable<S>> extends AbstractFactory<S>

@@ -148,7 +148,7 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
                                         ix = x;
                                 }
                                 var ipix = (ioff + ix) * 4;
-                                r += f * data[ipix];
+                                r += f * data[  ipix  ];
                                 g += f * data[ipix + 1];
                                 b += f * data[ipix + 2];
                             }
@@ -201,14 +201,10 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
         this.getPixel = function(data, x, y, w, h) {
             var p = (y * w + x) * 4;
             if ((x < 0) || (x >= w) || (y < 0) || (y >= h)) {
-                return [
-                    data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) * 4 + 0],
-                    data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) * 4 + 1],
-                    data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) * 4 + 2],
-                    data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) * 4 + 3]
-                ];
+                var c = ((this.clamp(y, 0, h - 1) * w) + (this.clamp(x, 0, w - 1)) * 4);
+                return [data[c], data[c + 1], data[c + 2], data[c + 3]];
             }
-            return [data[  p  ], data[p + 1], data[p + 2], data[p + 3]]
+            return [data[p], data[p + 1], data[p + 2], data[p + 3]]
         };
         this.filterTransform = function(data, buff, transform, w, h) {
             var xfrm = [];
@@ -223,10 +219,12 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
                     var nw, ne, sw, se;
                     if(srcx >= 0 && srcx < w - 1 && srcy >= 0 && srcy < h - 1) {
                         var i = (w * srcy + srcx) * 4;
+                        var s = i + w * 4;
+                        var e = i + (w + 1) * 4;
                         nw = [data[  i  ], data[i + 1], data[i + 2], data[i + 3]];
                         ne = [data[i + 4], data[i + 5], data[i + 6], data[i + 7]];
-                        sw = [data[i + w * 4], data[i + w * 4 + 1], data[i + w * 4 + 2],data[i + w * 4 + 3]];
-                        se = [data[i + (w + 1) * 4], data[i + (w + 1) * 4 + 1], data[i + (w + 1) * 4 + 2], data[i + (w + 1) * 4 + 3]];
+                        sw = [data[  s  ], data[s + 1], data[s + 2], data[s + 3]];
+                        se = [data[  e  ], data[e + 1], data[e + 2], data[e + 3]];
                     } else {
                         nw = this.getPixel(data, srcx + 0, srcy + 0, w, h);
                         ne = this.getPixel(data, srcx + 1, srcy + 0, w, h);
@@ -243,10 +241,7 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
         };
         this.filterLuminosity = function(data, length) {
             for (var j = 0; j < length; j += 4) {
-                var v = (((data[  j  ] * 0.21) + (data[j + 1] * 0.72) + (data[j + 2] * 0.07)) + 0.5) | 0;
-                data[  j  ] = v;
-                data[j + 1] = v;
-                data[j + 2] = v;
+                data[j] = data[j + 1] = data[j + 2] = (((data[j] * 0.21) + (data[j + 1] * 0.72) + (data[j + 2] * 0.07)) + 0.5) | 0;
             }
         };
         this.hasAlphaChannel = function(data, length) {

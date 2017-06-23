@@ -16,24 +16,23 @@
 
 package com.ait.lienzo.client.core.image;
 
-import java.util.HashMap;
-
+import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.resources.client.ImageResource;
 
 public final class ImageCache
 {
-    private static final ImageCache             INSTANCE   = new ImageCache();
+    private static final ImageCache            INSTANCE   = new ImageCache();
 
-    private final HashMap<String, String>       m_messages = new HashMap<String, String>();
+    private final NFastStringMap<String>       m_messages = new NFastStringMap<String>();
 
-    private final HashMap<String, ImageElement> m_url_hmap = new HashMap<String, ImageElement>();
+    private final NFastStringMap<ImageElement> m_url_hmap = new NFastStringMap<ImageElement>();
 
-    private final HashMap<String, ImageElement> m_key_hmap = new HashMap<String, ImageElement>();
+    private final NFastStringMap<ImageElement> m_key_hmap = new NFastStringMap<ImageElement>();
 
-    private int                                 m_counting = -1;
+    private int                                m_counting = -1;
 
-    private Runnable                            m_callback = null;
+    private Runnable                           m_callback = null;
 
     public static final ImageCache get()
     {

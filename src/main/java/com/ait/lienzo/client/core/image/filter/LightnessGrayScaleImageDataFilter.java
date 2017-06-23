@@ -72,10 +72,7 @@ public class LightnessGrayScaleImageDataFilter extends AbstractImageDataFilter<L
     		var r = data[  i  ];
     		var g = data[i + 1];
     		var b = data[i + 2];
-    		var v = ((((Math.max(Math.max(r, g), b) + Math.min(Math.min(r, g), b))) / 2.0) + 0.5) | 0;
-    		data[  i  ] = v;
-    		data[i + 1] = v;
-    		data[i + 2] = v;
+    		data[  i  ] = data[i + 1] = data[i + 2] = ((((Math.max(Math.max(r, g), b) + Math.min(Math.min(r, g), b))) / 2.0) + 0.5) | 0;
     	}
     }-*/;
 

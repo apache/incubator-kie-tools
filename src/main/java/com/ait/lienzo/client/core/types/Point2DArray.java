@@ -30,7 +30,7 @@ import com.google.gwt.json.client.JSONArray;
 /**
  * Point2DArray represents an array (or List) with {@link Point2D} objects.
  */
-public class Point2DArray implements Iterable<Point2D>
+public class Point2DArray implements IBoundedList<Point2D>
 {
     private final Point2DArrayJSO m_jso;
 
@@ -221,11 +221,19 @@ public class Point2DArray implements Iterable<Point2D>
         return this;
     }
 
+    @Override
     public final int size()
     {
         return m_jso.length();
     }
 
+    @Override
+    public final boolean isEmpty()
+    {
+        return (size() > 0);
+    }
+
+    @Override
     public final Point2D get(final int i)
     {
         return new Point2D(m_jso.get(i));
@@ -345,7 +353,7 @@ public class Point2DArray implements Iterable<Point2D>
     @Override
     public Iterator<Point2D> iterator()
     {
-        return getPoints().iterator();
+        return new BoundedListIterator<Point2D>(this);
     }
 
     public static final class Point2DArrayJSO extends JsArray<Point2DJSO>

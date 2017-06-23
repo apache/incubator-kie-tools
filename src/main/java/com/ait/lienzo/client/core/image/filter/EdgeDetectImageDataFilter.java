@@ -70,49 +70,53 @@ public class EdgeDetectImageDataFilter extends AbstractImageDataFilter<EdgeDetec
 
     private final native void filter_(JavaScriptObject data, JavaScriptObject buff, int w, int h)
     /*-{
-        var hmap = [-1, -2, -1, 0, 0, 0, 1, 2, 1];
-        var vmap = [-1, 0, 1, -2, 0, 2, -1, 0, 1];
-    	for (var y = 0; y < h; y++) {
-            for (var x = 0; x < w; x++) {
-                var p = (y * w + x) * 4;
-                var rh = 0; gh = 0; bh = 0;
-                var rv = 0; gv = 0; bv = 0;
-                for(var irow = -1; irow <= 1; irow++) {
-                    var iy = y + irow;
-                    var ioff;
-                    if((iy >= 0) && (iy < h)) {
-                        ioff = iy * w * 4;
-                    } else {
-                        ioff = y * w * 4;
-                    }
-                    var moff = 3 * (irow + 1) + 1;
-                    for(var icol = -1; icol <= 1; icol++) {
-                        var ix = x + icol;
-                        if(!((ix >= 0) && (ix < w))) {
-                            ix = x;
-                        }
-                        ix *= 4;
-                        var f = ioff + ix;
-                        var r = data[  f  ];
-                        var g = data[f + 1];
-                        var b = data[f + 2];
-                        var m = moff + icol;
-                        var z = hmap[m];
-                        var v = vmap[m];
-                        rh += ((z * r) | 0);
-                        bh += ((z * g) | 0);
-                        gh += ((z * b) | 0);
-                        rv += ((v * r) | 0);
-                        gv += ((v * g) | 0);
-                        bv += ((v * b) | 0);
-                    }
-                }
-                buff[  p  ] = ((Math.sqrt(rh * rh + rv * rv) / 1.8) | 0);
-                buff[p + 1] = ((Math.sqrt(gh * gh + gv * gv) / 1.8) | 0);
-                buff[p + 2] = ((Math.sqrt(bh * bh + bv * bv) / 1.8) | 0);
-                buff[p + 3] = data[p + 3];
-            }   
-        }
+		var hmap = [ -1, -2, -1, 0, 0, 0, 1, 2, 1 ];
+		var vmap = [ -1, 0, 1, -2, 0, 2, -1, 0, 1 ];
+		for (var y = 0; y < h; y++) {
+			for (var x = 0; x < w; x++) {
+				var p = (y * w + x) * 4;
+				var rh = 0;
+				gh = 0;
+				bh = 0;
+				var rv = 0;
+				gv = 0;
+				bv = 0;
+				for (var irow = -1; irow <= 1; irow++) {
+					var iy = y + irow;
+					var ioff;
+					if ((iy >= 0) && (iy < h)) {
+						ioff = iy * w * 4;
+					} else {
+						ioff = y * w * 4;
+					}
+					var moff = 3 * (irow + 1) + 1;
+					for (var icol = -1; icol <= 1; icol++) {
+						var ix = x + icol;
+						if (!((ix >= 0) && (ix < w))) {
+							ix = x;
+						}
+						ix *= 4;
+						var f = ioff + ix;
+						var r = data[f];
+						var g = data[f + 1];
+						var b = data[f + 2];
+						var m = moff + icol;
+						var z = hmap[m];
+						var v = vmap[m];
+						rh += ((z * r) | 0);
+						bh += ((z * g) | 0);
+						gh += ((z * b) | 0);
+						rv += ((v * r) | 0);
+						gv += ((v * g) | 0);
+						bv += ((v * b) | 0);
+					}
+				}
+				buff[p] = ((Math.sqrt(rh * rh + rv * rv) / 1.8) | 0);
+				buff[p + 1] = ((Math.sqrt(gh * gh + gv * gv) / 1.8) | 0);
+				buff[p + 2] = ((Math.sqrt(bh * bh + bv * bv) / 1.8) | 0);
+				buff[p + 3] = data[p + 3];
+			}
+		}
     }-*/;
 
     @Override

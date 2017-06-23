@@ -24,7 +24,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.google.gwt.json.client.JSONObject;
 
-public class ViewportFastArrayStorageEngine extends AbstractFastArrayStorageEngine<Scene>implements IJSONSerializable<ViewportFastArrayStorageEngine>
+public class ViewportFastArrayStorageEngine extends AbstractFastArrayStorageEngine<Scene> implements IJSONSerializable<ViewportFastArrayStorageEngine>
 {
     public ViewportFastArrayStorageEngine()
     {
