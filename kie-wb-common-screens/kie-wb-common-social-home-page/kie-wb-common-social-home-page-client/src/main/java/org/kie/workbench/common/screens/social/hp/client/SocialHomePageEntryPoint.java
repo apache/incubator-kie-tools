@@ -15,7 +15,8 @@
 
 package org.kie.workbench.common.screens.social.hp.client;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
+import javax.annotation.PostConstruct;
+
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.kie.workbench.common.screens.social.hp.client.resources.ContainerResources;
 import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
@@ -23,7 +24,7 @@ import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 @EntryPoint
 public class SocialHomePageEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         ContainerResources.INSTANCE.CSS().ensureInjected();
         PatternFlyBootstrapper.ensureBootstrapSelectIsAvailable();

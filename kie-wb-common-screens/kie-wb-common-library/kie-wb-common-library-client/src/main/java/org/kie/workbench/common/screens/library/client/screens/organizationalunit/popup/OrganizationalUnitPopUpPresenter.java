@@ -18,6 +18,8 @@ package org.kie.workbench.common.screens.library.client.screens.organizationalun
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -28,7 +30,6 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
@@ -98,7 +99,7 @@ public class OrganizationalUnitPopUpPresenter {
         this.organizationalUnitController = organizationalUnitController;
     }
 
-    @AfterInitialization
+    @PostConstruct
     public void setup() {
         view.init(this);
     }

@@ -16,6 +16,8 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
 import java.util.ArrayList;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -23,7 +25,6 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.workbench.common.screens.projecteditor.client.forms.GAVSelectionHandler;
 
 @Dependent
@@ -38,7 +39,7 @@ public class DependencySelectorPopup
 
     private ArrayList<GAVSelectionHandler> selectionHandlers = new ArrayList<GAVSelectionHandler>();
 
-    @AfterInitialization
+    @PostConstruct
     public void init() {
         view.init( this );
     }

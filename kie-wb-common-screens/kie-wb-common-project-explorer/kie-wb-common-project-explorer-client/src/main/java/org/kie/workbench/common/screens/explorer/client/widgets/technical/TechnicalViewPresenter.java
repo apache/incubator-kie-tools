@@ -15,15 +15,15 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 
 /**
  * Repository, Package, Folder and File explorer
  */
-@EntryPoint
+@ApplicationScoped
 public class TechnicalViewPresenter
         extends BaseViewPresenter {
 

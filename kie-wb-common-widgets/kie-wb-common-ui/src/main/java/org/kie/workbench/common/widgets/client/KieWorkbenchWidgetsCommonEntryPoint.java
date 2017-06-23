@@ -15,7 +15,8 @@
  */
 package org.kie.workbench.common.widgets.client;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
+import javax.annotation.PostConstruct;
+
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
 import org.kie.workbench.common.widgets.client.resources.CommonsResources;
@@ -26,7 +27,7 @@ import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 @Bundle("resources/i18n/KieWorkbenchWidgetsConstants.properties")
 public class KieWorkbenchWidgetsCommonEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
         CommonsResources.INSTANCE.css().ensureInjected();

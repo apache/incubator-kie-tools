@@ -18,6 +18,8 @@ package org.kie.workbench.common.screens.library.client.screens.organizationalun
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -27,7 +29,6 @@ import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
@@ -82,7 +83,7 @@ public class OrganizationalUnitsScreen {
         this.organizationalUnitTileWidgets = organizationalUnitTileWidgets;
     }
 
-    @AfterInitialization
+    @PostConstruct
     public void init() {
         setupView();
         setupOrganizationalUnits();

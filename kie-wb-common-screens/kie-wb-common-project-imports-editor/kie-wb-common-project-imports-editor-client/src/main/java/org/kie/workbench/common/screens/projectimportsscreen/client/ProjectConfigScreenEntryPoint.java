@@ -16,14 +16,15 @@
 
 package org.kie.workbench.common.screens.projectimportsscreen.client;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
+import javax.annotation.PostConstruct;
+
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.kie.workbench.common.screens.projectimportsscreen.client.resources.ProjectConfigScreenResources;
 
 @EntryPoint
 public class ProjectConfigScreenEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void wireUp() {
         ProjectConfigScreenResources.INSTANCE.mainCss().ensureInjected();
     }

@@ -15,6 +15,7 @@
 
 package org.kie.workbench.common.screens.social.hp.client.userpage;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -103,7 +104,7 @@ public class UserHomePageMainPresenter {
     //control race conditions due to assync system (cdi x UF lifecycle)
     private String lastUserOnpage;
 
-    @AfterInitialization
+    @PostConstruct
     public void loadContent() {
         initHeader();
     }
@@ -142,6 +143,7 @@ public class UserHomePageMainPresenter {
     private void setupUser( final String username ) {
         final SocialPaged socialPaged = new SocialPaged( 5 );
         socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
+            @Override
             public void callback( SocialUser socialUser ) {
                 if ( isThisUserStillCurrentActiveUser( socialUser ) ) {
                     generateConnectionsList( socialUser );
@@ -173,6 +175,7 @@ public class UserHomePageMainPresenter {
         header.clear();
         for ( final String follower : socialUser.getFollowingName() ) {
             socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
+                @Override
                 public void callback( final SocialUser follower ) {
                     if ( isThisUserStillCurrentActiveUser( socialUser ) ) {
                         setupFollowerWidget( follower );

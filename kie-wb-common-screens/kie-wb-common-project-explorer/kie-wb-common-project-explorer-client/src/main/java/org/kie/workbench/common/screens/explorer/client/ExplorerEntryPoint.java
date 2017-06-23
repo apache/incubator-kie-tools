@@ -15,14 +15,15 @@
  */
 package org.kie.workbench.common.screens.explorer.client;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
+import javax.annotation.PostConstruct;
+
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources;
 
 @EntryPoint
 public class ExplorerEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         ProjectExplorerResources.INSTANCE.CSS().ensureInjected();
     }

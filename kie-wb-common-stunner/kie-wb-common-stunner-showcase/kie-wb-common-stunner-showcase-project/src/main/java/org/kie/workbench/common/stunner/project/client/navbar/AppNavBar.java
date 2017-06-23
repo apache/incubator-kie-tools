@@ -15,12 +15,12 @@
 
 package org.kie.workbench.common.stunner.project.client.navbar;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.workbench.Header;
@@ -39,7 +39,7 @@ public class AppNavBar implements Header {
     @Inject
     private WorkbenchMenuBarPresenter menuBarPresenter;
 
-    @AfterInitialization
+    @PostConstruct
     public void setup() {
         DOMUtil.appendWidgetToElement(header,
                                       menuBarPresenter.getView().asWidget());

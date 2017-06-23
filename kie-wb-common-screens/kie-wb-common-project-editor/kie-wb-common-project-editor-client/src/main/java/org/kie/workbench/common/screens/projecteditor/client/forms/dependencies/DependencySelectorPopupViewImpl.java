@@ -15,13 +15,13 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.shared.event.ModalShownEvent;
 import org.gwtbootstrap3.client.shared.event.ModalShownHandler;
 import org.gwtbootstrap3.client.ui.ModalSize;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
@@ -34,11 +34,11 @@ public class DependencySelectorPopupViewImpl
 
     private DependencySelectorPresenter presenter;
     private DependencyListWidget dependencyPagedJarTable;
-    
+
     @Inject
     private javax.enterprise.event.Event<LockRequiredEvent> lockRequired;
 
-    @AfterInitialization
+    @PostConstruct
     public void init() {
         dependencyPagedJarTable = IOC.getBeanManager().lookupBean( DependencyListWidget.class ).getInstance();
 

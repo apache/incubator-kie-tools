@@ -30,6 +30,11 @@ public class HomeModel {
     private final List<CarouselEntry> carouselEntries = new ArrayList<>();
     private final List<SectionEntry> sections = new ArrayList<>();
 
+    // For proxying
+    protected HomeModel() {
+        this.title = null;
+    }
+
     public HomeModel( final String title ) {
         this.title = PortablePreconditions.checkNotNull( "title",
                                                          title );

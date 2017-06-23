@@ -18,6 +18,8 @@ package org.kie.workbench.common.workbench.client.configuration.popups;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -30,7 +32,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.workbench.client.configuration.ContextualView;
 import org.uberfire.client.mvp.PerspectiveActivity;
@@ -131,7 +132,7 @@ public class WorkbenchConfigurationPopup extends BaseModal {
                          constants.Basic() );
     }
 
-    @AfterInitialization
+    @PostConstruct
     public void setup() {
         languageListItemsLabel.setText( constants.Language() );
         multipleModeItemsLabel.setText( constants.View_Mode() );

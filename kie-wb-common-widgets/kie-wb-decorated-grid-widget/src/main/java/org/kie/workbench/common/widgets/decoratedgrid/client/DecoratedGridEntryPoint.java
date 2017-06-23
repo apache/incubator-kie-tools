@@ -15,14 +15,15 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
+import javax.annotation.PostConstruct;
+
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.kie.workbench.common.widgets.decoratedgrid.client.resources.GridResources;
 
 @EntryPoint
 public class DecoratedGridEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         GridResources.INSTANCE.style().ensureInjected();
     }

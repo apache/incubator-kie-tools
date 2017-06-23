@@ -16,6 +16,8 @@
 package org.kie.workbench.common.screens.social.hp.client.userpage;
 
 import java.util.Set;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.core.client.GWT;
@@ -47,7 +49,7 @@ public class UserHomePageSideView extends Composite implements UserHomePageSideP
 
     SearchWidget searchWidget;
 
-    @AfterInitialization
+    @PostConstruct
     public void setup() {
         initWidget( uiBinder.createAndBindUi( this ) );
     }

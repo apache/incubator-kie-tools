@@ -17,6 +17,8 @@
 package org.kie.workbench.common.workbench.client.entrypoint;
 
 import java.util.Map;
+
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.google.gwt.animation.client.Animation;
@@ -29,7 +31,6 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.UncaughtExceptionHandler;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.kie.workbench.common.services.shared.service.PlaceManagerActivityService;
 import org.kie.workbench.common.widgets.client.resources.RoundedCornersResource;
 import org.kie.workbench.common.workbench.client.error.DefaultWorkbenchErrorCallback;
 import org.kie.workbench.common.workbench.client.library.LibraryMonitor;
@@ -46,18 +47,14 @@ public abstract class DefaultWorkbenchEntryPoint {
 
     protected Caller<AppConfigService> appConfigService;
 
-    protected Caller<PlaceManagerActivityService> pmas;
-
     protected ActivityBeansCache activityBeansCache;
 
     private DefaultWorkbenchErrorCallback defaultErrorCallback = new DefaultWorkbenchErrorCallback();
 
     @Inject
     public DefaultWorkbenchEntryPoint( Caller<AppConfigService> appConfigService,
-                                       Caller<PlaceManagerActivityService> pmas,
                                        ActivityBeansCache activityBeansCache ) {
         this.appConfigService = appConfigService;
-        this.pmas = pmas;
         this.activityBeansCache = activityBeansCache;
     }
 
@@ -69,11 +66,9 @@ public abstract class DefaultWorkbenchEntryPoint {
     protected void setupAdminPage() {
     }
 
-    @AfterInitialization
+    @PostConstruct
     public void startDefaultWorkbench() {
         initializeWorkbench();
-
-        pmas.call().initActivities( activityBeansCache.getActivitiesById() );
     }
 
     @UncaughtExceptionHandler
@@ -98,6 +93,7 @@ public abstract class DefaultWorkbenchEntryPoint {
         RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
     }
 
+    @AfterInitialization
     public void hideLoadingPopup() {
         @SuppressWarnings("GwtToHtmlReferences")
         final Element e = RootPanel.get( "loading" ).getElement();
@@ -119,6 +115,5 @@ public abstract class DefaultWorkbenchEntryPoint {
         loadPreferences();
         loadStyles();
         libraryMonitor.initialize();
-        hideLoadingPopup();
     }
 }

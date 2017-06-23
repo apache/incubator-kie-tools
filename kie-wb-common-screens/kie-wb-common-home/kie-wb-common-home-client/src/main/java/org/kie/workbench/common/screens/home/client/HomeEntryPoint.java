@@ -15,7 +15,8 @@
 
 package org.kie.workbench.common.screens.home.client;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
+import javax.annotation.PostConstruct;
+
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.kie.workbench.common.screens.home.client.resources.HomeResources;
 
@@ -25,7 +26,7 @@ import org.kie.workbench.common.screens.home.client.resources.HomeResources;
 @EntryPoint
 public class HomeEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         HomeResources.INSTANCE.CSS().ensureInjected();
     }

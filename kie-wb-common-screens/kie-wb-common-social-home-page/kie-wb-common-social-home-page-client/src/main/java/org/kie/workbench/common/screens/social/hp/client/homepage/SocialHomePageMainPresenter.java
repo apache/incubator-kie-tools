@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -108,10 +110,11 @@ public class SocialHomePageMainPresenter {
     @Inject
     private DefaultSocialLinkCommandGenerator linkCommandGenerator;
 
-    @AfterInitialization
+    @PostConstruct
     public void init() {
         view.setHeader( header );
         view.setMain( main );
+        loadContent();
     }
 
     @OnOpen
@@ -126,6 +129,7 @@ public class SocialHomePageMainPresenter {
 
     private void initMain() {
         socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
+            @Override
             public void callback( SocialUser socialUser ) {
                 updateMainTimeline( "", socialUser );
 
@@ -140,6 +144,7 @@ public class SocialHomePageMainPresenter {
             public void execute( final String param ) {
 
                 socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
+                    @Override
                     public void callback( SocialUser socialUser ) {
                         updateMainTimeline( param, socialUser );
 
@@ -182,6 +187,7 @@ public class SocialHomePageMainPresenter {
             @Override
             public void execute( final String parameter ) {
                 socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
+                    @Override
                     public void callback( SocialUser socialUser ) {
                         if ( loggedUserFollowSelectedUser( socialUser ) ) {
                             socialUserService.call().userUnfollowAnotherUser( loggedUser.getIdentifier(), socialUser.getUserName() );
@@ -209,6 +215,7 @@ public class SocialHomePageMainPresenter {
         final List<String> reposNames = new ArrayList<String>();
         reposNames.add( Constants.INSTANCE.AllRepositories() );
         repositoryService.call( new RemoteCallback<Collection<String>>() {
+            @Override
             public void callback( Collection<String> repositories ) {
                 for ( String repository : repositories ) {
                     reposNames.add( repository );
@@ -219,7 +226,6 @@ public class SocialHomePageMainPresenter {
         } ).getRepositories();
     }
 
-    @AfterInitialization
     public void loadContent() {
     }
 

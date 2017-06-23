@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.google.gwt.animation.client.Animation;
@@ -29,7 +31,6 @@ import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -89,7 +90,7 @@ public class ShowcaseEntryPoint {
     @Inject
     private MenuDevCommandsBuilder menuDevCommandsBuilder;
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         userSystemManager.waitForInitialization(new Command() {
             @Override

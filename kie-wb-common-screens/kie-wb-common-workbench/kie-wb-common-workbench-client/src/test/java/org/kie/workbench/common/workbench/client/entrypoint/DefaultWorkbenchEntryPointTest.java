@@ -26,7 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.kie.workbench.common.services.shared.service.PlaceManagerActivityService;
 import org.kie.workbench.common.workbench.client.library.LibraryMonitor;
 import org.mockito.Mock;
 import org.uberfire.client.callbacks.Callback;
@@ -40,9 +39,6 @@ public class DefaultWorkbenchEntryPointTest {
 
     private AppConfigService appConfigService;
     private CallerMock<AppConfigService> appConfigServiceCallerMock;
-
-    private PlaceManagerActivityService pmas;
-    private CallerMock<PlaceManagerActivityService> pmasCallerMock;
 
     private ActivityBeansCache activityBeansCache;
 
@@ -60,11 +56,9 @@ public class DefaultWorkbenchEntryPointTest {
     @Before
     public void setup() {
         mockAppConfigService();
-        mockPmas();
         mockActivityBeansCache();
 
         entryPoint = spy( new DefaultWorkbenchEntryPoint( appConfigServiceCallerMock,
-                                                          pmasCallerMock,
                                                           activityBeansCache ) {
             {
                 libraryMonitor = libraryMonitorMock;
@@ -84,9 +78,6 @@ public class DefaultWorkbenchEntryPointTest {
         verify( entryPoint ).loadPreferences();
         verify( entryPoint ).loadStyles();
         verify( libraryMonitorMock ).initialize();
-        verify( entryPoint ).hideLoadingPopup();
-
-        verify( pmas ).initActivities( anyList() );
     }
 
     @Test
@@ -100,11 +91,6 @@ public class DefaultWorkbenchEntryPointTest {
     }
     private void mockActivityBeansCache() {
         activityBeansCache = mock( ActivityBeansCache.class );
-    }
-
-    private void mockPmas() {
-        pmas = mock( PlaceManagerActivityService.class );
-        pmasCallerMock = new CallerMock<>( pmas );
     }
 
     private void mockAppConfigService() {

@@ -17,6 +17,8 @@ package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.cell.client.FieldUpdater;
@@ -78,7 +80,7 @@ public class DependencyListWidget
         } );
     }
 
-    @AfterInitialization
+    @PostConstruct
     public void init() {
         dependencyPagedJarTable = IOC.getBeanManager().lookupBean( ArtifactListPresenter.class ).getInstance();
 
@@ -102,11 +104,13 @@ public class DependencyListWidget
 
         // Column to allow selection of dependency
         final Column<JarListPageRow, String> selectColumn = new Column<JarListPageRow, String>( new ButtonCell( ButtonSize.EXTRA_SMALL ) ) {
+            @Override
             public String getValue( JarListPageRow row ) {
                 return ProjectEditorResources.CONSTANTS.Select();
             }
         };
         selectColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
+            @Override
             public void update( final int index,
                                 final JarListPageRow row,
                                 final String value ) {

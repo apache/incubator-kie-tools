@@ -15,6 +15,7 @@
 
 package org.kie.workbench.common.screens.social.hp.client.homepage;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -48,7 +49,7 @@ public class SocialHomePageSideView extends Composite implements SocialHomePageS
     @Inject
     PlaceManager placeManager;
 
-    @AfterInitialization
+    @PostConstruct
     public void setup() {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
