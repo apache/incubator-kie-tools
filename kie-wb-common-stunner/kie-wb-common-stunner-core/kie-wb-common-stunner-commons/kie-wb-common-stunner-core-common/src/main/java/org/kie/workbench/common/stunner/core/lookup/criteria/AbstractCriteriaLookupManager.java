@@ -93,7 +93,7 @@ public abstract class AbstractCriteriaLookupManager<I, T, R extends LookupManage
             return new HashSet<>(0);
         } else if (s != null && s.startsWith(COLLECTION_START_CHAR) && s.endsWith(COLLECTION_END_CHAR)) {
             final String toParse = s.substring(1,
-                                               s.length() - 2);
+                                               s.length() - 1);
             final String[] parsed = toParse.split(COLLECTION_DELIMITER);
             final HashSet<String> result = new HashSet<>(parsed.length);
             for (String p : parsed) {
@@ -101,7 +101,7 @@ public abstract class AbstractCriteriaLookupManager<I, T, R extends LookupManage
             }
             return result;
         }
-        return null;
+        return new HashSet<>(0);
     }
 
     protected static <T> boolean isIntersect(final Collection<T> c1,
