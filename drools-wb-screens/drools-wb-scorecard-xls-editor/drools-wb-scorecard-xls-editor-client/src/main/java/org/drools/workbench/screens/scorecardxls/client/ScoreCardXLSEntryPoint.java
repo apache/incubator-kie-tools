@@ -15,14 +15,15 @@
  */
 package org.drools.workbench.screens.scorecardxls.client;
 
+import javax.annotation.PostConstruct;
+
 import org.drools.workbench.screens.scorecardxls.client.resources.ScoreCardXLSEditorResources;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 
 @EntryPoint
 public class ScoreCardXLSEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         ScoreCardXLSEditorResources.INSTANCE.CSS().ensureInjected();
     }

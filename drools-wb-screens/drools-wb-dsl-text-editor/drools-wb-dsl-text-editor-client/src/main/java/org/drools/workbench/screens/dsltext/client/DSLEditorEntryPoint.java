@@ -15,14 +15,15 @@
  */
 package org.drools.workbench.screens.dsltext.client;
 
+import javax.annotation.PostConstruct;
+
 import org.drools.workbench.screens.dsltext.client.resources.DSLTextEditorResources;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 
 @EntryPoint
 public class DSLEditorEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         DSLTextEditorResources.INSTANCE.CSS().ensureInjected();
     }

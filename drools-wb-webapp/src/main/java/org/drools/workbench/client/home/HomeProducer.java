@@ -15,8 +15,8 @@
 
 package org.drools.workbench.client.home;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
@@ -36,21 +36,14 @@ import static org.kie.workbench.common.workbench.client.PerspectiveIds.*;
 /**
  * Producer method for the Home Page content
  */
-@ApplicationScoped
+@Dependent
 public class HomeProducer {
 
-    private HomeModel model;
-
-    @Inject
-    private PlaceManager placeManager;
-
-    @Inject
-    protected LibraryMonitor libraryMonitor;
-
-    @PostConstruct
-    public void init() {
+    @Produces
+    @ApplicationScoped
+    public HomeModel getModel( PlaceManager placeManager, LibraryMonitor libraryMonitor ) {
         final String url = GWT.getModuleBaseURL();
-        model = new HomeModel( "The KIE Knowledge Development Cycle" );
+        final HomeModel model = new HomeModel( "The KIE Knowledge Development Cycle" );
         model.addCarouselEntry( ModelUtils.makeCarouselEntry( "Author",
                                                               "Formalize your Business Knowledge",
                                                               url + "/images/HandHome.jpg" ) );
@@ -78,10 +71,7 @@ public class HomeProducer {
                 GUVNOR_M2REPO, PERSPECTIVE ) );
 
         model.addSection( s2 );
-    }
 
-    @Produces
-    public HomeModel getModel() {
         return model;
     }
 

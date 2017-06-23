@@ -25,7 +25,6 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.service.PlaceManagerActivityService;
 import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
 import org.kie.workbench.common.workbench.client.menu.DefaultWorkbenchFeaturesMenusHelper;
 import org.mockito.ArgumentCaptor;
@@ -51,10 +50,6 @@ public class DroolsWorkbenchEntryPointTest {
     private CallerMock<AppConfigService> appConfigServiceCallerMock;
 
     @Mock
-    private PlaceManagerActivityService pmas;
-    private CallerMock<PlaceManagerActivityService> pmasCallerMock;
-
-    @Mock
     private ActivityBeansCache activityBeansCache;
 
     @Mock
@@ -77,10 +72,8 @@ public class DroolsWorkbenchEntryPointTest {
     @Before
     public void setup() {
         appConfigServiceCallerMock = new CallerMock<>(appConfigService);
-        pmasCallerMock = new CallerMock<>(pmas);
 
         droolsWorkbenchEntryPoint = spy(new DroolsWorkbenchEntryPoint(appConfigServiceCallerMock,
-                                                                      pmasCallerMock,
                                                                       activityBeansCache,
                                                                       placeManager,
                                                                       menusHelper,

@@ -15,14 +15,15 @@
  */
 package org.drools.workbench.screens.workitems.client;
 
+import javax.annotation.PostConstruct;
+
 import org.drools.workbench.screens.workitems.client.resources.WorkItemsEditorResources;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 
 @EntryPoint
 public class WorkItemsEditorEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         WorkItemsEditorResources.INSTANCE.CSS().ensureInjected();
     }

@@ -15,14 +15,15 @@
  */
 package org.drools.workbench.screens.guided.rule.client;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.ioc.client.api.EntryPoint;
+import javax.annotation.PostConstruct;
+
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
+import org.jboss.errai.ioc.client.api.EntryPoint;
 
 @EntryPoint
 public class GuidedRuleEditorEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         GuidedRuleEditorResources.INSTANCE.css().ensureInjected();
     }

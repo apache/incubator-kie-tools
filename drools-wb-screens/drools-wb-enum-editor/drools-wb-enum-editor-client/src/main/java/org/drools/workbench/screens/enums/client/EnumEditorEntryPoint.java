@@ -15,14 +15,15 @@
  */
 package org.drools.workbench.screens.enums.client;
 
+import javax.annotation.PostConstruct;
+
 import org.drools.workbench.screens.enums.client.resources.EnumEditorResources;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 
 @EntryPoint
 public class EnumEditorEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         EnumEditorResources.INSTANCE.css().ensureInjected();
     }

@@ -15,14 +15,15 @@
  */
 package org.drools.workbench.screens.testscenario.client;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
+import javax.annotation.PostConstruct;
+
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 
 @EntryPoint
 public class TestScenarioEditorEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         PatternFlyBootstrapper.ensureBootstrapSelectIsAvailable();
     }
