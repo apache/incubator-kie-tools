@@ -50,9 +50,7 @@ public class WorkItemDefinitionElementsBrowser extends Composite implements HasW
     private final Container container = new Container() {{
         setFluid( true );
     }};
-    private final ListBox importsList = new ListBox() {{
-        addStyleName( ColumnSize.MD_12.getCssName() );
-    }};
+
     private final ListBox imagesList = new ListBox() {{
         addStyleName( ColumnSize.MD_12.getCssName() );
     }};
@@ -74,38 +72,6 @@ public class WorkItemDefinitionElementsBrowser extends Composite implements HasW
         container.add( new Row() {{
             add( elements );
         }} );
-
-        //Imports
-        container.add( new Row() {{
-            add( importsList );
-        }} );
-        importsList.addItem( WorkItemsEditorConstants.INSTANCE.ChooseImportClass() );
-        importsList.addItem( "BooleanDataType",
-                             "import org.jbpm.process.core.datatype.impl.type.BooleanDataType;" );
-        importsList.addItem( "EnumDataType",
-                             "import org.jbpm.process.core.datatype.impl.type.EnumDataType;" );
-        importsList.addItem( "FloatDataType",
-                             "import org.jbpm.process.core.datatype.impl.type.FloatDataType;" );
-        importsList.addItem( "IntegerDataType",
-                             "import org.jbpm.process.core.datatype.impl.type.IntegerDataType;" );
-        importsList.addItem( "ListDataType",
-                             "import org.jbpm.process.core.datatype.impl.type.ListDataType;" );
-        importsList.addItem( "ObjectDataType",
-                             "import org.jbpm.process.core.datatype.impl.type.ObjectDataType;" );
-        importsList.addItem( "StringDataType",
-                             "import org.jbpm.process.core.datatype.impl.type.StringDataType;" );
-        importsList.addItem( "UndefinedDataType",
-                             "import org.jbpm.process.core.datatype.impl.type.UndefinedDataType;" );
-
-        importsList.setVisibleItemCount( 9 );
-        importsList.setSelectedIndex( 0 );
-
-        importsList.addChangeHandler( new ChangeHandler() {
-            public void onChange( ChangeEvent event ) {
-                elementSelected( importsList.getItemText( importsList.getSelectedIndex() ),
-                                 importsList.getValue( importsList.getSelectedIndex() ) );
-            }
-        } );
 
         //Images
         container.add( new Row() {{

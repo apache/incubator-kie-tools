@@ -1,10 +1,8 @@
-import org.jbpm.process.core.datatype.impl.type.StringDataType;
-
 [
   [
     "name" : "MyTask",
     "parameters" : [
-        "MyFirstParam" : new StringDataType(),
+        "MyFirstParam" : new MyCustomDataType(),
         "MySecondParam" : new StringDataType(),
         "MyThirdParam" : new ObjectDataType()
     ],

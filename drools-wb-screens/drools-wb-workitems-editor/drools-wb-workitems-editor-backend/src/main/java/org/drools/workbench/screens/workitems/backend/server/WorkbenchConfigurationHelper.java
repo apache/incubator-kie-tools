@@ -38,54 +38,49 @@ public class WorkbenchConfigurationHelper {
         //   - The value will be the text pasted into the editor when an element in the
         //     palette is selected. You can use a pipe ('|') to specify the place where
         //     the cursor should be put after pasting the element into the editor.
-        final ConfigGroup group = configurationFactory.newConfigGroup( ConfigType.EDITOR,
-                                                                       WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS,
-                                                                       "" );
-        group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_DEFINITION,
-                                                                 "import org.jbpm.process.core.datatype.impl.type.StringDataType;\n" +
-                                                                         "import org.jbpm.process.core.datatype.impl.type.ObjectDataType;\n" +
-                                                                         "\n" +
-                                                                         "[\n" +
-                                                                         "  [\n" +
-                                                                         "    \"name\" : \"MyTask\", \n" +
-                                                                         "    \"parameters\" : [ \n" +
-                                                                         "        \"MyFirstParam\" : new StringDataType(), \n" +
-                                                                         "        \"MySecondParam\" : new StringDataType(), \n" +
-                                                                         "        \"MyThirdParam\" : new ObjectDataType() \n" +
-                                                                         "    ], \n" +
-                                                                         "    \"results\" : [ \n" +
-                                                                         "        \"Result\" : new ObjectDataType(\"java.util.Map\") \n" +
-                                                                         "    ], \n" +
-                                                                         "    \"displayName\" : \"My Task\", \n" +
-                                                                         "    \"icon\" : \"\" \n" +
-                                                                         "  ]\n" +
-                                                                         "]" ) );
-        group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_PARAMETER,
-                                                                 "\"MyParam\" : new StringDataType()" ) );
-        group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_RESULT,
-                                                                 "\"Result\" : new ObjectDataType()" ) );
-        group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_DISPLAY_NAME,
-                                                                 "\"displayName\" : \"My Task\"" ) );
+        final ConfigGroup group = configurationFactory.newConfigGroup(ConfigType.EDITOR,
+                                                                      WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS,
+                                                                      "");
+        group.addConfigItem(configurationFactory.newConfigItem(WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_DEFINITION,
+                                                               "[\n" +
+                                                                       "  [\n" +
+                                                                       "    \"name\" : \"MyTask\", \n" +
+                                                                       "    \"parameters\" : [ \n" +
+                                                                       "        \"MyFirstParam\" : new StringDataType(), \n" +
+                                                                       "        \"MySecondParam\" : new StringDataType(), \n" +
+                                                                       "        \"MyThirdParam\" : new ObjectDataType() \n" +
+                                                                       "    ], \n" +
+                                                                       "    \"results\" : [ \n" +
+                                                                       "        \"Result\" : new ObjectDataType(\"java.util.Map\") \n" +
+                                                                       "    ], \n" +
+                                                                       "    \"displayName\" : \"My Task\", \n" +
+                                                                       "    \"icon\" : \"\" \n" +
+                                                                       "  ]\n" +
+                                                                       "]"));
+        group.addConfigItem(configurationFactory.newConfigItem(WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_PARAMETER,
+                                                               "\"MyParam\" : new StringDataType()"));
+        group.addConfigItem(configurationFactory.newConfigItem(WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_RESULT,
+                                                               "\"Result\" : new ObjectDataType()"));
+        group.addConfigItem(configurationFactory.newConfigItem(WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_DISPLAY_NAME,
+                                                               "\"displayName\" : \"My Task\""));
 
-        group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_PARAMETER_VALUES,
-                "\"parameterValues\" : [\n" +
-                        "   \"MyFirstParam\" : \"A,B,C\",   \n" +
-                        "   \"MySecondParam\" : \"X,Y,Z\"\n" +
-                        "]" ) );
+        group.addConfigItem(configurationFactory.newConfigItem(WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_PARAMETER_VALUES,
+                                                               "\"parameterValues\" : [\n" +
+                                                                       "   \"MyFirstParam\" : \"A,B,C\",   \n" +
+                                                                       "   \"MySecondParam\" : \"X,Y,Z\"\n" +
+                                                                       "]"));
 
-        group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_CUSTOM_EDITOR,
-                "\"customEditor\" : \"true\"" ) );
-
+        group.addConfigItem(configurationFactory.newConfigItem(WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_CUSTOM_EDITOR,
+                                                               "\"customEditor\" : \"true\""));
 
         return group;
     }
-
 
     /**
      * Sets ConfigurationFactory (for tests)
      * @param configurationFactory
      */
-    public void setConfigurationFactory( ConfigurationFactory configurationFactory ) {
+    public void setConfigurationFactory(ConfigurationFactory configurationFactory) {
         this.configurationFactory = configurationFactory;
     }
 }

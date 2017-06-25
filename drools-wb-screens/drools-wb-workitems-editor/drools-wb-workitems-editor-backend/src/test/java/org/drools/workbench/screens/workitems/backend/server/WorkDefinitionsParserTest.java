@@ -15,11 +15,6 @@
  */
 package org.drools.workbench.screens.workitems.backend.server;
 
-
-import org.jbpm.process.core.WorkDefinition;
-import org.junit.Test;
-import org.mvel2.CompileException;
-
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -27,36 +22,67 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.jbpm.process.core.WorkDefinition;
+import org.jbpm.process.workitem.WorkDefinitionImpl;
+import org.junit.Test;
+import org.mvel2.CompileException;
+
+import static org.junit.Assert.*;
 
 public class WorkDefinitionsParserTest {
 
     @Test
     public void testValidWorkitemDefinition() throws Exception {
         List<String> defStrings = new ArrayList<>();
-        defStrings.add(loadFile( "validWorkItemDefinition.wid" ));
+        defStrings.add(loadFile("validWorkItemDefinition.wid"));
 
-        Map<String, WorkDefinition> defs = WorkDefinitionsParser.parse( defStrings );
+        Map<String, WorkDefinition> defs = WorkDefinitionsParser.parse(defStrings);
 
-        assertNotNull( defs );
-        assertEquals(1, defs.size() );
+        assertNotNull(defs);
+        assertEquals(1,
+                     defs.size());
 
-        WorkDefinition myTaskDef = defs.get( "MyTask" );
+        WorkDefinitionImpl myTaskDef = (WorkDefinitionImpl) defs.get("MyTask");
 
-        assertNotNull( myTaskDef );
-        assertEquals("MyTask", myTaskDef.getName());
-        assertNotNull(myTaskDef.getParameter("MyFirstParam" ));
-        assertNotNull(myTaskDef.getParameter("MySecondParam" ));
-        assertNotNull(myTaskDef.getParameter( "MyThirdParam" ));
+        assertNotNull(myTaskDef);
+        assertEquals("MyTask",
+                     myTaskDef.getName());
+        assertNotNull(myTaskDef.getParameter("MyFirstParam"));
+        assertNotNull(myTaskDef.getParameter("MySecondParam"));
+        assertNotNull(myTaskDef.getParameter("MyThirdParam"));
+
+        assertNotNull(myTaskDef.getParameterValues());
+        assertEquals(2,
+                     myTaskDef.getParameterValues().size());
+        Map<String, Object> paramValues = myTaskDef.getParameterValues();
+        assertTrue(paramValues.containsKey("MyFirstParam"));
+        assertTrue(paramValues.containsKey("MySecondParam"));
+
+        assertNotNull(myTaskDef.getVersion());
+        assertEquals("1.0",
+                     myTaskDef.getVersion());
+
+        assertNotNull(myTaskDef.getDocumentation());
+        assertEquals("documentation for sample workitem",
+                     myTaskDef.getDocumentation());
+
+        assertNotNull(myTaskDef.getDescription());
+        assertEquals("this is a sample workitem",
+                     myTaskDef.getDescription());
+
+        assertNotNull(myTaskDef.getMavenDependencies());
+        assertEquals(1,
+                     myTaskDef.getMavenDependencies().length);
+        assertEquals("org.jboss:somemodule:3.2",
+                     myTaskDef.getMavenDependencies()[0]);
     }
 
     @Test(expected = CompileException.class)
-    public void testInvalidWorkitemDefinition() {
+    public void testMissingCustomDataTypeDefinition() {
         List<String> defStrings = new ArrayList<>();
-        defStrings.add(loadFile( "missingImportWorkItemDefinition.wid" ));
+        defStrings.add(loadFile("missingCustomDataTypeDefinition.wid"));
 
-        WorkDefinitionsParser.parse( defStrings );
+        WorkDefinitionsParser.parse(defStrings);
     }
 
     private String loadFile(String fileName) {

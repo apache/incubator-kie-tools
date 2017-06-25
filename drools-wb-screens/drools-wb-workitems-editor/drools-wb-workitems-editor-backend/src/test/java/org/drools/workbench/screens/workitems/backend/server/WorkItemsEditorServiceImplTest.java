@@ -58,12 +58,12 @@ public class WorkItemsEditorServiceImplTest {
     }
 
     @Test
-    public void testMissingImport() throws Exception {
+    public void testMissingCustomDataType() throws Exception {
         List<ValidationMessage> messages = service.validate(path,
-                                                            loadFile("missingImportWorkItemDefinition.wid"));
+                                                            loadFile("missingCustomDataTypeDefinition.wid"));
         assertEquals(1,
                      messages.size());
         assertTrue("Expected error about missing import",
-                   messages.get(0).getText().contains("Error: could not resolve class: ObjectDataType"));
+                   messages.get(0).getText().contains("Error: could not resolve class: MyCustomDataType"));
     }
 }

@@ -1,6 +1,3 @@
-import org.jbpm.process.core.datatype.impl.type.StringDataType;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
-
 [
   [
     "name" : "MyTask",
@@ -18,6 +15,12 @@ import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
         "Result" : new ObjectDataType("java.util.Map")
     ],
     "displayName" : "My Task",
-    "icon" : ""
+    "icon" : "",
+    "documentation" : "documentation for sample workitem",
+    "mavenDependencies" : [
+        "org.jboss:somemodule:3.2"
+    ],
+    "version" : "1.0",
+    "description" : "this is a sample workitem"
   ]
 ]
