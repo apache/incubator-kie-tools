@@ -17,20 +17,23 @@
 package org.uberfire.client.screens.widgets;
 
 import java.util.Date;
+import java.util.Random;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.Anchor;
+import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.slf4j.Logger;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.client.views.pfly.widgets.DateRangePicker;
 import org.uberfire.client.views.pfly.widgets.DateRangePickerOptions;
+import org.uberfire.client.views.pfly.widgets.JQueryProducer;
 import org.uberfire.client.views.pfly.widgets.Popover;
+import org.uberfire.client.views.pfly.widgets.PopoverOptions;
 
 import static org.jboss.errai.common.client.dom.Window.getDocument;
 import static org.uberfire.client.views.pfly.widgets.Moment.Builder.moment;
@@ -43,12 +46,15 @@ public class WidgetsShowcaseView implements UberElement<WidgetsShowcasePresenter
     private Logger logger;
 
     @Inject
+    private JQueryProducer.JQuery<Popover> jQueryPopover;
+
+    @Inject
     @DataField
     private Div root;
 
     @Inject
     @DataField
-    private Popover popover;
+    private Anchor popover;
 
     @Inject
     @DataField("dynamic-popover")
@@ -56,31 +62,40 @@ public class WidgetsShowcaseView implements UberElement<WidgetsShowcasePresenter
 
     @Inject
     @DataField("popover-override")
-    private Popover popoverOverride;
+    private Anchor popoverOverride;
+
+    @Inject
+    @DataField("popover-button")
+    private Button popoverButton;
 
     @Inject
     @DataField("datetimepicker")
     private DateRangePicker dateRangePicker;
 
-    @Inject
-    private ManagedInstance<Popover> popoversProvider;
-
     @Override
     public void init(final WidgetsShowcasePresenter presenter) {
+        //Ex 1
+        jQueryPopover.wrap(popover).popover();
         //Ex 2
-        final Popover newPopover = popoversProvider.get();
-        newPopover.setContent("dynamic text");
-        newPopover.setTrigger("click");
-        newPopover.setPlacement("bottom");
-        newPopover.setContainer("body");
+        final PopoverOptions popoverOptions = new PopoverOptions();
+        popoverOptions.setContent(e -> "dynamic content: " + new Random().nextInt());
+        popoverOptions.setTrigger("click");
+        popoverOptions.setPlacement("bottom");
+        popoverOptions.setContainer("body");
         final Anchor anchor = (Anchor) getDocument().createElement("a");
         anchor.setAttribute("data-toggle",
                             "popover");
         anchor.setTextContent("View popover");
-        newPopover.getElement().appendChild(anchor);
-        dynamicPopover.appendChild(newPopover.getElement());
+        dynamicPopover.appendChild(anchor);
+        jQueryPopover.wrap(anchor).popover(popoverOptions);
         //Ex 3
-        popoverOverride.setContent("New content!");
+        popoverOverride.setAttribute("data-content",
+                                     "New content!");
+        jQueryPopover.wrap(popoverOverride).popover();
+        //Ex 4
+        jQueryPopover.wrap(popoverButton).popover();
+        jQueryPopover.wrap(popoverButton).addShowListener(() -> logger.info("popover show callback"));
+        jQueryPopover.wrap(popoverButton).addHideListener(() -> logger.info("popover hide callback"));
         //Date range ex
         final DateRangePickerOptions options = getDateRangePickerOptions();
 
@@ -98,13 +113,20 @@ public class WidgetsShowcaseView implements UberElement<WidgetsShowcasePresenter
     protected DateRangePicker.DateRangePickerCallback getDateRangePickerCallback() {
         return (start, end, label) -> {
             logger.info("picker callback");
-            logger.info("picker start date: {}", start);
-            logger.info("picker start date as java.util.Date: {}", start.asDate());
-            logger.info("picker start date valueof: {}", new Date(start.valueOf().longValue()));
-            logger.info("picker start date aslong: {}", new Date(start.asLong()));
-            logger.info("picker end date: {}", end);
-            logger.info("picker end date as java.util.Date: {}", end.asDate());
-            logger.info("picker label: {}", label);
+            logger.info("picker start date: {}",
+                        start);
+            logger.info("picker start date as java.util.Date: {}",
+                        start.asDate());
+            logger.info("picker start date valueof: {}",
+                        new Date(start.valueOf().longValue()));
+            logger.info("picker start date aslong: {}",
+                        new Date(start.asLong()));
+            logger.info("picker end date: {}",
+                        end);
+            logger.info("picker end date as java.util.Date: {}",
+                        end.asDate());
+            logger.info("picker label: {}",
+                        label);
         };
     }
 

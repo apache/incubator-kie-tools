@@ -24,7 +24,6 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.Event;
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.TextInput;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 
@@ -52,7 +51,7 @@ public class DateRangePicker implements IsElement {
                                                   callback);
     }
 
-    protected void setupI18n(final DateRangePickerOptions options){
+    protected void setupI18n(final DateRangePickerOptions options) {
         options.setApplyLabel(translationService.format(ApplyLabel));
         options.setCancelLabel(translationService.format(CancelLabel));
         options.setCustomRangeLabel(translationService.format(CustomRangeLabel));
@@ -91,7 +90,7 @@ public class DateRangePicker implements IsElement {
     }
 
     @Override
-    public HTMLElement getElement() {
+    public TextInput getElement() {
         return input;
     }
 
@@ -126,13 +125,13 @@ public class DateRangePicker implements IsElement {
     public interface DateRangePickerElement {
 
         @JsProperty
-        public Moment getStartDate();
+        Moment getStartDate();
 
-        public void setStartDate(Moment startDate);
+        void setStartDate(Moment startDate);
 
         @JsProperty
-        public Moment getEndDate();
+        Moment getEndDate();
 
-        public void setEndDate(Moment endDate);
+        void setEndDate(Moment endDate);
     }
 }

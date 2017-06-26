@@ -16,103 +16,80 @@
 
 package org.uberfire.client.views.pfly.widgets;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-import com.google.gwt.core.client.Scheduler;
+import jsinterop.annotations.JsFunction;
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsType;
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.Anchor;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.uberfire.client.views.pfly.widgets.JQueryProducer.JQuery;
 import org.uberfire.client.views.pfly.widgets.JQueryProducer.JQueryElement;
 
 /**
  * Wrapper component for PatternFly's <a href="http://www.patternfly.org/pattern-library/widgets/#popover">Popover</a>
  */
-@Dependent
-public class Popover implements IsElement {
+@JsType(isNative = true)
+public interface Popover extends JQueryElement {
 
-    @Inject
-    private Anchor anchor;
+    void popover();
 
-    @Inject
-    private JQuery<JQueryPopoverElement> jQuery;
+    void popover(String method);
 
-    @PostConstruct
-    public void init() {
-        Scheduler.get().scheduleDeferred(() -> jQuery.wrap(getElement()).popover());
+    void popover(PopoverOptions options);
+
+    @JsOverlay
+    default void destroy() {
+        popover("destroy");
     }
 
-    @PreDestroy
-    public void destroy() {
-        jQuery.wrap(getElement()).popover("destroy");
+    @JsOverlay
+    default void show() {
+        popover("show");
     }
 
-    public void show() {
-        jQuery.wrap(getElement()).popover("show");
+    @JsOverlay
+    default void hide() {
+        popover("hide");
     }
 
-    public void hide() {
-        jQuery.wrap(getElement()).popover("hide");
+    @JsOverlay
+    default void toggle() {
+        popover("toggle");
     }
 
-    public void toggle() {
-        jQuery.wrap(getElement()).popover("toggle");
+    void on(String event,
+            PopoverEventCallback callback);
+
+    @JsOverlay
+    default void addShowListener(final PopoverEventCallback callback) {
+        on("show.bs.popover",
+           callback);
     }
 
-    public void setTitle(final String title) {
-        anchor.setTitle(title);
+    @JsOverlay
+    default void addShownListener(final PopoverEventCallback callback) {
+        on("shown.bs.popover",
+           callback);
     }
 
-    public void setContent(final String content) {
-        setDataAttribute("content",
-                         content);
+    @JsOverlay
+    default void addHiddenListener(final PopoverEventCallback callback) {
+        on("hidden.bs.popover",
+           callback);
     }
 
-    public void setContainer(final String container) {
-        setDataAttribute("container",
-                         container);
+    @JsOverlay
+    default void addHideListener(final PopoverEventCallback callback) {
+        on("hide.bs.popover",
+           callback);
     }
 
-    public void setTrigger(final String trigger) {
-        setDataAttribute("trigger",
-                         trigger);
+    @JsOverlay
+    default void addInsertedListener(final PopoverEventCallback callback) {
+        on("inserted.bs.popover",
+           callback);
     }
 
-    public void setTemplate(final String template) {
-        setDataAttribute("template",
-                         template);
-    }
+    @JsFunction
+    @FunctionalInterface
+    interface PopoverEventCallback {
 
-    public void setPlacement(final String placement) {
-        setDataAttribute("placement",
-                         placement);
-    }
-
-    public void setHtml(final Boolean html) {
-        setDataAttribute("html",
-                         String.valueOf(html));
-    }
-
-    protected void setDataAttribute(final String attribute,
-                                    final String value) {
-        anchor.setAttribute("data-" + attribute,
-                            value);
-    }
-
-    @Override
-    public HTMLElement getElement() {
-        return anchor;
-    }
-
-    @JsType(isNative = true)
-    public interface JQueryPopoverElement extends JQueryElement {
-
-        void popover();
-
-        void popover(String method);
+        void onEvent();
     }
 }
