@@ -45,6 +45,16 @@ public class PropertyEditorCheckBox extends AbstractPropertyEditorWidget {
         checkBox.addValueChangeHandler(valueChangeHandler);
     }
 
+    @Override
+    public boolean isEnabled() {
+        return checkBox.isEnabled();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        checkBox.setEnabled(enabled);
+    }
+
     interface MyUiBinder extends UiBinder<Widget, PropertyEditorCheckBox> {
 
     }

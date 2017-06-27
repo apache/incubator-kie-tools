@@ -482,6 +482,11 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
                         hierarchyElement.addPropertyBundleKey(field.getName(),
                                                               propertyBundleKey);
                     }
+
+                    hierarchyElement.addPropertyHelpBundleKey(field.getName(),
+                                                              propertyAnnotation.helpBundleKey());
+                    hierarchyElement.addPropertyFormOptions(field.getName(),
+                                                            propertyAnnotation.formOptions());
                 }
             }
         } catch (IllegalAccessException e) {

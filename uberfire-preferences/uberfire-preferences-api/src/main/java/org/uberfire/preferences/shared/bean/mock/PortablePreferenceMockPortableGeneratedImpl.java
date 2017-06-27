@@ -16,12 +16,15 @@
 
 package org.uberfire.preferences.shared.bean.mock;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.preferences.shared.PropertyFormType;
+import org.uberfire.preferences.shared.PropertyValidator;
 import org.uberfire.preferences.shared.annotations.PortablePreference;
 import org.uberfire.preferences.shared.bean.BasePreferencePortable;
 
@@ -87,6 +90,18 @@ public class PortablePreferenceMockPortableGeneratedImpl extends PortablePrefere
                             PropertyFormType.TEXT);
 
         return propertiesTypes;
+    }
+
+    @Override
+    public Map<String, List<PropertyValidator>> getPropertiesValidators() {
+        Map<String, List<PropertyValidator>> validatorsByProperty = new HashMap<>();
+
+        List<PropertyValidator> validatorsProperty = new ArrayList<>();
+        validatorsProperty.add(new org.uberfire.preferences.shared.impl.validation.NotEmptyValidator());
+        validatorsByProperty.put("property",
+                                 validatorsProperty);
+
+        return validatorsByProperty;
     }
 
     @Override

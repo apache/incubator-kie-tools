@@ -16,12 +16,18 @@
 
 package org.uberfire.ext.preferences.processors;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.Elements;
 
+import org.uberfire.annotations.processors.GeneratorUtils;
 import org.uberfire.preferences.shared.PropertyFormType;
 import org.uberfire.preferences.shared.annotations.Property;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
@@ -47,8 +53,11 @@ public class PropertyData {
 
     private TypeKind typeKind;
 
+    private List<String> validators;
+
     public PropertyData(final Element element,
                         final Property propertyAnnotation,
+                        final AnnotationMirror propertyAnnotationMirror,
                         final Elements elementUtils) {
         fieldName = element.getSimpleName().toString();
 
@@ -69,6 +78,23 @@ public class PropertyData {
         privateAccess = element.getModifiers().contains(Modifier.PRIVATE);
 
         typeKind = element.asType().getKind();
+
+        setupValidators(propertyAnnotationMirror,
+                        elementUtils);
+    }
+
+    void setupValidators(AnnotationMirror propertyAnnotationMirror,
+                         Elements elementUtils) {
+        final AnnotationValue validatorsAnnotationValue = GeneratorUtils.extractAnnotationPropertyValue(elementUtils,
+                                                                                                        propertyAnnotationMirror,
+                                                                                                        "validators");
+        List<?> validators = (List<?>) GeneratorUtils.extractValue(validatorsAnnotationValue);
+        this.validators = new ArrayList<>();
+        if (validators != null) {
+            this.validators.addAll((validators.stream()
+                    .map(v -> v.toString())
+                    .collect(Collectors.toList())));
+        }
     }
 
     public String getFieldName() {
@@ -101,6 +127,14 @@ public class PropertyData {
 
     public boolean isPrimitive() {
         return typeKind.isPrimitive();
+    }
+
+    public List<String> getValidators() {
+        return validators;
+    }
+
+    public boolean hasValidators() {
+        return validators != null && !validators.isEmpty();
     }
 
     public String getHashCodeFormula() {

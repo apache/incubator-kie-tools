@@ -58,6 +58,16 @@ public class PropertyEditorPasswordTextBox extends AbstractPropertyEditorWidget 
         passwordTextBox.addBlurHandler(blurHandler);
     }
 
+    @Override
+    public boolean isEnabled() {
+        return passwordTextBox.isEnabled();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        passwordTextBox.setEnabled(enabled);
+    }
+
     interface MyUiBinder extends UiBinder<Widget, PropertyEditorPasswordTextBox> {
 
     }

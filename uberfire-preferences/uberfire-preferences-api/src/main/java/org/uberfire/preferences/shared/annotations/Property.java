@@ -22,7 +22,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.uberfire.preferences.shared.PropertyFormOptions;
 import org.uberfire.preferences.shared.PropertyFormType;
+import org.uberfire.preferences.shared.PropertyValidator;
 
 /**
  * Annotation used to mark preference beans properties.
@@ -48,9 +50,29 @@ public @interface Property {
 
     /**
      * Defines a bundle key that will be used to internationalize the property's label wherever
-     * its necessary. It's expected that the TranslationService will have access to the key
+     * is necessary. It's expected that the TranslationService will have access to the key
      * translation.
      * @return The property bundle key.
      */
     String bundleKey() default "";
+
+    /**
+     * Defines a help bundle key that will be used to internationalize the property's help text
+     * wherever is necessary. It's expected that the TranslationService will have access to the
+     * key translation.
+     * @return The property help bundle key.
+     */
+    String helpBundleKey() default "";
+
+    /**
+     * Defines options that will be applied to the automatically generated form field.
+     * @return The form options to be used.
+     */
+    PropertyFormOptions[] formOptions() default {};
+
+    /**
+     * Defines validators that will be applied to the field on automatically generated forms.
+     * @return The validators to be applied.
+     */
+    Class<? extends PropertyValidator>[] validators() default {};
 }

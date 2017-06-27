@@ -26,6 +26,7 @@ import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.Container;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.Heading;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.InputGroup;
 import org.gwtbootstrap3.client.ui.InputGroupButton;
 import org.gwtbootstrap3.client.ui.Panel;
@@ -44,6 +45,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.ext.properties.editor.client.fields.AbstractField;
 import org.uberfire.ext.properties.editor.client.fields.PropertyEditorFieldType;
+import org.uberfire.ext.properties.editor.client.options.PropertyEditorFieldOptionUtils;
 import org.uberfire.ext.properties.editor.client.widgets.AbstractPropertyEditorWidget;
 import org.uberfire.ext.properties.editor.client.widgets.PropertyEditorItemLabel;
 import org.uberfire.ext.properties.editor.client.widgets.PropertyEditorItemWidget;
@@ -192,6 +194,7 @@ public class PropertyEditorHelper {
                                                 Form panelBody) {
         PropertyEditorItemWidget itemWidget = GWT.create(PropertyEditorItemWidget.class);
         InputGroup content = GWT.create(InputGroup.class);
+        HelpBlock helpBlock = GWT.create(HelpBlock.class);
 
         PropertyEditorFieldType editorFieldType = PropertyEditorFieldType.getFieldTypeFrom(field);
 
@@ -207,6 +210,11 @@ public class PropertyEditorHelper {
                                           fieldWidget);
 
         content.add(fieldWidget);
+        content.add(helpBlock);
+        parent.setHelpInline(helpBlock);
+
+        field.getOptions().forEach(option -> PropertyEditorFieldOptionUtils.applyFieldOption(option,
+                                                                                             fieldWidget));
 
         if (field.isRemovalSupported()) {
             content.add(createRemoveAddOn(field,

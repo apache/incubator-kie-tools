@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
@@ -86,14 +87,19 @@ public class WorkbenchPreferenceGeneratedImplGenerator extends AbstractGenerator
         List<PropertyData> properties = new ArrayList<>();
 
         TypeElement c = classElement;
-        c.getEnclosedElements().forEach(el -> {
+        final TypeElement propertyTypeElement = elementUtils.getTypeElement(Property.class.getName());
+
+        for (Element el : c.getEnclosedElements()) {
             final Property propertyAnnotation = el.getAnnotation(Property.class);
-            if (propertyAnnotation != null) {
-                properties.add(new PropertyData(el,
-                                                propertyAnnotation,
-                                                elementUtils));
+            for (AnnotationMirror am : el.getAnnotationMirrors()) {
+                if (am.getAnnotationType().equals(propertyTypeElement.asType())) {
+                    properties.add(new PropertyData(el,
+                                                    propertyAnnotation,
+                                                    am,
+                                                    elementUtils));
+                }
             }
-        });
+        }
 
         final List<PropertyData> simpleProperties = properties.stream()
                 .filter(p -> !p.isSubPreference())

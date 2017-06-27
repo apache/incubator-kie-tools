@@ -28,11 +28,11 @@ import org.uberfire.ext.properties.editor.client.PropertyEditorWidget;
 @Dependent
 public class DefaultPreferenceFormView implements DefaultPreferenceForm.View,
                                                   IsElement {
+    private DefaultPreferenceForm presenter;
 
     @Inject
     @DataField("properties-editor")
     PropertyEditorWidget propertiesEditorWidget;
-    private DefaultPreferenceForm presenter;
 
     @Override
     public void init(final DefaultPreferenceForm presenter) {

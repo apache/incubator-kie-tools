@@ -20,6 +20,7 @@ import javax.enterprise.inject.Vetoed;
 
 import org.uberfire.preferences.shared.annotations.Property;
 import org.uberfire.preferences.shared.bean.BasePreference;
+import org.uberfire.preferences.shared.impl.validation.NotEmptyValidator;
 
 /**
  * Created to be used in tests, and to avoid Errai errors due to unimplemented
@@ -28,6 +29,6 @@ import org.uberfire.preferences.shared.bean.BasePreference;
 @Vetoed
 public class PortablePreferenceMock implements BasePreference<PortablePreferenceMock> {
 
-    @Property
+    @Property(validators = NotEmptyValidator.class)
     String property;
 }

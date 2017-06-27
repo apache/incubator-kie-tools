@@ -20,24 +20,32 @@ import org.uberfire.preferences.shared.PropertyFormType;
 import org.uberfire.preferences.shared.annotations.Property;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.preferences.shared.bean.BasePreference;
+import org.uberfire.preferences.shared.impl.validation.NotEmptyValidator;
 
 @WorkbenchPreference(identifier = "MyPreference",
         bundleKey = "MyPreference.Label")
 public class MyPreference implements BasePreference<MyPreference> {
 
-    @Property(bundleKey = "MyPreference.Text")
+    @Property(bundleKey = "MyPreference.Text",
+            helpBundleKey = "MyPreference.Text",
+            validators = NotEmptyValidator.class)
     String text;
 
-    @Property(formType = PropertyFormType.BOOLEAN, bundleKey = "MyPreference.SendReports")
+    @Property(formType = PropertyFormType.BOOLEAN,
+            bundleKey = "MyPreference.SendReports")
     boolean sendReports;
 
-    @Property(formType = PropertyFormType.COLOR, bundleKey = "MyPreference.BackgroundColor")
+    @Property(formType = PropertyFormType.COLOR,
+            bundleKey = "MyPreference.BackgroundColor")
     String backgroundColor;
 
-    @Property(formType = PropertyFormType.NATURAL_NUMBER, bundleKey = "MyPreference.Age")
+    @Property(formType = PropertyFormType.NATURAL_NUMBER,
+            bundleKey = "MyPreference.Age")
     int age;
 
-    @Property(formType = PropertyFormType.SECRET_TEXT, bundleKey = "MyPreference.Password")
+    @Property(formType = PropertyFormType.SECRET_TEXT,
+            bundleKey = "MyPreference.Password",
+            validators = NotEmptyValidator.class)
     String password;
 
     @Property(bundleKey = "MyPreference.MyInnerPreference")

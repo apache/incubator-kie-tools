@@ -16,16 +16,21 @@
 
 package org.uberfire.preferences.backend;
 
+import org.uberfire.preferences.shared.PropertyFormOptions;
 import org.uberfire.preferences.shared.PropertyFormType;
 import org.uberfire.preferences.shared.annotations.Property;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.preferences.shared.bean.BasePreference;
+import org.uberfire.preferences.shared.impl.validation.NotEmptyValidator;
 
 @WorkbenchPreference(identifier = "MyPreference",
         bundleKey = "MyPreference.Label")
 public class MyPreference implements BasePreference<MyPreference> {
 
-    @Property(bundleKey = "MyPreference.Text")
+    @Property(bundleKey = "MyPreference.Text",
+            helpBundleKey = "MyPreference.Text.Help",
+            validators = NotEmptyValidator.class,
+            formOptions = PropertyFormOptions.DISABLED)
     String text;
 
     @Property(formType = PropertyFormType.BOOLEAN, bundleKey = "MyPreference.SendReports")

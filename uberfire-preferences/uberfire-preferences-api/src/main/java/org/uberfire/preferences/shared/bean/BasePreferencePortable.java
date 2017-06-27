@@ -16,9 +16,13 @@
 
 package org.uberfire.preferences.shared.bean;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.uberfire.preferences.shared.PropertyFormType;
+import org.uberfire.preferences.shared.PropertyValidator;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
 
 /**
@@ -74,6 +78,10 @@ public interface BasePreferencePortable<T> extends BasePreference<T> {
      */
     Map<String, PropertyFormType> getPropertiesTypes();
 
+    default Map<String, List<PropertyValidator>> getPropertiesValidators() {
+        return new HashMap<>();
+    }
+
     /**
      * Returns the form type of a specific simple (non-preference) property by its field name.
      * @param propertyName The property field name.
@@ -81,6 +89,11 @@ public interface BasePreferencePortable<T> extends BasePreference<T> {
      */
     default PropertyFormType getPropertyType(String propertyName) {
         return getPropertiesTypes().get(propertyName);
+    }
+
+    default List<PropertyValidator> getPropertyValidators(String propertyName) {
+        final List<PropertyValidator> propertyValidators = getPropertiesValidators().get(propertyName);
+        return propertyValidators != null ? propertyValidators : new ArrayList<>();
     }
 
     /**

@@ -16,34 +16,44 @@
 
 package org.uberfire.ext.wires.shared.preferences.bean;
 
+import org.uberfire.preferences.shared.PropertyFormOptions;
 import org.uberfire.preferences.shared.PropertyFormType;
 import org.uberfire.preferences.shared.annotations.Property;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.preferences.shared.bean.BasePreference;
+import org.uberfire.preferences.shared.impl.validation.NotEmptyValidator;
 
 @WorkbenchPreference(identifier = "MyPreference",
         bundleKey = "MyPreference.Label")
 public class MyPreference implements BasePreference<MyPreference> {
 
-    @Property(bundleKey = "MyPreference.Text")
+    @Property(bundleKey = "MyPreference.Text",
+            helpBundleKey = "MyPreference.Text",
+            validators = NotEmptyValidator.class)
     String text;
 
-    @Property(formType = PropertyFormType.BOOLEAN, bundleKey = "MyPreference.SendReports")
+    @Property(formType = PropertyFormType.BOOLEAN,
+            bundleKey = "MyPreference.SendReports")
     boolean sendReports;
 
-    @Property(formType = PropertyFormType.COLOR, bundleKey = "MyPreference.BackgroundColor")
+    @Property(formType = PropertyFormType.COLOR,
+            bundleKey = "MyPreference.BackgroundColor")
     String backgroundColor;
 
-    @Property(formType = PropertyFormType.NATURAL_NUMBER, bundleKey = "MyPreference.Age")
+    @Property(formType = PropertyFormType.NATURAL_NUMBER,
+            bundleKey = "MyPreference.Age",
+            formOptions = PropertyFormOptions.DISABLED)
     int age;
 
-    @Property(formType = PropertyFormType.SECRET_TEXT, bundleKey = "MyPreference.Password")
+    @Property(formType = PropertyFormType.SECRET_TEXT,
+            bundleKey = "MyPreference.Password")
     String password;
 
     @Property(bundleKey = "MyPreference.MyInnerPreference")
     MyInnerPreference myInnerPreference;
 
-    @Property(shared = true, bundleKey = "MyPreference.MySharedPreference")
+    @Property(shared = true,
+            bundleKey = "MyPreference.MySharedPreference")
     MySharedPreference mySharedPreference;
 
     @Override

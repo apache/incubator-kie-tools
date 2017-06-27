@@ -18,7 +18,6 @@
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
     <b:FormGroup ui:field="items">
-        <b:HelpBlock ui:field="helpInline"/>
     </b:FormGroup>
 
 </ui:UiBinder>

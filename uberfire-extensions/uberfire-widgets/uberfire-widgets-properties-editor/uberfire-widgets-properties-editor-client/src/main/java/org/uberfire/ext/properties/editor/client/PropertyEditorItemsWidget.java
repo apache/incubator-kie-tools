@@ -28,9 +28,10 @@ import org.gwtbootstrap3.client.ui.constants.ValidationState;
 public class PropertyEditorItemsWidget extends Composite {
 
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+
     @UiField
     FormGroup items;
-    @UiField
+
     HelpBlock helpInline;
 
     public PropertyEditorItemsWidget() {
@@ -39,6 +40,10 @@ public class PropertyEditorItemsWidget extends Composite {
 
     public void add(Widget item) {
         items.add(item);
+    }
+
+    public void setHelpInline(HelpBlock helpInline) {
+        this.helpInline = helpInline;
     }
 
     public void setError(String errorMessage) {

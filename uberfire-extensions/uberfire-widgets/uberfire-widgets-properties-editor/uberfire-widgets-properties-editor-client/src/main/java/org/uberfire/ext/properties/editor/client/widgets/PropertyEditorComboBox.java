@@ -77,6 +77,16 @@ public class PropertyEditorComboBox extends AbstractPropertyEditorWidget {
         listBox.addChangeHandler(changeHandler);
     }
 
+    @Override
+    public boolean isEnabled() {
+        return listBox.isEnabled();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        listBox.setEnabled(enabled);
+    }
+
     interface MyUiBinder extends UiBinder<Widget, PropertyEditorComboBox> {
 
     }

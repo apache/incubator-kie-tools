@@ -71,7 +71,7 @@ public class GeneratorUtils {
      * Finds the {@code @OnStartup} method suitable for workbench classes that are not {@code @WorkbenchEditor}.
      * The method must be public, non-static, have a return-type of void and either take zero parameters or one
      * parameter of type {@code PlaceRequest}.
-     * <p>
+     * <p/>
      * If no such method is found, returns null. If methods annotated with {@code @OnStartup} are found but they do not
      * satisfy all the requirements, they are marked with errors explaining the problem.
      */
@@ -128,7 +128,7 @@ public class GeneratorUtils {
      * Finds the {@code @OnStartup} method suitable for {@code @WorkbenchEditor} classes.
      * The method must be public, non-static, have a return-type of void and either take one parameter
      * of type {@code Path} or two parameters of type {@code (Path, PlaceRequest)}.
-     * <p>
+     * <p/>
      * If no such method is found, returns null. If methods annotated with {@code @OnStartup} are found but they do not
      * satisfy all the requirements, they are marked with errors explaining the problem.
      */
@@ -603,7 +603,7 @@ public class GeneratorUtils {
     /**
      * Searches for an accessible method annotated with the given annotation. The method must be non-private,
      * non-static, take no arguments, and return void.
-     * <p>
+     * <p/>
      * If a method with the given annotation is found but the method does not satisfy the requirements listed above, the
      * method will be marked with an error explaining the problem.
      * @param classElement the class to search for the annotated method.
@@ -719,10 +719,10 @@ public class GeneratorUtils {
 
     /**
      * Finds a public, non-static, no-args method annotated with the given annotation which returns boolean.
-     * <p>
+     * <p/>
      * If a method with the given annotation is found but the method does not satisfy the requirements listed above, the
      * method will be marked with an error explaining the problem.
-     * <p>
+     * <p/>
      * If more than one method satisfies all the criteria, all such methods are marked with an error explaining the
      * problem.
      * @param classElement the class to search for the annotated method.
@@ -749,10 +749,10 @@ public class GeneratorUtils {
 
     /**
      * Finds a public, non-static, no-args method annotated with the given annotation which returns String.
-     * <p>
+     * <p/>
      * If a method with the given annotation is found but the method does not satisfy the requirements listed above, the
      * method will be marked with an error explaining the problem.
-     * <p>
+     * <p/>
      * If more than one method satisfies all the criteria, all such methods are marked with an error explaining the
      * problem.
      * @return null if no such method exists; otherwise, the method's name.
@@ -777,10 +777,10 @@ public class GeneratorUtils {
 
     /**
      * Finds a public, non-static, no-args method annotated with the given annotation which returns boolean.
-     * <p>
+     * <p/>
      * If a method with the given annotation is found but the method does not satisfy the requirements listed above, the
      * method will be marked with an error explaining the problem.
-     * <p>
+     * <p/>
      * If more than one method satisfies all the criteria, all such methods are marked with an error explaining the
      * problem.
      * @return null if no such method exists; otherwise, the method's name.
@@ -802,10 +802,10 @@ public class GeneratorUtils {
     /**
      * Finds a public, non-static, method annotated with the given annotation which returns the given type and accepts
      * the given arguments.
-     * <p>
+     * <p/>
      * If a method with the given annotation is found but the method does not satisfy the requirements listed above, the
      * method will be marked with an error explaining the problem. This will trigger a compilation failure.
-     * <p>
+     * <p/>
      * If more than one method satisfies all the criteria, all such methods are marked with an error explaining the
      * problem.
      * @param originalClassElement the class to search for the annotated method.
@@ -833,10 +833,10 @@ public class GeneratorUtils {
     /**
      * Finds a public, non-static, method annotated with the given annotation which returns the given type and accepts
      * the given arguments.
-     * <p>
+     * <p/>
      * If a method with the given annotation is found but the method does not satisfy the requirements listed above, the
      * method will be marked with an error explaining the problem. This will trigger a compilation failure.
-     * <p>
+     * <p/>
      * If more than one method satisfies all the criteria, all such methods are marked with an error explaining the
      * problem.
      * @param originalClassElement the class to search for the annotated method.
@@ -877,10 +877,10 @@ public class GeneratorUtils {
 
     /**
      * Finds all public, non-static, no-args method annotated with the given annotation which returns the given type.
-     * <p>
+     * <p/>
      * If a method with the given annotation is found but the method does not satisfy the requirements listed above, the
      * method will be marked with an error explaining the problem. This will trigger a compilation failure.
-     * <p>
+     * <p/>
      * If more than one method satisfies all the criteria, all such methods are marked with an error explaining the
      * problem.
      * @param originalClassElement the class to search for the annotated method.
@@ -905,10 +905,10 @@ public class GeneratorUtils {
 
     /**
      * Finds all public, non-static, no-args method annotated with the given annotation which returns the given type.
-     * <p>
+     * <p/>
      * If a method with the given annotation is found but the method does not satisfy the requirements listed above, the
      * method will be marked with an error explaining the problem. This will trigger a compilation failure.
-     * <p>
+     * <p/>
      * If more than one method satisfies all the criteria, all such methods are marked with an error explaining the
      * problem.
      * @param originalClassElement the class to search for the annotated method.
@@ -1255,10 +1255,10 @@ public class GeneratorUtils {
 
     /**
      * Finds a public, non-static, no-args method annotated with the given annotation which returns the given type.
-     * <p>
+     * <p/>
      * If a method with the given annotation is found but the method does not satisfy the requirements listed above, the
      * method will be marked with an error explaining the problem.
-     * <p>
+     * <p/>
      * If more than one method satisfies all the criteria, all such methods are marked with an error explaining the
      * problem.
      * @param classElement the class to search for the annotated method.
@@ -1406,9 +1406,9 @@ public class GeneratorUtils {
         return null;
     }
 
-    static AnnotationValue extractAnnotationPropertyValue(Elements elementUtils,
-                                                          AnnotationMirror annotation,
-                                                          CharSequence annotationProperty) {
+    public static AnnotationValue extractAnnotationPropertyValue(Elements elementUtils,
+                                                                 AnnotationMirror annotation,
+                                                                 CharSequence annotationProperty) {
 
         Map<? extends ExecutableElement, ? extends AnnotationValue> annotationParams =
                 elementUtils.getElementValuesWithDefaults(annotation);

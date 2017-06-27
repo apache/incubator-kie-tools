@@ -81,6 +81,16 @@ public class PropertyEditorColorPicker extends AbstractPropertyEditorWidget {
         dlg.showRelativeTo(icon);
     }
 
+    @Override
+    public boolean isEnabled() {
+        return colorTextBox.isEnabled();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        colorTextBox.setEnabled(enabled);
+    }
+
     interface MyUiBinder extends UiBinder<Widget, PropertyEditorColorPicker> {
 
     }

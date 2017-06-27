@@ -62,6 +62,16 @@ public class PropertyEditorTextBox extends AbstractPropertyEditorWidget {
         textBox.addBlurHandler(blurHandler);
     }
 
+    @Override
+    public boolean isEnabled() {
+        return textBox.isEnabled();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        textBox.setEnabled(enabled);
+    }
+
     interface MyUiBinder extends UiBinder<Widget, PropertyEditorTextBox> {
 
     }

@@ -22,15 +22,23 @@ import java.util.Map;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.uberfire.ext.preferences.client.event.HierarchyItemFormInitializationEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
+import org.uberfire.ext.properties.editor.model.PropertyEditorFieldOption;
+import org.uberfire.ext.properties.editor.model.PropertyEditorType;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.preferences.shared.PropertyFormOptions;
 import org.uberfire.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.preferences.shared.bean.PreferenceHierarchyElement;
 import org.uberfire.preferences.shared.bean.mock.PortablePreferenceMock;
 import org.uberfire.preferences.shared.bean.mock.PortablePreferenceMockPortableGeneratedImpl;
+import org.uberfire.preferences.shared.impl.validation.NotEmptyValidator;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class DefaultPreferenceFormTest {
@@ -44,6 +52,9 @@ public class DefaultPreferenceFormTest {
     @Before
     public void setup() {
         final TranslationService translationService = mock(TranslationService.class);
+        doAnswer(invocationOnMock -> invocationOnMock.getArguments()[0])
+                .when(translationService).format(any(), anyVararg());
+
         preference = spy(new PortablePreferenceMockPortableGeneratedImpl());
         formView = mock(DefaultPreferenceForm.View.class);
         formPresenter = new DefaultPreferenceForm(formView,
@@ -88,6 +99,28 @@ public class DefaultPreferenceFormTest {
                             "newValue");
     }
 
+    @Test
+    public void testCreateFieldInfo() {
+        fireInitializationEvent("preference-id");
+
+        final PropertyEditorFieldInfo fieldInfo = formPresenter.createFieldInfo("property",
+                                                                                PropertyEditorType.TEXT,
+                                                                                "some-text");
+
+        assertEquals("property",
+                     fieldInfo.getKey());
+        assertEquals(1,
+                     fieldInfo.getValidators().size());
+        assertEquals("propertyBundleKey",
+                     fieldInfo.getLabel());
+        assertEquals("propertyHelpBundleKey",
+                     fieldInfo.getHelpText());
+        assertEquals(1,
+                     fieldInfo.getOptions().size());
+        assertEquals(PropertyEditorFieldOption.DISABLED,
+                     fieldInfo.getOptions().get(0));
+    }
+
     private void firePropertyChangedEvent(final String eventId) {
         final PropertyEditorFieldInfo propertyInfo = mock(PropertyEditorFieldInfo.class);
         doReturn(eventId).when(propertyInfo).getEventId();
@@ -101,6 +134,15 @@ public class DefaultPreferenceFormTest {
         PreferenceHierarchyElement<PortablePreferenceMock> preferenceHierarchyElement = new PreferenceHierarchyElement();
         preferenceHierarchyElement.setId(eventId);
         preferenceHierarchyElement.setPortablePreference(preference);
+        preferenceHierarchyElement.setBundleKey("bundleKey");
+        preferenceHierarchyElement.addPropertyBundleKey("property",
+                                                        "propertyBundleKey");
+        preferenceHierarchyElement.addPropertyHelpBundleKey("property",
+                                                            "propertyHelpBundleKey");
+        final PropertyFormOptions[] propertyFormOptions = new PropertyFormOptions[1];
+        propertyFormOptions[0] = PropertyFormOptions.DISABLED;
+        preferenceHierarchyElement.addPropertyFormOptions("property",
+                                                          propertyFormOptions);
 
         HierarchyItemFormInitializationEvent event = new HierarchyItemFormInitializationEvent(preferenceHierarchyElement);
 

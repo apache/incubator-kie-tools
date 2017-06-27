@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.preferences.client.central.form;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -33,12 +35,16 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
+import org.uberfire.ext.properties.editor.model.PropertyEditorFieldOption;
 import org.uberfire.ext.properties.editor.model.PropertyEditorType;
+import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.preferences.shared.PropertyFormOptions;
 import org.uberfire.preferences.shared.PropertyFormType;
 import org.uberfire.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.preferences.shared.bean.PreferenceHierarchyElement;
+import org.uberfire.preferences.shared.impl.validation.ValidationResult;
 
 @WorkbenchScreen(identifier = DefaultPreferenceForm.IDENTIFIER)
 public class DefaultPreferenceForm {
@@ -104,11 +110,83 @@ public class DefaultPreferenceForm {
             final PropertyEditorType propertyType = getPropertyEditorType(property.getValue());
             final Object propertyValue = preference.get(propertyName);
 
-            final PropertyEditorFieldInfo fieldInfo = new PropertyEditorFieldInfo(translationService.format(hierarchyElement.getBundleKeyByProperty().get(property.getKey())),
-                                                                                  propertyValue != null ? propertyValue.toString() : "",
-                                                                                  propertyType);
-            category.withField(fieldInfo.withKey(propertyName));
+            final PropertyEditorFieldInfo fieldInfo = createFieldInfo(propertyName,
+                                                                      propertyType,
+                                                                      propertyValue);
+
+            category.withField(fieldInfo);
         }
+    }
+
+    PropertyEditorFieldInfo createFieldInfo(final String propertyName,
+                                            final PropertyEditorType propertyType,
+                                            final Object propertyValue) {
+        final PropertyEditorFieldInfo fieldInfo = new PropertyEditorFieldInfo(translationService.format(hierarchyElement.getBundleKeyByProperty().get(propertyName)),
+                                                                              propertyValue != null ? propertyValue.toString() : "",
+                                                                              propertyType);
+
+        setupFieldValidators(propertyName,
+                             fieldInfo);
+        setupFieldHelpText(propertyName,
+                           fieldInfo);
+        setupFieldOptions(propertyName,
+                          fieldInfo);
+        setupFieldKey(propertyName,
+                      fieldInfo);
+
+        return fieldInfo;
+    }
+
+    private void setupFieldOptions(final String propertyName,
+                                   final PropertyEditorFieldInfo fieldInfo) {
+        for (PropertyFormOptions option : hierarchyElement.getFormOptionsByProperty().get(propertyName)) {
+            fieldInfo.withOptions(PropertyEditorFieldOption.valueOf(option.name()));
+        }
+    }
+
+    private void setupFieldHelpText(final String propertyName,
+                                    final PropertyEditorFieldInfo fieldInfo) {
+        final String helpText = hierarchyElement.getHelpBundleKeyByProperty().get(propertyName);
+        if (helpText != null && !helpText.isEmpty()) {
+            fieldInfo.withHelpInfo("", translationService.format(helpText));
+        }
+    }
+
+    private void setupFieldValidators(final String propertyName,
+                                      final PropertyEditorFieldInfo fieldInfo) {
+        final List<PropertyFieldValidator> propertyFieldValidators = new ArrayList<>();
+
+        preference.getPropertyValidators(propertyName).stream()
+                .forEach(validator -> propertyFieldValidators.add(new PropertyFieldValidator() {
+                    private ValidationResult validationResult;
+
+                    @Override
+                    public boolean validate(Object value) {
+                        validationResult = validator.validate(value);
+                        return validationResult.isValid();
+                    }
+
+                    @Override
+                    public String getValidatorErrorMessage() {
+                        final List<String> validationMessages = validationResult.getMessagesBundleKeys();
+                        if (!validationResult.isValid() && !validationMessages.isEmpty()) {
+                            return translationService.format(validationMessages.get(0));
+                        }
+
+                        return "";
+                    }
+                }));
+
+        final int validatorsSize = propertyFieldValidators.size();
+        final PropertyFieldValidator[] emptyValidatorsArray = new PropertyFieldValidator[validatorsSize];
+        final PropertyFieldValidator[] validators = propertyFieldValidators.toArray(emptyValidatorsArray);
+
+        fieldInfo.withValidators(validators);
+    }
+
+    private void setupFieldKey(final String propertyName,
+                               final PropertyEditorFieldInfo fieldInfo) {
+        fieldInfo.withKey(propertyName);
     }
 
     public void propertyChanged(@Observes PropertyEditorChangeEvent event) {

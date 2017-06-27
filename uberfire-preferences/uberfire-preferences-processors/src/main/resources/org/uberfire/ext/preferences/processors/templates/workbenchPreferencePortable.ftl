@@ -17,7 +17,9 @@
 package ${targetPackage};
 
 import java.lang.RuntimeException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Generated;
 
@@ -26,6 +28,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.preferences.shared.annotations.PortablePreference;
 import org.uberfire.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.preferences.shared.PropertyFormType;
+import org.uberfire.preferences.shared.PropertyValidator;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -120,6 +123,24 @@ public class ${targetClassName} extends ${sourceClassName} implements BasePrefer
     </#list>
 
         return propertiesTypes;
+    }
+
+    @Override
+    public Map<String, List<PropertyValidator>> getPropertiesValidators() {
+        Map<String, List<PropertyValidator>> validatorsByProperty = new HashMap<>();
+
+    <#list simpleProperties as property>
+        <#if property.hasValidators()>
+        List<PropertyValidator> validators${property.getCapitalizedFieldName()} = new ArrayList<>();
+            <#list property.validators as validator>
+        validators${property.getCapitalizedFieldName()}.add(new ${validator}());
+            </#list>    
+        validatorsByProperty.put("${property.getFieldName()}", validators${property.getCapitalizedFieldName()});
+
+        </#if>
+    </#list>
+
+        return validatorsByProperty;
     }
 
     @Override

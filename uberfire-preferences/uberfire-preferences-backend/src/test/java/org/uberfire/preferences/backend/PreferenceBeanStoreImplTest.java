@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.PreferenceScopeResolutionStrategy;
 import org.uberfire.preferences.shared.PreferenceStore;
+import org.uberfire.preferences.shared.PropertyFormOptions;
 import org.uberfire.preferences.shared.bean.BasePreference;
 import org.uberfire.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.preferences.shared.bean.PreferenceHierarchyElement;
@@ -264,6 +265,12 @@ public class PreferenceBeanStoreImplTest {
                      firstElement.getPortablePreference().identifier());
         assertTrue(firstElement.isRoot());
         assertFalse(firstElement.isShared());
+        assertEquals("MyPreference.Text.Help",
+                     firstElement.getHelpBundleKeyByProperty().get("text"));
+        assertEquals(1,
+                     firstElement.getFormOptionsByProperty().get("text").length);
+        assertEquals(PropertyFormOptions.DISABLED,
+                     firstElement.getFormOptionsByProperty().get("text")[0]);
         assertEquals(2,
                      firstElement.getChildren().size());
 

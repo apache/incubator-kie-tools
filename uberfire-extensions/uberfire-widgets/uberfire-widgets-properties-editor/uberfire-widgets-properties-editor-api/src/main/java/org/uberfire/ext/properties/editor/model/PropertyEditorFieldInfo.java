@@ -43,6 +43,7 @@ public class PropertyEditorFieldInfo {
     private boolean isRemovalSupported = false;
     private String helpHeading;
     private String helpText;
+    private List<PropertyEditorFieldOption> options = new ArrayList<>();
 
     public PropertyEditorFieldInfo() {
     }
@@ -128,7 +129,6 @@ public class PropertyEditorFieldInfo {
     public PropertyEditorFieldInfo withValidators(PropertyFieldValidator... validators) {
         checkNotNull("validators",
                      validators);
-        this.validators.clear();
         for (PropertyFieldValidator field : validators) {
             this.validators.add(field);
         }
@@ -137,6 +137,15 @@ public class PropertyEditorFieldInfo {
 
     public PropertyEditorFieldInfo withRemovalSupported(boolean isRemovalSupported) {
         this.isRemovalSupported = isRemovalSupported;
+        return this;
+    }
+
+    public PropertyEditorFieldInfo withOptions(PropertyEditorFieldOption... options) {
+        checkNotNull("options",
+                     options);
+        for (PropertyEditorFieldOption option : options) {
+            this.options.add(option);
+        }
         return this;
     }
 
@@ -202,6 +211,10 @@ public class PropertyEditorFieldInfo {
 
     public String getHelpText() {
         return helpText;
+    }
+
+    public List<PropertyEditorFieldOption> getOptions() {
+        return options;
     }
 
     @Override

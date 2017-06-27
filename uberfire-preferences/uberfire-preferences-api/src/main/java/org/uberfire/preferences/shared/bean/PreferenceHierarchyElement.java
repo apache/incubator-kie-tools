@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.preferences.shared.PropertyFormOptions;
 
 /**
  * Holds all preference information necessary to build a hierarchic interface for preferences.
@@ -45,6 +46,10 @@ public class PreferenceHierarchyElement<T> {
 
     private Map<String, String> bundleKeyByProperty;
 
+    private Map<String, String> helpBundleKeyByProperty;
+
+    private Map<String, PropertyFormOptions[]> formOptionsByProperty;
+
     public PreferenceHierarchyElement() {
         this(null,
              null,
@@ -64,6 +69,8 @@ public class PreferenceHierarchyElement<T> {
              shared,
              root,
              bundleKey,
+             new HashMap<>(),
+             new HashMap<>(),
              new HashMap<>());
     }
 
@@ -73,7 +80,9 @@ public class PreferenceHierarchyElement<T> {
                                       @MapsTo("shared") final boolean shared,
                                       @MapsTo("root") final boolean root,
                                       @MapsTo("bundleKey") final String bundleKey,
-                                      @MapsTo("bundleKeyByProperty") final Map<String, String> bundleKeyByProperty) {
+                                      @MapsTo("bundleKeyByProperty") final Map<String, String> bundleKeyByProperty,
+                                      @MapsTo("helpBundleKeyByProperty") final Map<String, String> helpBundleKeyByProperty,
+                                      @MapsTo("formOptionsByProperty") final Map<String, PropertyFormOptions[]> formOptionsByProperty) {
         this.id = id;
         this.portablePreference = portablePreference;
         this.children = children;
@@ -81,6 +90,8 @@ public class PreferenceHierarchyElement<T> {
         this.root = root;
         this.bundleKey = bundleKey;
         this.bundleKeyByProperty = bundleKeyByProperty;
+        this.helpBundleKeyByProperty = helpBundleKeyByProperty;
+        this.formOptionsByProperty = formOptionsByProperty;
     }
 
     public boolean isSelectable() {
@@ -150,8 +161,28 @@ public class PreferenceHierarchyElement<T> {
         return bundleKeyByProperty;
     }
 
+    public void addPropertyHelpBundleKey(final String propertyFieldName,
+                                         final String helpBundleKey) {
+        helpBundleKeyByProperty.put(propertyFieldName,
+                                    helpBundleKey);
+    }
+
+    public Map<String, String> getHelpBundleKeyByProperty() {
+        return helpBundleKeyByProperty;
+    }
+
+    public void addPropertyFormOptions(final String propertyFieldName,
+                                       final PropertyFormOptions[] formOptions) {
+        formOptionsByProperty.put(propertyFieldName,
+                                  formOptions);
+    }
+
+    public Map<String, PropertyFormOptions[]> getFormOptionsByProperty() {
+        return formOptionsByProperty;
+    }
+
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -159,44 +190,54 @@ public class PreferenceHierarchyElement<T> {
             return false;
         }
 
-        final PreferenceHierarchyElement<?> that = (PreferenceHierarchyElement<?>) o;
+        PreferenceHierarchyElement<?> that = (PreferenceHierarchyElement<?>) o;
 
-        if (shared != that.shared) {
+        if (isShared() != that.isShared()) {
             return false;
         }
-        if (root != that.root) {
+        if (isRoot() != that.isRoot()) {
             return false;
         }
-        if (id != null ? !id.equals(that.id) : that.id != null) {
+        if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) {
             return false;
         }
-        if (portablePreference != null ? !portablePreference.equals(that.portablePreference) : that.portablePreference != null) {
+        if (getPortablePreference() != null ? !getPortablePreference().equals(that.getPortablePreference()) : that.getPortablePreference() != null) {
             return false;
         }
-        if (children != null ? !children.equals(that.children) : that.children != null) {
+        if (getChildren() != null ? !getChildren().equals(that.getChildren()) : that.getChildren() != null) {
             return false;
         }
-        if (bundleKey != null ? !bundleKey.equals(that.bundleKey) : that.bundleKey != null) {
+        if (getBundleKey() != null ? !getBundleKey().equals(that.getBundleKey()) : that.getBundleKey() != null) {
             return false;
         }
-        return !(bundleKeyByProperty != null ? !bundleKeyByProperty.equals(that.bundleKeyByProperty) : that.bundleKeyByProperty != null);
+        if (getBundleKeyByProperty() != null ? !getBundleKeyByProperty().equals(that.getBundleKeyByProperty()) : that.getBundleKeyByProperty() != null) {
+            return false;
+        }
+        if (getHelpBundleKeyByProperty() != null ? !getHelpBundleKeyByProperty().equals(that.getHelpBundleKeyByProperty()) : that.getHelpBundleKeyByProperty() != null) {
+            return false;
+        }
+        return !(getFormOptionsByProperty() != null ? !getFormOptionsByProperty().equals(that.getFormOptionsByProperty()) : that.getFormOptionsByProperty() != null);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
+        int result = getId() != null ? getId().hashCode() : 0;
         result = ~~result;
-        result = 31 * result + (portablePreference != null ? portablePreference.hashCode() : 0);
+        result = 31 * result + (getPortablePreference() != null ? getPortablePreference().hashCode() : 0);
         result = ~~result;
-        result = 31 * result + (children != null ? children.hashCode() : 0);
+        result = 31 * result + (getChildren() != null ? getChildren().hashCode() : 0);
         result = ~~result;
-        result = 31 * result + (shared ? 1 : 0);
+        result = 31 * result + (isShared() ? 1 : 0);
         result = ~~result;
-        result = 31 * result + (root ? 1 : 0);
+        result = 31 * result + (isRoot() ? 1 : 0);
         result = ~~result;
-        result = 31 * result + (bundleKey != null ? bundleKey.hashCode() : 0);
+        result = 31 * result + (getBundleKey() != null ? getBundleKey().hashCode() : 0);
         result = ~~result;
-        result = 31 * result + (bundleKeyByProperty != null ? bundleKeyByProperty.hashCode() : 0);
+        result = 31 * result + (getBundleKeyByProperty() != null ? getBundleKeyByProperty().hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (getHelpBundleKeyByProperty() != null ? getHelpBundleKeyByProperty().hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (getFormOptionsByProperty() != null ? getFormOptionsByProperty().hashCode() : 0);
         result = ~~result;
         return result;
     }

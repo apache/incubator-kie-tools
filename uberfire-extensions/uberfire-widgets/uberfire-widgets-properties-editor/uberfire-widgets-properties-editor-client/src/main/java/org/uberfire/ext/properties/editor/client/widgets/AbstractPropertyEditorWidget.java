@@ -17,9 +17,10 @@
 package org.uberfire.ext.properties.editor.client.widgets;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasEnabled;
 import org.uberfire.ext.properties.editor.client.PropertyEditorItemsWidget;
 
-public class AbstractPropertyEditorWidget extends Composite {
+public abstract class AbstractPropertyEditorWidget extends Composite implements HasEnabled {
 
     PropertyEditorItemsWidget parent;
 
