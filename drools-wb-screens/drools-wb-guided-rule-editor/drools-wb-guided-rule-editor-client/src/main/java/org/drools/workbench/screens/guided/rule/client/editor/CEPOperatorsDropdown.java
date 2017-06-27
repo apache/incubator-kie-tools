@@ -120,9 +120,9 @@ public class CEPOperatorsDropdown extends Composite
     public void insertItem(String item,
                            String value,
                            int index) {
-        box.insertItem(item,
-                       value,
-                       index);
+        getBox().insertItem(item,
+                            value,
+                            index);
     }
 
     /**
@@ -240,6 +240,9 @@ public class CEPOperatorsDropdown extends Composite
         insertItem(item,
                    value,
                    0);
+        if (hop.getOperator() == null || hop.getOperator().isEmpty()) {
+            getBox().setSelectedIndex(0);
+        }
     }
 
     //Actual drop-down

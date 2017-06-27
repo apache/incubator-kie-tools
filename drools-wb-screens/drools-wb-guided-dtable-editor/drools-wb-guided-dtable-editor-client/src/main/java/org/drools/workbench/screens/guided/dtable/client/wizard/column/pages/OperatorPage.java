@@ -158,7 +158,9 @@ public class OperatorPage extends BaseDecisionTableColumnPage<ConditionColumnPlu
                                                                   box);
 
             box.addChangeHandler((ChangeEvent valueChangeEvent) -> setOperator(box.getValue(box.getSelectedIndex())));
-            box.setSelectedIndex(currentValueIndex);
+            if(currentValueIndex != 0) {
+                box.setSelectedIndex(currentValueIndex);
+            }
 
             widgetSupplier.accept(dropdown);
         });
