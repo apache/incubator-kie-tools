@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.project.client.editor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,6 +26,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
@@ -51,13 +53,16 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGr
 import org.kie.workbench.common.stunner.core.client.session.event.OnSessionErrorEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.kie.workbench.common.stunner.core.validation.impl.ValidationUtils;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -209,6 +214,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                               bindCommands();
                               updateTitle(diagram.getMetadata().getTitle());
                               hideLoadingViews();
+                              setOriginalHash(getCurrentDiagramHash());
                           }
 
                           @Override
@@ -219,6 +225,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     private AbstractClientFullSession newSession(final Diagram diagram) {
+        setOriginalHash(diagram.hashCode());
         return (AbstractClientFullSession) sessionManager.getSessionFactory(diagram,
                                                                             ClientFullSession.class).newSession();
     }
@@ -486,6 +493,19 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         return super.mayClose(getCurrentDiagramHash());
     }
 
+    @Override
+    protected void onSave() {
+        if (hasUnsavedChanges()){
+            super.onSave();
+        }
+        else {
+            final String message = CommonConstants.INSTANCE.NoChangesSinceLastSave();
+            log(Level.INFO,
+                message);
+            presenter.getView().showMessage(message);
+        }
+    }
+
     void bindCommands() {
         this.sessionClearStatesCommand.bind(getSession());
         this.sessionVisitGraphCommand.bind(getSession());
@@ -538,10 +558,27 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     protected int getCurrentDiagramHash() {
-        if (getDiagram() == null) {
+        if (null == getDiagram()) {
             return 0;
         }
-        return getDiagram().hashCode();
+        int hash = getDiagram().hashCode();
+        if (null == getCanvasHandler() ||
+                null == getCanvasHandler().getCanvas() ||
+                null == getCanvasHandler().getCanvas().getShapes()) {
+            return hash;
+        }
+        Collection<Shape> collectionOfShapes = getCanvasHandler().getCanvas().getShapes();
+        ArrayList<Shape> shapes = new ArrayList<>();
+        shapes.addAll(collectionOfShapes);
+        shapes.sort((a,b) -> (a.getShapeView().getShapeX() == b.getShapeView().getShapeX())?
+                (int)Math.round(a.getShapeView().getShapeY() - b.getShapeView().getShapeY()) :
+                (int)Math.round(a.getShapeView().getShapeX() - b.getShapeView().getShapeX()));
+        for (Shape shape : shapes) {
+            hash = HashUtil.combineHashCodes(hash,
+                                             Double.hashCode(shape.getShapeView().getShapeX()),
+                                             Double.hashCode(shape.getShapeView().getShapeY()));
+        }
+        return hash;
     }
 
     protected CanvasHandler getCanvasHandler() {
@@ -575,6 +612,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         log(Level.INFO,
             message);
         presenter.getView().showMessage(message);
+        setOriginalHash(getCurrentDiagramHash());
     }
 
     private void onSaveError(final ClientRuntimeError error) {
@@ -609,5 +647,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
             LOGGER.log(level,
                        message);
         }
+    }
+
+    protected boolean hasUnsavedChanges() {
+        return getCurrentDiagramHash() != originalHash;
     }
 }

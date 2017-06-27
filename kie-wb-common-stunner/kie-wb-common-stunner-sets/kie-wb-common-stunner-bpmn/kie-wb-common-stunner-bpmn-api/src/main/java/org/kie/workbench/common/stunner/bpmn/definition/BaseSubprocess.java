@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ca
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @MorphBase(defaultType = ReusableSubprocess.class, targets = {BaseTask.class})
 public abstract class BaseSubprocess implements BPMNDefinition {
@@ -156,5 +157,27 @@ public abstract class BaseSubprocess implements BPMNDefinition {
 
     public Set<String> getLabels() {
         return labels;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(general.hashCode(),
+                                         backgroundSet.hashCode(),
+                                         fontSet.hashCode(),
+                                         simulationSet.hashCode(),
+                                         dimensionsSet.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof BaseSubprocess) {
+            BaseSubprocess other = (BaseSubprocess) o;
+            return general.equals(other.general) &&
+                    backgroundSet.equals(other.backgroundSet) &&
+                    fontSet.equals(other.fontSet) &&
+                    simulationSet.equals(other.simulationSet) &&
+                    dimensionsSet.equals(other.dimensionsSet);
+        }
+        return false;
     }
 }

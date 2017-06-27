@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +23,10 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
 import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
+import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
@@ -40,7 +43,13 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientR
 import org.kie.workbench.common.stunner.core.client.session.impl.ClientFullSessionImpl;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
+import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
+import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
+import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
@@ -54,6 +63,8 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -118,11 +129,22 @@ public class ProjectDiagramEditorTest {
     ClientFullSessionImpl fullSession;
     @Mock
     ObservablePath path;
+    @Mock
+    ProjectDiagram diagram;
+    @Mock
+    ProjectMetadata metadata;
+    @Mock
+    OverviewWidgetPresenter overviewWidgetMock;
+    @Mock
+    ClientSessionFactory<ClientFullSession> clientSessionFactory;
+    @Mock
+    AbstractCanvasHandler canvasHandler;
 
     private ProjectDiagramEditorStub tested;
 
     @Before
     public void setup() throws Exception {
+        VersionRecordManager versionRecordManagerMock = versionRecordManager;
         when(versionRecordManager.getCurrentPath()).thenReturn(path);
         when(sessionCommandFactory.newClearCommand()).thenReturn(sessionClearCommand);
         when(sessionCommandFactory.newClearStatesCommand()).thenReturn(sessionClearStatesCommand);
@@ -135,7 +157,19 @@ public class ProjectDiagramEditorTest {
         when(sessionCommandFactory.newRefreshSessionCommand()).thenReturn(sessionRefreshCommand);
         when(presenterFactory.newPresenterEditor()).thenReturn(presenter);
         when(clientSessionManager.getCurrentSession()).thenReturn(fullSession);
+        when(clientSessionManager.getSessionFactory(diagram,
+                                                    ClientFullSession.class)).thenReturn(clientSessionFactory);
+        when(clientSessionFactory.newSession()).thenReturn((fullSession));
         when(presenter.getInstance()).thenReturn(fullSession);
+        when(presenter.withToolbar(anyBoolean())).thenReturn(presenter);
+        when(presenter.withPalette(anyBoolean())).thenReturn(presenter);
+        when(presenter.displayNotifications(any())).thenReturn(presenter);
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getTitle()).thenReturn("Title");
+        when(fullSession.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        ClientProjectDiagramService mock = Mockito.mock(ClientProjectDiagramService.class);
+
         this.tested = new ProjectDiagramEditorStub(view,
                                                    placeManager,
                                                    errorPopupPresenter,
@@ -146,7 +180,12 @@ public class ProjectDiagramEditorTest {
                                                    clientSessionManager,
                                                    presenterFactory,
                                                    sessionCommandFactory,
-                                                   menuItemsBuilder);
+                                                   menuItemsBuilder) {
+            {
+                overviewWidget = overviewWidgetMock;
+                versionRecordManager = versionRecordManagerMock;
+            }
+        };
     }
 
     @Test
@@ -190,5 +229,25 @@ public class ProjectDiagramEditorTest {
         verify(projectDiagramServices,
                times(1)).getByPath(eq(path),
                                    any(ServiceCallback.class));
+    }
+
+    @Test
+    public void testIsDirty() {
+        tested.init();
+        tested.open(diagram);
+        assertFalse(tested.isDirty(tested.getCurrentDiagramHash()));
+        tested.setOriginalHash(~~(tested.getCurrentDiagramHash() + 1));
+        assertTrue(tested.isDirty(tested.getCurrentDiagramHash()));
+    }
+
+    @Test
+    public void testHasChanges() {
+        tested.init();
+        tested.open(diagram);
+        assertFalse(tested.hasUnsavedChanges());
+        tested.setOriginalHash(~~(tested.getCurrentDiagramHash() + 1));
+        assertTrue(tested.hasUnsavedChanges());
+        tested.setOriginalHash(~~(tested.getCurrentDiagramHash()));
+        assertFalse(tested.hasUnsavedChanges());
     }
 }

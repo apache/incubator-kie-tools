@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 public abstract class BaseConnector implements BPMNDefinition {
 
@@ -113,5 +114,23 @@ public abstract class BaseConnector implements BPMNDefinition {
 
     public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(general.hashCode(),
+                                         backgroundSet.hashCode(),
+                                         fontSet.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof BaseConnector) {
+            BaseConnector other = (BaseConnector) o;
+            return general.equals(other.general) &&
+                    backgroundSet.equals(other.backgroundSet) &&
+                    fontSet.equals(other.fontSet);
+        }
+        return false;
     }
 }

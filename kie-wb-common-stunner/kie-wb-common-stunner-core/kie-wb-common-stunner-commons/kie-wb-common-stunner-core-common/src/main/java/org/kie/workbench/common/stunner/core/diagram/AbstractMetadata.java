@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.diagram;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.uberfire.backend.vfs.Path;
 
 public abstract class AbstractMetadata implements Metadata {
@@ -92,5 +93,29 @@ public abstract class AbstractMetadata implements Metadata {
 
     public void setDefinitionSetId(final String defSetId) {
         this.definitionSetId = defSetId;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes((null != definitionSetId) ? definitionSetId.hashCode() : 0,
+                                         (null != shapeSetId) ? shapeSetId.hashCode() : 0,
+                                         (null != canvasRootUUID) ? canvasRootUUID.hashCode() : 0,
+                                         (null != thumbData) ? thumbData.hashCode() : 0,
+                                         (null != path) ? path.hashCode() : 0,
+                                         (null != title) ? title.hashCode() : 0);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof AbstractMetadata) {
+            AbstractMetadata other = (AbstractMetadata) o;
+            return (null != definitionSetId) ? definitionSetId.equals(other.definitionSetId) : null == other.definitionSetId &&
+                    (null != shapeSetId) ? shapeSetId.equals(other.shapeSetId) : null == other.shapeSetId &&
+                    (null != canvasRootUUID) ? canvasRootUUID.equals(other.canvasRootUUID) : null == other.canvasRootUUID &&
+                    (null != thumbData) ? thumbData.equals(other.thumbData) : null == other.thumbData &&
+                    (null != path) ? path.equals(other.path) : null == other.path &&
+                    (null != title) ? title.equals(other.title) : null == other.title;
+        }
+        return false;
     }
 }

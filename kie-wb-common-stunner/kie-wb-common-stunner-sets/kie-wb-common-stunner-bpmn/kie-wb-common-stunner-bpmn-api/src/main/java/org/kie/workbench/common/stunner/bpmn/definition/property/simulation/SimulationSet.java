@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -205,5 +206,37 @@ public class SimulationSet implements BPMNPropertySet {
 
     public void setCurrency(final Currency currency) {
         this.currency = currency;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(min.hashCode(),
+                                         max.hashCode(),
+                                         mean.hashCode(),
+                                         timeUnit.hashCode(),
+                                         standardDeviation.hashCode(),
+                                         distributionType.hashCode(),
+                                         quantity.hashCode(),
+                                         workingHours.hashCode(),
+                                         unitCost.hashCode(),
+                                         currency.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof SimulationSet) {
+            SimulationSet other = (SimulationSet) o;
+            return min.equals(other.min) &&
+                    max.equals(other.max) &&
+                    mean.equals(other.mean) &&
+                    timeUnit.equals(other.timeUnit) &&
+                    standardDeviation.equals(other.standardDeviation) &&
+                    distributionType.equals(other.distributionType) &&
+                    quantity.equals(other.quantity) &&
+                    workingHours.equals(other.workingHours) &&
+                    unitCost.equals(other.unitCost) &&
+                    currency.equals(other.currency);
+        }
+        return false;
     }
 }

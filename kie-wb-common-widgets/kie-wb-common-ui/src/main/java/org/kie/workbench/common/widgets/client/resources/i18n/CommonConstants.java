@@ -110,6 +110,8 @@ public interface CommonConstants
 
     String DiscardUnsavedData();
 
+    String NoChangesSinceLastSave();
+
     String CantSaveReadOnly();
 
     String ItemCreatedSuccessfully();

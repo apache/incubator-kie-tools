@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,6 +42,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ti
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -185,5 +186,27 @@ public class CaseManagementDiagram implements BPMNDiagram {
 
     public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(diagramSet.hashCode(),
+                                         processData.hashCode(),
+                                         backgroundSet.hashCode(),
+                                         fontSet.hashCode(),
+                                         dimensionsSet.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof CaseManagementDiagram) {
+            CaseManagementDiagram other = (CaseManagementDiagram) o;
+            return diagramSet.equals(other.diagramSet) &&
+                    processData.equals(other.processData) &&
+                    backgroundSet.equals(other.backgroundSet) &&
+                    fontSet.equals(other.fontSet) &&
+                    dimensionsSet.equals(other.dimensionsSet);
+        }
+        return false;
     }
 }

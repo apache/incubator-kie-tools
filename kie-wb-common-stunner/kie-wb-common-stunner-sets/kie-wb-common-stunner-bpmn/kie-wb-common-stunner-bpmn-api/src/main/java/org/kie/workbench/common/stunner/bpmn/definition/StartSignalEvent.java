@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -117,5 +118,21 @@ public class StartSignalEvent extends BaseStartEvent {
 
     public void setExecutionSet(final SignalEventExecutionSet executionSet) {
         this.executionSet = executionSet;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(super.hashCode(),
+                                         executionSet.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof StartSignalEvent) {
+            StartSignalEvent other = (StartSignalEvent) o;
+            return super.equals(other) &&
+                    executionSet.equals(other.executionSet);
+        }
+        return false;
     }
 }

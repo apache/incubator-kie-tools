@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -140,5 +141,23 @@ public class StartTimerEvent extends BaseStartEvent {
 
     public void setIsInterrupting(final IsInterrupting isInterrupting) {
         this.isInterrupting = isInterrupting;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(super.hashCode(),
+                                         executionSet.hashCode(),
+                                         isInterrupting.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof StartTimerEvent) {
+            StartTimerEvent other = (StartTimerEvent) o;
+            return super.equals(other) &&
+                    executionSet.equals(other.executionSet) &&
+                    isInterrupting.equals(other.isInterrupting);
+        }
+        return false;
     }
 }

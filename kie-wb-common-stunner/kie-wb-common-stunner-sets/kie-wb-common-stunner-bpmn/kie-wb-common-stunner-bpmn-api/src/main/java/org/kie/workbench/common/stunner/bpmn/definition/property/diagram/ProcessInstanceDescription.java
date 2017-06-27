@@ -103,4 +103,18 @@ public class ProcessInstanceDescription implements BPMNProperty {
     public void setValue(final String value) {
         this.value = value;
     }
+
+    @Override
+    public int hashCode() {
+        return (null != value) ? value.hashCode() : 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof ProcessInstanceDescription) {
+            ProcessInstanceDescription other = (ProcessInstanceDescription) o;
+            return (null != value) ? value.equals(other.value) : null == other.value;
+        }
+        return false;
+    }
 }

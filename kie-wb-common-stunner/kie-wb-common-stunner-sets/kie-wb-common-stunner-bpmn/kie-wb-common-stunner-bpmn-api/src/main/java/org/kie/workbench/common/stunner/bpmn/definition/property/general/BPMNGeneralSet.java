@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,6 +26,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.ty
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -90,5 +91,21 @@ public class BPMNGeneralSet implements BPMNPropertySet {
 
     public void setDocumentation(final Documentation documentation) {
         this.documentation = documentation;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(name.hashCode(),
+                                         documentation.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof BPMNGeneralSet) {
+            BPMNGeneralSet other = (BPMNGeneralSet) o;
+            return name.equals(other.name) &&
+                    documentation.equals(other.documentation);
+        }
+        return false;
     }
 }

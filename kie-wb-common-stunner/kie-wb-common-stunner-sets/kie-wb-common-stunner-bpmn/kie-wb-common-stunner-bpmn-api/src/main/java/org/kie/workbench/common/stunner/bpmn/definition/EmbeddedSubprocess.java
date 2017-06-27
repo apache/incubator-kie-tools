@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -47,6 +47,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -217,5 +218,29 @@ public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel {
 
     public void setIsAsync(final IsAsync isAsync) {
         this.isAsync = isAsync;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(super.hashCode(),
+                                         onEntryAction.hashCode(),
+                                         onExitAction.hashCode(),
+                                         scriptLanguage.hashCode(),
+                                         isAsync.hashCode(),
+                                         processData.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof EmbeddedSubprocess) {
+            EmbeddedSubprocess other = (EmbeddedSubprocess) o;
+            return super.equals(other) &&
+                    onEntryAction.equals(other.onEntryAction) &&
+                    onExitAction.equals(other.onExitAction) &&
+                    scriptLanguage.equals(other.scriptLanguage) &&
+                    isAsync.equals(other.isAsync) &&
+                    processData.equals(other.processData);
+        }
+        return false;
     }
 }

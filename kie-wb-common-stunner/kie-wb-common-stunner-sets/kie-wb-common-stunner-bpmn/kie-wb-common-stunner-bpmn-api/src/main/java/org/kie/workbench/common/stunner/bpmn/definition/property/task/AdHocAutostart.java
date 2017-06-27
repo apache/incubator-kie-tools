@@ -23,6 +23,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.Fiel
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.LabelMode;
+import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -102,5 +103,19 @@ public class AdHocAutostart implements BPMNProperty {
 
     public void setValue(final Boolean value) {
         this.value = value;
+    }
+
+    @Override
+    public int hashCode() {
+        return (null != value) ? value.hashCode() : 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof AdHocAutostart) {
+            AdHocAutostart other = (AdHocAutostart) o;
+            return (null != value) ? value.equals(other.value) : null == other.value;
+        }
+        return false;
     }
 }

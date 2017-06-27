@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -169,5 +170,29 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
 
     public void setAdHocAutostart(AdHocAutostart adHocAutostart) {
         this.adHocAutostart = adHocAutostart;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(ruleFlowGroup.hashCode(),
+                                         onEntryAction.hashCode(),
+                                         onExitAction.hashCode(),
+                                         scriptLanguage.hashCode(),
+                                         isAsync.hashCode(),
+                                         adHocAutostart.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof BusinessRuleTaskExecutionSet) {
+            BusinessRuleTaskExecutionSet other = (BusinessRuleTaskExecutionSet) o;
+            return ruleFlowGroup.equals(other.ruleFlowGroup) &&
+                    onEntryAction.equals(other.onEntryAction) &&
+                    onExitAction.equals(other.onExitAction) &&
+                    scriptLanguage.equals(other.scriptLanguage) &&
+                    isAsync.equals(other.isAsync) &&
+                    adHocAutostart.equals(other.adHocAutostart);
+        }
+        return false;
     }
 }

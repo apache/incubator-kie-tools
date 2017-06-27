@@ -102,4 +102,18 @@ public class IsAsync implements BPMNProperty {
     public void setValue(final Boolean value) {
         this.value = value;
     }
+
+    @Override
+    public int hashCode() {
+        return (null != value) ? value.hashCode() : 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof IsAsync) {
+            IsAsync other = (IsAsync) o;
+            return (null != value) ? value.equals(other.value) : null == other.value;
+        }
+        return false;
+    }
 }

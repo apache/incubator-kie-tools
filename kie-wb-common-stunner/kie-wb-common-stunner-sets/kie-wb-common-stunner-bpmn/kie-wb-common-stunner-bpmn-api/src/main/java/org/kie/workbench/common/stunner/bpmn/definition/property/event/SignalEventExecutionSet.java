@@ -66,4 +66,18 @@ public class SignalEventExecutionSet implements BPMNPropertySet {
     public void setSignalRef(final SignalRef signalRef) {
         this.signalRef = signalRef;
     }
+
+    @Override
+    public int hashCode() {
+        return signalRef.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof SignalEventExecutionSet) {
+            SignalEventExecutionSet other = (SignalEventExecutionSet) o;
+            return signalRef.equals(other.signalRef);
+        }
+        return false;
+    }
 }
