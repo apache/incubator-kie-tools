@@ -16,18 +16,24 @@
 
 package org.kie.workbench.common.screens.library.api.preferences;
 
+import org.uberfire.preferences.shared.PropertyFormOptions;
 import org.uberfire.preferences.shared.annotations.Property;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.preferences.shared.bean.BasePreference;
+import org.uberfire.preferences.shared.impl.validation.NotEmptyValidator;
 
 @WorkbenchPreference(identifier = "LibraryRepositoryPreferences",
         bundleKey = "LibraryRepositoryPreferences.Label")
 public class LibraryRepositoryPreferences implements BasePreference<LibraryRepositoryPreferences> {
 
-    @Property(bundleKey = "LibraryRepositoryPreferences.Name")
+    @Property(bundleKey = "LibraryRepositoryPreferences.Name",
+            helpBundleKey = "LibraryRepositoryPreferences.Name.Help",
+            validators = NotEmptyValidator.class)
     String name;
 
-    @Property(bundleKey = "LibraryRepositoryPreferences.Scheme")
+    @Property(bundleKey = "LibraryRepositoryPreferences.Scheme",
+            helpBundleKey = "LibraryRepositoryPreferences.Scheme.Help",
+            formOptions = PropertyFormOptions.DISABLED)
     String scheme;
 
     public String getName() {

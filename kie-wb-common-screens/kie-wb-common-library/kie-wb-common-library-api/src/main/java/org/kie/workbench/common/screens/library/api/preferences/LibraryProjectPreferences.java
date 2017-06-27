@@ -16,21 +16,28 @@
 
 package org.kie.workbench.common.screens.library.api.preferences;
 
+import org.uberfire.preferences.shared.PropertyFormOptions;
 import org.uberfire.preferences.shared.annotations.Property;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.preferences.shared.bean.BasePreference;
+import org.uberfire.preferences.shared.impl.validation.NotEmptyValidator;
 
 @WorkbenchPreference(identifier = "LibraryProjectPreferences",
         bundleKey = "LibraryProjectPreferences.Label")
 public class LibraryProjectPreferences implements BasePreference<LibraryProjectPreferences> {
 
-    @Property(bundleKey = "LibraryProjectPreferences.Version")
+    @Property(bundleKey = "LibraryProjectPreferences.Version",
+            helpBundleKey = "LibraryProjectPreferences.Version.Help",
+            validators = NotEmptyValidator.class)
     String version;
 
-    @Property(bundleKey = "LibraryProjectPreferences.Description")
+    @Property(bundleKey = "LibraryProjectPreferences.Description",
+            helpBundleKey = "LibraryProjectPreferences.Description.Help")
     String description;
 
-    @Property(bundleKey = "LibraryProjectPreferences.Branch")
+    @Property(bundleKey = "LibraryProjectPreferences.Branch",
+            helpBundleKey = "LibraryProjectPreferences.Branch.Help",
+            formOptions = PropertyFormOptions.DISABLED)
     String branch;
 
     public String getVersion() {

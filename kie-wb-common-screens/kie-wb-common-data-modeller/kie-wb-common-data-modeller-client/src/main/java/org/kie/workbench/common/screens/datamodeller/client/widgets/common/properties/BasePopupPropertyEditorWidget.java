@@ -96,6 +96,16 @@ public abstract class BasePopupPropertyEditorWidget extends AbstractPropertyEdit
 
     protected abstract PropertyEditionPopup createEditionPopup( PropertyEditorFieldInfo property );
 
+    @Override
+    public boolean isEnabled() {
+        return propertyTextBox.isEnabled();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        propertyTextBox.setEnabled(enabled);
+    }
+
     public static class StringValueChangeEvent extends ValueChangeEvent<String> {
 
         public StringValueChangeEvent( String value ) {

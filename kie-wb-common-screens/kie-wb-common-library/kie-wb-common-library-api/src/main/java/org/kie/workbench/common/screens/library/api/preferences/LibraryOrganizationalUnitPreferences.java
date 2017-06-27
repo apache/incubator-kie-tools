@@ -19,24 +19,33 @@ package org.kie.workbench.common.screens.library.api.preferences;
 import org.uberfire.preferences.shared.annotations.Property;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.preferences.shared.bean.BasePreference;
+import org.uberfire.preferences.shared.impl.validation.NotEmptyValidator;
 
 @WorkbenchPreference(identifier = "LibraryOrganizationalUnitPreferences",
         bundleKey = "LibraryOrganizationalUnitPreferences.Label")
 public class LibraryOrganizationalUnitPreferences implements BasePreference<LibraryOrganizationalUnitPreferences> {
 
-    @Property(bundleKey = "LibraryOrganizationalUnitPreferences.Name")
+    @Property(bundleKey = "LibraryOrganizationalUnitPreferences.Name",
+            helpBundleKey = "LibraryOrganizationalUnitPreferences.Name.Help",
+            validators = NotEmptyValidator.class)
     String name;
 
-    @Property(bundleKey = "LibraryOrganizationalUnitPreferences.Owner")
+    @Property(bundleKey = "LibraryOrganizationalUnitPreferences.Owner",
+            helpBundleKey = "LibraryOrganizationalUnitPreferences.Owner.Help",
+            validators = NotEmptyValidator.class)
     String owner;
 
-    @Property(bundleKey = "LibraryOrganizationalUnitPreferences.GroupId")
+    @Property(bundleKey = "LibraryOrganizationalUnitPreferences.GroupId",
+            helpBundleKey = "LibraryOrganizationalUnitPreferences.GroupId.Help",
+            validators = NotEmptyValidator.class)
     String groupId;
 
-    @Property(bundleKey = "LibraryOrganizationalUnitPreferences.AliasInSingular")
+    @Property(bundleKey = "LibraryOrganizationalUnitPreferences.AliasInSingular",
+            helpBundleKey = "LibraryOrganizationalUnitPreferences.AliasInSingular.Help")
     String aliasInSingular;
 
-    @Property(bundleKey = "LibraryOrganizationalUnitPreferences.AliasInPlural")
+    @Property(bundleKey = "LibraryOrganizationalUnitPreferences.AliasInPlural",
+            helpBundleKey = "LibraryOrganizationalUnitPreferences.AliasInPlural.Help")
     String aliasInPlural;
 
     public String getName() {

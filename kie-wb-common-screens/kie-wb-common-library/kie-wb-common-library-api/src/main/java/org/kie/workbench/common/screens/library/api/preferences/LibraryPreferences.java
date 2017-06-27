@@ -33,7 +33,8 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
     @Property(bundleKey = "LibraryPreferences.ProjectPreferences")
     LibraryProjectPreferences projectPreferences;
 
-    @Property(bundleKey = "LibraryPreferences.ImportProjectsUrl")
+    @Property(bundleKey = "LibraryPreferences.ImportProjectsUrl",
+            helpBundleKey = "LibraryPreferences.ImportProjectsUrl.Help")
     String importProjectsUrl;
 
     @Override
@@ -48,7 +49,7 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
         defaultValue.repositoryPreferences.scheme = "git";
 
         defaultValue.projectPreferences.version = "1.0.0";
-        defaultValue.projectPreferences.description = "default description";
+        defaultValue.projectPreferences.description = "";
         defaultValue.projectPreferences.branch = "master";
 
         defaultValue.importProjectsUrl = "";
