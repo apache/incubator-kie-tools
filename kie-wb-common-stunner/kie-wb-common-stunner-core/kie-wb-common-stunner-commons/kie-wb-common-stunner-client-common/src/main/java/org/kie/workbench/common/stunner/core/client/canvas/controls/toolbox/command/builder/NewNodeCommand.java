@@ -176,7 +176,8 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
                                                                                         NewNodeCommand.this.sourceMagnet = MagnetImpl.Builder.build(Magnet.MagnetType.OUTGOING);
                                                                                         NewNodeCommand.this.targetMagnet = MagnetImpl.Builder.build(Magnet.MagnetType.INCOMING);
                                                                                         final double[] next = canvasLayoutUtils.getNext(canvasHandler,
-                                                                                                                                        (Node<View<?>, Edge>) element);
+                                                                                                                                        (Node<View<?>, Edge>) element,
+                                                                                                                                        (Node<View<?>, Edge>) newEdgeElement.asEdge().getTargetNode());
                                                                                         log(Level.INFO,
                                                                                             "New edge request complete - [UUID=" + newEdgeElement.getUUID()
                                                                                                     + ", x=" + next[0] + ", y=" + next[1] + "]");

@@ -25,8 +25,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public final class Point2D {
 
-    private final double x;
-    private final double y;
+    private double x;
+    private double y;
 
     public Point2D(final @MapsTo("x") double x,
                    final @MapsTo("y") double y) {
@@ -38,8 +38,16 @@ public final class Point2D {
         return x;
     }
 
+    public void setX(double x) {
+        this.x = x;
+    }
+
     public double getY() {
         return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
     }
 
     @Override

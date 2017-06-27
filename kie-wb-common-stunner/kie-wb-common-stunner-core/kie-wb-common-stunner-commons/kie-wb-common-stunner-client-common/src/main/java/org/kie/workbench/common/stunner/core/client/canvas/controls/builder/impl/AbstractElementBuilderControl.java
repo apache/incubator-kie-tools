@@ -147,7 +147,6 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         if (request.getX() == -1 || request.getY() == -1) {
             // TODO: Use the right size of the target element to be created.
             final double[] p = canvasLayoutUtils.getNext(canvasHandler,
-                                                         150,
                                                          75);
             x = p[0] + 50;
             y = p[1] > 0 ? p[1] : 200;
@@ -194,14 +193,6 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
     protected void doDisable() {
         graphBoundsIndexer.destroy();
         commandManagerProvider = null;
-    }
-
-    public interface CommandsCallback {
-
-        void onComplete(final String uuid,
-                        final List<Command<AbstractCanvasHandler, CanvasViolation>> commands);
-
-        void onError(final ClientRuntimeError error);
     }
 
     public void getCommands(final Object definition,
@@ -322,5 +313,13 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
 
     CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
         return commandManagerProvider.getCommandManager();
+    }
+
+    public interface CommandsCallback {
+
+        void onComplete(final String uuid,
+                        final List<Command<AbstractCanvasHandler, CanvasViolation>> commands);
+
+        void onError(final ClientRuntimeError error);
     }
 }
