@@ -55,6 +55,7 @@ import com.ait.tooling.common.api.java.util.function.Predicate;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -115,6 +116,12 @@ final class LienzoHandlerManager
 
     private boolean           m_dragging_mouse_pressed = false;
 
+    private boolean           m_mouse_button_left      = false;
+
+    private boolean           m_mouse_button_middle      = false;
+
+    private boolean           m_mouse_button_right      = false;
+
     private DragMode          m_drag_mode              = null;
 
     private IPrimitive<?>     m_drag_node              = null;
@@ -174,6 +181,9 @@ final class LienzoHandlerManager
             public void onClick(final ClickEvent event)
             {
                 onNodeMouseClick(new NodeMouseClickEvent(event));
+                m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
+                m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
+                m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
 
                 event.preventDefault();
             }
@@ -184,6 +194,9 @@ final class LienzoHandlerManager
             public void onDoubleClick(final DoubleClickEvent event)
             {
                 onNodeMouseDoubleClick(new NodeMouseDoubleClickEvent(event));
+                m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
+                m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
+                m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
 
                 event.preventDefault();
             }
@@ -207,6 +220,10 @@ final class LienzoHandlerManager
 
                     return;
                 }
+                m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
+                m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
+                m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
+
                 onNodeMouseMove(nevent);
 
                 event.preventDefault();
@@ -223,6 +240,11 @@ final class LienzoHandlerManager
                 {
                     return;
                 }
+
+                m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
+                m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
+                m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
+
                 onNodeMouseUp(nevent);
             }
         });
@@ -239,6 +261,11 @@ final class LienzoHandlerManager
 
                     return;
                 }
+
+                m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
+                m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
+                m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
+
                 onNodeMouseDown(nevent);
 
                 event.preventDefault();
@@ -658,7 +685,10 @@ final class LienzoHandlerManager
         {
             doDragCancel(event);
         }
-        m_dragging_mouse_pressed = true;
+        if (m_lienzo.getDragMouseButtons().allowDrag(m_mouse_button_left,m_mouse_button_middle,m_mouse_button_right))
+        {
+            m_dragging_mouse_pressed = true;
+        }
 
         fireEventForPrimitive(findPrimitiveForEventType(event, event.getNodeEvent().getAssociatedType()), event);
     }

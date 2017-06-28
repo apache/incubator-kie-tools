@@ -71,6 +71,8 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
     private Cursor               m_select_cursor;
 
+    private DragMouseControl     m_drag_mouse_control;
+
     public LienzoPanel()
     {
         this(new Viewport());
@@ -119,6 +121,8 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
         m_high = high;
 
         m_flex = flex;
+
+        m_drag_mouse_control = DragMouseControl.LEFT_MOUSE_ONLY;
 
         if (LienzoCore.IS_CANVAS_SUPPORTED)
         {
@@ -176,6 +180,18 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
             return AutoScaleType.NONE;
         }
         return m_auto;
+    }
+
+    public LienzoPanel setDragMouseButtons(DragMouseControl controls)
+    {
+        m_drag_mouse_control = controls;
+
+        return this;
+    }
+
+    public DragMouseControl getDragMouseButtons()
+    {
+        return m_drag_mouse_control;
     }
 
     public LienzoPanel setTransform(final Transform transform)
