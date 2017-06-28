@@ -24,7 +24,6 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.LinearGradient;
@@ -56,10 +55,10 @@ public class Text extends Shape<Text>
     private final DrawString STROKE = new DrawString() {
         @Override
         public void draw(Context2D context, String s,
-                         int lineNum) {
+                         double xOffset, double lineNum) {
             context.beginPath();
 
-            context.strokeText(s, 0, measure(context).getHeight() * lineNum);
+            context.strokeText(s, xOffset, getLineHeight(context) * lineNum);
 
             context.closePath();
 
@@ -70,14 +69,12 @@ public class Text extends Shape<Text>
         @Override
         public void draw(Context2D context,
                          String s,
-                         int lineNum) {
-            context.fillText(s, 0, measure(context).getHeight() * lineNum);
+                         double xOffset, double lineNum) {
+            context.fillText(s, xOffset, getLineHeight(context) * lineNum);
         }
     };
 
     private BoundingBox wrapBoundaries;
-    private TextAlign alignment;
-    private LinePlacement linePlacement;
 
     /**
      * Constructor. Creates an instance of text.
@@ -186,7 +183,8 @@ public class Text extends Shape<Text>
                 numOfLines++;
             }
         }
-        double height = getBoundingBoxForString("Mg").getHeight() * numOfLines;
+        double height = getBoundingBoxForString(getText()).getHeight();
+        height = height * numOfLines;
         return new BoundingBox().addX(0).addX(width).addY(0).addY(height);
     }
 
@@ -403,8 +401,8 @@ public class Text extends Shape<Text>
                                        @Override
                                        public void draw(Context2D context,
                                                         String s,
-                                                        int lineNum) {
-                                           context.fillTextWithGradient(s, 0, measure(context).getHeight() * lineNum, 0, 0, wide + (wide / 6), high + (high / 6), color);
+                                                        double xOffset, double lineNum) {
+                                           context.fillTextWithGradient(s, xOffset, getLineHeight(context) * lineNum, 0, 0, wide + (wide / 6), high + (high / 6), color);
                                        }
                                    });
 
@@ -419,8 +417,8 @@ public class Text extends Shape<Text>
                                        @Override
                                        public void draw(Context2D context,
                                                         String s,
-                                                        int lineNum) {
-                                           context.fillTextWithGradient(s, 0, measure(context).getHeight() * lineNum, 0,0, layer.getWidth(), layer.getHeight(), color);
+                                                        double xOffset, double lineNum) {
+                                           context.fillTextWithGradient(s, xOffset, getLineHeight(context) * lineNum, 0,0, layer.getWidth(), layer.getHeight(), color);
                                        }
                                    });
                     }
@@ -542,22 +540,34 @@ public class Text extends Shape<Text>
                 }
             }
             lines.add(nextLine);
+
+            double xOffset = 0;
+
+            switch (getTextAlign()) {
+                case START:
+                case LEFT:
+                    xOffset = 0;
+                    break;
+
+                case CENTER:
+                    xOffset = wrapBoundaries.getWidth()/2;
+                    break;
+
+                case END:
+                case RIGHT:
+                    xOffset = wrapBoundaries.getWidth();
+                    break;
+            }
+
             for (int i = 0; i < lines.size(); i++){
                 String line = lines.get(i);
                 int toPad = (int)Math.round((wrapBoundaries.getWidth() - getBoundingBoxForString(line).getWidth())/getBoundingBoxForString(" ").getWidth());
-                line = padString(line, line.length() + toPad, ' ', alignment);
-                switch (linePlacement)
-                {
-                    case TOP:
-                    case BOTTOM:
-                    case CENTER:
-                        drawCommand.draw(context,line,i);
-                        break;
-                }
+                line = padString(line, line.length() + toPad, ' ', getTextAlign());
+                drawCommand.draw(context,line,xOffset,i + 0.8);
             }
         }
         else {
-            drawCommand.draw(context,attr.getText(),0);
+            drawCommand.draw(context,attr.getText(),0,0);
         }
     }
 
@@ -569,16 +579,16 @@ public class Text extends Shape<Text>
         int toPad = targetSize - string.length();
         StringBuilder buffer = new StringBuilder(targetSize);
         switch (where) {
-            case START:
-            case LEFT:
+            case END:
+            case RIGHT:
                 for (int i = 0; i < toPad; i++) {
                     buffer.append(padChar);
                 }
                 buffer.append(string);
                 return buffer.toString();
 
-            case END:
-            case RIGHT:
+            case START:
+            case LEFT:
                 buffer.append(string);
                 for (int i = 0; i < toPad; i++) {
                     buffer.append(padChar);
@@ -648,6 +658,18 @@ public class Text extends Shape<Text>
         return meas;
     }
 
+
+    /**
+     * Returns TextMetrics, which includes an approximate value for
+     * height. As close as we can estimate it at this time.
+     *
+     * @param context
+     * @return TextMetric or null if the text is empty or null
+     */
+    private double getLineHeight(final Context2D context)
+    {
+        return getBoundingBoxForString("Mg").getHeight();
+    }
     /**
      * Returns TextMetrics, which includes an approximate value for
      * height. As close as we can estimate it at this time.
@@ -826,34 +848,8 @@ public class Text extends Shape<Text>
         return wrapBoundaries;
     }
 
-    public Text setWrapBoundaries(BoundingBox boundaries, LayoutContainer.Layout layout) {
+    public Text setWrapBoundaries(BoundingBox boundaries) {
         wrapBoundaries = boundaries;
-        switch (layout)
-        {
-            case TOP:
-                linePlacement = LinePlacement.TOP;
-                alignment = TextAlign.CENTER;
-                break;
-
-            case LEFT:
-                linePlacement = LinePlacement.CENTER;
-                alignment = TextAlign.LEFT;
-                break;
-
-            case RIGHT:
-                linePlacement = LinePlacement.CENTER;
-                alignment = TextAlign.RIGHT;
-                break;
-
-            case BOTTOM:
-                linePlacement = LinePlacement.BOTTOM;
-                alignment = TextAlign.CENTER;
-                break;
-
-            case CENTER:
-                linePlacement = LinePlacement.CENTER;
-                alignment = TextAlign.CENTER;
-        }
         return this;
     }
 
@@ -886,7 +882,7 @@ public class Text extends Shape<Text>
     }
 
     private interface DrawString {
-        void draw(Context2D c, String s, int lineNum);
+        void draw(Context2D c, String s, double xOffset, double lineNum);
     }
 
     private enum LinePlacement
