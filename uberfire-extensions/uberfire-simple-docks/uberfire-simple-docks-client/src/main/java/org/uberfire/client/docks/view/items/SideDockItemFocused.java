@@ -68,22 +68,22 @@ public class SideDockItemFocused
         itemButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                if (!parent.isSelected()) {
-                    select();
-                    parent.selectAndExecuteExpandCommand();
+                if (!parent.isOpened()) {
+                    active();
+                    parent.openAndExecuteExpandCommand();
                 } else {
-                    deselect();
-                    parent.deselectAndExecuteCommand();
+                    inactive();
+                    parent.closeAndExecuteCommand();
                 }
             }
         });
     }
 
-    public void deselect() {
+    public void active() {
         itemButton.setActive(false);
     }
 
-    public void select() {
+    public void inactive() {
         itemButton.setActive(true);
     }
 

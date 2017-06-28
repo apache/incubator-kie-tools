@@ -67,18 +67,17 @@ public class DocksCollapsedBar
     }
 
     public void addDock(final UberfireDock dock,
-                        final ParameterizedCommand<String> selectCommand,
-                        final ParameterizedCommand<String> deselectCommand) {
+                        final ParameterizedCommand<String> openCommand,
+                        final ParameterizedCommand<String> closeCommand) {
 
         AbstractDockItem dockItem = AbstractDockItem.create(dock,
-                                                            selectCommand,
-                                                            deselectCommand);
+                                                            openCommand,
+                                                            closeCommand);
 
         if (dock.getDockPosition().allowSingleDockItem()) {
             handleSingleDockItem(dockItem,
                                  dock,
-                                 selectCommand,
-                                 deselectCommand);
+                                 openCommand);
         }
 
         docksBarPanel.add(dockItem);
@@ -88,13 +87,11 @@ public class DocksCollapsedBar
 
     private void handleSingleDockItem(AbstractDockItem dockItem,
                                       UberfireDock dock,
-                                      ParameterizedCommand<String> selectCommand,
-                                      ParameterizedCommand<String> deselectCommand) {
+                                      ParameterizedCommand<String> openCommand) {
         if (docksItems.isEmpty()) {
             createSingleDockItem(dockItem,
                                  dock,
-                                 selectCommand,
-                                 deselectCommand);
+                                 openCommand);
         } else if (singleDockMode()) {
             clearSingleDockItem();
         }
@@ -106,13 +103,11 @@ public class DocksCollapsedBar
 
     private void createSingleDockItem(AbstractDockItem dockItem,
                                       UberfireDock dock,
-                                      ParameterizedCommand<String> selectCommand,
-                                      ParameterizedCommand<String> deselectCommand) {
+                                      ParameterizedCommand<String> openCommand) {
         firstDockItem = dockItem;
         firstDockItem.addStyleName(CSS.CSS().hideElement());
         singleSideDockItem = new SingleSideDockItem(dock,
-                                                    selectCommand,
-                                                    deselectCommand);
+                                                    openCommand);
         docksBarPanel.add(singleSideDockItem);
     }
 
@@ -121,35 +116,24 @@ public class DocksCollapsedBar
         docksBarPanel.remove(singleSideDockItem);
     }
 
-    public void setupDnD() {
-        createDropHandler();
-        for (AbstractDockItem docksItem : docksItems) {
-            docksItem.setupDnD();
-        }
-    }
-
-    private void createDropHandler() {
-
-    }
-
     public void clear() {
         docksBarPanel.clear();
-        docksItems = new ArrayList<AbstractDockItem>();
+        docksItems = new ArrayList<>();
     }
 
-    public void setDockSelected(final UberfireDock dockSelected) {
+    public void setDockClosed(final UberfireDock dockOpen) {
         for (AbstractDockItem docksItem : docksItems) {
-            if (docksItem.getDock().equals(dockSelected)) {
-                docksItem.select();
+            if (docksItem.getDock().equals(dockOpen)) {
+                docksItem.open();
             } else {
-                docksItem.deselect();
+                docksItem.close();
             }
         }
     }
 
-    public void deselectAllDocks() {
+    public void closeAllDocks() {
         for (AbstractDockItem docksItem : docksItems) {
-            docksItem.deselect();
+            docksItem.close();
         }
     }
 
@@ -164,8 +148,8 @@ public class DocksCollapsedBar
     public void expand(UberfireDock targetDock) {
         for (AbstractDockItem abstractDockItem : getDocksItems()) {
             UberfireDock candidate = abstractDockItem.getDock();
-            if (candidate.equals(targetDock)) {
-                abstractDockItem.selectAndExecuteExpandCommand();
+            if (candidate.getPlaceRequest().equals(targetDock.getPlaceRequest())) {
+                abstractDockItem.openAndExecuteExpandCommand();
             }
         }
     }

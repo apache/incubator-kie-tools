@@ -18,8 +18,6 @@ package org.uberfire.client.docks.view.bars;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -76,11 +74,11 @@ public class DocksExpandedBar
     }
 
     public void setup(String titleString,
-                      ParameterizedCommand<String> deselectCommand) {
+                      ParameterizedCommand<String> closeCommand) {
         clear();
         createTitle(titleString);
         createButtons(titleString,
-                      deselectCommand);
+                      closeCommand);
         setupComponents();
         setupCSS();
     }
@@ -118,16 +116,11 @@ public class DocksExpandedBar
     }
 
     private void createButtons(final String identifier,
-                               final ParameterizedCommand<String> deselectCommand) {
+                               final ParameterizedCommand<String> closeCommand) {
 
         collapse = GWT.create(Button.class);
         collapse.setSize(ButtonSize.SMALL);
-        collapse.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                deselectCommand.execute(identifier);
-            }
-        });
+        collapse.addClickHandler(even -> closeCommand.execute(identifier));
     }
 
     private void setupCSS() {

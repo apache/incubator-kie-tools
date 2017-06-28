@@ -22,6 +22,7 @@ import org.uberfire.client.docks.view.items.AbstractDockItem;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.PlaceRequest;
 
 public class DocksBar {
 
@@ -36,6 +37,7 @@ public class DocksBar {
 
     private DockResizeBar dockResizeBar;
     private Double dockResizeBarDefaultSize = 2.0;
+    private UberfireDock openDock;
 
     public DocksBar(UberfireDockPosition position) {
         this.position = position;
@@ -78,12 +80,12 @@ public class DocksBar {
     }
 
     public void addDock(UberfireDock dock,
-                        final ParameterizedCommand<String> selectCommand,
-                        final ParameterizedCommand<String> deselectCommand) {
+                        final ParameterizedCommand<String> openCommand,
+                        final ParameterizedCommand<String> closeCommand) {
         if (collapsedBar != null) {
             collapsedBar.addDock(dock,
-                                 selectCommand,
-                                 deselectCommand);
+                                 openCommand,
+                                 closeCommand);
         }
     }
 
@@ -93,10 +95,6 @@ public class DocksBar {
 
     public boolean hasDocksItems() {
         return !collapsedBar.getDocksItems().isEmpty();
-    }
-
-    public void setupDnD() {
-        collapsedBar.setupDnD();
     }
 
     public DockResizeBar getDockResizeBar() {
@@ -111,9 +109,29 @@ public class DocksBar {
         dockResizeBar.setup(resizeCommand);
     }
 
-    public void expand(UberfireDock dock) {
-        collapsedBar.expand(dock);
-        AbstractDockItem docksItems = collapsedBar.getDocksItems().get(0);
-        docksItems.select();
+    public void open(UberfireDock dock) {
+        if (hasDocksItems()) {
+            collapsedBar.expand(dock);
+            AbstractDockItem docksItems = collapsedBar.getDocksItems().get(0);
+            docksItems.open();
+        }
+    }
+
+    public void setOpenDock(UberfireDock openDock) {
+        this.openDock = openDock;
+    }
+
+    public boolean isOpen() {
+        return openDock != null;
+    }
+
+    public boolean isOpenWith(PlaceRequest placeRequest) {
+        return isOpen() && openDock.getPlaceRequest().equals(placeRequest);
+    }
+
+    public void clearExpandedDock(UberfireDock expandedDock) {
+        if (this.openDock != null && this.openDock.getPlaceRequest().equals(expandedDock.getPlaceRequest())) {
+            this.openDock = null;
+        }
     }
 }

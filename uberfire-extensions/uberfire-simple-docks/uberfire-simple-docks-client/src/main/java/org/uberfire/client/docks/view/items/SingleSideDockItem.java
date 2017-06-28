@@ -34,17 +34,16 @@ public class SingleSideDockItem
         extends AbstractDockItem {
 
     private static WebAppResource CSS = GWT.create(WebAppResource.class);
-    private final ParameterizedCommand<String> selectCommand;
+    private final ParameterizedCommand<String> openCommand;
     @UiField
     Button itemButton;
 
     private ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
     public SingleSideDockItem(UberfireDock dock,
-                              final ParameterizedCommand<String> selectCommand,
-                              final ParameterizedCommand<String> deselectCommand) {
+                              final ParameterizedCommand<String> openCommand) {
         super(dock);
-        this.selectCommand = selectCommand;
+        this.openCommand = openCommand;
         initWidget(uiBinder.createAndBindUi(this));
         createButtom();
         setupCSSLocators(dock);
@@ -57,25 +56,20 @@ public class SingleSideDockItem
         itemButton.setIconFixedWidth(true);
         itemButton.setSize(ButtonSize.SMALL);
         itemButton.setType(ButtonType.LINK);
-        itemButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                selectAndExecuteExpandCommand();
-            }
-        });
+        itemButton.addClickHandler(event -> openAndExecuteExpandCommand());
     }
 
     @Override
-    public void selectAndExecuteExpandCommand() {
-        selectCommand.execute(getIdentifier());
+    public void openAndExecuteExpandCommand() {
+        openCommand.execute(getIdentifier());
     }
 
     @Override
-    public void select() {
+    public void open() {
     }
 
     @Override
-    public void deselect() {
+    public void close() {
     }
 
     interface ViewBinder

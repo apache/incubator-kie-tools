@@ -83,8 +83,8 @@ public class UberfireDocksInteractionEvent implements UberFireEvent {
     }
 
     public enum InteractionType {
-        SELECTED,
-        DESELECTED,
-        RESIZED;
+        OPENED,
+        CLOSED,
+        RESIZED
     }
 }

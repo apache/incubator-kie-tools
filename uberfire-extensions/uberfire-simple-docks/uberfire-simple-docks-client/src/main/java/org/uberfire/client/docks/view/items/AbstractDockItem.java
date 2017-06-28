@@ -32,25 +32,25 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 public abstract class AbstractDockItem extends Composite {
 
-    private final boolean selected;
+    private final boolean opened;
     private final UberfireDock dock;
 
     AbstractDockItem(UberfireDock dock) {
         this.dock = dock;
-        this.selected = false;
+        this.opened = false;
     }
 
     public static AbstractDockItem create(UberfireDock dock,
-                                          ParameterizedCommand<String> selectCommand,
-                                          ParameterizedCommand<String> deselectCommand) {
+                                          ParameterizedCommand<String> openCommand,
+                                          ParameterizedCommand<String> closeCommand) {
         if (dock.getDockPosition() == UberfireDockPosition.SOUTH) {
             return new SouthDockItem(dock,
-                                     selectCommand,
-                                     deselectCommand);
+                                     openCommand,
+                                     closeCommand);
         } else {
             return new SideDockItem(dock,
-                                    selectCommand,
-                                    deselectCommand);
+                                    openCommand,
+                                    closeCommand);
         }
     }
 
@@ -124,15 +124,11 @@ public abstract class AbstractDockItem extends Composite {
         return dock.getLabel();
     }
 
-    public abstract void selectAndExecuteExpandCommand();
+    public abstract void openAndExecuteExpandCommand();
 
-    public abstract void select();
+    public abstract void open();
 
-    public abstract void deselect();
-
-    public void setupDnD() {
-
-    }
+    public abstract void close();
 
     void setupCSSLocators(UberfireDock dock) {
         getElement().addClassName(CSSLocatorsUtils.buildLocator("qe-docks-item",

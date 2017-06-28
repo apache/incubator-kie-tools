@@ -23,7 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.internal.verification.Times;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
@@ -34,8 +33,6 @@ import org.uberfire.workbench.model.ActivityResourceType;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-
-//@RunWith(MockitoJUnitRunner.class)
 @RunWith(GwtMockitoTestRunner.class)
 public class PlaceHistoryHandlerTest {
 
@@ -299,7 +296,8 @@ public class PlaceHistoryHandlerTest {
 
         // simulate an opened screen first
         PlaceRequest place = new DefaultPlaceRequest(placeRequestName);
-        placeHistoryHandler.registerOpen(screenActivity, place);
+        placeHistoryHandler.registerOpen(screenActivity,
+                                         place);
         // mock a dock
         PlaceRequest dockPlace = new DefaultPlaceRequest(dockName);
         UberfireDocksInteractionEvent openEvent = mock(UberfireDocksInteractionEvent.class);
@@ -311,7 +309,7 @@ public class PlaceHistoryHandlerTest {
         when(dock.getIconType()).thenReturn("iconType");
         when(dock.getPlaceRequest()).thenReturn(dockPlace);
 
-        when(openEvent.getType()).thenReturn(UberfireDocksInteractionEvent.InteractionType.SELECTED);
+        when(openEvent.getType()).thenReturn(UberfireDocksInteractionEvent.InteractionType.OPENED);
         when(openEvent.getTargetDock()).thenReturn(dock);
         placeHistoryHandler.registerOpenDock(openEvent);
 
@@ -324,7 +322,6 @@ public class PlaceHistoryHandlerTest {
         expected.append(BookmarkableUrlHelper.DOCK_CLOSE_SEP);
         assertEquals(expected.toString(),
                      placeHistoryHandler.getCurrentBookmarkableURLStatus());
-
     }
 
     @Test
@@ -334,7 +331,8 @@ public class PlaceHistoryHandlerTest {
 
         // simulate an opened screen first
         PlaceRequest place = new DefaultPlaceRequest(placeRequestName);
-        placeHistoryHandler.registerOpen(screenActivity, place);
+        placeHistoryHandler.registerOpen(screenActivity,
+                                         place);
         // mock a dock
         PlaceRequest dockPlace = new DefaultPlaceRequest(dockName);
         UberfireDocksInteractionEvent openEvent = mock(UberfireDocksInteractionEvent.class);
@@ -347,9 +345,9 @@ public class PlaceHistoryHandlerTest {
         when(dock.getIconType()).thenReturn("iconType");
         when(dock.getPlaceRequest()).thenReturn(dockPlace);
 
-        when(openEvent.getType()).thenReturn(UberfireDocksInteractionEvent.InteractionType.SELECTED);
+        when(openEvent.getType()).thenReturn(UberfireDocksInteractionEvent.InteractionType.OPENED);
         when(openEvent.getTargetDock()).thenReturn(dock);
-        when(closeEvent.getType()).thenReturn(UberfireDocksInteractionEvent.InteractionType.DESELECTED);
+        when(closeEvent.getType()).thenReturn(UberfireDocksInteractionEvent.InteractionType.CLOSED);
         when(closeEvent.getTargetDock()).thenReturn(dock);
         // open...
         placeHistoryHandler.registerOpenDock(openEvent);
@@ -367,7 +365,6 @@ public class PlaceHistoryHandlerTest {
         assertEquals(expected.toString(),
                      placeHistoryHandler.getCurrentBookmarkableURLStatus());
     }
-
 
     @Test
     public void testUrlLimit() {
@@ -398,7 +395,8 @@ public class PlaceHistoryHandlerTest {
 
         Set<String> opened = BookmarkableUrlHelper.getOpenedScreenFromPlace(req);
         assertNotNull(opened);
-        assertEquals(3L, opened.size());
+        assertEquals(3L,
+                     opened.size());
         assertTrue(opened.contains(SCREEN1_ID));
         assertTrue(opened.contains("!" + SCREEN2_ID));
         assertTrue(opened.contains("!" + SCREEN4_ID));
@@ -411,7 +409,8 @@ public class PlaceHistoryHandlerTest {
 
         Set<String> closed = BookmarkableUrlHelper.getClosedScreenFromPlace(req);
         assertNotNull(closed);
-        assertEquals(3L, closed.size());
+        assertEquals(3L,
+                     closed.size());
         assertTrue(closed.contains("~" + SCREEN3_ID));
         assertTrue(closed.contains("~!" + SCREEN2_ID));
         assertTrue(closed.contains("~!" + SCREEN4_ID));

@@ -132,7 +132,7 @@ public class DocksBarsTest {
         dockBars.add(dock2);
         when(docksBarsSpy.getDocksBars()).thenReturn(dockBars);
 
-        docksBarsSpy.clearAndCollapseAllDocks();
+        docksBarsSpy.clearAndHideAllDocks();
 
         verify(dock1).clearAll();
         verify(dock2).clearAll();
@@ -149,7 +149,7 @@ public class DocksBarsTest {
         DocksBar dock1 = createDocksBarMock();
         when(docksBarsSpy.getDockBar(UberfireDockPosition.EAST)).thenReturn(dock1);
 
-        docksBarsSpy.clearAndCollapse(UberfireDockPosition.EAST);
+        docksBarsSpy.clearAndHide(UberfireDockPosition.EAST);
 
         verify(dock1).clearAll();
         verify(docksBarsSpy).resizeDeferred();
@@ -162,38 +162,70 @@ public class DocksBarsTest {
         docksBars.setup();
         docksBars.addDock(dock0);
 
-        docksBars.expand(docksBars.getDockBar(dock0));
+        docksBars.show(docksBars.getDockBar(dock0));
 
         verify(uberfireDocksContainer,
                times(1)).show(any(Widget.class));
     }
 
     @Test
-    public void dockSelectCommand() {
+    public void dockOpenCommand() {
         DocksBars docksBarsSpy = spy(docksBars);
 
         docksBarsSpy.setup();
         docksBarsSpy.addDock(dock0);
 
-        Mockito.doNothing().when(docksBarsSpy).selectDock(dock0,
-                                                          docksBars.getDockBar(dock0));
+        Mockito.doNothing().when(docksBarsSpy).openDock(dock0,
+                                                        docksBars.getDockBar(dock0));
 
         ParameterizedCommand<String> dockSelectCommand = docksBarsSpy
-                .createDockSelectCommand(dock0,
-                                         docksBars.getDockBar(dock0));
+                .createDockOpenCommand(dock0,
+                                       docksBars.getDockBar(dock0));
 
         dockSelectCommand.execute(dock0.getIdentifier());
 
-        verify(docksBarsSpy).selectDock(dock0,
-                                        docksBars.getDockBar(dock0));
+        verify(docksBarsSpy).openDock(dock0,
+                                      docksBars.getDockBar(dock0));
         verify(uberfireDocksContainer).resize();
         verify(dockInteractionEvent,
                times(1)).fire(new UberfireDocksInteractionEvent(dock0,
-                                                                UberfireDocksInteractionEvent.InteractionType.SELECTED));
+                                                                UberfireDocksInteractionEvent.InteractionType.OPENED));
     }
 
     @Test
-    public void dockSelectCommandSingleMode() {
+    public void dockToggleTest() {
+        DocksBars docksBarsSpy = spy(docksBars);
+
+        docksBarsSpy.setup();
+        docksBarsSpy.addDock(dock0);
+
+        Mockito.doNothing().when(docksBarsSpy).openDock(dock0,
+                                                        docksBars.getDockBar(dock0));
+        Mockito.doNothing().when(docksBarsSpy).closeDock(dock0,
+                                                docksBars.getDockBar(dock0));
+
+        docksBarsSpy.toggle(dock0);
+
+        verify(docksBarsSpy).openDock(dock0,
+                                      docksBars.getDockBar(dock0));
+
+        when(docksBarsSpy.isOpenWith(dock0,docksBars.getDockBar(dock0))).thenReturn(true);
+
+        docksBarsSpy.toggle(dock0);
+
+        verify(docksBarsSpy).closeDockProcess(dock0,
+                                      docksBars.getDockBar(dock0));
+
+        docksBarsSpy.toggle(dock0);
+
+        verify(docksBarsSpy).openDock(dock0,
+                                      docksBars.getDockBar(dock0));
+
+
+    }
+
+    @Test
+    public void dockOpenCommandSingleMode() {
         DocksBars docksBarsSpy = spy(docksBars);
 
         docksBarsSpy.setup();
@@ -201,50 +233,100 @@ public class DocksBarsTest {
 
         DocksBar dockBar = spy(docksBars.getDockBar(dock0));
 
-        Mockito.doNothing().when(docksBarsSpy).selectDock(dock0,
-                                                          dockBar);
+        Mockito.doNothing().when(docksBarsSpy).openDock(dock0,
+                                                        dockBar);
         when(dockBar.isCollapsedBarInSingleMode()).thenReturn(true);
 
-        ParameterizedCommand<String> dockSelectCommand = docksBarsSpy.createDockSelectCommand(dock0,
-                                                                                              dockBar);
+        ParameterizedCommand<String> dockOpenCommand = docksBarsSpy.createDockOpenCommand(dock0,
+                                                                                          dockBar);
 
-        dockSelectCommand.execute(dock0.getIdentifier());
+        dockOpenCommand.execute(dock0.getIdentifier());
 
-        verify(docksBarsSpy).selectDock(dock0,
-                                        dockBar);
+        verify(docksBarsSpy).openDock(dock0,
+                                      dockBar);
         verify(uberfireDocksContainer).resize();
-        verify(docksBarsSpy).collapse(dockBar.getCollapsedBar());
+        verify(docksBarsSpy).hide(dockBar.getCollapsedBar());
         verify(uberfireDocksContainer,
                times(1)).hide(any(Widget.class));
         verify(dockInteractionEvent,
                times(1)).fire(new UberfireDocksInteractionEvent(dock0,
-                                                                UberfireDocksInteractionEvent.InteractionType.SELECTED));
+                                                                UberfireDocksInteractionEvent.InteractionType.OPENED));
     }
 
     @Test
-    public void dockDeSelectCommand() {
+    public void dockCloseCommand() {
         DocksBars spy = spy(docksBars);
 
         spy.setup();
         spy.addDock(dock0);
 
-        Mockito.doNothing().when(spy).deselectDock(docksBars.getDockBar(dock0));
+        Mockito.doNothing().when(spy).closeDock(dock0,
+                                                docksBars.getDockBar(dock0));
 
-        ParameterizedCommand<String> dockSelectCommand = spy
-                .createDockDeselectCommand(dock0,
-                                           docksBars.getDockBar(dock0));
+        ParameterizedCommand<String> dockCloseCommand = spy
+                .createDockCloseCommand(dock0,
+                                        docksBars.getDockBar(dock0));
 
-        dockSelectCommand.execute(dock0.getIdentifier());
+        dockCloseCommand.execute(dock0.getIdentifier());
 
-        verify(spy).deselectDock(docksBars.getDockBar(dock0));
+        verify(spy).closeDock(dock0,
+                              docksBars.getDockBar(dock0));
         verify(uberfireDocksContainer).resize();
         verify(dockInteractionEvent,
                times(1)).fire(new UberfireDocksInteractionEvent(dock0,
-                                                                UberfireDocksInteractionEvent.InteractionType.DESELECTED));
+                                                                UberfireDocksInteractionEvent.InteractionType.CLOSED));
     }
 
     @Test
-    public void dockDeSelectCommandSingleMode() {
+    public void dockCloseTest() {
+        DocksBars docksBars = spy(this.docksBars);
+
+        docksBars.setup();
+        docksBars.addDock(dock0);
+
+        ParameterizedCommand<String> dockCloseCommand = docksBars
+                .createDockCloseCommand(dock0,
+                                        docksBars.getDockBar(dock0));
+
+        dockCloseCommand.execute(dock0.getIdentifier());
+
+        Mockito.doNothing().when(docksBars).closeDock(dock0,
+                                                      this.docksBars.getDockBar(dock0));
+
+        docksBars.close(dock0);
+
+        verify(docksBars).closeDock(dock0,
+                                    this.docksBars.getDockBar(dock0));
+        verify(uberfireDocksContainer).resize();
+        verify(dockInteractionEvent,
+               times(1)).fire(new UberfireDocksInteractionEvent(dock0,
+                                                                UberfireDocksInteractionEvent.InteractionType.CLOSED));
+    }
+
+    @Test
+    public void doNothingWhenICloseANotClosedTest() {
+        DocksBars docksBars = spy(this.docksBars);
+
+        docksBars.setup();
+        docksBars.addDock(dock0);
+
+        Mockito.doNothing().when(docksBars).closeDock(dock0,
+                                                      this.docksBars.getDockBar(dock0));
+
+        docksBars.close(dock0);
+
+        verify(docksBars,
+               times(0)).closeDock(dock0,
+                                   this.docksBars.getDockBar(dock0));
+        verify(uberfireDocksContainer,
+               times(0)).resize();
+        verify(dockInteractionEvent,
+               times(0)).fire(new UberfireDocksInteractionEvent(dock0,
+                                                                UberfireDocksInteractionEvent.InteractionType.CLOSED));
+    }
+
+    @Test
+    public void dockCloseCommandSingleMode() {
         DocksBars docksBarsSpy = spy(docksBars);
 
         docksBarsSpy.setup();
@@ -252,20 +334,22 @@ public class DocksBarsTest {
 
         DocksBar dockBar = spy(docksBars.getDockBar(dock0));
 
-        Mockito.doNothing().when(docksBarsSpy).deselectDock(dockBar);
+        Mockito.doNothing().when(docksBarsSpy).closeDock(any(),
+                                                         eq(dockBar));
         when(dockBar.isCollapsedBarInSingleMode()).thenReturn(true);
 
-        ParameterizedCommand<String> dockSelectCommand = docksBarsSpy.createDockDeselectCommand(dock0,
-                                                                                                dockBar);
+        ParameterizedCommand<String> dockCloseCommand = docksBarsSpy.createDockCloseCommand(dock0,
+                                                                                            dockBar);
 
-        dockSelectCommand.execute(dock0.getIdentifier());
+        dockCloseCommand.execute(dock0.getIdentifier());
 
-        verify(docksBarsSpy).deselectDock(dockBar);
+        verify(docksBarsSpy).closeDock(any(),
+                                       eq(dockBar));
         verify(uberfireDocksContainer).resize();
-        verify(docksBarsSpy).expand(dockBar.getCollapsedBar());
+        verify(docksBarsSpy).show(dockBar.getCollapsedBar());
         verify(dockInteractionEvent,
                times(1)).fire(new UberfireDocksInteractionEvent(dock0,
-                                                                UberfireDocksInteractionEvent.InteractionType.DESELECTED));
+                                                                UberfireDocksInteractionEvent.InteractionType.CLOSED));
     }
 
     @Test

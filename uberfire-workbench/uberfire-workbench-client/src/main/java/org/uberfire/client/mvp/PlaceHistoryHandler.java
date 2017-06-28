@@ -61,8 +61,8 @@ public class PlaceHistoryHandler {
      * @return a registration object to de-register the handler
      */
     public HandlerRegistration initialize(final PlaceManager placeManager,
-                                        final EventBus eventBus,
-                                        final PlaceRequest defaultPlaceRequest) {
+                                          final EventBus eventBus,
+                                          final PlaceRequest defaultPlaceRequest) {
         this.placeManager = placeManager;
         this.defaultPlaceRequest = defaultPlaceRequest;
 
@@ -73,15 +73,15 @@ public class PlaceHistoryHandler {
                 });
 
         return () -> {
-                PlaceHistoryHandler.this.defaultPlaceRequest = DefaultPlaceRequest.NOWHERE;
-                PlaceHistoryHandler.this.placeManager = null;
-                historyReg.removeHandler();
+            PlaceHistoryHandler.this.defaultPlaceRequest = DefaultPlaceRequest.NOWHERE;
+            PlaceHistoryHandler.this.placeManager = null;
+            historyReg.removeHandler();
         };
     }
 
     private void updateHistoryBar() {
         historian.newItem(currentBookmarkableURLStatus,
-                              false);
+                          false);
     }
 
     Logger log() {
@@ -192,7 +192,7 @@ public class PlaceHistoryHandler {
     }
 
     public void registerOpenDock(@Observes UberfireDocksInteractionEvent event) {
-        if (event.getType() == UberfireDocksInteractionEvent.InteractionType.SELECTED) {
+        if (event.getType() == UberfireDocksInteractionEvent.InteractionType.OPENED) {
             currentBookmarkableURLStatus =
                     BookmarkableUrlHelper.registerOpenedDock(currentBookmarkableURLStatus,
                                                              event.getTargetDock());
@@ -201,7 +201,7 @@ public class PlaceHistoryHandler {
     }
 
     public void registerCloseDock(@Observes UberfireDocksInteractionEvent event) {
-        if (event.getType() == UberfireDocksInteractionEvent.InteractionType.DESELECTED) {
+        if (event.getType() == UberfireDocksInteractionEvent.InteractionType.CLOSED) {
 
             currentBookmarkableURLStatus =
                     BookmarkableUrlHelper.registerClosedDock(currentBookmarkableURLStatus,

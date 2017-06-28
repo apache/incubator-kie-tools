@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.Scheduler;
@@ -39,7 +40,11 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.workbench.docks.UberfireDock;
+import org.uberfire.client.workbench.docks.UberfireDockPosition;
+import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.ext.widgets.table.client.UberfirePagedTable;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.paging.AbstractPageRow;
 
 @Dependent
@@ -56,6 +61,8 @@ public class PagedTableScreen extends Composite implements RequiresResize {
     protected final FlowPanel panel = new FlowPanel();
     protected final Button addButton = new Button();
     protected final List<Row> data = new ArrayList<Row>();
+    @Inject
+    private UberfireDocks uberfireDocks;
     protected final AsyncDataProvider<Row> dataProvider = new AsyncDataProvider<Row>() {
         @Override
         protected void onRangeChanged(final HasData<Row> display) {
@@ -117,6 +124,12 @@ public class PagedTableScreen extends Composite implements RequiresResize {
             public void onClick(ClickEvent event) {
                 data.add(new Row(data.size()));
                 dataGrid.refresh();
+                final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest("SimpleDockScreen");
+                uberfireDocks.toggle(
+                        new UberfireDock(UberfireDockPosition.SOUTH,
+                                         "BARS",
+                                         new DefaultPlaceRequest("AppsHomePresenter"),
+                                         "UFWidgets").withSize(450).withLabel("Apps"));
             }
         });
         dataProvider.addDataDisplay(dataGrid);

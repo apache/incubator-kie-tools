@@ -65,11 +65,8 @@ public class SouthDockItemTest {
                                                        emptyCommand,
                                                        emptyCommand));
 
-        emptyCommand = new ParameterizedCommand<String>() {
-            @Override
-            public void execute(final String parameter) {
+        emptyCommand = parameter -> {
 
-            }
         };
     }
 
@@ -89,7 +86,7 @@ public class SouthDockItemTest {
 
     @Test
     public void selectSouthDockItemWithFontIconTest() {
-        southDockWithFontIcon.select();
+        southDockWithFontIcon.open();
 
         verify(southDockWithFontIcon,
                never()).configureImageIcon(any(Button.class),
@@ -97,8 +94,8 @@ public class SouthDockItemTest {
     }
 
     @Test
-    public void deselectSouthDockItemWithFontIconTest() {
-        southDockWithFontIcon.deselect();
+    public void closeSouthDockItemWithFontIconTest() {
+        southDockWithFontIcon.close();
 
         verify(southDockWithFontIcon,
                never()).configureImageIcon(any(Button.class),
@@ -116,16 +113,16 @@ public class SouthDockItemTest {
     }
 
     @Test
-    public void selectSouthDockItemWithImageIconTest() {
-        southDockWithImageIcon.select();
+    public void openSouthDockItemWithImageIconTest() {
+        southDockWithImageIcon.open();
 
         verify(southDockWithImageIcon).configureImageIcon(any(Button.class),
                                                           eq(imageResourceFocused));
     }
 
     @Test
-    public void deselectSouthDockItemWithImageIconTest() {
-        southDockWithImageIcon.deselect();
+    public void closeSouthDockItemWithImageIconTest() {
+        southDockWithImageIcon.close();
 
         verify(southDockWithImageIcon).configureImageIcon(any(Button.class),
                                                           eq(imageResource));

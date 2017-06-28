@@ -37,7 +37,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DocksBars_SelectDockTest {
+public class DocksBars_OpenDockTest {
 
     @Mock
     private UberfireDocksContainer uberfireDocksContainer;
@@ -55,15 +55,15 @@ public class DocksBars_SelectDockTest {
     private ArgumentCaptor<PlaceRequest> placeRequestArgumentCaptor;
 
     @Test
-    public void testSelectDockParametersArePreserved() throws Exception {
+    public void testOpenDockParametersArePreserved() throws Exception {
 
         final DefaultPlaceRequest myPlace = new DefaultPlaceRequest("myPlace");
 
         myPlace.addParameter("my_parameter_key",
                              "my_parameter_value");
 
-        docksBars.selectDock(getTargetDock(myPlace),
-                             getDocksBar());
+        docksBars.openDock(getTargetDock(myPlace),
+                           getDocksBar());
 
         verify(placeManager).goTo(placeRequestArgumentCaptor.capture(),
                                   any(FlowPanel.class));

@@ -17,9 +17,7 @@
 package org.uberfire.client.docks;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -32,7 +30,9 @@ import org.uberfire.client.docks.view.DocksBars;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockContainerReadyEvent;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
+import org.uberfire.client.workbench.docks.UberfireDockReadyEvent;
 import org.uberfire.client.workbench.events.PerspectiveChange;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.toolbar.IconType;
@@ -50,6 +50,8 @@ public class UberfireDocksImplTest {
     private DocksBars docksBars;
     @Mock
     private DockLayoutPanel dockLayoutPanel;
+    @Mock
+    EventSourceMock<UberfireDockReadyEvent> dockReadyEvent;
     private UberfireDocksImpl uberfireDocks;
     private Command resizeCommand;
     private UberfireDock dock0 = new UberfireDock(UberfireDockPosition.SOUTH,
@@ -78,11 +80,8 @@ public class UberfireDocksImplTest {
 
     @Before
     public void setup() {
-        uberfireDocks = new UberfireDocksImpl(docksBars) {
-            @Override
-            protected void fireDockReadyEvent() {
-            }
-        };
+        uberfireDocks = new UberfireDocksImpl(docksBars,
+                                              dockReadyEvent);
         resizeCommand = () -> {
         };
     }
@@ -91,18 +90,6 @@ public class UberfireDocksImplTest {
     public void setupDocks() {
         uberfireDocks.setup(new UberfireDockContainerReadyEvent());
         verify(docksBars).setup();
-    }
-
-    @Test
-    public void configure() {
-
-        Map<String, String> configurations = new HashMap<String, String>();
-        configurations.put(UberfireDocksImpl.IDE_DOCK,
-                           "true");
-
-        uberfireDocks.configure(configurations);
-
-        verify(docksBars).setIDEdock(true);
     }
 
     @Test
@@ -126,7 +113,7 @@ public class UberfireDocksImplTest {
     @Test
     public void perspectiveChangeEvent() {
 
-        when(docksBars.isReady()).thenReturn(true);
+        when(docksBars.isReady(any())).thenReturn(true);
         List<DocksBar> docksBars = generateDocksBars();
         when(this.docksBars.getDocksBars()).thenReturn(docksBars);
 
@@ -139,27 +126,27 @@ public class UberfireDocksImplTest {
                                                                    SOME_PERSPECTIVE));
 
         assertEquals(SOME_PERSPECTIVE,
-                     uberfireDocks.currentSelectedPerspective);
+                     uberfireDocks.currentPerspective);
         verify(this.docksBars,
-               times(2)).clearAndCollapseAllDocks();
+               times(2)).clearAndHideAllDocks();
         verify(this.docksBars).addDock(dock0);
         verify(this.docksBars).addDock(dock1);
 
         verify(this.docksBars,
-               times(docksBars.size())).expand(any(DocksBar.class));
+               times(docksBars.size())).show(any(DocksBar.class));
     }
 
     @Test
     public void remove() {
-
         uberfireDocks.add(dock0,
                           dock1);
 
-        when(docksBars.isReady()).thenReturn(true);
-        uberfireDocks.currentSelectedPerspective = SOME_PERSPECTIVE;
+        when(docksBars.isReady(any())).thenReturn(true);
+        uberfireDocks.currentPerspective = SOME_PERSPECTIVE;
 
         uberfireDocks.remove(dock0);
-        verify(docksBars).clearAndCollapseAllDocks();
+        verify(docksBars,
+               times(2)).clearAndHideAllDocks();
 
         verify(docksBars,
                never()).addDock(dock0);
@@ -168,37 +155,110 @@ public class UberfireDocksImplTest {
 
     @Test
     public void disableDock() {
-        when(docksBars.isReady()).thenReturn(true);
+        when(docksBars.isReady(any())).thenReturn(true);
         uberfireDocks.add(dock0,
                           dock1);
-        uberfireDocks.currentSelectedPerspective = SOME_PERSPECTIVE;
+        uberfireDocks.currentPerspective = SOME_PERSPECTIVE;
 
-        when(docksBars.isReady()).thenReturn(true);
+        when(docksBars.isReady(any())).thenReturn(true);
         List<DocksBar> docksBars = generateDocksBars();
         when(this.docksBars.getDocksBars()).thenReturn(docksBars);
 
-        uberfireDocks.disable(UberfireDockPosition.WEST,
-                              SOME_PERSPECTIVE);
+        uberfireDocks.hide(UberfireDockPosition.WEST,
+                           SOME_PERSPECTIVE);
 
-        verify(this.docksBars).clearAndCollapse(UberfireDockPosition.WEST);
+        verify(this.docksBars).clearAndHide(UberfireDockPosition.WEST);
     }
 
     @Test
     public void enableDock() {
-        when(docksBars.isReady()).thenReturn(true);
+        when(docksBars.isReady(any())).thenReturn(true);
         uberfireDocks.add(dock0,
                           dock1);
-        uberfireDocks.currentSelectedPerspective = SOME_PERSPECTIVE;
+        uberfireDocks.currentPerspective = SOME_PERSPECTIVE;
 
-        when(docksBars.isReady()).thenReturn(true);
+        when(docksBars.isReady(any())).thenReturn(true);
         List<DocksBar> docksBars = generateDocksBars();
         when(this.docksBars.getDocksBars()).thenReturn(docksBars);
 
-        uberfireDocks.disable(UberfireDockPosition.WEST,
-                              SOME_PERSPECTIVE);
-        uberfireDocks.enable(UberfireDockPosition.WEST,
-                             SOME_PERSPECTIVE);
-        verify(this.docksBars).expand(UberfireDockPosition.WEST);
+        uberfireDocks.hide(UberfireDockPosition.WEST,
+                           SOME_PERSPECTIVE);
+        uberfireDocks.show(UberfireDockPosition.WEST,
+                           SOME_PERSPECTIVE);
+        verify(this.docksBars).show(UberfireDockPosition.WEST);
+    }
+
+    @Test
+    public void closeDockTest() {
+        when(docksBars.isReady(any())).thenReturn(true);
+        uberfireDocks.add(dock0,
+                          dock1);
+        uberfireDocks.currentPerspective = SOME_PERSPECTIVE;
+
+        when(docksBars.isReady(any())).thenReturn(true);
+        List<DocksBar> docksBars = generateDocksBars();
+        when(this.docksBars.getDocksBars()).thenReturn(docksBars);
+
+        uberfireDocks.open(dock0);
+        uberfireDocks.close(dock0);
+
+        verify(this.docksBars).close(dock0);
+    }
+
+    @Test
+    public void toggleDockTest() {
+        when(docksBars.isReady(any())).thenReturn(true);
+        uberfireDocks.add(dock0,
+                          dock1);
+        uberfireDocks.currentPerspective = SOME_PERSPECTIVE;
+
+        when(docksBars.isReady(any())).thenReturn(true);
+        List<DocksBar> docksBars = generateDocksBars();
+        when(this.docksBars.getDocksBars()).thenReturn(docksBars);
+
+        uberfireDocks.toggle(dock0);
+        verify(this.docksBars).toggle(dock0);
+    }
+
+
+    @Test
+    public void openCloseDelayedOperationsTest() {
+        when(docksBars.isReady(any())).thenReturn(false);
+        uberfireDocks.add(dock0,
+                          dock1);
+        uberfireDocks.currentPerspective = SOME_PERSPECTIVE;
+
+        List<DocksBar> docksBars = generateDocksBars();
+        when(this.docksBars.getDocksBars()).thenReturn(docksBars);
+
+        uberfireDocks.open(dock0);
+        verify(this.docksBars,
+               never()).open(dock0);
+
+        uberfireDocks.close(dock0);
+        verify(this.docksBars,
+               never()).close(dock0);
+
+        assertEquals(2,
+                     uberfireDocks.delayedCommandsPerPerspective.get(SOME_PERSPECTIVE).size());
+
+        PerspectiveChange event = mock(PerspectiveChange.class);
+        when(event.getIdentifier()).thenReturn("Another");
+
+        uberfireDocks.perspectiveChangeEvent(event);
+
+        verify(this.docksBars,
+               never()).open(dock0);
+        verify(this.docksBars,
+               never()).close(dock0);
+
+        when(event.getIdentifier()).thenReturn(SOME_PERSPECTIVE);
+        uberfireDocks.perspectiveChangeEvent(event);
+
+        verify(this.docksBars).open(dock0);
+        verify(this.docksBars).close(dock0);
+
+        assertNull(uberfireDocks.delayedCommandsPerPerspective.get(SOME_PERSPECTIVE));
     }
 
     private List<DocksBar> generateDocksBars() {

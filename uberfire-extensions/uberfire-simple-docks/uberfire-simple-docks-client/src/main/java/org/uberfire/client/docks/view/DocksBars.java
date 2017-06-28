@@ -22,7 +22,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.docks.view.bars.DocksCollapsedBar;
@@ -95,10 +94,10 @@ public class DocksBars {
     public void addDock(UberfireDock dock) {
         DocksBar docksBar = getDockBar(dock);
         docksBar.addDock(dock,
-                         createDockSelectCommand(dock,
-                                                 docksBar),
-                         createDockDeselectCommand(dock,
-                                                   docksBar));
+                         createDockOpenCommand(dock,
+                                               docksBar),
+                         createDockCloseCommand(dock,
+                                                docksBar));
     }
 
     DocksBar getDockBar(UberfireDock dock) {
@@ -157,8 +156,8 @@ public class DocksBars {
         return max;
     }
 
-    public void clearAndCollapseAllDocks() {
-        collapseAll();
+    public void clearAndHideAllDocks() {
+        hideAll();
         clearAll();
     }
 
@@ -168,26 +167,26 @@ public class DocksBars {
         }
     }
 
-    private void collapseAll() {
+    private void hideAll() {
         for (DocksBar docksBar : getDocksBars()) {
-            collapse(docksBar);
+            hide(docksBar);
         }
     }
 
-    private void collapse(DocksBar docksBar) {
+    private void hide(DocksBar docksBar) {
         uberfireDocksContainer.hide(docksBar.getCollapsedBar());
         uberfireDocksContainer.hide(docksBar.getExpandedBar());
         uberfireDocksContainer.hide(docksBar.getDockResizeBar());
     }
 
-    void collapse(Widget bar) {
+    void hide(Widget bar) {
         uberfireDocksContainer.hide(bar);
     }
 
-    public void clearAndCollapse(UberfireDockPosition position) {
+    public void clearAndHide(UberfireDockPosition position) {
         DocksBar dockBar = getDockBar(position);
         dockBar.clearAll();
-        collapse(dockBar);
+        hide(dockBar);
 
         resizeDeferred();
     }
@@ -196,24 +195,25 @@ public class DocksBars {
         Scheduler.get().scheduleDeferred(() -> uberfireDocksContainer.resize());
     }
 
-    ParameterizedCommand<String> createDockSelectCommand(final UberfireDock targetDock,
-                                                         final DocksBar docksBar) {
+    ParameterizedCommand<String> createDockOpenCommand(final UberfireDock targetDock,
+                                                       final DocksBar docksBar) {
         return clickDockName -> {
             if (targetDock != null) {
-                selectDock(targetDock,
-                           docksBar);
+                openDock(targetDock,
+                         docksBar);
                 if (docksBar.isCollapsedBarInSingleMode()) {
-                    collapse(docksBar.getCollapsedBar());
+                    hide(docksBar.getCollapsedBar());
                 }
                 uberfireDocksContainer.resize();
                 dockInteractionEvent.fire(new UberfireDocksInteractionEvent(targetDock,
-                                                                            UberfireDocksInteractionEvent.InteractionType.SELECTED));
+                                                                            UberfireDocksInteractionEvent.InteractionType.OPENED));
             }
         };
     }
 
-    void selectDock(UberfireDock targetDock,
-                    DocksBar docksBar) {
+    void openDock(UberfireDock targetDock,
+                  DocksBar docksBar) {
+        docksBar.setOpenDock(targetDock);
         DocksCollapsedBar collapsedBar = docksBar.getCollapsedBar();
         DocksExpandedBar expandedBar = docksBar.getExpandedBar();
         PlaceRequest placeRequest = targetDock.getPlaceRequest();
@@ -223,7 +223,7 @@ public class DocksBars {
         setupExpandedBar(targetDock,
                          docksBar,
                          expandedBar);
-        expand(docksBar.getDockResizeBar());
+        show(docksBar.getDockResizeBar());
         goToPlace(expandedBar,
                   placeRequest);
 
@@ -252,48 +252,87 @@ public class DocksBars {
 
     private void setupCollapsedBar(UberfireDock targetDock,
                                    DocksCollapsedBar collapsedBar) {
-        collapsedBar.setDockSelected(targetDock);
+        collapsedBar.setDockClosed(targetDock);
     }
 
     private void setupExpandedBar(UberfireDock targetDock,
                                   DocksBar docksBar,
                                   DocksExpandedBar expandedBar) {
         expandedBar.clear();
-        expand(expandedBar);
+        show(expandedBar);
 
         setupExpandedBarSize(targetDock,
                              docksBar);
         expandedBar.setup(targetDock.getLabel(),
-                          createDockDeselectCommand(targetDock,
-                                                    docksBar));
+                          createDockCloseCommand(targetDock,
+                                                 docksBar));
     }
 
-    ParameterizedCommand<String> createDockDeselectCommand(final UberfireDock targetDock,
-                                                           final DocksBar docksBar) {
-        return new ParameterizedCommand<String>() {
-            @Override
-            public void execute(String clickDockName) {
-                if (targetDock != null) {
-                    deselectDock(docksBar);
-                    if (docksBar.isCollapsedBarInSingleMode()) {
-                        expand(docksBar.getCollapsedBar());
-                    }
-                    uberfireDocksContainer.resize();
-                    dockInteractionEvent.fire(new UberfireDocksInteractionEvent(targetDock,
-                                                                                UberfireDocksInteractionEvent.InteractionType.DESELECTED));
-                }
+    public void open(UberfireDock dock) {
+        DocksBar dockBar = getDockBar(dock);
+        if (dockBar != null) {
+            dockBar.open(dock);
+        }
+    }
+
+    public void close(UberfireDock dock) {
+        DocksBar dockBar = getDockBar(dock);
+        if (dockBar != null) {
+            if (isOpenWith(dock,
+                           dockBar)) {
+                closeDockProcess(dock,
+                                 dockBar);
             }
-        };
+        }
     }
 
-    void deselectDock(DocksBar docksBar) {
+    public void toggle(UberfireDock dock) {
+        DocksBar dockBar = getDockBar(dock);
+        if (dockBar != null) {
+            if (isOpenWith(dock,
+                           dockBar)) {
+                closeDockProcess(dock,
+                                 dockBar);
+            } else {
+                dockBar.open(dock);
+            }
+        }
+    }
+
+    boolean isOpenWith(UberfireDock dock,
+                               DocksBar dockBar) {
+        return dockBar.isOpenWith(dock.getPlaceRequest());
+    }
+
+    ParameterizedCommand<String> createDockCloseCommand(final UberfireDock targetDock,
+                                                        final DocksBar docksBar) {
+        return clickedDockName -> closeDockProcess(targetDock,
+                                                   docksBar);
+    }
+
+    void closeDockProcess(UberfireDock targetDock,
+                                  DocksBar docksBar) {
+        if (targetDock != null) {
+            closeDock(targetDock,
+                      docksBar);
+            if (docksBar.isCollapsedBarInSingleMode()) {
+                show(docksBar.getCollapsedBar());
+            }
+            uberfireDocksContainer.resize();
+            dockInteractionEvent.fire(new UberfireDocksInteractionEvent(targetDock,
+                                                                        UberfireDocksInteractionEvent.InteractionType.CLOSED));
+        }
+    }
+
+    void closeDock(UberfireDock dock,
+                   DocksBar docksBar) {
         DocksCollapsedBar collapsedBar = docksBar.getCollapsedBar();
         DocksExpandedBar dockExpandedBar = docksBar.getExpandedBar();
-
-        collapsedBar.deselectAllDocks();
+        docksBar.clearExpandedDock(dock);
+        collapsedBar.closeAllDocks();
         dockExpandedBar.clear();
-        collapse(dockExpandedBar);
-        collapse(docksBar.getDockResizeBar());
+        hide(dockExpandedBar);
+        hide(docksBar.getDockResizeBar());
     }
 
     private void setupExpandedBarSize(UberfireDock targetDock,
@@ -320,46 +359,38 @@ public class DocksBars {
         return targetDock.getSize() != null;
     }
 
-    public void expand(DocksBar docksBar) {
+    public void show(DocksBar docksBar) {
         if (docksBar.hasDocksItems()) {
-            expand(docksBar.getCollapsedBar());
+            show(docksBar.getCollapsedBar());
         }
     }
 
-    public void expand(UberfireDockPosition position) {
+    public void show(UberfireDockPosition position) {
         DocksBar dockBar = getDockBar(position);
         if (dockBar.hasDocksItems()) {
-            expand(dockBar.getCollapsedBar());
+            show(dockBar.getCollapsedBar());
         }
     }
 
-    public boolean isReady() {
-        return uberfireDocksContainer.isReady();
+    public boolean isReady(UberfireDockPosition dockPosition) {
+        return uberfireDocksContainer.isReady() && docksBarIsReady(dockPosition);
     }
 
-    void expand(Widget widget) {
+    private boolean docksBarIsReady(UberfireDockPosition dockPosition) {
+        DocksBar dockBar = getDockBar(dockPosition);
+        return dockBar != null && dockBar.hasDocksItems();
+    }
+
+    void show(Widget widget) {
         uberfireDocksContainer.show(widget);
     }
 
-    private void collapse(DocksExpandedBar dock) {
+    private void hide(DocksExpandedBar dock) {
         dock.clear();
         uberfireDocksContainer.hide(dock);
     }
 
     public List<DocksBar> getDocksBars() {
         return docks;
-    }
-
-    public void setIDEdock(Boolean IDEdock) {
-        for (DocksBar dock : getDocksBars()) {
-            dock.setupDnD();
-        }
-    }
-
-    public void expand(UberfireDock dock) {
-        DocksBar dockBar = getDockBar(dock);
-        if (dockBar != null) {
-            dockBar.expand(dock);
-        }
     }
 }

@@ -35,23 +35,23 @@ public class SideDockItem
         extends AbstractDockItem {
 
     private static WebAppResource CSS = GWT.create(WebAppResource.class);
-    private final ParameterizedCommand<String> selectCommand;
-    private final ParameterizedCommand<String> deselectCommand;
+    private final ParameterizedCommand<String> openCommand;
+    private final ParameterizedCommand<String> closeCommand;
     @UiField
     Button itemButton;
     private MouseEventHandler mouseEventHandler;
     private SideDockItemFocused popup = new SideDockItemFocused(SideDockItem.this);
 
-    private boolean selected;
+    private boolean opened;
 
     private ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
     SideDockItem(UberfireDock dock,
-                 final ParameterizedCommand<String> selectCommand,
-                 final ParameterizedCommand<String> deselectCommand) {
+                 final ParameterizedCommand<String> openCommand,
+                 final ParameterizedCommand<String> closeCommand) {
         super(dock);
-        this.selectCommand = selectCommand;
-        this.deselectCommand = deselectCommand;
+        this.openCommand = openCommand;
+        this.closeCommand = closeCommand;
         initWidget(uiBinder.createAndBindUi(this));
         createButton();
         setupCSSLocators(dock);
@@ -69,18 +69,18 @@ public class SideDockItem
         itemButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                if (!isSelected()) {
-                    selectAndExecuteExpandCommand();
+                if (!isOpened()) {
+                    openAndExecuteExpandCommand();
                 } else {
-                    deselectAndExecuteCommand();
+                    closeAndExecuteCommand();
                 }
             }
         });
     }
 
     @Override
-    public void select() {
-        selected = true;
+    public void open() {
+        opened = true;
         itemButton.setActive(true);
         itemButton.setType(ButtonType.INFO);
         if (getDock().getImageIconFocused() != null) {
@@ -91,16 +91,16 @@ public class SideDockItem
     }
 
     @Override
-    public void selectAndExecuteExpandCommand() {
-        select();
-        popup.select();
-        selectCommand.execute(getIdentifier());
+    public void openAndExecuteExpandCommand() {
+        open();
+        popup.active();
+        openCommand.execute(getIdentifier());
     }
 
     @Override
-    public void deselect() {
-        selected = false;
-        popup.deselect();
+    public void close() {
+        opened = false;
+        popup.inactive();
         itemButton.setActive(false);
         itemButton.setType(ButtonType.LINK);
         if (getDock().getImageIcon() != null) {
@@ -110,17 +110,17 @@ public class SideDockItem
         }
     }
 
-    public void deselectAndExecuteCommand() {
-        deselect();
-        deselectCommand.execute(getIdentifier());
+    public void closeAndExecuteCommand() {
+        close();
+        closeCommand.execute(getIdentifier());
     }
 
     private boolean openPopup() {
-        return !isSelected();
+        return !isOpened();
     }
 
-    public boolean isSelected() {
-        return selected;
+    public boolean isOpened() {
+        return opened;
     }
 
     SideDockItemFocused getPopup() {

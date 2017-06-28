@@ -33,19 +33,19 @@ public class SouthDockItem
         extends AbstractDockItem {
 
     private static WebAppResource CSS = GWT.create(WebAppResource.class);
-    private final ParameterizedCommand<String> selectCommand;
-    private final ParameterizedCommand<String> deselectCommand;
+    private final ParameterizedCommand<String> openCommand;
+    private final ParameterizedCommand<String> closeCommand;
     @UiField
     Button itemButton;
-    private boolean selected;
+    private boolean opened;
     private ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
     SouthDockItem(final UberfireDock dock,
-                  final ParameterizedCommand<String> selectCommand,
-                  final ParameterizedCommand<String> deselectCommand) {
+                  final ParameterizedCommand<String> openCommand,
+                  final ParameterizedCommand<String> closeCommand) {
         super(dock);
-        this.selectCommand = selectCommand;
-        this.deselectCommand = deselectCommand;
+        this.openCommand = openCommand;
+        this.closeCommand = closeCommand;
         initWidget(uiBinder.createAndBindUi(this));
         createButton();
         setupCSSLocators(dock);
@@ -62,26 +62,26 @@ public class SouthDockItem
         itemButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                if (!selected) {
-                    select();
-                    selectCommand.execute(getIdentifier());
+                if (!opened) {
+                    open();
+                    openCommand.execute(getIdentifier());
                 } else {
-                    deselect();
-                    deselectCommand.execute(getIdentifier());
+                    close();
+                    closeCommand.execute(getIdentifier());
                 }
             }
         });
     }
 
     @Override
-    public void selectAndExecuteExpandCommand() {
-        select();
-        selectCommand.execute(getIdentifier());
+    public void openAndExecuteExpandCommand() {
+        open();
+        openCommand.execute(getIdentifier());
     }
 
     @Override
-    public void select() {
-        selected = true;
+    public void open() {
+        opened = true;
         itemButton.setType(ButtonType.INFO);
         if (getDock().getImageIconFocused() != null) {
             itemButton.remove(0);
@@ -91,8 +91,8 @@ public class SouthDockItem
     }
 
     @Override
-    public void deselect() {
-        selected = false;
+    public void close() {
+        opened = false;
         itemButton.setType(ButtonType.LINK);
         if (getDock().getImageIcon() != null) {
             itemButton.remove(0);

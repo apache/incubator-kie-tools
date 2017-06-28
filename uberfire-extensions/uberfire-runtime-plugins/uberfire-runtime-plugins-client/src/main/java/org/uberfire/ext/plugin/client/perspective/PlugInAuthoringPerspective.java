@@ -18,16 +18,15 @@ package org.uberfire.ext.plugin.client.perspective;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
-import org.uberfire.client.workbench.docks.UberfireDockReadyEvent;
 import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
+import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
@@ -50,10 +49,9 @@ public class PlugInAuthoringPerspective {
         uberfireDocks.add(dock);
     }
 
-    public void perspectiveChangeEvent(@Observes UberfireDockReadyEvent dockReadyEvent) {
-        if (dockReadyEvent.getCurrentPerspective().equals("PlugInAuthoringPerspective")) {
-            uberfireDocks.expand(dock);
-        }
+    @OnOpen
+    public void onOpen() {
+        uberfireDocks.open(dock);
     }
 
     @Perspective
