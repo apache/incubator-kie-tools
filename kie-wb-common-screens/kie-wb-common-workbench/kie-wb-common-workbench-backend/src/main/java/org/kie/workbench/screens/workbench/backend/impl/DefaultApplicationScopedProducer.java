@@ -17,9 +17,9 @@
 package org.kie.workbench.screens.workbench.backend.impl;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -42,7 +42,6 @@ import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
-import org.uberfire.security.authz.AuthorizationManager;
 
 /**
  * This class contains all default ApplicationScoped producers
@@ -54,53 +53,62 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
 
     private IOService ioService;
     private IOSearchService ioSearchService;
-
-    @Inject
-    @Named("luceneConfig")
     private LuceneConfig config;
-
-    @Inject
-    @Named("clusterServiceFactory")
     private ClusterServiceFactory clusterServiceFactory;
-
-    @Inject
     private IOWatchServiceNonDotImpl watchService;
-
-    @Inject
     private AuthenticationService authenticationService;
-
-    @Inject
     private DefaultIndexEngineObserver defaultIndexEngineObserver;
+    private ManagedExecutorService managedExecutorService;
 
     public DefaultApplicationScopedProducer() {
-        if ( System.getProperty( "org.uberfire.watcher.autostart" ) == null ) {
-            System.setProperty( "org.uberfire.watcher.autostart", "false" );
+        if (System.getProperty("org.uberfire.watcher.autostart") == null) {
+            System.setProperty("org.uberfire.watcher.autostart",
+                               "false");
         }
 
-        if ( System.getProperty( "org.kie.deployment.desc.location" ) == null ) {
-            System.setProperty( "org.kie.deployment.desc.location", "classpath:META-INF/kie-wb-deployment-descriptor.xml" );
+        if (System.getProperty("org.kie.deployment.desc.location") == null) {
+            System.setProperty("org.kie.deployment.desc.location",
+                               "classpath:META-INF/kie-wb-deployment-descriptor.xml");
         }
+    }
+
+    @Inject
+    public DefaultApplicationScopedProducer(@Named("luceneConfig") LuceneConfig config,
+                                            @Named("clusterServiceFactory") ClusterServiceFactory clusterServiceFactory,
+                                            IOWatchServiceNonDotImpl watchService,
+                                            AuthenticationService authenticationService,
+                                            DefaultIndexEngineObserver defaultIndexEngineObserver,
+                                            ManagedExecutorService managedExecutorService) {
+        this();
+        this.config = config;
+        this.clusterServiceFactory = clusterServiceFactory;
+        this.watchService = watchService;
+        this.authenticationService = authenticationService;
+        this.defaultIndexEngineObserver = defaultIndexEngineObserver;
+        this.managedExecutorService = managedExecutorService;
     }
 
     @PostConstruct
     public void setup() {
-        final IOService service = new IOServiceIndexedImpl( watchService,
-                                                            config.getIndexEngine(),
-                                                            defaultIndexEngineObserver,
-                                                            DublinCoreView.class,
-                                                            VersionAttributeView.class,
-                                                            OtherMetaView.class );
+        final IOService service = new IOServiceIndexedImpl(watchService,
+                                                           config.getIndexEngine(),
+                                                           defaultIndexEngineObserver,
+                                                           managedExecutorService,
+                                                           DublinCoreView.class,
+                                                           VersionAttributeView.class,
+                                                           OtherMetaView.class);
 
-        if ( clusterServiceFactory == null ) {
+        if (clusterServiceFactory == null) {
             ioService = service;
         } else {
-            ioService = new IOServiceClusterImpl( service,
-                                                  clusterServiceFactory,
-                                                  false );
+            ioService = new IOServiceClusterImpl(service,
+                                                 clusterServiceFactory,
+                                                 false,
+                                                 managedExecutorService);
         }
 
-        this.ioSearchService = new IOSearchServiceImpl( config.getSearchIndex(),
-                                                        ioService );
+        this.ioSearchService = new IOSearchServiceImpl(config.getSearchIndex(),
+                                                       ioService);
     }
 
     @Produces
@@ -120,9 +128,8 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
     public User getIdentity() {
         try {
             return authenticationService.getUser();
-        } catch ( final IllegalStateException ex ) {
-            return new UserImpl( "system" );
+        } catch (final IllegalStateException ex) {
+            return new UserImpl("system");
         }
     }
-
 }

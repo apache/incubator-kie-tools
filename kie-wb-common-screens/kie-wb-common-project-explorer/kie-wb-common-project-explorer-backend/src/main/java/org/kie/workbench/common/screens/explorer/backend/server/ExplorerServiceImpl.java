@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
@@ -29,7 +29,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.thoughtworks.xstream.XStream;
-import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
 import org.guvnor.common.services.project.model.Package;
@@ -58,24 +57,19 @@ import org.uberfire.backend.server.UserServicesImpl;
 import org.uberfire.backend.server.VFSLockServiceImpl;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.commons.async.DescriptiveRunnable;
-import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.ext.editor.commons.backend.service.helper.CopyHelper;
 import org.uberfire.ext.editor.commons.backend.service.helper.RenameHelper;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.Files;
-import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static java.util.Collections.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static java.util.Collections.emptyList;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
 
 @Service
 @Dependent
@@ -144,6 +138,9 @@ public class ExplorerServiceImpl
     @Inject
     //@AppResourcesAuthz
     private AuthorizationManager authorizationManager;
+
+    @Inject
+    private ManagedExecutorService executorService;
 
     private XStream xs = new XStream();
 
@@ -261,7 +258,7 @@ public class ExplorerServiceImpl
             final org.uberfire.java.nio.file.Path userNavPath = userServices.buildPath( "explorer", "user.nav" );
             final org.uberfire.java.nio.file.Path lastUserNavPath = userServices.buildPath( "explorer", "last.user.nav" );
 
-            SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
+            this.executorService.execute( new DescriptiveRunnable() {
                 @Override
                 public String getDescription() {
                     return "Serialize Navigation State";

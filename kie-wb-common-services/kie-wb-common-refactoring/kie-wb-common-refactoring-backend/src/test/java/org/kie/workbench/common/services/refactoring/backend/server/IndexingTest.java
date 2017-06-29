@@ -16,12 +16,6 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executors;
+import javax.enterprise.concurrent.ManagedExecutorService;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.analysis.Analyzer;
@@ -45,10 +41,9 @@ import org.junit.BeforeClass;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ImpactAnalysisAnalyzerWrapperFactory;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.ext.metadata.backend.lucene.index.CustomAnalyzerWrapperFactory;
@@ -62,6 +57,10 @@ import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public abstract class IndexingTest<T extends ResourceTypeDefinition> {
 
@@ -170,7 +169,16 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
                 config = configBuilder.build();
             }
 
-            ioService = new IOServiceIndexedImpl(config.getIndexEngine());
+            ManagedExecutorService executorService = mock(ManagedExecutorService.class);
+            doAnswer(invocationOnMock -> {
+                Executors.newCachedThreadPool(new DescriptiveThreadFactory())
+                        .execute(invocationOnMock.getArgumentAt(0,
+                                                                Runnable.class));
+                return null;
+            }).when(executorService).execute(any());
+
+            ioService = new IOServiceIndexedImpl(config.getIndexEngine(),
+                                                 executorService);
             final TestIndexer indexer = getIndexer();
             IndexersFactory.clear();
             IndexersFactory.addIndexer(indexer);
@@ -204,7 +212,7 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
     }
 
     protected KieProject getKieProjectMock(final String testProjectRoot,
-                                         final String testProjectName) {
+                                           final String testProjectName) {
         final org.uberfire.backend.vfs.Path mockRoot = mock(org.uberfire.backend.vfs.Path.class);
         when(mockRoot.toURI()).thenReturn(testProjectRoot);
 

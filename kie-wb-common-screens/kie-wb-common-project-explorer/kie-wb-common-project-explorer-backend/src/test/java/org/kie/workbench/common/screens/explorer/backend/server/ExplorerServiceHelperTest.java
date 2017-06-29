@@ -21,6 +21,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Executors;
+
+import javax.enterprise.concurrent.ManagedExecutorService;
 
 import org.guvnor.common.services.backend.file.LinkedFilter;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
@@ -41,6 +44,7 @@ import org.uberfire.backend.server.UserServicesImpl;
 import org.uberfire.backend.server.VFSLockServiceImpl;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -147,6 +151,14 @@ public class ExplorerServiceHelperTest {
             }
         } );
 
+        ManagedExecutorService executorService = mock(ManagedExecutorService.class);
+        doAnswer(invocationOnMock -> {
+            Executors.newCachedThreadPool(new DescriptiveThreadFactory())
+                    .execute(invocationOnMock.getArgumentAt(0,
+                                                            Runnable.class));
+            return null;
+        }).when(executorService).execute(any());
+
         helper = spy( new ExplorerServiceHelper( projectService,
                                                  folderListingResolver,
                                                  ioService,
@@ -156,7 +168,8 @@ public class ExplorerServiceHelperTest {
                                                  userServices,
                                                  deleteService,
                                                  renameService,
-                                                 copyService ) );
+                                                 copyService,
+                                                 executorService) );
     }
 
     @Test

@@ -47,7 +47,7 @@ import static java.util.stream.StreamSupport.stream;
  * A simple LRU cache for Builders
  */
 @ApplicationScoped
-public class LRUBuilderCache extends LRUCache<Project, Builder > {
+public class LRUBuilderCache extends LRUCache<Project, Builder> {
 
     private IOService ioService;
 

@@ -19,7 +19,9 @@ package org.kie.workbench.common.screens.server.management.backend.runtime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import javax.annotation.PostConstruct;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -38,19 +40,17 @@ import org.kie.server.controller.impl.KieServerInstanceManager;
 import org.kie.workbench.common.screens.server.management.model.ContainerRuntimeOperation;
 import org.kie.workbench.common.screens.server.management.model.ContainerRuntimeState;
 import org.kie.workbench.common.screens.server.management.model.ContainerUpdateEvent;
-import org.uberfire.commons.async.DisposableExecutor;
-import org.uberfire.commons.async.SimpleAsyncExecutorService;
 
 import static org.kie.workbench.common.screens.server.management.model.ContainerRuntimeOperation.*;
 
 @ApplicationScoped
 public class AsyncKieServerInstanceManager extends KieServerInstanceManager {
 
-    private DisposableExecutor executor;
+    private ManagedExecutorService executor;
     private NotificationService notificationService;
     private Event<ContainerUpdateEvent> containerUpdateEvent;
 
-    protected void setExecutor(DisposableExecutor executor) {
+    protected void setExecutor(ManagedExecutorService executor) {
         this.executor = executor;
     }
 
@@ -58,14 +58,10 @@ public class AsyncKieServerInstanceManager extends KieServerInstanceManager {
     }
 
     @Inject
-    public AsyncKieServerInstanceManager(NotificationService notificationService, Event<ContainerUpdateEvent> containerUpdateEvent) {
+    public AsyncKieServerInstanceManager(NotificationService notificationService, Event<ContainerUpdateEvent> containerUpdateEvent,ManagedExecutorService executorService) {
         this.notificationService = notificationService;
         this.containerUpdateEvent = containerUpdateEvent;
-    }
-
-    @PostConstruct
-    public void configure() {
-        executor = SimpleAsyncExecutorService.getDefaultInstance();
+        this.executor = executorService;
     }
 
     @Override

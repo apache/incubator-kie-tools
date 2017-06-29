@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.inject.Instance;
 
 import org.apache.commons.io.FileUtils;
@@ -52,6 +54,7 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
@@ -218,7 +221,15 @@ public abstract class BaseLibraryIndexingTest {
                 config = configBuilder.build();
             }
 
-            ioService = new IOServiceIndexedImpl(config.getIndexEngine());
+            ManagedExecutorService executorService = mock(ManagedExecutorService.class);
+            doAnswer(invocationOnMock -> {
+                Executors.newCachedThreadPool(new DescriptiveThreadFactory())
+                        .execute(invocationOnMock.getArgumentAt(0,
+                                                                Runnable.class));
+                return null;
+            }).when(executorService).execute(any());
+
+            ioService = new IOServiceIndexedImpl(config.getIndexEngine(),executorService);
 
             final LibraryIndexer indexer = new LibraryIndexer(new LibraryAssetTypeDefinition());
             IndexersFactory.clear();

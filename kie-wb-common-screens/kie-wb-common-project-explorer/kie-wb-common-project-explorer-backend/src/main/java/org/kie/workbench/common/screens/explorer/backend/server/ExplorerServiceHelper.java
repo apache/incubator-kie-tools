@@ -21,8 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -50,7 +49,6 @@ import org.uberfire.backend.server.VFSLockServiceImpl;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.async.DescriptiveRunnable;
-import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -58,12 +56,12 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 
-import static java.util.Collections.*;
-import static java.util.stream.Collectors.toList;
+import static java.util.Collections.emptyList;
 
 public class ExplorerServiceHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( ExplorerServiceHelper.class );
+    private ManagedExecutorService executorService;
 
     private LinkedDotFileFilter dotFileFilter = new LinkedDotFileFilter();
     private LinkedRegularFileFilter regularFileFilter = new LinkedRegularFileFilter( dotFileFilter );
@@ -86,16 +84,17 @@ public class ExplorerServiceHelper {
     }
 
     @Inject
-    public ExplorerServiceHelper( final KieProjectService projectService,
-                                  final FolderListingResolver folderListingResolver,
-                                  @Named("ioStrategy") final IOService ioService,
-                                  @Named("configIO") final IOService ioServiceConfig,
-                                  final VFSLockServiceImpl lockService,
-                                  final MetadataService metadataService,
-                                  final UserServicesImpl userServices,
-                                  final DeleteService deleteService,
-                                  final RenameService renameService,
-                                  final CopyService copyService ) {
+    public ExplorerServiceHelper(final KieProjectService projectService,
+                                 final FolderListingResolver folderListingResolver,
+                                 @Named("ioStrategy") final IOService ioService,
+                                 @Named("configIO") final IOService ioServiceConfig,
+                                 final VFSLockServiceImpl lockService,
+                                 final MetadataService metadataService,
+                                 final UserServicesImpl userServices,
+                                 final DeleteService deleteService,
+                                 final RenameService renameService,
+                                 final CopyService copyService,
+                                 final ManagedExecutorService executorService) {
         this.projectService = projectService;
         this.folderListingResolver = folderListingResolver;
         this.ioService = ioService;
@@ -106,6 +105,7 @@ public class ExplorerServiceHelper {
         this.deleteService = deleteService;
         this.renameService = renameService;
         this.copyService = copyService;
+        this.executorService = executorService;
     }
 
     public FolderItem toFolderItem( final org.guvnor.common.services.project.model.Package pkg ) {
@@ -364,7 +364,7 @@ public class ExplorerServiceHelper {
             _selectedPackage = null;
         }
 
-        SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
+        this.executorService.execute( new DescriptiveRunnable() {
             @Override
             public String getDescription() {
                 return "Serialize Navigation State";
