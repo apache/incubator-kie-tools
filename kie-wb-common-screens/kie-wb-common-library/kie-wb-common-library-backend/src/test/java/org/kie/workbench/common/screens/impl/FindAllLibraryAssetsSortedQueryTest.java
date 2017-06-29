@@ -41,11 +41,11 @@ import static org.mockito.Mockito.*;
 public class FindAllLibraryAssetsSortedQueryTest
         extends BaseLibraryIndexingTest {
 
-    private static final String TEST_PROJECT_ROOT = "/find/all/library/assets/sorted/query/test/mock/project/root";
-    private static final String TEST_PROJECT_NAME = "mock-project";
+    private static final String TEST_PROJECT_ROOT1 = "/find/all/library/assets/sorted/query/test/mock/project1/root";
+    private static final String TEST_PROJECT_NAME1 = "mock-project1";
 
-    private static final String SOME_OTHER_PROJECT_ROOT = "/find/all/library/assets/sorted/query/test/some/other/projectRoot";
-    private static final String SOME_OTHER_PROJECT_NAME = "other-mock-project";
+    private static final String TEST_PROJECT_ROOT2 = "/find/all/library/assets/sorted/query/test/mock/project2/root";
+    private static final String TEST_PROJECT_NAME2 = "mock-project2";
 
     protected Set<NamedQuery> getQueries() {
         return new HashSet<NamedQuery>() {{
@@ -68,12 +68,12 @@ public class FindAllLibraryAssetsSortedQueryTest
                     @Override
                     public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                         Path resource = (Path) invocationOnMock.getArguments()[0];
-                        if (resource.toURI().contains(TEST_PROJECT_ROOT)) {
-                            return getKieProjectMock(TEST_PROJECT_ROOT,
-                                                     TEST_PROJECT_NAME);
-                        } else if (resource.toURI().contains(SOME_OTHER_PROJECT_ROOT)) {
-                            return getKieProjectMock(SOME_OTHER_PROJECT_ROOT,
-                                                     SOME_OTHER_PROJECT_NAME);
+                        if (resource.toURI().contains(TEST_PROJECT_ROOT1)) {
+                            return getKieProjectMock(TEST_PROJECT_ROOT1,
+                                                     TEST_PROJECT_NAME1);
+                        } else if (resource.toURI().contains(TEST_PROJECT_ROOT2)) {
+                            return getKieProjectMock(TEST_PROJECT_ROOT2,
+                                                     TEST_PROJECT_NAME2);
                         } else {
                             return null;
                         }
@@ -87,19 +87,19 @@ public class FindAllLibraryAssetsSortedQueryTest
     public void listAllInProjectSorted() throws IOException, InterruptedException {
 
         //Add test files
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT1,
                     "rule3.rule");
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT1,
                     "functions.functions");
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT1,
                     "drl3.ext3");
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT1,
                     "drl2.ext2");
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT1,
                     "drl1.drl");
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT1,
                     "RULE4.rule");
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT1,
                     "DRL4.drl");
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
@@ -107,7 +107,7 @@ public class FindAllLibraryAssetsSortedQueryTest
         {
             final RefactoringPageRequest request = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                  add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT,
+                                                                                  add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT1,
                                                                                                                                TermSearchType.WILDCARD));
                                                                               }},
                                                                               0,
@@ -147,19 +147,19 @@ public class FindAllLibraryAssetsSortedQueryTest
     public void listAllInProjectSortedPaged() throws IOException, InterruptedException {
 
         //Add test files
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT2,
                     "rule3.rule");
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT2,
                     "functions.functions");
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT2,
                     "drl3.ext3");
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT2,
                     "drl2.ext2");
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT2,
                     "drl1.drl");
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT2,
                     "RULE4.rule");
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_PROJECT_ROOT2,
                     "DRL4.drl");
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
@@ -167,14 +167,14 @@ public class FindAllLibraryAssetsSortedQueryTest
         {
             final RefactoringPageRequest request1 = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                                new HashSet<ValueIndexTerm>() {{
-                                                                                   add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT,
+                                                                                   add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT2,
                                                                                                                                 TermSearchType.WILDCARD));
                                                                                }},
                                                                                0,
                                                                                4);
             final RefactoringPageRequest request2 = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                                new HashSet<ValueIndexTerm>() {{
-                                                                                   add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT,
+                                                                                   add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT2,
                                                                                                                                 TermSearchType.WILDCARD));
                                                                                }},
                                                                                4,
