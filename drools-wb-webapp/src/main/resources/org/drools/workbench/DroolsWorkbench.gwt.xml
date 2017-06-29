@@ -14,7 +14,10 @@
   <inherits name="org.uberfire.UberfireDocksClient"/>
   <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
   <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
+  <inherits name="org.uberfire.preferences.UberfirePreferencesAPI"/>
   <inherits name="org.uberfire.ext.preferences.UberfirePreferences"/>
+  <inherits name="org.uberfire.UberfireBackend"/>
+
 
   <!-- Guvnor dependencies -->
   <inherits name='org.guvnor.asset.management.GuvnorAssetMgmtClient'/>

@@ -12,6 +12,7 @@
   <logger name="org.kie" level="info"/>
   <logger name="org.drools" level="info"/>
   <logger name="org.guvnor" level="info"/>
+  <logger name="org.uberfire.backend" level="debug"/>
 
   <root level="error">
     <appender-ref ref="consoleAppender" />

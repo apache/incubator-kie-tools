@@ -36,6 +36,9 @@
   <logger name="org.drools">
     <level value="INFO"/>
   </logger>
+  <logger name="org.uberfire.backend">
+    <level value="DEBUG"/>
+  </logger>
   <root>
     <priority value="ERROR"/>
     <appender-ref ref="CONSOLE"/>
