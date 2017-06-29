@@ -36,7 +36,7 @@ import javax.interceptor.InterceptorBinding;
 @InterceptorBinding
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ElementType.TYPE, ElementType.METHOD})
 public @interface WorkspaceScoped {
 
 }
