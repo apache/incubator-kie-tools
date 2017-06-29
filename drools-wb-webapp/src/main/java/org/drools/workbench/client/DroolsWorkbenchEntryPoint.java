@@ -22,6 +22,8 @@ import org.drools.workbench.client.resources.i18n.AppConstants;
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.kie.workbench.common.services.shared.preferences.config.WorkbenchPreferenceScopes;
+import org.kie.workbench.common.services.shared.preferences.scopes.GlobalPreferenceScope;
 import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
 import org.kie.workbench.common.workbench.client.admin.resources.i18n.PreferencesConstants;
 import org.kie.workbench.common.workbench.client.entrypoint.DefaultWorkbenchEntryPoint;
@@ -50,6 +52,8 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
 
     protected DefaultAdminPageHelper adminPageHelper;
 
+    protected GlobalPreferenceScope globalPreferenceScope;
+
     @Inject
     public DroolsWorkbenchEntryPoint(final Caller<AppConfigService> appConfigService,
                                      final ActivityBeansCache activityBeansCache,
@@ -57,7 +61,8 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
                                      final DefaultWorkbenchFeaturesMenusHelper menusHelper,
                                      final WorkbenchMenuBarPresenter menuBar,
                                      final AdminPage adminPage,
-                                     final DefaultAdminPageHelper adminPageHelper) {
+                                     final DefaultAdminPageHelper adminPageHelper,
+                                     final GlobalPreferenceScope globalPreferenceScope) {
         super(appConfigService,
               activityBeansCache);
         this.placeManager = placeManager;
@@ -65,6 +70,7 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
         this.menuBar = menuBar;
         this.adminPage = adminPage;
         this.adminPageHelper = adminPageHelper;
+        this.globalPreferenceScope = globalPreferenceScope;
     }
 
     @Override
@@ -77,13 +83,15 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
                                 "LibraryPreferences",
                                 AppConstants.INSTANCE.Library(),
                                 "fa-cubes",
-                                "preferences");
+                                "preferences",
+                                globalPreferenceScope.resolve());
 
         adminPage.addPreference("root",
                                 "ArtifactRepositoryPreference",
                                 AppConstants.INSTANCE.ArtifactRepository(),
                                 "fa-archive",
-                                "preferences");
+                                "preferences",
+                                globalPreferenceScope.resolve());
 
         final AbstractWorkbenchPerspectiveActivity defaultPerspective = menusHelper.getDefaultPerspectiveActivity();
 

@@ -25,6 +25,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.shared.preferences.scopes.GlobalPreferenceScope;
 import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
 import org.kie.workbench.common.workbench.client.menu.DefaultWorkbenchFeaturesMenusHelper;
 import org.mockito.ArgumentCaptor;
@@ -67,6 +68,9 @@ public class DroolsWorkbenchEntryPointTest {
     @Mock
     protected DefaultAdminPageHelper adminPageHelper;
 
+    @Mock
+    protected GlobalPreferenceScope globalPreferenceScope;
+
     private DroolsWorkbenchEntryPoint droolsWorkbenchEntryPoint;
 
     @Before
@@ -79,7 +83,8 @@ public class DroolsWorkbenchEntryPointTest {
                                                                       menusHelper,
                                                                       menuBar,
                                                                       adminPage,
-                                                                      adminPageHelper));
+                                                                      adminPageHelper,
+                                                                      globalPreferenceScope));
         mockMenuHelper();
         mockConstants();
     }
