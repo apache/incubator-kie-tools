@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,16 @@
 
 package org.uberfire.preferences.shared.bean;
 
-/**
- * Represents a generated managed bean implementation of a preference bean.
- * @param <T> The preference bean type implementing the interface.
- */
-public interface BasePreferenceBean<T> extends BasePreference<T> {
+import org.uberfire.preferences.shared.PreferenceScope;
 
+/**
+ * Used to resolve scopes on client and server-side.
+ */
+public interface PreferenceScopeBean {
+
+    /**
+     * Builds the scope with the present context considered.
+     * @return A scope.
+     */
+    PreferenceScope resolve();
 }

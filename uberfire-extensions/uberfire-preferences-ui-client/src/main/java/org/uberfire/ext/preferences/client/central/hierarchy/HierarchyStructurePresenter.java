@@ -16,14 +16,14 @@
 
 package org.uberfire.ext.preferences.client.central.hierarchy;
 
+import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 public interface HierarchyStructurePresenter {
 
-    void init(String rootIdentifier);
-
     void init(String rootIdentifier,
-              PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategyInfo);
+              PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategyInfo,
+              PreferenceScope scope);
 
     HierarchyStructureView getView();
 }

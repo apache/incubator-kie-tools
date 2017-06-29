@@ -25,6 +25,7 @@ import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.bean.BasePreference;
 import org.uberfire.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.preferences.shared.bean.PreferenceBeanServerStore;
@@ -132,9 +133,10 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanStore {
     }
 
     @Override
-    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveDefaultValue(final T defaultValue,
-                                                                                                    final Command successCallback,
-                                                                                                    final ParameterizedCommand<Throwable> errorCallback) {
+    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save(T portablePreference,
+                                                                                        PreferenceScope scope,
+                                                                                        Command successCallback,
+                                                                                        ParameterizedCommand<Throwable> errorCallback) {
         store.call(voidReturn -> {
                        if (successCallback != null) {
                            successCallback.execute();
@@ -145,7 +147,8 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanStore {
                            errorCallback.execute(throwable);
                        }
                        return false;
-                   }).saveDefaultValue(defaultValue);
+                   }).save(portablePreference,
+                           scope);
     }
 
     @Override
@@ -182,5 +185,24 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanStore {
                        return false;
                    }).save(portablePreferences,
                            scopeResolutionStrategyInfo);
+    }
+
+    @Override
+    public void save(Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
+                     PreferenceScope scope,
+                     Command successCallback,
+                     ParameterizedCommand<Throwable> errorCallback) {
+        store.call(voidReturn -> {
+                       if (successCallback != null) {
+                           successCallback.execute();
+                       }
+                   },
+                   (message, throwable) -> {
+                       if (errorCallback != null) {
+                           errorCallback.execute(throwable);
+                       }
+                       return false;
+                   }).save(portablePreferences,
+                           scope);
     }
 }

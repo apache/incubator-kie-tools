@@ -26,12 +26,15 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.uberfire.annotations.Customizable;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.preferences.client.central.PreferencesCentralPerspective;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralInitializationEvent;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.preferences.shared.PreferenceScope;
+import org.uberfire.preferences.shared.PreferenceScopeResolutionStrategy;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 @ApplicationScoped
@@ -41,6 +44,8 @@ public class AdminPageImpl implements AdminPage {
 
     private Event<PreferencesCentralInitializationEvent> preferencesCentralInitializationEvent;
 
+    private PreferenceScopeResolutionStrategy resolutionStrategy;
+
     private Map<String, String> screenTitleByIdentifier;
 
     private Map<String, Map<String, List<AdminTool>>> toolsByCategoryByScreen;
@@ -49,14 +54,17 @@ public class AdminPageImpl implements AdminPage {
 
     public AdminPageImpl() {
         this(null,
+             null,
              null);
     }
 
     @Inject
     public AdminPageImpl(final PlaceManager placeManager,
-                         final Event<PreferencesCentralInitializationEvent> preferencesCentralInitializationEvent) {
+                         final Event<PreferencesCentralInitializationEvent> preferencesCentralInitializationEvent,
+                         @Customizable final PreferenceScopeResolutionStrategy resolutionStrategy) {
         this.placeManager = placeManager;
         this.preferencesCentralInitializationEvent = preferencesCentralInitializationEvent;
+        this.resolutionStrategy = resolutionStrategy;
         this.toolsByCategoryByScreen = new HashMap<>();
         this.screenTitleByIdentifier = new HashMap<>();
     }
@@ -135,7 +143,7 @@ public class AdminPageImpl implements AdminPage {
                       title,
                       iconCss,
                       category,
-                      null);
+                      (Supplier<PreferenceScopeResolutionStrategyInfo>) null);
     }
 
     @Override
@@ -145,6 +153,39 @@ public class AdminPageImpl implements AdminPage {
                               final String iconCss,
                               final String category,
                               final Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier) {
+        addPreference(screen,
+                      identifier,
+                      title,
+                      iconCss,
+                      category,
+                      customScopeResolutionStrategySupplier,
+                      null);
+    }
+
+    @Override
+    public void addPreference(final String screen,
+                              final String identifier,
+                              final String title,
+                              final String iconCss,
+                              final String category,
+                              final PreferenceScope preferenceScope) {
+        addPreference(screen,
+                      identifier,
+                      title,
+                      iconCss,
+                      category,
+                      null,
+                      preferenceScope);
+    }
+
+    @Override
+    public void addPreference(final String screen,
+                              final String identifier,
+                              final String title,
+                              final String iconCss,
+                              final String category,
+                              final Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier,
+                              final PreferenceScope preferenceScope) {
 
         addTool(screen,
                 title,
@@ -153,7 +194,8 @@ public class AdminPageImpl implements AdminPage {
                 () -> {
                     final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy = customScopeResolutionStrategySupplier != null ? customScopeResolutionStrategySupplier.get() : null;
                     final PreferencesCentralInitializationEvent initEvent = new PreferencesCentralInitializationEvent(identifier,
-                                                                                                                      customScopeResolutionStrategy);
+                                                                                                                      customScopeResolutionStrategy,
+                                                                                                                      preferenceScope);
                     placeManager.goTo(new DefaultPlaceRequest(PreferencesCentralPerspective.IDENTIFIER));
                     preferencesCentralInitializationEvent.fire(initEvent);
                 });

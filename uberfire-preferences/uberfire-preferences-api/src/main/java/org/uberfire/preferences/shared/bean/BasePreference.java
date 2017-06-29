@@ -18,6 +18,7 @@ package org.uberfire.preferences.shared.bean;
 
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 /**
@@ -133,6 +134,36 @@ public interface BasePreference<T> extends Preference {
      * @param errorCallback Error callback that returns the exception that occurred (if any).
      */
     default void save(final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy,
+                      final Command successCallback,
+                      final ParameterizedCommand<Throwable> errorCallback) {
+        throw new UnsupportedOperationException("You should call this method only for default qualified injected instances.");
+    }
+
+    /**
+     * Saves the preference content recursively through its properties.
+     * @param customScope Custom preference scope to be used.
+     */
+    default void save(final PreferenceScope customScope) {
+        throw new UnsupportedOperationException("You should call this method only for default qualified injected instances.");
+    }
+
+    /**
+     * Saves the preference content recursively through its properties.
+     * @param customScope Custom preference scope to be used.
+     * @param errorCallback Error callback that returns the exception that occurred (if any).
+     */
+    default void save(final PreferenceScope customScope,
+                      final ParameterizedCommand<Throwable> errorCallback) {
+        throw new UnsupportedOperationException("You should call this method only for default qualified injected instances.");
+    }
+
+    /**
+     * Saves the preference content recursively through its properties.
+     * @param customScope Custom preference scope to be used.
+     * @param successCallback Success callback that indicates that the preference was saved.
+     * @param errorCallback Error callback that returns the exception that occurred (if any).
+     */
+    default void save(final PreferenceScope customScope,
                       final Command successCallback,
                       final ParameterizedCommand<Throwable> errorCallback) {
         throw new UnsupportedOperationException("You should call this method only for default qualified injected instances.");

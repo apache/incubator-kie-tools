@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.preferences.client.event;
 
+import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 public class PreferencesCentralInitializationEvent {
@@ -24,15 +25,14 @@ public class PreferencesCentralInitializationEvent {
 
     private PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy;
 
-    public PreferencesCentralInitializationEvent(final String preferenceIdentifier) {
-        this.preferenceIdentifier = preferenceIdentifier;
-        this.customScopeResolutionStrategy = null;
-    }
+    private PreferenceScope preferenceScope;
 
     public PreferencesCentralInitializationEvent(final String preferenceIdentifier,
-                                                 final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy) {
+                                                 final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy,
+                                                 final PreferenceScope preferenceScope) {
         this.preferenceIdentifier = preferenceIdentifier;
         this.customScopeResolutionStrategy = customScopeResolutionStrategy;
+        this.preferenceScope = preferenceScope;
     }
 
     public String getPreferenceIdentifier() {
@@ -47,8 +47,12 @@ public class PreferencesCentralInitializationEvent {
         return customScopeResolutionStrategy;
     }
 
+    public PreferenceScope getPreferenceScope() {
+        return preferenceScope;
+    }
+
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -56,12 +60,15 @@ public class PreferencesCentralInitializationEvent {
             return false;
         }
 
-        final PreferencesCentralInitializationEvent that = (PreferencesCentralInitializationEvent) o;
+        PreferencesCentralInitializationEvent that = (PreferencesCentralInitializationEvent) o;
 
         if (preferenceIdentifier != null ? !preferenceIdentifier.equals(that.preferenceIdentifier) : that.preferenceIdentifier != null) {
             return false;
         }
-        return !(customScopeResolutionStrategy != null ? !customScopeResolutionStrategy.equals(that.customScopeResolutionStrategy) : that.customScopeResolutionStrategy != null);
+        if (customScopeResolutionStrategy != null ? !customScopeResolutionStrategy.equals(that.customScopeResolutionStrategy) : that.customScopeResolutionStrategy != null) {
+            return false;
+        }
+        return !(preferenceScope != null ? !preferenceScope.equals(that.preferenceScope) : that.preferenceScope != null);
     }
 
     @Override
@@ -69,6 +76,8 @@ public class PreferencesCentralInitializationEvent {
         int result = preferenceIdentifier != null ? preferenceIdentifier.hashCode() : 0;
         result = ~~result;
         result = 31 * result + (customScopeResolutionStrategy != null ? customScopeResolutionStrategy.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (preferenceScope != null ? preferenceScope.hashCode() : 0);
         result = ~~result;
         return result;
     }

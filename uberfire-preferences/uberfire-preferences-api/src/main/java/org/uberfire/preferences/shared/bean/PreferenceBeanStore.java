@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 /**
@@ -80,6 +81,20 @@ public interface PreferenceBeanStore {
                                                                                  ParameterizedCommand<Throwable> errorCallback);
 
     /**
+     * Saves all preference data, following the passed scope resolution strategy.
+     * @param portablePreference Preference instance to be saved.
+     * @param scope Custom scope inside which the preference should be saved.
+     * @param successCallback Success callback that indicates that the preference was saved.
+     * @param errorCallback Error callback that returns the exception that occurred (if any).
+     * @param <U> Preference bean type.
+     * @param <T> Preference bean generated portable type.
+     */
+    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save(T portablePreference,
+                                                                                 PreferenceScope scope,
+                                                                                 Command successCallback,
+                                                                                 ParameterizedCommand<Throwable> errorCallback);
+
+    /**
      * Saves all preferences passed.
      * @param portablePreferences Preference instances to be saved.
      * @param successCallback Success callback that indicates that the preference was saved.
@@ -102,14 +117,14 @@ public interface PreferenceBeanStore {
               ParameterizedCommand<Throwable> errorCallback);
 
     /**
-     * Saves all preference data, in the last scope of the hierarchy.
-     * @param defaultValue Preference instance to be saved as default.
+     * Saves all preferences passed, following the passed scope resolution strategy.
+     * @param portablePreferences Preference instances to be saved.
+     * @param scope Custom scope inside which the preference should be saved.
      * @param successCallback Success callback that indicates that the preference was saved.
      * @param errorCallback Error callback that returns the exception that occurred (if any).
-     * @param <U> Preference bean type.
-     * @param <T> Preference bean generated portable type.
      */
-    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveDefaultValue(T defaultValue,
-                                                                                             Command successCallback,
-                                                                                             ParameterizedCommand<Throwable> errorCallback);
+    void save(Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
+              PreferenceScope scope,
+              Command successCallback,
+              ParameterizedCommand<Throwable> errorCallback);
 }

@@ -20,6 +20,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.annotation.Generated;
 
+import org.uberfire.annotations.Customizable;
+import org.uberfire.preferences.shared.PreferenceScopeResolutionStrategy;
+import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.bean.BasePreferenceBean;
 import org.uberfire.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.preferences.shared.bean.PreferenceBeanStore;
@@ -35,10 +38,14 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class ${targetClassName} extends ${sourceClassName} implements BasePreferenceBean<${sourceClassName}> {
 
     private PreferenceBeanStore store;
+    
+    private PreferenceScopeResolutionStrategy resolutionStrategy;
 
     @Inject
-    public ${targetClassName}( final PreferenceBeanStore store ) {
+    public ${targetClassName}( final PreferenceBeanStore store,
+                               @Customizable final PreferenceScopeResolutionStrategy resolutionStrategy ) {
         this.store = store;
+        this.resolutionStrategy = resolutionStrategy;
     }
 
     @Override
@@ -149,27 +156,24 @@ public class ${targetClassName} extends ${sourceClassName} implements BasePrefer
     }
 
     @Override
-    public void saveDefaultValue() {
-        saveDefaultValue( null );
+    public void save( final PreferenceScope customScope ) {
+        save( customScope, null );
     }
 
     @Override
-    public void saveDefaultValue( final ParameterizedCommand<Throwable> errorCallback ) {
-        saveDefaultValue( null, errorCallback);
+    public void save( final PreferenceScope customScope,
+                      final ParameterizedCommand<Throwable> errorCallback ) {
+        save( customScope, null, errorCallback );
     }
 
     @Override
-    public void saveDefaultValue( final Command successCallback,
-                                  final ParameterizedCommand<Throwable> errorCallback ) {
-        final ${sourceClassName} defaultValue = defaultValue( new ${sourceClassName}PortableGeneratedImpl() );
-
-        if ( defaultValue != null ) {
-            if ( defaultValue instanceof ${sourceClassName}PortableGeneratedImpl ) {
-                store.saveDefaultValue( (${sourceClassName}PortableGeneratedImpl) defaultValue, successCallback, errorCallback );
-            } else {
-                throw new RuntimeException( "Your ${sourceClassName}.defaultValue( ${sourceClassName} emptyPreference ) implementation must return the emptyPreference parameter, only with its attributes modified." );
-            }
-        }
+    public void save( final PreferenceScope customScope,
+                      final Command successCallback,
+                      final ParameterizedCommand<Throwable> errorCallback ) {
+        store.save( createPortableCopy(),
+                    customScope,
+                    successCallback,
+                    errorCallback );
     }
 
     private BasePreferencePortable<${sourceClassName}> createPortableCopy() {

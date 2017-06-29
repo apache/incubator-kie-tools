@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 /**
@@ -98,6 +99,42 @@ public interface AdminPage {
                        String iconCss,
                        String category,
                        Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier);
+
+    /**
+     * Adds a new admin tool that links to a preference to the admin page.
+     * @param screen Identifier for the admin screen where the preference will be inserted.
+     * @param identifier Preference identifier.
+     * @param title Preference title that will be displayed on the tool accessor.
+     * @param iconCss CSS class related to the shortcut icon.
+     * @param category Defines the group inside which the shortcut will be.
+     * @param preferenceScope Scope where the preferences will be saved when edited.
+     * It will be used when the tool is selected.
+     */
+    void addPreference(String screen,
+                       String identifier,
+                       String title,
+                       String iconCss,
+                       String category,
+                       PreferenceScope preferenceScope);
+
+    /**
+     * Adds a new admin tool that links to a preference to the admin page.
+     * @param screen Identifier for the admin screen where the preference will be inserted.
+     * @param identifier Preference identifier.
+     * @param title Preference title that will be displayed on the tool accessor.
+     * @param iconCss CSS class related to the shortcut icon.
+     * @param category Defines the group inside which the shortcut will be.
+     * @param customScopeResolutionStrategySupplier Supplier for a custom preference scope resolution strategy.
+     * @param preferenceScope Scope where the preferences will be saved when edited.
+     * It will be used when the tool is selected.
+     */
+    void addPreference(String screen,
+                       String identifier,
+                       String title,
+                       String iconCss,
+                       String category,
+                       Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier,
+                       PreferenceScope preferenceScope);
 
     /**
      * Returns all added admin tools, grouped by their category.

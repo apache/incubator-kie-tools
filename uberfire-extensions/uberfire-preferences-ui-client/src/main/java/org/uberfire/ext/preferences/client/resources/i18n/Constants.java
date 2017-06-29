@@ -37,4 +37,7 @@ public class Constants {
 
     @TranslationKey(defaultValue = "")
     public static final String PreferencesCentralPerspective_Preferences = "PreferencesCentralPerspective.Preferences";
+
+    @TranslationKey(defaultValue = "")
+    public static final String UnexpectedErrorWhileSaving = "UnexpectedErrorWhileSaving";
 }

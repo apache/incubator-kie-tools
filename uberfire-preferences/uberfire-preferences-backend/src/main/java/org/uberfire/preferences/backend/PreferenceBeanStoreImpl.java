@@ -86,6 +86,9 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
         Class<U> clazz = emptyPortablePreference.getPojoClass();
         T portablePreference = preferenceStore.get(scopeResolutionStrategyInfo,
                                                    emptyPortablePreference.identifier());
+        if (portablePreference == null) {
+            portablePreference = (T) emptyPortablePreference.defaultValue((U) emptyPortablePreference);
+        }
 
         try {
             return load(clazz,
@@ -132,8 +135,16 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
              defaultScopeResolutionStrategy.getInfo());
     }
 
-    private <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save(final T portablePreference,
-                                                                                         final PreferenceScope scope) {
+    @Override
+    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save(final T portablePreference,
+                                                                                        final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo) {
+        save(portablePreference,
+             scopeResolutionStrategyInfo.defaultScope());
+    }
+
+    @Override
+    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save(final T portablePreference,
+                                                                                        final PreferenceScope scope) {
         try {
             Class<U> clazz = portablePreference.getPojoClass();
             save(clazz,
@@ -151,13 +162,6 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
 
     @Override
     public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save(final T portablePreference,
-                                                                                        final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo) {
-        save(portablePreference,
-             scopeResolutionStrategyInfo.defaultScope());
-    }
-
-    @Override
-    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save(final T portablePreference,
                                                                                         final Command successCallback,
                                                                                         final ParameterizedCommand<Throwable> errorCallback) {
         save(portablePreference,
@@ -171,9 +175,20 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
                                                                                         final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                                                                                         final Command successCallback,
                                                                                         final ParameterizedCommand<Throwable> errorCallback) {
+        save(portablePreference,
+             scopeResolutionStrategyInfo.defaultScope(),
+             successCallback,
+             errorCallback);
+    }
+
+    @Override
+    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save(final T portablePreference,
+                                                                                        final PreferenceScope scope,
+                                                                                        final Command successCallback,
+                                                                                        final ParameterizedCommand<Throwable> errorCallback) {
         try {
             save(portablePreference,
-                 scopeResolutionStrategyInfo);
+                 scope);
         } catch (Exception e) {
             if (errorCallback != null) {
                 errorCallback.execute(e);
@@ -194,9 +209,16 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
     @Override
     public void save(final Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
                      final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo) {
+        save(portablePreferences,
+             scopeResolutionStrategyInfo.defaultScope());
+    }
+
+    @Override
+    public void save(final Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
+                     final PreferenceScope scope) {
         for (BasePreferencePortable<? extends BasePreference<?>> portablePreference : portablePreferences) {
             saveOne(portablePreference,
-                    scopeResolutionStrategyInfo.defaultScope());
+                    scope);
         }
     }
 
@@ -215,9 +237,20 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
                      final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                      final Command successCallback,
                      final ParameterizedCommand<Throwable> errorCallback) {
+        save(portablePreferences,
+             scopeResolutionStrategyInfo.defaultScope(),
+             successCallback,
+             errorCallback);
+    }
+
+    @Override
+    public void save(final Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
+                     final PreferenceScope scope,
+                     final Command successCallback,
+                     final ParameterizedCommand<Throwable> errorCallback) {
         try {
             save(portablePreferences,
-                 scopeResolutionStrategyInfo);
+                 scope);
         } catch (Exception e) {
             if (errorCallback != null) {
                 errorCallback.execute(e);
@@ -230,34 +263,7 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
     }
 
     @Override
-    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveDefaultValue(final T defaultValue) {
-        final List<PreferenceScope> scopeOrder = defaultScopeResolutionStrategy.getInfo().order();
-        final int lastIndex = scopeOrder.size() - 1;
-        final PreferenceScope lastScope = scopeOrder.get(lastIndex);
-
-        save(defaultValue,
-             lastScope);
-    }
-
-    @Override
-    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveDefaultValue(final T defaultValue,
-                                                                                                    final Command successCallback,
-                                                                                                    final ParameterizedCommand<Throwable> errorCallback) {
-        try {
-            saveDefaultValue(defaultValue);
-        } catch (Exception e) {
-            if (errorCallback != null) {
-                errorCallback.execute(e);
-            }
-        }
-
-        if (successCallback != null) {
-            successCallback.execute();
-        }
-    }
-
-    @Override
-    public PreferenceHierarchyElement<?> buildHierarchyStructureForPreference(String identifier) {
+    public PreferenceHierarchyElement<?> buildHierarchyStructureForPreference(final String identifier) {
         return buildHierarchyStructureForPreference(identifier,
                                                     defaultScopeResolutionStrategy.getInfo());
     }
@@ -323,6 +329,9 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
             T emptyPortablePreference = lookupPortablePreference(propertyType);
             T portablePreference = preferenceStore.get(scopeResolutionStrategyInfo,
                                                        emptyPortablePreference.identifier());
+            if (portablePreference == null) {
+                portablePreference = (T) emptyPortablePreference.defaultValue((U) emptyPortablePreference);
+            }
             loadedPreference = load(propertyType,
                                     portablePreference,
                                     scopeResolutionStrategyInfo);

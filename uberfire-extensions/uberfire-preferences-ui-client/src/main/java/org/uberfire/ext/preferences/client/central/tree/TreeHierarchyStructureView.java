@@ -57,4 +57,10 @@ public class TreeHierarchyStructureView implements IsElement,
     public String getSaveSuccessMessage() {
         return translationService.format(Constants.TreeHierarchyStructureView_SaveSuccess);
     }
+
+    @Override
+    public String getSaveErrorMessage(String message) {
+        return translationService.format(Constants.UnexpectedErrorWhileSaving,
+                                         message);
+    }
 }

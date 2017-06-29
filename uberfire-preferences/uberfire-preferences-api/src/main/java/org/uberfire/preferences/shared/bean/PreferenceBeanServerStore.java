@@ -19,6 +19,7 @@ package org.uberfire.preferences.shared.bean;
 import java.util.Collection;
 
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 /**
@@ -66,12 +67,14 @@ public interface PreferenceBeanServerStore extends PreferenceBeanStore {
                                                                                  PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo);
 
     /**
-     * Saves all preference data, in the last scope of the hierarchy.
-     * @param defaultValue Preference instance to be saved as default.
+     * Saves all preference data, inside the passed scope.
+     * @param portablePreference Preference instance to be saved.
+     * @param scope Custom scope inside which the preference should be saved.
      * @param <U> Preference bean type.
      * @param <T> Preference bean generated portable type.
      */
-    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveDefaultValue(T defaultValue);
+    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save(T portablePreference,
+                                                                                 PreferenceScope scope);
 
     /**
      * Saves all preferences passed.
@@ -86,6 +89,14 @@ public interface PreferenceBeanServerStore extends PreferenceBeanStore {
      */
     void save(Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
               PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo);
+
+    /**
+     * Saves all preferences passed, following the passed scope resolution strategy.
+     * @param portablePreferences Preference instances to be saved.
+     * @param scope Custom scope resolution strategy to follow.
+     */
+    void save(Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
+              PreferenceScope scope);
 
     /**
      * Builds a tree hierarchy that begins with the root preference bean which identifier was passed and

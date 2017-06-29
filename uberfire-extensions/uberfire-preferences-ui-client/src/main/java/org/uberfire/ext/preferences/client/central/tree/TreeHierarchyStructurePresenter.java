@@ -35,6 +35,9 @@ import org.uberfire.ext.preferences.client.central.hierarchy.HierarchyStructureV
 import org.uberfire.ext.preferences.client.event.HierarchyItemFormInitializationEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
 import org.uberfire.ext.preferences.client.utils.PreferenceFormBeansInfo;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.bean.BasePreference;
 import org.uberfire.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.preferences.shared.bean.PreferenceBeanServerStore;
@@ -59,6 +62,7 @@ public class TreeHierarchyStructurePresenter implements HierarchyStructurePresen
     private HierarchyItemPresenter hierarchyItem;
     private PreferenceHierarchyElement<?> preferenceElement;
     private PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategyInfo;
+    private PreferenceScope scope;
 
     @Inject
     public TreeHierarchyStructurePresenter(final View view,
@@ -82,38 +86,18 @@ public class TreeHierarchyStructurePresenter implements HierarchyStructurePresen
     }
 
     @Override
-    public void init(final String rootIdentifier) {
-        init(rootIdentifier,
-             null);
-    }
-
-    @Override
     public void init(final String rootIdentifier,
-                     final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategyInfo) {
+                     final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategyInfo,
+                     final PreferenceScope scope) {
         final TreeHierarchyStructurePresenter presenter = this;
 
         this.customScopeResolutionStrategyInfo = customScopeResolutionStrategyInfo;
+        this.scope = scope;
 
-        final RemoteCallback<PreferenceHierarchyElement<?>> successCallback = new RemoteCallback<PreferenceHierarchyElement<?>>() {
-            @Override
-            public void callback(final PreferenceHierarchyElement<?> rootPreference) {
-                preferenceElement = rootPreference;
-
-                if (rootPreference.hasChildren()) {
-                    hierarchyItem = treeHierarchyInternalItemPresenterProvider.get();
-                } else {
-                    hierarchyItem = treeHierarchyLeafItemPresenterProvider.get();
-                }
-
-                hierarchyItem.init(rootPreference,
-                                   0,
-                                   !rootPreference.isSelectable());
-                if (rootPreference.isSelectable()) {
-                    hierarchyItem.fireSelect();
-                }
-
-                view.init(presenter);
-            }
+        final RemoteCallback<PreferenceHierarchyElement<?>> successCallback = rootPreference -> {
+            preferenceElement = rootPreference;
+            setupHierarchyItem(rootPreference);
+            view.init(presenter);
         };
 
         final ErrorCallback<Object> errorCallback = (message, throwable) -> {
@@ -131,25 +115,44 @@ public class TreeHierarchyStructurePresenter implements HierarchyStructurePresen
     }
 
     public void saveEvent(@Observes PreferencesCentralSaveEvent event) {
-        Collection<BasePreferencePortable<? extends BasePreference<?>>> preferencesToSave = getPreferencesToSave(preferenceElement);
-
-        if (customScopeResolutionStrategyInfo != null) {
+        final Collection<BasePreferencePortable<? extends BasePreference<?>>> preferencesToSave = getPreferencesToSave(preferenceElement);
+        final Command successCallback = () -> notification.fire(new NotificationEvent(view.getSaveSuccessMessage(),
+                                                                                      NotificationEvent.NotificationType.SUCCESS));
+        final ParameterizedCommand<Throwable> errorCallback = parameter -> notification.fire(new NotificationEvent(view.getSaveErrorMessage(parameter.getMessage()),
+                                                                                                                   NotificationEvent.NotificationType.ERROR));
+        if (scope != null) {
+            store.save(preferencesToSave,
+                       scope,
+                       successCallback,
+                       errorCallback);
+        } else if (customScopeResolutionStrategyInfo != null) {
             store.save(preferencesToSave,
                        customScopeResolutionStrategyInfo,
-                       () -> notification.fire(new NotificationEvent(view.getSaveSuccessMessage(),
-                                                                     NotificationEvent.NotificationType.SUCCESS)),
-                       parameter -> notification.fire(new NotificationEvent("Unexpected error while saving: " + parameter.getMessage(),
-                                                                            NotificationEvent.NotificationType.ERROR)));
+                       successCallback,
+                       errorCallback);
         } else {
             store.save(preferencesToSave,
-                       () -> notification.fire(new NotificationEvent(view.getSaveSuccessMessage(),
-                                                                     NotificationEvent.NotificationType.SUCCESS)),
-                       parameter -> notification.fire(new NotificationEvent("Unexpected error while saving: " + parameter.getMessage(),
-                                                                            NotificationEvent.NotificationType.ERROR)));
+                       successCallback,
+                       errorCallback);
         }
     }
 
-    private Collection<BasePreferencePortable<? extends BasePreference<?>>> getPreferencesToSave(final PreferenceHierarchyElement<?> preferenceElement) {
+    void setupHierarchyItem(final PreferenceHierarchyElement<?> rootPreference) {
+        if (rootPreference.hasChildren()) {
+            hierarchyItem = treeHierarchyInternalItemPresenterProvider.get();
+        } else {
+            hierarchyItem = treeHierarchyLeafItemPresenterProvider.get();
+        }
+
+        hierarchyItem.init(rootPreference,
+                           0,
+                           !rootPreference.isSelectable());
+        if (rootPreference.isSelectable()) {
+            hierarchyItem.fireSelect();
+        }
+    }
+
+    Collection<BasePreferencePortable<? extends BasePreference<?>>> getPreferencesToSave(final PreferenceHierarchyElement<?> preferenceElement) {
         Collection<BasePreferencePortable<? extends BasePreference<?>>> preferencesToSave = new ArrayList<>();
 
         if (preferenceElement.isRoot()) {
@@ -178,5 +181,7 @@ public class TreeHierarchyStructurePresenter implements HierarchyStructurePresen
         String getTranslation(String key);
 
         String getSaveSuccessMessage();
+
+        String getSaveErrorMessage(String message);
     }
 }

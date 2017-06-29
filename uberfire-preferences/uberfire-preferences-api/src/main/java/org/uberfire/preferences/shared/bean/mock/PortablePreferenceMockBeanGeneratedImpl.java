@@ -151,33 +151,6 @@ public class PortablePreferenceMockBeanGeneratedImpl extends PortablePreferenceM
                    errorCallback);
     }
 
-    @Override
-    public void saveDefaultValue() {
-        saveDefaultValue(null);
-    }
-
-    @Override
-    public void saveDefaultValue(final ParameterizedCommand<Throwable> errorCallback) {
-        saveDefaultValue(null,
-                         errorCallback);
-    }
-
-    @Override
-    public void saveDefaultValue(final Command successCallback,
-                                 final ParameterizedCommand<Throwable> errorCallback) {
-        final PortablePreferenceMock defaultValue = defaultValue(new PortablePreferenceMockPortableGeneratedImpl());
-
-        if (defaultValue != null) {
-            if (defaultValue instanceof PortablePreferenceMockPortableGeneratedImpl) {
-                store.saveDefaultValue((PortablePreferenceMockPortableGeneratedImpl) defaultValue,
-                                       successCallback,
-                                       errorCallback);
-            } else {
-                throw new RuntimeException("Your PortablePreferenceMock.defaultValue( PortablePreferenceMock emptyPreference ) implementation must return the emptyPreference parameter, only with its attributes modified.");
-            }
-        }
-    }
-
     private BasePreferencePortable<PortablePreferenceMock> createPortableCopy() {
         PortablePreferenceMockPortableGeneratedImpl portablePreference = new PortablePreferenceMockPortableGeneratedImpl();
 
