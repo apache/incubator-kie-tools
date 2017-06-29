@@ -606,7 +606,8 @@ public class LibraryPlacesTest {
         verify(placeManager).goTo(eq(part),
                                   any(PanelDefinition.class));
         verify(preferencesCentralInitializationEvent).fire(new PreferencesCentralInitializationEvent("ProjectPreferences",
-                                                                                                     scopeResolutionStrategyInfo));
+                                                                                                     scopeResolutionStrategyInfo,
+                                                                                                     null));
         verify(libraryPlaces).setupLibraryBreadCrumbsForPreferences(any());
     }
 

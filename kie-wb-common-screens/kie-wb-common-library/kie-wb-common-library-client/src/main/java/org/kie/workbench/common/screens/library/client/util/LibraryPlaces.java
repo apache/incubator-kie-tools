@@ -682,7 +682,8 @@ public class LibraryPlaces {
     public void goToPreferences() {
         final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy = projectScopedResolutionStrategySupplier.get();
         final PreferencesCentralInitializationEvent initEvent = new PreferencesCentralInitializationEvent("ProjectPreferences",
-                                                                                                          customScopeResolutionStrategy);
+                                                                                                          customScopeResolutionStrategy,
+                                                                                                          null);
 
         final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(PreferencesRootScreen.IDENTIFIER);
         final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);

@@ -22,11 +22,14 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.shared.preferences.config.WorkbenchPreferenceScopes;
+import org.kie.workbench.common.services.shared.preferences.scopes.GlobalPreferenceScope;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
+import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -47,6 +50,9 @@ public class DefaultAdminPageHelperTest {
 
     @Mock
     private SessionInfo sessionInfo;
+
+    @Mock
+    private GlobalPreferenceScope globalPreferenceScope;
 
     @InjectMocks
     private DefaultAdminPageHelper defaultAdminPageHelper;
@@ -121,6 +127,28 @@ public class DefaultAdminPageHelperTest {
                                 any(),
                                 any(),
                                 any());
+    }
+
+    @Test
+    public void preferencesShouldBeSavedOnGlobalScopeTest() {
+        final PreferenceScope globalScope = mock(PreferenceScope.class);
+        doReturn(globalScope).when(globalPreferenceScope).resolve();
+
+        defaultAdminPageHelper.setup();
+
+        verify(adminPage, times(3)).addPreference(anyString(),
+                                                  anyString(),
+                                                  anyString(),
+                                                  anyString(),
+                                                  anyString(),
+                                                  any(PreferenceScope.class));
+
+        verify(adminPage, times(3)).addPreference(anyString(),
+                                                  anyString(),
+                                                  anyString(),
+                                                  anyString(),
+                                                  anyString(),
+                                                  eq(globalScope));
     }
 
     private void mockConstants() {

@@ -24,6 +24,8 @@ import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.services.shared.preferences.config.WorkbenchPreferenceScopes;
+import org.kie.workbench.common.services.shared.preferences.scopes.GlobalPreferenceScope;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.kie.workbench.common.workbench.client.admin.resources.i18n.PreferencesConstants;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
@@ -61,6 +63,9 @@ public class DefaultAdminPageHelper {
 
     @Inject
     private SessionInfo sessionInfo;
+
+    @Inject
+    private GlobalPreferenceScope globalPreferenceScope;
 
     public void setup() {
         adminPage.addScreen("root",
@@ -136,19 +141,22 @@ public class DefaultAdminPageHelper {
                                 "ProjectPreferences",
                                 translationService.format(PreferencesConstants.ProjectPreferences_Label),
                                 "fa-pencil-square-o",
-                                "preferences");
+                                "preferences",
+                                globalPreferenceScope.resolve());
 
         adminPage.addPreference("root",
                                 "LibraryPreferences",
                                 translationService.format(PreferencesConstants.LibraryPreferences_Title),
                                 "fa-cubes",
-                                "preferences");
+                                "preferences",
+                                globalPreferenceScope.resolve());
 
         adminPage.addPreference("root",
                                 "ArtifactRepositoryPreference",
                                 translationService.format(PreferencesConstants.ArtifactRepositoryPreferences_Title),
                                 "fa-archive",
-                                "preferences");
+                                "preferences",
+                                globalPreferenceScope.resolve());
     }
 
     boolean hasAccessToPerspective(final String perspectiveId) {

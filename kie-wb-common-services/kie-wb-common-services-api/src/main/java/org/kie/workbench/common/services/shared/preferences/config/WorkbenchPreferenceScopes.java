@@ -24,7 +24,7 @@ import org.guvnor.common.services.shared.preferences.GuvnorPreferenceScopes;
 public class WorkbenchPreferenceScopes {
 
     public static final String GLOBAL = "global";
-    public static final String USER = "user";
+    public static final String USER = GuvnorPreferenceScopes.USER;
     public static final String PROJECT = GuvnorPreferenceScopes.PROJECT;
 
     /**
@@ -35,7 +35,7 @@ public class WorkbenchPreferenceScopes {
     public static List<String> getUserScopedScopes() {
         List<String> userScopedScopes = new ArrayList<>();
 
-        userScopedScopes.add( PROJECT );
+        userScopedScopes.add(PROJECT);
 
         return userScopedScopes;
     }
