@@ -56,7 +56,7 @@ public class ProjectDiagramWorkbenchDocksTest {
         tested.perspectiveId = pId;
         tested.enableDocks();
         verify(uberfireDocks,
-               times(1)).enable(any(UberfireDockPosition.class),
+               times(1)).show(any(UberfireDockPosition.class),
                                 eq(pId));
         assertTrue(tested.isEnabled());
     }
@@ -68,7 +68,7 @@ public class ProjectDiagramWorkbenchDocksTest {
         tested.enabled = true;
         tested.disableDocks();
         verify(uberfireDocks,
-               times(1)).disable(any(UberfireDockPosition.class),
+               times(1)).hide(any(UberfireDockPosition.class),
                                  eq(pId));
         assertFalse(tested.isEnabled());
     }

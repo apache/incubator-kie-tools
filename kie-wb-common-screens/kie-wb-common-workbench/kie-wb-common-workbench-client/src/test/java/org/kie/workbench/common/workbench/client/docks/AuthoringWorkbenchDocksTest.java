@@ -178,11 +178,11 @@ public class AuthoringWorkbenchDocksTest {
 
         //disable operation should have been invoked only one time as part of the setup process, but never again.
         verify(uberfireDocks,
-               times(1)).disable(any(UberfireDockPosition.class),
+               times(1)).hide(any(UberfireDockPosition.class),
                                  anyString());
         //no other docks operations should have been invoked.
         verify(uberfireDocks,
-               times(0)).enable(any(UberfireDockPosition.class),
+               times(0)).show(any(UberfireDockPosition.class),
                                 anyString());
     }
 
@@ -197,7 +197,7 @@ public class AuthoringWorkbenchDocksTest {
 
         //at this point the docks were disabled as part of the initialization procedure.
         verify(uberfireDocks,
-               times(1)).disable(UberfireDockPosition.EAST,
+               times(1)).hide(UberfireDockPosition.EAST,
                                  "authoring");
 
         //emulates that "authoring" perspective was selected.
@@ -219,7 +219,7 @@ public class AuthoringWorkbenchDocksTest {
 
         //the docks should have been enabled only one time.
         verify(uberfireDocks,
-               times(1)).enable(UberfireDockPosition.EAST,
+               times(1)).show(UberfireDockPosition.EAST,
                                 "authoring");
 
         //now let's the dock to be disabled multiple times
@@ -235,7 +235,7 @@ public class AuthoringWorkbenchDocksTest {
         // procedure) + only one additional that derives from the multiple context changes.
 
         verify(uberfireDocks,
-               times(2)).disable(UberfireDockPosition.EAST,
+               times(2)).hide(UberfireDockPosition.EAST,
                                  "authoring");
     }
 
@@ -243,9 +243,9 @@ public class AuthoringWorkbenchDocksTest {
     public void hideTest() {
         authoringDocks.hide();
 
-        verify(uberfireDocks).disable(UberfireDockPosition.WEST,
+        verify(uberfireDocks).hide(UberfireDockPosition.WEST,
                                       "authoring");
-        verify(uberfireDocks).disable(UberfireDockPosition.EAST,
+        verify(uberfireDocks).hide(UberfireDockPosition.EAST,
                                       "authoring");
     }
 
@@ -257,9 +257,9 @@ public class AuthoringWorkbenchDocksTest {
 
         authoringDocks.show();
 
-        verify(uberfireDocks).enable(UberfireDockPosition.WEST,
+        verify(uberfireDocks).show(UberfireDockPosition.WEST,
                                      "authoring");
-        verify(uberfireDocks).enable(UberfireDockPosition.EAST,
+        verify(uberfireDocks).show(UberfireDockPosition.EAST,
                                      "authoring");
     }
 
@@ -267,10 +267,10 @@ public class AuthoringWorkbenchDocksTest {
     public void showWithDataModelerInactiveTest() {
         authoringDocks.show();
 
-        verify(uberfireDocks).enable(UberfireDockPosition.WEST,
+        verify(uberfireDocks).show(UberfireDockPosition.WEST,
                                      "authoring");
         verify(uberfireDocks,
-               never()).enable(UberfireDockPosition.EAST,
+               never()).show(UberfireDockPosition.EAST,
                                "authoring");
     }
 
@@ -297,7 +297,7 @@ public class AuthoringWorkbenchDocksTest {
     @Test
     public void projectExplorerExpandedEvent_NotProjectExplorerDock() {
         final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(mock(UberfireDock.class),
-                                                                                                                UberfireDocksInteractionEvent.InteractionType.SELECTED);
+                                                                                                                UberfireDocksInteractionEvent.InteractionType.OPENED);
 
         authoringDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
 
@@ -308,7 +308,7 @@ public class AuthoringWorkbenchDocksTest {
     @Test
     public void projectExplorerExpandedEvent_SelectedInteraction() {
         final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(authoringDocks.projectExplorerDock,
-                                                                                                                UberfireDocksInteractionEvent.InteractionType.SELECTED);
+                                                                                                                UberfireDocksInteractionEvent.InteractionType.OPENED);
 
         authoringDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
 
@@ -318,7 +318,7 @@ public class AuthoringWorkbenchDocksTest {
     @Test
     public void projectExplorerExpandedEvent_DeselectedInteraction() {
         final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(authoringDocks.projectExplorerDock,
-                                                                                                                UberfireDocksInteractionEvent.InteractionType.DESELECTED);
+                                                                                                                UberfireDocksInteractionEvent.InteractionType.CLOSED);
 
         authoringDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
 

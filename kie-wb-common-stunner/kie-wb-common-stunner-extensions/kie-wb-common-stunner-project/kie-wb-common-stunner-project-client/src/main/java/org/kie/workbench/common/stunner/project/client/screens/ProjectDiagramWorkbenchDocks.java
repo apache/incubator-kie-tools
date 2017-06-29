@@ -61,8 +61,8 @@ public class ProjectDiagramWorkbenchDocks {
     public void enableDocks() {
         if (!isEnabled()) {
             log(Level.INFO,
-                "Enabling docks");
-            uberfireDocks.enable(POSITION,
+                "Show docks");
+            uberfireDocks.show(POSITION,
                                  perspectiveId);
             this.enabled = true;
         }
@@ -71,9 +71,9 @@ public class ProjectDiagramWorkbenchDocks {
     public void disableDocks() {
         if (isEnabled()) {
             log(Level.INFO,
-                "Disabling docks");
+                "Hide docks");
             // TODO: Ask to walter - uberfireDocks.disable( POSITION, perspectiveId );
-            uberfireDocks.disable(POSITION,
+            uberfireDocks.hide(POSITION,
                                   perspectiveId);
             this.enabled = false;
         }

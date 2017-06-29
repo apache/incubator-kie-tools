@@ -143,7 +143,7 @@ public class AuthoringWorkbenchDocks {
                                  authoringPerspectiveIdentifier).withSize(450).withLabel(constants.DocksStunnerExplorerTitle())
         );
         updatePlannerDock(authoringPerspectiveIdentifier);
-        uberfireDocks.disable(UberfireDockPosition.EAST,
+        uberfireDocks.hide(UberfireDockPosition.EAST,
                               authoringPerspectiveIdentifier);
         dataModelerDocksEnabled = false;
     }
@@ -175,10 +175,10 @@ public class AuthoringWorkbenchDocks {
         if (enabled != dataModelerDocksEnabled) {
             dataModelerDocksEnabled = enabled;
             if (enabled) {
-                uberfireDocks.enable(UberfireDockPosition.EAST,
+                uberfireDocks.show(UberfireDockPosition.EAST,
                                      authoringPerspectiveIdentifier);
             } else {
-                uberfireDocks.disable(UberfireDockPosition.EAST,
+                uberfireDocks.hide(UberfireDockPosition.EAST,
                                       authoringPerspectiveIdentifier);
             }
         }
@@ -200,14 +200,14 @@ public class AuthoringWorkbenchDocks {
     }
 
     public void hide() {
-        uberfireDocks.disable(UberfireDockPosition.WEST,
+        uberfireDocks.hide(UberfireDockPosition.WEST,
                               authoringPerspectiveIdentifier);
         enableDocks(false);
         projectExplorerEnabled = false;
     }
 
     public void show() {
-        uberfireDocks.enable(UberfireDockPosition.WEST,
+        uberfireDocks.show(UberfireDockPosition.WEST,
                              authoringPerspectiveIdentifier);
         handleDocks();
         projectExplorerEnabled = true;
@@ -223,7 +223,7 @@ public class AuthoringWorkbenchDocks {
 
     public void expandProjectExplorer() {
         if (projectExplorerDock != null) {
-            uberfireDocks.expand(projectExplorerDock);
+            uberfireDocks.open(projectExplorerDock);
         }
     }
 
@@ -234,9 +234,9 @@ public class AuthoringWorkbenchDocks {
         }
         if (targetDock.equals(projectExplorerDock)) {
             final UberfireDocksInteractionEvent.InteractionType interactionType = uberfireDocksInteractionEvent.getType();
-            if (interactionType.equals(UberfireDocksInteractionEvent.InteractionType.SELECTED)) {
+            if (interactionType.equals(UberfireDocksInteractionEvent.InteractionType.OPENED)) {
                 setProjectExplorerExpandedPreference(true);
-            } else if (interactionType.equals(UberfireDocksInteractionEvent.InteractionType.DESELECTED)) {
+            } else if (interactionType.equals(UberfireDocksInteractionEvent.InteractionType.CLOSED)) {
                 setProjectExplorerExpandedPreference(false);
             }
         }
