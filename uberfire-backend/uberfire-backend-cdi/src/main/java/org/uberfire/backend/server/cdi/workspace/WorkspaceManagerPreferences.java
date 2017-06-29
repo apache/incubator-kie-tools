@@ -18,13 +18,11 @@ package org.uberfire.backend.server.cdi.workspace;
 
 import java.util.concurrent.TimeUnit;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.preferences.shared.annotations.Property;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.preferences.shared.bean.BasePreference;
 
 @WorkbenchPreference(identifier = "WorkspaceManagerPreferences", bundleKey = "WorkspaceManagerPreferences.Label")
-@Portable
 public class WorkspaceManagerPreferences implements BasePreference<WorkspaceManagerPreferences> {
 
     @Property(bundleKey = "WorkspaceManagerPreferences.CacheMaximumSize")
@@ -36,10 +34,13 @@ public class WorkspaceManagerPreferences implements BasePreference<WorkspaceMana
     @Property(bundleKey = "WorkspaceManagerPreferences.CacheExpirationUnit")
     private String cacheExpirationUnit;
 
+    public WorkspaceManagerPreferences() {
+    }
+
     @Override
     public WorkspaceManagerPreferences defaultValue(final WorkspaceManagerPreferences defaultValue) {
-        defaultValue.cacheMaximumSize = 10;
-        defaultValue.cacheExpirationTime = 10;
+        defaultValue.cacheMaximumSize = 50;
+        defaultValue.cacheExpirationTime = 30;
         defaultValue.cacheExpirationUnit = TimeUnit.MINUTES.toString();
         return defaultValue;
     }

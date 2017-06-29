@@ -17,6 +17,7 @@
 package org.uberfire.ext.wires.backend.server.impl;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
@@ -34,17 +35,29 @@ import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
 @ApplicationScoped
 public class ApplicationScopedProducer {
 
-    @Inject
     IOWatchServiceNonDotImpl watchService;
 
-    @Inject
     private AuthenticationService authenticationService;
 
-    @Inject
-    @Named("clusterServiceFactory")
     private ClusterServiceFactory clusterServiceFactory;
 
     private IOService ioService;
+
+    private ManagedExecutorService managedExecutorService;
+
+    public ApplicationScopedProducer() {
+    }
+
+    @Inject
+    public ApplicationScopedProducer(IOWatchServiceNonDotImpl watchService,
+                                     AuthenticationService authenticationService,
+                                     @Named("clusterServiceFactory") ClusterServiceFactory clusterServiceFactory,
+                                     ManagedExecutorService managedExecutorService) {
+        this.watchService = watchService;
+        this.authenticationService = authenticationService;
+        this.clusterServiceFactory = clusterServiceFactory;
+        this.managedExecutorService = managedExecutorService;
+    }
 
     @PostConstruct
     public void setup() {
@@ -52,7 +65,8 @@ public class ApplicationScopedProducer {
             ioService = new IOServiceDotFileImpl(watchService);
         } else {
             ioService = new IOServiceClusterImpl(new IOServiceDotFileImpl(watchService),
-                                                 clusterServiceFactory);
+                                                 clusterServiceFactory,
+                                                 managedExecutorService);
         }
     }
 

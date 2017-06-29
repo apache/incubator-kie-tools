@@ -35,13 +35,21 @@ import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
 @ApplicationScoped
 public class ApplicationScopedProducer {
 
-    @Inject
     private IOWatchServiceAllImpl watchService;
-
-    @Inject
     private AuthenticationService authenticationService;
 
     private IOService ioService;
+
+    public ApplicationScopedProducer() {
+
+    }
+
+    @Inject
+    public ApplicationScopedProducer(IOWatchServiceAllImpl watchService,
+                                     AuthenticationService authenticationService) {
+        this.watchService = watchService;
+        this.authenticationService = authenticationService;
+    }
 
     @PostConstruct
     public void setup() {

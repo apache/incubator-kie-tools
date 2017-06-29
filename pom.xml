@@ -81,6 +81,8 @@
     <version.com.ahome-it.lienzo-core>2.0.287-RELEASE</version.com.ahome-it.lienzo-core>
     <version.com.ahome-it.lienzo-tests>2.0.287-RELEASE</version.com.ahome-it.lienzo-tests>
 
+    <version.org.jboss.spec.javax.enterprise.concurrent>1.0.0.Final</version.org.jboss.spec.javax.enterprise.concurrent>
+
     <!-- Make OSGi happy -->
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
     <!-- TODO fix all the modules to have all direct dependencies specified, then remove this property -->
@@ -90,6 +92,7 @@
          directly should help to avoid some of the issues with deploying artifacts. -->
     <jboss.releases.repo.url>https://origin-repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
     <jboss.snapshots.repo.url>https://origin-repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
+
   </properties>
 
   <repositories>
@@ -813,6 +816,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.jboss.spec.javax.enterprise.concurrent</groupId>
+        <artifactId>jboss-concurrency-api_1.0_spec</artifactId>
+        <version>${version.org.jboss.spec.javax.enterprise.concurrent}</version>
+      </dependency>
+
+      <dependency>
         <groupId>com.google.gwt.gwtmockito</groupId>
         <artifactId>gwtmockito</artifactId>
         <version>${version.com.google.gwt.gwtmockito}</version>
@@ -823,7 +832,6 @@
           </exclusion>
         </exclusions>
       </dependency>
-
 
       <!-- Byteman -->
       <dependency>

@@ -19,14 +19,15 @@ package org.uberfire.backend.server.io;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import javax.enterprise.concurrent.ManagedExecutorService;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.lifecycle.PriorityDisposable;
 import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
@@ -40,28 +41,39 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({PriorityDisposableRegistry.class,
-        SimpleAsyncExecutorService.class,
         FileSystemProviders.class})
 public class DisposableShutdownServiceTest {
 
+    private ManagedExecutorService managedExecutorService;
+    private DisposableShutdownService disposableShutdownService;
+
+    @Before
+    public void setUp(){
+
+        managedExecutorService = mock(ManagedExecutorService.class);
+
+        disposableShutdownService = new DisposableShutdownService(this.managedExecutorService);
+
+        mockStatic(PriorityDisposableRegistry.class);
+        mockStatic(FileSystemProviders.class);
+    }
+
     @Test
     public void testGeneralStatic() {
-        mockStatic(PriorityDisposableRegistry.class);
-        mockStatic(SimpleAsyncExecutorService.class);
-        mockStatic(FileSystemProviders.class);
+
 
         final JGitFileSystemProvider disposableProvider = mock(JGitFileSystemProvider.class);
 
         when(FileSystemProviders.installedProviders()).thenReturn(Arrays.asList(mock(FileSystemProvider.class),
                                                                                 disposableProvider));
 
-        new DisposableShutdownService().contextDestroyed(null);
+        disposableShutdownService.contextDestroyed(null);
 
         verify(disposableProvider,
                times(1)).dispose();
 
-        PowerMockito.verifyStatic();
-        SimpleAsyncExecutorService.shutdownInstances();
+
+        verify(managedExecutorService,times(1)).shutdown();
 
         PowerMockito.verifyStatic();
         PriorityDisposableRegistry.clear();
@@ -69,9 +81,6 @@ public class DisposableShutdownServiceTest {
 
     @Test
     public void testCluster() {
-        mockStatic(PriorityDisposableRegistry.class);
-        mockStatic(SimpleAsyncExecutorService.class);
-        mockStatic(FileSystemProviders.class);
 
         final ClusterService clusterService = mock(ClusterService.class);
 
@@ -79,7 +88,7 @@ public class DisposableShutdownServiceTest {
         when(PriorityDisposableRegistry.getDisposables()).thenReturn(Arrays.asList(mock(PriorityDisposable.class),
                                                                                    clusterService));
 
-        new DisposableShutdownService().contextDestroyed(null);
+        disposableShutdownService.contextDestroyed(null);
 
         verify(clusterService,
                times(1)).lock();
@@ -91,10 +100,6 @@ public class DisposableShutdownServiceTest {
 
     @Test
     public void testDisposables() {
-        mockStatic(PriorityDisposableRegistry.class);
-        mockStatic(SimpleAsyncExecutorService.class);
-        mockStatic(FileSystemProviders.class);
-
         final PriorityDisposable priorityDisposable1 = mock(PriorityDisposable.class);
         final PriorityDisposable priorityDisposable2 = mock(PriorityDisposable.class);
         final PriorityDisposable priorityDisposable3 = mock(PriorityDisposable.class);
@@ -104,7 +109,7 @@ public class DisposableShutdownServiceTest {
                                                                                    priorityDisposable2,
                                                                                    priorityDisposable3));
 
-        new DisposableShutdownService().contextDestroyed(null);
+        disposableShutdownService.contextDestroyed(null);
 
         verify(priorityDisposable1,
                times(1)).dispose();
@@ -140,7 +145,7 @@ public class DisposableShutdownServiceTest {
         assertEquals(priorityDisposable1,
                      disposables.get(3));
 
-        new DisposableShutdownService().sort(disposables);
+        disposableShutdownService.sort(disposables);
 
         assertEquals(4,
                      disposables.size());

@@ -73,6 +73,7 @@ public abstract class BaseIndexTest {
     }
 
     protected IOService ioService() {
+
         if (ioService == null) {
             config = new LuceneConfigBuilder()
                     .withInMemoryMetaModelStore()
@@ -81,6 +82,7 @@ public abstract class BaseIndexTest {
                     .build();
 
             ioService = new IOServiceIndexedImpl(config.getIndexEngine(),
+                                                 new MockManagedExecutorService(),
                                                  DublinCoreView.class,
                                                  VersionAttributeView.class);
         }

@@ -29,11 +29,14 @@ import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.cdi.model.WorkspaceImpl;
 import org.uberfire.backend.server.cdi.workspace.WorkspaceManager;
+import org.uberfire.backend.server.cdi.workspace.WorkspaceNameResolver;
 import org.uberfire.backend.server.cdi.workspace.WorkspaceScopedExtension;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.rpc.SessionInfo;
@@ -43,11 +46,6 @@ import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
 public class WorkspaceBuilderServiceTest {
-
-    @Inject
-    SessionBasedBean bean;
-    @Inject
-    private WorkspaceManager workspaceManager;
 
     @Deployment
     public static JavaArchive createDeployment() {
@@ -83,14 +81,27 @@ public class WorkspaceBuilderServiceTest {
                                       WorkspaceScopedExtension.class);
     }
 
-    @BeforeClass
-    public static void setUp() {
+    @Inject
+    private WorkspaceManager workspaceManager;
 
+    @Inject
+    SessionBasedBean bean;
+
+    @Inject
+    WorkspaceBuilderService workspaceBuilderService;
+
+    @Produces
+    protected Logger createLogger(InjectionPoint injectionPoint) {
+        return LoggerFactory.getLogger(injectionPoint.getMember().getDeclaringClass().getSimpleName());
     }
 
     @Produces
     protected SessionInfo createSessionInfo(InjectionPoint injectionPoint) {
         return new SessionInfoImpl(new UserImpl(Thread.currentThread().getName()));
+    }
+
+    @Before
+    public void setUp() {
     }
 
     @Test

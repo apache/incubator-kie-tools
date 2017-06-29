@@ -208,6 +208,7 @@ public class BatchIndexTest extends BaseIndexTest {
 
                            }
                        },
+                       new MockManagedExecutorService(),
                        DublinCoreView.class).run(ioService().get("git://temp-repo-test/"),
                                                  () -> {
                                                      try {

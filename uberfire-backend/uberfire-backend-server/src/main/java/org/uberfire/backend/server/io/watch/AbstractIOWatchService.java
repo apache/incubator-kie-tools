@@ -22,10 +22,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -35,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Filter;
 import org.uberfire.commons.async.DescriptiveRunnable;
-import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.commons.services.cdi.ApplicationStarted;
 import org.uberfire.io.IOWatchService;
 import org.uberfire.java.nio.file.FileSystem;
@@ -56,27 +56,44 @@ public abstract class AbstractIOWatchService implements IOWatchService,
     private static final Integer AWAIT_TERMINATION_TIMEOUT = Integer.parseInt(System.getProperty("org.uberfire.watcher.quitetimeout",
                                                                                                  "3"));
 
-    private final ExecutorService executorService = Executors.newCachedThreadPool(new DescriptiveThreadFactory());
-
     private final List<FileSystem> fileSystems = new ArrayList<FileSystem>();
     private final List<WatchService> watchServices = new ArrayList<WatchService>();
-    private final Set<AsyncWatchService> watchThreads = new HashSet<AsyncWatchService>();
-    private final Set<Future<?>> jobs = new CopyOnWriteArraySet<Future<?>>();
     protected boolean isDisposed = false;
+
     private boolean started;
-    @Inject
+    private final Set<AsyncWatchService> watchThreads = new HashSet<AsyncWatchService>();
     private Event<ResourceBatchChangesEvent> resourceBatchChanges;
-    @Inject
     private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
-    @Inject
     private Event<ResourceRenamedEvent> resourceRenamedEvent;
-    @Inject
     private Event<ResourceDeletedEvent> resourceDeletedEvent;
-    @Inject
     private Event<ResourceAddedEvent> resourceAddedEvent;
+    private ManagedExecutorService managedExecutorService;
+
     private IOWatchServiceExecutor executor = null;
 
+    private final Set<Future<?>> jobs = new CopyOnWriteArraySet<Future<?>>();
+
     public AbstractIOWatchService() {
+    }
+
+    @Inject
+    public AbstractIOWatchService(Event<ResourceBatchChangesEvent> resourceBatchChanges,
+                                  Event<ResourceUpdatedEvent> resourceUpdatedEvent,
+                                  Event<ResourceRenamedEvent> resourceRenamedEvent,
+                                  Event<ResourceDeletedEvent> resourceDeletedEvent,
+                                  Event<ResourceAddedEvent> resourceAddedEvent,
+                                  ManagedExecutorService managedExecutorService) {
+
+        this.resourceBatchChanges = resourceBatchChanges;
+        this.resourceUpdatedEvent = resourceUpdatedEvent;
+        this.resourceRenamedEvent = resourceRenamedEvent;
+        this.resourceDeletedEvent = resourceDeletedEvent;
+        this.resourceAddedEvent = resourceAddedEvent;
+        this.managedExecutorService = managedExecutorService;
+    }
+
+    @PostConstruct
+    public void initialize() {
         final boolean autostart = Boolean.parseBoolean(System.getProperty("org.uberfire.watcher.autostart",
                                                                           "true"));
         if (autostart) {
@@ -89,7 +106,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
             this.started = true;
             for (final AsyncWatchService watchThread : watchThreads) {
                 final IOWatchServiceExecutor watchServiceExecutor = getWatchServiceExecutor();
-                jobs.add(executorService.submit(new DescriptiveRunnable() {
+                jobs.add(managedExecutorService.submit(new DescriptiveRunnable() {
                     @Override
                     public String getDescription() {
                         return watchThread.getDescription();
@@ -116,21 +133,21 @@ public abstract class AbstractIOWatchService implements IOWatchService,
                 job.cancel(true);
             }
         }
-        executorService.shutdown(); // Disable new tasks from being submitted
+        managedExecutorService.shutdown(); // Disable new tasks from being submitted
         try {
             // Wait a while for existing tasks to terminate
-            if (!executorService.awaitTermination(AWAIT_TERMINATION_TIMEOUT,
+            if (!managedExecutorService.awaitTermination(AWAIT_TERMINATION_TIMEOUT,
                                                   TimeUnit.SECONDS)) {
-                executorService.shutdownNow(); // Cancel currently executing tasks
+                managedExecutorService.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
-                if (!executorService.awaitTermination(AWAIT_TERMINATION_TIMEOUT,
+                if (!managedExecutorService.awaitTermination(AWAIT_TERMINATION_TIMEOUT,
                                                       TimeUnit.SECONDS)) {
                     LOG.error("Thread pool did not terminate");
                 }
             }
         } catch (InterruptedException ie) {
             // (Re-)Cancel if current thread also interrupted
-            executorService.shutdownNow();
+            managedExecutorService.shutdownNow();
             // Preserve interrupt status
             Thread.currentThread().interrupt();
         }
@@ -184,7 +201,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
 
         if (started) {
             final IOWatchServiceExecutor watchServiceExecutor = getWatchServiceExecutor();
-            executorService.execute(new DescriptiveRunnable() {
+            managedExecutorService.execute(new DescriptiveRunnable() {
                 @Override
                 public String getDescription() {
                     return asyncWatchService.getDescription();

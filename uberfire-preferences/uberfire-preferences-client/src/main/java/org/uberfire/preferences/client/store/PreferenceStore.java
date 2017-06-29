@@ -24,7 +24,6 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.PreferenceScopeResolver;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
@@ -84,7 +83,7 @@ public class PreferenceStore {
     }
 
     private ErrorCallback<Message> defaultErrorCallback() {
-        return new DefaultErrorCallback();
+        return ( message, throwable ) -> false;
     }
 
     public <T> void put(final PreferenceScope scope,

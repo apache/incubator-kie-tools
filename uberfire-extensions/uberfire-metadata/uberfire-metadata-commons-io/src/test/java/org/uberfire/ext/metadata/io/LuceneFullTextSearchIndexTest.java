@@ -57,6 +57,7 @@ public class LuceneFullTextSearchIndexTest extends BaseIndexTest {
                     .build();
 
             ioService = new IOServiceIndexedImpl(config.getIndexEngine(),
+                                                 new MockManagedExecutorService(),
                                                  DublinCoreView.class,
                                                  VersionAttributeView.class);
 

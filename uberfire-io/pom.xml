@@ -57,6 +57,10 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.enterprise.concurrent</groupId>
+      <artifactId>jboss-concurrency-api_1.0_spec</artifactId>
+    </dependency>
     <!-- Replacement for log4j:log4j which is excluded from helix-core -->
     <dependency>
       <groupId>org.slf4j</groupId>

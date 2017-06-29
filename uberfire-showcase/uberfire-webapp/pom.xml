@@ -152,6 +152,18 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-client-api</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -398,6 +410,8 @@
             <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-io</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-preferences-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-preferences-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-js</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-client</compileSourcesArtifact>

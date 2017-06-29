@@ -5,7 +5,7 @@
     </encoder>
   </appender>
 
-  <logger name="org.uberfire.backend.server.cdi" level="DEBUG"/>
+  <logger name="org.uberfire.backend.server.cdi" level="TRACE"/>
 
   <root level="INFO">
     <appender-ref ref="STDOUT"/>

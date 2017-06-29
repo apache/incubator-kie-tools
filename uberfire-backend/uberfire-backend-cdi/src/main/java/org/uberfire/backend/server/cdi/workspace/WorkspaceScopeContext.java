@@ -17,7 +17,6 @@
 package org.uberfire.backend.server.cdi.workspace;
 
 import java.lang.annotation.Annotation;
-import java.util.NoSuchElementException;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
@@ -27,7 +26,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.cdi.workspace.Workspace;
-import org.uberfire.rpc.SessionInfo;
 
 /**
  * Workspace context.
@@ -38,9 +36,11 @@ public class WorkspaceScopeContext implements Context {
 
     private static Logger logger = LoggerFactory.getLogger(WorkspaceScopeContext.class);
     private final BeanManager beanManager;
+    private WorkspaceNameResolver resolver;
 
     public WorkspaceScopeContext(BeanManager beanManager) {
         this.beanManager = beanManager;
+        this.resolver = new WorkspaceNameResolver(beanManager);
     }
 
     @Override
@@ -53,27 +53,29 @@ public class WorkspaceScopeContext implements Context {
                      final CreationalContext<T> creationalContext) {
 
         Bean<T> bean = getBean(contextual);
+
         Workspace workspace = this.getWorkspaceManager().getOrCreateWorkspace(getWorkspaceName());
         final T instance = getWorkspaceManager().getBean(workspace,
-                                                         bean.getBeanClass().getSimpleName());
+                                                         bean.getBeanClass().getCanonicalName());
 
         if (instance == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Creating Bean <<{}>> with creational context for workspace <<{}>>",
+            if (logger.isTraceEnabled()) {
+                logger.trace("Creating Bean <<{}>> with creational context for workspace <<{}>>",
                              bean.getBeanClass(),
                              workspace.getName());
             }
             final T created = bean.create(creationalContext);
             this.getWorkspaceManager().putBean(workspace,
-                                               bean.getBeanClass().getSimpleName(),
+                                               bean.getBeanClass().getCanonicalName(),
                                                created);
             return created;
         } else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Bean <<{}>> found for workspace <<{}>>",
+            if (logger.isTraceEnabled()) {
+                logger.trace("Bean <<{}>> found for workspace <<{}>>",
                              bean.getBeanClass(),
                              workspace.getName());
             }
+            Thread.currentThread().setName("WorkspaceScopeContext" + "-" + workspace.getName());
             return instance;
         }
     }
@@ -82,21 +84,17 @@ public class WorkspaceScopeContext implements Context {
     public <T> T get(final Contextual<T> contextual) {
         Bean<T> bean = getBean(contextual);
         Workspace workspace = this.getWorkspaceManager().getOrCreateWorkspace(getWorkspaceName());
-        if (logger.isDebugEnabled()) {
-            logger.debug("Getting Bean <<{}>> for workspace <<{}>>",
+        if (logger.isTraceEnabled()) {
+            logger.trace("Getting Bean <<{}>> for workspace <<{}>>",
                          bean.getBeanClass(),
                          workspace.getName());
         }
         return this.getWorkspaceManager().getBean(workspace,
-                                                  bean.getBeanClass().toString());
+                                                  bean.getBeanClass().getCanonicalName());
     }
 
     private String getWorkspaceName() {
-        try {
-            return this.getSessionInfo().getIdentity().getIdentifier();
-        } catch (NoSuchElementException e) {
-            return "default";
-        }
+        return resolver.getWorkspaceName();
     }
 
     @Override
@@ -108,19 +106,15 @@ public class WorkspaceScopeContext implements Context {
         return (Bean<T>) contextual;
     }
 
-    protected SessionInfo getSessionInfo() {
-        final Bean<SessionInfo> bean = (Bean<SessionInfo>) this.beanManager.getBeans(SessionInfo.class).iterator().next();
-        final CreationalContext<SessionInfo> creationalContext = this.beanManager.createCreationalContext(bean);
-        return (SessionInfo) this.beanManager.getReference(bean,
-                                                           SessionInfo.class,
-                                                           creationalContext);
+    protected WorkspaceManager getWorkspaceManager() {
+        return this.getBean(WorkspaceManager.class);
     }
 
-    protected WorkspaceManager getWorkspaceManager() {
-        final Bean<WorkspaceManager> bean = (Bean<WorkspaceManager>) this.beanManager.getBeans(WorkspaceManager.class).iterator().next();
-        final CreationalContext<WorkspaceManager> creationalContext = this.beanManager.createCreationalContext(bean);
-        return (WorkspaceManager) this.beanManager.getReference(bean,
-                                                                WorkspaceManager.class,
-                                                                creationalContext);
+    protected <T> T getBean(Class<T> clazz) {
+        final Bean<T> bean = (Bean<T>) this.beanManager.getBeans(clazz).iterator().next();
+        final CreationalContext<T> creationalContext = this.beanManager.createCreationalContext(bean);
+        return (T) this.beanManager.getReference(bean,
+                                                 clazz,
+                                                 creationalContext);
     }
 }

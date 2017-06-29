@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,16 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
-package org.uberfire.backend.server.cdi;
-
-import java.io.Serializable;
+package org.uberfire.workspace;
 
 /**
- * Just for testing purposes
+ * This context is used to store the active workspace for the thread that uses that is using it.
  */
-public interface WorkspaceBuilderService extends Serializable {
+public class WorkspaceContext {
 
-    void build(String gav);
+    private WorkspaceContext() {
+    }
+
+    private static ThreadLocal<String> workspace = new ThreadLocal<>();
+
+    public static void set(String workspace) {
+        WorkspaceContext.workspace.set(workspace);
+    }
+
+    public static String get() {
+        return workspace.get();
+    }
 }

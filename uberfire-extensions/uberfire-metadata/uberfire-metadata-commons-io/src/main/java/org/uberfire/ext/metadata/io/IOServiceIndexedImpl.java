@@ -22,12 +22,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import javax.enterprise.concurrent.ManagedExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveRunnable;
-import org.uberfire.commons.async.DisposableExecutor;
-import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.ext.metadata.engine.Indexer;
 import org.uberfire.ext.metadata.engine.MetaIndexEngine;
 import org.uberfire.ext.metadata.engine.Observer;
@@ -71,45 +71,55 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     private final List<WatchService> watchServices = new ArrayList<WatchService>();
 
     private final Observer observer;
+    private ManagedExecutorService managedExecutorService;
 
     public IOServiceIndexedImpl(final MetaIndexEngine indexEngine,
+                                final ManagedExecutorService managedExecutorService,
                                 final Class<? extends FileAttributeView>... views) {
         this(indexEngine,
              new NOPObserver(),
+             managedExecutorService,
              views);
     }
 
     public IOServiceIndexedImpl(final String id,
                                 final MetaIndexEngine indexEngine,
+                                final ManagedExecutorService managedExecutorService,
                                 final Class<? extends FileAttributeView>... views) {
         this(id,
              indexEngine,
              new NOPObserver(),
+             managedExecutorService,
              views);
     }
 
     public IOServiceIndexedImpl(final IOWatchService watchService,
                                 final MetaIndexEngine indexEngine,
+                                final ManagedExecutorService managedExecutorService,
                                 final Class<? extends FileAttributeView>... views) {
         this(watchService,
              indexEngine,
              new NOPObserver(),
+             managedExecutorService,
              views);
     }
 
     public IOServiceIndexedImpl(final String id,
                                 final IOWatchService watchService,
                                 final MetaIndexEngine indexEngine,
+                                final ManagedExecutorService managedExecutorService,
                                 final Class<? extends FileAttributeView>... views) {
         this(id,
              watchService,
              indexEngine,
              new NOPObserver(),
+             managedExecutorService,
              views);
     }
 
     public IOServiceIndexedImpl(final MetaIndexEngine indexEngine,
                                 final Observer observer,
+                                final ManagedExecutorService managedExecutorService,
                                 final Class<? extends FileAttributeView>... views) {
         super();
         this.indexEngine = checkNotNull("indexEngine",
@@ -119,13 +129,17 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.batchIndex = new BatchIndex(indexEngine,
                                          this,
                                          observer,
+                                         managedExecutorService,
                                          views);
         this.views = views;
+
+        this.managedExecutorService = managedExecutorService;
     }
 
     public IOServiceIndexedImpl(final String id,
                                 final MetaIndexEngine indexEngine,
                                 final Observer observer,
+                                final ManagedExecutorService managedExecutorService,
                                 final Class<? extends FileAttributeView>... views) {
         super(id);
         this.indexEngine = checkNotNull("indexEngine",
@@ -135,13 +149,16 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.batchIndex = new BatchIndex(indexEngine,
                                          this,
                                          observer,
+                                         managedExecutorService,
                                          views);
         this.views = views;
+        this.managedExecutorService = managedExecutorService;
     }
 
     public IOServiceIndexedImpl(final IOWatchService watchService,
                                 final MetaIndexEngine indexEngine,
                                 final Observer observer,
+                                final ManagedExecutorService managedExecutorService,
                                 final Class<? extends FileAttributeView>... views) {
         super(watchService);
         this.indexEngine = checkNotNull("indexEngine",
@@ -151,14 +168,18 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.batchIndex = new BatchIndex(indexEngine,
                                          this,
                                          observer,
+                                         managedExecutorService,
                                          views);
         this.views = views;
+
+        this.managedExecutorService = managedExecutorService;
     }
 
     public IOServiceIndexedImpl(final String id,
                                 final IOWatchService watchService,
                                 final MetaIndexEngine indexEngine,
                                 final Observer observer,
+                                final ManagedExecutorService managedExecutorService,
                                 final Class<? extends FileAttributeView>... views) {
         super(id,
               watchService);
@@ -169,8 +190,11 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.batchIndex = new BatchIndex(indexEngine,
                                          this,
                                          observer,
+                                         managedExecutorService,
                                          views);
         this.views = views;
+
+        this.managedExecutorService = managedExecutorService;
     }
 
     @Override
@@ -238,10 +262,9 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         watchedList.add(fs);
         watchServices.add(ws);
 
-        final DisposableExecutor defaultInstance = SimpleAsyncExecutorService.getDefaultInstance();
-        final DisposableExecutor unmanagedInstance = SimpleAsyncExecutorService.getUnmanagedInstance();
+        final ExecutorService defaultInstance = this.managedExecutorService;
 
-        SimpleAsyncExecutorService.getUnmanagedInstance().execute(new DescriptiveRunnable() {
+        defaultInstance.execute(new DescriptiveRunnable() {
             @Override
             public String getDescription() {
                 return "IOServiceIndexedImpl(" + ws.toString() + ")";
@@ -379,14 +402,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                             return isDisposed || ws.isClose();
                         }
                     };
-                    if (defaultInstance.equals(unmanagedInstance)) {
-                        // if default and unmanaged are same instance simply run the job to avoid duplicated threads
-                        job.run();
-                    } else {
-                        // whenever events are found submit the actual operation to the executor to avoid blocking thread
-                        // and to have correct scope on application servers to gain access to CDI beans
-                        defaultInstance.execute(job);
-                    }
+                    defaultInstance.execute(job);
                 }
             }
         });

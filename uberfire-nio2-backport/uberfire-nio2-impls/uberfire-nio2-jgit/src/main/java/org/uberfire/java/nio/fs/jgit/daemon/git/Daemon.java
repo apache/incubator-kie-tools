@@ -26,6 +26,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.Deflater;
 
@@ -40,7 +42,7 @@ import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.eclipse.jgit.transport.resolver.UploadPackFactory;
 import org.uberfire.commons.async.DescriptiveRunnable;
-import org.uberfire.commons.async.SimpleAsyncExecutorService;
+import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.java.nio.fs.jgit.daemon.filters.HiddenBranchRefFilter;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
@@ -64,6 +66,7 @@ public class Daemon {
     private volatile RepositoryResolver<DaemonClient> repositoryResolver;
     private volatile UploadPackFactory<DaemonClient> uploadPackFactory;
     private ServerSocket listenSock = null;
+    private ExecutorService executorService;
 
     /**
      * Configures a new daemon for the specified network address. The daemon will not attempt to bind to an address or
@@ -78,6 +81,8 @@ public class Daemon {
         myAddress = addr;
         this.acceptThreadPool = checkNotNull("acceptThreadPool",
                                              acceptThreadPool);
+
+        this.executorService = Executors.newCachedThreadPool(new DescriptiveThreadFactory());
 
         repositoryResolver = (RepositoryResolver<DaemonClient>) RepositoryResolver.NONE;
 
@@ -261,7 +266,7 @@ public class Daemon {
             dc.setRemoteAddress(((InetSocketAddress) peer).getAddress());
         }
 
-        SimpleAsyncExecutorService.getUnmanagedInstance().execute(new DescriptiveRunnable() {
+        executorService.execute(new DescriptiveRunnable() {
             @Override
             public String getDescription() {
                 return "Git-Daemon-Client " + peer.toString();

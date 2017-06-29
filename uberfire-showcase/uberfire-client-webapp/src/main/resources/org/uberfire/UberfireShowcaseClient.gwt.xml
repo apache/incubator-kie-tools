@@ -20,6 +20,8 @@
 <module>
   <inherits name="org.uberfire.UberfireClient"/>
   <inherits name="org.uberfire.client.views.PatternFly"/>
+  <inherits name="org.uberfire.preferences.UberfirePreferencesAPI"/>
+  <inherits name="org.uberfire.preferences.UberfirePreferencesClient"/>
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/uberfire-showcase.css'/>
@@ -37,16 +39,16 @@
 
   <collapse-property name="locale" values="*"/>
 
-  <inherits name="org.jboss.errai.ui.UI" />
-  <inherits name="org.jboss.errai.common.ErraiCommon" />
-  <inherits name="org.jboss.errai.bus.ErraiBus" />
-  <inherits name="org.jboss.errai.ioc.Container" />
+  <inherits name="org.jboss.errai.ui.UI"/>
+  <inherits name="org.jboss.errai.common.ErraiCommon"/>
+  <inherits name="org.jboss.errai.bus.ErraiBus"/>
+  <inherits name="org.jboss.errai.ioc.Container"/>
 
   <!-- We don't need to support IE10 or older -->
   <!-- There is no "ie11" permutation. IE11 uses the Firefox one (gecko1_8) -->
   <set-property name="user.agent" value="gecko1_8,safari"/>
-  
-  <set-property name="jre.checks.type" value="DISABLED" />
-  <set-property name="jre.checkedMode" value="DISABLED" />
-  
+
+  <set-property name="jre.checks.type" value="DISABLED"/>
+  <set-property name="jre.checkedMode" value="DISABLED"/>
+
 </module>

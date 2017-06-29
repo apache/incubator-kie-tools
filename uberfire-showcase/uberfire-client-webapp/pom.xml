@@ -49,7 +49,13 @@
       <artifactId>uberfire-workbench-processors</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-io</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -65,6 +71,18 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-client</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -91,13 +109,14 @@
             <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-io</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>            
+            <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-preferences-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-preferences-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-js</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-client-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-backend</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
           </compileSourcesArtifacts>
         </configuration>

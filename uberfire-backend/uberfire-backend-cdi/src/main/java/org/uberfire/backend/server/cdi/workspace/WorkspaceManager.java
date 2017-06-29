@@ -32,6 +32,8 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.cdi.workspace.Workspace;
 import org.uberfire.backend.server.cdi.model.WorkspaceImpl;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 /**
  * Contains every workspace created in the application and the beans for those workspaces.
  * Beans are stored into a cache, with size and time expiration.
@@ -62,6 +64,8 @@ public class WorkspaceManager {
      * @return The existent or the new workspace.
      */
     public Workspace getOrCreateWorkspace(String name) {
+        checkNotNull("name",
+                     name);
         Workspace workspace = new WorkspaceImpl(name);
         workspaces.computeIfAbsent(new WorkspaceImpl(name),
                                    w -> this.createCache());
@@ -92,9 +96,11 @@ public class WorkspaceManager {
      * @return The workspace object
      */
     public Workspace getWorkspace(String name) {
+        checkNotNull("name",
+                     name);
         Optional<Workspace> optionalWorkspace = this.workspaces.keySet()
                 .stream()
-                .filter(w -> w.equals(new WorkspaceImpl(name)))
+                .filter(w -> name.equals(w.getName()))
                 .findAny();
         return optionalWorkspace
                 .orElseThrow(() -> new NoSuchElementException(String.format("Workspace <<%s>> not found",
@@ -109,6 +115,10 @@ public class WorkspaceManager {
      */
     public <T> T getBean(Workspace workspace,
                          String beanName) {
+        checkNotNull("workspace",
+                     workspace);
+        checkNotNull("beanName",
+                     beanName);
         return (T) this.workspaces.get(workspace).getIfPresent(beanName);
     }
 
@@ -122,6 +132,8 @@ public class WorkspaceManager {
                             String beanName,
                             T instance) {
         try {
+            checkNotNull("beanName",
+                         beanName);
             this.workspaces.get(workspace).get(beanName,
                                                () -> instance);
         } catch (ExecutionException e) {

@@ -16,15 +16,42 @@
 
 package org.uberfire.backend.server;
 
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
 import org.uberfire.backend.server.io.watch.AbstractIOWatchService;
 import org.uberfire.java.nio.base.WatchContext;
 import org.uberfire.java.nio.file.StandardWatchEventKind;
 import org.uberfire.java.nio.file.WatchEvent;
+import org.uberfire.workbench.events.ResourceAddedEvent;
+import org.uberfire.workbench.events.ResourceBatchChangesEvent;
+import org.uberfire.workbench.events.ResourceDeletedEvent;
+import org.uberfire.workbench.events.ResourceRenamedEvent;
+import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 @ApplicationScoped
 public class IOWatchServiceNonDotImpl extends AbstractIOWatchService {
+
+    public IOWatchServiceNonDotImpl(){}
+
+    @Inject
+    public IOWatchServiceNonDotImpl(Event<ResourceBatchChangesEvent> resourceBatchChanges,
+                                 Event<ResourceUpdatedEvent> resourceUpdatedEvent,
+                                 Event<ResourceRenamedEvent> resourceRenamedEvent,
+                                 Event<ResourceDeletedEvent> resourceDeletedEvent,
+                                 Event<ResourceAddedEvent> resourceAddedEvent,
+                                 ManagedExecutorService managedExecutorService) {
+
+        super(resourceBatchChanges,
+              resourceUpdatedEvent,
+              resourceRenamedEvent,
+              resourceDeletedEvent,
+              resourceAddedEvent,
+              managedExecutorService);
+    }
+
 
     @Override
     public boolean doFilter(WatchEvent<?> object) {

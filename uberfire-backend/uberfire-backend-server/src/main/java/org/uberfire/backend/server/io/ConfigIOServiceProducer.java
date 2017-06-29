@@ -17,10 +17,10 @@
 package org.uberfire.backend.server.io;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.jboss.errai.security.shared.service.AuthenticationService;
@@ -40,12 +40,10 @@ public class ConfigIOServiceProducer {
 
     private static ConfigIOServiceProducer instance;
 
-    @Inject
-    @Named("clusterServiceFactory")
     private ClusterServiceFactory clusterServiceFactory;
 
-    @Inject
-    @IOSecurityAuth
+    private ManagedExecutorService managedExecutorService;
+
     private Instance<AuthenticationService> applicationProvidedConfigIOAuthService;
 
     private IOService configIOService;
@@ -58,6 +56,17 @@ public class ConfigIOServiceProducer {
         return instance;
     }
 
+    public ConfigIOServiceProducer() {
+    }
+
+    public ConfigIOServiceProducer(@Named("clusterServiceFactory") ClusterServiceFactory clusterServiceFactory,
+                                   ManagedExecutorService managedExecutorService,
+                                   @IOSecurityAuth Instance<AuthenticationService> applicationProvidedConfigIOAuthService) {
+        this.clusterServiceFactory = clusterServiceFactory;
+        this.managedExecutorService = managedExecutorService;
+        this.applicationProvidedConfigIOAuthService = applicationProvidedConfigIOAuthService;
+    }
+
     @PostConstruct
     public void setup() {
         instance = this;
@@ -66,7 +75,8 @@ public class ConfigIOServiceProducer {
         } else {
             configIOService = new IOServiceClusterImpl(new IOServiceNio2WrapperImpl("config"),
                                                        clusterServiceFactory,
-                                                       clusterServiceFactory.isAutoStart());
+                                                       clusterServiceFactory.isAutoStart(),
+                                                       managedExecutorService);
         }
         configFileSystem = (FileSystem) PriorityDisposableRegistry.get("systemFS");
     }

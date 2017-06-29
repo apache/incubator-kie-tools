@@ -18,10 +18,11 @@ package org.uberfire.ext.metadata.io;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.enterprise.concurrent.ManagedExecutorService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveRunnable;
-import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.ext.metadata.engine.Indexer;
 import org.uberfire.ext.metadata.engine.MetaIndexEngine;
 import org.uberfire.ext.metadata.engine.Observer;
@@ -53,10 +54,12 @@ public final class BatchIndex {
     private final Class<? extends FileAttributeView>[] views;
     private final AtomicBoolean indexDisposed = new AtomicBoolean(false);
     private final Observer observer;
+    private final ManagedExecutorService managedExecutorService;
 
     public BatchIndex(final MetaIndexEngine indexEngine,
                       final IOService ioService,
                       final Observer observer,
+                      final ManagedExecutorService managedExecutorService,
                       final Class<? extends FileAttributeView>... views) {
         this.indexEngine = checkNotNull("indexEngine",
                                         indexEngine);
@@ -65,11 +68,13 @@ public final class BatchIndex {
         this.observer = checkNotNull("observer",
                                      observer);
         this.views = views;
+
+        this.managedExecutorService = managedExecutorService;
     }
 
     public void runAsync(final FileSystem fs) {
         if (fs != null && fs.getRootDirectories().iterator().hasNext()) {
-            SimpleAsyncExecutorService.getDefaultInstance().execute(new DescriptiveRunnable() {
+            managedExecutorService.execute(new DescriptiveRunnable() {
                 @Override
                 public String getDescription() {
                     return "FS BatchIndex [" + ((FileSystemId) fs).id() + "]";
@@ -106,7 +111,7 @@ public final class BatchIndex {
     }
 
     public void runAsync(final Path root) {
-        SimpleAsyncExecutorService.getDefaultInstance().execute(new DescriptiveRunnable() {
+        this.managedExecutorService.execute(new DescriptiveRunnable() {
             @Override
             public String getDescription() {
                 return "Path BatchIndex [" + root.toString() + "]";

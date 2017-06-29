@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
@@ -367,13 +368,16 @@ public class SystemConfigProducer implements Extension {
                                                                                                             ClusterServiceFactory.class,
                                                                                                             _ctx);
 
+                final ManagedExecutorService managedExecutorService = getBean(bm,ManagedExecutorService.class);
+
                 final IOService result;
 
                 if (clusterServiceFactory == null) {
                     result = new IOServiceNio2WrapperImpl();
                 } else {
                     result = new IOServiceClusterImpl(new IOServiceNio2WrapperImpl(),
-                                                      clusterServiceFactory);
+                                                      clusterServiceFactory,
+                                                      managedExecutorService);
                 }
 
                 return result;
@@ -385,6 +389,14 @@ public class SystemConfigProducer implements Extension {
                 ctx.release();
             }
         });
+    }
+
+    private <T> T getBean(BeanManager bm,Class<T> clazz) {
+        final Bean<T> bean = (Bean<T>) bm.getBeans(clazz).iterator().next();
+        final CreationalContext<T> creationalContext = bm.createCreationalContext(bean);
+        return (T) bm.getReference(bean,
+                                   clazz,
+                                   creationalContext);
     }
 
     private void buildStartableBean(final AfterBeanDiscovery abd,

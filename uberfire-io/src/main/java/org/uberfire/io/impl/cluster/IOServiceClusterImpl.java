@@ -37,10 +37,11 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.enterprise.concurrent.ManagedExecutorService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveRunnable;
-import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.commons.cluster.LockExecuteNotifySyncReleaseTemplate;
@@ -89,6 +90,7 @@ public class IOServiceClusterImpl implements IOService {
 
     private static final Logger logger = LoggerFactory.getLogger(IOServiceClusterImpl.class);
     protected final Set<String> batchFileSystems = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+    private ManagedExecutorService managedExecutorService;
     protected IOServiceLockable service;
     protected ClusterService clusterService;
     private NewFileSystemListener newFileSystemListener = null;
@@ -97,15 +99,18 @@ public class IOServiceClusterImpl implements IOService {
     }
 
     public IOServiceClusterImpl(final IOService service,
-                                final ClusterServiceFactory clusterServiceFactory) {
+                                final ClusterServiceFactory clusterServiceFactory,
+                                final ManagedExecutorService managedExecutorService) {
         this(service,
              clusterServiceFactory,
-             true);
+             true,
+             managedExecutorService);
     }
 
     public IOServiceClusterImpl(final IOService service,
                                 final ClusterServiceFactory clusterServiceFactory,
-                                final boolean autoStart) {
+                                final boolean autoStart,
+                                final ManagedExecutorService managedExecutorService) {
         checkNotNull("clusterServiceFactory",
                      clusterServiceFactory);
         this.service = checkInstanceOf("service",
@@ -114,6 +119,9 @@ public class IOServiceClusterImpl implements IOService {
 
         logger.debug("Creating instance of cluster service with auto start {}",
                      autoStart);
+
+        this.managedExecutorService = managedExecutorService;
+
         this.clusterService = clusterServiceFactory.build(new MessageHandlerResolver() {
 
             final MessageHandler newFs = new NewFileSystemMessageHandler();
@@ -183,7 +191,7 @@ public class IOServiceClusterImpl implements IOService {
 
                                                                                                        onSync.set(true);
 
-                                                                                                       SimpleAsyncExecutorService.getUnmanagedInstance().execute(new DescriptiveRunnable() {
+                                                                                                       managedExecutorService.execute(new DescriptiveRunnable() {
                                                                                                            @Override
                                                                                                            public String getDescription() {
                                                                                                                return "Cluster Messaging Reply [" + service.getId() + "/QUERY_FOR_FS]";

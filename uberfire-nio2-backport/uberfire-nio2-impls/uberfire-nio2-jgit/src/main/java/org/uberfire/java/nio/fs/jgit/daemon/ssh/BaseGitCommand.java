@@ -18,6 +18,9 @@ package org.uberfire.java.nio.fs.jgit.daemon.ssh;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import javax.enterprise.concurrent.ManagedExecutorService;
 
 import org.apache.sshd.common.Session;
 import org.apache.sshd.common.channel.ChannelOutputStream;
@@ -32,7 +35,7 @@ import org.eclipse.jgit.transport.ServiceMayNotContinueException;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.uberfire.commons.async.DescriptiveRunnable;
-import org.uberfire.commons.async.SimpleAsyncExecutorService;
+import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
@@ -48,6 +51,7 @@ public abstract class BaseGitCommand implements Command,
     protected final String repositoryName;
     protected final FileSystemAuthorizer fileSystemAuthorizer;
     protected final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver;
+    private final ExecutorService executorService;
 
     private InputStream in;
     private OutputStream out;
@@ -62,6 +66,7 @@ public abstract class BaseGitCommand implements Command,
         this.fileSystemAuthorizer = fileSystemAuthorizer;
         this.repositoryName = buildRepositoryName(command);
         this.repositoryResolver = repositoryResolver;
+        this.executorService = Executors.newCachedThreadPool(new DescriptiveThreadFactory());
     }
 
     private String buildRepositoryName(String command) {
@@ -101,7 +106,7 @@ public abstract class BaseGitCommand implements Command,
 
     @Override
     public void start(final Environment env) throws IOException {
-        SimpleAsyncExecutorService.getDefaultInstance().execute(new DescriptiveRunnable() {
+        this.executorService.execute(new DescriptiveRunnable() {
             @Override
             public String getDescription() {
                 return "Git Command [" + getClass().getName() + "]";

@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.uberfire.backend.server.util.Filter;
+import org.uberfire.backend.server.util.MockManagedExecutorService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.ClosedWatchServiceException;
 import org.uberfire.java.nio.file.InterruptedException;
@@ -42,7 +43,12 @@ public class AbstractIOWatchServiceTest {
             System.setProperty("org.uberfire.watcher.autostart",
                                "false");
 
-            AbstractIOWatchService service = new AbstractIOWatchService() {
+            AbstractIOWatchService service = new AbstractIOWatchService(null,
+                                                                        null,
+                                                                        null,
+                                                                        null,
+                                                                        null,
+                                                                        new MockManagedExecutorService()) {
 
                 @Override
                 public boolean doFilter(WatchEvent<?> t) {

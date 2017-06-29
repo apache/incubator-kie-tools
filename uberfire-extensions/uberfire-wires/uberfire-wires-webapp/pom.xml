@@ -434,6 +434,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.jboss.spec.javax.enterprise.concurrent</groupId>
+      <artifactId>jboss-concurrency-api_1.0_spec</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-social-activities-backend</artifactId>
     </dependency>

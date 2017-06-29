@@ -36,6 +36,7 @@ public class WorkspaceScopedExtension implements Extension {
         if (logger.isDebugEnabled()) {
             logger.debug("Before bean discovery, adding WosrkspaceScoped");
         }
+
         bbd.addScope(WorkspaceScoped.class,
                      true,
                      false);
@@ -46,6 +47,7 @@ public class WorkspaceScopedExtension implements Extension {
         if (logger.isDebugEnabled()) {
             logger.debug("After bean discovery, adding WorkspaceScopeContext");
         }
+
         abd.addContext(new WorkspaceScopeContext(beanManager));
     }
 }

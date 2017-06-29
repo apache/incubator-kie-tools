@@ -47,6 +47,7 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import com.jcraft.jsch.Session;
@@ -85,8 +86,7 @@ import org.eclipse.jgit.util.FS;
 import org.eclipse.jgit.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.commons.async.DisposableExecutor;
-import org.uberfire.commons.async.SimpleAsyncExecutorService;
+import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.commons.config.ConfigProperties.ConfigProperty;
@@ -252,6 +252,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
 
     private GitSSHService gitSSHService = null;
     private FS detectedFS = FS.DETECTED;
+    private ExecutorService executorService;
 
     /**
      * Creates a JGit filesystem provider which takes its configuration from system properties. In a normal production
@@ -278,6 +279,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
      * this class during startup.
      */
     public JGitFileSystemProvider(final ConfigProperties gitPrefs) {
+        this.executorService = Executors.newCachedThreadPool(new DescriptiveThreadFactory());
         loadConfig(gitPrefs);
         CredentialsProvider.setDefault(new UsernamePasswordCredentialsProvider("guest",
                                                                                ""));
@@ -711,7 +713,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         if (daemonService == null || !daemonService.isRunning()) {
             daemonService = new Daemon(new InetSocketAddress(daemonHostAddr,
                                                              daemonPort),
-                                       new ExecutorWrapper(SimpleAsyncExecutorService.getUnmanagedInstance()));
+                                       new ExecutorWrapper(executorService));
             daemonService.setRepositoryResolver(new RepositoryResolverImpl<DaemonClient>());
             try {
                 daemonService.start();
@@ -2868,14 +2870,13 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     }
 
     /**
-     * Adapts a {@link SimpleAsyncExecutorService} to an {@link Executor} because SimpleAsyncExecutorService can't
      * implement Executor directly due to bugs in some older CDI implementations.
      */
     private static class ExecutorWrapper implements Executor {
 
-        private final DisposableExecutor simpleAsyncExecutor;
+        private final ExecutorService simpleAsyncExecutor;
 
-        public ExecutorWrapper(DisposableExecutor simpleAsyncExecutor) {
+        public ExecutorWrapper(ExecutorService simpleAsyncExecutor) {
             this.simpleAsyncExecutor = checkNotNull("simpleAsyncExecutor",
                                                     simpleAsyncExecutor);
         }

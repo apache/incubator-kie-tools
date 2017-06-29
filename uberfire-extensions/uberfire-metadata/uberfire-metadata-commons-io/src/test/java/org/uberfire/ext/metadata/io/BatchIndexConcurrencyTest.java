@@ -59,6 +59,7 @@ public class BatchIndexConcurrencyTest extends BaseIndexTest {
             metaIndexEngine = spy(config.getIndexEngine());
 
             ioService = new IOServiceIndexedImpl(metaIndexEngine,
+                                                 new MockManagedExecutorService(),
                                                  DublinCoreView.class,
                                                  VersionAttributeView.class) {
                 @Override
