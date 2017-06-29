@@ -56,11 +56,13 @@ public class DataManagementServiceImpl
 
     private static final int COLUMN_WIDTH = 100;
 
+    private static final String SEPARATOR = "#";
+
     @Inject
-    public DataManagementServiceImpl( DataSourceRuntimeManager dataSourceRuntimeManager,
-                                      DatabaseMetadataService databaseMetadataService,
-                                      DataSetDefRegistry dataSetDefRegistry,
-                                      DataSetManager dataSetManager ) {
+    public DataManagementServiceImpl(DataSourceRuntimeManager dataSourceRuntimeManager,
+                                     DatabaseMetadataService databaseMetadataService,
+                                     DataSetDefRegistry dataSetDefRegistry,
+                                     DataSetManager dataSetManager) {
         this.dataSourceRuntimeManager = dataSourceRuntimeManager;
         this.databaseMetadataService = databaseMetadataService;
         this.dataSetDefRegistry = dataSetDefRegistry;
@@ -68,59 +70,73 @@ public class DataManagementServiceImpl
     }
 
     @Override
-    public DisplayerSettings getDisplayerSettings( String dataSourceUuid, String schema, String table ) {
-        checkNotNull( "dataSourceUuid", dataSourceUuid );
-        checkNotNull( "table", table );
+    public DisplayerSettings getDisplayerSettings(String dataSourceUuid,
+                                                  String schema,
+                                                  String table) {
+        checkNotNull("dataSourceUuid",
+                     dataSourceUuid);
+        checkNotNull("table",
+                     table);
         try {
-            DataSourceDeploymentInfo deploymentInfo = dataSourceRuntimeManager.getDataSourceDeploymentInfo( dataSourceUuid );
-            DataSetDef dataSetDef = DataSetDefBuilder.newBuilder( )
-                    .dataSetUuid( buildDataSetUuid( dataSourceUuid, schema, table ) )
-                    .dataSetName( buildDataSetName( schema, table ) )
-                    .dataSourceUuid( deploymentInfo.getUuid() )
-                    .schema( schema )
-                    .table( buildDataSetTableName( dataSourceUuid, table ) )
-                    .isPublic( false )
-                    .build( );
+            DataSourceDeploymentInfo deploymentInfo = dataSourceRuntimeManager.getDataSourceDeploymentInfo(dataSourceUuid);
+            DataSetDef dataSetDef = DataSetDefBuilder.newBuilder()
+                    .dataSetUuid(buildDataSetUuid(dataSourceUuid,
+                                                  schema,
+                                                  table))
+                    .dataSetName(buildDataSetName(schema,
+                                                  table))
+                    .dataSourceUuid(deploymentInfo.getUuid())
+                    .schema(schema)
+                    .table(buildDataSetTableName(dataSourceUuid,
+                                                 table))
+                    .isPublic(false)
+                    .build();
 
-            dataSetDefRegistry.registerDataSetDef( dataSetDef );
-            DataSetLookup lookup = new DataSetLookup( );
-            lookup.setDataSetUUID( dataSetDef.getUUID( ) );
-            DataSet dataSet = dataSetManager.lookupDataSet( lookup );
+            dataSetDefRegistry.registerDataSetDef(dataSetDef);
+            DataSetLookup lookup = new DataSetLookup();
+            lookup.setDataSetUUID(dataSetDef.getUUID());
+            DataSet dataSet = dataSetManager.lookupDataSet(lookup);
 
-            TableDisplayerSettingsBuilder settingsBuilder = DisplayerSettingsFactory.newTableSettings( )
-                    .dataset( dataSetDef.getUUID( ) )
-                    .title( table )
-                    .titleVisible( true )
-                    .tablePageSize( 20 )
-                    .tableOrderEnabled( true );
+            TableDisplayerSettingsBuilder settingsBuilder = DisplayerSettingsFactory.newTableSettings()
+                    .dataset(dataSetDef.getUUID())
+                    .title(table)
+                    .titleVisible(true)
+                    .tablePageSize(20)
+                    .tableOrderEnabled(true);
 
-            List< DataColumn > columns = dataSet.getColumns( );
-            for ( DataColumn column : columns ) {
-                settingsBuilder.column( column.getId( ) );
+            List<DataColumn> columns = dataSet.getColumns();
+            for (DataColumn column : columns) {
+                settingsBuilder.column(column.getId());
             }
             int tableWith = columns.size() * COLUMN_WIDTH;
-            settingsBuilder.tableWidth( tableWith );
-            settingsBuilder.renderer( DefaultRenderer.UUID );
+            settingsBuilder.tableWidth(tableWith);
+            settingsBuilder.renderer(DefaultRenderer.UUID);
 
-            return settingsBuilder.buildSettings( );
-        } catch ( Exception e ) {
-            throw new GenericPortableException( e.getMessage( ) );
+            return settingsBuilder.buildSettings();
+        } catch (Exception e) {
+            throw new GenericPortableException(e.getMessage());
         }
     }
 
-    private String buildDataSetUuid( String dataSourceUuid, String schema, String table ) {
-        return dataSourceUuid + ":" + schema + ":" + table;
+    private String buildDataSetUuid(String dataSourceUuid,
+                                    String schema,
+                                    String table) {
+        return dataSourceUuid + SEPARATOR + schema + SEPARATOR + table;
     }
 
-    private String buildDataSetName( String schema, String table ) {
+    private String buildDataSetName(String schema,
+                                    String table) {
         return schema + "." + table;
     }
 
-    private String buildDataSetTableName( String dataSourceUuid, String table ) throws Exception {
+    private String buildDataSetTableName(String dataSourceUuid,
+                                         String table) throws Exception {
         String result = table;
-        DatabaseMetadata metadata = databaseMetadataService.getMetadata( dataSourceUuid, false, false );
-        if ( metadata.getDatabaseType() != null ) {
-            switch ( metadata.getDatabaseType( ) ) {
+        DatabaseMetadata metadata = databaseMetadataService.getMetadata(dataSourceUuid,
+                                                                        false,
+                                                                        false);
+        if (metadata.getDatabaseType() != null) {
+            switch (metadata.getDatabaseType()) {
                 case POSTGRESQL:
                     result = "\"" + table + "\"";
                     break;
