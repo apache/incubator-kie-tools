@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 
 /**
  * A bookmarkable URL has the following form:
@@ -398,6 +399,29 @@ public class BookmarkableUrlHelper {
         if (!currentBookmarkableURLStatus.contains(closed)) {
             return currentBookmarkableURLStatus.replace(id,
                                                         CLOSED_DOCK_PREFIX.concat(id));
+        }
+        return currentBookmarkableURLStatus;
+    }
+
+    /**
+     * Remove the editor reference from the URL
+     * @param currentBookmarkableURLStatus
+     * @param place
+     * @return
+     */
+    public static String registerCloseEditor(final String currentBookmarkableURLStatus,
+                                             final PlaceRequest place) {
+        if (place != null
+                && place instanceof PathPlaceRequest) {
+            final String path = place.getFullIdentifier();
+            final String pathWithSep = path.concat(SEPARATOR);
+
+            if (currentBookmarkableURLStatus.contains(pathWithSep)) {
+                return currentBookmarkableURLStatus.replace(pathWithSep,
+                                                            "");
+            }
+            return currentBookmarkableURLStatus.replace(path,
+                                                        "");
         }
         return currentBookmarkableURLStatus;
     }
