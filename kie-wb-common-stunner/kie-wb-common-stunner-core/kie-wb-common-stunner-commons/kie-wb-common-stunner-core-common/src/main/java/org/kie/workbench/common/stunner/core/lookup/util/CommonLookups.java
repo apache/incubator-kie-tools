@@ -60,7 +60,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 /**
  * An utils class that provides common used look-ups and other logic for querying the domain model and the rules model,
  * that is used along the application.
- * <p>
+ * <p/>
  * // TODO: Some kind of cache to avoid frequently used lookups? Consider performance and memory, this class
  * is shared on both server and client sides.
  */
@@ -151,7 +151,7 @@ public class CommonLookups {
      * the given edge (connector) identifier.
      * This method only returns the definition identifiers that are considered the default types for its morph type,
      * it does NOT return all the identifiers for all the allowed target definitions.
-     * <p>
+     * <p/>
      * TODO: Handle several result pages.
      */
     public <T> Set<String> getAllowedMorphDefaultDefinitions(final String defSetId,
@@ -193,7 +193,7 @@ public class CommonLookups {
     /**
      * Returns the allowed definition identifiers that can be used as target node for the given source node and
      * the given edge (connector) identifier.
-     * <p>
+     * <p/>
      * TODO: Handle several result pages.
      */
     @SuppressWarnings("unchecked")
@@ -203,6 +203,8 @@ public class CommonLookups {
                                                        final String edgeId,
                                                        final int page,
                                                        final int pageSize) {
+        final Set<Object> result = new LinkedHashSet<>();
+
         if (null != defSetId && null != graph && null != sourceNode && null != edgeId) {
             final T definition = sourceNode.getContent().getDefinition();
             final RuleSet ruleSet = getRuleSet(defSetId);
@@ -248,7 +250,6 @@ public class CommonLookups {
                                                                                                allowedConnectionRoles);
                         final int inConnectorsCount = countIncomingEdges(sourceNode,
                                                                          edgeId);
-                        final Set<Object> result = new LinkedHashSet<>();
                         allowedDefinitions
                                 .stream()
                                 .forEach(defId -> {
@@ -301,12 +302,12 @@ public class CommonLookups {
                 }
             }
         }
-        return null;
+        return result;
     }
 
     /**
      * Returns all the Definition Set's definition identifiers that contains the given labels.
-     * <p>
+     * <p/>
      * TODO: Handle several result pages.
      */
     private Set<String> getDefinitions(final String defSetId,
@@ -362,7 +363,7 @@ public class CommonLookups {
     /**
      * Returns the allowed ROLES that satisfy connection rules for a given source
      * definition ( domain model object, not a node ).and the given edge (connector) identifier.
-     * <p>
+     * <p/>
      * TODO: Handle several result pages.
      */
     private <T> Set<String> getConnectionRulesAllowedTargets(final String defSetId,
@@ -377,12 +378,15 @@ public class CommonLookups {
                                                        pageSize);
         if (null != rules && !rules.isEmpty()) {
             final Set<String> result = new LinkedHashSet<>();
+            final Set<String> sourceDefLabels = getDefinitionLabels(sourceDefinition);
             for (final Rule rule : rules) {
                 final CanConnect cr = (CanConnect) rule;
                 final List<CanConnect.PermittedConnection> connections = cr.getPermittedConnections();
                 if (null != connections && !connections.isEmpty()) {
                     for (final CanConnect.PermittedConnection connection : connections) {
-                        result.add(connection.getEndRole());
+                        if (sourceDefLabels != null && sourceDefLabels.contains(connection.getStartRole())) {
+                            result.add(connection.getEndRole());
+                        }
                     }
                 }
             }

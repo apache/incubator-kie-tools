@@ -45,7 +45,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 /**
  * A toolbox control provider implementation that provides buttons to create new elements
  * and update the graph structure.
- * <p>
+ * <p/>
  * It provides buttons for:
  * - Creating a new connection from the source element.
  * It looks for the default connector type and creates a button for it.
@@ -145,6 +145,7 @@ public class FlowActionsToolboxControlProvider extends AbstractToolboxControlPro
                 if (null != allowedMorphDefaultDefinitionIds && !allowedMorphDefaultDefinitionIds.isEmpty()) {
                     for (final String allowedDefId : allowedMorphDefaultDefinitionIds) {
                         final NewNodeCommand newNodeCommand = defaultToolboxCommandFactory.newNodeCommand();
+                        newNodeCommand.setEdgeIdentifier(defaultConnectorId);
                         newNodeCommand.setDefinitionIdentifier(allowedDefId);
                         commands.add(newNodeCommand);
                     }
