@@ -82,20 +82,20 @@ public class MinimalPomParser extends DefaultHandler {
                            final String localName,
                            final String qname) throws SAXException {
         if ( "project".equals( qname ) ) {
-            ReleaseId parentReleaseId = model.getParentReleaseId();
-            model.setReleaseId(new ReleaseIdImpl(pomGroupId != null ? pomGroupId : parentReleaseId.getGroupId(),
-                                                 pomArtifactId,
-                                                 pomVersion != null ? pomVersion : parentReleaseId.getVersion()));
+            AFReleaseId parentReleaseId = model.getParentReleaseId();
+            model.setReleaseId(new AFReleaseIdImpl(pomGroupId != null ? pomGroupId : parentReleaseId.getGroupId(),
+                                                   pomArtifactId,
+                                                   pomVersion != null ? pomVersion : parentReleaseId.getVersion()));
         } else if ( "parent".equals( qname ) ) {
             if ( currentGroupId != null && currentArtifactId != null && currentVersion != null ) {
-                model.setParentReleaseId(new ReleaseIdImpl(currentGroupId, currentArtifactId, currentVersion));
+                model.setParentReleaseId(new AFReleaseIdImpl(currentGroupId, currentArtifactId, currentVersion));
             }
             currentGroupId = null;
             currentArtifactId = null;
             currentVersion = null;
         } else if ( "dependency".equals( qname ) ) {
             if ( currentGroupId != null && currentArtifactId != null && currentVersion != null ) {
-                model.addDependency(new ReleaseIdImpl(currentGroupId, currentArtifactId, currentVersion), currentScope != null ? currentScope : "");
+                model.addDependency(new AFReleaseIdImpl(currentGroupId, currentArtifactId, currentVersion), currentScope != null ? currentScope : "");
             }
             currentGroupId = null;
             currentArtifactId = null;

@@ -34,7 +34,7 @@ import org.appformer.maven.integration.embedder.EmbeddedPomParser;
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.MinimalPomParser;
 import org.appformer.maven.support.PomModel;
-import org.appformer.maven.support.ReleaseId;
+import org.appformer.maven.support.AFReleaseId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +63,7 @@ public class ArtifactResolver {
         this.pomParser = pomParser;
     }
 
-    public Artifact resolveArtifact(ReleaseId releaseId ) {
+    public Artifact resolveArtifact(AFReleaseId releaseId ) {
         return mavenRepository.resolveArtifact(releaseId);
     }
 
@@ -92,7 +92,7 @@ public class ArtifactResolver {
         return dependencies;
     }
 
-    public static ArtifactResolver getResolverFor(ReleaseId releaseId, boolean allowDefaultPom) {
+    public static ArtifactResolver getResolverFor(AFReleaseId releaseId, boolean allowDefaultPom) {
         File pomFile = getPomFileForGAV( releaseId, allowDefaultPom );
         if (pomFile != null) {
             ArtifactResolver artifactResolver = getResolverFor(pomFile);
@@ -125,13 +125,13 @@ public class ArtifactResolver {
         return new ArtifactResolver(mavenProject);
     }
 
-    private static File getPomFileForGAV(ReleaseId releaseId, boolean allowDefaultPom) {
+    private static File getPomFileForGAV(AFReleaseId releaseId, boolean allowDefaultPom) {
         String artifactName = releaseId.getGroupId() + ":" + releaseId.getArtifactId() + ":pom:" + releaseId.getVersion();
         Artifact artifact = MavenRepository.getMavenRepository().resolveArtifact(artifactName, !allowDefaultPom);
         return artifact != null ? artifact.getFile() : null;
     }
 
-    public static ArtifactResolver getResolverFor( InputStream pomStream, ReleaseId releaseId, boolean allowDefaultPom ) {
+    public static ArtifactResolver getResolverFor(InputStream pomStream, AFReleaseId releaseId, boolean allowDefaultPom ) {
         if (pomStream != null) {
             ArtifactResolver artifactResolver = getResolverFor(pomStream);
             if (artifactResolver != null) {
@@ -173,7 +173,7 @@ public class ArtifactResolver {
         @Override
         public List<DependencyDescriptor> getPomDirectDependencies( DependencyFilter filter ) {
             List<DependencyDescriptor> deps = new ArrayList<DependencyDescriptor>();
-            for (ReleaseId rId : pomModel.getDependencies( filter )) {
+            for (AFReleaseId rId : pomModel.getDependencies(filter )) {
                 deps.add(new DependencyDescriptor(rId));
             }
             return deps;

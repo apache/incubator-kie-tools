@@ -18,11 +18,11 @@ package org.appformer.maven.support;
 
 
 public interface DependencyFilter {
-    boolean accept( ReleaseId releaseId, String scope );
+    boolean accept(AFReleaseId releaseId, String scope );
 
     DependencyFilter TAKE_ALL_FILTER = new DependencyFilter() {
         @Override
-        public boolean accept( ReleaseId releaseId, String scope ) {
+        public boolean accept(AFReleaseId releaseId, String scope ) {
             return true;
         }
     };
@@ -37,7 +37,7 @@ public interface DependencyFilter {
         }
 
         @Override
-        public boolean accept( ReleaseId releaseId, String scope ) {
+        public boolean accept(AFReleaseId releaseId, String scope ) {
             for (String excludedScope : excludedScopes) {
                 if (excludedScope.equals( scope )) {
                     return false;

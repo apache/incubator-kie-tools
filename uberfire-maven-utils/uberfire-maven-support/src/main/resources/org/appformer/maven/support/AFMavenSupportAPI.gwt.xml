@@ -3,6 +3,6 @@
 
 <module>
 
-  <source path="" includes="ReleaseId.java" defaultexcludes="true"/>
+  <source path="" includes="AFReleaseId.java" defaultexcludes="true"/>
 
 </module>

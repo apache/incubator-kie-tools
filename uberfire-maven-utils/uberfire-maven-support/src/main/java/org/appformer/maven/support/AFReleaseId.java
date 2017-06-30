@@ -20,7 +20,7 @@ package org.appformer.maven.support;
  * ReleaseId is a full identifier far a given version of an artifact.
  * Following the Maven conventions it is composed of 3 parts: a groupId, an artifactId and a version
  */
-public interface ReleaseId {
+public interface AFReleaseId {
 
     String getGroupId();
     String getArtifactId();

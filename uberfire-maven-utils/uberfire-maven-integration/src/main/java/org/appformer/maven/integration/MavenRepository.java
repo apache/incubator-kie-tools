@@ -59,7 +59,7 @@ import org.eclipse.aether.version.Version;
 import org.appformer.maven.integration.embedder.MavenEmbedder;
 import org.appformer.maven.integration.embedder.MavenProjectLoader;
 import org.appformer.maven.integration.embedder.MavenSettings;
-import org.appformer.maven.support.ReleaseId;
+import org.appformer.maven.support.AFReleaseId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,7 +138,7 @@ public class MavenRepository {
         return descriptors;
     }
 
-    public Artifact resolveArtifact( ReleaseId releaseId ) {
+    public Artifact resolveArtifact( AFReleaseId releaseId ) {
         String artifactName = releaseId.toString();
         if ( DependencyDescriptor.isRangedVersion( releaseId.getVersion() ) ) {
             Version v = resolveVersion( artifactName );
@@ -243,7 +243,7 @@ public class MavenRepository {
      * @param pomfile The pom file to be deployed together with the kjar
      */
     public void deployArtifact( RemoteRepository repository,
-                                ReleaseId releaseId,
+                                AFReleaseId releaseId,
                                 File jar,
                                 File pomfile ) {
         Artifact jarArtifact = new DefaultArtifact( releaseId.getGroupId(), releaseId.getArtifactId(), "jar", releaseId.getVersion() );
@@ -265,7 +265,7 @@ public class MavenRepository {
         }
     }
 
-    protected File bytesToFile( ReleaseId releaseId, byte[] bytes, String extension ) {
+    protected File bytesToFile(AFReleaseId releaseId, byte[] bytes, String extension ) {
         File file = new File( System.getProperty( "java.io.tmpdir" ), toFileName( releaseId, null ) + extension );
         try {
             FileOutputStream fos = new FileOutputStream( file );
@@ -286,7 +286,7 @@ public class MavenRepository {
      * @param jarContent A byte array containing the kjar to be installed
      * @param pomContent A byte array containing the pom file to be installed together with the kjar
      */
-    public void installArtifact( ReleaseId releaseId,
+    public void installArtifact( AFReleaseId releaseId,
                                  byte[] jarContent,
                                  byte[] pomContent ) {
         File jarFile = bytesToFile( releaseId, jarContent, ".jar" );
@@ -301,7 +301,7 @@ public class MavenRepository {
      * @param jar The jar to be installed
      * @param pomfile The pom file to be installed together with the kjar
      */
-    public void installArtifact( ReleaseId releaseId,
+    public void installArtifact( AFReleaseId releaseId,
                                  File jar,
                                  File pomfile ) {
         Artifact jarArtifact = new DefaultArtifact( releaseId.getGroupId(), releaseId.getArtifactId(), "jar", releaseId.getVersion() );
@@ -359,7 +359,7 @@ public class MavenRepository {
         }
     }
 
-    public static String toFileName( ReleaseId releaseId,
+    public static String toFileName( AFReleaseId releaseId,
                                      String classifier ) {
         if ( classifier != null ) {
             return releaseId.getArtifactId() + "-" + releaseId.getVersion() + "-" + classifier;
@@ -371,7 +371,7 @@ public class MavenRepository {
     /**
      * Utility method specifically suggested for testing purposes only.
      */
-    public void removeLocalArtifact(ReleaseId releaseId) {
+    public void removeLocalArtifact(AFReleaseId releaseId) {
         // Taken by analogy of build-helper-maven-plugin
         Artifact artifact = new DefaultArtifact(releaseId.getGroupId(), releaseId.getArtifactId(), null, releaseId.getVersion());
         

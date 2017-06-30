@@ -23,7 +23,8 @@ import java.io.ObjectOutput;
 
 import static java.lang.Character.isWhitespace;
 
-public class ReleaseIdImpl implements ReleaseId, Externalizable {
+public class AFReleaseIdImpl implements AFReleaseId,
+                                        Externalizable {
 
     private String groupId;
     private String artifactId;
@@ -32,21 +33,29 @@ public class ReleaseIdImpl implements ReleaseId, Externalizable {
 
     private String snapshotVersion;
 
-    public ReleaseIdImpl() {
+    public AFReleaseIdImpl() {
     }
 
-    public ReleaseIdImpl( String releaseId ) {
+    public AFReleaseIdImpl(String releaseId) {
         String[] split = releaseId.split(":");
         this.groupId = split[0];
         this.artifactId = split[1];
         this.version = split[2];
     }
 
-    public ReleaseIdImpl( String groupId, String artifactId, String version ) {
-        this(groupId, artifactId, version, "jar");
+    public AFReleaseIdImpl(String groupId,
+                           String artifactId,
+                           String version) {
+        this(groupId,
+             artifactId,
+             version,
+             "jar");
     }
 
-    public ReleaseIdImpl( String groupId, String artifactId, String version, String type ) {
+    public AFReleaseIdImpl(String groupId,
+                           String artifactId,
+                           String version,
+                           String type) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
@@ -83,9 +92,9 @@ public class ReleaseIdImpl implements ReleaseId, Externalizable {
 
     @Override
     public String toString() {
-        return type == null || type.equals( "jar" ) ?
-               groupId + ":" + artifactId + ":" + version :
-               groupId + ":" + artifactId + ":" + type + ":" + version;
+        return type == null || type.equals("jar") ?
+                groupId + ":" + artifactId + ":" + version :
+                groupId + ":" + artifactId + ":" + type + ":" + version;
     }
 
     public String toExternalForm() {
@@ -100,11 +109,11 @@ public class ReleaseIdImpl implements ReleaseId, Externalizable {
         return getPomPropertiesPath(this);
     }
 
-    public static String getPomXmlPath(ReleaseId releaseId) {
+    public static String getPomXmlPath(AFReleaseId releaseId) {
         return "META-INF/maven/" + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/pom.xml";
     }
-    
-    public static String getPomPropertiesPath(ReleaseId releaseId) {
+
+    public static String getPomPropertiesPath(AFReleaseId releaseId) {
         return "META-INF/maven/" + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/pom.properties";
     }
 
@@ -126,12 +135,17 @@ public class ReleaseIdImpl implements ReleaseId, Externalizable {
             return false;
         }
 
-        ReleaseIdImpl that = (ReleaseIdImpl) o;
-        return equalsIgnoreNull(artifactId, that.artifactId) && equalsIgnoreNull(groupId, that.groupId) &&
-               equalsIgnoreNull(version, that.version) && equalsIgnoreNull(type, that.type);
+        AFReleaseIdImpl that = (AFReleaseIdImpl) o;
+        return equalsIgnoreNull(artifactId,
+                                that.artifactId) && equalsIgnoreNull(groupId,
+                                                                     that.groupId) &&
+                equalsIgnoreNull(version,
+                                 that.version) && equalsIgnoreNull(type,
+                                                                   that.type);
     }
 
-    private boolean equalsIgnoreNull(Object o1, Object o2) {
+    private boolean equalsIgnoreNull(Object o1,
+                                     Object o2) {
         return o1 != null ? o1.equals(o2) : o2 == null;
     }
 
@@ -168,13 +182,13 @@ public class ReleaseIdImpl implements ReleaseId, Externalizable {
         type = (String) in.readObject();
     }
 
-    protected static boolean isEmpty( final CharSequence str ) {
-        if ( str == null || str.length() == 0 ) {
+    protected static boolean isEmpty(final CharSequence str) {
+        if (str == null || str.length() == 0) {
             return true;
         }
 
-        for ( int i = 0, length = str.length(); i < length; i++ ){
-            if ( !isWhitespace(str.charAt( i )) )  {
+        for (int i = 0, length = str.length(); i < length; i++) {
+            if (!isWhitespace(str.charAt(i))) {
                 return false;
             }
         }

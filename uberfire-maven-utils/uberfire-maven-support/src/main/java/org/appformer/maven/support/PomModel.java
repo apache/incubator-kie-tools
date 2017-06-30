@@ -31,46 +31,46 @@ public interface PomModel {
 
     String NATIVE_MAVEN_PARSER_CLASS = "org.appformer.maven.integration.MavenPomModelGenerator";
 
-    ReleaseId getReleaseId();
+    AFReleaseId getReleaseId();
 
-    ReleaseId getParentReleaseId();
+    AFReleaseId getParentReleaseId();
 
-    Collection<ReleaseId> getDependencies();
-    Collection<ReleaseId> getDependencies(DependencyFilter filter);
+    Collection<AFReleaseId> getDependencies();
+    Collection<AFReleaseId> getDependencies(DependencyFilter filter);
 
     class InternalModel implements PomModel {
-        private ReleaseId releaseId;
-        private ReleaseId parentReleaseId;
-        private final Map<String, Set<ReleaseId>> dependencies = new HashMap<String, Set<ReleaseId>>();
+        private AFReleaseId releaseId;
+        private AFReleaseId parentReleaseId;
+        private final Map<String, Set<AFReleaseId>> dependencies = new HashMap<String, Set<AFReleaseId>>();
 
         @Override
-        public ReleaseId getReleaseId() {
+        public AFReleaseId getReleaseId() {
             return releaseId;
         }
 
-        public void setReleaseId(ReleaseId releaseId) {
+        public void setReleaseId(AFReleaseId releaseId) {
             this.releaseId = releaseId;
         }
 
         @Override
-        public ReleaseId getParentReleaseId() {
+        public AFReleaseId getParentReleaseId() {
             return parentReleaseId;
         }
 
-        public void setParentReleaseId(ReleaseId parentReleaseId) {
+        public void setParentReleaseId(AFReleaseId parentReleaseId) {
             this.parentReleaseId = parentReleaseId;
         }
 
         @Override
-        public Collection<ReleaseId> getDependencies() {
+        public Collection<AFReleaseId> getDependencies() {
             return getDependencies(DependencyFilter.TAKE_ALL_FILTER);
         }
 
         @Override
-        public Collection<ReleaseId> getDependencies(DependencyFilter filter ) {
-            Set<ReleaseId> depSet = new HashSet<ReleaseId>();
-            for (Map.Entry<String, Set<ReleaseId>> entry : dependencies.entrySet()) {
-                for (ReleaseId releaseId : entry.getValue()) {
+        public Collection<AFReleaseId> getDependencies(DependencyFilter filter ) {
+            Set<AFReleaseId> depSet = new HashSet<AFReleaseId>();
+            for (Map.Entry<String, Set<AFReleaseId>> entry : dependencies.entrySet()) {
+                for (AFReleaseId releaseId : entry.getValue()) {
                     if (filter.accept( releaseId, entry.getKey() )) {
                         depSet.add(releaseId);
                     }
@@ -79,10 +79,10 @@ public interface PomModel {
             return depSet;
         }
 
-        protected void addDependency(ReleaseId dependency, String scope) {
-            Set<ReleaseId> depsByScope = dependencies.get(scope);
+        protected void addDependency(AFReleaseId dependency, String scope) {
+            Set<AFReleaseId> depsByScope = dependencies.get(scope);
             if (depsByScope == null) {
-                depsByScope = new HashSet<ReleaseId>();
+                depsByScope = new HashSet<AFReleaseId>();
                 dependencies.put( scope, depsByScope );
             }
             depsByScope.add( dependency );

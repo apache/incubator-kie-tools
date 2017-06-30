@@ -20,8 +20,8 @@ import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.model.Dependency;
 import org.eclipse.aether.artifact.Artifact;
-import org.appformer.maven.support.ReleaseId;
-import org.appformer.maven.support.ReleaseIdImpl;
+import org.appformer.maven.support.AFReleaseId;
+import org.appformer.maven.support.AFReleaseIdImpl;
 
 public class DependencyDescriptor {
     private final String groupId;
@@ -55,7 +55,7 @@ public class DependencyDescriptor {
         }
     }
 
-    public DependencyDescriptor(ReleaseId releaseId) {
+    public DependencyDescriptor(AFReleaseId releaseId) {
         this(releaseId.getGroupId(),
              releaseId.getArtifactId(),
              releaseId.getVersion(),
@@ -64,7 +64,7 @@ public class DependencyDescriptor {
              "");
     }
 
-    public DependencyDescriptor(ReleaseId releaseId, long artifactTimestamp) {
+    public DependencyDescriptor(AFReleaseId releaseId, long artifactTimestamp) {
         this(releaseId);
         this.artifactTimestamp = artifactTimestamp;
     }
@@ -90,16 +90,16 @@ public class DependencyDescriptor {
         return version;
     }
 
-    public ReleaseId getReleaseIdWithoutVersion() {
-        return new ReleaseIdImpl( groupId, artifactId, "0");
+    public AFReleaseId getReleaseIdWithoutVersion() {
+        return new AFReleaseIdImpl(groupId, artifactId, "0");
     }
 
-    public ReleaseId getReleaseId() {
-        return new ReleaseIdImpl(groupId, artifactId, version);
+    public AFReleaseId getReleaseId() {
+        return new AFReleaseIdImpl(groupId, artifactId, version);
     }
 
-    public ReleaseId getArtifactReleaseId() {
-        return new ReleaseIdImpl(groupId, artifactId, artifactVersion.toString());
+    public AFReleaseId getArtifactReleaseId() {
+        return new AFReleaseIdImpl(groupId, artifactId, artifactVersion.toString());
     }
 
     public String getType() {
@@ -124,7 +124,7 @@ public class DependencyDescriptor {
                version.indexOf('[') >= 0 || version.indexOf(']') >= 0;
     }
 
-    public boolean isSameArtifact(ReleaseId releaseId) {
+    public boolean isSameArtifact(AFReleaseId releaseId) {
         return groupId.equals(releaseId.getGroupId()) && artifactId.equals(releaseId.getArtifactId());
     }
 

@@ -22,8 +22,8 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 import org.appformer.maven.support.PomModel;
 import org.appformer.maven.support.PomModelGenerator;
-import org.appformer.maven.support.ReleaseId;
-import org.appformer.maven.support.ReleaseIdImpl;
+import org.appformer.maven.support.AFReleaseId;
+import org.appformer.maven.support.AFReleaseIdImpl;
 
 import static org.appformer.maven.integration.embedder.MavenProjectLoader.parseMavenPom;
 
@@ -49,19 +49,19 @@ public class MavenPomModelGenerator implements PomModelGenerator {
             return mavenProject;
         }
 
-        private ReleaseId initReleaseId( MavenProject mavenProject ) {
-            return new ReleaseIdImpl( mavenProject.getGroupId(),
-                                      mavenProject.getArtifactId(),
-                                      mavenProject.getVersion());
+        private AFReleaseId initReleaseId(MavenProject mavenProject ) {
+            return new AFReleaseIdImpl(mavenProject.getGroupId(),
+                                       mavenProject.getArtifactId(),
+                                       mavenProject.getVersion());
         }
 
-        private ReleaseId initParentReleaseId(MavenProject mavenProject) {
+        private AFReleaseId initParentReleaseId(MavenProject mavenProject) {
             try {
                 MavenProject parentProject = mavenProject.getParent();
                 if (parentProject != null) {
-                    return new ReleaseIdImpl( parentProject.getGroupId(),
-                                              parentProject.getArtifactId(),
-                                              parentProject.getVersion());
+                    return new AFReleaseIdImpl(parentProject.getGroupId(),
+                                               parentProject.getArtifactId(),
+                                               parentProject.getVersion());
                 }
             } catch (Exception e) {
                 // ignore
@@ -72,7 +72,7 @@ public class MavenPomModelGenerator implements PomModelGenerator {
         private void initDependencies(MavenProject mavenProject) {
             // use getArtifacts instead of getDependencies to load transitive dependencies as well
             for (Artifact dep : mavenProject.getArtifacts()) {
-                addDependency(new ReleaseIdImpl( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() ), dep.getScope());
+                addDependency(new AFReleaseIdImpl(dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() ), dep.getScope());
             }
         }
     }
