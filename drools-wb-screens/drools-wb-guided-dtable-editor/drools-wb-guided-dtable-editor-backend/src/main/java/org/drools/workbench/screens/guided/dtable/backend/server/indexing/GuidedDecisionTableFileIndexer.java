@@ -18,40 +18,43 @@ package org.drools.workbench.screens.guided.dtable.backend.server.indexing;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.guided.dtable.backend.GuidedDTDRLPersistence;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
+import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.file.Path;
 
 @ApplicationScoped
-public class GuidedDecisionTableFileIndexer extends AbstractFileIndexer {
+public class GuidedDecisionTableFileIndexer extends AbstractDrlFileIndexer {
 
     @Inject
     protected GuidedDTableResourceTypeDefinition type;
 
+    @Inject
+    protected DataModelService dataModelService;
+
     @Override
-    public boolean supportsPath( final Path path ) {
-        return type.accept( Paths.convert( path ) );
+    public boolean supportsPath(final Path path) {
+        return type.accept(Paths.convert(path));
     }
 
     @Override
-    public DefaultIndexBuilder fillIndexBuilder( final Path path ) throws Exception {
-        final String content = ioService.readAllString( path );
-        final GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( content );
+    public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
+        final String content = ioService.readAllString(path);
+        final GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal(content);
+        final String drl = GuidedDTDRLPersistence.getInstance().marshal(model);
 
-        final DefaultIndexBuilder builder = getIndexBuilder(path);
-        if( builder == null ) {
-            return null;
-        }
-
-        final GuidedDecisionTableModelIndexVisitor visitor = new GuidedDecisionTableModelIndexVisitor( builder, model );
-        visitor.visit();
-        addReferencedResourcesToIndexBuilder(builder, visitor);
-
-        return builder;
+        return fillDrlIndexBuilder(path,
+                                   drl);
     }
 
+    @Override
+    protected ProjectDataModelOracle getProjectDataModelOracle(final Path path) {
+        return dataModelService.getProjectDataModel(Paths.convert(path));
+    }
 }
