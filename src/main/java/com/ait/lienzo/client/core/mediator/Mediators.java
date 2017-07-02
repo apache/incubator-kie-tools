@@ -74,7 +74,18 @@ public final class Mediators implements Iterable<IMediator>
 
     public void push(final IMediator mediator)
     {
-        m_mediators.push(mediator);
+    	if (null != mediator)
+        {
+            if (mediator instanceof AbstractMediator)
+            {
+                ((AbstractMediator) mediator).setViewport(m_viewport);
+            }
+            m_mediators.push(mediator);
+
+            m_size = m_mediators.size();
+        }
+    	
+    	
     }
 
     public IMediator pop()
