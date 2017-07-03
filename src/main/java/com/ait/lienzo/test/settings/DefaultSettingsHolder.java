@@ -42,7 +42,8 @@ import com.ait.lienzo.test.translator.*;
         },
         
         stubs = {
-                com.ait.lienzo.test.stub.overlays.TransformJSO.class,
+        		com.ait.lienzo.test.stub.overlays.BoundingBoxJSO.class,
+        		com.ait.lienzo.test.stub.overlays.TransformJSO.class,
                 com.ait.lienzo.test.stub.overlays.NObjectJSO.class,
                 com.ait.lienzo.test.stub.overlays.Point2DJSO.class,
                 com.ait.lienzo.test.stub.overlays.JsArray.class,
@@ -61,9 +62,8 @@ import com.ait.lienzo.test.translator.*;
                 com.ait.lienzo.test.stub.NFastStringMap.class,
         },
         
-        jsoStubs = {
-                "com.ait.lienzo.client.core.types.Shadow$ShadowJSO",
-                "com.ait.lienzo.client.core.types.BoundingBox$BoundingBoxJSO",
+        jsoStubs = {        		
+        		"com.ait.lienzo.client.core.types.Shadow$ShadowJSO",                
                 "com.ait.lienzo.client.core.types.FillGradient$GradientJSO",
                 "com.ait.lienzo.client.core.types.ImageData",
                 "com.ait.lienzo.client.core.types.DragBounds$DragBoundsJSO",
