@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.graph.content.view;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class MagnetImpl implements Magnet {
@@ -53,6 +54,26 @@ public class MagnetImpl implements Magnet {
     @Override
     public String toString() {
         return "[MagnetImpl at {" + location + "}, magnetType = " + magnetType + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof MagnetImpl) {
+            MagnetImpl other = (MagnetImpl) o;
+            return ((null != location)?
+                    (location.getX() == other.location.getX() && location.getY() == other.location.getY()) :
+                    null == other.location) &&
+                    ((null != magnetType)? magnetType.equals(other.magnetType) : null == other.magnetType);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes((null != location)? HashUtil.combineHashCodes(1,Double.hashCode(location.getX()),
+                                                                                       Double.hashCode(location.getY()))
+                                                 : 0,
+                                         (null != magnetType)? magnetType.hashCode() : 0);
     }
 
     @NonPortable
