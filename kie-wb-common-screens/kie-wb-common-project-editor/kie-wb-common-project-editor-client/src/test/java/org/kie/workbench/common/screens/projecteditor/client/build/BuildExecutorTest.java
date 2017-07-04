@@ -42,7 +42,11 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.server.controller.api.model.spec.Capability;
+import org.kie.server.controller.api.model.spec.ContainerConfig;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
+import org.kie.server.controller.api.model.spec.ProcessConfig;
+import org.kie.server.controller.api.model.spec.RuleConfig;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.workbench.common.screens.projecteditor.client.editor.DeploymentScreenPopupViewImpl;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
@@ -65,6 +69,15 @@ import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class BuildExecutorTest {
+
+    @Mock
+    protected Repository repository;
+
+    @Mock
+    protected KieProject project;
+
+    @Mock
+    protected Path pomPath;
 
     @Mock
     private DeploymentScreenPopupViewImpl deploymentScreenPopupView;
@@ -90,15 +103,6 @@ public class BuildExecutorTest {
     private ProjectContext context;
 
     @Mock
-    protected Repository repository;
-
-    @Mock
-    protected KieProject project;
-
-    @Mock
-    protected Path pomPath;
-
-    @Mock
     private BuildExecutor.View view;
 
     private BuildExecutor buildExecutor;
@@ -117,13 +121,14 @@ public class BuildExecutorTest {
                            project,
                            pomPath);
 
-        buildExecutor = new BuildExecutor(deploymentScreenPopupView,
-                                          specManagementService,
-                                          buildService,
-                                          buildResultsEvent,
-                                          notificationEvent,
-                                          conflictingRepositoriesPopup,
-                                          context);
+        buildExecutor = spy(new BuildExecutor(deploymentScreenPopupView,
+                                              specManagementService,
+                                              buildService,
+                                              buildResultsEvent,
+                                              notificationEvent,
+                                              conflictingRepositoriesPopup,
+                                              context));
+
         buildExecutor.init(view);
     }
 
@@ -386,6 +391,41 @@ public class BuildExecutorTest {
                times(2)).showBusyIndicator(eq(ProjectEditorResources.CONSTANTS.Building()));
         verify(view,
                times(2)).hideBusyIndicator();
+    }
+
+    @Test
+    public void testMakeConfigsWhenServerTemplateDoesNotHaveProcessCapability() {
+        final ServerTemplate serverTemplate = mock(ServerTemplate.class);
+        final RuleConfig ruleConfig = mock(RuleConfig.class);
+
+        doReturn(ruleConfig).when(buildExecutor).makeRuleConfig();
+
+        final Map<Capability, ContainerConfig> configs = buildExecutor.makeConfigs(serverTemplate);
+
+        assertTrue(configs.keySet().contains(Capability.RULE));
+        assertTrue(configs.values().contains(ruleConfig));
+        assertEquals(1,
+                     configs.size());
+    }
+
+    @Test
+    public void testMakeConfigsWhenServerTemplateHasProcessCapability() {
+        final ServerTemplate serverTemplate = mock(ServerTemplate.class);
+        final RuleConfig ruleConfig = mock(RuleConfig.class);
+        final ProcessConfig processConfig = mock(ProcessConfig.class);
+
+        doReturn(ruleConfig).when(buildExecutor).makeRuleConfig();
+        doReturn(processConfig).when(buildExecutor).makeProcessConfig();
+        doReturn(true).when(buildExecutor).hasProcessCapability(any());
+
+        final Map<Capability, ContainerConfig> configs = buildExecutor.makeConfigs(serverTemplate);
+
+        assertTrue(configs.keySet().contains(Capability.RULE));
+        assertTrue(configs.keySet().contains(Capability.PROCESS));
+        assertTrue(configs.values().contains(ruleConfig));
+        assertTrue(configs.values().contains(processConfig));
+        assertEquals(2,
+                     configs.size());
     }
 
     private void verifyNotification(final String message,
