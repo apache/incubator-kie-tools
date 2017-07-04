@@ -172,14 +172,15 @@ public class Text extends Shape<Text>
         double width = wrapBoundaries.getWidth();
         int numOfLines = 1;
         String[] words = getText().split(" ");
-        String nextLine = words[0];
+        StringBuilder nextLine = new StringBuilder(words[0]);
         for (int i = 1; i < words.length; i++) {
-            if (getBoundingBoxForString(nextLine + words[i]).getWidth() <= wrapBoundaries.getWidth())
+            if (getBoundingBoxForString(nextLine + " " + words[i]).getWidth() <= wrapBoundaries.getWidth())
             {
-                nextLine = nextLine + " " + words[i];
+                nextLine.append(" ").append(words[i]);
             }
             else {
-                nextLine = words[i];
+                nextLine.setLength(words[i].length());
+                nextLine.replace(0,words[i].length(),words[i]);
                 numOfLines++;
             }
         }
@@ -525,21 +526,20 @@ public class Text extends Shape<Text>
     {
         if (null != wrapBoundaries) {
             String[] words = attr.getText().split(" ");
-            String nextLine = words[0];
-            int numOfLines = 1;
+            StringBuilder nextLine = new StringBuilder(words[0]);
             ArrayList<String> lines = new ArrayList<>();
             for (int i = 1; i < words.length; i++) {
-                if (getBoundingBoxForString(nextLine + words[i]).getWidth() <= wrapBoundaries.getWidth())
+                if (getBoundingBoxForString(nextLine + " " + words[i]).getWidth() <= wrapBoundaries.getWidth())
                 {
-                    nextLine = nextLine + " " + words[i];
+                    nextLine.append(" ").append(words[i]);
                 }
                 else {
-                    lines.add(nextLine);
-                    nextLine = words[i];
-                    numOfLines++;
+                    lines.add(nextLine.toString());
+                    nextLine.setLength(words[i].length());
+                    nextLine.replace(0,words[i].length(),words[i]);
                 }
             }
-            lines.add(nextLine);
+            lines.add(nextLine.toString());
 
             double xOffset = 0;
 
@@ -666,7 +666,7 @@ public class Text extends Shape<Text>
      * @param context
      * @return TextMetric or null if the text is empty or null
      */
-    private double getLineHeight(final Context2D context)
+    public double getLineHeight(final Context2D context)
     {
         return getBoundingBoxForString("Mg").getHeight();
     }
