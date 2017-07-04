@@ -218,7 +218,15 @@ public class WiresShape extends WiresContainer
     {
         Objects.requireNonNull(handler);
 
-        return getHandlerManager().addHandler(WiresResizeEndEvent.TYPE, handler);
+        return getHandlerManager().addHandler(WiresResizeEndEvent.TYPE,
+                                              new WiresResizeEndHandler() {
+                                                  @Override
+                                                  public void onShapeResizeEnd(WiresResizeEndEvent event) {
+                                                      handler.onShapeResizeEnd(event);
+                                                      innerLayoutContainer.refresh();
+                                                      refresh();
+                                                  }
+                                              });
     }
 
     public String uuid()

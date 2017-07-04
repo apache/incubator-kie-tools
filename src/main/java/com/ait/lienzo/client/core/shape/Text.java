@@ -92,7 +92,7 @@ public class Text extends Shape<Text>
         {
             text = "";
         }
-        setText(text).setFontFamily(globals.getDefaultFontFamily()).setFontStyle(globals.getDefaultFontStyle()).setFontSize(globals.getDefaultFontSize());
+        setText(text).setFontFamily(globals.getDefaultFontFamily()).setFontStyle(globals.getDefaultFontStyle()).setFontSize(globals.getDefaultFontSize()).setWrapBoundaries(null);
     }
 
     /**
@@ -121,7 +121,7 @@ public class Text extends Shape<Text>
         {
             size = globals.getDefaultFontSize();
         }
-        setText(text).setFontFamily(family).setFontStyle(globals.getDefaultFontStyle()).setFontSize(size);
+        setText(text).setFontFamily(family).setFontStyle(globals.getDefaultFontStyle()).setFontSize(size).setWrapBoundaries(null);
     }
 
     /**
@@ -155,7 +155,7 @@ public class Text extends Shape<Text>
         {
             size = globals.getDefaultFontSize();
         }
-        setText(text).setFontFamily(family).setFontStyle(style).setFontSize(size);
+        setText(text).setFontFamily(family).setFontStyle(style).setFontSize(size).setWrapBoundaries(null);
     }
 
     protected Text(JSONObject node, ValidationContext ctx) throws ValidationException
@@ -841,7 +841,13 @@ public class Text extends Shape<Text>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return asAttributes(Attribute.TEXT, Attribute.FONT_SIZE, Attribute.FONT_STYLE, Attribute.FONT_FAMILY, Attribute.TEXT_UNIT, Attribute.TEXT_ALIGN, Attribute.TEXT_BASELINE);
+        return asAttributes(Attribute.TEXT, Attribute.FONT_SIZE, Attribute.FONT_STYLE, Attribute.FONT_FAMILY, Attribute.TEXT_UNIT, Attribute.TEXT_ALIGN, Attribute.TEXT_BASELINE, Attribute.WIDTH);
+    }
+
+    @Override
+    public List<Attribute> getTransformingAttributes()
+    {
+        return asAttributes(Attribute.TEXT, Attribute.FONT_SIZE, Attribute.FONT_STYLE, Attribute.FONT_FAMILY, Attribute.TEXT_UNIT, Attribute.TEXT_ALIGN, Attribute.TEXT_BASELINE, Attribute.WIDTH);
     }
 
     public BoundingBox getWrapBoundaries() {
@@ -850,6 +856,7 @@ public class Text extends Shape<Text>
 
     public Text setWrapBoundaries(BoundingBox boundaries) {
         wrapBoundaries = boundaries;
+        getAttributes().setWidth((null != boundaries)? boundaries.getWidth() : 0);
         return this;
     }
 
@@ -872,6 +879,8 @@ public class Text extends Shape<Text>
             addAttribute(Attribute.TEXT_ALIGN);
 
             addAttribute(Attribute.TEXT_BASELINE);
+
+            addAttribute(Attribute.WIDTH);
         }
 
         @Override
@@ -883,12 +892,5 @@ public class Text extends Shape<Text>
 
     private interface DrawString {
         void draw(Context2D c, String s, double xOffset, double lineNum);
-    }
-
-    private enum LinePlacement
-    {
-        TOP,
-        CENTER,
-        BOTTOM
     }
 }
