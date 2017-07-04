@@ -57,6 +57,7 @@ public class WiresTextTest
             String text = (String) args[0];
             double x = (double) args[1];
             double y = (double) args[2];
+
             drawnTexts.add(new DrawnText(text,x,y));
 
             return null;
@@ -78,7 +79,10 @@ public class WiresTextTest
             {
                 Object[] args = invocation.getArguments();
                 String arg = (String) args[0];
-                return TextMetrics.make(arg.length(),1);
+                TextMetrics out = mock(TextMetrics.class);
+                when(out.getWidth()).thenReturn(arg.length()*1.0);
+                when(out.getHeight()).thenReturn(1.0);
+                return out;
             }
         });
 
@@ -91,29 +95,28 @@ public class WiresTextTest
 
     @Test
     public void testTextWrap() {
-        BoundingBox bbox = mock(BoundingBox.class);
-        when(bbox.getWidth()).thenReturn(10.0);
-        when(bbox.getHeight()).thenReturn(10.0);
+        BoundingBox bbox = new BoundingBox().addX(0).addY(0).addX(10).addY(10);
         Text tested = new Text("very long text that should wrap");
 
         tested.setWrapBoundaries(bbox);
         tested.setTextAlign(TextAlign.LEFT);
 
         spy(tested);
+
+        when(tested.getLineHeight(context)).thenReturn(1.0);
         assertEquals(bbox,tested.getWrapBoundaries());
         tested.getBoundingBox();
-
-        verify(bbox,atLeastOnce()).getWidth();
+        assertEquals(bbox.getWidth(),tested.getBoundingBox().getWidth(),0.0001);
 
         //Cannot be tested until a workaround is found for BoundingBox
-        /*tested.drawWithTransforms(context,1, bbox);
+        tested.drawWithTransforms(context,1, bbox);
 
         assertArrayEquals(new Object[] {
-                new DrawnText("very long ",0,0),
-                new DrawnText("text that ", 0,1),
-                new DrawnText("should    ",0,2),
-                new DrawnText("wrap      ", 0, 3)
-        }, drawnTexts.toArray());*/
+                new DrawnText("very long ",0,0.8),
+                new DrawnText("text that ", 0,1.8),
+                new DrawnText("should    ",0,2.8),
+                new DrawnText("wrap      ", 0, 3.8)
+        }, drawnTexts.toArray());
 
     }
 
