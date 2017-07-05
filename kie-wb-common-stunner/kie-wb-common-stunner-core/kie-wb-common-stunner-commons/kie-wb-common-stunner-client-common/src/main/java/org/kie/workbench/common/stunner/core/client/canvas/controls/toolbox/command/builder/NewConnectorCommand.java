@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
@@ -30,7 +28,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.requ
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
 import org.kie.workbench.common.stunner.core.client.components.drag.ConnectorDragProxy;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxy;
-import org.kie.workbench.common.stunner.core.client.components.glyph.DefinitionGlyphTooltip;
+import org.kie.workbench.common.stunner.core.client.components.views.CanvasDefinitionTooltip;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -40,42 +38,31 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.uberfire.mvp.Command;
 
-@Dependent
-public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
+public abstract class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
 
     private final ConnectorDragProxy<AbstractCanvasHandler> connectorDragProxyFactory;
     private final EdgeBuilderControl<AbstractCanvasHandler> edgeBuilderControl;
 
     private String edgeId;
 
-    protected NewConnectorCommand() {
-        this(null,
-             null,
-             null,
-             null,
-             null,
-             null);
-    }
-
     @Inject
-    public NewConnectorCommand(final ClientFactoryService clientFactoryServices,
-                               final ShapeManager shapeManager,
-                               final DefinitionGlyphTooltip<?> glyphTooltip,
-                               final GraphBoundsIndexer graphBoundsIndexer,
-                               final ConnectorDragProxy<AbstractCanvasHandler> connectorDragProxyFactory,
-                               final EdgeBuilderControl<AbstractCanvasHandler> edgeBuilderControl) {
+    protected NewConnectorCommand(final ClientFactoryService clientFactoryServices,
+                                  final ShapeManager shapeManager,
+                                  final CanvasDefinitionTooltip definitionTooltip,
+                                  final GraphBoundsIndexer graphBoundsIndexer,
+                                  final ConnectorDragProxy<AbstractCanvasHandler> connectorDragProxyFactory,
+                                  final EdgeBuilderControl<AbstractCanvasHandler> edgeBuilderControl) {
         super(clientFactoryServices,
               shapeManager,
-              glyphTooltip,
+              definitionTooltip,
               graphBoundsIndexer);
         this.connectorDragProxyFactory = connectorDragProxyFactory;
         this.edgeBuilderControl = edgeBuilderControl;
     }
 
-    // TODO: i18n.
-    @PostConstruct
-    public void init() {
-        getGlyphTooltip().setPrefix("Click and move to connect using a ");
+    @Override
+    protected String getGlyphDefinitionId(final AbstractCanvasHandler context) {
+        return edgeId;
     }
 
     public void setEdgeIdentifier(final String edgeId) {
@@ -84,11 +71,6 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
 
     @Override
     protected String getDefinitionIdentifier(final Context<AbstractCanvasHandler> context) {
-        return edgeId;
-    }
-
-    @Override
-    protected String getGlyphDefinitionId() {
         return edgeId;
     }
 
@@ -125,7 +107,7 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
                                                final Element newElement) {
         final Node<View<?>, Edge> sourceNode = (Node<View<?>, Edge>) source;
         final Edge<View<?>, Node> edge = (Edge<View<?>, Node>) newElement;
-        final ShapeFactory<?, ?, ?> edgeFactory = getFactory(context.getCanvasHandler());
+        final ShapeFactory<?, ?> edgeFactory = getFactory(context.getCanvasHandler());
         return new ConnectorDragProxy.Item() {
             @Override
             public Edge<View<?>, Node> getEdge() {

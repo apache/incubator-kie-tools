@@ -19,22 +19,20 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.safehtml.shared.SafeUri;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
-import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
+import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
-import org.kie.workbench.common.stunner.svg.client.shape.def.SVGMutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public class StartEventShapeDef
-        extends AbstractShapeDef<BaseStartEvent>
-        implements SVGMutableShapeDef<BaseStartEvent, BPMNSVGViewFactory> {
+        implements BPMNSvgShapeDef<BaseStartEvent> {
 
     private static final String EVENT_START = "eventStart";
     private static final String EVENT_START_SIGNAL = "eventStartSignal";
@@ -105,36 +103,23 @@ public class StartEventShapeDef
         return 0;
     }
 
-    private static final PictureGlyphDef<BaseStartEvent, BPMNPictures> STARTEVENT_GLYPH_DEF = new PictureGlyphDef<BaseStartEvent, BPMNPictures>() {
-
-        private final Map<Class<?>, BPMNPictures> PICTURES = new HashMap<Class<?>, BPMNPictures>(3) {{
-            put(StartNoneEvent.class,
-                BPMNPictures.EVENT_START);
-            put(StartSignalEvent.class,
-                BPMNPictures.EVENT_START_SIGNAL);
-            put(StartTimerEvent.class,
-                BPMNPictures.EVENT_START_TIMER);
-        }};
-
-        @Override
-        public String getGlyphDescription(final BaseStartEvent element) {
-            return element.getGeneral().getName().getValue();
-        }
-
-        @Override
-        public BPMNPictures getSource(final Class<?> type) {
-            return PICTURES.get(type);
-        }
-    };
-
-    @Override
-    public GlyphDef<BaseStartEvent> getGlyphDef() {
-        return STARTEVENT_GLYPH_DEF;
-    }
+    private final static Map<Class<? extends BaseStartEvent>, SafeUri> ICONS = new HashMap<Class<? extends BaseStartEvent>, SafeUri>(2) {{
+        put(StartNoneEvent.class,
+            BPMNImageResources.INSTANCE.eventStart().getSafeUri());
+        put(StartSignalEvent.class,
+            BPMNImageResources.INSTANCE.eventStartSignal().getSafeUri());
+        put(StartTimerEvent.class,
+            BPMNImageResources.INSTANCE.eventStartTimer().getSafeUri());
+    }};
 
     @Override
     public double getWidth(final BaseStartEvent element) {
         return element.getDimensionsSet().getRadius().getValue() * 2;
+    }
+
+    @Override
+    public Glyph getGlyph(final Class<? extends BaseStartEvent> type) {
+        return SvgDataUriGlyph.create(ICONS.get(type));
     }
 
     @Override

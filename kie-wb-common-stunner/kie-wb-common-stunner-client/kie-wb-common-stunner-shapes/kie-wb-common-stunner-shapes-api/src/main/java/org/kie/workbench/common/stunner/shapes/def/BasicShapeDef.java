@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,10 @@ package org.kie.workbench.common.stunner.shapes.def;
 
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
-public interface BasicShapeDef<W>
-        extends ShapeDef<W> {
+public interface BasicShapeDef<W> extends ShapeDef<W> {
 
-    String getBackgroundColor(final W element);
-
-    double getBackgroundAlpha(final W element);
-
-    String getBorderColor(final W element);
-
-    double getBorderSize(final W element);
-
-    double getBorderAlpha(final W element);
+    @Override
+    default Class<? extends ShapeDef> getType() {
+        return BasicShapeDef.class;
+    }
 }

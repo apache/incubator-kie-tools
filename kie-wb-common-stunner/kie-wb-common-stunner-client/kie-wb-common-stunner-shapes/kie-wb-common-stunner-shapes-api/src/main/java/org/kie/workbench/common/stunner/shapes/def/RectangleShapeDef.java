@@ -16,13 +16,18 @@
 
 package org.kie.workbench.common.stunner.shapes.def;
 
-import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
-public interface RectangleShapeDef<W> extends MutableShapeDef<W> {
+public interface RectangleShapeDef<W> extends BasicMutableShapeDef<W> {
 
     double getWidth(final W element);
 
     double getHeight(final W element);
 
     double getCornerRadius(final W element);
+
+    @Override
+    default Class<? extends ShapeDef> getType() {
+        return RectangleShapeDef.class;
+    }
 }

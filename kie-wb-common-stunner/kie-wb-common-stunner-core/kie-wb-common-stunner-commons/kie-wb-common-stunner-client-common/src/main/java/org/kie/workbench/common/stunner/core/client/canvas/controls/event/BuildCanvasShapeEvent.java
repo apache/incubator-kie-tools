@@ -28,13 +28,13 @@ import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 public final class BuildCanvasShapeEvent extends AbstractCanvasHandlerEvent<AbstractCanvasHandler> {
 
     private Object definition;
-    private ShapeFactory<?, ?, ? extends Shape> shapeFactory;
+    private ShapeFactory<?, ? extends Shape> shapeFactory;
     private double x;
     private double y;
 
     public BuildCanvasShapeEvent(final AbstractCanvasHandler abstractCanvasHandler,
                                  final Object definition,
-                                 final ShapeFactory<?, ?, ? extends Shape> shapeFactory) {
+                                 final ShapeFactory<?, ? extends Shape> shapeFactory) {
         super(abstractCanvasHandler);
         this.definition = definition;
         this.shapeFactory = shapeFactory;
@@ -44,7 +44,7 @@ public final class BuildCanvasShapeEvent extends AbstractCanvasHandlerEvent<Abst
 
     public BuildCanvasShapeEvent(final AbstractCanvasHandler abstractCanvasHandler,
                                  final Object definition,
-                                 final ShapeFactory<?, ?, ? extends Shape> shapeFactory,
+                                 final ShapeFactory<?, ? extends Shape> shapeFactory,
                                  final double x,
                                  final double y) {
         super(abstractCanvasHandler);
@@ -58,7 +58,7 @@ public final class BuildCanvasShapeEvent extends AbstractCanvasHandlerEvent<Abst
         return definition;
     }
 
-    public ShapeFactory<?, ?, ? extends Shape> getShapeFactory() {
+    public ShapeFactory<?, ? extends Shape> getShapeFactory() {
         return shapeFactory;
     }
 

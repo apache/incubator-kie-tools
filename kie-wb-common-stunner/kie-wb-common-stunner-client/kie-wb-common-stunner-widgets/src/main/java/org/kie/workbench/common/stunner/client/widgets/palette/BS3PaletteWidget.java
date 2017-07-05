@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.palette;
 
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteViewFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
-import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 public interface BS3PaletteWidget extends PaletteWidget<DefinitionSetPalette> {
 
@@ -36,5 +36,5 @@ public interface BS3PaletteWidget extends PaletteWidget<DefinitionSetPalette> {
                          double x,
                          double y);
 
-    Glyph<?> getShapeGlyph(String definitionId);
+    Glyph getShapeGlyph(String definitionId);
 }

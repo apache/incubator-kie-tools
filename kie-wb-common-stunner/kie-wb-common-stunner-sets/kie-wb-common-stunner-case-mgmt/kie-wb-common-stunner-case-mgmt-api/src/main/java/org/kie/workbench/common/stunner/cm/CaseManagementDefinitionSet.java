@@ -40,7 +40,6 @@ import org.kie.workbench.common.stunner.cm.factory.CaseManagementGraphFactory;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
-import org.kie.workbench.common.stunner.core.definition.annotation.ShapeSet;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
@@ -75,7 +74,6 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
 @Occurrences(role = "diagram", max = 1)
 @Occurrences(role = "Startevents_all", min = 0)
 @Occurrences(role = "Endevents_all", min = 0)
-@ShapeSet
 public class CaseManagementDefinitionSet {
 
     @Description

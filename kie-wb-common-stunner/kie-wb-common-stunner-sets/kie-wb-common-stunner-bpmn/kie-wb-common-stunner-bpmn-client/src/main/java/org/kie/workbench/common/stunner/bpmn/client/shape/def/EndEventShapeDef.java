@@ -19,21 +19,19 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.safehtml.shared.SafeUri;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
-import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
+import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
-import org.kie.workbench.common.stunner.svg.client.shape.def.SVGMutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public class EndEventShapeDef
-        extends AbstractShapeDef<BaseEndEvent>
-        implements SVGMutableShapeDef<BaseEndEvent, BPMNSVGViewFactory> {
+        implements BPMNSvgShapeDef<BaseEndEvent> {
 
     private static final String EVENT_END_NONE = "eventEndNone";
     private static final String EVENT_END_TERMINATE = "eventEndTerminate";
@@ -103,29 +101,16 @@ public class EndEventShapeDef
         return 0;
     }
 
-    private static final PictureGlyphDef<BaseEndEvent, BPMNPictures> ENDEVENT_GLYPH_DEF = new PictureGlyphDef<BaseEndEvent, BPMNPictures>() {
-
-        private final Map<Class<?>, BPMNPictures> PICTURES = new HashMap<Class<?>, BPMNPictures>(3) {{
-            put(EndNoneEvent.class,
-                BPMNPictures.EVENT_END_NONE);
-            put(EndTerminateEvent.class,
-                BPMNPictures.EVENT_END_TERMINATE);
-        }};
-
-        @Override
-        public String getGlyphDescription(final BaseEndEvent element) {
-            return element.getGeneral().getName().getValue();
-        }
-
-        @Override
-        public BPMNPictures getSource(final Class<?> type) {
-            return PICTURES.get(type);
-        }
-    };
+    private final static Map<Class<? extends BaseEndEvent>, SafeUri> ICONS = new HashMap<Class<? extends BaseEndEvent>, SafeUri>(2) {{
+        put(EndNoneEvent.class,
+            BPMNImageResources.INSTANCE.eventEndNone().getSafeUri());
+        put(EndTerminateEvent.class,
+            BPMNImageResources.INSTANCE.eventEndTerminate().getSafeUri());
+    }};
 
     @Override
-    public GlyphDef<BaseEndEvent> getGlyphDef() {
-        return ENDEVENT_GLYPH_DEF;
+    public Glyph getGlyph(final Class<? extends BaseEndEvent> type) {
+        return SvgDataUriGlyph.create(ICONS.get(type));
     }
 
     @Override

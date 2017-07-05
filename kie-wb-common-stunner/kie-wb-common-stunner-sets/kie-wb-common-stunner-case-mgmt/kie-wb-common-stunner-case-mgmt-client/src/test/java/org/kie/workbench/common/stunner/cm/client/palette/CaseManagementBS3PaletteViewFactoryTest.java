@@ -15,16 +15,12 @@
  */
 package org.kie.workbench.common.stunner.cm.client.palette;
 
-import java.util.Map;
-
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconResource;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.bs3.BS3IconRenderer;
+import org.kie.workbench.common.stunner.client.widgets.components.glyph.BS3IconTypeGlyph;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
-import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
@@ -32,14 +28,11 @@ import static org.junit.Assert.*;
 @RunWith(MockitoJUnitRunner.class)
 public class CaseManagementBS3PaletteViewFactoryTest {
 
-    @Mock
-    private ShapeManager shapeManager;
-
     private CaseManagementBS3PaletteViewFactory paletteViewFactory;
 
     @Before
     public void setup() {
-        this.paletteViewFactory = new CaseManagementBS3PaletteViewFactory(shapeManager);
+        this.paletteViewFactory = new CaseManagementBS3PaletteViewFactory();
     }
 
     @Test
@@ -49,20 +42,14 @@ public class CaseManagementBS3PaletteViewFactoryTest {
     }
 
     @Test
-    public void assertPaletteIconRendererType() {
-        assertEquals(BS3IconRenderer.class,
-                     paletteViewFactory.getPaletteIconRendererType());
-    }
-
-    @Test
-    public void checkCategoryIconResources() {
-        final Map<String, IconResource> iconResources = paletteViewFactory.getCategoryIconResources();
-        assertNotNull(iconResources);
-        assertEquals(2,
-                     iconResources.size());
-        assertTrue(iconResources.containsKey(CaseManagementPaletteDefinitionFactory.STAGES));
-        assertTrue(iconResources.containsKey(CaseManagementPaletteDefinitionFactory.ACTIVITIES));
-        assertNotNull(iconResources.get(CaseManagementPaletteDefinitionFactory.STAGES));
-        assertNotNull(iconResources.get(CaseManagementPaletteDefinitionFactory.ACTIVITIES));
+    public void checkCategoryGlyphs() {
+        final BS3IconTypeGlyph g1 = (BS3IconTypeGlyph) paletteViewFactory.getCategoryGlyph(CaseManagementPaletteDefinitionFactory.STAGES);
+        assertNotNull(g1);
+        assertEquals(IconType.STAR,
+                     g1.getIconType());
+        final BS3IconTypeGlyph g2 = (BS3IconTypeGlyph) paletteViewFactory.getCategoryGlyph(CaseManagementPaletteDefinitionFactory.ACTIVITIES);
+        assertNotNull(g2);
+        assertEquals(IconType.TASKS,
+                     g2.getIconType());
     }
 }

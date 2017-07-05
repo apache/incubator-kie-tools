@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.svg.client.shape.def;
 
 import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
 /**
  * An SVG Shape Definition type that allows runtime updates
@@ -62,4 +63,9 @@ public interface SVGMutableShapeDef<W, F> extends SVGShapeDef<W, F>,
      */
     boolean isSVGViewVisible(final String viewName,
                              final W element);
+
+    @Override
+    default Class<? extends ShapeDef> getType() {
+        return SVGMutableShapeDef.class;
+    }
 }

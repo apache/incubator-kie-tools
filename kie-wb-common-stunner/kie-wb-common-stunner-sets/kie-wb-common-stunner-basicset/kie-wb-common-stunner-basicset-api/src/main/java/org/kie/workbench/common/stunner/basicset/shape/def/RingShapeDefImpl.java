@@ -18,13 +18,9 @@ package org.kie.workbench.common.stunner.basicset.shape.def;
 
 import org.kie.workbench.common.stunner.basicset.definition.Ring;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDefinitions;
 import org.kie.workbench.common.stunner.shapes.def.RingShapeDef;
 
 public final class RingShapeDefImpl
-        extends AbstractShapeDef<Ring>
         implements RingShapeDef<Ring> {
 
     @Override
@@ -102,8 +98,4 @@ public final class RingShapeDefImpl
         return element.getInnerRadius().getValue();
     }
 
-    @Override
-    public GlyphDef<Ring> getGlyphDef() {
-        return GlyphDefinitions.GLYPH_SHAPE();
-    }
 }

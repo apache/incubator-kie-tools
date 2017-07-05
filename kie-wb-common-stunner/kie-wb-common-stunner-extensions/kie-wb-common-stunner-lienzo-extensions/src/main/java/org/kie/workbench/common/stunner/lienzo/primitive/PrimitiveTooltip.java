@@ -63,12 +63,22 @@ public class PrimitiveTooltip extends PrimitivePopup {
         this.hideTimeout = hideTimeout;
     }
 
+    public PrimitiveTooltip show(final String text,
+                                 final Point2D location,
+                                 final Direction direction) {
+        return this.show(null,
+                         text,
+                         location,
+                         0,
+                         0,
+                         direction);
+    }
+
     public PrimitiveTooltip show(final IPrimitive<?> _glyph,
                                  final String text,
+                                 final Point2D location,
                                  final double width,
                                  final double height,
-                                 final double x,
-                                 final double y,
                                  final Direction direction) {
         clearTimers();
         final IPrimitive<?> glyph = null != _glyph ? (IPrimitive<?>) _glyph.copy() : null;
@@ -99,8 +109,8 @@ public class PrimitiveTooltip extends PrimitivePopup {
         super.show(g,
                    w,
                    h,
-                   x,
-                   y);
+                   location.getX(),
+                   location.getY());
         double _x = (w / 2) + (isWest(direction) ? PADDING / 2 : 0);
         double _y = PADDING / 2 + (isNorth(direction) ? TRIANGLE_SIZE : 0);
         if (null != glyph) {

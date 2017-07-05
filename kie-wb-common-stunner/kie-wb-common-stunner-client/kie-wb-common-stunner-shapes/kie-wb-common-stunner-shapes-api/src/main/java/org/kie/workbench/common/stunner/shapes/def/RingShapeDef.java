@@ -16,11 +16,16 @@
 
 package org.kie.workbench.common.stunner.shapes.def;
 
-import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
-public interface RingShapeDef<W> extends MutableShapeDef<W> {
+public interface RingShapeDef<W> extends BasicMutableShapeDef<W> {
 
     double getInnerRadius(final W element);
 
     double getOuterRadius(final W element);
+
+    @Override
+    default Class<? extends ShapeDef> getType() {
+        return RingShapeDef.class;
+    }
 }

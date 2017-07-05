@@ -16,19 +16,16 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
-import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
+import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
-import org.kie.workbench.common.stunner.svg.client.shape.def.SVGMutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public class EmbeddedSubprocessShapeDef
-        extends AbstractShapeDef<EmbeddedSubprocess>
-        implements SVGMutableShapeDef<EmbeddedSubprocess, BPMNSVGViewFactory> {
+        implements BPMNSvgShapeDef<EmbeddedSubprocess> {
 
     @Override
     public double getAlpha(final EmbeddedSubprocess element) {
@@ -124,20 +121,10 @@ public class EmbeddedSubprocessShapeDef
         return BPMNSVGViewFactory.class;
     }
 
+    private static final SvgDataUriGlyph GLYPH = SvgDataUriGlyph.create(BPMNImageResources.INSTANCE.subProcessEmbedded().getSafeUri());
+
     @Override
-    public GlyphDef<EmbeddedSubprocess> getGlyphDef() {
-        return GLYPH_DEF;
+    public Glyph getGlyph(final Class<? extends EmbeddedSubprocess> type) {
+        return GLYPH;
     }
-
-    private static final PictureGlyphDef<EmbeddedSubprocess, BPMNPictures> GLYPH_DEF = new PictureGlyphDef<EmbeddedSubprocess, BPMNPictures>() {
-        @Override
-        public BPMNPictures getSource(final Class<?> type) {
-            return BPMNPictures.SUB_PROCESS_EMBEDDED;
-        }
-
-        @Override
-        public String getGlyphDescription(final EmbeddedSubprocess element) {
-            return element.getDescription();
-        }
-    };
 }

@@ -15,14 +15,12 @@
  */
 package org.kie.workbench.common.stunner.client.widgets.palette;
 
-import com.ait.lienzo.client.core.shape.Group;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.DefinitionPaletteCategoryWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteViewFactory;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRenderer;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
@@ -44,13 +42,10 @@ public class BS3PaletteWidgetImplTest {
     private BS3PaletteWidgetView view;
 
     @Mock
-    private ShapeGlyphDragHandler<Group> shapeGlyphDragHandler;
+    private ShapeGlyphDragHandler shapeGlyphDragHandler;
 
     @Mock
     private ManagedInstance<DefinitionPaletteCategoryWidget> categoryWidgetInstance;
-
-    @Mock
-    private ManagedInstance<IconRenderer> iconRendererInstance;
 
     @Mock
     private BS3PaletteViewFactory viewFactory;
@@ -63,8 +58,7 @@ public class BS3PaletteWidgetImplTest {
                                                 clientFactoryServices,
                                                 view,
                                                 shapeGlyphDragHandler,
-                                                categoryWidgetInstance,
-                                                iconRendererInstance);
+                                                categoryWidgetInstance);
         this.palette.init();
         this.palette.setViewFactory(viewFactory);
     }
@@ -74,7 +68,6 @@ public class BS3PaletteWidgetImplTest {
         palette.doDestroy();
 
         verify(categoryWidgetInstance).destroyAll();
-        verify(iconRendererInstance).destroyAll();
         verify(viewFactory).destroy();
         verify(view).destroy();
     }

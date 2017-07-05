@@ -15,18 +15,16 @@
  */
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
-import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
+import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
-import org.kie.workbench.common.stunner.svg.client.shape.def.SVGMutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
-public class IntermediateTimerEventShapeDef extends AbstractShapeDef<IntermediateTimerEvent>
-        implements SVGMutableShapeDef<IntermediateTimerEvent, BPMNSVGViewFactory> {
+public class IntermediateTimerEventShapeDef
+        implements BPMNSvgShapeDef<IntermediateTimerEvent> {
 
     @Override
     public double getAlpha(final IntermediateTimerEvent element) {
@@ -123,19 +121,7 @@ public class IntermediateTimerEventShapeDef extends AbstractShapeDef<Intermediat
     }
 
     @Override
-    public GlyphDef<IntermediateTimerEvent> getGlyphDef() {
-        return GLYPH_DEF;
+    public Glyph getGlyph(final Class<? extends IntermediateTimerEvent> type) {
+        return SvgDataUriGlyph.create(BPMNImageResources.INSTANCE.eventIntermediateTimer().getSafeUri());
     }
-
-    private static final PictureGlyphDef<IntermediateTimerEvent, BPMNPictures> GLYPH_DEF = new PictureGlyphDef<IntermediateTimerEvent, BPMNPictures>() {
-        @Override
-        public BPMNPictures getSource(final Class<?> type) {
-            return BPMNPictures.EVENT_INTERMEDIATE_TIMER;
-        }
-
-        @Override
-        public String getGlyphDescription(final IntermediateTimerEvent element) {
-            return element.getDescription();
-        }
-    };
 }

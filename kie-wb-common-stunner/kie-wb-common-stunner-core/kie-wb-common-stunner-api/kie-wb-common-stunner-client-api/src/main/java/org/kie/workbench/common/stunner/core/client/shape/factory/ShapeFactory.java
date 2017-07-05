@@ -16,33 +16,38 @@
 package org.kie.workbench.common.stunner.core.client.shape.factory;
 
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 /**
- * Factory for building shapes available for authoring.
+ * A Shapes factory.
+ * <p>
+ * Main goals are:
+ * <ul>
+ * <li>
+ * Create the a Shape instance for a specified Definition bean
+ * </li>
+ * <li>
+ * Provides the glyph for a specified Definition bean
+ * </li>
+ * </ul>
+ * <p>
+ * A Definition Set can have multiple Shape Sets associated, so multiple
+ * Shape Factories available as well. This way each factory can provide
+ * different Shapes/Glyph can for the same Definition.
  */
-public interface ShapeFactory<W, C, S extends Shape> {
+public interface ShapeFactory<W, S extends Shape> {
 
     /**
-     * Does the Factory builds the given definition identifier.
+     * Builds a new Shape instance for the specified Defintiion bean.
+     * @param instance the Definition (bean) instance.
+     * @return a new Shape instance.
      */
-    boolean accepts(final String definitionId);
+    S newShape(W instance);
 
     /**
-     * Get description of Shape.
+     * Returns the glyph (thumbnail/miniature) for the specified Definition identifier.
+     * @param definitionId
+     * @return
      */
-    String getDescription(final String definitionId);
-
-    /**
-     * Builds a new Shape instance for the given context.
-     */
-    S build(final W definition,
-            final C context);
-
-    /**
-     * Builds a new shape glyph instance with the given size.
-     */
-    Glyph glyph(final String definitionId,
-                final double width,
-                final double height);
+    Glyph getGlyph(String definitionId);
 }

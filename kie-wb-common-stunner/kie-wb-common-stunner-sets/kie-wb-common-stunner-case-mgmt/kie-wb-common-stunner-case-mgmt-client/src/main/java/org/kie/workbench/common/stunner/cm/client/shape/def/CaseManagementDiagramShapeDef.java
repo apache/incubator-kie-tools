@@ -18,12 +18,12 @@ package org.kie.workbench.common.stunner.cm.client.shape.def;
 
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
 
 public final class CaseManagementDiagramShapeDef
-        extends AbstractShapeDef<CaseManagementDiagram>
-        implements RectangleShapeDef<CaseManagementDiagram> {
+        implements RectangleShapeDef<CaseManagementDiagram>,
+                   CaseManagementShapeDef<CaseManagementDiagram> {
 
     @Override
     public double getAlpha(final CaseManagementDiagram element) {
@@ -103,5 +103,10 @@ public final class CaseManagementDiagramShapeDef
     @Override
     public double getCornerRadius(final CaseManagementDiagram element) {
         return 0;
+    }
+
+    @Override
+    public Class<? extends ShapeDef> getType() {
+        return CaseManagementDiagramShapeDef.class;
     }
 }

@@ -16,18 +16,94 @@
 
 package org.kie.workbench.common.stunner.svg.client.shape.factory;
 
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFactory;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
+import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFunctionalFactory;
+import org.kie.workbench.common.stunner.svg.client.shape.SVGShape;
+import org.kie.workbench.common.stunner.svg.client.shape.def.SVGMutableShapeDef;
+import org.kie.workbench.common.stunner.svg.client.shape.def.SVGShapeDef;
+import org.kie.workbench.common.stunner.svg.client.shape.impl.SVGMutableShapeImpl;
+import org.kie.workbench.common.stunner.svg.client.shape.impl.SVGShapeImpl;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
+import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGShapeViewImpl;
 
 /**
  * A Shape Factory type that handles SVG Shapes.
- * @param <W> The definition type.
- * @param <H> The canvas handler type.
  */
-public interface SVGShapeFactory<W, H extends CanvasHandler>
-        extends ShapeDefFactory<W, H, Shape<ShapeView>, ShapeDef<W>> {
+@ApplicationScoped
+public class SVGShapeFactory
+        implements ShapeDefFactory<Object, SVGShapeDef, SVGShape<?>> {
 
+    private final SyncBeanManager beanManager;
+    private final ShapeDefFunctionalFactory<Object, SVGShapeDef, Shape> functionalFactory;
+
+    protected SVGShapeFactory() {
+        this(null,
+             null);
+    }
+
+    @Inject
+    public SVGShapeFactory(final SyncBeanManager beanManager,
+                           final ShapeDefFunctionalFactory<Object, SVGShapeDef, Shape> functionalFactory) {
+        this.beanManager = beanManager;
+        this.functionalFactory = functionalFactory;
+    }
+
+    @PostConstruct
+    @SuppressWarnings("unchecked")
+    public void init() {
+        // Set the shape instance builders for each supported svg shape definition..
+        functionalFactory
+                .set(SVGShapeDef.class,
+                     this::newSVGShape)
+                .set(SVGMutableShapeDef.class,
+                     this::newSVGMutableShape);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public SVGShape<?> newShape(final Object instance,
+                                final SVGShapeDef shapeDef) {
+        return (SVGShape<?>) functionalFactory.newShape(instance,
+                                                        shapeDef);
+    }
+
+    private SVGShape<?> newSVGShape(final Object instance,
+                                    final SVGShapeDef shapeDef) {
+        final SVGShapeView view = newSVGShapeView(instance,
+                                                  shapeDef);
+        return new SVGShapeImpl(view);
+    }
+
+    @SuppressWarnings("unchecked")
+    private SVGShape<?> newSVGMutableShape(final Object instance,
+                                           final SVGShapeDef shapeDef) {
+        final SVGMutableShapeDef mutableShapeDef = (SVGMutableShapeDef) shapeDef;
+        final SVGShapeView view = newSVGShapeView(instance,
+                                                  mutableShapeDef);
+        return new SVGMutableShapeImpl<Object, SVGMutableShapeDef<Object, Object>>(mutableShapeDef,
+                                                                                   (SVGShapeViewImpl) view);
+    }
+
+    @SuppressWarnings("unchecked")
+    private SVGShapeView newSVGShapeView(final Object instance,
+                                         final SVGShapeDef shapeDef) {
+        final Object factory = getViewFactory(shapeDef);
+        return shapeDef.newViewInstance(factory,
+                                        instance);
+    }
+
+    Object getViewFactory(final SVGShapeDef def) {
+        final Class<?> viewFactoryType = def.getViewFactoryType();
+        final Object factory = beanManager.lookupBean(viewFactoryType).getInstance();
+        if (null == factory) {
+            throw new RuntimeException("No SVG view factory present of type [" + viewFactoryType.getName() + "]");
+        }
+        return factory;
+    }
 }

@@ -19,24 +19,22 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.safehtml.shared.SafeUri;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
-import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
+import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
-import org.kie.workbench.common.stunner.svg.client.shape.def.SVGMutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public class TaskShapeDef
-        extends AbstractShapeDef<BaseTask>
-        implements SVGMutableShapeDef<BaseTask, BPMNSVGViewFactory> {
+        implements BPMNSvgShapeDef<BaseTask> {
 
     private static final String SVG_TASK_BR = "taskBusinessRule";
     private static final String SVG_TASK_SCRIPT = "taskScript";
@@ -107,34 +105,20 @@ public class TaskShapeDef
         return 0;
     }
 
-    private static final PictureGlyphDef<BaseTask, BPMNPictures> TASK_GLYPH_DEF = new PictureGlyphDef<BaseTask, BPMNPictures>() {
-
-        private final Map<Class<?>, BPMNPictures> PICTURES = new HashMap<Class<?>, BPMNPictures>(3) {{
-            // TODO: Change NoneTask image!
-            put(NoneTask.class,
-                BPMNPictures.TASK_USER);
-            put(UserTask.class,
-                BPMNPictures.TASK_USER);
-            put(ScriptTask.class,
-                BPMNPictures.TASK_SCRIPT);
-            put(BusinessRuleTask.class,
-                BPMNPictures.TASK_BUSINESS_RULE);
-        }};
-
-        @Override
-        public String getGlyphDescription(final BaseTask element) {
-            return element.getDescription();
-        }
-
-        @Override
-        public BPMNPictures getSource(final Class<?> type) {
-            return PICTURES.get(type);
-        }
-    };
+    public final static Map<Class<? extends BaseTask>, SafeUri> ICONS = new HashMap<Class<? extends BaseTask>, SafeUri>(2) {{
+        put(NoneTask.class,
+            BPMNImageResources.INSTANCE.taskUser().getSafeUri());
+        put(UserTask.class,
+            BPMNImageResources.INSTANCE.taskUser().getSafeUri());
+        put(ScriptTask.class,
+            BPMNImageResources.INSTANCE.taskScript().getSafeUri());
+        put(BusinessRuleTask.class,
+            BPMNImageResources.INSTANCE.taskBusinessRule().getSafeUri());
+    }};
 
     @Override
-    public GlyphDef<BaseTask> getGlyphDef() {
-        return TASK_GLYPH_DEF;
+    public Glyph getGlyph(final Class<? extends BaseTask> type) {
+        return SvgDataUriGlyph.create(ICONS.get(type));
     }
 
     @Override

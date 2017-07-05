@@ -19,13 +19,10 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
-import org.kie.workbench.common.stunner.svg.client.shape.def.SVGMutableShapeDef;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public class BPMNDiagramShapeDef
-        extends AbstractShapeDef<BPMNDiagramImpl>
-        implements SVGMutableShapeDef<BPMNDiagramImpl, BPMNSVGViewFactory> {
+        implements BPMNSvgShapeDef<BPMNDiagramImpl> {
 
     @Override
     public double getAlpha(final BPMNDiagramImpl element) {

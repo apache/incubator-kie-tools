@@ -16,38 +16,14 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
+import com.google.gwt.safehtml.shared.SafeUri;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
-import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
-import org.kie.workbench.common.stunner.shapes.def.HasChildShapeDefs;
-import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
-import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
-import org.kie.workbench.common.stunner.shapes.def.picture.PictureShapeDef;
 
 public final class CaseManagementReusableSubprocessTaskShapeDef
-        extends AbstractShapeDef<ReusableSubprocess>
-        implements RectangleShapeDef<ReusableSubprocess>,
-                   HasChildShapeDefs<ReusableSubprocess> {
-
-    private static final PictureGlyphDef<ReusableSubprocess, BPMNPictures> TASK_GLYPH_DEF = new PictureGlyphDef<ReusableSubprocess, BPMNPictures>() {
-
-        @Override
-        public String getGlyphDescription(final ReusableSubprocess element) {
-            return element.getDescription();
-        }
-
-        @Override
-        public BPMNPictures getSource(final Class<?> type) {
-            return BPMNPictures.TASK_BUSINESS_RULE;
-        }
-    };
+        implements CaseManagementActivityShapeDef<ReusableSubprocess> {
 
     @Override
     public double getAlpha(final ReusableSubprocess element) {
@@ -115,19 +91,6 @@ public final class CaseManagementReusableSubprocessTaskShapeDef
     }
 
     @Override
-    public GlyphDef<ReusableSubprocess> getGlyphDef() {
-        return TASK_GLYPH_DEF;
-    }
-
-    @Override
-    public Map<ShapeDef<ReusableSubprocess>, HasChildren.Layout> getChildShapeDefs() {
-        return new HashMap<ShapeDef<ReusableSubprocess>, HasChildren.Layout>() {{
-            put(new ReusableSubprocessTaskTypeProxy(),
-                HasChildren.Layout.TOP);
-        }};
-    }
-
-    @Override
     public double getWidth(final ReusableSubprocess element) {
         return element.getDimensionsSet().getWidth().getValue();
     }
@@ -142,21 +105,13 @@ public final class CaseManagementReusableSubprocessTaskShapeDef
         return 5;
     }
 
-    public final class ReusableSubprocessTaskTypeProxy extends AbstractShapeDef<ReusableSubprocess> implements PictureShapeDef<ReusableSubprocess, BPMNPictures> {
+    @Override
+    public SafeUri getIconUri(Class<? extends ReusableSubprocess> task) {
+        return BPMNImageResources.INSTANCE.taskBusinessRule().getSafeUri();
+    }
 
-        @Override
-        public BPMNPictures getPictureSource(final ReusableSubprocess element) {
-            return BPMNPictures.TASK_BUSINESS_RULE;
-        }
-
-        @Override
-        public double getWidth(final ReusableSubprocess element) {
-            return 15d;
-        }
-
-        @Override
-        public double getHeight(final ReusableSubprocess element) {
-            return 15d;
-        }
+    @Override
+    public Class<? extends ShapeDef> getType() {
+        return CaseManagementReusableSubprocessTaskShapeDef.class;
     }
 }

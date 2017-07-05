@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape;
 
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.cm.client.shape.def.StageShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.view.StageView;
@@ -24,7 +25,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public class StageShape<W> extends AbstractCMContainerShape<W, StageShapeDef<W>, StageView> {
+public class StageShape<W extends BPMNDefinition> extends AbstractCMContainerShape<W, StageShapeDef<W>, StageView> {
 
     public StageShape(final StageShapeDef<W> shapeDef,
                       final StageView view) {

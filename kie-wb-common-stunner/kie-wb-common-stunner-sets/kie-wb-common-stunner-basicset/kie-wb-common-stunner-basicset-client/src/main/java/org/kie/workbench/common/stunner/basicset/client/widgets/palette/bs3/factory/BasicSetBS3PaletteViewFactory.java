@@ -19,35 +19,23 @@ package org.kie.workbench.common.stunner.basicset.client.widgets.palette.bs3.fac
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.stunner.basicset.BasicSet;
 import org.kie.workbench.common.stunner.basicset.definition.Categories;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.BindableBS3PaletteGlyphViewFactory;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRenderer;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconResource;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.bs3.BS3IconRenderer;
-import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
+import org.kie.workbench.common.stunner.client.widgets.components.glyph.BS3IconTypeGlyph;
+import org.kie.workbench.common.stunner.client.widgets.palette.factory.AbstractBS3PaletteViewFactory;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 @ApplicationScoped
-public class BasicSetBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactory {
+public class BasicSetBS3PaletteViewFactory extends AbstractBS3PaletteViewFactory {
 
-    private final static Map<String, IconResource> CATEGORY_RERNDERERS_SETTINGS = new HashMap<String, IconResource>() {{
+    private final static Map<String, Glyph> CATEGORY_GLYPHS = new HashMap<String, Glyph>(2) {{
         put(Categories.BASIC,
-            new IconResource<>(IconType.SQUARE));
+            BS3IconTypeGlyph.create(IconType.SQUARE));
         put(Categories.CONNECTORS,
-            new IconResource(IconType.LONG_ARROW_RIGHT));
+            BS3IconTypeGlyph.create(IconType.LONG_ARROW_RIGHT));
     }};
-
-    protected BasicSetBS3PaletteViewFactory() {
-        this(null);
-    }
-
-    @Inject
-    public BasicSetBS3PaletteViewFactory(final ShapeManager shapeManager) {
-        super(shapeManager);
-    }
 
     @Override
     protected Class<?> getDefinitionSetType() {
@@ -55,17 +43,7 @@ public class BasicSetBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFa
     }
 
     @Override
-    protected Class<? extends IconRenderer> getPaletteIconRendererType() {
-        return BS3IconRenderer.class;
-    }
-
-    @Override
-    protected Map<String, IconResource> getCategoryIconResources() {
-        return CATEGORY_RERNDERERS_SETTINGS;
-    }
-
-    @Override
-    protected Map<String, IconResource> getDefinitionIconResources() {
-        return null;
+    protected Map<String, Glyph> getCategoryGlyphs() {
+        return CATEGORY_GLYPHS;
     }
 }

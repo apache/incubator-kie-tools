@@ -43,12 +43,9 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
 import org.apache.commons.lang3.StringUtils;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.Shape;
-import org.kie.workbench.common.stunner.core.definition.annotation.ShapeSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphProperty;
@@ -70,8 +67,6 @@ import org.kie.workbench.common.stunner.core.processors.rule.ContainmentRuleGene
 import org.kie.workbench.common.stunner.core.processors.rule.DockingRuleGenerator;
 import org.kie.workbench.common.stunner.core.processors.rule.EdgeCardinalityRuleGenerator;
 import org.kie.workbench.common.stunner.core.processors.rule.ExtensionRuleGenerator;
-import org.kie.workbench.common.stunner.core.processors.shape.BindableShapeFactoryGenerator;
-import org.kie.workbench.common.stunner.core.processors.shape.BindableShapeSetGenerator;
 import org.uberfire.annotations.processors.AbstractErrorAbsorbingProcessor;
 import org.uberfire.annotations.processors.AbstractGenerator;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
@@ -90,9 +85,7 @@ import org.uberfire.annotations.processors.exceptions.GenerationException;
         MainProcessor.ANNOTATION_RULE_ALLOWED_EDGE_OCCURRS,
         MainProcessor.ANNOTATION_RULE_EDGE_OCCS,
         MainProcessor.ANNOTATION_RULE_ALLOWED_OCCS,
-        MainProcessor.ANNOTATION_RULE_OCCS,
-        MainProcessor.ANNOTATION_SHAPE,
-        MainProcessor.ANNOTATION_SHAPE_SET})
+        MainProcessor.ANNOTATION_RULE_OCCS})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class MainProcessor extends AbstractErrorAbsorbingProcessor {
 
@@ -137,9 +130,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
     public static final String ANNOTATION_RULE_ALLOWED_EDGE_OCCURRS = "org.kie.workbench.common.stunner.core.rule.annotation.AllowedEdgeOccurrences";
     public static final String ANNOTATION_RULE_EDGE_OCCS = "org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences";
 
-    public static final String ANNOTATION_SHAPE_SET = "org.kie.workbench.common.stunner.core.client.annotation.ShapeSet";
-    public static final String ANNOTATION_SHAPE = "org.kie.workbench.common.stunner.core.client.annotation.Shape";
-
     public static final String MORPH_DEFINITION_CLASSNAME = "MorphDefinition";
     public static final String MORPH_PROPERTY_DEFINITION_CLASSNAME = "MorphPropertyDefinition";
     public static final String MORPH_PROVIDER_CLASSNAME = "MorphDefinitionProvider";
@@ -159,8 +149,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
     public static final String PROPERTY_ADAPTER_CLASSNAME = "PropertyAdapterImpl";
     public static final String RULE_ADAPTER_CLASSNAME = "RuleAdapterImpl";
 
-    public static final String SHAPE_FACTORY_CLASSNAME = "ShapeFactory";
-
     private final ProcessingContext processingContext = ProcessingContext.getInstance();
     private final ContainmentRuleGenerator containmentRuleGenerator;
     private final ConnectionRuleGenerator connectionRuleGenerator;
@@ -177,9 +165,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
     private MorphDefinitionGenerator morphDefinitionGenerator;
     private MorphPropertyDefinitionGenerator morphPropertyDefinitionGenerator;
     private MorphDefinitionProviderGenerator morphDefinitionProviderGenerator;
-    private BindableShapeSetGenerator shapeSetGenerator;
     private ModelFactoryGenerator generatedDefinitionFactoryGenerator;
-    private BindableShapeFactoryGenerator shapeFactoryGenerator;
 
     public MainProcessor() {
         ContainmentRuleGenerator ruleGenerator = null;
@@ -197,8 +183,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         MorphDefinitionProviderGenerator morphDefinitionProviderGenerator = null;
         BindableDefinitionSetRuleAdapterGenerator ruleAdapter = null;
         DefinitionSetProxyGenerator definitionSetProxyGenerator = null;
-        BindableShapeSetGenerator shapeSetGenerator = null;
-        BindableShapeFactoryGenerator shapeFactoryGenerator = null;
         ModelFactoryGenerator generatedDefinitionFactoryGenerator = null;
         try {
             ruleGenerator = new ContainmentRuleGenerator();
@@ -216,9 +200,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             morphDefinitionGenerator = new MorphDefinitionGenerator();
             morphPropertyDefinitionGenerator = new MorphPropertyDefinitionGenerator();
             morphDefinitionProviderGenerator = new MorphDefinitionProviderGenerator();
-            shapeSetGenerator = new BindableShapeSetGenerator();
             generatedDefinitionFactoryGenerator = new ModelFactoryGenerator();
-            shapeFactoryGenerator = new BindableShapeFactoryGenerator();
         } catch (Throwable t) {
             rememberInitializationError(t);
         }
@@ -237,9 +219,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         this.morphDefinitionGenerator = morphDefinitionGenerator;
         this.morphPropertyDefinitionGenerator = morphPropertyDefinitionGenerator;
         this.morphDefinitionProviderGenerator = morphDefinitionProviderGenerator;
-        this.shapeSetGenerator = shapeSetGenerator;
         this.generatedDefinitionFactoryGenerator = generatedDefinitionFactoryGenerator;
-        this.shapeFactoryGenerator = shapeFactoryGenerator;
     }
 
     public static String toValidId(final String id) {
@@ -423,11 +403,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             }
             processingContext.getDefSetAnnotations().getQualifiers().put(defSetClassName,
                                                                          mirror.toString());
-            // Shape Set definition.
-            ShapeSet shapeSetAnn = e.getAnnotation(ShapeSet.class);
-            if (null != shapeSetAnn) {
-                processingContext.getDefSetAnnotations().setHasShapeSet(true);
-            }
         }
         return true;
     }
@@ -569,36 +544,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                                                                                     currentTargets);
                 }
                 currentTargets.add(defintionClassName);
-            }
-            // Shape Definitions Factory.
-            Shape shapeAnn = e.getAnnotation(Shape.class);
-            if (null != shapeAnn) {
-                TypeMirror sfm = null;
-                try {
-                    Class<?> graphClass = shapeAnn.factory();
-                } catch (MirroredTypeException mte) {
-                    sfm = mte.getTypeMirror();
-                }
-                if (null == sfm) {
-                    throw new RuntimeException("No ShapeDef Factory class class specifyed for the Definition ["
-                                                       + defintionClassName + "]");
-                }
-                String sfmfqcn = sfm.toString();
-                TypeMirror sm = null;
-                try {
-                    Class<?> graphClass = shapeAnn.def();
-                } catch (MirroredTypeException mte) {
-                    sm = mte.getTypeMirror();
-                }
-                if (null == sm) {
-                    throw new RuntimeException("No Shape Def class class specifyed for the @Definition.");
-                }
-                String smfqcn = sm.toString();
-                if (!processingContext.getDefinitionAnnotations().getShapeDefinitions().containsKey(defintionClassName)) {
-                    processingContext.getDefinitionAnnotations()
-                            .getShapeDefinitions().put(defintionClassName,
-                                                       new String[]{sfmfqcn, smfqcn});
-                }
             }
         }
         return false;
@@ -1039,8 +984,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                                     roundEnv);
         processLastRoundMorphing(set,
                                  roundEnv);
-        processLastRoundShapesStuffGenerator(set,
-                                             roundEnv);
         return true;
     }
 
@@ -1317,53 +1260,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             writeCode(packageName,
                       className,
                       ruleClassCode);
-        } catch (GenerationException ge) {
-            final String msg = ge.getMessage();
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                                                     msg);
-        }
-        return true;
-    }
-
-    private boolean processLastRoundShapesStuffGenerator(final Set<? extends TypeElement> set,
-                                                         final RoundEnvironment roundEnv) throws Exception {
-        final Messager messager = processingEnv.getMessager();
-        try {
-            String shapeFactoryClassname = null;
-            // Generate the Shape Factory, if exist shape definitions.
-            if (processingContext.getDefSetAnnotations().hasShapeSet() &&
-                    !processingContext.getDefinitionAnnotations().getShapeDefinitions().isEmpty()) {
-                // Ensure only visible on client side.
-                final String packageName = getGeneratedPackageName() + ".client.shape";
-                final String className = getSetClassPrefix() + SHAPE_FACTORY_CLASSNAME;
-                shapeFactoryClassname = packageName + "." + className;
-                messager.printMessage(Diagnostic.Kind.NOTE,
-                                      "Starting Shape Factory bean adf " +
-                                              "[" + shapeFactoryClassname + "]");
-                final StringBuffer sfClassCode = shapeFactoryGenerator.generate(packageName,
-                                                                                className,
-                                                                                processingContext.getDefinitionAnnotations(),
-                                                                                messager);
-                writeCode(packageName,
-                          className,
-                          sfClassCode);
-                // Generate the Shape Set if annotation present ( Ensure only visible on client side. ).
-                final String packageName2 = getGeneratedPackageName() + ".client.shape";
-                final String className2 = getSetClassPrefix() + BindableAdapterUtils.SHAPE_SET_SUFFIX;
-                final String classFQName2 = packageName2 + "." + className2;
-                messager.printMessage(Diagnostic.Kind.NOTE,
-                                      "Starting Shape Set bean adf " +
-                                              "[" + classFQName2 + "]");
-                final String defSetClassName = processingContext.getDefinitionSet().getClassName();
-                final StringBuffer ssClassCode = shapeSetGenerator.generate(packageName2,
-                                                                            className2,
-                                                                            defSetClassName,
-                                                                            shapeFactoryClassname,
-                                                                            messager);
-                writeCode(packageName2,
-                          className2,
-                          ssClassCode);
-            }
         } catch (GenerationException ge) {
             final String msg = ge.getMessage();
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,

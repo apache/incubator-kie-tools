@@ -26,22 +26,22 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public class NullShape<W extends BPMNDefinition> extends AbstractElementShape<W, View<W>, Node<View<W>, Edge>, NullShapeDef<W>, NullView> {
+public class NullShape extends AbstractElementShape<BPMNDefinition, View<BPMNDefinition>, Node<View<BPMNDefinition>, Edge>, NullShapeDef, NullView> {
 
-    public NullShape(final NullShapeDef<W> shapeDef,
+    public NullShape(final NullShapeDef shapeDef,
                      final NullView view) {
         super(shapeDef,
               view);
     }
 
     @Override
-    public void applyPosition(final Node<View<W>, Edge> element,
+    public void applyPosition(final Node<View<BPMNDefinition>, Edge> element,
                               final MutationContext mutationContext) {
         //A NullShape should not be rendered; and represents a BPMN2 node that is not rendered for Case Management
     }
 
     @Override
-    public void applyProperties(final Node<View<W>, Edge> element,
+    public void applyProperties(final Node<View<BPMNDefinition>, Edge> element,
                                 final MutationContext mutationContext) {
         //A NullShape should not be rendered; and represents a BPMN2 node that is not rendered for Case Management
     }

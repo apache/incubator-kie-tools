@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
@@ -29,34 +30,42 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
-import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
-// TODO: Refactor implementing DragProxy<T>
 @Dependent
-public class ShapeGlyphDragHandlerImpl implements ShapeGlyphDragHandler<Group> {
+public class ShapeGlyphDragHandlerImpl implements ShapeGlyphDragHandler {
 
     private static final int ZINDEX = Integer.MAX_VALUE;
 
+    private final LienzoGlyphRenderer<Glyph> glyphLienzoGlyphRenderer;
+
+    @Inject
+    public ShapeGlyphDragHandlerImpl(final LienzoGlyphRenderers glyphLienzoGlyphRenderer) {
+        this.glyphLienzoGlyphRenderer = glyphLienzoGlyphRenderer;
+    }
+
     @Override
-    public void show(final Glyph<Group> shapeGlyph,
+    public void show(final Glyph shapeGlyph,
                      final double x,
                      final double y,
+                     final double width,
+                     final double height,
                      final Callback callback) {
-        final double proxyWidth = shapeGlyph.getWidth();
-        final double proxyHeight = shapeGlyph.getHeight();
-        final Group dragShape = shapeGlyph.getGroup();
-        dragShape.setX(proxyWidth / 2);
-        dragShape.setY(proxyHeight / 2);
-        final LienzoPanel dragProxyPanel = new LienzoPanel(((int) proxyWidth * 2),
-                                                           ((int) proxyHeight * 2));
+        final Group dragShape = glyphLienzoGlyphRenderer.render(shapeGlyph,
+                                                                width,
+                                                                height);
+        dragShape.setX(width / 2);
+        dragShape.setY(height / 2);
+        final LienzoPanel dragProxyPanel = new LienzoPanel(((int) width * 2),
+                                                           ((int) height * 2));
         dragProxyPanel.getElement().getStyle().setCursor(Style.Cursor.MOVE);
         final Layer dragProxyLayer = new Layer();
         dragProxyLayer.add(dragShape);
         dragProxyPanel.add(dragProxyLayer);
         dragProxyLayer.batch();
         setDragProxyPosition(dragProxyPanel,
-                             proxyWidth,
-                             proxyHeight,
+                             width,
+                             height,
                              x,
                              y);
         attachDragProxyHandlers(dragProxyPanel,

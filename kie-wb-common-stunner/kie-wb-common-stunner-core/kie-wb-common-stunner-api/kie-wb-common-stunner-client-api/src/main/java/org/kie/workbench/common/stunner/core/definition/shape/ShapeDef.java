@@ -30,5 +30,9 @@ package org.kie.workbench.common.stunner.core.definition.shape;
  */
 public interface ShapeDef<W> {
 
-    GlyphDef<W> getGlyphDef();
+    Class<? extends ShapeDef> getType();
+
+    default Glyph getGlyph(final Class<? extends W> type) {
+        return ShapeGlyph.create();
+    }
 }

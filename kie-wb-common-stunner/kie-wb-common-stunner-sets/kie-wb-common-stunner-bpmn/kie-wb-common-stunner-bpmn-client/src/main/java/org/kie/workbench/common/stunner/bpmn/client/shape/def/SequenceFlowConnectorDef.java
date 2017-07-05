@@ -16,17 +16,17 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
-import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontFamily;
+import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-import org.kie.workbench.common.stunner.shapes.def.AbstractConnectorDef;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
-import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
 
 public final class SequenceFlowConnectorDef
-        extends AbstractConnectorDef<SequenceFlow>
-        implements ConnectorShapeDef<SequenceFlow> {
+        implements BPMNShapeDef<SequenceFlow>,
+                   ConnectorShapeDef<SequenceFlow> {
 
     @Override
     public String getBackgroundColor(final SequenceFlow element) {
@@ -54,6 +54,11 @@ public final class SequenceFlowConnectorDef
     }
 
     @Override
+    public String getFontFamily(final SequenceFlow element) {
+        return FontFamily.defaultValue;
+    }
+
+    @Override
     public String getFontBorderColor(final SequenceFlow element) {
         return element.getFontSet().getFontBorderColor().getValue();
     }
@@ -69,21 +74,7 @@ public final class SequenceFlowConnectorDef
     }
 
     @Override
-    public GlyphDef<SequenceFlow> getGlyphDef() {
-        return GLYPH_DEF;
+    public Glyph getGlyph(final Class<? extends SequenceFlow> type) {
+        return SvgDataUriGlyph.create(BPMNImageResources.INSTANCE.sequenceFlow().getSafeUri());
     }
-
-    private static final PictureGlyphDef<SequenceFlow, BPMNPictures> GLYPH_DEF
-            = new PictureGlyphDef<SequenceFlow, BPMNPictures>() {
-
-        @Override
-        public String getGlyphDescription(final SequenceFlow element) {
-            return element.getTitle();
-        }
-
-        @Override
-        public BPMNPictures getSource(final Class<?> type) {
-            return BPMNPictures.SEQUENCE_FLOW;
-        }
-    };
 }

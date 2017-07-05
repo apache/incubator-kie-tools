@@ -22,8 +22,8 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 
 public abstract class AbstractToolboxControlProvider implements ToolboxControlProvider<AbstractCanvasHandler, Element> {
 
-    public final static int DEFAULT_ICON_SIZE = 12;
-    public final static int DEFAULT_PADDING = 10;
+    public final static int DEFAULT_ICON_SIZE = 17;
+    public final static int DEFAULT_PADDING = 9;
 
     protected ToolboxFactory toolboxFactory;
 

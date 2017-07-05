@@ -21,16 +21,14 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Transform;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
-import org.kie.workbench.common.stunner.core.client.components.glyph.DefinitionGlyphTooltip;
-import org.kie.workbench.common.stunner.core.client.components.glyph.GlyphTooltip;
+import org.kie.workbench.common.stunner.core.client.components.views.CanvasDefinitionTooltip;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyDownEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
-import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
@@ -40,44 +38,41 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCommand<I> {
 
     private final ShapeManager shapeManager;
-    private final DefinitionGlyphTooltip<?> glyphTooltip;
-    private I iconView;
+    private final CanvasDefinitionTooltip definitionTooltip;
     private ShapeFactory factory;
 
     @Inject
     public AbstractElementBuilderCommand(final ClientFactoryService clientFactoryServices,
                                          final ShapeManager shapeManager,
-                                         final DefinitionGlyphTooltip<?> glyphTooltip,
+                                         final CanvasDefinitionTooltip definitionTooltip,
                                          final GraphBoundsIndexer graphBoundsIndexer) {
         super(clientFactoryServices,
               graphBoundsIndexer);
         this.shapeManager = shapeManager;
-        this.glyphTooltip = glyphTooltip;
+        this.definitionTooltip = definitionTooltip;
     }
 
-    protected abstract String getGlyphDefinitionId();
+    protected abstract String getGlyphDefinitionId(AbstractCanvasHandler context);
+
+    protected abstract I getGlyphIcon(Glyph glyph,
+                                      double width,
+                                      double height);
 
     @Override
-    public void destroy() {
-        super.destroy();
-        this.factory = null;
-        this.iconView = null;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
     public I getIcon(final AbstractCanvasHandler context,
                      final double width,
                      final double height) {
-        if (null == iconView) {
-            final ShapeFactory factory = getFactory(context);
-            // TODO: Review why glyphs result smaller than expected. Adding some padding pixels here.
-            final Glyph<I> glyph = factory.glyph(getGlyphDefinitionId(),
-                                                 width + 6,
-                                                 height + 6);
-            this.iconView = glyph.getGroup();
-        }
-        return iconView;
+        final Glyph glyph = getFactory(context).getGlyph(getGlyphDefinitionId(context));
+        return getGlyphIcon(glyph,
+                            width,
+                            height);
+    }
+
+    @Override
+    public void destroy() {
+        this.definitionTooltip.destroy();
+        this.factory = null;
+        super.destroy();
     }
 
     @Override
@@ -86,17 +81,11 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
         super.mouseEnter(context,
                          element);
         if (null != getFactory(context.getCanvasHandler())) {
-            final Transform transform = context.getCanvasHandler().getCanvas().getLayer().getTransform();
-            final double ax = context.getCanvasHandler().getAbstractCanvas().getView().getAbsoluteX();
-            final double ay = context.getCanvasHandler().getAbstractCanvas().getView().getAbsoluteY();
-            // As tooltip is a floating view (not part of the canvas), need to transform the cartesian coordinates
-            // using current transform attributes to obtain the right absolute position on the screen.
-            final Point2D t = transform.transform(context.getX(),
-                                                  context.getY());
-            glyphTooltip.showTooltip(getGlyphDefinitionId(),
-                                     ax + t.getX() + 20,
-                                     ay + t.getY(),
-                                     GlyphTooltip.Direction.WEST);
+            definitionTooltip
+                    .configure(context.getCanvasHandler())
+                    .show(getGlyphDefinitionId(context.getCanvasHandler()),
+                          new Point2D(context.getX() + 20,
+                                      context.getY()));
         }
     }
 
@@ -105,7 +94,7 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
                           final Element element) {
         super.mouseExit(context,
                         element);
-        glyphTooltip.hide();
+        definitionTooltip.hide();
     }
 
     protected ShapeFactory getFactory(final AbstractCanvasHandler context) {
@@ -159,19 +148,19 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
                                final String uuid) {
         super.onItemBuilt(context,
                           uuid);
-        glyphTooltip.hide();
+        definitionTooltip.hide();
     }
 
     protected void clearDragProxy() {
         getDragProxyFactory().clear();
     }
 
-    ShapeManager getShapeManager() {
-        return shapeManager;
+    protected CanvasDefinitionTooltip getDefinitionTooltip() {
+        return definitionTooltip;
     }
 
-    DefinitionGlyphTooltip<?> getGlyphTooltip() {
-        return glyphTooltip;
+    ShapeManager getShapeManager() {
+        return shapeManager;
     }
 
     /**

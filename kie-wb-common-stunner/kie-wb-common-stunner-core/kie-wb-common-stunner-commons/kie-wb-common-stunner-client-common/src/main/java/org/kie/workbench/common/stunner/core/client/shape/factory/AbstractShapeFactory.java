@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,22 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.factory;
 
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeGlyph;
 
-public abstract class AbstractShapeFactory<W, S extends Shape> implements ShapeFactory<W, AbstractCanvasHandler, S> {
+public abstract class AbstractShapeFactory<W, S extends Shape> implements ShapeFactory<W, S> {
 
+    protected abstract Glyph getGlyphFor(String definitionId);
+
+    @Override
+    public Glyph getGlyph(final String definitionId) {
+        final Glyph glyph = getGlyphFor(definitionId);
+        if (ShapeGlyph.class.equals(glyph.getClass())) {
+            final ShapeGlyph shapeGlyph = (ShapeGlyph) glyph;
+            shapeGlyph.setDefinitionId(definitionId);
+            shapeGlyph.setFactorySupplier(() -> this);
+        }
+        return glyph;
+    }
 }

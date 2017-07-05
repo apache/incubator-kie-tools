@@ -177,7 +177,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
                                               final boolean applyProperties,
                                               final MutationContext mutationContext);
 
-    public abstract ShapeFactory<Object, AbstractCanvasHandler, Shape> getShapeFactory(final String shapeSetId);
+    public abstract ShapeFactory<Object, Shape> getShapeFactory(final String shapeSetId);
 
     /**
      * It does:
@@ -190,7 +190,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     @SuppressWarnings("unchecked")
     public void register(final String shapeSetId,
                          final Element<View<?>> candidate) {
-        final ShapeFactory<Object, AbstractCanvasHandler, Shape> factory = getShapeFactory(shapeSetId);
+        final ShapeFactory<Object, Shape> factory = getShapeFactory(shapeSetId);
         register(factory,
                  candidate,
                  true);
@@ -205,12 +205,11 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
      * @param fireEvents If canvas and canvas handled registration events must be fired.
      */
     @SuppressWarnings("unchecked")
-    public void register(final ShapeFactory<Object, AbstractCanvasHandler, Shape> factory,
+    public void register(final ShapeFactory<Object, Shape> factory,
                          final Element<View<?>> candidate,
                          final boolean fireEvents) {
         assert factory != null && candidate != null;
-        final Shape shape = factory.build(candidate.getContent().getDefinition(),
-                                          AbstractCanvasHandler.this);
+        final Shape shape = factory.newShape(candidate.getContent().getDefinition());
         // Set the same identifier as the graph element's one.
         if (null == shape.getUUID()) {
             shape.setUUID(candidate.getUUID());

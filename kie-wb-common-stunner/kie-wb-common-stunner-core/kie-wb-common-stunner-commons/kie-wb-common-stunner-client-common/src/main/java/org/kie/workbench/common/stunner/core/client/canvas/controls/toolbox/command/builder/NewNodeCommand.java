@@ -18,10 +18,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.com
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
@@ -39,7 +36,7 @@ import org.kie.workbench.common.stunner.core.client.components.drag.DragProxy;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
 import org.kie.workbench.common.stunner.core.client.components.drag.NodeDragProxy;
 import org.kie.workbench.common.stunner.core.client.components.drag.NodeDragProxyCallback;
-import org.kie.workbench.common.stunner.core.client.components.glyph.DefinitionGlyphTooltip;
+import org.kie.workbench.common.stunner.core.client.components.views.CanvasDefinitionTooltip;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
@@ -56,8 +53,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.uberfire.mvp.Command;
 
-@Dependent
-public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
+public abstract class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
 
     private static Logger LOGGER = Logger.getLogger(NewNodeCommand.class.getName());
 
@@ -73,31 +69,18 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
     private Magnet targetMagnet;
     private HasEventHandlers<?, ?> layerEventHandlers;
 
-    protected NewNodeCommand() {
-        this(null,
-             null,
-             null,
-             null,
-             null,
-             null,
-             null,
-             null,
-             null);
-    }
-
-    @Inject
-    public NewNodeCommand(final ClientFactoryService clientFactoryServices,
-                          final ShapeManager shapeManager,
-                          final DefinitionGlyphTooltip<?> glyphTooltip,
-                          final GraphBoundsIndexer graphBoundsIndexer,
-                          final NodeDragProxy<AbstractCanvasHandler> nodeDragProxyFactory,
-                          final NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl,
-                          final DefinitionUtils definitionUtils,
-                          final CanvasLayoutUtils canvasLayoutUtils,
-                          final Event<CanvasElementSelectedEvent> elementSelectedEvent) {
+    protected NewNodeCommand(final ClientFactoryService clientFactoryServices,
+                             final ShapeManager shapeManager,
+                             final CanvasDefinitionTooltip definitionTooltip,
+                             final GraphBoundsIndexer graphBoundsIndexer,
+                             final NodeDragProxy<AbstractCanvasHandler> nodeDragProxyFactory,
+                             final NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl,
+                             final DefinitionUtils definitionUtils,
+                             final CanvasLayoutUtils canvasLayoutUtils,
+                             final Event<CanvasElementSelectedEvent> elementSelectedEvent) {
         super(clientFactoryServices,
               shapeManager,
-              glyphTooltip,
+              definitionTooltip,
               graphBoundsIndexer);
         this.nodeDragProxyFactory = nodeDragProxyFactory;
         this.nodeBuilderControl = nodeBuilderControl;
@@ -107,11 +90,6 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
         this.layerEventHandlers = null;
     }
 
-    // TODO: i18n.
-    @PostConstruct
-    public void init() {
-        getGlyphTooltip().setPrefix("Click to create a ");
-    }
 
     public void setEdgeIdentifier(final String edgeId) {
         this.edgeId = edgeId;
@@ -122,13 +100,13 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
     }
 
     @Override
-    protected String getDefinitionIdentifier(final Context<AbstractCanvasHandler> context) {
-        return this.edgeId;
+    protected String getGlyphDefinitionId(AbstractCanvasHandler context) {
+        return definitionId;
     }
 
     @Override
-    protected String getGlyphDefinitionId() {
-        return this.definitionId;
+    protected String getDefinitionIdentifier(final Context<AbstractCanvasHandler> context) {
+        return this.edgeId;
     }
 
     // TODO: I18n.
@@ -334,7 +312,7 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
                                                final Element newElement) {
         final Node<View<?>, Edge> sourceNode = (Node<View<?>, Edge>) source;
         final Edge<View<?>, Node> edge = (Edge<View<?>, Node>) newElement;
-        final ShapeFactory<?, AbstractCanvasHandler, ?> shapeFactory = getFactory(context.getCanvasHandler());
+        final ShapeFactory<?, ?> shapeFactory = getFactory(context.getCanvasHandler());
         return new NodeDragProxy.Item<AbstractCanvasHandler>() {
             @Override
             public Node<View<?>, Edge> getNode() {
@@ -342,7 +320,7 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
             }
 
             @Override
-            public ShapeFactory<?, AbstractCanvasHandler, ?> getNodeShapeFactory() {
+            public ShapeFactory<?, ?> getNodeShapeFactory() {
                 return shapeFactory;
             }
 
@@ -357,7 +335,7 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
             }
 
             @Override
-            public ShapeFactory<?, AbstractCanvasHandler, ?> getInEdgeShapeFactory() {
+            public ShapeFactory<?, ?> getInEdgeShapeFactory() {
                 return shapeFactory;
             }
         };

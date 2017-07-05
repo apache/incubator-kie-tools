@@ -16,32 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command;
 
-import javax.inject.Inject;
-
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions.RemoveToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder.NewConnectorCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder.NewNodeCommand;
 
 public abstract class ToolboxCommandFactory {
 
-    private final ManagedInstance<NewNodeCommand> newNodeCommands;
-    private final ManagedInstance<NewConnectorCommand> newConnectorCommands;
-
-    @Inject
-    public ToolboxCommandFactory(final ManagedInstance<NewNodeCommand> newNodeCommands,
-                                 final ManagedInstance<NewConnectorCommand> newConnectorCommands) {
-        this.newNodeCommands = newNodeCommands;
-        this.newConnectorCommands = newConnectorCommands;
-    }
-
     public abstract RemoveToolboxCommand<?> newRemoveToolboxCommand();
 
-    public NewNodeCommand<?> newNodeCommand() {
-        return newNodeCommands.get();
-    }
+    public abstract NewNodeCommand<?> newNodeToolboxCommand();
 
-    public NewConnectorCommand<?> newConnectorCommand() {
-        return newConnectorCommands.get();
-    }
+    public abstract NewConnectorCommand<?> newConnectorToolboxCommand();
 }

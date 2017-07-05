@@ -107,7 +107,7 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
                                                  // Manually set the source node as the drag def will need it.
                                                  edge.setSourceNode(sourceNode);
                                                  final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
-                                                 final ShapeFactory<?, AbstractCanvasHandler, ?> shapeFactory = shapeManager.getShapeSet(ssid).getShapeFactory();
+                                                 final ShapeFactory<?, ?> shapeFactory = shapeManager.getShapeSet(ssid).getShapeFactory();
                                                  clientFactoryServices.newElement(UUID.uuid(),
                                                                                   definitionId,
                                                                                   new ServiceCallback<Element>() {
@@ -121,7 +121,7 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
                                                                                               }
 
                                                                                               @Override
-                                                                                              public ShapeFactory<?, AbstractCanvasHandler, ?> getNodeShapeFactory() {
+                                                                                              public ShapeFactory<?, ?> getNodeShapeFactory() {
                                                                                                   return shapeFactory;
                                                                                               }
 
@@ -136,7 +136,7 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
                                                                                               }
 
                                                                                               @Override
-                                                                                              public ShapeFactory<?, AbstractCanvasHandler, ?> getInEdgeShapeFactory() {
+                                                                                              public ShapeFactory<?, ?> getInEdgeShapeFactory() {
                                                                                                   return shapeFactory;
                                                                                               }
                                                                                           };

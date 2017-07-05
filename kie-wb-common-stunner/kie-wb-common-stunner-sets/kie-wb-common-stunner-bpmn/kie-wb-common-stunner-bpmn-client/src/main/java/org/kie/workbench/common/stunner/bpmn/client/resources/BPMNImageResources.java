@@ -31,8 +31,6 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @Source("images/bpmn_thumb.png")
     DataResource bpmnSetThumb();
 
-    // ******* BPMN Pictures/Icons *******
-
     // ******* Categories *******
     @ClientBundle.Source("images/categories/activity.svg")
     @DataResource.MimeType("image/svg+xml")
@@ -145,6 +143,8 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType("image/svg+xml")
     DataResource gatewayInclusive();
 
+    // ******* Containers *******
+
     @ClientBundle.Source(BPMNSVGViewFactory.LANE)
     @DataResource.MimeType("image/svg+xml")
     DataResource lane();
@@ -175,7 +175,7 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
 
     @ClientBundle.Source(BPMNSVGViewFactory.CIRCLE)
     @DataResource.MimeType("image/svg+xml")
-    DataResource circle();
+    DataResource cagetoryEvents();
 
     @ClientBundle.Source("images/cancel.svg")
     @DataResource.MimeType("image/svg+xml")

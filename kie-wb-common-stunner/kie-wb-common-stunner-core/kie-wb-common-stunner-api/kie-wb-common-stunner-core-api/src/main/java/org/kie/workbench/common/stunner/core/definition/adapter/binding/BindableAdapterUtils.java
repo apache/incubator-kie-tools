@@ -26,10 +26,6 @@ import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry
 
 public class BindableAdapterUtils {
 
-    private static Logger LOGGER = Logger.getLogger(BindableAdapterUtils.class.getName());
-
-    public static final String SHAPE_SET_SUFFIX = "ShapeSet";
-
     public static String getDefinitionId(final Class<?> type) {
         return getDefinitionId(type,
                                null);

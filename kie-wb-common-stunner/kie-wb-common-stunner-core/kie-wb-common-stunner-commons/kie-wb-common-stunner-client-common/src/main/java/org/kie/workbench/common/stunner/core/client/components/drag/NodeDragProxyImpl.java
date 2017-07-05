@@ -65,18 +65,16 @@ public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
                                                                               final NodeDragProxyCallback callback) {
         final AbstractCanvas canvas = canvasHandler.getAbstractCanvas();
         final Node<View<?>, Edge> node = item.getNode();
-        final ShapeFactory<Object, AbstractCanvasHandler, ?> nodeShapeFactory = item.getNodeShapeFactory();
+        final ShapeFactory<Object,?> nodeShapeFactory = item.getNodeShapeFactory();
         final Edge<View<?>, Node> inEdge = item.getInEdge();
         final Node<View<?>, Edge> inEdgeSourceNode = item.getInEdgeSourceNode();
-        final ShapeFactory<Object, AbstractCanvasHandler, ?> edgeShapeFactory = item.getInEdgeShapeFactory();
-        final Shape nodeShape = nodeShapeFactory.build(node.getContent().getDefinition(),
-                                                       canvasHandler);
+        final ShapeFactory<Object, ?> edgeShapeFactory = item.getInEdgeShapeFactory();
+        final Shape nodeShape = nodeShapeFactory.newShape(node.getContent().getDefinition());
         if (nodeShape instanceof ElementShape) {
             ((ElementShape) nodeShape).applyProperties(node,
                                                        MutationContext.STATIC);
         }
-        this.transientEdgeShape = (EdgeShape) edgeShapeFactory.build(inEdge.getContent().getDefinition(),
-                                                                     canvasHandler);
+        this.transientEdgeShape = (EdgeShape) edgeShapeFactory.newShape(inEdge.getContent().getDefinition());
         canvas.addTransientShape(this.transientEdgeShape);
         this.transientEdgeShape.applyProperties(inEdge,
                                                 MutationContext.STATIC);

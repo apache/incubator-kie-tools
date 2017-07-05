@@ -16,23 +16,25 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape;
 
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementDiagramShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.view.DiagramView;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
 
-public class DiagramShape<W> extends AbstractCMContainerShape<W, RectangleShapeDef<W>, DiagramView> {
+public class DiagramShape<W> extends AbstractCMContainerShape<CaseManagementDiagram, CaseManagementDiagramShapeDef, DiagramView> {
 
-    public DiagramShape(final RectangleShapeDef<W> shapeDef,
+    public DiagramShape(final CaseManagementDiagramShapeDef shapeDef,
                         final DiagramView view) {
         super(shapeDef,
               view);
     }
 
     @Override
-    public void applyProperties(final Node<View<W>, Edge> element,
+    public void applyProperties(final Node<View<CaseManagementDiagram>, Edge> element,
                                 final MutationContext mutationContext) {
         super.applyProperties(element,
                               mutationContext);

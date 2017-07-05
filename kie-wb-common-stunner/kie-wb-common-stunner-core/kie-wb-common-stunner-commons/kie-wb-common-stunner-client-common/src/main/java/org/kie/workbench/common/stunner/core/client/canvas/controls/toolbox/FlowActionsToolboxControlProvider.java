@@ -125,7 +125,7 @@ public class FlowActionsToolboxControlProvider extends AbstractToolboxControlPro
                                                                                        10);
             if (null != allowedConnectorIds && !allowedConnectorIds.isEmpty()) {
                 for (final String allowedConnectorId : allowedConnectorIds) {
-                    final NewConnectorCommand<?> newConnectorCommand = defaultToolboxCommandFactory.newConnectorCommand();
+                    final NewConnectorCommand<?> newConnectorCommand = defaultToolboxCommandFactory.newConnectorToolboxCommand();
                     newConnectorCommand.setEdgeIdentifier(allowedConnectorId);
                     commands.add(newConnectorCommand);
                 }
@@ -144,9 +144,9 @@ public class FlowActionsToolboxControlProvider extends AbstractToolboxControlPro
                                                                                                                      10);
                 if (null != allowedMorphDefaultDefinitionIds && !allowedMorphDefaultDefinitionIds.isEmpty()) {
                     for (final String allowedDefId : allowedMorphDefaultDefinitionIds) {
-                        final NewNodeCommand newNodeCommand = defaultToolboxCommandFactory.newNodeCommand();
-                        newNodeCommand.setEdgeIdentifier(defaultConnectorId);
+                        final NewNodeCommand newNodeCommand = defaultToolboxCommandFactory.newNodeToolboxCommand();
                         newNodeCommand.setDefinitionIdentifier(allowedDefId);
+                        newNodeCommand.setEdgeIdentifier(defaultConnectorId);
                         commands.add(newNodeCommand);
                     }
                 }

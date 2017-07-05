@@ -31,14 +31,16 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.comm
 public class LienzoToolboxCommandFactory extends ToolboxCommandFactory {
 
     private final ManagedInstance<RemoveToolboxCommand> removeToolboxCommands;
+    private final ManagedInstance<NewNodeCommand> newNodeCommands;
+    private final ManagedInstance<NewConnectorCommand> newConnectorCommands;
 
     @Inject
     public LienzoToolboxCommandFactory(final ManagedInstance<RemoveToolboxCommand> removeToolboxCommands,
                                        final ManagedInstance<NewNodeCommand> newNodeCommands,
                                        final ManagedInstance<NewConnectorCommand> newConnectorCommands) {
-        super(newNodeCommands,
-              newConnectorCommands);
         this.removeToolboxCommands = removeToolboxCommands;
+        this.newNodeCommands = newNodeCommands;
+        this.newConnectorCommands = newConnectorCommands;
     }
 
     @Override
@@ -47,5 +49,15 @@ public class LienzoToolboxCommandFactory extends ToolboxCommandFactory {
         final RemoveToolboxCommand<Shape<?>> c = removeToolboxCommands.get();
         c.setIcon(SVGUtils.createSVGIcon(SVGUtils.getTrashIcon()));
         return c;
+    }
+
+    @Override
+    public NewNodeCommand<?> newNodeToolboxCommand() {
+        return newNodeCommands.get();
+    }
+
+    @Override
+    public NewConnectorCommand<?> newConnectorToolboxCommand() {
+        return newConnectorCommands.get();
     }
 }

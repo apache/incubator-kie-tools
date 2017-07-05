@@ -16,16 +16,13 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.factory;
 
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.PaletteIconSettings;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 public interface BS3PaletteViewFactory {
 
-    PaletteIconSettings getDefinitionIconSettings(String defSetId,
-                                                  String itemId);
-
     boolean accepts(final String defSetId);
 
-    PaletteIconSettings getCategoryIconSettings(final String categoryId);
+    Glyph getCategoryGlyph(final String categoryId);
 
     /**
      * Destroys resources that may need releasing when the factory is destroyed

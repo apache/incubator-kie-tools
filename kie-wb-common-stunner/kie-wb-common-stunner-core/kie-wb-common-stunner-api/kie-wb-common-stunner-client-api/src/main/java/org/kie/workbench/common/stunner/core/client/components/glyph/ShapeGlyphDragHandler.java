@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.components.glyph;
 
-import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
-public interface ShapeGlyphDragHandler<G> {
+public interface ShapeGlyphDragHandler {
 
     interface Callback {
 
@@ -29,8 +29,10 @@ public interface ShapeGlyphDragHandler<G> {
                         final double y);
     }
 
-    void show(final Glyph<G> shapeGlyph,
+    void show(final Glyph shapeGlyph,
               final double x,
               final double y,
+              final double width,
+              final double height,
               final Callback callback);
 }

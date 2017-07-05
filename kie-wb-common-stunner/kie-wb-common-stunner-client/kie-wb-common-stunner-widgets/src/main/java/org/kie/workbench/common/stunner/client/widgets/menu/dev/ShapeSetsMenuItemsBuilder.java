@@ -60,7 +60,7 @@ public class ShapeSetsMenuItemsBuilder {
         final Collection<ShapeSet<?>> shapeSets = shapeManager.getShapeSets();
         if (null != shapeSets) {
             shapeSets.stream().forEach(shapeSet -> {
-                menu.add(new AnchorListItem(prefix + " " + shapeSet.getName()) {{
+                menu.add(new AnchorListItem(prefix + " " + shapeSet.getDescription()) {{
                     setTitle(prefix + " " + shapeSet.getDescription());
                     setIcon(IconType.PLUS);
                     addClickHandler(event -> callback.onClick(shapeSet));

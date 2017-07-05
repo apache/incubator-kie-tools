@@ -29,10 +29,11 @@ import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.stunner.client.widgets.components.glyph.DOMGlyphRenderers;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.group.DefinitionPaletteGroupWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRenderer;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 @Templated
 @Dependent
@@ -54,6 +55,9 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
     @DataField
     private Span header;
 
+    @Inject
+    private DOMGlyphRenderers domGlyphRenderers;
+
     private Presenter presenter;
 
     @Override
@@ -62,13 +66,17 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
     }
 
     @Override
-    public void render(IconRenderer renderer) {
+    public void render(Glyph glyph,
+                       double width,
+                       double height) {
         DefinitionPaletteCategory category = presenter.getCategory();
-
         categoryIcon.setTitle(category.getTitle());
         header.setTextContent(category.getTitle());
-
-        categoryIcon.appendChild(renderer.getElement());
+        final org.jboss.errai.common.client.api.IsElement glyphElement =
+                domGlyphRenderers.render(glyph,
+                                         width,
+                                         height);
+        categoryIcon.appendChild(glyphElement.getElement());
     }
 
     @Override

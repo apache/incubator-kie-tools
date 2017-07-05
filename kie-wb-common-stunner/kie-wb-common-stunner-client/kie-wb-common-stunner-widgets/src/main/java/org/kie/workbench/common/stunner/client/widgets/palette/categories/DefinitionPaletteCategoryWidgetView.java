@@ -18,13 +18,15 @@ package org.kie.workbench.common.stunner.client.widgets.palette.categories;
 
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.group.DefinitionPaletteGroupWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRenderer;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.uberfire.client.mvp.UberElement;
 
 public interface DefinitionPaletteCategoryWidgetView extends UberElement<DefinitionPaletteCategoryWidgetView.Presenter> {
 
-    void render(IconRenderer renderer);
+    void render(Glyph glyph,
+                double width,
+                double height);
 
     void addItem(DefinitionPaletteItemWidget item);
 

@@ -27,7 +27,6 @@ import org.kie.workbench.common.stunner.basicset.definition.Rectangle;
 import org.kie.workbench.common.stunner.basicset.definition.Ring;
 import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
-import org.kie.workbench.common.stunner.core.definition.annotation.ShapeSet;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.GraphFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
@@ -48,7 +47,6 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
         builder = BasicSet.BasicSetBuilder.class
 )
 @CanContain(roles = {"all"})
-@ShapeSet
 public class BasicSet {
 
     @Description

@@ -16,30 +16,12 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
-import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
 public final class CaseManagementSubprocessShapeDef
-        extends AbstractShapeDef<BaseSubprocess>
         implements StageShapeDef<BaseSubprocess> {
-
-    private static final PictureGlyphDef<BaseSubprocess, BPMNPictures> SUBPROCESS_GLYPH_DEF =
-            new PictureGlyphDef<BaseSubprocess, BPMNPictures>() {
-
-                @Override
-                public String getGlyphDescription(final BaseSubprocess element) {
-                    return element.getDescription();
-                }
-
-                @Override
-                public BPMNPictures getSource(final Class<?> type) {
-                    return BPMNPictures.GLYPH_OOME_HACK;
-                }
-            };
 
     @Override
     public double getAlpha(final BaseSubprocess element) {
@@ -122,7 +104,7 @@ public final class CaseManagementSubprocessShapeDef
     }
 
     @Override
-    public GlyphDef<BaseSubprocess> getGlyphDef() {
-        return SUBPROCESS_GLYPH_DEF;
+    public Class<? extends ShapeDef> getType() {
+        return CaseManagementSubprocessShapeDef.class;
     }
 }

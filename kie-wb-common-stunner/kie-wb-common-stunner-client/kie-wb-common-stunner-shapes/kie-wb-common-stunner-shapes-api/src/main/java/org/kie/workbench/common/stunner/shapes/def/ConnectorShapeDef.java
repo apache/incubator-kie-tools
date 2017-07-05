@@ -16,9 +16,20 @@
 
 package org.kie.workbench.common.stunner.shapes.def;
 
-import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
-public interface ConnectorShapeDef<W> extends BasicShapeWithTitleDef<W>,
-                                              MutableShapeDef<W> {
+public interface ConnectorShapeDef<W> extends BasicMutableShapeDef<W> {
 
+    ConnectorGlyph GLYPH = ConnectorGlyph.create();
+
+    @Override
+    default Glyph getGlyph(Class<? extends W> type) {
+        return GLYPH;
+    }
+
+    @Override
+    default Class<? extends ShapeDef> getType() {
+        return ConnectorShapeDef.class;
+    }
 }

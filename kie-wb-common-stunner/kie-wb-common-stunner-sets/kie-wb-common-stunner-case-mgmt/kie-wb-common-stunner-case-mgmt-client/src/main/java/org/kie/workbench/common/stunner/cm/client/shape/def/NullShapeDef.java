@@ -16,96 +16,79 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
-import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
-import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
-public class NullShapeDef<W extends BPMNDefinition> implements MutableShapeDef<W> {
-
-    private final PictureGlyphDef<W, BPMNPictures> NULL_GLYPH_DEF =
-            new PictureGlyphDef<W, BPMNPictures>() {
-
-                @Override
-                public String getGlyphDescription(final BPMNDefinition element) {
-                    return "";
-                }
-
-                @Override
-                public BPMNPictures getSource(final Class<?> type) {
-                    return BPMNPictures.GLYPH_OOME_HACK;
-                }
-            };
+public class NullShapeDef implements CaseManagementShapeDef<BPMNDefinition> {
 
     @Override
-    public double getAlpha(final W element) {
+    public double getAlpha(final BPMNDefinition element) {
         return 1d;
     }
 
     @Override
-    public String getBackgroundColor(final W element) {
+    public String getBackgroundColor(final BPMNDefinition element) {
         return "";
     }
 
     @Override
-    public double getBackgroundAlpha(final W element) {
+    public double getBackgroundAlpha(final BPMNDefinition element) {
         return 1d;
     }
 
     @Override
-    public String getBorderColor(final W element) {
+    public String getBorderColor(final BPMNDefinition element) {
         return "";
     }
 
     @Override
-    public double getBorderSize(final W element) {
+    public double getBorderSize(final BPMNDefinition element) {
         return 1d;
     }
 
     @Override
-    public double getBorderAlpha(final W element) {
+    public double getBorderAlpha(final BPMNDefinition element) {
         return 1d;
     }
 
     @Override
-    public String getFontFamily(final W element) {
+    public String getFontFamily(final BPMNDefinition element) {
         return "";
     }
 
     @Override
-    public String getFontColor(final W element) {
+    public String getFontColor(final BPMNDefinition element) {
         return "";
     }
 
     @Override
-    public String getFontBorderColor(final W element) {
+    public String getFontBorderColor(final BPMNDefinition element) {
         return "";
     }
 
     @Override
-    public double getFontSize(final W element) {
+    public double getFontSize(final BPMNDefinition element) {
         return 0;
     }
 
     @Override
-    public double getFontBorderSize(final W element) {
+    public double getFontBorderSize(final BPMNDefinition element) {
         return 0;
     }
 
     @Override
-    public HasTitle.Position getFontPosition(final W element) {
+    public HasTitle.Position getFontPosition(final BPMNDefinition element) {
         return HasTitle.Position.CENTER;
     }
 
     @Override
-    public double getFontRotation(final W element) {
+    public double getFontRotation(final BPMNDefinition element) {
         return 0;
     }
 
     @Override
-    public GlyphDef<W> getGlyphDef() {
-        return NULL_GLYPH_DEF;
+    public Class<? extends ShapeDef> getType() {
+        return NullShapeDef.class;
     }
 }

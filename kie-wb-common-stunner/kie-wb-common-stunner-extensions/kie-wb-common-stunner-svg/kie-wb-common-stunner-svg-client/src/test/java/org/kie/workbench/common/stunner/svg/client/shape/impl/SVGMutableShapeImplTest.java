@@ -26,8 +26,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.shape.impl.AnimationShapeStateHelper;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphShapeDef;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -207,21 +205,6 @@ public class SVGMutableShapeImplTest {
         public SVGShapeView<?> newViewInstance(final Object factory,
                                                final Object element) {
             return null;
-        }
-
-        @Override
-        public GlyphDef<Object> getGlyphDef() {
-            return new GlyphDef<Object>() {
-                @Override
-                public Class<?> getType() {
-                    return GlyphShapeDef.class;
-                }
-
-                @Override
-                public String getGlyphDescription(final Object element) {
-                    return "";
-                }
-            };
         }
     };
 }

@@ -153,7 +153,7 @@ public class FlowActionsToolboxControlProviderTest {
                                                 eq(node),
                                                 anyInt(),
                                                 anyInt())).thenReturn(Collections.singleton(MockConnector.class.getName()));
-        when(defaultToolboxCommandFactory.newConnectorCommand()).thenReturn(newConnectorCommand);
+        when(defaultToolboxCommandFactory.newConnectorToolboxCommand()).thenReturn(newConnectorCommand);
 
         final List<ToolboxCommand<AbstractCanvasHandler, ?>> commands = provider.getCommands(context,
                                                                                              node);
@@ -176,7 +176,7 @@ public class FlowActionsToolboxControlProviderTest {
                                                 eq(node),
                                                 anyInt(),
                                                 anyInt())).thenReturn(Collections.singleton(MockConnector.class.getName()));
-        when(defaultToolboxCommandFactory.newConnectorCommand()).thenReturn(newConnectorCommand);
+        when(defaultToolboxCommandFactory.newConnectorToolboxCommand()).thenReturn(newConnectorCommand);
 
         when(definitionUtils.getDefaultConnectorId(eq(MockDefinitionSet.class.getName()))).thenReturn(MockConnector.class.getName());
 
@@ -187,7 +187,7 @@ public class FlowActionsToolboxControlProviderTest {
                                                              eq(MockConnector.class.getName()),
                                                              anyInt(),
                                                              anyInt())).thenReturn(Collections.singleton(MockNode.class.getName()));
-        when(defaultToolboxCommandFactory.newNodeCommand()).thenReturn(newNodeCommand);
+        when(defaultToolboxCommandFactory.newNodeToolboxCommand()).thenReturn(newNodeCommand);
 
         final List<ToolboxCommand<AbstractCanvasHandler, ?>> commands = provider.getCommands(context,
                                                                                              node);

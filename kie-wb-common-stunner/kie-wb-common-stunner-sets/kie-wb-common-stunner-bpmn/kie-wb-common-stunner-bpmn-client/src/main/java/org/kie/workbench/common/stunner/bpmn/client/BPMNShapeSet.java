@@ -16,17 +16,19 @@
 
 package org.kie.workbench.common.stunner.bpmn.client;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
-import org.kie.workbench.common.stunner.bpmn.client.shape.factory.BPMNSVGShapeFactory;
+import org.kie.workbench.common.stunner.bpmn.client.shape.factory.BPMNShapeFactory;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.AbstractBindableShapeSet;
 
 @ApplicationScoped
-public class BPMNShapeSet extends AbstractBindableShapeSet<BPMNSVGShapeFactory> {
+public class BPMNShapeSet extends AbstractBindableShapeSet<BPMNShapeFactory> {
+
+    private final DefinitionManager definitionManager;
+    private final BPMNShapeFactory factory;
 
     protected BPMNShapeSet() {
         this(null,
@@ -35,18 +37,23 @@ public class BPMNShapeSet extends AbstractBindableShapeSet<BPMNSVGShapeFactory> 
 
     @Inject
     public BPMNShapeSet(final DefinitionManager definitionManager,
-                        final BPMNSVGShapeFactory factory) {
-        super(definitionManager,
-              factory);
+                        final BPMNShapeFactory factory) {
+        this.definitionManager = definitionManager;
+        this.factory = factory;
     }
 
-    @PostConstruct
-    public void init() {
-        super.doInit();
+    @Override
+    protected DefinitionManager getDefinitionManager() {
+        return definitionManager;
     }
 
     @Override
     protected Class<?> getDefinitionSetClass() {
         return BPMNDefinitionSet.class;
+    }
+
+    @Override
+    public BPMNShapeFactory getShapeFactory() {
+        return factory;
     }
 }

@@ -20,6 +20,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.widgets.components.glyph.DOMGlyphRenderers;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
@@ -53,6 +54,9 @@ public class TreeExplorerTest {
     TreeExplorerView view;
 
     @Mock
+    DOMGlyphRenderers domGlyphRenderers;
+
+    @Mock
     Graph graph;
 
     @Mock
@@ -71,6 +75,7 @@ public class TreeExplorerTest {
                                            elementSelectedEvent,
                                            definitionUtils,
                                            shapeManager,
+                                           domGlyphRenderers,
                                            view);
     }
 

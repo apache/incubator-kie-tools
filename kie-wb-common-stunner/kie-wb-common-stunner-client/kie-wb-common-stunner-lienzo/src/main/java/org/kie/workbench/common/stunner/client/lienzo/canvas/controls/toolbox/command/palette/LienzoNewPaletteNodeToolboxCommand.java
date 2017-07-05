@@ -20,7 +20,6 @@ import javax.annotation.PostConstruct;
 
 import com.ait.lienzo.client.core.shape.Shape;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
-import org.kie.workbench.common.stunner.client.lienzo.components.palette.AbstractLienzoGlyphItemsPalette;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.LienzoGlyphsHoverPalette;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.LienzoPalette;
 import org.kie.workbench.common.stunner.client.lienzo.util.SVGUtils;
@@ -67,7 +66,7 @@ public abstract class LienzoNewPaletteNodeToolboxCommand extends NewPaletteNodeC
                 .setIconSize(15)
                 .setPadding(5)
                 .setLayout(LienzoPalette.Layout.VERTICAL);
-        ((AbstractLienzoGlyphItemsPalette) getLienzoPalette()).getDefinitionGlyphTooltip().setPrefix("Click to create a ");
+        getLienzoPalette().getTooltip().setPrefix("Click to create a ");
     }
 
     @Override

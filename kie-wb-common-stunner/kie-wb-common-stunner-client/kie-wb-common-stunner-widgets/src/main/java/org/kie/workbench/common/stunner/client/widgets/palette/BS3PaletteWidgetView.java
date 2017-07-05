@@ -26,7 +26,9 @@ public interface BS3PaletteWidgetView extends UberElement<BS3PaletteWidget> {
 
     void showDragProxy(String itemId,
                        double x,
-                       double y);
+                       double y,
+                       double width,
+                       double height);
 
     void setBackgroundColor(String backgroundColor);
 

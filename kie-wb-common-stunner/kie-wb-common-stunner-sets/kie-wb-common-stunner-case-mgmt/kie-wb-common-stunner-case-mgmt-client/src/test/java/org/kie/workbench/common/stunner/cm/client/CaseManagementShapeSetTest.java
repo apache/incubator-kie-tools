@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
-import org.kie.workbench.common.stunner.cm.client.shape.factory.CaseManagementDelegateShapeFactory;
+import org.kie.workbench.common.stunner.cm.client.shape.factory.CaseManagementShapeFactory;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -34,7 +34,7 @@ public class CaseManagementShapeSetTest {
     private DefinitionManager definitionManager;
 
     @Mock
-    private CaseManagementDelegateShapeFactory factoryRegistry;
+    private CaseManagementShapeFactory factoryRegistry;
 
     private CaseManagementShapeSet shapeSet;
 

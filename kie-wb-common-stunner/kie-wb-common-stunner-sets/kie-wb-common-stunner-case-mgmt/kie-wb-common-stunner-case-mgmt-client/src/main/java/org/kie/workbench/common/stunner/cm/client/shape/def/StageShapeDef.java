@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
-import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 
-public interface StageShapeDef<W> extends MutableShapeDef<W> {
+public interface StageShapeDef<W extends BPMNDefinition> extends CaseManagementShapeDef<W> {
 
     double getWidth(final W element);
 

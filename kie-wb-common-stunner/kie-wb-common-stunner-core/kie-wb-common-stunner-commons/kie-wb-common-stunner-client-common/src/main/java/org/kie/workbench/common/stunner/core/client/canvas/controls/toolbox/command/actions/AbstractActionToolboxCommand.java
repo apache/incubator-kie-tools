@@ -19,18 +19,17 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.Transform;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.AbstractToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
-import org.kie.workbench.common.stunner.core.client.components.glyph.DefinitionGlyphTooltip;
-import org.kie.workbench.common.stunner.core.client.components.glyph.GlyphTooltip;
+import org.kie.workbench.common.stunner.core.client.components.views.CanvasTooltip;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 public abstract class AbstractActionToolboxCommand<I> extends AbstractToolboxCommand<I> {
 
-    private final DefinitionGlyphTooltip<?> glyphTooltip;
+    private final CanvasTooltip<String> canvasTextTooltip;
     private I icon;
 
-    protected AbstractActionToolboxCommand(final DefinitionGlyphTooltip<?> glyphTooltip) {
-        this.glyphTooltip = glyphTooltip;
+    protected AbstractActionToolboxCommand(final CanvasTooltip<String> canvasTextTooltip) {
+        this.canvasTextTooltip = canvasTextTooltip;
     }
 
     public AbstractActionToolboxCommand<I> setIcon(final I icon) {
@@ -57,10 +56,9 @@ public abstract class AbstractActionToolboxCommand<I> extends AbstractToolboxCom
         // using current transform attributes to obtain the right absolute position on the screen.
         final Point2D t = transform.transform(context.getX(),
                                               context.getY());
-        glyphTooltip.show(getTitle(),
-                          ax + t.getX() + 20,
-                          ay + t.getY(),
-                          GlyphTooltip.Direction.WEST);
+        canvasTextTooltip.show(getTitle(),
+                               new Point2D(ax + t.getX() + 20,
+                                           ay + t.getY()));
     }
 
     @Override
@@ -68,6 +66,6 @@ public abstract class AbstractActionToolboxCommand<I> extends AbstractToolboxCom
                           final Element element) {
         super.mouseExit(context,
                         element);
-        glyphTooltip.hide();
+        canvasTextTooltip.hide();
     }
 }

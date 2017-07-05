@@ -23,27 +23,22 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.ait.lienzo.client.core.shape.Group;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.DefinitionPaletteCategoryWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteViewFactory;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRenderer;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconResource;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.PaletteIconSettings;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
-import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
@@ -62,27 +57,24 @@ public class BS3PaletteWidgetImpl extends AbstractPalette<DefinitionSetPalette>
     protected ItemDropCallback itemDropCallback;
     protected ItemDragStartCallback itemDragStartCallback;
     protected ItemDragUpdateCallback itemDragUpdateCallback;
-    private final ShapeGlyphDragHandler<Group> shapeGlyphDragHandler;
+    private final ShapeGlyphDragHandler shapeGlyphDragHandler;
 
     private BS3PaletteViewFactory viewFactory;
 
     private ManagedInstance<DefinitionPaletteCategoryWidget> categoryWidgetInstance;
-    private ManagedInstance<IconRenderer> iconRendererInstance;
     private BS3PaletteWidgetView view;
 
     @Inject
     public BS3PaletteWidgetImpl(final ShapeManager shapeManager,
                                 final ClientFactoryService clientFactoryServices,
                                 final BS3PaletteWidgetView view,
-                                final ShapeGlyphDragHandler<Group> shapeGlyphDragHandler,
-                                final ManagedInstance<DefinitionPaletteCategoryWidget> categoryWidgetInstance,
-                                final ManagedInstance<IconRenderer> iconRendererInstance) {
+                                final ShapeGlyphDragHandler shapeGlyphDragHandler,
+                                final ManagedInstance<DefinitionPaletteCategoryWidget> categoryWidgetInstance) {
         super(shapeManager);
         this.clientFactoryServices = clientFactoryServices;
         this.view = view;
         this.shapeGlyphDragHandler = shapeGlyphDragHandler;
         this.categoryWidgetInstance = categoryWidgetInstance;
-        this.iconRendererInstance = iconRendererInstance;
     }
 
     public static int getDefaultWidth() {
@@ -121,7 +113,7 @@ public class BS3PaletteWidgetImpl extends AbstractPalette<DefinitionSetPalette>
                             final double y) {
         if (null != itemDragStartCallback) {
             final Object definition = clientFactoryServices.getClientFactoryManager().newDefinition(definitionId);
-            final ShapeFactory<?, ?, ? extends Shape> factory = getShapeFactory();
+            final ShapeFactory<?, ? extends Shape> factory = getShapeFactory();
             // Fire the callback as shape drag starts.
             itemDragStartCallback.onDragStartItem(definition,
                                                   factory,
@@ -136,7 +128,7 @@ public class BS3PaletteWidgetImpl extends AbstractPalette<DefinitionSetPalette>
                                 double y) {
         if (null != itemDragUpdateCallback) {
             final Object definition = clientFactoryServices.getClientFactoryManager().newDefinition(definitionId);
-            final ShapeFactory<?, ?, ? extends Shape> factory = getShapeFactory();
+            final ShapeFactory<?, ? extends Shape> factory = getShapeFactory();
             // Fire the callback as shape dragged over the target canvas.
             itemDragUpdateCallback.onDragUpdateItem(definition,
                                                     factory,
@@ -180,20 +172,10 @@ public class BS3PaletteWidgetImpl extends AbstractPalette<DefinitionSetPalette>
         final DefinitionSetPalette palette = paletteDefinition;
         if (null != palette) {
             palette.getItems().forEach(definitionPaletteCategory -> {
-                DefinitionPaletteCategoryWidget widget = categoryWidgetInstance.get();
-
+                final DefinitionPaletteCategoryWidget widget = categoryWidgetInstance.get();
                 widget.initialize(definitionPaletteCategory,
-                                  new IconRendererProvider() {
-                                      @Override
-                                      public IconRenderer getCategoryIconRenderer(DefinitionPaletteCategory category) {
-                                          return BS3PaletteWidgetImpl.this.getCategoryIconRenderer(category);
-                                      }
-
-                                      @Override
-                                      public IconRenderer getDefinitionIconRenderer(DefinitionPaletteItem item) {
-                                          return BS3PaletteWidgetImpl.this.getDefinitionIconRenderer(item);
-                                      }
-                                  },
+                                  viewFactory,
+                                  getShapeFactory(),
                                   (id, mouseX, mouseY, itemX, itemY) -> {
                                       PortablePreconditions.checkNotNull("id",
                                                                          id);
@@ -216,33 +198,13 @@ public class BS3PaletteWidgetImpl extends AbstractPalette<DefinitionSetPalette>
         return this;
     }
 
-    protected IconRenderer getCategoryIconRenderer(DefinitionPaletteCategory category) {
-        PaletteIconSettings<? extends IconRenderer, ? extends IconResource> iconSettings = viewFactory.getCategoryIconSettings(category.getId());
-
-        return getIconRenderer(iconSettings);
-    }
-
-    protected IconRenderer getDefinitionIconRenderer(DefinitionPaletteItem item) {
-        PaletteIconSettings<? extends IconRenderer, ? extends IconResource> iconSettings = viewFactory.getDefinitionIconSettings(paletteDefinition.getDefinitionSetId(),
-                                                                                                                                 item.getId());
-
-        return getIconRenderer(iconSettings);
-    }
-
-    protected IconRenderer getIconRenderer(PaletteIconSettings<? extends IconRenderer, ? extends IconResource> iconSettings) {
-        IconRenderer iconRenderer = iconRendererInstance.select(iconSettings.getIconRendererType()).get();
-
-        iconRenderer.render(iconSettings.getIconResource());
-        return iconRenderer;
-    }
-
     @Override
     public void onDragProxyComplete(final String definitionId,
                                     final double x,
                                     final double y) {
         if (null != itemDropCallback) {
             final Object definition = clientFactoryServices.getClientFactoryManager().newDefinition(definitionId);
-            final ShapeFactory<?, ?, ? extends Shape> factory = getShapeFactory();
+            final ShapeFactory<?, ? extends Shape> factory = getShapeFactory();
             // Fire the callback as shape dropped onto the target canvas.
             itemDropCallback.onDropItem(definition,
                                         factory,
@@ -252,10 +214,8 @@ public class BS3PaletteWidgetImpl extends AbstractPalette<DefinitionSetPalette>
     }
 
     @Override
-    public Glyph<?> getShapeGlyph(final String definitionId) {
-        return getShapeFactory().glyph(definitionId,
-                                       getIconSize(),
-                                       getIconSize());
+    public Glyph getShapeGlyph(final String definitionId) {
+        return getShapeFactory().getGlyph(definitionId);
     }
 
     private String getDefinitionIdForCategory(final String id) {
@@ -277,7 +237,9 @@ public class BS3PaletteWidgetImpl extends AbstractPalette<DefinitionSetPalette>
         // Show the drag proxy for the element at x, y.
         view.showDragProxy(id,
                            x,
-                           y);
+                           y,
+                           getIconSize(),
+                           getIconSize());
     }
 
     private List<DefinitionPaletteCategory> getMainPaletteItems() {
@@ -314,7 +276,6 @@ public class BS3PaletteWidgetImpl extends AbstractPalette<DefinitionSetPalette>
     @Override
     protected void doDestroy() {
         categoryWidgetInstance.destroyAll();
-        iconRendererInstance.destroyAll();
         viewFactory.destroy();
         view.destroy();
         this.itemDropCallback = null;

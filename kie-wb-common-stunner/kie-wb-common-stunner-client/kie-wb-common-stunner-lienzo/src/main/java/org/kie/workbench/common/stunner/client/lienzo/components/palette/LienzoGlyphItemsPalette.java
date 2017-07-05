@@ -19,28 +19,18 @@ package org.kie.workbench.common.stunner.client.lienzo.components.palette;
 import java.util.List;
 
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.view.LienzoPaletteView;
-import org.kie.workbench.common.stunner.core.client.components.glyph.DefinitionGlyphTooltip;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.GlyphPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
+import org.kie.workbench.common.stunner.core.client.components.views.CanvasDefinitionTooltip;
 
 public interface LienzoGlyphItemsPalette<I extends HasPaletteItems<? extends GlyphPaletteItem>, V extends LienzoPaletteView>
         extends LienzoPalette<I, V> {
 
-    interface GlyphTooltipCallback {
-
-        boolean onShowTooltip(final DefinitionGlyphTooltip<?> glyphTooltip,
-                              final GlyphPaletteItem item,
-                              final double mouseX,
-                              final double mouseY,
-                              final double itemX,
-                              final double itemY);
-    }
-
-    LienzoGlyphItemsPalette<I, V> setShapeSetId(final String shapeSetId);
+    LienzoGlyphItemsPalette<I, V> setShapeSetId(String shapeSetId);
 
     List<GlyphPaletteItem> getItems();
 
-    GlyphPaletteItem getItem(final int pos);
+    GlyphPaletteItem getItem(int pos);
 
-    LienzoGlyphItemsPalette<I, V> onShowGlyTooltip(final GlyphTooltipCallback callback);
+    CanvasDefinitionTooltip getTooltip();
 }

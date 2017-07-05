@@ -26,11 +26,6 @@ public interface ShapeSet<F extends ShapeFactory> {
     String getId();
 
     /**
-     * Get the name for the set.
-     */
-    String getName();
-
-    /**
      * Get the description for the set.
      */
     String getDescription();
@@ -41,13 +36,8 @@ public interface ShapeSet<F extends ShapeFactory> {
     String getDefinitionSetId();
 
     /**
-     * If multiple shape sets available for same definition set,
-     * this indicates wheter is this shape set must be the default one.
-     */
-    boolean isDefault();
-
-    /**
      * The shapes factory instance for this set.
      */
     F getShapeFactory();
+
 }

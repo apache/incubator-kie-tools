@@ -21,12 +21,15 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
-import org.kie.workbench.common.stunner.cm.client.shape.factory.CaseManagementDelegateShapeFactory;
+import org.kie.workbench.common.stunner.cm.client.shape.factory.CaseManagementShapeFactory;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.AbstractBindableShapeSet;
 
 @ApplicationScoped
-public class CaseManagementShapeSet extends AbstractBindableShapeSet<CaseManagementDelegateShapeFactory> {
+public class CaseManagementShapeSet extends AbstractBindableShapeSet<CaseManagementShapeFactory> {
+
+    private final DefinitionManager definitionManager;
+    private final CaseManagementShapeFactory factory;
 
     protected CaseManagementShapeSet() {
         this(null,
@@ -35,18 +38,23 @@ public class CaseManagementShapeSet extends AbstractBindableShapeSet<CaseManagem
 
     @Inject
     public CaseManagementShapeSet(final DefinitionManager definitionManager,
-                                  final CaseManagementDelegateShapeFactory factory) {
-        super(definitionManager,
-              factory);
-    }
-
-    @PostConstruct
-    public void init() {
-        super.doInit();
+                                  final CaseManagementShapeFactory factory) {
+       this.definitionManager = definitionManager;
+       this.factory= factory;
     }
 
     @Override
     protected Class<?> getDefinitionSetClass() {
         return CaseManagementDefinitionSet.class;
+    }
+
+    @Override
+    protected DefinitionManager getDefinitionManager() {
+        return definitionManager;
+    }
+
+    @Override
+    public CaseManagementShapeFactory getShapeFactory() {
+        return factory;
     }
 }

@@ -17,11 +17,8 @@
 package org.kie.workbench.common.stunner.client.widgets.palette;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRenderer;
 import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinition;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 
@@ -31,7 +28,7 @@ public interface PaletteWidget<D extends PaletteDefinition>
     interface ItemDropCallback {
 
         void onDropItem(final Object definition,
-                        final ShapeFactory<?, ?, ? extends Shape> factory,
+                        final ShapeFactory<?, ? extends Shape> factory,
                         final double x,
                         final double y);
     }
@@ -39,7 +36,7 @@ public interface PaletteWidget<D extends PaletteDefinition>
     interface ItemDragStartCallback {
 
         void onDragStartItem(final Object definition,
-                             final ShapeFactory<?, ?, ? extends Shape> factory,
+                             final ShapeFactory<?, ? extends Shape> factory,
                              final double x,
                              final double y);
     }
@@ -47,16 +44,9 @@ public interface PaletteWidget<D extends PaletteDefinition>
     interface ItemDragUpdateCallback {
 
         void onDragUpdateItem(final Object definition,
-                              final ShapeFactory<?, ?, ? extends Shape> factory,
+                              final ShapeFactory<?, ? extends Shape> factory,
                               final double x,
                               final double y);
-    }
-
-    interface IconRendererProvider {
-
-        IconRenderer getCategoryIconRenderer(DefinitionPaletteCategory category);
-
-        IconRenderer getDefinitionIconRenderer(DefinitionPaletteItem item);
     }
 
     PaletteWidget<D> onItemDrop(final ItemDropCallback callback);

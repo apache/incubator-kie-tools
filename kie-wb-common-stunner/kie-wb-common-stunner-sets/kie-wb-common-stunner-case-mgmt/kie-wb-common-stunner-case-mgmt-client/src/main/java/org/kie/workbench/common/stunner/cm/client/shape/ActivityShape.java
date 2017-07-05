@@ -16,24 +16,36 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape;
 
+import java.util.Optional;
+
+import com.google.gwt.safehtml.shared.SafeUri;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementActivityShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.view.ActivityView;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.shapes.client.PictureShape;
+import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
 import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
 
-public class ActivityShape<W> extends AbstractCMContainerShape<W, RectangleShapeDef<W>, ActivityView> {
+public class ActivityShape extends AbstractCMContainerShape<BPMNDefinition, CaseManagementActivityShapeDef<BPMNDefinition>, ActivityView> {
 
-    public ActivityShape(final RectangleShapeDef<W> shapeDef,
+    private final PictureShape iconShape;
+
+    public ActivityShape(final CaseManagementActivityShapeDef shapeDef,
+                         final PictureShapeView iconView,
                          final ActivityView view) {
         super(shapeDef,
               view);
+        this.iconShape = new PictureShape(iconView);
+        addChild(iconShape, Layout.TOP);
     }
 
     @Override
-    public void applyProperties(final Node<View<W>, Edge> element,
+    public void applyProperties(final Node<View<BPMNDefinition>, Edge> element,
                                 final MutationContext mutationContext) {
         super.applyProperties(element,
                               mutationContext);
@@ -43,4 +55,5 @@ public class ActivityShape<W> extends AbstractCMContainerShape<W, RectangleShape
                                                        height,
                                                        mutationContext);
     }
+
 }

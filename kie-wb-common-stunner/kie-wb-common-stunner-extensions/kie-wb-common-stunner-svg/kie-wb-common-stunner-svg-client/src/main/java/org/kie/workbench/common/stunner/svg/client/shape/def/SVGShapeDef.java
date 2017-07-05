@@ -50,4 +50,9 @@ public interface SVGShapeDef<W, F> extends ShapeDef<W> {
      */
     SVGShapeView<?> newViewInstance(F factory,
                                     W element);
+
+    @Override
+    default Class<? extends ShapeDef> getType() {
+        return SVGShapeDef.class;
+    }
 }

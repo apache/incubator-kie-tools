@@ -28,27 +28,23 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.basicset.definition.property.Name;
 import org.kie.workbench.common.stunner.basicset.definition.property.background.BackgroundAndBorderSet;
-import org.kie.workbench.common.stunner.basicset.shape.def.BasicConnectorDefImpl;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.Shape;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
-import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
 @Portable
 @Bindable
 @Definition(graphFactory = EdgeFactory.class, builder = BasicConnector.BasicConnectorBuilder.class)
 @CanConnect(startRole = "all", endRole = "all")
-@Shape(factory = BasicShapesFactory.class, def = BasicConnectorDefImpl.class)
 @FormDefinition(startElement = "backgroundSet")
-public class BasicConnector {
+public class BasicConnector implements BasicSetDefinition {
 
     @Category
     public static final transient String category = Categories.CONNECTORS;

@@ -25,117 +25,121 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.group.DefinitionPaletteGroupWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRenderer;
+import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteViewFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteGroup;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
+import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 @Dependent
 public class DefinitionPaletteCategoryWidget implements DefinitionPaletteCategoryWidgetView.Presenter,
                                                         IsElement {
 
-  private DefinitionPaletteCategory category;
-  private Palette.ItemMouseDownCallback itemMouseDownCallback;
-  private PaletteWidget.IconRendererProvider iconRendererProvider;
+    private static final double ICON_WIDTH = 20;
+    private static final double ICON_HEIGHT = 20;
 
-  private DefinitionPaletteCategoryWidgetView view;
-  private ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgetInstance;
-  private ManagedInstance<DefinitionPaletteGroupWidget> definitionPaletteGroupWidgetInstance;
+    private DefinitionPaletteCategory category;
+    private Palette.ItemMouseDownCallback itemMouseDownCallback;
 
-  @Inject
-  public DefinitionPaletteCategoryWidget(DefinitionPaletteCategoryWidgetView view,
-                                         ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgetInstance,
-                                         ManagedInstance<DefinitionPaletteGroupWidget> definitionPaletteGroupWidgetInstance) {
-    this.view = view;
-    this.definitionPaletteItemWidgetInstance = definitionPaletteItemWidgetInstance;
-    this.definitionPaletteGroupWidgetInstance = definitionPaletteGroupWidgetInstance;
-  }
+    private DefinitionPaletteCategoryWidgetView view;
+    private ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgetInstance;
+    private ManagedInstance<DefinitionPaletteGroupWidget> definitionPaletteGroupWidgetInstance;
 
-  @PostConstruct
-  public void setUp() {
-    view.init(this);
-  }
+    @Inject
+    public DefinitionPaletteCategoryWidget(DefinitionPaletteCategoryWidgetView view,
+                                           ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgetInstance,
+                                           ManagedInstance<DefinitionPaletteGroupWidget> definitionPaletteGroupWidgetInstance) {
+        this.view = view;
+        this.definitionPaletteItemWidgetInstance = definitionPaletteItemWidgetInstance;
+        this.definitionPaletteGroupWidgetInstance = definitionPaletteGroupWidgetInstance;
+    }
 
-  @Override
-  public HTMLElement getElement() {
-    return view.getElement();
-  }
+    @PostConstruct
+    public void setUp() {
+        view.init(this);
+    }
 
-  public void initialize(DefinitionPaletteCategory category,
-                         PaletteWidget.IconRendererProvider iconRendererProvider,
-                         Palette.ItemMouseDownCallback itemMouseDownCallback) {
-    this.category = category;
-    this.itemMouseDownCallback = itemMouseDownCallback;
-    this.iconRendererProvider = iconRendererProvider;
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
+    }
 
-    IconRenderer iconRenderer = iconRendererProvider.getCategoryIconRenderer(category);
+    public void initialize(final DefinitionPaletteCategory category,
+                           final BS3PaletteViewFactory viewFactory,
+                           final ShapeFactory<?, ?> shapeFactory,
+                           final Palette.ItemMouseDownCallback itemMouseDownCallback) {
+        this.category = category;
+        this.itemMouseDownCallback = itemMouseDownCallback;
+        final Glyph categoryGlyph = viewFactory.getCategoryGlyph(category.getId());
+        view.render(categoryGlyph,
+                    ICON_WIDTH,
+                    ICON_HEIGHT);
+        renderItems(category.getItems(),
+                    shapeFactory);
+    }
 
-    iconRenderer.resize(IconRenderer.Size.LARGE);
+    private void renderItems(final List<DefinitionPaletteItem> items,
+                             final ShapeFactory<?, ?> shapeFactory) {
+        if (items != null && !items.isEmpty()) {
+            items.forEach(item -> {
+                if (item instanceof DefinitionPaletteGroup) {
 
-    view.render(iconRenderer);
+                    renderGroup((DefinitionPaletteGroup) item,
+                                shapeFactory);
+                } else {
+                    DefinitionPaletteItemWidget categoryItemWidget = definitionPaletteItemWidgetInstance.get();
 
-    renderItems(category.getItems());
-  }
+                    categoryItemWidget.initialize(item,
+                                                  shapeFactory,
+                                                  itemMouseDownCallback);
 
-  private void renderItems(List<DefinitionPaletteItem> items) {
-    if (items != null && !items.isEmpty()) {
-      items.forEach(item -> {
-        if (item instanceof DefinitionPaletteGroup) {
-
-          renderGroup((DefinitionPaletteGroup) item);
-        } else {
-          DefinitionPaletteItemWidget categoryItemWidget = definitionPaletteItemWidgetInstance.get();
-
-          categoryItemWidget.initialize(item,
-                                        iconRendererProvider,
-                                        itemMouseDownCallback);
-
-          view.addItem(categoryItemWidget);
+                    view.addItem(categoryItemWidget);
+                }
+            });
         }
-      });
     }
-  }
 
-  private void renderGroup(DefinitionPaletteGroup group) {
-    DefinitionPaletteGroupWidget groupWidget = definitionPaletteGroupWidgetInstance.get();
+    private void renderGroup(final DefinitionPaletteGroup group,
+                             final ShapeFactory<?, ?> shapeFactory) {
+        DefinitionPaletteGroupWidget groupWidget = definitionPaletteGroupWidgetInstance.get();
 
-    groupWidget.initialize(group,
-                           iconRendererProvider,
-                           itemMouseDownCallback);
+        groupWidget.initialize(group,
+                               shapeFactory,
+                               itemMouseDownCallback);
 
-    view.addGroup(groupWidget);
-  }
-
-  public DefinitionPaletteCategoryWidgetView getView() {
-    return view;
-  }
-
-  @Override
-  public DefinitionPaletteCategory getCategory() {
-    return category;
-  }
-
-  @Override
-  public void onMouseDown(int clientX,
-                          int clientY,
-                          int x,
-                          int y) {
-    if (itemMouseDownCallback != null) {
-      itemMouseDownCallback.onItemMouseDown(category.getId(),
-                                            clientX,
-                                            clientY,
-                                            x,
-                                            y);
+        view.addGroup(groupWidget);
     }
-  }
 
-  @PreDestroy
-  public void destroy() {
-    definitionPaletteItemWidgetInstance.destroyAll();
-    definitionPaletteGroupWidgetInstance.destroyAll();
-  }
+    public DefinitionPaletteCategoryWidgetView getView() {
+        return view;
+    }
+
+    @Override
+    public DefinitionPaletteCategory getCategory() {
+        return category;
+    }
+
+    @Override
+    public void onMouseDown(int clientX,
+                            int clientY,
+                            int x,
+                            int y) {
+        if (itemMouseDownCallback != null) {
+            itemMouseDownCallback.onItemMouseDown(category.getId(),
+                                                  clientX,
+                                                  clientY,
+                                                  x,
+                                                  y);
+        }
+    }
+
+    @PreDestroy
+    public void destroy() {
+        definitionPaletteItemWidgetInstance.destroyAll();
+        definitionPaletteGroupWidgetInstance.destroyAll();
+    }
 }

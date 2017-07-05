@@ -18,13 +18,9 @@ package org.kie.workbench.common.stunner.basicset.shape.def;
 
 import org.kie.workbench.common.stunner.basicset.definition.Polygon;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDefinitions;
 import org.kie.workbench.common.stunner.shapes.def.PolygonShapeDef;
 
 public final class PolygonShapeDefImpl
-        extends AbstractShapeDef<Polygon>
         implements PolygonShapeDef<Polygon> {
 
     @Override
@@ -97,8 +93,4 @@ public final class PolygonShapeDefImpl
         return 0;
     }
 
-    @Override
-    public GlyphDef<Polygon> getGlyphDef() {
-        return GlyphDefinitions.GLYPH_SHAPE();
-    }
 }

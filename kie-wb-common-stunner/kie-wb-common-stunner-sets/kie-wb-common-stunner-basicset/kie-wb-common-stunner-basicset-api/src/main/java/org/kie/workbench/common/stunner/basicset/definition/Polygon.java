@@ -32,27 +32,23 @@ import org.kie.workbench.common.stunner.basicset.definition.property.Name;
 import org.kie.workbench.common.stunner.basicset.definition.property.Radius;
 import org.kie.workbench.common.stunner.basicset.definition.property.background.BackgroundAndBorderSet;
 import org.kie.workbench.common.stunner.basicset.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.basicset.shape.def.PolygonShapeDefImpl;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.Shape;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
-import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = Polygon.PolygonBuilder.class)
 @CanContain(roles = {"all"})
-@Shape(factory = BasicShapesFactory.class, def = PolygonShapeDefImpl.class)
 @FormDefinition(startElement = "backgroundSet")
-public class Polygon {
+public class Polygon implements BasicSetDefinition {
 
     @Category
     public static final transient String category = Categories.BASIC;

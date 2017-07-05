@@ -20,7 +20,6 @@ import java.util.Optional;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
@@ -108,7 +107,7 @@ public class SessionPreviewCanvasHandlerProxy<D extends Diagram, C extends Abstr
     }
 
     @Override
-    public void register(final ShapeFactory<Object, AbstractCanvasHandler, Shape> factory,
+    public void register(final ShapeFactory<Object, Shape> factory,
                          final Element<View<?>> candidate,
                          final boolean fireEvents) {
         wrapped.register(factory,
@@ -247,7 +246,7 @@ public class SessionPreviewCanvasHandlerProxy<D extends Diagram, C extends Abstr
     }
 
     @Override
-    public ShapeFactory<Object, AbstractCanvasHandler, Shape> getShapeFactory(final String shapeSetId) {
+    public ShapeFactory<Object, Shape> getShapeFactory(final String shapeSetId) {
         return wrapped.getShapeFactory(shapeSetId);
     }
 

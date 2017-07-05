@@ -116,9 +116,6 @@ public class BS3PaletteFactoryImpl extends AbstractPaletteFactory<DefinitionSetP
                                 shapeSetId);
         final String defSetId = paletteDefinition.getDefinitionSetId();
         BS3PaletteViewFactory viewFactory = getViewFactory(defSetId);
-        if (null == viewFactory) {
-            viewFactory = new BS3PaletteGlyphViewFactory(shapeManager);
-        }
         palette.setViewFactory(viewFactory);
     }
 

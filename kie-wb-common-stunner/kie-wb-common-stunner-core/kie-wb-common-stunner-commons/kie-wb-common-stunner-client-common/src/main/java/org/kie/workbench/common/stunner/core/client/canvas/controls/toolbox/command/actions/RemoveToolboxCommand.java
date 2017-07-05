@@ -23,7 +23,7 @@ import com.google.gwt.user.client.Window;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.components.glyph.DefinitionGlyphTooltip;
+import org.kie.workbench.common.stunner.core.client.components.views.CanvasTooltip;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
@@ -39,9 +39,9 @@ public class RemoveToolboxCommand<I> extends AbstractActionToolboxCommand<I> {
     }
 
     @Inject
-    public RemoveToolboxCommand(final DefinitionGlyphTooltip<?> glyphTooltip,
+    public RemoveToolboxCommand(final CanvasTooltip<String> canvasTextTooltip,
                                 final CanvasCommandFactory<AbstractCanvasHandler> commandFactory) {
-        super(glyphTooltip);
+        super(canvasTextTooltip);
         this.commandFactory = commandFactory;
     }
 

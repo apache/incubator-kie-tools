@@ -26,7 +26,8 @@ import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRenderer;
+import org.kie.workbench.common.stunner.client.widgets.components.glyph.DOMGlyphRenderers;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 @Templated
 @Dependent
@@ -45,6 +46,9 @@ public class DefinitionPaletteItemWidgetViewImpl implements DefinitionPaletteIte
     @DataField
     private Span name;
 
+    @Inject
+    private DOMGlyphRenderers domGlyphRenderers;
+
     private Presenter presenter;
 
     @Override
@@ -53,10 +57,14 @@ public class DefinitionPaletteItemWidgetViewImpl implements DefinitionPaletteIte
     }
 
     @Override
-    public void render(IconRenderer iconRenderer) {
-
-        icon.appendChild(iconRenderer.getElement());
-
+    public void render(final Glyph glyph,
+                       final double width,
+                       final double height) {
+        final org.jboss.errai.common.client.api.IsElement glyphElement =
+                domGlyphRenderers.render(glyph,
+                                         width,
+                                         height);
+        icon.appendChild(glyphElement.getElement());
         name.setTextContent(presenter.getItem().getTitle());
     }
 

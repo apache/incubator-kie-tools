@@ -207,12 +207,16 @@ div.kie-palette-flyout > li:only-of-type {
 }
 
 .kie-palette-flyout .list-group-item > p .fa,
-.kie-palette-flyout .list-group-item > p .bs3-icon-renderer-svg-content,
-.kie-palette-flyout .list-group-item > p .bs3-lienzo-icon-renderer-content,
+.kie-palette-flyout .list-group-item > p .glyph-icon-renderer-svg-content,
+.kie-palette-flyout .list-group-item > p .glyph-lienzo-icon-renderer-content,
 .kie-palette-flyout .list-group-item > p .glyphicon,
 .kie-palette-flyout .list-group-item > p .pficon {
     font-size: calc(13.999992px);
     padding-right: 1em;
+}
+
+.kie-palette .glyph-icon-svg-position {
+    position: absolute;
 }
 
 .kie-palette-flyout .list-group-item:first-child {

@@ -46,6 +46,16 @@ public class ShapeViewFactory {
                                  corner_radius);
     }
 
+    public PictureShapeView pictureFromUri(final SafeUri uri,
+                                           final double width,
+                                           final double height) {
+        checkNotNull("uri",
+                     uri);
+        return new PictureShapeView(uri.asString(),
+                                    width,
+                                    height);
+    }
+
     public PictureShapeView picture(final Object source,
                                     final double width,
                                     final double height) {

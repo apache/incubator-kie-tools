@@ -15,13 +15,21 @@
 
 package org.kie.workbench.common.stunner.shapes.def.picture;
 
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
+import org.kie.workbench.common.stunner.shapes.def.BasicShapeDef;
 
-public interface PictureShapeDef<W, S> extends ShapeDef<W> {
+public interface PictureShapeDef<W, S> extends BasicShapeDef<W> {
 
     S getPictureSource(final W element);
 
     double getWidth(final W element);
 
     double getHeight(final W element);
+
+    @Override
+    default Class<? extends ShapeDef> getType() {
+        return PictureShapeDef.class;
+    }
+
 }

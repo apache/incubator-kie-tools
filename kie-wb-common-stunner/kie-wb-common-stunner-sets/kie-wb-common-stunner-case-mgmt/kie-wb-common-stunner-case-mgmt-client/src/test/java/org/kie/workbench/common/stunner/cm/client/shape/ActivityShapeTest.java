@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.cm.client.shape.view.ActivityView;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
 import org.mockito.Mock;
 
 import static org.mockito.Mockito.*;
@@ -48,12 +49,16 @@ public class ActivityShapeTest {
     @Mock
     private BusinessRuleTask nodeDef;
 
+    @Mock
+    private PictureShapeView iconView;
+
     private ActivityShape shape;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
         this.shape = new ActivityShape(shapeDef,
+                                       iconView,
                                        shapeView);
         when(node.getContent()).thenReturn(nodeView);
         when(nodeView.getDefinition()).thenReturn(nodeDef);

@@ -16,19 +16,16 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
-import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
-import org.kie.workbench.common.stunner.svg.client.shape.def.SVGMutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public class ReusableSubprocessShapeDef
-        extends AbstractShapeDef<ReusableSubprocess>
-        implements SVGMutableShapeDef<ReusableSubprocess, BPMNSVGViewFactory> {
+        implements BPMNSvgShapeDef<ReusableSubprocess> {
 
     @Override
     public double getAlpha(final ReusableSubprocess element) {
@@ -125,19 +122,7 @@ public class ReusableSubprocessShapeDef
     }
 
     @Override
-    public GlyphDef<ReusableSubprocess> getGlyphDef() {
-        return GLYPH_DEF;
+    public Glyph getGlyph(final Class<? extends ReusableSubprocess> type) {
+        return SvgDataUriGlyph.create(BPMNImageResources.INSTANCE.subProcessReusable().getSafeUri());
     }
-
-    private static final PictureGlyphDef<ReusableSubprocess, BPMNPictures> GLYPH_DEF = new PictureGlyphDef<ReusableSubprocess, BPMNPictures>() {
-        @Override
-        public BPMNPictures getSource(final Class<?> type) {
-            return BPMNPictures.SUB_PROCESS_REUSABLE;
-        }
-
-        @Override
-        public String getGlyphDescription(final ReusableSubprocess element) {
-            return element.getDescription();
-        }
-    };
 }

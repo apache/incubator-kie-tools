@@ -37,8 +37,6 @@ import org.kie.workbench.common.stunner.core.graph.Element;
  * <p/>
  * It provides buttons for:
  * - Removing the element.
- * - Moving the shape up on the canvas index.
- * - Moving the shape down on the canvas index.
  */
 @Dependent
 public class ActionsToolboxControlProvider extends AbstractToolboxControlProvider {

@@ -136,7 +136,7 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
 
     @Override
     @SuppressWarnings("unchecked")
-    public ShapeFactory<Object, AbstractCanvasHandler, Shape> getShapeFactory(final String shapeSetId) {
+    public ShapeFactory<Object, Shape> getShapeFactory(final String shapeSetId) {
         ShapeSet<?> shapeSet = shapeManager.getShapeSet(shapeSetId);
         if (null == shapeSet) {
             LOGGER.log(Level.SEVERE,

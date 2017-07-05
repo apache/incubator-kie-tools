@@ -73,11 +73,10 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
                                                                           final DragProxyCallback callback) {
         final Edge<View<?>, Node> edge = item.getEdge();
         final Node<View<?>, Edge> sourceNode = item.getSourceNode();
-        final ShapeFactory<Object, AbstractCanvasHandler, ?> factory = (ShapeFactory<Object, AbstractCanvasHandler, ?>) item.getShapeFactory();
+        final ShapeFactory<Object, ?> factory = (ShapeFactory<Object, ?>) item.getShapeFactory();
         final WiresManager wiresManager = getWiresManager();
         final Shape<?> sourceNodeShape = getCanvas().getShape(sourceNode.getUUID());
-        final Shape<?> shape = factory.build(edge.getContent().getDefinition(),
-                                             canvasHandler);
+        final Shape<?> shape = factory.newShape(edge.getContent().getDefinition());
         final EdgeShape connector = (EdgeShape) shape;
         this.wiresConnector = (WiresConnector) shape.getShapeView();
         wiresManager.register(wiresConnector);

@@ -19,21 +19,19 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.safehtml.shared.SafeUri;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
-import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
+import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
-import org.kie.workbench.common.stunner.svg.client.shape.def.SVGMutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public class GatewayShapeDef
-        extends AbstractShapeDef<BaseGateway>
-        implements SVGMutableShapeDef<BaseGateway, BPMNSVGViewFactory> {
+        implements BPMNSvgShapeDef<BaseGateway> {
 
     private static final String GW_EXCLUSIVE = "gwExclusive";
     private static final String GW_MULTIPLE = "gwParallelMultiple";
@@ -138,28 +136,15 @@ public class GatewayShapeDef
         return BPMNSVGViewFactory.class;
     }
 
-    private static final PictureGlyphDef<BaseGateway, BPMNPictures> TASK_GLYPH_DEF = new PictureGlyphDef<BaseGateway, BPMNPictures>() {
-
-        private final Map<Class<?>, BPMNPictures> PICTURES = new HashMap<Class<?>, BPMNPictures>(2) {{
-            put(ParallelGateway.class,
-                BPMNPictures.PARALLEL_MULTIPLE);
-            put(ExclusiveDatabasedGateway.class,
-                BPMNPictures.EXCLUSIVE);
-        }};
-
-        @Override
-        public String getGlyphDescription(final BaseGateway element) {
-            return element.getGeneral().getName().getValue();
-        }
-
-        @Override
-        public BPMNPictures getSource(final Class<?> type) {
-            return PICTURES.get(type);
-        }
-    };
+    private final static Map<Class<? extends BaseGateway>, SafeUri> ICONS = new HashMap<Class<? extends BaseGateway>, SafeUri>(2) {{
+        put(ParallelGateway.class,
+            BPMNImageResources.INSTANCE.gatewayParallelEvent().getSafeUri());
+        put(ExclusiveDatabasedGateway.class,
+            BPMNImageResources.INSTANCE.gatewayExclusive().getSafeUri());
+    }};
 
     @Override
-    public GlyphDef<BaseGateway> getGlyphDef() {
-        return TASK_GLYPH_DEF;
+    public Glyph getGlyph(final Class<? extends BaseGateway> type) {
+        return SvgDataUriGlyph.create(ICONS.get(type));
     }
 }

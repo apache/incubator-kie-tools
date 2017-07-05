@@ -26,130 +26,128 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
 import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteGroup;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
+import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 
 @Dependent
 public class DefinitionPaletteGroupWidget implements DefinitionPaletteGroupWidgetView.Presenter,
                                                      IsElement {
 
-  private enum State {
-    COMPACT,
-    FULL_LIST
-  }
+    private enum State {
+        COMPACT,
+        FULL_LIST
+    }
 
-  public static final int COMPACT_ELEMENTS_LIST_SIZE = 3;
+    public static final int COMPACT_ELEMENTS_LIST_SIZE = 3;
 
-  private State state = State.COMPACT;
+    private State state = State.COMPACT;
 
-  private List<DefinitionPaletteItemWidget> hiddenList = new ArrayList<>();
+    private List<DefinitionPaletteItemWidget> hiddenList = new ArrayList<>();
 
-  private DefinitionPaletteGroupWidgetView view;
+    private DefinitionPaletteGroupWidgetView view;
 
-  private DefinitionPaletteGroup group;
+    private DefinitionPaletteGroup group;
 
-  private ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgets;
+    private ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgets;
 
-  private PaletteWidget.IconRendererProvider rendererProvider;
-  private Palette.ItemMouseDownCallback itemMouseDownCallback;
+    private Palette.ItemMouseDownCallback itemMouseDownCallback;
 
-  @Inject
-  public DefinitionPaletteGroupWidget(DefinitionPaletteGroupWidgetView view,
-                                      ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgets) {
-    this.view = view;
-    this.definitionPaletteItemWidgets = definitionPaletteItemWidgets;
-  }
+    @Inject
+    public DefinitionPaletteGroupWidget(DefinitionPaletteGroupWidgetView view,
+                                        ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgets) {
+        this.view = view;
+        this.definitionPaletteItemWidgets = definitionPaletteItemWidgets;
+    }
 
-  @PostConstruct
-  public void setUp() {
-    view.init(this);
-  }
+    @PostConstruct
+    public void setUp() {
+        view.init(this);
+    }
 
-  public void initialize(DefinitionPaletteGroup group,
-                         PaletteWidget.IconRendererProvider rendererProvider,
-                         Palette.ItemMouseDownCallback itemMouseDownCallback) {
-    this.group = group;
-    this.rendererProvider = rendererProvider;
-    this.itemMouseDownCallback = (id, mouseX, mouseY, itemX, itemY) -> {
-      switchState(State.COMPACT);
-      return itemMouseDownCallback.onItemMouseDown(id,
-                                                   mouseX,
-                                                   mouseY,
-                                                   itemX,
-                                                   itemY);
-    };
+    public void initialize(DefinitionPaletteGroup group,
+                           ShapeFactory<?, ?> shapeFactory,
+                           Palette.ItemMouseDownCallback itemMouseDownCallback) {
+        this.group = group;
+        this.itemMouseDownCallback = (id, mouseX, mouseY, itemX, itemY) -> {
+            switchState(State.COMPACT);
+            return itemMouseDownCallback.onItemMouseDown(id,
+                                                         mouseX,
+                                                         mouseY,
+                                                         itemX,
+                                                         itemY);
+        };
 
-    loadItems();
-  }
+        loadItems(shapeFactory);
+    }
 
-  protected void loadItems() {
-    view.initView();
-    definitionPaletteItemWidgets.destroyAll();
+    private void loadItems(ShapeFactory<?, ?> shapeFactory) {
+        view.initView();
+        definitionPaletteItemWidgets.destroyAll();
 
-    List<DefinitionPaletteItem> items = group.getItems();
+        List<DefinitionPaletteItem> items = group.getItems();
 
-    for (int i = 0; i < items.size(); i++) {
-      DefinitionPaletteItem item = items.get(i);
-      DefinitionPaletteItemWidget categoryItemWidget = definitionPaletteItemWidgets.get();
+        for (int i = 0; i < items.size(); i++) {
+            DefinitionPaletteItem item = items.get(i);
+            DefinitionPaletteItemWidget itemWidget = definitionPaletteItemWidgets.get();
 
-      categoryItemWidget.initialize(item,
-                                    rendererProvider,
-                                    itemMouseDownCallback);
-      if (i >= COMPACT_ELEMENTS_LIST_SIZE) {
-        categoryItemWidget.getElement().getStyle().setProperty("display",
+            itemWidget.initialize(item,
+                                  shapeFactory,
+                                  itemMouseDownCallback);
+            if (i >= COMPACT_ELEMENTS_LIST_SIZE) {
+                itemWidget.getElement().getStyle().setProperty("display",
                                                                "none");
-        hiddenList.add(categoryItemWidget);
-      }
-      view.addItem(categoryItemWidget);
+                hiddenList.add(itemWidget);
+            }
+            view.addItem(itemWidget);
+        }
+        if (!hiddenList.isEmpty()) {
+            view.addAnchors();
+            view.showMoreAnchor();
+        }
     }
-    if (!hiddenList.isEmpty()) {
-      view.addAnchors();
-      view.showMoreAnchor();
+
+    private void switchState(final State state) {
+        if (!this.state.equals(state)) {
+            this.state = state;
+            String displayStyle = state.equals(State.COMPACT) ? "none" : "block";
+            hiddenList.forEach(item -> {
+                item.getElement().getStyle().setProperty("display",
+                                                         displayStyle);
+            });
+
+            if (state.equals(State.COMPACT)) {
+                view.showMoreAnchor();
+            } else {
+                view.showLessAnchor();
+            }
+        }
     }
-  }
 
-  protected void switchState(final State state) {
-    if (!this.state.equals(state)) {
-      this.state = state;
-      String displayStyle = state.equals(State.COMPACT) ? "none" : "block";
-      hiddenList.forEach(item -> {
-        item.getElement().getStyle().setProperty("display",
-                                                 displayStyle);
-      });
-
-      if (state.equals(State.COMPACT)) {
-        view.showMoreAnchor();
-      } else {
-        view.showLessAnchor();
-      }
+    @Override
+    public void showMore() {
+        switchState(State.FULL_LIST);
     }
-  }
 
-  @Override
-  public void showMore() {
-    switchState(State.FULL_LIST);
-  }
+    @Override
+    public void showLess() {
+        switchState(State.COMPACT);
+    }
 
-  @Override
-  public void showLess() {
-    switchState(State.COMPACT);
-  }
+    @Override
+    public DefinitionPaletteGroup getItem() {
+        return group;
+    }
 
-  @Override
-  public DefinitionPaletteGroup getItem() {
-    return group;
-  }
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
+    }
 
-  @Override
-  public HTMLElement getElement() {
-    return view.getElement();
-  }
-
-  @PreDestroy
-  public void destroy() {
-    definitionPaletteItemWidgets.destroyAll();
-  }
+    @PreDestroy
+    public void destroy() {
+        definitionPaletteItemWidgets.destroyAll();
+    }
 }

@@ -16,55 +16,14 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.kie.workbench.common.stunner.bpmn.client.shape.BPMNPictures;
+import com.google.gwt.safehtml.shared.SafeUri;
+import org.kie.workbench.common.stunner.bpmn.client.shape.def.TaskShapeDef;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
-import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
-import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
-import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
-import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
-import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
-import org.kie.workbench.common.stunner.shapes.def.HasChildShapeDefs;
-import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
-import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
-import org.kie.workbench.common.stunner.shapes.def.picture.PictureShapeDef;
 
 public final class CaseManagementTaskShapeDef
-        extends AbstractShapeDef<BaseTask>
-        implements RectangleShapeDef<BaseTask>,
-                   HasChildShapeDefs<BaseTask> {
-
-    private static final PictureGlyphDef<BaseTask, BPMNPictures> TASK_GLYPH_DEF = new PictureGlyphDef<BaseTask, BPMNPictures>() {
-
-        private final Map<Class<?>, BPMNPictures> PICTURES = new HashMap<Class<?>, BPMNPictures>(3) {{
-            // TODO: Change NoneTask image!
-            put(NoneTask.class,
-                BPMNPictures.GLYPH_OOME_HACK);
-            put(UserTask.class,
-                BPMNPictures.GLYPH_OOME_HACK);
-            put(ScriptTask.class,
-                BPMNPictures.GLYPH_OOME_HACK);
-            put(BusinessRuleTask.class,
-                BPMNPictures.GLYPH_OOME_HACK);
-        }};
-
-        @Override
-        public String getGlyphDescription(final BaseTask element) {
-            return element.getDescription();
-        }
-
-        @Override
-        public BPMNPictures getSource(final Class<?> type) {
-            return PICTURES.get(type);
-        }
-    };
+        implements CaseManagementActivityShapeDef<BaseTask> {
 
     @Override
     public double getAlpha(final BaseTask element) {
@@ -132,19 +91,6 @@ public final class CaseManagementTaskShapeDef
     }
 
     @Override
-    public GlyphDef<BaseTask> getGlyphDef() {
-        return TASK_GLYPH_DEF;
-    }
-
-    @Override
-    public Map<ShapeDef<BaseTask>, HasChildren.Layout> getChildShapeDefs() {
-        return new HashMap<ShapeDef<BaseTask>, HasChildren.Layout>() {{
-            put(new TaskTypeProxy(),
-                HasChildren.Layout.TOP);
-        }};
-    }
-
-    @Override
     public double getWidth(final BaseTask element) {
         return element.getDimensionsSet().getWidth().getValue();
     }
@@ -159,30 +105,13 @@ public final class CaseManagementTaskShapeDef
         return 5;
     }
 
-    public final class TaskTypeProxy extends AbstractShapeDef<BaseTask> implements PictureShapeDef<BaseTask, BPMNPictures> {
+    @Override
+    public SafeUri getIconUri(final Class<? extends BaseTask> task) {
+        return TaskShapeDef.ICONS.get(task);
+    }
 
-        @Override
-        public BPMNPictures getPictureSource(final BaseTask element) {
-            final TaskType taskType = element.getTaskType();
-            switch (taskType.getValue()) {
-                case USER:
-                    return BPMNPictures.TASK_USER;
-                case SCRIPT:
-                    return BPMNPictures.TASK_SCRIPT;
-                case BUSINESS_RULE:
-                    return BPMNPictures.TASK_BUSINESS_RULE;
-            }
-            return null;
-        }
-
-        @Override
-        public double getWidth(final BaseTask element) {
-            return 15d;
-        }
-
-        @Override
-        public double getHeight(final BaseTask element) {
-            return 15d;
-        }
+    @Override
+    public Class<? extends ShapeDef> getType() {
+        return CaseManagementTaskShapeDef.class;
     }
 }

@@ -28,12 +28,12 @@ public interface NodeDragProxy<H extends CanvasHandler> extends DragProxy<H, Nod
 
         Node<View<?>, Edge> getNode();
 
-        ShapeFactory<?, H, ?> getNodeShapeFactory();
+        ShapeFactory<?, ?> getNodeShapeFactory();
 
         Edge<View<?>, Node> getInEdge();
 
         Node<View<?>, Edge> getInEdgeSourceNode();
 
-        ShapeFactory<?, H, ?> getInEdgeShapeFactory();
+        ShapeFactory<?, ?> getInEdgeShapeFactory();
     }
 }

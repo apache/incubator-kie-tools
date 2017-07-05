@@ -24,10 +24,11 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.ait.lienzo.client.widget.LienzoPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.stunner.client.lienzo.util.LienzoPanelUtils;
+import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.kie.workbench.common.stunner.client.widgets.components.glyph.DOMGlyphRenderers;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -40,7 +41,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
-import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -57,11 +58,13 @@ public class TreeExplorer implements IsWidget {
 
     private final int icoHeight = 16;
     private final int icoWidth = 16;
-    ChildrenTraverseProcessor childrenTraverseProcessor;
-    ShapeManager shapeManager;
-    Event<CanvasElementSelectedEvent> elementSelectedEventEvent;
-    View view;
-    DefinitionUtils definitionUtils;
+    private final ChildrenTraverseProcessor childrenTraverseProcessor;
+    private final DefinitionUtils definitionUtils;
+    private final ShapeManager shapeManager;
+    private final Event<CanvasElementSelectedEvent> elementSelectedEventEvent;
+    private final View view;
+    private final DOMGlyphRenderers domGlyphRenderers;
+
     private String selectedItemCanvasUuid;
     private CanvasHandler canvasHandler;
 
@@ -70,11 +73,13 @@ public class TreeExplorer implements IsWidget {
                         final Event<CanvasElementSelectedEvent> elementSelectedEventEvent,
                         final DefinitionUtils definitionUtils,
                         final ShapeManager shapeManager,
+                        final DOMGlyphRenderers domGlyphRenderers,
                         final View view) {
         this.childrenTraverseProcessor = childrenTraverseProcessor;
         this.elementSelectedEventEvent = elementSelectedEventEvent;
         this.definitionUtils = definitionUtils;
         this.shapeManager = shapeManager;
+        this.domGlyphRenderers = domGlyphRenderers;
         this.view = view;
     }
 
@@ -130,9 +135,7 @@ public class TreeExplorer implements IsWidget {
         final Object definition = element.getContent().getDefinition();
         final String defId = definitionUtils.getDefinitionManager().adapters().forDefinition().getId(definition);
         final ShapeFactory factory = shapeManager.getShapeSet(shapeSetId).getShapeFactory();
-        return factory.glyph(defId,
-                             icoWidth,
-                             icoHeight);
+        return factory.getGlyph(defId);
     }
 
     private void inc(final List<Integer> levels,
@@ -265,13 +268,12 @@ public class TreeExplorer implements IsWidget {
                          final boolean expand,
                          final boolean checkParent) {
         final boolean isContainer = isContainer().test(element);
-        final Glyph ico = getGlyph(getShapeSetId(),
-                                   element);
+        final Glyph glyph = getGlyph(getShapeSetId(),
+                                     element);
         final String name = getItemName(element);
-        final LienzoPanel icon = LienzoPanelUtils.newPanel(ico,
-                                                           icoWidth + 2,
-                                                           icoHeight + 2);
-
+        final IsElement icon = domGlyphRenderers.render(glyph,
+                                                        icoWidth,
+                                                        icoHeight);
         // Check the parent, in case a TreeItem mutates from/to ITEM type to CONTAINER type.
         final boolean isValidParentItem = null != parent && isValidTreeItem().test(parent);
 
@@ -287,18 +289,20 @@ public class TreeExplorer implements IsWidget {
             }
         }
 
+        final ElementWrapperWidget<?> widget = ElementWrapperWidget.getWidget(icon.getElement());
+
         // Create and add the tree item.
         if (isValidParentItem) {
             view.addItem(element.getUUID(),
                          parent.getUUID(),
                          name,
-                         icon,
+                         widget,
                          isContainer,
                          expand);
         } else {
             view.addItem(element.getUUID(),
                          name,
-                         icon,
+                         widget,
                          isContainer,
                          expand);
         }

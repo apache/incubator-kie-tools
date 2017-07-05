@@ -107,7 +107,6 @@ public class ShapeManagerImpl implements ShapeManager {
                      defSetId);
         return shapeSets.stream()
                 .filter(s -> defSetId.equals(s.getDefinitionSetId()))
-                .filter(ShapeSet::isDefault)
                 .findFirst()
                 .orElse(null);
     }

@@ -18,8 +18,6 @@ package org.kie.workbench.common.stunner.basicset.shape.def;
 
 import org.kie.workbench.common.stunner.basicset.definition.BasicConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-import org.kie.workbench.common.stunner.shapes.def.ConnectorGlyphDef;
 import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
 
 public final class BasicConnectorDefImpl
@@ -53,11 +51,6 @@ public final class BasicConnectorDefImpl
     @Override
     public double getBorderAlpha(final BasicConnector element) {
         return 1;
-    }
-
-    @Override
-    public String getNamePropertyValue(final BasicConnector element) {
-        return element.getName().getValue();
     }
 
     @Override
@@ -95,21 +88,4 @@ public final class BasicConnectorDefImpl
         return 0;
     }
 
-    @Override
-    public GlyphDef<BasicConnector> getGlyphDef() {
-        return new BasicConnectorGlyphDef();
-    }
-
-    private static class BasicConnectorGlyphDef extends ConnectorGlyphDef<BasicConnector> {
-
-        @Override
-        public String getColor() {
-            return "#000000";
-        }
-
-        @Override
-        public String getGlyphDescription(final BasicConnector element) {
-            return element.getTitle();
-        }
-    }
 }

@@ -30,6 +30,6 @@ public interface ConnectorDragProxy<H extends CanvasHandler> extends DragProxy<H
 
         Node<View<?>, Edge> getSourceNode();
 
-        ShapeFactory<?, H, ?> getShapeFactory();
+        ShapeFactory<?, ?> getShapeFactory();
     }
 }

@@ -32,8 +32,6 @@ public interface ToolboxCommand<H extends CanvasHandler, I> {
 
     String getTitle();
 
-    // TODO: add method -> Status check( Element element );
-
     void execute(final Context<H> context,
                  final Element element);
 

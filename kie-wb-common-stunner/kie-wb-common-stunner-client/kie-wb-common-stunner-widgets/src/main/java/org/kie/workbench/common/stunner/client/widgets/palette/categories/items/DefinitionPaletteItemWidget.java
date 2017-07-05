@@ -22,22 +22,29 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRenderer;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
+import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 @Dependent
 public class DefinitionPaletteItemWidget implements DefinitionPaletteItemWidgetView.Presenter,
                                                     IsElement {
 
-    private DefinitionPaletteItemWidgetView view;
+    public static final double ICON_WIDTH = 15;
+    public static final double ICON_HEIGHT = 15;
+
+    private final ShapeManager shapeManager;
+    private final DefinitionPaletteItemWidgetView view;
 
     private DefinitionPaletteItem item;
     private Palette.ItemMouseDownCallback itemMouseDownCallback;
 
     @Inject
-    public DefinitionPaletteItemWidget(DefinitionPaletteItemWidgetView view) {
+    public DefinitionPaletteItemWidget(final ShapeManager shapeManager,
+                                       final DefinitionPaletteItemWidgetView view) {
+        this.shapeManager = shapeManager;
         this.view = view;
     }
 
@@ -47,13 +54,14 @@ public class DefinitionPaletteItemWidget implements DefinitionPaletteItemWidgetV
     }
 
     public void initialize(DefinitionPaletteItem item,
-                           PaletteWidget.IconRendererProvider iconRendererProvider,
+                           ShapeFactory<?, ?> shapeFactory,
                            Palette.ItemMouseDownCallback itemMouseDownCallback) {
         this.item = item;
+        final Glyph glyph = shapeFactory.getGlyph(item.getDefinitionId());
         this.itemMouseDownCallback = itemMouseDownCallback;
-        IconRenderer iconRenderer = iconRendererProvider.getDefinitionIconRenderer(item);
-        iconRenderer.resize(IconRenderer.Size.SMALL);
-        view.render(iconRenderer);
+        view.render(glyph,
+                    ICON_WIDTH,
+                    ICON_HEIGHT);
     }
 
     @Override

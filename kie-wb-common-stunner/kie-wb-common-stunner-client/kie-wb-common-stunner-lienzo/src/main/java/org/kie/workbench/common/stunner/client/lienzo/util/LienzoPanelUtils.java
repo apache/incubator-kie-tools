@@ -16,22 +16,37 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.util;
 
-import com.ait.lienzo.client.core.shape.IPrimitive;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.widget.LienzoPanel;
-import com.google.gwt.validation.client.impl.Group;
-import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
+import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGlyphRenderer;
+import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGlyphRenderers;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
+@ApplicationScoped
 public class LienzoPanelUtils {
 
-    public static LienzoPanel newPanel(final Glyph<Group> glyph,
-                                       final int width,
-                                       final int height) {
+    private final LienzoGlyphRenderer<Glyph> glyphLienzoGlyphRenderer;
+
+    @Inject
+    public LienzoPanelUtils(final LienzoGlyphRenderers glyphLienzoGlyphRenderer) {
+        this.glyphLienzoGlyphRenderer = glyphLienzoGlyphRenderer;
+    }
+
+    public LienzoPanel newPanel(final Glyph glyph,
+                                final int width,
+                                final int height) {
+        final Group glyphGroup = glyphLienzoGlyphRenderer.render(glyph,
+                                                                 width,
+                                                                 height);
         final com.ait.lienzo.client.widget.LienzoPanel panel = new LienzoPanel(width,
                                                                                height);
         final Layer layer = new Layer();
         panel.add(layer.setTransformable(true));
-        layer.add((IPrimitive<?>) glyph.getGroup());
+        layer.add(glyphGroup);
         return panel;
     }
 }

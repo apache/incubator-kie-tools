@@ -33,12 +33,10 @@ import org.kie.workbench.common.stunner.basicset.definition.property.Name;
 import org.kie.workbench.common.stunner.basicset.definition.property.Width;
 import org.kie.workbench.common.stunner.basicset.definition.property.background.BackgroundAndBorderSet;
 import org.kie.workbench.common.stunner.basicset.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.basicset.shape.def.RectangleShapeDefImpl;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.Shape;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
@@ -46,16 +44,14 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
-import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = Rectangle.RectangleBuilder.class)
 @CanContain(roles = {"all"})
 @CanDock(roles = {"all"})
-@Shape(factory = BasicShapesFactory.class, def = RectangleShapeDefImpl.class)
 @FormDefinition(startElement = "backgroundSet")
-public class Rectangle {
+public class Rectangle implements BasicSetDefinition {
 
     @Category
     public static final transient String category = Categories.BASIC;

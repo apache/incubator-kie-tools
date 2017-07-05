@@ -16,29 +16,18 @@
 
 package org.kie.workbench.common.stunner.core.client;
 
+import java.util.function.BiFunction;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 
 public abstract class AbstractBindableShapeSet<F extends ShapeFactory> implements ShapeSet<F> {
 
+    protected abstract DefinitionManager getDefinitionManager();
+
     protected abstract Class<?> getDefinitionSetClass();
-
-    private final DefinitionManager definitionManager;
-    private final F factory;
-
-    protected String description;
-
-    public AbstractBindableShapeSet(final DefinitionManager definitionManager,
-                                    final F factory) {
-        this.definitionManager = definitionManager;
-        this.factory = factory;
-    }
-
-    public void doInit() {
-        final Object defSet = definitionManager.definitionSets().getDefinitionSetById(getDefinitionSetId());
-        this.description = definitionManager.adapters().forDefinitionSet().getDescription(defSet);
-    }
 
     @Override
     public String getId() {
@@ -46,13 +35,8 @@ public abstract class AbstractBindableShapeSet<F extends ShapeFactory> implement
     }
 
     @Override
-    public String getName() {
-        return this.description;
-    }
-
-    @Override
     public String getDescription() {
-        return this.description;
+        return getDefinitionSetAttribute((o, adapter) -> adapter.getDescription(o));
     }
 
     @Override
@@ -60,13 +44,10 @@ public abstract class AbstractBindableShapeSet<F extends ShapeFactory> implement
         return BindableAdapterUtils.getDefinitionSetId(getDefinitionSetClass());
     }
 
-    @Override
-    public F getShapeFactory() {
-        return factory;
-    }
-
-    @Override
-    public boolean isDefault() {
-        return true;
+    private String getDefinitionSetAttribute(final BiFunction<Object, DefinitionSetAdapter<Object>, String> function) {
+        final Object defSet = getDefinitionManager().definitionSets().getDefinitionSetById(getDefinitionSetId());
+        final DefinitionSetAdapter<Object> definitionSetAdapter =
+                getDefinitionManager().adapters().registry().getDefinitionSetAdapter(getDefinitionSetClass());
+        return function.apply(defSet, definitionSetAdapter);
     }
 }

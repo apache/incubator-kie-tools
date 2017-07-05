@@ -18,13 +18,9 @@ package org.kie.workbench.common.stunner.basicset.shape.def;
 
 import org.kie.workbench.common.stunner.basicset.definition.Circle;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDefinitions;
 import org.kie.workbench.common.stunner.shapes.def.CircleShapeDef;
 
 public final class CircleShapeDefImpl
-        extends AbstractShapeDef<Circle>
         implements CircleShapeDef<Circle> {
 
     @Override
@@ -97,8 +93,4 @@ public final class CircleShapeDefImpl
         return 1;
     }
 
-    @Override
-    public GlyphDef<Circle> getGlyphDef() {
-        return GlyphDefinitions.GLYPH_SHAPE();
-    }
 }

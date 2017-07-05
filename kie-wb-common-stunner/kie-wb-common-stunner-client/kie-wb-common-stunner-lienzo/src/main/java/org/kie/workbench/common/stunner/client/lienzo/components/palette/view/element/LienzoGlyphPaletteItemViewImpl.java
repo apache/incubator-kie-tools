@@ -19,27 +19,32 @@ package org.kie.workbench.common.stunner.client.lienzo.components.palette.view.e
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Text;
+import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGlyphRenderer;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.view.LienzoPaletteView;
 import org.kie.workbench.common.stunner.core.client.components.palette.ClientPaletteUtils;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.GlyphPaletteItem;
-import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 public final class LienzoGlyphPaletteItemViewImpl
         extends AbstractLienzoGlyphPaletteItemView {
 
     private static final String FONT_FAMILY = "Open Sans";
 
-    protected final Glyph<Group> glyph;
     private final Group view = new Group();
     private Text text;
 
     public LienzoGlyphPaletteItemViewImpl(final GlyphPaletteItem item,
                                           final LienzoPaletteView paletteView,
-                                          final Glyph<Group> glyph) {
+                                          final LienzoGlyphRenderer<Glyph> glyphRenderer,
+                                          final Glyph glyph,
+                                          final double width,
+                                          final double height) {
         super(item,
               paletteView);
-        this.glyph = glyph;
-        init();
+        init(glyphRenderer,
+             glyph,
+             width,
+             height);
     }
 
     public void expand() {
@@ -55,19 +60,23 @@ public final class LienzoGlyphPaletteItemViewImpl
         return view;
     }
 
-    private void init() {
+    private void init(final LienzoGlyphRenderer<Glyph> glyphRenderer,
+                      final Glyph glyph,
+                      final double width,
+                      final double height) {
         final String title = item.getTitle();
-        final double glyphWidth = glyph.getWidth();
-        final double glyphHeight = glyph.getHeight();
-        final double fontSize = ClientPaletteUtils.computeFontSize(glyphWidth,
-                                                                   glyphHeight,
+        Group glyphGroup = glyphRenderer.render(glyph,
+                                                width,
+                                                height);
+        final double fontSize = ClientPaletteUtils.computeFontSize(width,
+                                                                   height,
                                                                    title.length());
         text = new Text(title)
-                .setX(glyphWidth + 10)
-                .setY(glyphWidth / 2)
+                .setX(width + 10)
+                .setY(width / 2)
                 .setFontFamily(FONT_FAMILY)
                 .setFontSize(fontSize)
                 .setStrokeWidth(1);
-        view.add(glyph.getGroup());
+        view.add(glyphGroup);
     }
 }

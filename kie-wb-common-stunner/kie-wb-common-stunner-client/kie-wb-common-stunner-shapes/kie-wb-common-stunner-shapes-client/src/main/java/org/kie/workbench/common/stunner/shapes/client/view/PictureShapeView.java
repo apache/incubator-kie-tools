@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.shapes.client.view;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Picture;
 import com.google.gwt.core.client.Scheduler;
+import org.kie.workbench.common.stunner.client.lienzo.shape.util.LienzoPictureUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresContainerShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
@@ -54,12 +55,17 @@ public class PictureShapeView<T extends PictureShapeView>
         super.setResizable(false);
     }
 
+    public PictureShapeView(final MultiPath path) {
+        super(ShapeViewSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
+              path);
+    }
+
     @Override
     protected void preDestroy() {
         super.preDestroy();
-        PictureUtils.tryDestroy(getPicture(),
-                                (p) -> Scheduler.get().scheduleFixedDelay(() -> !PictureUtils.retryDestroy(p),
-                                                                          200));
+        LienzoPictureUtils.tryDestroy(getPicture(),
+                                      (p) -> Scheduler.get().scheduleFixedDelay(() -> !LienzoPictureUtils.retryDestroy(p),
+                                                                                200));
     }
 
     //package-protected method to support overriding Picture in Unit Tests

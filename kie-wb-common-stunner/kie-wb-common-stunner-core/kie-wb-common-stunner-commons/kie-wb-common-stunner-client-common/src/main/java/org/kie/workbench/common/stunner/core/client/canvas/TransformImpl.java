@@ -22,6 +22,11 @@ public class TransformImpl implements Transform {
     private final Point2D translate;
     private final Point2D scale;
 
+    public static final TransformImpl NO_TRANSFORM = new TransformImpl(new Point2D(0,
+                                                                                   0),
+                                                                       new Point2D(1,
+                                                                                   1));
+
     TransformImpl(final Point2D translate,
                   final Point2D scale) {
         this.translate = translate;

@@ -19,13 +19,22 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
 /**
- * Factory for building shape definitions.
+ * A factory for Shapes based on Shape Definition inputs.
+ * <p>
+ * Rather than a ShapeFactory, which relies a concrete Definition instance for
+ * building a Shape, this factory is based on Shape Definition types, so instead
+ * of using the concrete bean public API it relies on the concrete API for
+ * the Shape Definition,
  */
-public interface ShapeDefFactory<W, C, S extends Shape, P extends ShapeDef<W>> extends ShapeFactory<W, C, S> {
+public interface ShapeDefFactory<W, D extends ShapeDef, S extends Shape> {
 
-    // TODO: Rename by "registerShapedef" - term "add" is not the correct one.
-    void addShapeDef(final Class<?> clazz,
-                     final P def);
-
-    // TODO: Add method build(instance, def, context)
+    /**
+     * Creates a new Shape instance for the specified Definition and ShapeDefinitions.
+     * @param instance The definition (bean) instance used by MutableShapes, if applies.
+     * @param shapeDef The ShapeDefinition instance that provides the bridge between the
+     * view and the specified Definition (bean) argument.
+     * @return A new Shape instance.
+     */
+    S newShape(final W instance,
+               final D shapeDef);
 }
