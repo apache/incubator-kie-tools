@@ -67,8 +67,14 @@ public class DiagramNavigatorItemImpl implements IsWidget,
                      final Command callback) {
         this.callback = callback;
         this.name = diagramRepresentation.getName();
-        view.setUUID(name)
-                .setItemTitle(diagramRepresentation.getTitle());
+        view.setUUID(name);
+        view.setItemTitle(diagramRepresentation.getTitle());
+
+        //Set size before Uri/data as we cannot scale until the image is loaded and it's real size known
+        view.setItemPxSize(widthInPx,
+                           heightInPx);
+
+        //Set Uri/data. Image's LoadHandler will set size requested above after image is loaded from Uri/data
         final String thumbData = diagramRepresentation.getThumbImageData();
         if (isEmpty(thumbData)) {
             final String defSetId = diagramRepresentation.getDefinitionSetId();
@@ -77,8 +83,6 @@ public class DiagramNavigatorItemImpl implements IsWidget,
         } else {
             view.setThumbData(thumbData);
         }
-        view.setItemPxSize(widthInPx,
-                           heightInPx);
     }
 
     @Override

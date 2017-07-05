@@ -127,19 +127,23 @@ public class NavigatorThumbnailItemView
     @Override
     public NavigatorThumbnailItemView setItemPxSize(final int width,
                                                     final int height) {
-        final int imgWidth = thumbImage.getWidth();
-        final int imgHeight = thumbImage.getHeight();
-        final float wfactor = imgWidth > width ? imgWidth / width : 1;
-        final float hfactor = imgHeight > height ? imgHeight / height : 1;
-        final float factor = wfactor >= hfactor ? wfactor : hfactor;
-        if (factor > 1) {
-            final int w = (int) Math.ceil(imgWidth / factor);
-            final int h = (int) Math.ceil(imgHeight / factor);
+        thumbImage.addLoadHandler((e) -> {
+            final int imgWidth = thumbImage.getWidth();
+            final int imgHeight = thumbImage.getHeight();
+            final float wfactor = imgWidth > width ? imgWidth / width : 1;
+            final float hfactor = imgHeight > height ? imgHeight / height : 1;
+            final float factor = wfactor >= hfactor ? wfactor : hfactor;
+            int w = width;
+            int h = height;
+            if (factor > 1) {
+                w = (int) Math.ceil(imgWidth / factor);
+                h = (int) Math.ceil(imgHeight / factor);
+            }
             thumbImage.setPixelSize(w,
                                     h);
-        }
-        body.setPixelSize(width,
-                          height);
+            body.setPixelSize(width,
+                              height);
+        });
         return this;
     }
 
