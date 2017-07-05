@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -229,5 +230,28 @@ public class ColumnPickerTest {
         testColumn.setSortable(true);
         testColumn.setDataStoreName(dataStoreName);
         return testColumn;
+    }
+
+    @Test
+    public void testSetColumnWidth() {
+        final Column column1 = createColumn("col1",
+                                            "col1");
+        final ColumnMeta meta1 = new ColumnMeta(column1,
+                                                "caption1",
+                                                true,
+                                                1);
+
+        final Column column2 = createColumn("col2",
+                                            "col2");
+        final ColumnMeta meta2 = new ColumnMeta(column2,
+                                                "caption2",
+                                                true,
+                                                0);
+
+        when(dataGrid.getColumnWidth(column1)).thenReturn("38.0px");
+
+        columnPicker.addColumns(Lists.newArrayList(meta1, meta2));
+
+        verify(dataGrid).setColumnWidth(eq(column1), eq("38px"));
     }
 }

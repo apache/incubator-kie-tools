@@ -162,11 +162,17 @@ public class ColumnPicker<T> extends UberfireColumnPicker<T> {
 
         for (GridColumnPreference preference : preferences) {
             if (preference.getWidth() != null && preference.getWidth().endsWith(Style.Unit.PX.getType())) {
+                String width = preference.getWidth().substring(0,
+                                                               preference.getWidth().indexOf(Style.Unit.PX.getType()));
+                if (width.contains(".")) {
+                    width = width.substring(0,
+                                            width.indexOf("."));
+                }
+
                 fixedWidths.put(preference.getName(),
-                                preference.getWidth());
-                fixedColumnsWidth += Integer.decode(preference.getWidth().substring(0,
-                                                                                    preference.getWidth()
-                                                                                            .indexOf(Style.Unit.PX.getType())));
+                                width + Style.Unit.PX.getType());
+
+                fixedColumnsWidth += Integer.decode(width);
             } else {
                 columnsToCalculate.add(preference.getName());
             }
