@@ -19,22 +19,28 @@ package org.kie.workbench.common.screens.datasource.management.client.explorer.c
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.Composite;
-import org.gwtbootstrap3.client.ui.LinkedGroupItem;
+import org.jboss.errai.common.client.dom.Anchor;
+import org.jboss.errai.common.client.dom.Event;
+import org.jboss.errai.common.client.dom.Span;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
 @Templated
 public class DefItemViewImpl
-        extends Composite
-        implements DefItemView {
+        implements DefItemView,
+                   IsElement {
 
     @Inject
-    @DataField( "item" )
-    private LinkedGroupItem item;
+    @DataField("item")
+    private Anchor item;
+
+    @Inject
+    @DataField("itemContent")
+    private Span itemContent;
 
     Presenter presenter;
 
@@ -42,23 +48,22 @@ public class DefItemViewImpl
     }
 
     @Override
-    public void setName( String name ) {
-        item.setText( name );
+    public void setName(String name) {
+        itemContent.setTextContent(name);
     }
 
     @Override
     public String getName() {
-        return item.getText();
+        return item.getTextContent();
     }
 
     @Override
-    public void init( DefItemView.Presenter presenter ) {
+    public void init(DefItemView.Presenter presenter) {
         this.presenter = presenter;
     }
 
-    @EventHandler( "item" )
-    private void onItemClick( ClickEvent event ) {
+    @EventHandler("item")
+    private void onItemClick(@ForEvent("click") Event event) {
         presenter.onClick();
     }
-
 }

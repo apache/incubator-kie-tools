@@ -17,17 +17,16 @@
 package org.kie.workbench.common.screens.datasource.management.client.wizard.driver;
 
 import org.kie.workbench.common.screens.datasource.management.client.editor.driver.DriverDefMainPanel;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 
 public interface DriverDefPageView
-        extends UberView<DriverDefPageView.Presenter> {
+        extends UberElement<DriverDefPageView.Presenter> {
 
     interface Presenter {
 
     }
 
-    void setMainPanel( DriverDefMainPanel mainPanel );
+    void setMainPanel(DriverDefMainPanel mainPanel);
 
     String getPageTitle();
-
 }

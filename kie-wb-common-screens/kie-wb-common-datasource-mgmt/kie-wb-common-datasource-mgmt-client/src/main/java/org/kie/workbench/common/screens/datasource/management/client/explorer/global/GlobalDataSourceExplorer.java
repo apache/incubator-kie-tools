@@ -20,9 +20,9 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.screens.datasource.management.client.explorer.common.DefExplorerBase;
 import org.kie.workbench.common.screens.datasource.management.client.explorer.common.DefExplorerContent;
 import org.kie.workbench.common.screens.datasource.management.client.explorer.project.ProjectDataSourceExplorerView;
@@ -38,24 +38,27 @@ import org.kie.workbench.common.screens.datasource.management.service.DefExplore
 public class GlobalDataSourceExplorer
         extends DefExplorerBase
         implements ProjectDataSourceExplorerView.Presenter,
-        IsWidget {
+                   IsElement {
 
     private GlobalDataSourceExplorerView view;
 
     @Inject
-    public GlobalDataSourceExplorer( final GlobalDataSourceExplorerView view,
-            final DefExplorerContent defExplorerContent,
-            final NewDataSourceDefWizard newDataSourceDefWizard,
-            final NewDriverDefWizard newDriverDefWizard,
-            final Caller<DefExplorerQueryService> explorerService ) {
-        super( defExplorerContent, newDataSourceDefWizard, newDriverDefWizard, explorerService );
+    public GlobalDataSourceExplorer(final GlobalDataSourceExplorerView view,
+                                    final DefExplorerContent defExplorerContent,
+                                    final NewDataSourceDefWizard newDataSourceDefWizard,
+                                    final NewDriverDefWizard newDriverDefWizard,
+                                    final Caller<DefExplorerQueryService> explorerService) {
+        super(defExplorerContent,
+              newDataSourceDefWizard,
+              newDriverDefWizard,
+              explorerService);
         this.view = view;
     }
 
     @PostConstruct
     protected void init() {
         super.init();
-        view.setDataSourceDefExplorer( defExplorerContent );
+        view.setDataSourceDefExplorer(defExplorerContent);
     }
 
     @Override
@@ -71,29 +74,28 @@ public class GlobalDataSourceExplorer
     }
 
     @Override
-    public Widget asWidget() {
-        return view.asWidget();
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 
     @Override
     protected DefExplorerQuery createRefreshQuery() {
-        return new DefExplorerQuery( true );
+        return new DefExplorerQuery(true);
     }
 
     @Override
-    protected void loadContent( final DefExplorerQueryResult content ) {
-        defExplorerContent.loadDataSources( content.getDataSourceDefs() );
-        defExplorerContent.loadDrivers( content.getDriverDefs() );
+    protected void loadContent(final DefExplorerQueryResult content) {
+        defExplorerContent.loadDataSources(content.getDataSourceDefs());
+        defExplorerContent.loadDrivers(content.getDriverDefs());
     }
 
     @Override
-    protected boolean refreshOnDataSourceEvent( BaseDataSourceEvent event ) {
+    protected boolean refreshOnDataSourceEvent(BaseDataSourceEvent event) {
         return event.isGlobal();
     }
 
     @Override
-    protected boolean refreshOnDriverEvent( BaseDriverEvent event ) {
+    protected boolean refreshOnDriverEvent(BaseDriverEvent event) {
         return event.isGlobal();
     }
-
 }

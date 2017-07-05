@@ -18,18 +18,24 @@ package org.kie.workbench.common.screens.datasource.management.model;
 
 public abstract class Def {
 
-    protected String uuid;
+    protected String uuid = null;
 
-    protected String name;
+    protected String name = null;
 
     public Def() {
+    }
+
+    public Def(String uuid,
+               String name) {
+        this.uuid = uuid;
+        this.name = name;
     }
 
     public String getUuid() {
         return uuid;
     }
 
-    public void setUuid( String uuid ) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
@@ -37,33 +43,32 @@ public abstract class Def {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
-        Def def = ( Def ) o;
+        Def def = (Def) o;
 
-        if ( uuid != null ? !uuid.equals( def.uuid ) : def.uuid != null ) {
+        if (uuid != null ? !uuid.equals(def.uuid) : def.uuid != null) {
             return false;
         }
-        return name != null ? name.equals( def.name ) : def.name == null;
-
+        return name != null ? name.equals(def.name) : def.name == null;
     }
 
     @Override
     public int hashCode() {
         int result = uuid != null ? uuid.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( name != null ? name.hashCode() : 0 );
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = ~~result;
         return result;
     }

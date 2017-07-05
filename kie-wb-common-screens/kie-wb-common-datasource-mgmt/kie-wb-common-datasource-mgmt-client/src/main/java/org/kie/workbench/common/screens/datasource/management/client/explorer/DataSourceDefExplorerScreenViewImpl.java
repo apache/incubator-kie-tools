@@ -19,38 +19,21 @@ package org.kie.workbench.common.screens.datasource.management.client.explorer;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.screens.datasource.management.client.explorer.project.ProjectDataSourceExplorer;
 import org.kie.workbench.common.screens.datasource.management.client.explorer.global.GlobalDataSourceExplorer;
 
 @Dependent
 @Templated
 public class DataSourceDefExplorerScreenViewImpl
-        extends Composite
-        implements DataSourceDefExplorerScreenView {
-
-
-    @Inject
-    @DataField
-    private FlowPanel projectBrowserContainer;
+        implements DataSourceDefExplorerScreenView,
+                   IsElement {
 
     @Inject
     @DataField
-    private FlowPanel globalBrowserContainer;
-
-    @Inject
-    @DataField
-    private Anchor projectTab;
-
-    @Inject
-    @DataField
-    private Anchor globalTab;
+    private Div globalBrowserContainer;
 
     private Presenter presenter;
 
@@ -58,28 +41,12 @@ public class DataSourceDefExplorerScreenViewImpl
     }
 
     @Override
-    public void init( Presenter presenter ) {
+    public void init(Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setProjectExplorer( ProjectDataSourceExplorer projectExplorer ) {
-        projectBrowserContainer.add( projectExplorer );
+    public void setGlobalExplorer(GlobalDataSourceExplorer globalExplorer) {
+        globalBrowserContainer.appendChild(globalExplorer.getElement());
     }
-
-    @Override
-    public void setGlobalExplorer( GlobalDataSourceExplorer globalExplorer ) {
-        globalBrowserContainer.add( globalExplorer );
-    }
-
-    @EventHandler( "projectTab" )
-    void onProjectTabClick( ClickEvent event ) {
-        presenter.onProjectExplorerSelected();
-    }
-
-    @EventHandler( "globalTab" )
-    public void onGlobalTabClick( ClickEvent event ) {
-        presenter.onGlobalExplorerSelected();
-    }
-
 }

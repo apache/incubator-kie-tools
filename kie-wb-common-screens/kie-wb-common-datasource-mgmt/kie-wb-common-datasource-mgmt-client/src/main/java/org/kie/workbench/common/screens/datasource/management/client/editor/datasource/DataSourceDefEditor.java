@@ -24,7 +24,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.screens.datasource.management.client.dbexplorer.DatabaseStructureExplorer;
 import org.kie.workbench.common.screens.datasource.management.client.dbexplorer.DatabaseStructureExplorerView;
 import org.kie.workbench.common.screens.datasource.management.client.resources.i18n.DataSourceManagementConstants;
@@ -54,8 +53,8 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
-@WorkbenchEditor( identifier = "DataSourceDefEditor",
-        supportedTypes = { DataSourceDefType.class } )
+@WorkbenchEditor(identifier = "DataSourceDefEditor",
+        supportedTypes = {DataSourceDefType.class})
 public class DataSourceDefEditor
         extends BaseEditor
         implements DataSourceDefEditorView.Presenter {
@@ -74,9 +73,9 @@ public class DataSourceDefEditor
 
     private DataSourceDefType type;
 
-    private Caller< DataSourceDefEditorService > editorService;
+    private Caller<DataSourceDefEditorService> editorService;
 
-    private Caller< DataSourceRuntimeManagerClientService > dataSourceManagerClient;
+    private Caller<DataSourceRuntimeManagerClientService> dataSourceManagerClient;
 
     private DataSourceDefEditorContent editorContent;
 
@@ -85,18 +84,18 @@ public class DataSourceDefEditor
     private DeletePopUpPresenter deletePopUpPresenter;
 
     @Inject
-    public DataSourceDefEditor( final DataSourceDefEditorView view,
-                                final DataSourceDefMainPanel mainPanel,
-                                final DataSourceDefEditorHelper editorHelper,
-                                final DatabaseStructureExplorer dbStructureExplorer,
-                                final PopupsUtil popupsUtil,
-                                final PlaceManager placeManager,
-                                final DataSourceDefType type,
-                                final SavePopUpPresenter savePopUpPresenter,
-                                final DeletePopUpPresenter deletePopUpPresenter,
-                                final Caller< DataSourceDefEditorService > editorService,
-                                final Caller< DataSourceRuntimeManagerClientService > dataSourceManagerClient ) {
-        super( view );
+    public DataSourceDefEditor(final DataSourceDefEditorView view,
+                               final DataSourceDefMainPanel mainPanel,
+                               final DataSourceDefEditorHelper editorHelper,
+                               final DatabaseStructureExplorer dbStructureExplorer,
+                               final PopupsUtil popupsUtil,
+                               final PlaceManager placeManager,
+                               final DataSourceDefType type,
+                               final SavePopUpPresenter savePopUpPresenter,
+                               final DeletePopUpPresenter deletePopUpPresenter,
+                               final Caller<DataSourceDefEditorService> editorService,
+                               final Caller<DataSourceRuntimeManagerClientService> dataSourceManagerClient) {
+        super(view);
         this.view = view;
         this.mainPanel = mainPanel;
         this.editorHelper = editorHelper;
@@ -108,130 +107,131 @@ public class DataSourceDefEditor
         this.deletePopUpPresenter = deletePopUpPresenter;
         this.editorService = editorService;
         this.dataSourceManagerClient = dataSourceManagerClient;
-        view.init( this );
-        editorHelper.init( mainPanel );
+        view.init(this);
+        editorHelper.init(mainPanel);
     }
 
     @PostConstruct
-    protected void init( ) {
-        showEditor( );
-        dbStructureExplorer.addHandler( new DatabaseStructureExplorerView.Handler( ) {
+    protected void init() {
+        showEditor();
+        dbStructureExplorer.addHandler(new DatabaseStructureExplorerView.Handler() {
             @Override
-            public void onDataSourceSelected( ) {
-                showEditor( );
+            public void onDataSourceSelected() {
+                showEditor();
             }
-        } );
+        });
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path, final PlaceRequest place ) {
-        init( path,
-                place,
-                type,
-                true,
-                false );
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
+        init(path,
+             place,
+             type,
+             true,
+             false);
     }
 
     @WorkbenchPartTitleDecoration
-    public IsWidget getTitle( ) {
-        return super.getTitle( );
+    public IsWidget getTitle() {
+        return super.getTitle();
     }
 
     @WorkbenchPartTitle
-    public String getTitleText( ) {
-        return super.getTitleText( );
+    public String getTitleText() {
+        return super.getTitleText();
     }
 
     @WorkbenchPartView
-    public IsWidget getWidget( ) {
-        return view.asWidget( );
+    public IsWidget getWidget() {
+        return view.asWidget();
     }
 
     @OnMayClose
-    public boolean onMayClose( ) {
-        return super.mayClose( getContent( ).hashCode( ) );
+    public boolean onMayClose() {
+        return super.mayClose(getContent().hashCode());
     }
 
     @Override
-    protected void loadContent( ) {
-        editorService.call( getLoadContentSuccessCallback( ),
-                new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent(
-                versionRecordManager.getCurrentPath( ) );
+    protected void loadContent() {
+        editorService.call(getLoadContentSuccessCallback(),
+                           new HasBusyIndicatorDefaultErrorCallback(view)).loadContent(
+                versionRecordManager.getCurrentPath());
     }
 
     @Override
-    public boolean mayClose( Integer currentHash ) {
-        return super.mayClose( currentHash );
+    public boolean mayClose(Integer currentHash) {
+        return super.mayClose(currentHash);
     }
 
     @Override
-    public void onSave( ) {
-        save( );
+    public void onSave() {
+        save();
     }
 
     @Override
-    public void onCancel( ) {
-        placeManager.closePlace( place );
+    public void onCancel() {
+        placeManager.closePlace(place);
     }
 
     @Override
-    public void onDelete( ) {
-        safeDelete( versionRecordManager.getCurrentPath( ) );
+    public void onDelete() {
+        safeDelete(versionRecordManager.getCurrentPath());
     }
 
-    protected void save( ) {
-        if ( !editorHelper.isNameValid( ) ||
-                !editorHelper.isConnectionURLValid( ) ||
-                !editorHelper.isUserValid( ) ||
-                !editorHelper.isPasswordValid( ) ||
-                !editorHelper.isDriverValid( ) ) {
-            popupsUtil.showInformationPopup( editorHelper.getMessage(
-                    DataSourceManagementConstants.DataSourceDefEditor_AllFieldsRequiresValidation ) );
+    protected void save() {
+        if (!editorHelper.isNameValid() ||
+                !editorHelper.isConnectionURLValid() ||
+                !editorHelper.isUserValid() ||
+                !editorHelper.isPasswordValid() ||
+                !editorHelper.isDriverValid()) {
+            popupsUtil.showInformationPopup(editorHelper.getMessage(
+                    DataSourceManagementConstants.DataSourceDefEditor_AllFieldsRequiresValidation));
         } else {
-            safeSave( );
+            safeSave();
         }
     }
 
     /**
      * Executes a safe saving of the data source by checking it's status and asking user confirmation if needed.
      */
-    protected void safeSave( ) {
-        executeSafeUpdateCommand( DataSourceManagementConstants.DataSourceDefEditor_DataSourceHasBeenReferencedForSaveMessage,
-                new Command( ) {
-                    @Override
-                    public void execute( ) {
-                        _save( );
-                    }
-                },
-                new Command( ) {
-                    @Override
-                    public void execute( ) {
-                        _save( );
-                    }
-                },
-                new Command( ) {
-                    @Override
-                    public void execute( ) {
-                        //do nothing;
-                    }
-                } );
+    protected void safeSave() {
+        executeSafeUpdateCommand(DataSourceManagementConstants.DataSourceDefEditor_DataSourceHasBeenReferencedForSaveMessage,
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         _save();
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         _save();
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         //do nothing;
+                                     }
+                                 });
     }
 
     /**
      * Performs the formal save of the data source.
      */
-    protected void _save( ) {
-        savePopUpPresenter.show( versionRecordManager.getCurrentPath( ),
-                new ParameterizedCommand< String >( ) {
-                    @Override
-                    public void execute( final String commitMessage ) {
-                        editorService.call( getSaveSuccessCallback( getContent( ).hashCode( ) ),
-                                new HasBusyIndicatorDefaultErrorCallback( view )
-                        ).save( versionRecordManager.getCurrentPath( ),
-                                getContent( ),
-                                commitMessage );
-                    }
-                }
+    protected void _save() {
+        savePopUpPresenter.show(versionRecordManager.getCurrentPath(),
+                                new ParameterizedCommand<String>() {
+                                    @Override
+                                    public void execute(final String commitMessage) {
+                                        editorService.call(getSaveSuccessCallback(getContent().hashCode()),
+                                                           new HasBusyIndicatorDefaultErrorCallback(view)
+                                        ).save(versionRecordManager.getCurrentPath(),
+                                               getContent(),
+                                               commitMessage);
+                                    }
+                                }
         );
         concurrentUpdateSessionInfo = null;
     }
@@ -239,159 +239,165 @@ public class DataSourceDefEditor
     /**
      * Executes a safe deletion of the data source by checking it's status and asking user confirmation if needed.
      */
-    protected void safeDelete( ObservablePath currentPath ) {
-        executeSafeUpdateCommand( DataSourceManagementConstants.DataSourceDefEditor_DataSourceHasBeenReferencedForDeleteMessage,
-                new Command( ) {
-                    @Override
-                    public void execute( ) {
-                        delete( currentPath );
-                    }
-                },
-                new Command( ) {
-                    @Override
-                    public void execute( ) {
-                        delete( currentPath );
-                    }
-                },
-                new Command( ) {
-                    @Override
-                    public void execute( ) {
-                        //do nothing.
-                    }
-                }
+    protected void safeDelete(ObservablePath currentPath) {
+        executeSafeUpdateCommand(DataSourceManagementConstants.DataSourceDefEditor_DataSourceHasBeenReferencedForDeleteMessage,
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         delete(currentPath);
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         delete(currentPath);
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         //do nothing.
+                                     }
+                                 }
         );
     }
 
     /**
      * Performs the formal deletion of the data source.
      */
-    protected void delete( ObservablePath currentPath ) {
+    protected void delete(ObservablePath currentPath) {
 
-        deletePopUpPresenter.show( new ParameterizedCommand< String >( ) {
+        deletePopUpPresenter.show(new ParameterizedCommand<String>() {
             @Override
-            public void execute( final String comment ) {
-                view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Deleting( ) );
-                editorService.call( new RemoteCallback< Void >( ) {
-                    @Override
-                    public void callback( Void aVoid ) {
-                        view.hideBusyIndicator( );
-                        notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemDeletedSuccessfully( ),
-                                NotificationEvent.NotificationType.SUCCESS ) );
-                    }
-                }, new HasBusyIndicatorDefaultErrorCallback( view ) ).delete( currentPath, comment );
+            public void execute(final String comment) {
+                view.showBusyIndicator(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Deleting());
+                editorService.call(new RemoteCallback<Void>() {
+                                       @Override
+                                       public void callback(Void aVoid) {
+                                           view.hideBusyIndicator();
+                                           notification.fire(new NotificationEvent(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemDeletedSuccessfully(),
+                                                                                   NotificationEvent.NotificationType.SUCCESS));
+                                       }
+                                   },
+                                   new HasBusyIndicatorDefaultErrorCallback(view)).delete(currentPath,
+                                                                                          comment);
             }
-        } );
+        });
     }
 
     /**
      * Checks current data source status prior to execute an update operation.
      */
-    protected void executeSafeUpdateCommand( String onDependantsMessageKey,
-                                             Command defaultCommand, Command yesCommand, Command noCommand ) {
-        dataSourceManagerClient.call( new RemoteCallback< DataSourceDeploymentInfo >( ) {
+    protected void executeSafeUpdateCommand(String onDependantsMessageKey,
+                                            Command defaultCommand,
+                                            Command yesCommand,
+                                            Command noCommand) {
+        dataSourceManagerClient.call(new RemoteCallback<DataSourceDeploymentInfo>() {
             @Override
-            public void callback( DataSourceDeploymentInfo deploymentInfo ) {
+            public void callback(DataSourceDeploymentInfo deploymentInfo) {
 
-                if ( deploymentInfo != null && deploymentInfo.wasReferenced( ) ) {
-                    popupsUtil.showYesNoPopup( CommonConstants.INSTANCE.Warning( ),
-                            editorHelper.getMessage( onDependantsMessageKey ),
-                            yesCommand,
-                            CommonConstants.INSTANCE.YES( ),
-                            ButtonType.WARNING,
-                            noCommand,
-                            CommonConstants.INSTANCE.NO( ),
-                            ButtonType.DEFAULT );
+                if (deploymentInfo != null && deploymentInfo.wasReferenced()) {
+                    popupsUtil.showYesNoPopup(CommonConstants.INSTANCE.Warning(),
+                                              editorHelper.getMessage(onDependantsMessageKey),
+                                              yesCommand,
+                                              CommonConstants.INSTANCE.YES(),
+                                              ButtonType.WARNING,
+                                              noCommand,
+                                              CommonConstants.INSTANCE.NO(),
+                                              ButtonType.DEFAULT);
                 } else {
-                    defaultCommand.execute( );
+                    defaultCommand.execute();
                 }
             }
-        } ).getDataSourceDeploymentInfo( getContent( ).getDef( ).getUuid( ) );
+        }).getDataSourceDeploymentInfo(getContent().getDef().getUuid());
     }
 
-    private RemoteCallback< DataSourceDefEditorContent > getLoadContentSuccessCallback( ) {
-        return new RemoteCallback< DataSourceDefEditorContent >( ) {
+    private RemoteCallback<DataSourceDefEditorContent> getLoadContentSuccessCallback() {
+        return new RemoteCallback<DataSourceDefEditorContent>() {
             @Override
-            public void callback( DataSourceDefEditorContent editorContent ) {
-                view.hideBusyIndicator( );
-                onContentLoaded( editorContent );
+            public void callback(DataSourceDefEditorContent editorContent) {
+                view.hideBusyIndicator();
+                onContentLoaded(editorContent);
             }
         };
     }
 
-    protected void onContentLoaded( final DataSourceDefEditorContent editorContent ) {
+    protected void onContentLoaded(final DataSourceDefEditorContent editorContent) {
         //Path is set to null when the Editor is closed (which can happen before async calls complete).
-        if ( versionRecordManager.getCurrentPath( ) == null ) {
+        if (versionRecordManager.getCurrentPath() == null) {
             return;
         }
-        setContent( editorContent );
-        setOriginalHash( editorContent.hashCode( ) );
-        editorHelper.loadDrivers( getLoadDriversSuccessCommand( ), getLoadDriversErrorCommand( ) );
+        setContent(editorContent);
+        setOriginalHash(editorContent.hashCode());
+        editorHelper.loadDrivers(getLoadDriversSuccessCommand(),
+                                 getLoadDriversErrorCommand());
     }
 
-    protected DataSourceDefEditorContent getContent( ) {
+    protected DataSourceDefEditorContent getContent() {
         return editorContent;
     }
 
-    protected void setContent( final DataSourceDefEditorContent editorContent ) {
+    protected void setContent(final DataSourceDefEditorContent editorContent) {
         this.editorContent = editorContent;
-        view.setDataSourceName( editorContent.getDef( ).getName( ) );
-        editorHelper.setDataSourceDef( editorContent.getDef( ) );
-        editorHelper.setProject( editorContent.getProject( ) );
-        editorHelper.setValid( true );
+        view.setDataSourceName(editorContent.getDef().getName());
+        editorHelper.setDataSourceDef(editorContent.getDef());
+        editorHelper.setProject(editorContent.getProject());
+        editorHelper.setValid(true);
     }
 
-    public Command getLoadDriversSuccessCommand( ) {
-        return new Command( ) {
+    public Command getLoadDriversSuccessCommand() {
+        return new Command() {
             @Override
-            public void execute( ) {
-                mainPanel.setDriver( getContent( ).getDef( ).getDriverUuid( ) );
+            public void execute() {
+                mainPanel.setDriver(getContent().getDef().getDriverUuid());
             }
         };
     }
 
-    public ParameterizedCommand< Throwable > getLoadDriversErrorCommand( ) {
-        return new ParameterizedCommand< Throwable >( ) {
+    public ParameterizedCommand<Throwable> getLoadDriversErrorCommand() {
+        return new ParameterizedCommand<Throwable>() {
             @Override
-            public void execute( Throwable parameter ) {
-                popupsUtil.showErrorPopup( editorHelper.getMessage(
+            public void execute(Throwable parameter) {
+                popupsUtil.showErrorPopup(editorHelper.getMessage(
                         DataSourceManagementConstants.DataSourceDefEditor_LoadDriversErrorMessage,
-                        parameter.getMessage( ) ) );
+                        parameter.getMessage()));
             }
         };
     }
 
     @Override
-    public void onShowContent( ) {
-        DatabaseStructureExplorer.Settings settings = new DatabaseStructureExplorer.Settings( )
-                .dataSourceUuid( getContent( ).getDef( ).getUuid( ) )
-                .dataSourceName( getContent( ).getDef( ).getName( ) );
+    public void onShowContent() {
+        DatabaseStructureExplorer.Settings settings = new DatabaseStructureExplorer.Settings()
+                .dataSourceUuid(getContent().getDef().getUuid())
+                .dataSourceName(getContent().getDef().getName());
 
-        dbStructureExplorer.initialize( settings, new InitializeCallback( ) {
-            @Override
-            public void onInitializeError( Throwable throwable ) {
-                // do nothing, just stay showing the parameters edition.
-            }
+        dbStructureExplorer.initialize(settings,
+                                       new InitializeCallback() {
+                                           @Override
+                                           public void onInitializeError(Throwable throwable) {
+                                               // do nothing, just stay showing the parameters edition.
+                                           }
 
-            @Override
-            public void onInitializeSuccess( ) {
-                showContent( );
-            }
-        } );
+                                           @Override
+                                           public void onInitializeSuccess() {
+                                               showContent();
+                                           }
+                                       });
     }
 
-    private void showEditor( ) {
-        view.clearContent( );
-        view.setContentWidth( DataSourceDefEditorView.COL_MD_8 );
-        view.setContent( mainPanel );
-        view.showHeaderPanel( true );
-        view.showActionsPanel( true );
+    private void showEditor() {
+        view.clearContent();
+        view.setContentWidth(DataSourceDefEditorView.COL_MD_8);
+        view.setContent(mainPanel);
+        view.showHeaderPanel(true);
+        view.showActionsPanel(true);
     }
 
-    private void showContent( ) {
-        view.showHeaderPanel( false );
-        view.showActionsPanel( false );
-        view.clearContent( );
-        view.setContentWidth( DataSourceDefEditorView.COL_MD_12 );
-        view.setContent( ElementWrapperWidget.getWidget( dbStructureExplorer.getElement( ) ) );
+    private void showContent() {
+        view.showHeaderPanel(false);
+        view.showActionsPanel(false);
+        view.clearContent();
+        view.setContentWidth(DataSourceDefEditorView.COL_MD_12);
+        view.setContent(dbStructureExplorer);
     }
 }

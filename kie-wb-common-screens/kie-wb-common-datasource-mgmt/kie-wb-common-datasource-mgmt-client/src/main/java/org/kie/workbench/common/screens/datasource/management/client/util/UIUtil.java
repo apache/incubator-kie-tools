@@ -22,43 +22,79 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.jboss.errai.common.client.dom.DOMUtil;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.Span;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.common.StyleHelper;
 
 public class UIUtil {
 
-    public static void setGroupOnError( final Element formGroup, final boolean onError ) {
-        StyleHelper.addUniqueEnumStyleName( formGroup, ValidationState.class,
-                onError ? ValidationState.ERROR : ValidationState.NONE );
+    public static void setGroupOnError(final Element formGroup,
+                                       final boolean onError) {
+        StyleHelper.addUniqueEnumStyleName(formGroup,
+                                           ValidationState.class,
+                                           onError ? ValidationState.ERROR : ValidationState.NONE);
     }
 
-    public static void setSpanMessage( final Element span, final String text ) {
-        span.getStyle().setVisibility( Style.Visibility.VISIBLE );
-        span.setInnerHTML( text );
+    public static void setGroupOnError(final HTMLElement formGroup,
+                                       final boolean onError) {
+        if (onError) {
+            DOMUtil.addCSSClass(formGroup,
+                                ValidationState.ERROR.getCssName());
+        } else {
+            DOMUtil.removeCSSClass(formGroup,
+                                   ValidationState.ERROR.getCssName());
+        }
     }
 
-    public static void clearSpanMessage( final Element span ) {
-        span.getStyle().setVisibility( Style.Visibility.HIDDEN );
-        span.setInnerHTML( "" );
+    public static void setSpanMessage(final Element span,
+                                      final String text) {
+        span.getStyle().setVisibility(Style.Visibility.VISIBLE);
+        span.setInnerHTML(text);
     }
 
-    public static void loadOptions( ListBox listBox, List< Pair< String, String > > options ) {
-        loadOptions( listBox, options, null );
+    public static void setSpanMessage(final Span span,
+                                      final String text) {
+        span.getStyle().setProperty("visibility",
+                                    "visible");
+        span.setInnerHTML(text);
     }
 
-    public static void loadOptions( ListBox listBox, List< Pair< String, String > > options, String selectedOption ) {
-        Pair< String, String > option;
+    public static void clearSpanMessage(final Element span) {
+        span.getStyle().setVisibility(Style.Visibility.HIDDEN);
+        span.setInnerHTML("");
+    }
+
+    public static void clearSpanMessage(final Span span) {
+        span.getStyle().setProperty("visibility",
+                                    "hidden");
+        span.setInnerHTML("");
+    }
+
+    public static void loadOptions(ListBox listBox,
+                                   List<Pair<String, String>> options) {
+        loadOptions(listBox,
+                    options,
+                    null);
+    }
+
+    public static void loadOptions(ListBox listBox,
+                                   List<Pair<String, String>> options,
+                                   String selectedOption) {
+        Pair<String, String> option;
         int selectedIndex = -1;
-        listBox.clear( );
-        for ( int i = 0; i < options.size( ); i++ ) {
-            option = options.get( i );
-            listBox.addItem( option.getK1( ), option.getK2( ) );
-            if ( selectedIndex < 0 && selectedOption != null && selectedOption.equals( option.getK2( ) ) ) {
+        listBox.clear();
+        for (int i = 0; i < options.size(); i++) {
+            option = options.get(i);
+            listBox.addItem(option.getK1(),
+                            option.getK2());
+            if (selectedIndex < 0 && selectedOption != null && selectedOption.equals(option.getK2())) {
                 selectedIndex = i;
             }
         }
-        if ( selectedIndex >= 0 ) {
-            listBox.setSelectedIndex( selectedIndex );
+        if (selectedIndex >= 0) {
+            listBox.setSelectedIndex(selectedIndex);
         }
     }
 }

@@ -22,25 +22,25 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.datasource.management.client.explorer.common.DefExplorerContent;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 
 public interface ProjectDataSourceExplorerView
-        extends UberView<ProjectDataSourceExplorerView.Presenter> {
+        extends UberElement<ProjectDataSourceExplorerView.Presenter> {
 
     interface Presenter {
 
     }
 
-    void loadContent( final Collection<OrganizationalUnit> organizationalUnits,
-            final OrganizationalUnit activeOrganizationalUnit,
-            final Collection<Repository> repositories,
-            final Repository activeRepository,
-            final Collection<Project> projects,
-            final Project activeProject );
+    void loadContent(final Collection<OrganizationalUnit> organizationalUnits,
+                     final OrganizationalUnit activeOrganizationalUnit,
+                     final Collection<Repository> repositories,
+                     final Repository activeRepository,
+                     final Collection<Project> projects,
+                     final Project activeProject);
 
     void clear();
 
-    void addProjectSelectorHandler( final ProjectSelectorHandler handler );
+    void addProjectSelectorHandler(final ProjectSelectorHandler handler);
 
-    void setDataSourceDefExplorer( final DefExplorerContent defExplorerContent );
+    void setDataSourceDefExplorer(final DefExplorerContent defExplorerContent);
 }

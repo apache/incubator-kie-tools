@@ -21,11 +21,11 @@ import java.util.Collection;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Composite;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.datasource.management.client.explorer.common.DefExplorerContent;
@@ -33,16 +33,16 @@ import org.kie.workbench.common.screens.datasource.management.client.explorer.co
 @Dependent
 @Templated
 public class ProjectDataSourceExplorerViewImpl
-        extends Composite
-        implements ProjectDataSourceExplorerView {
+        implements ProjectDataSourceExplorerView,
+                   IsElement {
 
     @Inject
-    @DataField( "project-selector" )
+    @DataField("project-selector")
     private ProjectSelector projectSelector;
 
     @Inject
-    @DataField( "datasource-explorer-container")
-    private FlowPanel container;
+    @DataField("datasource-explorer-container")
+    private Div container;
 
     private Presenter presenter;
 
@@ -50,40 +50,43 @@ public class ProjectDataSourceExplorerViewImpl
     }
 
     @Override
-    public void init( final Presenter presenter ) {
+    public void init(final Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void loadContent( final Collection<OrganizationalUnit> organizationalUnits,
-            final OrganizationalUnit activeOrganizationalUnit,
-            final Collection<Repository> repositories,
-            final Repository activeRepository,
-            final Collection<Project> projects,
-            final Project activeProject ) {
+    public void loadContent(final Collection<OrganizationalUnit> organizationalUnits,
+                            final OrganizationalUnit activeOrganizationalUnit,
+                            final Collection<Repository> repositories,
+                            final Repository activeRepository,
+                            final Collection<Project> projects,
+                            final Project activeProject) {
 
-        projectSelector.loadOptions( organizationalUnits,
-                activeOrganizationalUnit,
-                repositories,
-                activeRepository,
-                projects,
-                activeProject );
+        projectSelector.loadOptions(organizationalUnits,
+                                    activeOrganizationalUnit,
+                                    repositories,
+                                    activeRepository,
+                                    projects,
+                                    activeProject);
     }
 
     @Override
     public void clear() {
-        loadContent( new ArrayList<>( ), null,
-                new ArrayList<>( ), null,
-                new ArrayList<>( ), null );
+        loadContent(new ArrayList<>(),
+                    null,
+                    new ArrayList<>(),
+                    null,
+                    new ArrayList<>(),
+                    null);
     }
 
     @Override
-    public void addProjectSelectorHandler( final ProjectSelectorHandler handler ) {
-        projectSelector.addProjectSelectorHandler( handler );
+    public void addProjectSelectorHandler(final ProjectSelectorHandler handler) {
+        projectSelector.addProjectSelectorHandler(handler);
     }
 
     @Override
-    public void setDataSourceDefExplorer( final DefExplorerContent defExplorerContent ) {
-        container.add( defExplorerContent );
+    public void setDataSourceDefExplorer(final DefExplorerContent defExplorerContent) {
+        container.appendChild(defExplorerContent.getElement());
     }
 }

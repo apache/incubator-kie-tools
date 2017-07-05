@@ -19,8 +19,8 @@ package org.kie.workbench.common.screens.datasource.management.client.editor.dri
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.datasource.management.client.editor.common.DefEditorBaseViewImpl;
@@ -32,22 +32,22 @@ public class DriverDefEditorViewImpl
         implements DriverDefEditorView {
 
     @Inject
-    @DataField ( "content-panel" )
-    private FlowPanel contentPanel;
+    @DataField("content-panel")
+    private Div contentPanel;
 
     private Presenter presenter;
 
-    public DriverDefEditorViewImpl( ) {
+    public DriverDefEditorViewImpl() {
     }
 
     @Override
-    public void init( final Presenter presenter ) {
+    public void init(final Presenter presenter) {
         this.presenter = presenter;
-        super.init( presenter );
+        super.init(presenter);
     }
 
     @Override
-    public void setContent( IsWidget content ) {
-        contentPanel.add( content );
+    public void setContent(IsElement content) {
+        contentPanel.appendChild(content.getElement());
     }
 }

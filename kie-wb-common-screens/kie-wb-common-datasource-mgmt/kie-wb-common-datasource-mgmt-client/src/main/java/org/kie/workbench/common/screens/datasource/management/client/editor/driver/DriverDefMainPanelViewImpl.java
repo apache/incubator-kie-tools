@@ -19,72 +19,85 @@ package org.kie.workbench.common.screens.datasource.management.client.editor.dri
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Composite;
-import org.gwtbootstrap3.client.ui.TextBox;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Event;
+import org.jboss.errai.common.client.dom.Span;
+import org.jboss.errai.common.client.dom.TextInput;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
-import static org.kie.workbench.common.screens.datasource.management.client.util.UIUtil.*;
+import static org.kie.workbench.common.screens.datasource.management.client.util.UIUtil.clearSpanMessage;
+import static org.kie.workbench.common.screens.datasource.management.client.util.UIUtil.setGroupOnError;
+import static org.kie.workbench.common.screens.datasource.management.client.util.UIUtil.setSpanMessage;
 
 @Dependent
 @Templated
 public class DriverDefMainPanelViewImpl
-        extends Composite
-        implements DriverDefMainPanelView {
-
-    @DataField( "name-form-group" )
-    private Element nameFormGroup =  DOM.createDiv();
+        implements IsElement,
+                   DriverDefMainPanelView {
 
     @Inject
-    @DataField ( "name" )
-    private TextBox nameTextBox;
+    @DataField("name-form-group")
+    private Div nameFormGroup;
 
+    @Inject
+    @DataField("name")
+    private TextInput nameTextBox;
+
+    @Inject
     @DataField("name-help")
-    private Element nameHelp = DOM.createSpan();
-
-    @DataField ( "driver-class-form-group" )
-    private Element driverClassFormGroup =  DOM.createDiv();
+    private Span nameHelp;
 
     @Inject
-    @DataField ( "driver-class" )
-    private TextBox driverClassTextBox;
+    @DataField("driver-class-form-group")
+    private Div driverClassFormGroup;
 
+    @Inject
+    @DataField("driver-class")
+    private TextInput driverClassTextBox;
+
+    @Inject
     @DataField("driver-class-help")
-    private Element driverClassHelp = DOM.createSpan();
-
-    @DataField( "group-id-form-group" )
-    private Element groupIdFormGroup =  DOM.createDiv();
+    private Span driverClassHelp;
 
     @Inject
-    @DataField ( "group-id" )
-    private TextBox groupIdTextBox;
+    @DataField("group-id-form-group")
+    private Div groupIdFormGroup;
 
+    @Inject
+    @DataField("group-id")
+    private TextInput groupIdTextBox;
+
+    @Inject
     @DataField("group-id-help")
-    private Element groupIdHelp = DOM.createSpan();
-
-    @DataField( "artifact-id-form-group" )
-    private Element artifactIdFormGroup =  DOM.createDiv();
+    private Span groupIdHelp;
 
     @Inject
-    @DataField ( "artifact-id" )
-    private TextBox artifactIdTextBox;
+    @DataField("artifact-id-form-group")
+    private Div artifactIdFormGroup;
 
+    @Inject
+    @DataField("artifact-id")
+    private TextInput artifactIdTextBox;
+
+    @Inject
     @DataField("artifact-id-help")
-    private Element artifactIdHelp = DOM.createSpan();
-
-    @DataField( "version-form-group" )
-    private Element versionFormGroup =  DOM.createDiv();
+    private Span artifactIdHelp;
 
     @Inject
-    @DataField ( "version" )
-    private TextBox versionTextBox;
+    @DataField("version-form-group")
+    private Div versionFormGroup;
 
+    @Inject
+    @DataField("version")
+    private TextInput versionTextBox;
+
+    @Inject
     @DataField("version-help")
-    private Element versionHelp = DOM.createSpan();
+    private Span versionHelp;
 
     private DriverDefMainPanelView.Presenter presenter;
 
@@ -92,142 +105,157 @@ public class DriverDefMainPanelViewImpl
     }
 
     @Override
-    public void init( final DriverDefMainPanelView.Presenter presenter ) {
+    public void init(final DriverDefMainPanelView.Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setName( final String name ) {
-        this.nameTextBox.setText( name );
+    public void setName(final String name) {
+        this.nameTextBox.setValue(name);
     }
 
     @Override
     public String getName() {
-        return nameTextBox.getText();
+        return nameTextBox.getValue();
     }
 
     @Override
-    public void setNameErrorMessage( final String message ) {
-        setGroupOnError( nameFormGroup, true );
-        setSpanMessage( nameHelp, message );
+    public void setNameErrorMessage(final String message) {
+        setGroupOnError(nameFormGroup,
+                        true);
+        setSpanMessage(nameHelp,
+                       message);
     }
 
     @Override
     public void clearNameErrorMessage() {
-        setGroupOnError( nameFormGroup, false );
-        clearSpanMessage( nameHelp );
+        setGroupOnError(nameFormGroup,
+                        false);
+        clearSpanMessage(nameHelp);
     }
 
     @Override
-    public void setDriverClass( final String driverClass ) {
-        this.driverClassTextBox.setText( driverClass );
+    public void setDriverClass(final String driverClass) {
+        this.driverClassTextBox.setValue(driverClass);
     }
 
     @Override
     public String getDriverClass() {
-        return driverClassTextBox.getText();
+        return driverClassTextBox.getValue();
     }
 
     @Override
-    public void setDriverClassErrorMessage( final String message ) {
-        setGroupOnError( driverClassFormGroup, true );
-        setSpanMessage( driverClassHelp, message );
+    public void setDriverClassErrorMessage(final String message) {
+        setGroupOnError(driverClassFormGroup,
+                        true);
+        setSpanMessage(driverClassHelp,
+                       message);
     }
 
     @Override
     public void clearDriverClassErrorMessage() {
-        setGroupOnError( driverClassFormGroup, false );
-        clearSpanMessage( driverClassHelp );
+        setGroupOnError(driverClassFormGroup,
+                        false);
+        clearSpanMessage(driverClassHelp);
     }
 
     @Override
-    public void setGroupId( final String groupId ) {
-        groupIdTextBox.setText( groupId );
+    public void setGroupId(final String groupId) {
+        groupIdTextBox.setValue(groupId);
     }
 
     @Override
     public String getGroupId() {
-        return groupIdTextBox.getText();
+        return groupIdTextBox.getValue();
     }
 
     @Override
-    public void setGroupIdErrorMessage( final String message ) {
-        setGroupOnError( groupIdFormGroup, true );
-        setSpanMessage( groupIdHelp, message );
+    public void setGroupIdErrorMessage(final String message) {
+        setGroupOnError(groupIdFormGroup,
+                        true);
+        setSpanMessage(groupIdHelp,
+                       message);
     }
 
     @Override
     public void clearGroupIdErrorMessage() {
-        setGroupOnError( groupIdFormGroup, false );
-        clearSpanMessage( groupIdHelp );
+        setGroupOnError(groupIdFormGroup,
+                        false);
+        clearSpanMessage(groupIdHelp);
     }
 
     @Override
-    public void setArtifactId( final String artifactId ) {
-        artifactIdTextBox.setText( artifactId );
+    public void setArtifactId(final String artifactId) {
+        artifactIdTextBox.setValue(artifactId);
     }
 
     @Override
     public String getArtifactId() {
-        return artifactIdTextBox.getText();
+        return artifactIdTextBox.getValue();
     }
 
     @Override
-    public void setArtifactIdErrorMessage( final String message ) {
-        setGroupOnError( artifactIdFormGroup, true );
-        setSpanMessage( artifactIdHelp, message );
+    public void setArtifactIdErrorMessage(final String message) {
+        setGroupOnError(artifactIdFormGroup,
+                        true);
+        setSpanMessage(artifactIdHelp,
+                       message);
     }
 
     @Override
     public void clearArtifactIdErrorMessage() {
-        setGroupOnError( artifactIdFormGroup, false );
-        clearSpanMessage( artifactIdHelp );
+        setGroupOnError(artifactIdFormGroup,
+                        false);
+        clearSpanMessage(artifactIdHelp);
     }
 
     @Override
-    public void setVersion( final String version ) {
-        versionTextBox.setText( version );
+    public void setVersion(final String version) {
+        versionTextBox.setValue(version);
     }
 
     @Override
     public String getVersion() {
-        return versionTextBox.getText();
+        return versionTextBox.getValue();
     }
 
     @Override
-    public void setVersionErrorMessage( final String message ) {
-        setGroupOnError( versionFormGroup, true );
-        setSpanMessage( versionHelp, message );
+    public void setVersionErrorMessage(final String message) {
+        setGroupOnError(versionFormGroup,
+                        true);
+        setSpanMessage(versionHelp,
+                       message);
     }
 
     @Override
     public void clearVersionErrorMessage() {
-        setGroupOnError( versionFormGroup, false );
-        clearSpanMessage( versionHelp );
+        setGroupOnError(versionFormGroup,
+                        false);
+        clearSpanMessage(versionHelp);
     }
 
-    @EventHandler( "name" )
-    private void onNameChange( final ChangeEvent event ) {
+    @EventHandler("name")
+    private void onNameChange(@ForEvent("change") final Event event) {
         presenter.onNameChange();
     }
 
-    @EventHandler( "driver-class" )
-    private void onDriverClassChange( final ChangeEvent event ) {
+    @EventHandler("driver-class")
+    private void onDriverClassChange(@ForEvent("change") final Event event) {
         presenter.onDriverClassChange();
     }
 
-    @EventHandler( "group-id")
-    private void onGroupIdChange( final ChangeEvent event ) {
+    @EventHandler("group-id")
+    private void onGroupIdChange(@ForEvent("change") final Event event) {
         presenter.onGroupIdChange();
     }
 
-    @EventHandler( "artifact-id")
-    private void onArtifactIdChange( final ChangeEvent event ) {
+    @EventHandler("artifact-id")
+    private void onArtifactIdChange(@ForEvent("change") final Event event) {
         presenter.onArtifactIdChange();
     }
 
-    @EventHandler( "version")
-    private void onVersionChange( final ChangeEvent event ) {
+    @EventHandler("version")
+    private void onVersionChange(@ForEvent("change") final Event event) {
         presenter.onVersionChange();
     }
 }

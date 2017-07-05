@@ -16,28 +16,43 @@
 
 package org.kie.workbench.common.screens.datasource.management.model;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class DataSourceDef
         extends Def {
 
-    private String connectionURL;
+    private String connectionURL = null;
 
-    private String driverUuid;
+    private String driverUuid = null;
 
-    private String user;
+    private String user = null;
 
-    private String password;
+    private String password = null;
 
     public DataSourceDef() {
+    }
+
+    public DataSourceDef(@MapsTo("uuid") final String uuid,
+                         @MapsTo("name") final String name,
+                         @MapsTo("connectionURL") final String connectionURL,
+                         @MapsTo("driverUuid") final String driverUuid,
+                         @MapsTo("user") final String user,
+                         @MapsTo("password") final String password) {
+        super(uuid,
+              name);
+        this.connectionURL = connectionURL;
+        this.driverUuid = driverUuid;
+        this.user = user;
+        this.password = password;
     }
 
     public String getConnectionURL() {
         return connectionURL;
     }
 
-    public void setConnectionURL( String connectionURL ) {
+    public void setConnectionURL(String connectionURL) {
         this.connectionURL = connectionURL;
     }
 
@@ -45,7 +60,7 @@ public class DataSourceDef
         return driverUuid;
     }
 
-    public void setDriverUuid( String driverUuid ) {
+    public void setDriverUuid(String driverUuid) {
         this.driverUuid = driverUuid;
     }
 
@@ -53,7 +68,7 @@ public class DataSourceDef
         return user;
     }
 
-    public void setUser( String user ) {
+    public void setUser(String user) {
         this.user = user;
     }
 
@@ -61,7 +76,7 @@ public class DataSourceDef
         return password;
     }
 
-    public void setPassword( String password ) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
@@ -78,41 +93,41 @@ public class DataSourceDef
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        if ( !super.equals( o ) ) {
+        if (!super.equals(o)) {
             return false;
         }
 
-        DataSourceDef that = ( DataSourceDef ) o;
+        DataSourceDef that = (DataSourceDef) o;
 
-        if ( connectionURL != null ? !connectionURL.equals( that.connectionURL ) : that.connectionURL != null ) {
+        if (connectionURL != null ? !connectionURL.equals(that.connectionURL) : that.connectionURL != null) {
             return false;
         }
-        if ( driverUuid != null ? !driverUuid.equals( that.driverUuid ) : that.driverUuid != null ) {
+        if (driverUuid != null ? !driverUuid.equals(that.driverUuid) : that.driverUuid != null) {
             return false;
         }
-        if ( user != null ? !user.equals( that.user ) : that.user != null ) {
+        if (user != null ? !user.equals(that.user) : that.user != null) {
             return false;
         }
-        return password != null ? password.equals( that.password ) : that.password == null;
+        return password != null ? password.equals(that.password) : that.password == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + ( connectionURL != null ? connectionURL.hashCode() : 0 );
+        result = 31 * result + (connectionURL != null ? connectionURL.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( driverUuid != null ? driverUuid.hashCode() : 0 );
+        result = 31 * result + (driverUuid != null ? driverUuid.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( user != null ? user.hashCode() : 0 );
+        result = 31 * result + (user != null ? user.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( password != null ? password.hashCode() : 0 );
+        result = 31 * result + (password != null ? password.hashCode() : 0);
         result = ~~result;
         return result;
     }

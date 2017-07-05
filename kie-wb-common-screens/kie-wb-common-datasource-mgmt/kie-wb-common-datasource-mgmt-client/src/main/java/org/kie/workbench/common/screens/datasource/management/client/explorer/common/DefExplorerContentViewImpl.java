@@ -21,14 +21,14 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Composite;
-import org.gwtbootstrap3.client.ui.LinkedGroup;
+import org.jboss.errai.common.client.dom.Anchor;
+import org.jboss.errai.common.client.dom.DOMUtil;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Event;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.PlaceRequest;
@@ -38,41 +38,43 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 @Dependent
 @Templated
 public class DefExplorerContentViewImpl
-        extends Composite
-        implements DefExplorerContentView {
-
-
-    @DataField( "content-accordion" )
-    private Element contentAccordion = DOM.createDiv();
+        implements DefExplorerContentView,
+                   IsElement {
 
     @Inject
-    @DataField( "datasources-panel-link" )
+    @DataField("content-accordion")
+    private Div contentAccordion;
+
+    @Inject
+    @DataField("datasources-panel-link")
     private Anchor dataSourcesPanelLink;
 
-    @DataField ( "datasources-panel" )
-    private Element dataSourcesPanel =  DOM.createDiv();
+    @Inject
+    @DataField("datasources-panel")
+    private Div dataSourcesPanel;
 
     @Inject
-    @DataField( "datasources-list-group" )
-    private LinkedGroup dataSourcesListGroup;
+    @DataField("datasources-list-group")
+    private Div dataSourcesListGroup;
 
     @Inject
-    @DataField( "add-new-datasource" )
+    @DataField("add-new-datasource")
     private Anchor newDataSourceLink;
 
     @Inject
-    @DataField( "drivers-panel-link" )
+    @DataField("drivers-panel-link")
     private Anchor driversPanelLink;
 
-    @DataField( "drivers-panel" )
-    private Element driversPanel = DOM.createDiv();
+    @Inject
+    @DataField("drivers-panel")
+    private Div driversPanel;
 
     @Inject
-    @DataField( "drivers-list-group" )
-    private LinkedGroup driversListGroup;
+    @DataField("drivers-list-group")
+    private Div driversListGroup;
 
     @Inject
-    @DataField( "add-new-driver" )
+    @DataField("add-new-driver")
     private Anchor newDriverLink;
 
     private Presenter presenter;
@@ -86,69 +88,71 @@ public class DefExplorerContentViewImpl
         //recalculate the panel group needed ids in order to enable more than one instance to be instantiated
         // on the same page.
         String contentAccordionId = Document.get().createUniqueId();
-        contentAccordion.setId( contentAccordionId );
+        contentAccordion.setId(contentAccordionId);
 
         String dataSourcesPanelId = Document.get().createUniqueId();
-        dataSourcesPanelLink.getElement().setAttribute( "data-parent", "#" + contentAccordionId );
-        dataSourcesPanelLink.getElement().setAttribute( "data-target", "#" + dataSourcesPanelId );
-        dataSourcesPanel.setId( dataSourcesPanelId );
+        dataSourcesPanelLink.setAttribute("data-parent",
+                                          "#" + contentAccordionId);
+        dataSourcesPanelLink.setAttribute("data-target",
+                                          "#" + dataSourcesPanelId);
+        dataSourcesPanel.setId(dataSourcesPanelId);
 
         String driversPanelLinkId = Document.get().createUniqueId();
-        driversPanelLink.getElement().setAttribute( "data-parent", "#" + contentAccordionId );
-        driversPanelLink.getElement().setAttribute( "data-target", "#" + driversPanelLinkId );
-        driversPanel.setId( driversPanelLinkId );
-
+        driversPanelLink.setAttribute("data-parent",
+                                      "#" + contentAccordionId);
+        driversPanelLink.setAttribute("data-target",
+                                      "#" + driversPanelLinkId);
+        driversPanel.setId(driversPanelLinkId);
     }
 
     @Override
-    public void init( Presenter presenter ) {
+    public void init(Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void addDataSourceItem( DefItem item ) {
-        dataSourcesListGroup.add( item );
+    public void addDataSourceItem(DefItem item) {
+        dataSourcesListGroup.appendChild(item.getElement());
     }
 
     @Override
-    public void addDriverItem( DefItem item ) {
-        driversListGroup.add( item );
+    public void addDriverItem(DefItem item) {
+        driversListGroup.appendChild(item.getElement());
     }
 
     @Override
     public void clear() {
-        dataSourcesListGroup.clear();
-        driversListGroup.clear();
+        DOMUtil.removeAllChildren(dataSourcesListGroup);
+        DOMUtil.removeAllChildren(driversListGroup);
     }
 
     @Override
     public void clearDataSources() {
-        dataSourcesListGroup.clear();
+        DOMUtil.removeAllChildren(dataSourcesListGroup);
     }
 
     @Override
     public void clearDrivers() {
-        driversListGroup.clear();
+        DOMUtil.removeAllChildren(driversListGroup);
     }
 
     @Override
-    public PlaceRequest createEditorPlaceRequest( Path path ) {
-        return new PathPlaceRequest( path );
+    public PlaceRequest createEditorPlaceRequest(Path path) {
+        return new PathPlaceRequest(path);
     }
 
     @Override
-    public PlaceRequest createScreenPlaceRequest( String identifier ) {
-        return new DefaultPlaceRequest( identifier );
+    public PlaceRequest createScreenPlaceRequest(String identifier) {
+        return new DefaultPlaceRequest(identifier);
     }
 
-    @EventHandler( "add-new-datasource" )
-    private void onAddNewDataSource( ClickEvent event ) {
+    @EventHandler("add-new-datasource")
+    private void onAddNewDataSource(@ForEvent("click") Event event) {
         presenter.onAddDataSource();
     }
 
-    @EventHandler( "add-new-driver" )
-    private void onAddNewDriver( ClickEvent event ) {
+    @EventHandler("add-new-driver")
+    private void onAddNewDriver(@ForEvent("click") Event event) {
         presenter.onAddDriver();
     }
-
 }

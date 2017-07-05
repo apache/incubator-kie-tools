@@ -20,85 +20,86 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.uberfire.commons.data.Pair;
 
 @Dependent
 public class DataSourceDefMainPanel
-        implements DataSourceDefMainPanelView.Presenter, IsWidget {
+        implements DataSourceDefMainPanelView.Presenter,
+                   IsElement {
 
     private DataSourceDefMainPanelView.Handler handler;
 
     private DataSourceDefMainPanelView view;
 
     @Inject
-    public DataSourceDefMainPanel( final DataSourceDefMainPanelView view ) {
+    public DataSourceDefMainPanel(final DataSourceDefMainPanelView view) {
         this.view = view;
-        view.init( this );
+        view.init(this);
     }
 
-    public void setHandler( final DataSourceDefMainPanelView.Handler handler ) {
+    public void setHandler(final DataSourceDefMainPanelView.Handler handler) {
         this.handler = handler;
     }
 
     @Override
     public void onNameChange() {
-        if ( handler != null ) {
+        if (handler != null) {
             handler.onNameChange();
         }
     }
 
     @Override
     public void onConnectionURLChange() {
-        if ( handler != null ) {
+        if (handler != null) {
             handler.onConnectionURLChange();
         }
     }
 
     @Override
     public void onUserChange() {
-        if ( handler != null ) {
+        if (handler != null) {
             handler.onUserChange();
         }
     }
 
     @Override
     public void onPasswordChange() {
-        if ( handler != null ) {
+        if (handler != null) {
             handler.onPasswordChange();
         }
     }
 
     @Override
     public void onDriverChange() {
-        if ( handler != null ) {
+        if (handler != null) {
             handler.onDriverChange();
         }
     }
 
     @Override
     public void onTestConnection() {
-        if ( handler != null ) {
+        if (handler != null) {
             handler.onTestConnection();
         }
     }
 
     @Override
-    public Widget asWidget() {
-        return view.asWidget();
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 
-    public void setName( final String name ) {
-        view.setName( name );
+    public void setName(final String name) {
+        view.setName(name);
     }
 
     public String getName() {
         return view.getName();
     }
 
-    public void setNameErrorMessage( final String message ) {
-        view.setNameErrorMessage( message );
+    public void setNameErrorMessage(final String message) {
+        view.setNameErrorMessage(message);
     }
 
     public void clearNameErrorMessage() {
@@ -109,12 +110,12 @@ public class DataSourceDefMainPanel
         return view.getConnectionURL();
     }
 
-    void setConnectionURL( final String connectionURL ) {
-        view.setConnectionURL( connectionURL );
+    void setConnectionURL(final String connectionURL) {
+        view.setConnectionURL(connectionURL);
     }
 
-    public void setConnectionURLErrorMessage( String message ) {
-        view.setConnectionURLErrorMessage( message );
+    public void setConnectionURLErrorMessage(String message) {
+        view.setConnectionURLErrorMessage(message);
     }
 
     public void clearConnectionURLErrorMessage() {
@@ -125,12 +126,12 @@ public class DataSourceDefMainPanel
         return view.getUser();
     }
 
-    public void setUser( final String user ) {
-        view.setUser( user );
+    public void setUser(final String user) {
+        view.setUser(user);
     }
 
-    public void setUserErrorMessage( final String message ) {
-        view.setUserErrorMessage( message );
+    public void setUserErrorMessage(final String message) {
+        view.setUserErrorMessage(message);
     }
 
     public void clearUserErrorMessage() {
@@ -141,12 +142,12 @@ public class DataSourceDefMainPanel
         return view.getPassword();
     }
 
-    public void setPassword( final String password ) {
-        view.setPassword( password );
+    public void setPassword(final String password) {
+        view.setPassword(password);
     }
 
-    public void setPasswordErrorMessage( final String message ) {
-        view.setPasswordErrorMessage( message );
+    public void setPasswordErrorMessage(final String message) {
+        view.setPasswordErrorMessage(message);
     }
 
     public void clearPasswordErrorMessage() {
@@ -157,36 +158,38 @@ public class DataSourceDefMainPanel
         return view.getDriver();
     }
 
-    public void setDriver( final String driver ) {
-        view.setDriver( driver );
+    public void setDriver(final String driver) {
+        view.setDriver(driver);
     }
 
-    public void setDriverErrorMessage( final String message ) {
-        view.setDriverErrorMessage( message );
+    public void setDriverErrorMessage(final String message) {
+        view.setDriverErrorMessage(message);
     }
 
     public void clearDriverErrorMessage() {
         view.clearDriverErrorMessage();
     }
 
-    public void loadDriverOptions( final List<Pair<String,String>> driverOptions, final boolean addEmptyOption ) {
-        view.loadDriverOptions( driverOptions, addEmptyOption );
+    public void loadDriverOptions(final List<Pair<String, String>> driverOptions,
+                                  final boolean addEmptyOption) {
+        view.loadDriverOptions(driverOptions,
+                               addEmptyOption);
     }
 
     public void clear() {
-        view.setName( null );
+        view.setName(null);
         view.clearNameErrorMessage();
 
-        view.setConnectionURL( null );
+        view.setConnectionURL(null);
         view.clearConnectionURLErrorMessage();
 
-        view.setUser( null );
+        view.setUser(null);
         view.clearUserErrorMessage();
 
-        view.setPassword( null );
+        view.setPassword(null);
         view.clearPasswordErrorMessage();
 
-        view.setDriver( ""  );
+        view.setDriver("");
         view.clearDriverErrorMessage();
     }
 }

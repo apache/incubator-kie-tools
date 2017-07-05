@@ -16,11 +16,11 @@
 package org.kie.workbench.common.screens.datasource.management.client.explorer.common;
 
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 import org.uberfire.mvp.PlaceRequest;
 
 public interface DefExplorerContentView
-        extends UberView<DefExplorerContentView.Presenter> {
+        extends UberElement<DefExplorerContentView.Presenter> {
 
     interface Presenter extends Handler {
 
@@ -31,12 +31,11 @@ public interface DefExplorerContentView
         void onAddDataSource();
 
         void onAddDriver();
-
     }
 
-    void addDataSourceItem( DefItem item );
+    void addDataSourceItem(DefItem item);
 
-    void addDriverItem( DefItem item );
+    void addDriverItem(DefItem item);
 
     void clear();
 
@@ -44,8 +43,7 @@ public interface DefExplorerContentView
 
     void clearDrivers();
 
-    PlaceRequest createEditorPlaceRequest( Path path );
+    PlaceRequest createEditorPlaceRequest(Path path);
 
-    PlaceRequest createScreenPlaceRequest( String identifier );
-
+    PlaceRequest createScreenPlaceRequest(String identifier);
 }

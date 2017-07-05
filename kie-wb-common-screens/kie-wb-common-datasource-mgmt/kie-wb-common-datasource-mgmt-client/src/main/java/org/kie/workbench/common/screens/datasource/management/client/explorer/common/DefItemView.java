@@ -16,26 +16,24 @@
 
 package org.kie.workbench.common.screens.datasource.management.client.explorer.common;
 
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 
 public interface DefItemView
-        extends UberView<DefItemView.Presenter> {
+        extends UberElement<DefItemView.Presenter> {
 
     interface Presenter {
 
         void onClick();
 
-        void addItemHandler( ItemHandler itemHandler );
-
+        void addItemHandler(ItemHandler itemHandler);
     }
 
     interface ItemHandler {
-        void onClick( String itemId );
+
+        void onClick(String itemId);
     }
 
-    void setName( String name );
+    void setName(String name);
 
     String getName();
-
-
 }

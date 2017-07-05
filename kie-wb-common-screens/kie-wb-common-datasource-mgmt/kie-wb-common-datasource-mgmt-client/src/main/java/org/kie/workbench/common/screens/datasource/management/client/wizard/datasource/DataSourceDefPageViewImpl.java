@@ -19,8 +19,8 @@ package org.kie.workbench.common.screens.datasource.management.client.wizard.dat
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Composite;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -30,33 +30,33 @@ import org.kie.workbench.common.screens.datasource.management.client.resources.i
 @Dependent
 @Templated
 public class DataSourceDefPageViewImpl
-        extends Composite
-        implements DataSourceDefPageView {
+        implements DataSourceDefPageView,
+                   IsElement {
 
     @Inject
-    @DataField( "main-panel-container" )
-    private FlowPanel mainPanelContainer;
+    @DataField("main-panel-container")
+    private Div mainPanelContainer;
 
     private Presenter presenter;
 
     @Inject
     TranslationService translationService;
 
-    public DataSourceDefPageViewImpl( ) {
+    public DataSourceDefPageViewImpl() {
     }
 
     @Override
-    public void init( Presenter presenter ) {
+    public void init(Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setMainPanel( final DataSourceDefMainPanel mainPanel ) {
-        mainPanelContainer.add( mainPanel );
+    public void setMainPanel(final DataSourceDefMainPanel mainPanel) {
+        mainPanelContainer.appendChild(mainPanel.getElement());
     }
 
     @Override
     public String getPageTitle() {
-        return translationService.getTranslation( DataSourceManagementConstants.DataSourceDefPage_pagetTitle );
+        return translationService.getTranslation(DataSourceManagementConstants.DataSourceDefPage_pagetTitle);
     }
 }

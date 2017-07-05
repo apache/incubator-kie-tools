@@ -17,17 +17,16 @@
 package org.kie.workbench.common.screens.datasource.management.client.wizard.datasource;
 
 import org.kie.workbench.common.screens.datasource.management.client.editor.datasource.DataSourceDefMainPanel;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 
 public interface DataSourceDefPageView
-        extends UberView<DataSourceDefPageView.Presenter> {
+        extends UberElement<DataSourceDefPageView.Presenter> {
 
     interface Presenter {
 
     }
 
-    void setMainPanel( DataSourceDefMainPanel mainPanel );
+    void setMainPanel(DataSourceDefMainPanel mainPanel);
 
     String getPageTitle();
-
 }

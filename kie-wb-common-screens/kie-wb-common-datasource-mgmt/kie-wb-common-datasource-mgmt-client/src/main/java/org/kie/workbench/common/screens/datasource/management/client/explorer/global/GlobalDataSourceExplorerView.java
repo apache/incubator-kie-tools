@@ -17,14 +17,14 @@
 package org.kie.workbench.common.screens.datasource.management.client.explorer.global;
 
 import org.kie.workbench.common.screens.datasource.management.client.explorer.common.DefExplorerContent;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 
 public interface GlobalDataSourceExplorerView
-        extends UberView<GlobalDataSourceExplorerView.Presenter> {
+        extends UberElement<GlobalDataSourceExplorerView.Presenter> {
 
     interface Presenter {
 
     }
 
-    void setDataSourceDefExplorer( final DefExplorerContent defExplorerContent );
+    void setDataSourceDefExplorer(final DefExplorerContent defExplorerContent);
 }

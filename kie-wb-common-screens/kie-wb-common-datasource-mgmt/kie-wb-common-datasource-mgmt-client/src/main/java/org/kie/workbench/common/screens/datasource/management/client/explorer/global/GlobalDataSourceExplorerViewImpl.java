@@ -19,8 +19,8 @@ package org.kie.workbench.common.screens.datasource.management.client.explorer.g
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Composite;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.datasource.management.client.explorer.common.DefExplorerContent;
@@ -28,12 +28,12 @@ import org.kie.workbench.common.screens.datasource.management.client.explorer.co
 @Dependent
 @Templated
 public class GlobalDataSourceExplorerViewImpl
-        extends Composite
-        implements GlobalDataSourceExplorerView {
+        implements GlobalDataSourceExplorerView,
+                   IsElement {
 
     @Inject
-    @DataField( "datasource-explorer-container")
-    private FlowPanel container;
+    @DataField("datasource-explorer-container")
+    private Div container;
 
     private Presenter presenter;
 
@@ -41,12 +41,12 @@ public class GlobalDataSourceExplorerViewImpl
     }
 
     @Override
-    public void init( final Presenter presenter ) {
+    public void init(final Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setDataSourceDefExplorer( final DefExplorerContent defExplorerContent ) {
-        container.add( defExplorerContent );
+    public void setDataSourceDefExplorer(final DefExplorerContent defExplorerContent) {
+        container.appendChild(defExplorerContent.getElement());
     }
 }

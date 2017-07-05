@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.screens.datasource.management.client.editor.driver;
 
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 
-public interface DriverDefMainPanelView extends UberView<DriverDefMainPanelView.Presenter> {
+public interface DriverDefMainPanelView extends UberElement<DriverDefMainPanelView.Presenter> {
 
     interface Presenter extends Handler {
 
@@ -37,43 +37,43 @@ public interface DriverDefMainPanelView extends UberView<DriverDefMainPanelView.
         void onVersionChange();
     }
 
-    void setName( final String text );
+    void setName(final String text);
 
     String getName();
 
-    void setNameErrorMessage( final String message );
+    void setNameErrorMessage(final String message);
 
     void clearNameErrorMessage();
 
-    void setDriverClass( final String driverClass );
+    void setDriverClass(final String driverClass);
 
     String getDriverClass();
 
-    void setDriverClassErrorMessage( final String message );
+    void setDriverClassErrorMessage(final String message);
 
     void clearDriverClassErrorMessage();
 
-    void setGroupId( final String groupId );
+    void setGroupId(final String groupId);
 
     String getGroupId();
 
-    void setGroupIdErrorMessage( final String message );
+    void setGroupIdErrorMessage(final String message);
 
     void clearGroupIdErrorMessage();
 
-    void setArtifactId( final String artifactId );
+    void setArtifactId(final String artifactId);
 
     String getArtifactId();
 
-    void setArtifactIdErrorMessage( final String message );
+    void setArtifactIdErrorMessage(final String message);
 
     void clearArtifactIdErrorMessage();
 
-    void setVersion( String version );
+    void setVersion(String version);
 
     String getVersion();
 
-    void setVersionErrorMessage( final String message );
+    void setVersionErrorMessage(final String message);
 
     void clearVersionErrorMessage();
 }

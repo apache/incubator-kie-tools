@@ -23,12 +23,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.screens.datasource.management.client.explorer.common.DefExplorerBase;
 import org.kie.workbench.common.screens.datasource.management.client.explorer.common.DefExplorerContent;
 import org.kie.workbench.common.screens.datasource.management.client.wizard.datasource.NewDataSourceDefWizard;
@@ -43,7 +43,7 @@ import org.kie.workbench.common.screens.datasource.management.service.DefExplore
 public class ProjectDataSourceExplorer
         extends DefExplorerBase
         implements ProjectDataSourceExplorerView.Presenter,
-        IsWidget {
+                   IsElement {
 
     private ProjectDataSourceExplorerView view;
 
@@ -56,44 +56,47 @@ public class ProjectDataSourceExplorer
     private String activeBranch = "master";
 
     @Inject
-    public ProjectDataSourceExplorer( final ProjectDataSourceExplorerView view,
-            final DefExplorerContent defExplorerContent,
-            final NewDataSourceDefWizard newDataSourceDefWizard,
-            final NewDriverDefWizard newDriverDefWizard,
-            final Caller<DefExplorerQueryService> explorerService ) {
-        super( defExplorerContent, newDataSourceDefWizard, newDriverDefWizard, explorerService );
+    public ProjectDataSourceExplorer(final ProjectDataSourceExplorerView view,
+                                     final DefExplorerContent defExplorerContent,
+                                     final NewDataSourceDefWizard newDataSourceDefWizard,
+                                     final NewDriverDefWizard newDriverDefWizard,
+                                     final Caller<DefExplorerQueryService> explorerService) {
+        super(defExplorerContent,
+              newDataSourceDefWizard,
+              newDriverDefWizard,
+              explorerService);
         this.view = view;
     }
 
     @PostConstruct
     protected void init() {
         super.init();
-        view.setDataSourceDefExplorer( defExplorerContent );
-        view.addProjectSelectorHandler( new ProjectSelectorHandler() {
+        view.setDataSourceDefExplorer(defExplorerContent);
+        view.addProjectSelectorHandler(new ProjectSelectorHandler() {
             @Override
-            public void onOrganizationalUnitSelected( OrganizationalUnit ou ) {
-                ProjectDataSourceExplorer.this.onOrganizationalUnitSelected( ou );
+            public void onOrganizationalUnitSelected(OrganizationalUnit ou) {
+                ProjectDataSourceExplorer.this.onOrganizationalUnitSelected(ou);
             }
 
             @Override
-            public void onRepositorySelected( Repository repository ) {
-                ProjectDataSourceExplorer.this.onRepositorySelected( repository );
+            public void onRepositorySelected(Repository repository) {
+                ProjectDataSourceExplorer.this.onRepositorySelected(repository);
             }
 
             @Override
-            public void onProjectSelected( Project project ) {
-                ProjectDataSourceExplorer.this.onProjectSelected( project );
+            public void onProjectSelected(Project project) {
+                ProjectDataSourceExplorer.this.onProjectSelected(project);
             }
-        } );
+        });
     }
 
     @Override
     public void onAddDriver() {
         final Project activeProject = getActiveProject();
-        if ( activeProject == null ) {
-            Window.alert( "No project has been selected" );
+        if (activeProject == null) {
+            Window.alert("No project has been selected");
         } else {
-            newDriverDefWizard.setProject( activeProject );
+            newDriverDefWizard.setProject(activeProject);
             newDriverDefWizard.start();
         }
     }
@@ -101,45 +104,46 @@ public class ProjectDataSourceExplorer
     @Override
     public void onAddDataSource() {
         final Project activeProject = getActiveProject();
-        if ( activeProject == null ) {
-            Window.alert( "No project has been selected" );
+        if (activeProject == null) {
+            Window.alert("No project has been selected");
         } else {
-            newDataSourceDefWizard.setProject( getActiveProject() );
+            newDataSourceDefWizard.setProject(getActiveProject());
             newDataSourceDefWizard.start();
         }
     }
 
     @Override
-    public Widget asWidget() {
-        return view.asWidget();
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 
     @Override
     protected DefExplorerQuery createRefreshQuery() {
-        return new DefExplorerQuery( activeOrganizationalUnit,
-                activeRepository,
-                activeProject,
-                activeBranch );
+        return new DefExplorerQuery(activeOrganizationalUnit,
+                                    activeRepository,
+                                    activeProject,
+                                    activeBranch);
     }
 
-    private void refresh( final DefExplorerQuery query ) {
-        explorerService.call( getRefreshCallback() ).executeQuery( query );
+    private void refresh(final DefExplorerQuery query) {
+        explorerService.call(getRefreshCallback()).executeQuery(query);
     }
 
     @Override
-    protected void loadContent( final DefExplorerQueryResult content ) {
+    protected void loadContent(final DefExplorerQueryResult content) {
 
         defExplorerContent.clear();
-        if ( activeOrganizationalUnit == null || !contains( content.getOrganizationalUnits(), activeOrganizationalUnit ) ) {
+        if (activeOrganizationalUnit == null || !contains(content.getOrganizationalUnits(),
+                                                          activeOrganizationalUnit)) {
             //no organizational unit was selected or the previously selected one has been deleted at server side.
 
-            if ( content.getOrganizationalUnits() != null && content.getOrganizationalUnits().size() > 0 ) {
+            if (content.getOrganizationalUnits() != null && content.getOrganizationalUnits().size() > 0) {
                 //let's select the first one
                 activeOrganizationalUnit = content.getOrganizationalUnits().iterator().next();
                 activeRepository = null;
                 activeProject = null;
                 //try a refresh.
-                refresh( );
+                refresh();
             } else {
                 //there are no organizational units, nothing to do.
                 activeOrganizationalUnit = null;
@@ -147,12 +151,12 @@ public class ProjectDataSourceExplorer
                 activeProject = null;
                 view.clear();
             }
-
-        } else if ( activeRepository == null || !contains( content.getRepositories(), activeRepository ) ) {
+        } else if (activeRepository == null || !contains(content.getRepositories(),
+                                                         activeRepository)) {
             //an organizational unit was selected and is in the result but no repository was selected or the previously
             //selected one has been deleted at server side.
 
-            if ( content.getRepositories() != null && content.getRepositories().size() > 0 ) {
+            if (content.getRepositories() != null && content.getRepositories().size() > 0) {
                 //let's select the first one.
                 activeRepository = content.getRepositories().iterator().next();
                 activeProject = null;
@@ -162,40 +166,50 @@ public class ProjectDataSourceExplorer
                 //there are no repositories for the activeOrganizationalUnit
                 activeRepository = null;
                 activeProject = null;
-                view.loadContent( content.getOrganizationalUnits(), activeOrganizationalUnit,
-                        new ArrayList<>( ), activeRepository,
-                        new ArrayList<>( ), activeProject );
+                view.loadContent(content.getOrganizationalUnits(),
+                                 activeOrganizationalUnit,
+                                 new ArrayList<>(),
+                                 activeRepository,
+                                 new ArrayList<>(),
+                                 activeProject);
             }
-        } else if ( activeProject == null || !contains( content.getProjects(), activeProject ) ) {
+        } else if (activeProject == null || !contains(content.getProjects(),
+                                                      activeProject)) {
             //an organization unit and a repository were selected and both are in the result, but no project is
             //selected or the selected one has been deleted at server side.
-            if ( content.getProjects() != null && content.getProjects().size() > 0 ) {
+            if (content.getProjects() != null && content.getProjects().size() > 0) {
                 activeProject = content.getProjects().iterator().next();
                 //try a refresh.
                 refresh();
             } else {
                 activeProject = null;
-                view.loadContent( content.getOrganizationalUnits(), activeOrganizationalUnit,
-                        content.getRepositories(), activeRepository,
-                        new ArrayList<>( ), activeProject );
+                view.loadContent(content.getOrganizationalUnits(),
+                                 activeOrganizationalUnit,
+                                 content.getRepositories(),
+                                 activeRepository,
+                                 new ArrayList<>(),
+                                 activeProject);
             }
         } else {
             //an organizational unit, repository and project are selected and are in the result.
             //just load the view with the results.
 
-            view.loadContent( content.getOrganizationalUnits(), activeOrganizationalUnit,
-                    content.getRepositories(), activeRepository,
-                    content.getProjects(), activeProject );
-            defExplorerContent.loadDataSources( content.getDataSourceDefs() );
-            defExplorerContent.loadDrivers( content.getDriverDefs() );
+            view.loadContent(content.getOrganizationalUnits(),
+                             activeOrganizationalUnit,
+                             content.getRepositories(),
+                             activeRepository,
+                             content.getProjects(),
+                             activeProject);
+            defExplorerContent.loadDataSources(content.getDataSourceDefs());
+            defExplorerContent.loadDrivers(content.getDriverDefs());
         }
-
     }
 
-    private boolean contains( Collection<Repository> repositories, Repository activeRepository ) {
-        if ( repositories != null ) {
-            for ( Repository repository : repositories ) {
-                if ( repository.getAlias().equals( activeRepository.getAlias() ) ) {
+    private boolean contains(Collection<Repository> repositories,
+                             Repository activeRepository) {
+        if (repositories != null) {
+            for (Repository repository : repositories) {
+                if (repository.getAlias().equals(activeRepository.getAlias())) {
                     return true;
                 }
             }
@@ -203,10 +217,11 @@ public class ProjectDataSourceExplorer
         return false;
     }
 
-    private boolean contains( Collection<OrganizationalUnit> organizationalUnits, OrganizationalUnit activeOrganizationalUnit ) {
-        if ( organizationalUnits != null ) {
-            for ( OrganizationalUnit ou : organizationalUnits ) {
-                if ( ou.getName().equals( activeOrganizationalUnit.getName() ) ) {
+    private boolean contains(Collection<OrganizationalUnit> organizationalUnits,
+                             OrganizationalUnit activeOrganizationalUnit) {
+        if (organizationalUnits != null) {
+            for (OrganizationalUnit ou : organizationalUnits) {
+                if (ou.getName().equals(activeOrganizationalUnit.getName())) {
                     return true;
                 }
             }
@@ -214,10 +229,11 @@ public class ProjectDataSourceExplorer
         return false;
     }
 
-    private boolean contains( Collection<Project> projects, Project activeProject ) {
-        if ( projects != null ) {
-            for ( Project project : projects ) {
-                if ( project.getRootPath().equals( activeProject.getRootPath() ) ) {
+    private boolean contains(Collection<Project> projects,
+                             Project activeProject) {
+        if (projects != null) {
+            for (Project project : projects) {
+                if (project.getRootPath().equals(activeProject.getRootPath())) {
                     return true;
                 }
             }
@@ -225,47 +241,47 @@ public class ProjectDataSourceExplorer
         return false;
     }
 
-    public void onOrganizationalUnitSelected( final OrganizationalUnit ou ) {
-        if ( hasChanged( ou ) ) {
+    public void onOrganizationalUnitSelected(final OrganizationalUnit ou) {
+        if (hasChanged(ou)) {
             activeOrganizationalUnit = ou;
             activeRepository = null;
             activeProject = null;
             DefExplorerQuery query = new DefExplorerQuery();
-            query.setOrganizationalUnit( ou );
-            refresh( query );
+            query.setOrganizationalUnit(ou);
+            refresh(query);
         }
     }
 
-    public void onRepositorySelected( final Repository repository ) {
-        if ( hasChanged( repository ) ) {
+    public void onRepositorySelected(final Repository repository) {
+        if (hasChanged(repository)) {
             DefExplorerQuery query = new DefExplorerQuery();
-            if ( activeOrganizationalUnit != null ) {
+            if (activeOrganizationalUnit != null) {
                 activeRepository = repository;
                 activeProject = null;
-                query.setOrganizationalUnit( activeOrganizationalUnit );
-                query.setRepository( repository );
-                query.setBranch( activeBranch );
+                query.setOrganizationalUnit(activeOrganizationalUnit);
+                query.setRepository(repository);
+                query.setBranch(activeBranch);
             } else {
                 activeRepository = null;
                 activeProject = null;
             }
-            refresh( query );
+            refresh(query);
         }
     }
 
-    public void onProjectSelected( final Project project ) {
-        if ( hasChanged( project ) ) {
+    public void onProjectSelected(final Project project) {
+        if (hasChanged(project)) {
             DefExplorerQuery query = new DefExplorerQuery();
-            if ( activeOrganizationalUnit != null && activeRepository != null ) {
+            if (activeOrganizationalUnit != null && activeRepository != null) {
                 activeProject = project;
-                query.setOrganizationalUnit( activeOrganizationalUnit );
-                query.setRepository( activeRepository );
-                query.setBranch( activeBranch );
-                query.setProject( project );
+                query.setOrganizationalUnit(activeOrganizationalUnit);
+                query.setRepository(activeRepository);
+                query.setBranch(activeBranch);
+                query.setProject(project);
             } else {
                 activeProject = null;
             }
-            refresh( query );
+            refresh(query);
         }
     }
 
@@ -273,7 +289,7 @@ public class ProjectDataSourceExplorer
         return activeOrganizationalUnit;
     }
 
-    public void setActiveOrganizationalUnit( OrganizationalUnit activeOrganizationalUnit ) {
+    public void setActiveOrganizationalUnit(OrganizationalUnit activeOrganizationalUnit) {
         this.activeOrganizationalUnit = activeOrganizationalUnit;
     }
 
@@ -281,7 +297,7 @@ public class ProjectDataSourceExplorer
         return activeRepository;
     }
 
-    public void setActiveRepository( Repository activeRepository ) {
+    public void setActiveRepository(Repository activeRepository) {
         this.activeRepository = activeRepository;
     }
 
@@ -289,7 +305,7 @@ public class ProjectDataSourceExplorer
         return activeProject;
     }
 
-    public void setActiveProject( Project activeProject ) {
+    public void setActiveProject(Project activeProject) {
         this.activeProject = activeProject;
     }
 
@@ -298,24 +314,24 @@ public class ProjectDataSourceExplorer
     }
 
     @Override
-    protected boolean refreshOnDataSourceEvent( BaseDataSourceEvent event ) {
-        return !event.isGlobal() && activeProject != null && activeProject.equals( event.getProject() );
+    protected boolean refreshOnDataSourceEvent(BaseDataSourceEvent event) {
+        return !event.isGlobal() && activeProject != null && activeProject.equals(event.getProject());
     }
 
     @Override
-    protected boolean refreshOnDriverEvent( BaseDriverEvent event ) {
-        return !event.isGlobal() && activeProject != null && activeProject.equals( event.getProject() );
+    protected boolean refreshOnDriverEvent(BaseDriverEvent event) {
+        return !event.isGlobal() && activeProject != null && activeProject.equals(event.getProject());
     }
 
-    private boolean hasChanged( final OrganizationalUnit ou ) {
-        return activeOrganizationalUnit != null ? !activeOrganizationalUnit.equals( ou ) : ou != null;
+    private boolean hasChanged(final OrganizationalUnit ou) {
+        return activeOrganizationalUnit != null ? !activeOrganizationalUnit.equals(ou) : ou != null;
     }
 
-    private boolean hasChanged( final Repository repository ) {
-        return activeRepository != null ? !activeRepository.equals( repository ) : repository != null;
+    private boolean hasChanged(final Repository repository) {
+        return activeRepository != null ? !activeRepository.equals(repository) : repository != null;
     }
 
-    private boolean hasChanged( final Project project ) {
-        return activeProject != null ? !activeProject.equals( project ) : project != null;
+    private boolean hasChanged(final Project project) {
+        return activeProject != null ? !activeProject.equals(project) : project != null;
     }
 }

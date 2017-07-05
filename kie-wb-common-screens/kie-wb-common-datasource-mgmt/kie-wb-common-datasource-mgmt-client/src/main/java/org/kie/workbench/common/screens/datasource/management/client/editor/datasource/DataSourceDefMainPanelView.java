@@ -18,10 +18,10 @@ package org.kie.workbench.common.screens.datasource.management.client.editor.dat
 
 import java.util.List;
 
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 import org.uberfire.commons.data.Pair;
 
-public interface DataSourceDefMainPanelView extends UberView<DataSourceDefMainPanelView.Presenter> {
+public interface DataSourceDefMainPanelView extends UberElement<DataSourceDefMainPanelView.Presenter> {
 
     interface Presenter extends Handler {
 
@@ -42,45 +42,46 @@ public interface DataSourceDefMainPanelView extends UberView<DataSourceDefMainPa
         void onTestConnection();
     }
 
-    void setName( final String text );
+    void setName(final String text);
 
     String getName();
 
-    void setNameErrorMessage( final String message );
+    void setNameErrorMessage(final String message);
 
     void clearNameErrorMessage();
 
     String getConnectionURL();
 
-    void setConnectionURL( final String connectionURL );
+    void setConnectionURL(final String connectionURL);
 
-    void setConnectionURLErrorMessage( final String message );
+    void setConnectionURLErrorMessage(final String message);
 
     void clearConnectionURLErrorMessage();
 
     String getUser();
 
-    void setUser( final String user );
+    void setUser(final String user);
 
-    void setUserErrorMessage( final String message );
+    void setUserErrorMessage(final String message);
 
     void clearUserErrorMessage();
 
     String getPassword();
 
-    void setPassword( final String password );
+    void setPassword(final String password);
 
-    void setPasswordErrorMessage( final String message );
+    void setPasswordErrorMessage(final String message);
 
     void clearPasswordErrorMessage();
 
     String getDriver();
 
-    void setDriver( final String driver );
+    void setDriver(final String driver);
 
-    void setDriverErrorMessage( final String message );
+    void setDriverErrorMessage(final String message);
 
     void clearDriverErrorMessage();
 
-    void loadDriverOptions( final List<Pair<String,String>> driverOptions, final boolean addEmptyOption );
+    void loadDriverOptions(final List<Pair<String, String>> driverOptions,
+                           final boolean addEmptyOption);
 }

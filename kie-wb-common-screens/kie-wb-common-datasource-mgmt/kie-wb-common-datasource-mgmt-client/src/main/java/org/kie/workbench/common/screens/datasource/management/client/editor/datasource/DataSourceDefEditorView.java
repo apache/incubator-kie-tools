@@ -16,13 +16,14 @@
 
 package org.kie.workbench.common.screens.datasource.management.client.editor.datasource;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.api.IsElement;
 import org.kie.workbench.common.screens.datasource.management.client.editor.common.DefEditorActionsPanelView;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
 
 public interface DataSourceDefEditorView
-        extends UberView< DataSourceDefEditorView.Presenter >, BaseEditorView {
+        extends UberView<DataSourceDefEditorView.Presenter>,
+                BaseEditorView {
 
     String COL_MD_8 = "col-md-8";
 
@@ -30,19 +31,18 @@ public interface DataSourceDefEditorView
 
     interface Presenter extends DefEditorActionsPanelView.Presenter {
 
-        void onShowContent( );
+        void onShowContent();
     }
 
-    void setDataSourceName( String dataSourceName );
+    void setDataSourceName(String dataSourceName);
 
-    void clearContent( );
+    void clearContent();
 
-    void setContent( IsWidget content );
+    void setContent(IsElement content);
 
-    void setContentWidth( String width );
+    void setContentWidth(String width);
 
-    void showHeaderPanel( boolean show );
+    void showHeaderPanel(boolean show);
 
-    void showActionsPanel( boolean show );
-
+    void showActionsPanel(boolean show);
 }

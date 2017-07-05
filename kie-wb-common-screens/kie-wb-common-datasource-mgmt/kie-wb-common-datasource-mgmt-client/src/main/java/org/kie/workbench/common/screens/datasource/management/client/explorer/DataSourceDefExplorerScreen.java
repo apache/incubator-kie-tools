@@ -20,10 +20,9 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.datasource.management.client.explorer.global.GlobalDataSourceExplorer;
-import org.kie.workbench.common.screens.datasource.management.client.explorer.project.ProjectDataSourceExplorer;
 import org.kie.workbench.common.screens.datasource.management.client.resources.i18n.DataSourceManagementConstants;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -31,12 +30,11 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
 @ApplicationScoped
-@WorkbenchScreen( identifier = DataSourceDefExplorerScreen.SCREEN_ID )
+@WorkbenchScreen(identifier = DataSourceDefExplorerScreen.SCREEN_ID)
 public class DataSourceDefExplorerScreen
         implements DataSourceDefExplorerScreenView.Presenter {
 
@@ -44,60 +42,45 @@ public class DataSourceDefExplorerScreen
 
     private DataSourceDefExplorerScreenView view;
 
-    private ProjectDataSourceExplorer projectDataSourceExplorer;
-
     private GlobalDataSourceExplorer globalDataSourceExplorer;
 
     private TranslationService translationService;
 
-    private PlaceRequest placeRequest;
-
     private Menus menu;
-
-    private boolean projectExplorerSelected = true;
 
     public DataSourceDefExplorerScreen() {
     }
 
     @Inject
-    public DataSourceDefExplorerScreen( DataSourceDefExplorerScreenView view,
-            ProjectDataSourceExplorer projectDataSourceExplorer,
-            GlobalDataSourceExplorer globalDataSourceExplorer,
-            TranslationService translationService ) {
+    public DataSourceDefExplorerScreen(DataSourceDefExplorerScreenView view,
+                                       GlobalDataSourceExplorer globalDataSourceExplorer,
+                                       TranslationService translationService) {
 
         this.view = view;
-        this.projectDataSourceExplorer = projectDataSourceExplorer;
         this.globalDataSourceExplorer = globalDataSourceExplorer;
         this.translationService = translationService;
-        view.init( this );
+        view.init(this);
     }
 
     @PostConstruct
     public void init() {
-        view.setProjectExplorer( projectDataSourceExplorer );
-        view.setGlobalExplorer( globalDataSourceExplorer );
+        view.setGlobalExplorer(globalDataSourceExplorer);
     }
 
     @OnStartup
-    public void onStartup( PlaceRequest placeRequest ) {
-        this.placeRequest = placeRequest;
+    public void onStartup() {
         this.menu = makeMenuBar();
-
-        projectDataSourceExplorer.setActiveOrganizationalUnit( null );
-        projectDataSourceExplorer.setActiveRepository( null );
-        projectDataSourceExplorer.setActiveProject( null );
-
-        onProjectExplorerSelected();
+        globalDataSourceExplorer.refresh();
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return translationService.getTranslation( DataSourceManagementConstants.DataSourceDefExplorerScreen_Title );
+        return translationService.getTranslation(DataSourceManagementConstants.DataSourceDefExplorerScreen_Title);
     }
 
     @WorkbenchPartView
-    public IsWidget getView() {
-        return view.asWidget();
+    public IsElement getView() {
+        return view;
     }
 
     @WorkbenchMenu
@@ -109,34 +92,18 @@ public class DataSourceDefExplorerScreen
         return MenuFactory
                 .newTopLevelMenu(
                         translationService.getTranslation(
-                                DataSourceManagementConstants.DataSourceDefExplorerScreen_Refresh ) )
-                .respondsWith( getRefreshCommand() )
+                                DataSourceManagementConstants.DataSourceDefExplorerScreen_Refresh))
+                .respondsWith(getRefreshCommand())
                 .endMenu()
                 .build();
     }
 
-    private Command getRefreshCommand() {
+    protected Command getRefreshCommand() {
         return new Command() {
             @Override
             public void execute() {
-                if ( projectExplorerSelected ) {
-                    onProjectExplorerSelected();
-                } else {
-                    onGlobalExplorerSelected();
-                }
+                globalDataSourceExplorer.refresh();
             }
         };
-    }
-
-    @Override
-    public void onProjectExplorerSelected() {
-        projectExplorerSelected = true;
-        projectDataSourceExplorer.refresh();
-    }
-
-    @Override
-    public void onGlobalExplorerSelected() {
-        projectExplorerSelected = false;
-        globalDataSourceExplorer.refresh();
     }
 }

@@ -19,8 +19,8 @@ package org.kie.workbench.common.screens.datasource.management.client.wizard.dri
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Composite;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -30,12 +30,12 @@ import org.kie.workbench.common.screens.datasource.management.client.resources.i
 @Dependent
 @Templated
 public class DriverDefPageViewImpl
-        extends Composite
-        implements DriverDefPageView {
+        implements DriverDefPageView,
+                   IsElement {
 
     @Inject
-    @DataField( "main-panel-container" )
-    private FlowPanel mainPanelContainer;
+    @DataField("main-panel-container")
+    private Div mainPanelContainer;
 
     private DriverDefPageView.Presenter presenter;
 
@@ -46,17 +46,17 @@ public class DriverDefPageViewImpl
     }
 
     @Override
-    public void init( Presenter presenter ) {
+    public void init(Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setMainPanel( DriverDefMainPanel mainPanel ) {
-        mainPanelContainer.add( mainPanel );
+    public void setMainPanel(DriverDefMainPanel mainPanel) {
+        mainPanelContainer.appendChild(mainPanel.getElement());
     }
 
     @Override
     public String getPageTitle() {
-        return translationService.getTranslation( DataSourceManagementConstants.DriverDefDefPageViewImpl_pageTitle );
+        return translationService.getTranslation(DataSourceManagementConstants.DriverDefDefPageViewImpl_pageTitle);
     }
 }

@@ -16,18 +16,18 @@
 
 package org.kie.workbench.common.screens.datasource.management.client.editor.driver;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.api.IsElement;
 import org.kie.workbench.common.screens.datasource.management.client.editor.common.DefEditorActionsPanelView;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
 
 public interface DriverDefEditorView
         extends UberView<DriverDefEditorView.Presenter>,
-        BaseEditorView {
+                BaseEditorView {
 
     interface Presenter extends DefEditorActionsPanelView.Presenter {
 
     }
 
-    void setContent( final IsWidget content );
+    void setContent(final IsElement content);
 }

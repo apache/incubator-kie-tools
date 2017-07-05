@@ -22,6 +22,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.screens.datasource.management.client.editor.driver.DriverDefEditorHelper;
 import org.kie.workbench.common.screens.datasource.management.client.editor.driver.DriverDefMainPanel;
 import org.kie.workbench.common.screens.datasource.management.client.editor.driver.DriverDefMainPanelView;
@@ -33,7 +34,7 @@ import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 @Dependent
 public class DriverDefPage
         implements WizardPage,
-        DriverDefPageView.Presenter {
+                   DriverDefPageView.Presenter {
 
     private DriverDefPageView view;
 
@@ -44,21 +45,21 @@ public class DriverDefPage
     private Event<WizardPageStatusChangeEvent> statusChangeEvent;
 
     @Inject
-    public DriverDefPage( final DriverDefPageView view,
-            final DriverDefMainPanel mainPanel,
-            final DriverDefEditorHelper editorHelper,
-            final Event<WizardPageStatusChangeEvent> statusChangeEvent ) {
+    public DriverDefPage(final DriverDefPageView view,
+                         final DriverDefMainPanel mainPanel,
+                         final DriverDefEditorHelper editorHelper,
+                         final Event<WizardPageStatusChangeEvent> statusChangeEvent) {
         this.view = view;
         this.mainPanel = mainPanel;
         this.editorHelper = editorHelper;
         this.statusChangeEvent = statusChangeEvent;
-        view.init( this );
-        editorHelper.init( mainPanel );
+        view.init(this);
+        editorHelper.init(mainPanel);
 
-        editorHelper.setHandler( new DriverDefMainPanelView.Handler() {
+        editorHelper.setHandler(new DriverDefMainPanelView.Handler() {
             @Override
             public void onNameChange() {
-                 DriverDefPage.this.notifyChange();
+                DriverDefPage.this.notifyChange();
             }
 
             @Override
@@ -80,16 +81,16 @@ public class DriverDefPage
             public void onVersionChange() {
                 DriverDefPage.this.notifyChange();
             }
-        } );
+        });
     }
 
     @PostConstruct
     private void init() {
-        view.setMainPanel( mainPanel );
+        view.setMainPanel(mainPanel);
     }
 
-    public void setDriverDef( DriverDef driverDef ) {
-        editorHelper.setDriverDef( driverDef );
+    public void setDriverDef(DriverDef driverDef) {
+        editorHelper.setDriverDef(driverDef);
     }
 
     @Override
@@ -98,14 +99,14 @@ public class DriverDefPage
     }
 
     @Override
-    public void isComplete( Callback<Boolean> callback ) {
+    public void isComplete(Callback<Boolean> callback) {
         boolean complete = editorHelper.isNameValid() &&
                 editorHelper.isDriverClassValid() &&
                 editorHelper.isGroupIdValid() &&
                 editorHelper.isArtifactIdValid() &&
                 editorHelper.isVersionValid();
 
-        callback.callback( complete );
+        callback.callback(complete);
     }
 
     @Override
@@ -120,16 +121,16 @@ public class DriverDefPage
 
     @Override
     public Widget asWidget() {
-        return view.asWidget();
+        return ElementWrapperWidget.getWidget(view.getElement());
     }
 
     public void notifyChange() {
-        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
-        statusChangeEvent.fire( event );
+        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent(this);
+        statusChangeEvent.fire(event);
     }
 
-    public void setComplete( boolean complete ) {
-        editorHelper.setValid( complete );
+    public void setComplete(boolean complete) {
+        editorHelper.setValid(complete);
     }
 
     public void clear() {

@@ -19,14 +19,13 @@ package org.kie.workbench.common.screens.datasource.management.client.explorer.c
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.ui.client.local.api.IsElement;
 
 @Dependent
 public class DefItem
-        implements IsWidget,
-        DefItemView.Presenter {
-
+        implements IsElement,
+                   DefItemView.Presenter {
 
     private DefItemView view;
 
@@ -34,32 +33,32 @@ public class DefItem
 
     private static int itemIds = 0;
 
-    private String itemId = "item_"+ itemIds++;
+    private String itemId = "item_" + itemIds++;
 
     @Inject
-    public DefItem( DefItemView view ) {
+    public DefItem(DefItemView view) {
         this.view = view;
-        view.init( this );
+        view.init(this);
     }
 
-    public void setName( String name ) {
-        view.setName( name );
+    public void setName(String name) {
+        view.setName(name);
     }
 
     @Override
-    public Widget asWidget() {
-        return view.asWidget();
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 
     @Override
     public void onClick() {
-        if ( itemHandler != null ) {
-            itemHandler.onClick( getId() );
+        if (itemHandler != null) {
+            itemHandler.onClick(getId());
         }
     }
 
     @Override
-    public void addItemHandler( DefItemView.ItemHandler itemHandler ) {
+    public void addItemHandler(DefItemView.ItemHandler itemHandler) {
         this.itemHandler = itemHandler;
     }
 

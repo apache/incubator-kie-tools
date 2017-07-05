@@ -20,159 +20,162 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
 public interface DataSourceManagementConstants {
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceDefEditor_InvalidNameMessage = "DataSourceDefEditor.InvalidNameMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceDefEditor_InvalidConnectionURLMessage = "DataSourceDefEditor.InvalidConnectionURLMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceDefEditor_InvalidUserMessage = "DataSourceDefEditor.InvalidUserMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceDefEditor_InvalidPasswordMessage = "DataSourceDefEditor.InvalidPasswordMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceDefEditor_DriverRequiredMessage = "DataSourceDefEditor.DriverRequiredMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceDefEditor_AllFieldsRequiresValidation = "DataSourceDefEditor.AllFieldsRequiresValidation";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceDefEditor_LoadDriversErrorMessage = "DataSourceDefEditor.LoadDriversErrorMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceDefEditor_ConnectionTestSuccessfulMessage = "DataSourceDefEditor.ConnectionTestSuccessfulMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceDefEditor_ConnectionTestFailedMessage = "DataSourceDefEditor.ConnectionTestFailedMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceDefEditor_DataSourceHasBeenReferencedForDeleteMessage = "DataSourceDefEditor.DataSourceHasBeenReferencedForDeleteMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceDefEditor_DataSourceHasBeenReferencedForSaveMessage = "DataSourceDefEditor.DataSourceHasBeenReferencedForSaveMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
+    String DataSourceDefMainPanelViewImpl_emptyOption = "DataSourceDefMainPanelViewImpl.emptyOption";
+
+    @TranslationKey(defaultValue = "")
     String NewDataSourceDefWizard_title = "NewDataSourceDefWizard.title";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String NewDataSourceDefWizard_DataSourceCreatedMessage = "NewDataSourceDefWizard.DataSourceCreatedMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String NewDataSourceDefWizard_DataSourceCreateErrorMessage = "NewDataSourceDefWizard.DataSourceCreateErrorMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String NewDataSourceDefWizard_FileExistsErrorMessage = "NewDataSourceDefWizard.FileExistsErrorMessage";
 
-    @TranslationKey( defaultValue = "")
+    @TranslationKey(defaultValue = "")
     String NewDataSourceDefWizard_WizardStartErrorMessage = "NewDataSourceDefWizard.WizardStartErrorMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceDefPage_pagetTitle = "DataSourceDefPageViewImpl.pageTitle";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DriverDefEditor_InvalidNameMessage = "DriverDefEditor.InvalidNameMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DriverDefEditor_InvalidDriverClassMessage = "DriverDefEditor.InvalidDriverClassMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DriverDefEditor_InvalidGroupIdMessage = "DriverDefEditor.InvalidGroupIdMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DriverDefEditor_InvalidArtifactIdMessage = "DriverDefEditor.InvalidArtifactIdMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DriverDefEditor_InvalidVersionMessage = "DriverDefEditor.InvalidVersionMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DriverDefEditor_DriverHasDependantsForSaveMessage = "DriverDefEditor.DriverHasDependantsForSaveMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DriverDefEditor_DriverHasDependantsForDeleteMessage = "DriverDefEditor.DriverHasDependantsForDeleteMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String NewDriverDefWizard_title = "NewDriverDefWizard.title";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String NewDriverDefWizard_DriverCreatedMessage = "NewDriverDefWizard.DriverCreatedMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String NewDriverDefWizard_DriverCreateErrorMessage = "NewDriverDefWizard.DriverCreateErrorMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DriverDefDefPageViewImpl_pageTitle = "DriverDefDefPageViewImpl.pageTitle";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceSelector_Title = "DataSourceSelector.Title";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceSelector_NoAvailableDataSourcesMessage = "DataSourceSelector.NoAvailableDataSourcesMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceSelector_DataSourceColumn = "DataSourceSelector.DataSourceColumn";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceSelector_SelectButton = "DataSourceSelector.SelectButton";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceSelector_DataSourcesLoadError = "DataSourceSelector.DataSourcesLoadError";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceDefExplorerScreen_Title = "DataSourceDefExplorerScreen.Title";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataSourceDefExplorerScreen_Refresh = "DataSourceDefExplorerScreen.Refresh";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseStructureExplorerViewImpl_schemasTitle = "DatabaseStructureExplorerViewImpl.schemasTitle";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseStructureExplorerViewImpl_defaultSchema = "DatabaseStructureExplorerViewImpl.defaultSchema";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseStructureExplorerViewImpl_dataSourceTitle = "DatabaseStructureExplorerViewImpl.dataSourceTitle";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseSchemaExplorerViewImpl_loadingDbSchemas = "DatabaseSchemaExplorerViewImpl.loadingDbSchemas";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseSchemaExplorerViewImpl_schemasListEmpty = "DatabaseSchemaExplorerViewImpl.schemasListEmpty";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseSchemaExplorerViewImpl_schemaNameColumn = "DatabaseSchemaExplorerViewImpl.schemaNameColumn";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseSchemaExplorerViewImpl_actionColumn = "DatabaseSchemaExplorerViewImpl.actionColumn";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseSchemaExplorerViewImpl_schemaOpenAction = "DatabaseSchemaExplorerViewImpl.schemaOpenAction";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseObjectExplorerViewImpl_loadingDbObjects = "DatabaseObjectExplorerViewImpl.loadingDbObjects";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseObjectExplorerViewImpl_loadingDbSchemas = "DatabaseObjectExplorerViewImpl.loadingDbSchemas";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseObjectExplorerViewImpl_namePatternHelp = "DatabaseObjectExplorerViewImpl.namePatternHelp";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseObjectExplorerViewImpl_dbObjectNameColumn = "DatabaseObjectExplorerViewImpl.dbObjectNameColumn";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseObjectExplorerViewImpl_dbObjectsListEmpty = "DatabaseObjectExplorerViewImpl.dbObjectsListEmpty";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseObjectExplorerViewImpl_dbObjectTypeColumn = "DatabaseObjectExplorerViewImpl.dbObjectTypeColumn";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseObjectExplorerViewImpl_dbObjectOpen = "DatabaseObjectExplorerViewImpl.dbObjectOpen";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseObjectExplorerViewImpl_dbObjectActionColumn = "DatabaseObjectExplorerViewImpl.dbObjectActionColumn";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DatabaseStructureExplorerScreen_title = "DatabaseStructureExplorerScreen.title";
 }

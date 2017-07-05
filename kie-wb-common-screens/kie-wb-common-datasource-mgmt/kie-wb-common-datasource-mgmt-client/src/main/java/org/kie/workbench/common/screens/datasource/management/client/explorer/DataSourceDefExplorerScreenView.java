@@ -16,22 +16,15 @@
 
 package org.kie.workbench.common.screens.datasource.management.client.explorer;
 
-import org.kie.workbench.common.screens.datasource.management.client.explorer.project.ProjectDataSourceExplorer;
 import org.kie.workbench.common.screens.datasource.management.client.explorer.global.GlobalDataSourceExplorer;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 
 public interface DataSourceDefExplorerScreenView
-        extends UberView<DataSourceDefExplorerScreenView.Presenter> {
+        extends UberElement<DataSourceDefExplorerScreenView.Presenter> {
 
     interface Presenter {
 
-        void onProjectExplorerSelected();
-
-        void onGlobalExplorerSelected();
     }
 
-    void setProjectExplorer( ProjectDataSourceExplorer projectExplorer );
-
-    void setGlobalExplorer( GlobalDataSourceExplorer globalExplorer );
-
+    void setGlobalExplorer(GlobalDataSourceExplorer globalExplorer);
 }

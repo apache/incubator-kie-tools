@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.Project;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.screens.datasource.management.client.editor.datasource.DataSourceDefEditorHelper;
 import org.kie.workbench.common.screens.datasource.management.client.editor.datasource.DataSourceDefMainPanel;
 import org.kie.workbench.common.screens.datasource.management.client.editor.datasource.DataSourceDefMainPanelView;
@@ -36,7 +37,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 @Dependent
 public class DataSourceDefPage
         implements WizardPage,
-                    DataSourceDefPageView.Presenter {
+                   DataSourceDefPageView.Presenter {
 
     private DataSourceDefPageView view;
 
@@ -47,18 +48,18 @@ public class DataSourceDefPage
     private Event<WizardPageStatusChangeEvent> statusChangeEvent;
 
     @Inject
-    public DataSourceDefPage( final DataSourceDefPageView view,
-            final DataSourceDefMainPanel mainPanel,
-            final DataSourceDefEditorHelper editorHelper,
-            final  Event<WizardPageStatusChangeEvent> statusChangeEvent ) {
+    public DataSourceDefPage(final DataSourceDefPageView view,
+                             final DataSourceDefMainPanel mainPanel,
+                             final DataSourceDefEditorHelper editorHelper,
+                             final Event<WizardPageStatusChangeEvent> statusChangeEvent) {
         this.view = view;
         this.mainPanel = mainPanel;
         this.editorHelper = editorHelper;
         this.statusChangeEvent = statusChangeEvent;
-        view.init( this );
-        editorHelper.init( mainPanel );
+        view.init(this);
+        editorHelper.init(mainPanel);
 
-        editorHelper.setHandler( new DataSourceDefMainPanelView.Handler() {
+        editorHelper.setHandler(new DataSourceDefMainPanelView.Handler() {
             @Override
             public void onNameChange() {
                 DataSourceDefPage.this.notifyChange();
@@ -88,20 +89,20 @@ public class DataSourceDefPage
             public void onTestConnection() {
 
             }
-        } );
+        });
     }
 
     @PostConstruct
     private void init() {
-        view.setMainPanel( mainPanel );
+        view.setMainPanel(mainPanel);
     }
 
-    public void setDataSourceDef( DataSourceDef dataSourceDef ) {
-        editorHelper.setDataSourceDef( dataSourceDef );
+    public void setDataSourceDef(DataSourceDef dataSourceDef) {
+        editorHelper.setDataSourceDef(dataSourceDef);
     }
 
-    public void setProject( Project project ) {
-        editorHelper.setProject( project );
+    public void setProject(Project project) {
+        editorHelper.setProject(project);
     }
 
     @Override
@@ -110,14 +111,14 @@ public class DataSourceDefPage
     }
 
     @Override
-    public void isComplete( Callback<Boolean> callback ) {
+    public void isComplete(Callback<Boolean> callback) {
         boolean complete = editorHelper.isNameValid() &&
                 editorHelper.isConnectionURLValid() &&
                 editorHelper.isUserValid() &&
                 editorHelper.isPasswordValid() &&
                 editorHelper.isDriverValid();
 
-        callback.callback( complete );
+        callback.callback(complete);
     }
 
     @Override
@@ -132,24 +133,25 @@ public class DataSourceDefPage
 
     @Override
     public Widget asWidget() {
-        return view.asWidget();
+        return ElementWrapperWidget.getWidget(view.getElement());
     }
 
-    public void loadDrivers( final Command onSuccessCommand, final ParameterizedCommand<Throwable> onFailureCommand ) {
-        editorHelper.loadDrivers( onSuccessCommand, onFailureCommand );
+    public void loadDrivers(final Command onSuccessCommand,
+                            final ParameterizedCommand<Throwable> onFailureCommand) {
+        editorHelper.loadDrivers(onSuccessCommand,
+                                 onFailureCommand);
     }
 
     public void notifyChange() {
-        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
-        statusChangeEvent.fire( event );
+        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent(this);
+        statusChangeEvent.fire(event);
     }
 
-    public void setComplete( boolean complete ) {
-        editorHelper.setValid( complete );
+    public void setComplete(boolean complete) {
+        editorHelper.setValid(complete);
     }
 
     public void clear() {
         mainPanel.clear();
     }
-
 }

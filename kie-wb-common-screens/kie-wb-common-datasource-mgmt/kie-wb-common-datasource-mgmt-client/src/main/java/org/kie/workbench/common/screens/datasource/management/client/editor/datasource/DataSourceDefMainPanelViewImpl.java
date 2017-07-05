@@ -20,177 +20,206 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Composite;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.extras.select.client.ui.Option;
-import org.gwtbootstrap3.extras.select.client.ui.Select;
+import org.jboss.errai.common.client.dom.Button;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Event;
+import org.jboss.errai.common.client.dom.Option;
+import org.jboss.errai.common.client.dom.Select;
+import org.jboss.errai.common.client.dom.Span;
+import org.jboss.errai.common.client.dom.TextInput;
+import org.jboss.errai.common.client.dom.Window;
+import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.commons.data.Pair;
 
-import static org.kie.workbench.common.screens.datasource.management.client.util.UIUtil.*;
+import static org.kie.workbench.common.screens.datasource.management.client.resources.i18n.DataSourceManagementConstants.DataSourceDefMainPanelViewImpl_emptyOption;
+import static org.kie.workbench.common.screens.datasource.management.client.util.UIUtil.clearSpanMessage;
+import static org.kie.workbench.common.screens.datasource.management.client.util.UIUtil.setGroupOnError;
+import static org.kie.workbench.common.screens.datasource.management.client.util.UIUtil.setSpanMessage;
 
 @Dependent
 @Templated
 public class DataSourceDefMainPanelViewImpl
-        extends Composite
-        implements DataSourceDefMainPanelView {
-
-    @DataField ( "name-form-group" )
-    private Element nameFormGroup =  DOM.createDiv();
+        implements DataSourceDefMainPanelView,
+                   IsElement {
 
     @Inject
-    @DataField ( "name" )
-    private TextBox nameTextBox;
+    @DataField("name-form-group")
+    private Div nameFormGroup;
 
+    @Inject
+    @DataField("name")
+    private TextInput nameTextBox;
+
+    @Inject
     @DataField("name-help")
-    private Element nameHelp = DOM.createSpan();
-
-    @DataField ( "connection-url-form-group" )
-    private Element connectionURLFormGroup =  DOM.createDiv();
+    private Span nameHelp;
 
     @Inject
-    @DataField ( "connection-url" )
-    private TextBox connectionURLTextBox;
+    @DataField("connection-url-form-group")
+    private Div connectionURLFormGroup;
 
+    @Inject
+    @DataField("connection-url")
+    private TextInput connectionURLTextBox;
+
+    @Inject
     @DataField("connection-url-help")
-    private Element connectionURLHelp = DOM.createSpan();
-
-    @DataField ( "user-form-group" )
-    private Element userFormGroup =  DOM.createDiv();
+    private Span connectionURLHelp;
 
     @Inject
-    @DataField ( "user" )
-    private TextBox userTextBox;
-
-    @DataField( "user-help" )
-    private Element userHelp = DOM.createSpan();
-
-    @DataField ( "password-form-group" )
-    private Element passwordFormGroup =  DOM.createDiv();
+    @DataField("user-form-group")
+    private Div userFormGroup;
 
     @Inject
-    @DataField ( "password" )
-    private TextBox passwordTextBox;
-
-    @DataField( "password-help" )
-    private Element passwordHelp = DOM.createSpan();
-
-    @DataField ( "driver-form-group" )
-    private Element driverFormGroup = DOM.createDiv();
+    @DataField("user")
+    private TextInput userTextBox;
 
     @Inject
-    @DataField ( "driver-selector" )
+    @DataField("user-help")
+    private Span userHelp;
+
+    @Inject
+    @DataField("password-form-group")
+    private Div passwordFormGroup;
+
+    @Inject
+    @DataField("password")
+    private TextInput passwordTextBox;
+
+    @Inject
+    @DataField("password-help")
+    private Span passwordHelp;
+
+    @Inject
+    @DataField("driver-form-group")
+    private Div driverFormGroup;
+
+    @Inject
+    @DataField("driver-selector")
     private Select driverSelector;
 
-    @DataField( "driver-selector-help" )
-    private Element driverSelectorHelp = DOM.createSpan();
+    @Inject
+    @DataField("driver-selector-help")
+    private Span driverSelectorHelp;
 
     @Inject
     @DataField("test-connection-button")
     private Button testConnection;
 
+    @Inject
+    private TranslationService translationService;
+
     private DataSourceDefMainPanelView.Presenter presenter;
 
-    public DataSourceDefMainPanelViewImpl( ) {
+    public DataSourceDefMainPanelViewImpl() {
     }
 
     @Override
-    public void init( final DataSourceDefMainPanelView.Presenter presenter ) {
+    public void init(final DataSourceDefMainPanelView.Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setName( final String name ) {
-        this.nameTextBox.setText( name );
+    public void setName(final String name) {
+        this.nameTextBox.setValue(name);
     }
 
     @Override
     public String getName() {
-        return nameTextBox.getText();
+        return nameTextBox.getValue();
     }
 
-    public void setNameErrorMessage( final String message ) {
-        setGroupOnError( nameFormGroup, true );
-        setSpanMessage( nameHelp, message );
+    public void setNameErrorMessage(final String message) {
+        setGroupOnError(nameFormGroup,
+                        true);
+        setSpanMessage(nameHelp,
+                       message);
     }
 
     public void clearNameErrorMessage() {
-        setGroupOnError( nameFormGroup, false );
-        clearSpanMessage( nameHelp );
+        setGroupOnError(nameFormGroup,
+                        false);
+        clearSpanMessage(nameHelp);
     }
 
     @Override
     public String getConnectionURL() {
-        return connectionURLTextBox.getText();
+        return connectionURLTextBox.getValue();
     }
 
     @Override
-    public void setConnectionURL( final String connectionURL ) {
-        this.connectionURLTextBox.setText( connectionURL );
+    public void setConnectionURL(final String connectionURL) {
+        this.connectionURLTextBox.setValue(connectionURL);
     }
 
     @Override
-    public void setConnectionURLErrorMessage( String message ) {
-        setGroupOnError( connectionURLFormGroup, true );
-        setSpanMessage( connectionURLHelp, message );
+    public void setConnectionURLErrorMessage(String message) {
+        setGroupOnError(connectionURLFormGroup,
+                        true);
+        setSpanMessage(connectionURLHelp,
+                       message);
     }
 
     @Override
     public void clearConnectionURLErrorMessage() {
-        setGroupOnError( connectionURLFormGroup, false );
-        clearSpanMessage( connectionURLHelp );
+        setGroupOnError(connectionURLFormGroup,
+                        false);
+        clearSpanMessage(connectionURLHelp);
     }
 
     @Override
     public String getUser() {
-        return userTextBox.getText();
+        return userTextBox.getValue();
     }
 
     @Override
-    public void setUser( final String user ) {
-        this.userTextBox.setText( user );
+    public void setUser(final String user) {
+        this.userTextBox.setValue(user);
     }
 
     @Override
-    public void setUserErrorMessage( String message ) {
-        setGroupOnError( userFormGroup, true );
-        setSpanMessage( userHelp, message );
+    public void setUserErrorMessage(String message) {
+        setGroupOnError(userFormGroup,
+                        true);
+        setSpanMessage(userHelp,
+                       message);
     }
 
     @Override
     public void clearUserErrorMessage() {
-        setGroupOnError( userFormGroup, false );
-        clearSpanMessage( userHelp );
+        setGroupOnError(userFormGroup,
+                        false);
+        clearSpanMessage(userHelp);
     }
 
     @Override
     public String getPassword() {
-        return passwordTextBox.getText();
+        return passwordTextBox.getValue();
     }
 
     @Override
-    public void setPassword( final String password ) {
-        this.passwordTextBox.setText( password );
+    public void setPassword(final String password) {
+        this.passwordTextBox.setValue(password);
     }
 
     @Override
-    public void setPasswordErrorMessage( String message ) {
-        setGroupOnError( passwordFormGroup, true );
-        setSpanMessage( passwordHelp, message );
+    public void setPasswordErrorMessage(String message) {
+        setGroupOnError(passwordFormGroup,
+                        true);
+        setSpanMessage(passwordHelp,
+                       message);
     }
 
     @Override
     public void clearPasswordErrorMessage() {
-        setGroupOnError( passwordFormGroup, false );
-        clearSpanMessage( passwordHelp );
+        setGroupOnError(passwordFormGroup,
+                        false);
+        clearSpanMessage(passwordHelp);
     }
 
     @Override
@@ -199,79 +228,81 @@ public class DataSourceDefMainPanelViewImpl
     }
 
     @Override
-    public void setDriver( final String driver ) {
-        driverSelector.setValue( driver );
-        refreshDriverSelector();
+    public void setDriver(final String driver) {
+        driverSelector.setValue(driver);
     }
 
     @Override
-    public void setDriverErrorMessage( final String message ) {
-        setGroupOnError( driverFormGroup, true );
-        setSpanMessage( driverSelectorHelp, message );
+    public void setDriverErrorMessage(final String message) {
+        setGroupOnError(driverFormGroup,
+                        true);
+        setSpanMessage(driverSelectorHelp,
+                       message);
     }
 
     @Override
     public void clearDriverErrorMessage() {
-        setGroupOnError( driverFormGroup, false );
-        clearSpanMessage( driverSelectorHelp );
+        setGroupOnError(driverFormGroup,
+                        false);
+        clearSpanMessage(driverSelectorHelp);
     }
 
     @Override
-    public void loadDriverOptions( final List<Pair<String, String>> driverOptions, final boolean addEmptyOption ) {
-        driverSelector.clear();
-        if ( addEmptyOption ) {
-            driverSelector.add( newOption( "", "" ) );
+    public void loadDriverOptions(final List<Pair<String, String>> driverOptions,
+                                  final boolean addEmptyOption) {
+        clear(driverSelector);
+        if (addEmptyOption) {
+            driverSelector.add(newOption(translationService.getTranslation(DataSourceDefMainPanelViewImpl_emptyOption),
+                                         ""));
         }
-        for ( Pair<String, String> optionPair: driverOptions ) {
-            driverSelector.add( newOption( optionPair.getK1(), optionPair.getK2() ));
+        for (Pair<String, String> optionPair : driverOptions) {
+            driverSelector.add(newOption(optionPair.getK1(),
+                                         optionPair.getK2()));
         }
-        refreshDriverSelector();
     }
 
-    @EventHandler( "name" )
-    private void onNameChange( final ChangeEvent event ) {
+    @EventHandler("name")
+    private void onNameChange(@ForEvent("change") final Event event) {
         presenter.onNameChange();
     }
 
-    @EventHandler( "connection-url")
-    private void onConnectionURLChange( final ChangeEvent event ) {
+    @EventHandler("connection-url")
+    private void onConnectionURLChange(@ForEvent("change") final Event event) {
         presenter.onConnectionURLChange();
     }
 
-    @EventHandler( "user" )
-    private void onUserChange( final ChangeEvent event ) {
+    @EventHandler("user")
+    private void onUserChange(@ForEvent("change") final Event event) {
         presenter.onUserChange();
     }
 
-    @EventHandler( "password" )
-    private void onPasswordChange( final ChangeEvent event ) {
+    @EventHandler("password")
+    private void onPasswordChange(@ForEvent("change") final Event event) {
         presenter.onPasswordChange();
     }
 
-    @EventHandler( "driver-selector" )
-    private void onDriverChange( final ChangeEvent event ) {
+    @EventHandler("driver-selector")
+    private void onDriverChange(@ForEvent("change") final Event event) {
         presenter.onDriverChange();
     }
 
-    @EventHandler( "test-connection-button" )
-    private void onTestConnection( final ClickEvent event ) {
+    @EventHandler("test-connection-button")
+    private void onTestConnection(@ForEvent("click") final Event event) {
         presenter.onTestConnection();
     }
 
-    private Option newOption( final String text, final String value ) {
-        final Option option = new Option();
-        option.setValue( value );
-        option.setText( text );
+    private Option newOption(final String text,
+                             final String value) {
+        final Option option = (Option) Window.getDocument().createElement("option");
+        option.setTextContent(text);
+        option.setValue(value);
         return option;
     }
 
-    private void refreshDriverSelector() {
-        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
-            @Override
-            public void execute() {
-                driverSelector.refresh();
-            }
-        } );
+    private void clear(final Select select) {
+        for (int i = 0; i < select.getOptions().getLength(); i++) {
+            select.remove(i);
+        }
+        select.setInnerHTML("");
     }
-
 }
