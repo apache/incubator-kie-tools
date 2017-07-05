@@ -432,25 +432,25 @@ public class WiresLayoutContainer implements LayoutContainer
         }
     }
 
-    private static class ObjectAttribute
+    private final static class ObjectAttribute
     {
-        public Object obj;
-        public Attribute attr;
+        private final Object obj;
+        private final Attribute attr;
 
-        public ObjectAttribute(Object obj, Attribute attr)
+        private ObjectAttribute(Object obj, Attribute attr)
         {
             this.obj = obj;
             this.attr = attr;
         }
 
         @Override
-        public int hashCode()
+        public final int hashCode()
         {
             return obj.hashCode() ^ attr.hashCode();
         }
 
         @Override
-        public boolean equals(Object o)
+        public final boolean equals(Object o)
         {
             if (o instanceof ObjectAttribute)
             {
