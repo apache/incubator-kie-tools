@@ -54,6 +54,17 @@ public class PatternWrapper {
         this.negated = negated;
     }
 
+    public PatternWrapper(final String factType,
+                          final String boundName,
+                          final String entryPointName,
+                          final Boolean negated) {
+        this(factType,
+             boundName,
+             negated);
+
+        this.entryPointName = entryPointName;
+    }
+
     public PatternWrapper() {
     }
 

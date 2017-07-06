@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -106,6 +107,7 @@ public class ConditionColumnPluginTest {
         final GuidedDecisionTable52.TableFormat tableFormat = GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY;
 
         doReturn(tableFormat).when(model).getTableFormat();
+        doReturn(true).when(plugin).isNewColumn();
         doReturn(model).when(presenter).getModel();
     }
 
@@ -167,9 +169,11 @@ public class ConditionColumnPluginTest {
     }
 
     @Test
-    public void testAppendColumn() throws Exception {
+    public void testAppendColumnWhenColumnIsNew() throws Exception {
         final PatternWrapper patternWrapper = mock(PatternWrapper.class);
         final Pattern52 pattern52 = mock(Pattern52.class);
+
+        doReturn(true).when(plugin).isNewColumn();
 
         doReturn(editingCol).when(plugin).editingCol();
         doReturn(patternWrapper).when(plugin).patternWrapper();
@@ -179,6 +183,28 @@ public class ConditionColumnPluginTest {
 
         verify(presenter).appendColumn(pattern52,
                                        editingCol);
+    }
+
+    @Test
+    public void testAppendColumnWhenColumnIsNotNew() throws Exception {
+        final ConditionCol52 originalColumn = mock(ConditionCol52.class);
+        final ConditionCol52 editingColumn = mock(ConditionCol52.class);
+        final Pattern52 originalPattern = mock(Pattern52.class);
+        final Pattern52 editingPattern = mock(Pattern52.class);
+
+        doReturn(false).when(plugin).isNewColumn();
+
+        doReturn(originalColumn).when(plugin).originalCondition();
+        doReturn(editingColumn).when(plugin).editingCol();
+        doReturn(originalPattern).when(plugin).getOriginalPattern52();
+        doReturn(editingPattern).when(plugin).editingPattern();
+
+        plugin.appendColumn();
+
+        verify(presenter).updateColumn(originalPattern,
+                                       originalColumn,
+                                       editingPattern,
+                                       editingColumn);
     }
 
     @Test
@@ -496,5 +522,163 @@ public class ConditionColumnPluginTest {
         doReturn(GuidedDecisionTable52.TableFormat.LIMITED_ENTRY).when(model).getTableFormat();
 
         assertTrue(plugin.isBindable());
+    }
+
+    @Test
+    public void testSetupDefaultValuesWhenColumnIsNew() {
+        final Pattern52 pattern52 = mock(Pattern52.class);
+        final ConditionCol52 conditionCol52 = mock(ConditionCol52.class);
+
+        doReturn(true).when(plugin).isNewColumn();
+        doReturn(pattern52).when(plugin).emptyPattern();
+        doReturn(conditionCol52).when(plugin).newConditionColumn();
+        doReturn(oracle).when(presenter).getDataModelOracle();
+        doReturn(false).when(oracle).hasEnums(any(),
+                                              any());
+
+        plugin.setupDefaultValues();
+
+        assertEquals(pattern52,
+                     plugin.editingPattern());
+        assertEquals(conditionCol52,
+                     plugin.editingCol());
+        assertEquals(BaseSingleFieldConstraint.TYPE_UNDEFINED,
+                     plugin.constraintValue());
+        assertEquals(Boolean.FALSE,
+                     plugin.isValueOptionsPageCompleted());
+    }
+
+    @Test
+    public void testSetupDefaultValuesWhenColumnIsNotNew() {
+        final Pattern52 originalPattern52 = mock(Pattern52.class);
+        final Pattern52 clonedPattern52 = mock(Pattern52.class);
+        final ConditionCol52 originalConditionCol52 = mock(ConditionCol52.class);
+        final ConditionCol52 clonedConditionCol52 = mock(ConditionCol52.class);
+
+        doReturn(BaseSingleFieldConstraint.TYPE_LITERAL).when(clonedConditionCol52).getConstraintValueType();
+        doReturn(originalConditionCol52).when(plugin).getOriginalColumnConfig52();
+        doReturn(clonedConditionCol52).when(plugin).clone(originalConditionCol52);
+        doReturn(originalPattern52).when(plugin).getOriginalPattern52();
+        doReturn(clonedPattern52).when(originalPattern52).clonePattern();
+        doReturn(oracle).when(presenter).getDataModelOracle();
+        doReturn(false).when(plugin).isNewColumn();
+        doReturn(false).when(oracle).hasEnums(any(),
+                                              any());
+
+        plugin.setupDefaultValues();
+
+        assertEquals(clonedPattern52,
+                     plugin.editingPattern());
+        assertEquals(BaseSingleFieldConstraint.TYPE_LITERAL,
+                     plugin.constraintValue());
+        assertEquals(Boolean.TRUE,
+                     plugin.isValueOptionsPageCompleted());
+        assertEquals(clonedConditionCol52,
+                     plugin.editingCol());
+    }
+
+    @Test
+    public void testCloneDTCellValueWhenDTCellValue52IsNull() {
+        assertNull(plugin.cloneDTCellValue(null));
+    }
+
+    @Test
+    public void testCloneDTCellValueWhenDTCellValue52IsNotNull() {
+        final DTCellValue52 dcv = new DTCellValue52() {{
+            setStringValue("value");
+        }};
+        final DTCellValue52 clone = plugin.cloneDTCellValue(dcv);
+
+        assertEquals(dcv,
+                     clone);
+        assertNotSame(dcv,
+                      clone);
+    }
+
+    @Test
+    public void testCloneWhenColumnIsALimitedEntryConditionCol52() {
+
+    }
+
+    @Test
+    public void testCloneWhenColumnIsAConditionCol52() {
+        final int constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
+        final String factField = "FactField";
+        final String fieldType = "FieldType";
+        final String header = "Header";
+        final String operator = "Operator";
+        final String valueList = "ValueList";
+        final DTCellValue52 defaultValue = null;
+        final boolean hideColumn = false;
+        final HashMap<String, String> parameters = new HashMap<>();
+        final int width = 999;
+        final String binding = "Binding";
+
+        final ConditionCol52 column = makeConditionCol52(constraintValueType,
+                                                         factField,
+                                                         fieldType,
+                                                         header,
+                                                         operator,
+                                                         valueList,
+                                                         defaultValue,
+                                                         hideColumn,
+                                                         parameters,
+                                                         width,
+                                                         binding);
+        final ConditionCol52 clone = plugin.clone(column);
+
+        assertEquals(constraintValueType,
+                     clone.getConstraintValueType());
+        assertEquals(factField,
+                     clone.getFactField());
+        assertEquals(fieldType,
+                     clone.getFieldType());
+        assertEquals(header,
+                     clone.getHeader());
+        assertEquals(operator,
+                     clone.getOperator());
+        assertEquals(valueList,
+                     clone.getValueList());
+        assertEquals(defaultValue,
+                     clone.getDefaultValue());
+        assertEquals(hideColumn,
+                     clone.isHideColumn());
+        assertEquals(parameters,
+                     clone.getParameters());
+        assertEquals(width,
+                     clone.getWidth());
+        assertEquals(binding,
+                     clone.getBinding());
+        assertNotSame(column,
+                      clone);
+    }
+
+    private ConditionCol52 makeConditionCol52(final int constraintValueType,
+                                              final String factField,
+                                              final String fieldType,
+                                              final String header,
+                                              final String operator,
+                                              final String valueList,
+                                              final DTCellValue52 defaultValue,
+                                              final boolean hideColumn,
+                                              final HashMap<String, String> parameters,
+                                              final int width,
+                                              final String binding) {
+
+        final ConditionCol52 column = new ConditionCol52();
+
+        column.setConstraintValueType(constraintValueType);
+        column.setFactField(factField);
+        column.setFieldType(fieldType);
+        column.setHeader(header);
+        column.setOperator(operator);
+        column.setValueList(valueList);
+        column.setDefaultValue(defaultValue);
+        column.setHideColumn(hideColumn);
+        column.setParameters(parameters);
+        column.setWidth(width);
+        column.setBinding(binding);
+
+        return column;
     }
 }

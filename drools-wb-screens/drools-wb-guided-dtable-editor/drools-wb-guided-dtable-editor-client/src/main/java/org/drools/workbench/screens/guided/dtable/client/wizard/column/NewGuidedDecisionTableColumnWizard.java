@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -56,6 +57,8 @@ public class NewGuidedDecisionTableColumnWizard extends AbstractWizard {
     private Command onCloseCallback = () -> {
     };
 
+    private String title;
+
     @Inject
     public NewGuidedDecisionTableColumnWizard(final WizardView view,
                                               final SummaryPage summaryPage,
@@ -67,7 +70,20 @@ public class NewGuidedDecisionTableColumnWizard extends AbstractWizard {
 
     @Override
     public String getTitle() {
-        return translate(GuidedDecisionTableErraiConstants.NewGuidedDecisionTableColumnWizard_AddNewColumn);
+        final String defaultTitle = translate(GuidedDecisionTableErraiConstants.NewGuidedDecisionTableColumnWizard_AddNewColumn);
+
+        return Optional.ofNullable(title).orElse(defaultTitle);
+    }
+
+    void setupTitle(final DecisionTableColumnPlugin plugin) {
+        final String addNewColumn = translate(GuidedDecisionTableErraiConstants.NewGuidedDecisionTableColumnWizard_AddNewColumn);
+        final String editColumn = translate(GuidedDecisionTableErraiConstants.NewGuidedDecisionTableColumnWizard_EditColumn);
+
+        setTitle(plugin.isNewColumn() ? addNewColumn : editColumn);
+    }
+
+    public void setTitle(final String title) {
+        this.title = title;
     }
 
     @Override
@@ -124,19 +140,28 @@ public class NewGuidedDecisionTableColumnWizard extends AbstractWizard {
             ((BaseDecisionTableColumnPage) page).init(this);
         }
 
-        super.start();
+        parentStart();
     }
 
     public void start(final DecisionTableColumnPlugin plugin) {
         plugin.init(this);
 
-        loadPages(plugin);
-        initPages(plugin);
+        loadPlugin(plugin);
 
+        parentStart();
+    }
+
+    void parentStart() {
         super.start();
     }
 
-    private void initPages(final DecisionTableColumnPlugin plugin) {
+    private void loadPlugin(final DecisionTableColumnPlugin plugin) {
+        setupTitle(plugin);
+        loadPages(plugin);
+        initPages(plugin);
+    }
+
+    void initPages(final DecisionTableColumnPlugin plugin) {
         for (final WizardPage page : pages) {
             final BaseDecisionTableColumnPage tableColumnPage = (BaseDecisionTableColumnPage) page;
 
@@ -145,10 +170,14 @@ public class NewGuidedDecisionTableColumnWizard extends AbstractWizard {
         }
     }
 
-    private void loadPages(final DecisionTableColumnPlugin plugin) {
-        pages.clear();
-        pages.add(summaryPage);
-        pages.addAll(plugin.getPages());
+    void loadPages(final DecisionTableColumnPlugin plugin) {
+        getPages().clear();
+
+        if (plugin.isNewColumn()) {
+            getPages().add(summaryPage);
+        }
+
+        getPages().addAll(plugin.getPages());
     }
 
     @Override

@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasAdditionalInfoPage;
@@ -80,7 +81,33 @@ public class ActionWorkItemPlugin extends BaseDecisionTableColumnPlugin implemen
     public void init(final NewGuidedDecisionTableColumnWizard wizard) {
         super.init(wizard);
 
-        editingCol = new ActionWorkItemCol52();
+        setupDefaultValues();
+    }
+
+    void setupDefaultValues() {
+        if (isNewColumn()) {
+            editingCol = newActionWorkItemCol52();
+            return;
+        }
+
+        editingCol = clone(originalCol());
+
+        fireChangeEvent(workItemPage);
+        fireChangeEvent(additionalInfoPage);
+    }
+
+    ActionWorkItemCol52 newActionWorkItemCol52() {
+        return new ActionWorkItemCol52();
+    }
+
+    ActionWorkItemCol52 clone(final ActionWorkItemCol52 column) {
+        final ActionWorkItemCol52 clone = new ActionWorkItemCol52();
+
+        clone.setHeader(column.getHeader());
+        clone.setWorkItemDefinition(column.getWorkItemDefinition());
+        clone.setHideColumn(column.isHideColumn());
+
+        return clone;
     }
 
     @Override
@@ -124,8 +151,11 @@ public class ActionWorkItemPlugin extends BaseDecisionTableColumnPlugin implemen
 
     @Override
     public Set<String> getAlreadyUsedColumnHeaders() {
-        return presenter.getModel().getActionCols().stream()
-                .map(actionCol52 -> actionCol52.getHeader())
+        return presenter
+                .getModel()
+                .getActionCols()
+                .stream()
+                .map(DTColumnConfig52::getHeader)
                 .collect(Collectors.toSet());
     }
 
@@ -172,6 +202,16 @@ public class ActionWorkItemPlugin extends BaseDecisionTableColumnPlugin implemen
         return false;
     }
 
+    @Override
+    public boolean isLogicallyInsert() {
+        return false;
+    }
+
+    @Override
+    public boolean isUpdateEngine() {
+        return false;
+    }
+
     PortableWorkDefinition findWorkItemDefinition(final String workItem) {
         final List<PortableWorkDefinition> workItemDefinitions = new ArrayList<>(presenter.getWorkItemDefinitions());
 
@@ -185,9 +225,18 @@ public class ActionWorkItemPlugin extends BaseDecisionTableColumnPlugin implemen
     @Override
     public Boolean generateColumn() {
 
-        presenter.appendColumn(editingCol());
+        if (isNewColumn()) {
+            presenter.appendColumn(editingCol());
+        } else {
+            presenter.updateColumn(originalCol(),
+                                   editingCol());
+        }
 
         return true;
+    }
+
+    private ActionWorkItemCol52 originalCol() {
+        return (ActionWorkItemCol52) getOriginalColumnConfig52();
     }
 
     WizardPage workItemPage() {

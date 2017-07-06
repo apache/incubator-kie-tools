@@ -26,6 +26,13 @@ public class ActionWorkItemSetWrapper extends ActionSetFactWrapper implements Ac
 
     private ActionWorkItemSetFieldCol52 action52;
 
+    public ActionWorkItemSetWrapper(final BaseDecisionTableColumnPlugin plugin,
+                                    final ActionWorkItemSetFieldCol52 actionCol52) {
+        super(plugin);
+
+        action52 = clone(actionCol52);
+    }
+
     public ActionWorkItemSetWrapper(final BaseDecisionTableColumnPlugin plugin) {
         super(plugin);
 
@@ -70,5 +77,23 @@ public class ActionWorkItemSetWrapper extends ActionSetFactWrapper implements Ac
     @Override
     public ActionWorkItemSetFieldCol52 getActionCol52() {
         return action52;
+    }
+
+    private ActionWorkItemSetFieldCol52 clone(final ActionWorkItemSetFieldCol52 column) {
+        final ActionWorkItemSetFieldCol52 clone = new ActionWorkItemSetFieldCol52();
+
+        clone.setFactField(column.getFactField());
+        clone.setBoundName(column.getBoundName());
+        clone.setValueList(column.getValueList());
+        clone.setHeader(column.getHeader());
+        clone.setUpdate(column.isUpdate());
+        clone.setDefaultValue(column.getDefaultValue());
+        clone.setHideColumn(column.isHideColumn());
+        clone.setType(column.getType());
+        clone.setParameterClassName(column.getParameterClassName());
+        clone.setWorkItemName(column.getWorkItemName());
+        clone.setWorkItemResultParameterName(column.getWorkItemResultParameterName());
+
+        return clone;
     }
 }

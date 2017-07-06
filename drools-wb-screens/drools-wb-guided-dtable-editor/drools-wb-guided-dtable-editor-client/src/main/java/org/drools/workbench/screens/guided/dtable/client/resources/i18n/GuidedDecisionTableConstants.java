@@ -50,11 +50,7 @@ public interface GuidedDecisionTableConstants
 
     String HideThisColumn();
 
-    String DecisionTableBRLFragmentNothingDefined();
-
     String Choose();
-
-    String ActionColumnConfigurationInsertingANewFact();
 
     String Pattern();
 
@@ -72,23 +68,7 @@ public interface GuidedDecisionTableConstants
 
     String LogicallyInsert();
 
-    String YouMustEnterAColumnPattern();
-
-    String YouMustEnterAColumnField();
-
-    String EditTheFieldThatThisColumnOperatesOn();
-
-    String ChooseAPatternThatThisColumnAddsDataTo();
-
-    String pleaseChooseFactType();
-
     String OK();
-
-    String ChooseExistingPatternToAddColumnTo();
-
-    String CreateNewFactPattern();
-
-    String NewFactSelectTheType();
 
     String FactType();
 
@@ -96,63 +76,23 @@ public interface GuidedDecisionTableConstants
 
     String Binding();
 
-    String PleaseEnterANameForFact();
-
-    String PleaseEnterANameThatIsNotTheSameAsTheFactType();
-
-    String PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern();
-
-    String LogicallyInsertANewFact();
-
     String LogicallyAssertAFactTheFactWillBeDeletedWhenTheSupportingEvidenceIsRemoved();
 
     String Edit();
 
     String EditDisabled();
 
-    String ColumnConfigurationDeleteAFact();
-
-    String FactToDeleteColon();
-
-    String ColumnConfigurationSetAFieldOnAFact();
-
-    String ChooseABoundFactThatThisColumnPertainsTo();
-
     String Fact();
 
     String UpdateEngineWithChanges();
-
-    String YouMustEnterAColumnFact();
-
-    String pleaseChooseABoundFactForThisColumn();
-
-    String pleaseChooseAFactPatternFirst();
 
     String UpdateFact();
 
     String UpdateDescription();
 
-    String ChooseFact();
-
-    String ColumnConfigurationWorkItemInsertFact();
-
-    String BindActionFieldToWorkItem();
-
-    String NoWorkItemsAvailable();
-
-    String ColumnConfigurationWorkItem();
-
     String WorkItemNameColon();
 
-    String WorkItemInputParameters();
-
     String WorkItemParameterNameColon();
-
-    String ColumnConfigurationWorkItemSetField();
-
-    String ActionBRLFragmentConfiguration();
-
-    String ConditionBRLFragmentConfiguration();
 
     String LiteralValue();
 
@@ -160,13 +100,7 @@ public interface GuidedDecisionTableConstants
 
     String Predicate();
 
-    String ConditionColumnConfiguration();
-
-    String ChooseAnExistingPatternThatThisColumnAddsTo();
-
     String CalculationType();
-
-    String EditTheOperatorThatIsUsedToCompareDataWithThisField();
 
     String Operator();
 
@@ -174,33 +108,9 @@ public interface GuidedDecisionTableConstants
 
     String DTLabelFromEntryPoint();
 
-    String PleaseSelectOrEnterField();
-
-    String NotifyNoSelectedOperator();
-
-    String notNeededForPredicate();
-
-    String pleaseSelectAPatternFirst();
-
-    String pleaseSelectAField();
-
-    String pleaseSelectAnOperator();
-
-    String pleaseChooseAFieldFirst();
-
     String Predicates();
 
     String PredicatesInfo();
-
-    String SetTheOperator();
-
-    String noOperator();
-
-    String CreateANewFactPattern();
-
-    String negatePattern();
-
-    String OverCEPWindow();
 
     String Options();
 

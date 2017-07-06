@@ -37,4 +37,8 @@ public interface HasAdditionalInfoPage {
     boolean showUpdateEngineWithChanges();
 
     boolean showLogicallyInsert();
+
+    boolean isLogicallyInsert();
+
+    boolean isUpdateEngine();
 }

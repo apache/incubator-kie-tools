@@ -318,4 +318,35 @@ public class ValueOptionsPageTest {
         verify(oracle).hasEnums("factType",
                                 "factField");
     }
+
+    @Test
+    public void testSetupValueListWhenValueListIsNotEnabled() throws Exception {
+        doReturn(false).when(page).isValueListEnabled();
+
+        page.setupValueList();
+
+        verify(view).hideValueList();
+    }
+
+    @Test
+    public void testSetupValueListWhenValueListCanNotBeSetUp() throws Exception {
+        doReturn(true).when(page).isValueListEnabled();
+        doReturn(false).when(page).canSetupValueList();
+
+        page.setupValueList();
+
+        verify(view).disableValueList();
+        verify(view).setValueListText("");
+    }
+
+    @Test
+    public void testSetupValueListWhenValueListCanBeSetUp() throws Exception {
+        doReturn(true).when(page).isValueListEnabled();
+        doReturn(true).when(page).canSetupValueList();
+
+        page.setupValueList();
+
+        verify(view).enableValueList();
+        verify(view).setValueListText(any());
+    }
 }

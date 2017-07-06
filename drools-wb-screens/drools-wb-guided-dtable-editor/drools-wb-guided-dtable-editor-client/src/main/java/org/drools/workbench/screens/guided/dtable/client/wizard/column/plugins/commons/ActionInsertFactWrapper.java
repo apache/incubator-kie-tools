@@ -16,33 +16,38 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons;
 
+import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionInsertFactCol52;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+
+import static org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.TableFormat;
+import static org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.TableFormat.LIMITED_ENTRY;
 
 public class ActionInsertFactWrapper implements ActionWrapper {
 
-    private final ActionInsertFactCol52 actionCol52;
-
     private final BaseDecisionTableColumnPlugin plugin;
+    private ActionInsertFactCol52 actionCol52;
+
+    public ActionInsertFactWrapper(final BaseDecisionTableColumnPlugin plugin,
+                                   final ActionInsertFactCol52 actionCol52) {
+        this.plugin = plugin;
+        this.actionCol52 = clone(actionCol52);
+    }
 
     public ActionInsertFactWrapper(final BaseDecisionTableColumnPlugin plugin) {
         this.plugin = plugin;
         this.actionCol52 = newActionInsertFact();
     }
 
-    ActionInsertFactCol52 newActionInsertFact() {
-        final GuidedDecisionTable52.TableFormat tableFormat = plugin.getPresenter().getModel().getTableFormat();
-
-        switch (tableFormat) {
+    private ActionInsertFactCol52 newActionInsertFact() {
+        switch (tableFormat()) {
             case EXTENDED_ENTRY:
                 return new ActionInsertFactCol52();
             case LIMITED_ENTRY:
                 return new LimitedEntryActionInsertFactCol52();
             default:
-                throw new UnsupportedOperationException("Unsupported table format: " + tableFormat);
+                throw new UnsupportedOperationException("Unsupported table format: " + tableFormat());
         }
     }
 
@@ -57,7 +62,7 @@ public class ActionInsertFactWrapper implements ActionWrapper {
     }
 
     @Override
-    public boolean isUpdate() {
+    public boolean isUpdateEngine() {
         return false;
     }
 
@@ -141,7 +146,31 @@ public class ActionInsertFactWrapper implements ActionWrapper {
         return actionCol52;
     }
 
-    private GuidedDecisionTableView.Presenter presenter() {
-        return plugin.getPresenter();
+    private ActionInsertFactCol52 clone(final ActionInsertFactCol52 column) {
+        final ActionInsertFactCol52 clone = newActionInsertFact();
+
+        if (tableFormat() == LIMITED_ENTRY) {
+            asLimited(clone).setValue(asLimited(column).getValue());
+        }
+
+        clone.setFactField(column.getFactField());
+        clone.setBoundName(column.getBoundName());
+        clone.setValueList(column.getValueList());
+        clone.setHeader(column.getHeader());
+        clone.setInsertLogical(column.isInsertLogical());
+        clone.setDefaultValue(column.getDefaultValue());
+        clone.setFactType(column.getFactType());
+        clone.setHideColumn(column.isHideColumn());
+        clone.setType(column.getType());
+
+        return clone;
+    }
+
+    private LimitedEntryActionInsertFactCol52 asLimited(final ActionInsertFactCol52 column) {
+        return (LimitedEntryActionInsertFactCol52) column;
+    }
+
+    private TableFormat tableFormat() {
+        return plugin.getPresenter().getModel().getTableFormat();
     }
 }

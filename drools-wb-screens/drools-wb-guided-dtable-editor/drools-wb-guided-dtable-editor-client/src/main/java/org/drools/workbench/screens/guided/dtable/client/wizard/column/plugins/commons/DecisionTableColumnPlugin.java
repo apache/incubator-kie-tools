@@ -19,6 +19,8 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 
@@ -61,6 +63,30 @@ public interface DecisionTableColumnPlugin {
         public Type getType() {
             return null;
         }
+
+        public DTColumnConfig52 getOriginalColumnConfig52() {
+            return null;
+        }
+
+        @Override
+        public void setOriginalColumnConfig52(final DTColumnConfig52 originalColumnConfig52) {
+
+        }
+
+        @Override
+        public Boolean isNewColumn() {
+            return true;
+        }
+
+        @Override
+        public Pattern52 getOriginalPattern52() {
+            return null;
+        }
+
+        @Override
+        public void setOriginalPattern52(final Pattern52 originalPattern52) {
+
+        }
     };
 
     /**
@@ -75,13 +101,13 @@ public interface DecisionTableColumnPlugin {
     String getTitle();
 
     /**
-     * Retrieves the list of subsequent pages required for the "Type" selected in the first page of the the Wizard.
+     * Retrieves the list of subsequent pages required for the "Type" selected in the first page of the Wizard.
      */
     List<WizardPage> getPages();
 
     /**
      * Creates the column when the Wizard completes.
-     * @return 'true' when the was successful, otherwise 'false'.
+     * @return 'true' when the Wizard was successful, otherwise 'false'.
      */
     Boolean generateColumn();
 
@@ -96,6 +122,33 @@ public interface DecisionTableColumnPlugin {
      * @return A enum representing the Type.
      */
     Type getType();
+
+    /**
+     * Represents the current plugin operation.
+     * @return `true` when the plugin is creating a new column,
+     *     and `false` when the plugin is updating an existing column.
+     */
+    Boolean isNewColumn();
+
+    /**
+     * Retrieves the original column without any update.
+     */
+    Pattern52 getOriginalPattern52();
+
+    /**
+     * Sets the original column (required when the plugin is updating a column).
+     */
+    void setOriginalPattern52(final Pattern52 originalPattern52);
+
+    /**
+     * Retrieves the original pattern without any update.
+     */
+    DTColumnConfig52 getOriginalColumnConfig52();
+
+    /**
+     * Sets the original pattern (required when the plugin is updating a column).
+     */
+    void setOriginalColumnConfig52(final DTColumnConfig52 originalColumnConfig52);
 
     /**
      * Plugin type for the column wizard.

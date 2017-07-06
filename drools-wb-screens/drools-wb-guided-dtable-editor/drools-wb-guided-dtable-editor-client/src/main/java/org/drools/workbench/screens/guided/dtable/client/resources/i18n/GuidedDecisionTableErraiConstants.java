@@ -174,6 +174,9 @@ public class GuidedDecisionTableErraiConstants {
     public static final String NewGuidedDecisionTableColumnWizard_AddNewColumn = "NewGuidedDecisionTableColumnWizard.AddNewColumn";
 
     @TranslationKey(defaultValue = "")
+    public static final String NewGuidedDecisionTableColumnWizard_EditColumn = "NewGuidedDecisionTableColumnWizard.EditColumn";
+
+    @TranslationKey(defaultValue = "")
     public static final String NewPatternView_CreateANewFact = "NewPatternView.CreateANewFact";
 
     @TranslationKey(defaultValue = "")

@@ -48,6 +48,8 @@ public class PatternPage<T extends HasPatternPage & DecisionTableColumnPlugin> e
 
     private boolean negatedPatternEnabled = true;
 
+    private boolean patternCreationEnabled = true;
+
     @Inject
     public PatternPage(final View view,
                        final NewPatternPresenter newPatternPresenter,
@@ -107,6 +109,10 @@ public class PatternPage<T extends HasPatternPage & DecisionTableColumnPlugin> e
 
         setUpPatternList();
 
+        if (!isPatternCreationEnabled()) {
+            view.disablePatternCreation();
+        }
+
         view.selectPattern(currentPatternValue());
         view.hidePatternListWhenItIsEmpty();
     }
@@ -136,6 +142,14 @@ public class PatternPage<T extends HasPatternPage & DecisionTableColumnPlugin> e
 
     public void disableNegatedPatterns() {
         negatedPatternEnabled = false;
+    }
+
+    public boolean isPatternCreationEnabled() {
+        return patternCreationEnabled;
+    }
+
+    public void disablePatternCreation() {
+        patternCreationEnabled = false;
     }
 
     void setSelectedEditingPattern() {
@@ -228,5 +242,7 @@ public class PatternPage<T extends HasPatternPage & DecisionTableColumnPlugin> e
         void showPatternWarning();
 
         void hidePatternWarning();
+
+        void disablePatternCreation();
     }
 }

@@ -40,7 +40,7 @@ public class DecisionTableColumnViewUtils {
         for (int index = 0; index < list.getItemCount(); index++) {
             final String value = list.getValue(index);
 
-            if (currentValue != null && currentValue.equals(value)) {
+            if (value != null && value.equals(currentValue)) {
                 return index;
             }
         }

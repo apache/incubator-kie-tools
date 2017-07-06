@@ -68,7 +68,6 @@ public class PatternPageTest {
     private PatternPage<ConditionColumnPlugin> page = spy(new PatternPage<ConditionColumnPlugin>(view,
                                                                                                  newPatternPresenter,
                                                                                                  translationService));
-    ;
 
     @Mock
     private SimplePanel content;
@@ -269,7 +268,8 @@ public class PatternPageTest {
 
         page.isComplete(Assert::assertTrue);
         verify(view).hidePatternWarning();
-        verify(view, never()).showPatternWarning();
+        verify(view,
+               never()).showPatternWarning();
     }
 
     @Test
@@ -279,7 +279,8 @@ public class PatternPageTest {
                                                             false));
 
         page.isComplete(Assert::assertFalse);
-        verify(view, never()).hidePatternWarning();
+        verify(view,
+               never()).hidePatternWarning();
         verify(view).showPatternWarning();
     }
 
@@ -328,7 +329,7 @@ public class PatternPageTest {
     }
 
     @Test
-    public void testSetupPattern() {
+    public void testSetupPatternWhenPatternCreationIsEnabled() {
         final PatternWrapper pattern1 = newPattern("factType1",
                                                    "boundName1",
                                                    false);
@@ -352,6 +353,37 @@ public class PatternPageTest {
         verify(view).clearPatternList();
         verify(view).selectPattern(pattern2.key());
         verify(view).hidePatternListWhenItIsEmpty();
+        verify(view,
+               never()).disablePatternCreation();
+    }
+
+    @Test
+    public void testSetupPatternWhenPatternCreationIsDisabled() {
+        final PatternWrapper pattern1 = newPattern("factType1",
+                                                   "boundName1",
+                                                   false);
+        final PatternWrapper pattern2 = newPattern("factType2",
+                                                   "boundName2",
+                                                   false);
+        final List<PatternWrapper> patterns = new ArrayList<PatternWrapper>() {{
+            add(pattern1);
+            add(pattern2);
+        }};
+
+        doReturn(pattern2.key()).when(page).currentPatternValue();
+        doReturn(patterns).when(page).getPatterns();
+
+        page.disablePatternCreation();
+        page.setupPattern();
+
+        verify(view).addItem("factType1 [boundName1]",
+                             "factType1 boundName1 false");
+        verify(view).addItem("factType2 [boundName2]",
+                             "factType2 boundName2 false");
+        verify(view).clearPatternList();
+        verify(view).selectPattern(pattern2.key());
+        verify(view).hidePatternListWhenItIsEmpty();
+        verify(view).disablePatternCreation();
     }
 
     private List<PatternWrapper> fakePatterns() {

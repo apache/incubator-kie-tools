@@ -33,7 +33,7 @@ public interface ActionWrapper {
         }
 
         @Override
-        public boolean isUpdate() {
+        public boolean isUpdateEngine() {
             return false;
         }
 
@@ -114,7 +114,7 @@ public interface ActionWrapper {
 
     void setInsertLogical(final boolean insertLogical);
 
-    boolean isUpdate();
+    boolean isUpdateEngine();
 
     void setUpdate(final boolean update);
 

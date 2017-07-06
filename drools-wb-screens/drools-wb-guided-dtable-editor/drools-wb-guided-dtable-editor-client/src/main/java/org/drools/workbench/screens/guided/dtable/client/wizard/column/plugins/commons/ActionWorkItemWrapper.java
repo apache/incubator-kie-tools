@@ -38,7 +38,7 @@ public interface ActionWorkItemWrapper extends ActionWrapper {
         }
 
         @Override
-        public boolean isUpdate() {
+        public boolean isUpdateEngine() {
             return false;
         }
 

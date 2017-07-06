@@ -20,7 +20,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CEPWindow;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
@@ -87,7 +86,7 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         setupBinding();
     }
 
-    private void setupValueList() {
+    void setupValueList() {
         if (!isValueListEnabled()) {
             view.hideValueList();
             return;
@@ -95,11 +94,11 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
 
         if (!canSetupValueList()) {
             view.disableValueList();
+            view.setValueListText("");
         } else {
             view.enableValueList();
+            view.setValueListText(getValueList());
         }
-
-        view.setValueListText(getValueList());
     }
 
     private void setupCepOperators() {
@@ -163,7 +162,7 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         }};
     }
 
-    private boolean isValueListEnabled() {
+    boolean isValueListEnabled() {
         return valueListEnabled;
     }
 
@@ -288,7 +287,7 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         return plugin().isBindable();
     }
 
-    private boolean canSetupValueList() {
+    boolean canSetupValueList() {
         if (!isValueListEnabled()) {
             return false;
         }

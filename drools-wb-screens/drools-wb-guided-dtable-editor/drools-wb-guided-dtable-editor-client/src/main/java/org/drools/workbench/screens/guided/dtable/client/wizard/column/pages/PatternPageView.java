@@ -158,4 +158,10 @@ public class PatternPageView implements IsElement,
     public void hidePatternWarning() {
         patternWarning.setHidden(true);
     }
+
+    @Override
+    public void disablePatternCreation() {
+        createANewFactPattern.setVisible(false);
+        createANewFactPattern.setEnabled(false);
+    }
 }

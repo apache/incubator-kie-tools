@@ -18,9 +18,11 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionInsertFactCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -37,13 +39,18 @@ public class ActionInsertFactWrapperTest {
     @Mock
     private GuidedDecisionTable52 model;
 
-    @Test
-    public void testNewActionInsertFactWhenTableFormatIsExtendedEntry() throws Exception {
-        final BaseDecisionTableColumnPlugin plugin = mock(BaseDecisionTableColumnPlugin.class);
+    @Mock
+    private BaseDecisionTableColumnPlugin plugin;
 
-        doReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY).when(model).getTableFormat();
+    @Before
+    public void setup() {
         doReturn(model).when(presenter).getModel();
         doReturn(presenter).when(plugin).getPresenter();
+    }
+
+    @Test
+    public void testNewActionInsertFactWhenTableFormatIsExtendedEntry() throws Exception {
+        doReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY).when(model).getTableFormat();
 
         final ActionWrapper wrapper = new ActionInsertFactWrapper(plugin);
 
@@ -52,14 +59,97 @@ public class ActionInsertFactWrapperTest {
 
     @Test
     public void testNewActionInsertFactWhenTableFormatIsLimitedEntry() throws Exception {
-        final BaseDecisionTableColumnPlugin plugin = mock(BaseDecisionTableColumnPlugin.class);
-
         doReturn(GuidedDecisionTable52.TableFormat.LIMITED_ENTRY).when(model).getTableFormat();
-        doReturn(model).when(presenter).getModel();
-        doReturn(presenter).when(plugin).getPresenter();
 
         final ActionWrapper wrapper = new ActionInsertFactWrapper(plugin);
 
         assertTrue(wrapper.getActionCol52() instanceof LimitedEntryActionInsertFactCol52);
+    }
+
+    @Test
+    public void testCloneALimitedEntryActionInsert() throws Exception {
+        doReturn(GuidedDecisionTable52.TableFormat.LIMITED_ENTRY).when(model).getTableFormat();
+
+        final LimitedEntryActionInsertFactCol52 column = new LimitedEntryActionInsertFactCol52();
+        column.setFactField("factField");
+        column.setBoundName("boundName");
+        column.setValueList("valueList");
+        column.setHeader("header");
+        column.setInsertLogical(false);
+        column.setDefaultValue(new DTCellValue52("defaultValue"));
+        column.setFactType("factType");
+        column.setHideColumn(false);
+        column.setType("type");
+        column.setValue(new DTCellValue52("value"));
+
+        final ActionInsertFactWrapper wrapper = new ActionInsertFactWrapper(plugin,
+                                                                            column);
+
+        final ActionInsertFactCol52 clone = wrapper.getActionCol52();
+
+        assertEquals("factField",
+                     column.getFactField());
+        assertEquals("boundName",
+                     column.getBoundName());
+        assertEquals("valueList",
+                     column.getValueList());
+        assertEquals("header",
+                     column.getHeader());
+        assertEquals(false,
+                     column.isInsertLogical());
+        assertEquals(new DTCellValue52("defaultValue"),
+                     column.getDefaultValue());
+        assertEquals("factType",
+                     column.getFactType());
+        assertEquals(false,
+                     column.isHideColumn());
+        assertEquals("type",
+                     column.getType());
+        assertEquals(new DTCellValue52("value"),
+                     column.getValue());
+        assertNotSame(column,
+                      clone);
+    }
+
+    @Test
+    public void testCloneAnActionInsert() throws Exception {
+        doReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY).when(model).getTableFormat();
+
+        final ActionInsertFactCol52 column = new ActionInsertFactCol52();
+        column.setFactField("factField");
+        column.setBoundName("boundName");
+        column.setValueList("valueList");
+        column.setHeader("header");
+        column.setInsertLogical(false);
+        column.setDefaultValue(new DTCellValue52("defaultValue"));
+        column.setFactType("factType");
+        column.setHideColumn(false);
+        column.setType("type");
+
+        final ActionInsertFactWrapper wrapper = new ActionInsertFactWrapper(plugin,
+                                                                            column);
+
+        final ActionInsertFactCol52 clone = wrapper.getActionCol52();
+
+        assertEquals("factField",
+                     column.getFactField());
+        assertEquals("boundName",
+                     column.getBoundName());
+        assertEquals("valueList",
+                     column.getValueList());
+        assertEquals("header",
+                     column.getHeader());
+        assertEquals(false,
+                     column.isInsertLogical());
+        assertEquals(new DTCellValue52("defaultValue"),
+                     column.getDefaultValue());
+        assertEquals("factType",
+                     column.getFactType());
+        assertEquals(false,
+                     column.isHideColumn());
+        assertEquals("type",
+                     column.getType());
+        assertNotSame(column,
+                      clone);
     }
 }

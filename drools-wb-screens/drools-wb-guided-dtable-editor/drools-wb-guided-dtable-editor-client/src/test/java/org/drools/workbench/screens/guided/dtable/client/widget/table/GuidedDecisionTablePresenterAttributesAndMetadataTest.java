@@ -21,14 +21,11 @@ import java.util.Set;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.HitPolicy;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
-import org.drools.workbench.screens.guided.dtable.client.resources.HitPolicyInternationalizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
-import org.drools.workbench.services.verifier.api.client.index.Rule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,8 +36,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class GuidedDecisionTablePresenterAttributesAndMetadataTest
-        extends BaseGuidedDecisionTablePresenterTest {
+public class GuidedDecisionTablePresenterAttributesAndMetadataTest extends BaseGuidedDecisionTablePresenterTest {
 
     @Captor
     private ArgumentCaptor<Set<String>> reservedAttributesCaptor;
@@ -58,16 +54,9 @@ public class GuidedDecisionTablePresenterAttributesAndMetadataTest
     }
 
     @Test
-    public void newAttributeOrMetaDataColumn() {
-        dtPresenter.newAttributeOrMetaDataColumn();
-
-        verify(view,
-               times(1)).newAttributeOrMetaDataColumn(any());
-    }
-
-    @Test
     public void isMetaDataUnique() {
         final MetadataCol52 metadata = new MetadataCol52();
+
         metadata.setMetadata("metadata");
         dtPresenter.getModel()
                 .getMetadataCols()
@@ -78,37 +67,7 @@ public class GuidedDecisionTablePresenterAttributesAndMetadataTest
     }
 
     @Test
-    public void getExistingAttributeNames() {
-        final AttributeCol52 attribute1 = new AttributeCol52();
-        attribute1.setAttribute(RuleAttributeWidget.ENABLED_ATTR);
-
-        final AttributeCol52 attribute2 = new AttributeCol52();
-        attribute2.setAttribute(RuleAttributeWidget.AUTO_FOCUS_ATTR);
-        dtPresenter.getModel()
-                .getAttributeCols()
-                .add(attribute1);
-        dtPresenter.getModel()
-                .getAttributeCols()
-                .add(attribute2);
-
-        dtPresenter.newAttributeOrMetaDataColumn();
-
-        ArgumentCaptor<Set> argumentCaptor = ArgumentCaptor.forClass(Set.class);
-
-        verify(view,
-               times(1)).newAttributeOrMetaDataColumn(argumentCaptor.capture());
-
-        final Set existingAttributeNames = argumentCaptor.getValue();
-
-        assertEquals(2,
-                     existingAttributeNames.size());
-        assertTrue(existingAttributeNames.contains(RuleAttributeWidget.ENABLED_ATTR));
-        assertTrue(existingAttributeNames.contains(RuleAttributeWidget.AUTO_FOCUS_ATTR));
-    }
-
-    @Test
-    public void appendAttributeColumn() throws
-            ModelSynchronizer.MoveColumnVetoException {
+    public void appendAttributeColumn() throws ModelSynchronizer.MoveColumnVetoException {
         reset(modellerPresenter);
 
         final AttributeCol52 column = new AttributeCol52();
@@ -125,8 +84,7 @@ public class GuidedDecisionTablePresenterAttributesAndMetadataTest
     }
 
     @Test
-    public void appendMetadataColumn() throws
-            ModelSynchronizer.MoveColumnVetoException {
+    public void appendMetadataColumn() throws ModelSynchronizer.MoveColumnVetoException {
         reset(modellerPresenter);
 
         final MetadataCol52 column = new MetadataCol52();
@@ -143,8 +101,7 @@ public class GuidedDecisionTablePresenterAttributesAndMetadataTest
     }
 
     @Test
-    public void deleteAttributeColumn() throws
-            ModelSynchronizer.MoveColumnVetoException {
+    public void deleteAttributeColumn() throws ModelSynchronizer.MoveColumnVetoException {
         final AttributeCol52 column = new AttributeCol52();
         column.setAttribute(RuleAttributeWidget.AUTO_FOCUS_ATTR);
         dtPresenter.appendColumn(column);
@@ -159,8 +116,7 @@ public class GuidedDecisionTablePresenterAttributesAndMetadataTest
     }
 
     @Test
-    public void deleteMetadataColumn() throws
-            ModelSynchronizer.MoveColumnVetoException {
+    public void deleteMetadataColumn() throws ModelSynchronizer.MoveColumnVetoException {
         final MetadataCol52 column = new MetadataCol52();
         column.setMetadata("metadata");
         dtPresenter.appendColumn(column);
@@ -175,8 +131,7 @@ public class GuidedDecisionTablePresenterAttributesAndMetadataTest
     }
 
     @Test
-    public void updateAttributeColumn() throws
-            ModelSynchronizer.MoveColumnVetoException {
+    public void updateAttributeColumn() throws ModelSynchronizer.MoveColumnVetoException {
         final AttributeCol52 column = new AttributeCol52();
         column.setAttribute(RuleAttributeWidget.AUTO_FOCUS_ATTR);
         dtPresenter.appendColumn(column);
@@ -196,8 +151,7 @@ public class GuidedDecisionTablePresenterAttributesAndMetadataTest
     }
 
     @Test
-    public void updateMetadataColumn() throws
-            ModelSynchronizer.MoveColumnVetoException {
+    public void updateMetadataColumn() throws ModelSynchronizer.MoveColumnVetoException {
         final MetadataCol52 column = new MetadataCol52();
         column.setMetadata("metadata");
         dtPresenter.appendColumn(column);
@@ -214,36 +168,5 @@ public class GuidedDecisionTablePresenterAttributesAndMetadataTest
                                       eq(update));
         verify(modellerPresenter,
                times(1)).updateLinks();
-    }
-
-    @Test
-    public void testNewAttributeOrMetaDataColumnUniqueHitPolicy() throws Exception {
-        testReservedAttributes(HitPolicy.UNIQUE_HIT, "activation-group");
-    }
-
-    @Test
-    public void testNewAttributeOrMetaDataColumnFirstHitPolicy() throws Exception {
-        testReservedAttributes(HitPolicy.FIRST_HIT, "activation-group", "salience");
-    }
-
-    @Test
-    public void testNewAttributeOrMetaDataColumnResolvedHitPolicy() throws Exception {
-        testReservedAttributes(HitPolicy.RESOLVED_HIT, "activation-group", "salience");
-    }
-
-    @Test
-    public void testNewAttributeOrMetaDataColumnRuleOrderHitPolicy() throws Exception {
-        testReservedAttributes(HitPolicy.RULE_ORDER, "salience");
-    }
-
-    private void testReservedAttributes(HitPolicy policy, String... attributes) {
-        model.setHitPolicy(policy);
-        dtPresenter.newAttributeOrMetaDataColumn();
-        verify(view).newAttributeOrMetaDataColumn(reservedAttributesCaptor.capture());
-        assertEquals(attributes.length,
-                     reservedAttributesCaptor.getValue().size());
-        for(String attribute : attributes) {
-            assertTrue(reservedAttributesCaptor.getValue().contains(attribute));
-        }
     }
 }

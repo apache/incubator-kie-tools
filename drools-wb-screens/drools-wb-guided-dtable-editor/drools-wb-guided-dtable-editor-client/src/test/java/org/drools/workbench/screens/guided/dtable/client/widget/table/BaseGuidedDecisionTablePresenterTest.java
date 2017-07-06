@@ -247,16 +247,16 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
 
     @Mock
     protected DefaultGridLayer gridLayer;
-
+    @Mock
+    protected AnalyzerController analyzerController;
+    protected GuidedDecisionTable52 model;
+    protected GuidedDecisionTablePresenter dtPresenter;
+    protected GuidedDecisionTableEditorContent dtContent;
     @Mock
     private DecisionTableAnalyzerProvider decisionTableAnalyzerProvider;
 
     @Mock
-    protected AnalyzerController analyzerController;
-
-    protected GuidedDecisionTable52 model;
-    protected GuidedDecisionTablePresenter dtPresenter;
-    protected GuidedDecisionTableEditorContent dtContent;
+    private PluginHandler pluginHandler;
 
     @Before
     public void setup() {
@@ -309,7 +309,8 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
                                                                                       linkManager,
                                                                                       clipboard,
                                                                                       decisionTableAnalyzerProvider,
-                                                                                      enumLoaderUtilities) {
+                                                                                      enumLoaderUtilities,
+                                                                                      pluginHandler) {
             @Override
             void initialiseLockManager() {
                 //Do nothing for tests
@@ -393,10 +394,10 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
         when(presenter.getModellerPresenter()).thenReturn(modellerPresenter);
 
         presenter.setContent(dtPath,
-                               dtPlaceRequest,
-                               dtContent,
-                               modellerPresenter,
-                               false);
+                             dtPlaceRequest,
+                             dtContent,
+                             modellerPresenter,
+                             false);
 
         return presenter;
     }

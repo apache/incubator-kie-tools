@@ -19,12 +19,20 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.
 import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 
 public class ActionWorkItemInsertWrapper extends ActionInsertFactWrapper implements ActionWorkItemWrapper {
 
     private ActionWorkItemInsertFactCol52 action52;
+
+    public ActionWorkItemInsertWrapper(final BaseDecisionTableColumnPlugin plugin,
+                                       final ActionWorkItemInsertFactCol52 actionCol52) {
+        super(plugin);
+
+        action52 = clone(actionCol52);
+    }
 
     public ActionWorkItemInsertWrapper(final BaseDecisionTableColumnPlugin plugin) {
         super(plugin);
@@ -75,5 +83,24 @@ public class ActionWorkItemInsertWrapper extends ActionInsertFactWrapper impleme
     @Override
     public ActionWorkItemInsertFactCol52 getActionCol52() {
         return action52;
+    }
+
+    private ActionWorkItemInsertFactCol52 clone(final ActionWorkItemInsertFactCol52 column) {
+        final ActionWorkItemInsertFactCol52 clone = new ActionWorkItemInsertFactCol52();
+
+        clone.setFactField(column.getFactField());
+        clone.setBoundName(column.getBoundName());
+        clone.setValueList(column.getValueList());
+        clone.setHeader(column.getHeader());
+        clone.setInsertLogical(column.isInsertLogical());
+        clone.setDefaultValue(column.getDefaultValue());
+        clone.setFactType(column.getFactType());
+        clone.setHideColumn(column.isHideColumn());
+        clone.setType(column.getType());
+        clone.setParameterClassName(column.getParameterClassName());
+        clone.setWorkItemName(column.getWorkItemName());
+        clone.setWorkItemResultParameterName(column.getWorkItemResultParameterName());
+
+        return clone;
     }
 }

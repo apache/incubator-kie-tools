@@ -34,7 +34,11 @@ import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
+import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
@@ -43,6 +47,8 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.Add
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.FieldPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.PatternPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.WorkItemPage;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.ActionWorkItemInsertWrapper;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.ActionWorkItemSetWrapper;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.ActionWorkItemWrapper;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.PatternWrapper;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -61,6 +67,9 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub(BRLRuleModel.class)
 public class ActionWorkItemSetFieldPluginTest {
+
+    @Mock
+    PatternWrapper patternWrapper;
 
     @Mock
     private BiConsumer<String, String> biConsumer;
@@ -82,9 +91,6 @@ public class ActionWorkItemSetFieldPluginTest {
 
     @Mock
     private ActionWorkItemWrapper editingWrapper;
-
-    @Mock
-    PatternWrapper patternWrapper;
 
     @Mock
     private TranslationService translationService;
@@ -116,7 +122,12 @@ public class ActionWorkItemSetFieldPluginTest {
             put(workItemKey,
                 parameter);
         }};
+        final List<ActionInsertFactCol52> actions = new ArrayList<ActionInsertFactCol52>() {{
+            add(mock(ActionInsertFactCol52.class));
+        }};
 
+        doReturn(model).when(presenter).getModel();
+        doReturn(actions).when(model).getActionCols();
         doReturn("workName").when(workDefinition).getName();
         doReturn("parameterName").when(parameterDefinition).getName();
         doReturn("parameterClassName").when(parameterDefinition).getClassName();
@@ -245,10 +256,11 @@ public class ActionWorkItemSetFieldPluginTest {
     }
 
     @Test
-    public void testGenerateColumn() throws Exception {
+    public void testGenerateColumnWhenColumnIsNew() throws Exception {
         final ActionCol52 actionCol52 = mock(ActionCol52.class);
         final String header = "header";
 
+        doReturn(true).when(plugin).isNewColumn();
         doReturn(header).when(editingWrapper).getHeader();
         doReturn("factField").when(editingWrapper).getFactField();
         doReturn("factType").when(editingWrapper).getFactType();
@@ -259,6 +271,29 @@ public class ActionWorkItemSetFieldPluginTest {
 
         assertTrue(success);
         verify(presenter).appendColumn(actionCol52);
+        verify(translationService,
+               never()).format(any());
+    }
+
+    @Test
+    public void testGenerateColumnWhenColumnIsNotNew() throws Exception {
+        final ActionCol52 editingColumn = mock(ActionCol52.class);
+        final ActionCol52 originalColumn = mock(ActionCol52.class);
+        final String header = "header";
+
+        doReturn(false).when(plugin).isNewColumn();
+        doReturn(header).when(editingWrapper).getHeader();
+        doReturn("factField").when(editingWrapper).getFactField();
+        doReturn("factType2").when(editingWrapper).getFactType();
+        doReturn(editingWrapper).when(plugin).editingWrapper();
+        doReturn(editingColumn).when(editingWrapper).getActionCol52();
+        doReturn(originalColumn).when(plugin).getOriginalColumnConfig52();
+
+        final Boolean success = plugin.generateColumn();
+
+        assertTrue(success);
+        verify(presenter).updateColumn(originalColumn,
+                                       editingColumn);
         verify(translationService,
                never()).format(any());
     }
@@ -283,22 +318,41 @@ public class ActionWorkItemSetFieldPluginTest {
     }
 
     @Test
-    public void testGetPatterns() throws Exception {
-        final List<ActionInsertFactCol52> actions = new ArrayList<ActionInsertFactCol52>() {{
-            add(mock(ActionInsertFactCol52.class));
-        }};
-        final List<Pattern52> patterns = new ArrayList<Pattern52>() {{
-            add(mock(Pattern52.class));
-        }};
+    public void testGetPatternsWhenColumnIsNew() throws Exception {
+        mockPatterns();
 
-        doReturn(model).when(presenter).getModel();
-        doReturn(actions).when(model).getActionCols();
-        doReturn(patterns).when(model).getPatterns();
+        doReturn(true).when(plugin).isNewColumn();
 
-        final List<PatternWrapper> result = plugin.getPatterns();
+        final List<PatternWrapper> patterns = plugin.getPatterns();
+
+        assertEquals(3,
+                     patterns.size());
+    }
+
+    @Test
+    public void testGetPatternsWhenColumnIsNotNewButFactPatternIsNew() throws Exception {
+        mockPatterns();
+
+        doReturn(false).when(plugin).isNewColumn();
+        doReturn(true).when(plugin).isNewFactPattern();
+
+        final List<PatternWrapper> patterns = plugin.getPatterns();
 
         assertEquals(2,
-                     result.size());
+                     patterns.size());
+    }
+
+    @Test
+    public void testGetPatternsWhenColumnAndFactPatternAreNotNew() throws Exception {
+        mockPatterns();
+
+        doReturn(false).when(plugin).isNewColumn();
+        doReturn(false).when(plugin).isNewFactPattern();
+
+        final List<PatternWrapper> patterns = plugin.getPatterns();
+
+        assertEquals(1,
+                     patterns.size());
     }
 
     @Test
@@ -356,7 +410,7 @@ public class ActionWorkItemSetFieldPluginTest {
 
     @Test
     public void testShowUpdateEngineWithChangesWhenFactPatternIsNew() throws Exception {
-        doReturn(true).when(plugin).isNewFactPattern();
+        doReturn(mock(ActionWorkItemInsertWrapper.class)).when(plugin).editingWrapper();
 
         final boolean updateEngineWithChanges = plugin.showUpdateEngineWithChanges();
 
@@ -365,7 +419,7 @@ public class ActionWorkItemSetFieldPluginTest {
 
     @Test
     public void testShowUpdateEngineWithChangesWhenFactPatternIsNotNew() throws Exception {
-        doReturn(false).when(plugin).isNewFactPattern();
+        doReturn(mock(ActionWorkItemSetWrapper.class)).when(plugin).editingWrapper();
 
         final boolean updateEngineWithChanges = plugin.showUpdateEngineWithChanges();
 
@@ -374,7 +428,7 @@ public class ActionWorkItemSetFieldPluginTest {
 
     @Test
     public void testShowLogicallyInsertWhenFactPatternIsNew() throws Exception {
-        doReturn(true).when(plugin).isNewFactPattern();
+        doReturn(mock(ActionWorkItemInsertWrapper.class)).when(plugin).editingWrapper();
 
         final boolean logicallyInsert = plugin.showLogicallyInsert();
 
@@ -383,7 +437,7 @@ public class ActionWorkItemSetFieldPluginTest {
 
     @Test
     public void testShowLogicallyInsertWhenFactPatternIsNotNew() throws Exception {
-        doReturn(false).when(plugin).isNewFactPattern();
+        doReturn(mock(ActionWorkItemSetWrapper.class)).when(plugin).editingWrapper();
 
         final boolean logicallyInsert = plugin.showLogicallyInsert();
 
@@ -429,51 +483,203 @@ public class ActionWorkItemSetFieldPluginTest {
     @Ignore("Reproducer for: GUVNOR-3170")
     public void testForEachWorkItemStringField() throws Exception {
         setUpWorkItemDefinitions();
-        when(oracle.getFieldClassName("Person", "factField")).thenReturn("java.lang.String");
+        when(oracle.getFieldClassName("Person",
+                                      "factField")).thenReturn("java.lang.String");
+        plugin.setupWorkItems();
 
         plugin.forEachWorkItem(biConsumer);
 
-        verify(biConsumer, times(2)).accept(anyString(), anyString());
-        verify(biConsumer).accept("StringWorkItem - StringResult", "FirstWorkItemStringResult");
-        verify(biConsumer).accept("FloatWorkItem - FloatResult", "SecondWorkItemFloatResult");
+        verify(biConsumer,
+               times(2)).accept(anyString(),
+                                anyString());
+        verify(biConsumer).accept("StringWorkItem - StringResult",
+                                  "StringWorkItemStringResult");
+        verify(biConsumer).accept("FloatWorkItem - FloatResult",
+                                  "FloatWorkItemFloatResult");
     }
 
     @Test
     public void testForEachWorkItemFloatField() throws Exception {
         setUpWorkItemDefinitions();
-        when(oracle.getFieldClassName("Person", "factField")).thenReturn("java.lang.Float");
+        when(oracle.getFieldClassName("Person",
+                                      "factField")).thenReturn("java.lang.Float");
+        plugin.setupWorkItems();
 
         plugin.forEachWorkItem(biConsumer);
 
-        verify(biConsumer, times(1)).accept(anyString(), anyString());
-        verify(biConsumer).accept("FloatWorkItem - FloatResult", "SecondWorkItemFloatResult");
+        verify(biConsumer,
+               times(1)).accept(anyString(),
+                                anyString());
+        verify(biConsumer).accept("FloatWorkItem - FloatResult",
+                                  "FloatWorkItemFloatResult");
+    }
+
+    @Test
+    public void testNewActionWrapperWhenColumnIsAnActionWorkItemInsertFactCol52() throws Exception {
+        when(model.getTableFormat()).thenReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
+        when(presenter.getModel()).thenReturn(model);
+
+        final ActionWorkItemWrapper wrapper = plugin.newActionWorkItemWrapper(mock(ActionWorkItemInsertFactCol52.class));
+
+        assertTrue(wrapper instanceof ActionWorkItemInsertWrapper);
+    }
+
+    @Test
+    public void testNewActionWrapperWhenColumnIsAnActionSetFactWrapper() throws Exception {
+        when(model.getTableFormat()).thenReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
+        when(presenter.getModel()).thenReturn(model);
+
+        final ActionWorkItemWrapper wrapper = plugin.newActionWorkItemWrapper(mock(ActionWorkItemSetFieldCol52.class));
+
+        assertTrue(wrapper instanceof ActionWorkItemSetWrapper);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testNewActionWrapperWhenColumnIsInvalid() throws Exception {
+        when(model.getTableFormat()).thenReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
+        when(presenter.getModel()).thenReturn(model);
+
+        plugin.newActionWorkItemWrapper(mock(ConditionCol52.class));
+    }
+
+    @Test
+    public void testNewPatternWrapperWhenPatternIsFound() throws Exception {
+        final PatternWrapper expectedWrapper = mockPatternWrapper("BoundName");
+        final ArrayList<PatternWrapper> actionWrappers = new ArrayList<PatternWrapper>() {{
+            add(expectedWrapper);
+        }};
+
+        doReturn(actionWrappers).when(plugin).getPatterns();
+
+        final PatternWrapper actualWrapper = plugin.newPatternWrapper(mockActionWrapper("BoundName",
+                                                                                        "factType"));
+
+        assertSame(expectedWrapper,
+                   actualWrapper);
+    }
+
+    @Test
+    public void testNewPatternWrapperWhenPatternIsNotFound() throws Exception {
+        final ArrayList<PatternWrapper> actionWrappers = new ArrayList<>();
+        final ActionWorkItemWrapper actionWrapper = mockActionWrapper("BoundName",
+                                                                      "FactType");
+
+        doReturn(actionWrappers).when(plugin).getPatterns();
+
+        final PatternWrapper patternWrapper = plugin.newPatternWrapper(actionWrapper);
+
+        assertEquals(actionWrapper.getBoundName(),
+                     patternWrapper.getBoundName());
+        assertEquals(actionWrapper.getFactType(),
+                     patternWrapper.getFactType());
+    }
+
+    @Test
+    public void testSetupValuesWhenColumnIsNew() throws Exception {
+        doReturn(true).when(plugin).isNewColumn();
+
+        plugin.setupValues();
+
+        verify(plugin,
+               never()).setWorkItemPageAsCompleted();
+        verify(plugin,
+               never()).fireChangeEvent(patternPage);
+        verify(plugin,
+               never()).fireChangeEvent(fieldPage);
+        verify(plugin,
+               never()).fireChangeEvent(additionalInfoPage);
+    }
+
+    @Test
+    public void testSetupValuesWhenColumnIsNotNew() throws Exception {
+        final DTColumnConfig52 column = mock(DTColumnConfig52.class);
+        final ActionWorkItemWrapper actionWrapper = mock(ActionWorkItemWrapper.class);
+        final PatternWrapper patternWrapper = mock(PatternWrapper.class);
+
+        doReturn(model).when(presenter).getModel();
+        doReturn(column).when(plugin).getOriginalColumnConfig52();
+        doReturn(actionWrapper).when(plugin).newActionWorkItemWrapper(column);
+        doReturn(patternWrapper).when(plugin).newPatternWrapper(actionWrapper);
+        doReturn("WorkItemName").when(actionWrapper).getWorkItemName();
+        doReturn("WorkItemResultParameterName").when(actionWrapper).getWorkItemResultParameterName();
+        doReturn(new ArrayList<ActionCol52>()).when(model).getActionCols();
+
+        doReturn(false).when(plugin).isNewColumn();
+
+        plugin.setupValues();
+
+        verify(plugin).setupWorkItems();
+        verify(plugin).setWorkItem("WorkItemNameWorkItemResultParameterName");
+        verify(plugin).setWorkItemPageAsCompleted();
+        verify(plugin).fireChangeEvent(patternPage);
+        verify(plugin).fireChangeEvent(fieldPage);
+        verify(plugin).fireChangeEvent(additionalInfoPage);
+    }
+
+    private ActionWorkItemWrapper mockActionWrapper(final String boundName,
+                                                    final String factType) {
+        final ActionWorkItemWrapper wrapper = mock(ActionWorkItemWrapper.class);
+
+        when(wrapper.getBoundName()).thenReturn(boundName);
+        when(wrapper.getFactType()).thenReturn(factType);
+
+        return wrapper;
+    }
+
+    private PatternWrapper mockPatternWrapper(final String boundName) {
+        final PatternWrapper wrapper = mock(PatternWrapper.class);
+
+        when(wrapper.getBoundName()).thenReturn(boundName);
+
+        return wrapper;
     }
 
     private void setUpWorkItemDefinitions() {
-        final ActionWorkItemCol52 firstWorkItem = new ActionWorkItemCol52();
-        final PortableWorkDefinition firstWorkItemDefinition = new PortableWorkDefinition();
-        final PortableParameterDefinition firstParameterDefinition = new PortableStringParameterDefinition();
-        firstParameterDefinition.setName("StringResult");
-        firstWorkItemDefinition.setResults(Collections.singleton(firstParameterDefinition));
-        firstWorkItemDefinition.setName("StringWorkItem");
-        firstWorkItemDefinition.setDisplayName("FirstWorkItem");
-        firstWorkItem.setWorkItemDefinition(firstWorkItemDefinition);
-
-        final ActionWorkItemCol52 secondWorkItem = new ActionWorkItemCol52();
-        final PortableWorkDefinition secondWorkItemDefinition = new PortableWorkDefinition();
-        final PortableParameterDefinition secondParameterDefinition = new PortableFloatParameterDefinition();
-        secondParameterDefinition.setName("FloatResult");
-        secondWorkItemDefinition.setResults(Collections.singleton(secondParameterDefinition));
-        secondWorkItemDefinition.setName("FloatWorkItem");
-        secondWorkItemDefinition.setDisplayName("SecondWorkItem");
-        secondWorkItem.setWorkItemDefinition(secondWorkItemDefinition);
-
         when(patternWrapper.getFactType()).thenReturn("Person");
         when(plugin.patternWrapper()).thenReturn(patternWrapper);
         when(editingWrapper.getFactField()).thenReturn("factField");
         when(presenter.getDataModelOracle()).thenReturn(oracle);
         when(presenter.getModel()).thenReturn(model);
-        when(model.getActionCols()).thenReturn(Arrays.asList(firstWorkItem, secondWorkItem));
+        when(model.getActionCols()).thenReturn(Arrays.asList(firstFakeWorkItem(),
+                                                             secondFakeWorkItem()));
     }
 
+    private ActionWorkItemCol52 secondFakeWorkItem() {
+        final ActionWorkItemCol52 workItemCol52 = new ActionWorkItemCol52();
+        final PortableWorkDefinition portableWorkDefinition = new PortableWorkDefinition();
+        final PortableParameterDefinition portableFloatParameterDefinition = new PortableFloatParameterDefinition();
+
+        portableFloatParameterDefinition.setName("FloatResult");
+        portableWorkDefinition.setResults(Collections.singleton(portableFloatParameterDefinition));
+        portableWorkDefinition.setName("FloatWorkItem");
+        portableWorkDefinition.setDisplayName("SecondWorkItem");
+        workItemCol52.setWorkItemDefinition(portableWorkDefinition);
+
+        return workItemCol52;
+    }
+
+    private ActionWorkItemCol52 firstFakeWorkItem() {
+        final ActionWorkItemCol52 workItemCol52 = new ActionWorkItemCol52();
+        final PortableWorkDefinition portableWorkDefinition = new PortableWorkDefinition();
+        final PortableParameterDefinition portableStringParameterDefinition = new PortableStringParameterDefinition();
+
+        portableStringParameterDefinition.setName("StringResult");
+        portableWorkDefinition.setResults(Collections.singleton(portableStringParameterDefinition));
+        portableWorkDefinition.setName("StringWorkItem");
+        portableWorkDefinition.setDisplayName("FirstWorkItem");
+        workItemCol52.setWorkItemDefinition(portableWorkDefinition);
+
+        return workItemCol52;
+    }
+
+    private void mockPatterns() {
+        when(model.getPatterns()).thenReturn(new ArrayList<Pattern52>() {{
+            add(new Pattern52());
+        }});
+        when(model.getActionCols()).thenReturn(new ArrayList<ActionCol52>() {{
+            add(new ActionWorkItemInsertFactCol52());
+            add(new ActionWorkItemInsertFactCol52());
+        }});
+        when(presenter.getModel()).thenReturn(model);
+    }
 }

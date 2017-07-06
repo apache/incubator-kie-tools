@@ -30,10 +30,13 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasAdditionalInfoPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasFieldPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasPatternPage;
@@ -95,6 +98,56 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
     }
 
     @Override
+    public void init(final NewGuidedDecisionTableColumnWizard wizard) {
+        super.init(wizard);
+
+        setupValues();
+    }
+
+    void setupValues() {
+        if (!isNewColumn()) {
+            final DTColumnConfig52 originalCol = getOriginalColumnConfig52();
+
+            editingWrapper = newActionWrapper(originalCol);
+            patternWrapper = newPatternWrapper(editingWrapper());
+
+            setValueOptionsPageAsCompleted();
+
+            fireChangeEvent(patternPage);
+            fireChangeEvent(fieldPage);
+            fireChangeEvent(additionalInfoPage);
+        }
+    }
+
+    PatternWrapper newPatternWrapper(final ActionWrapper actionWrapper) {
+        final String boundName = actionWrapper.getBoundName();
+        final String factType = actionWrapper.getFactType();
+        final PatternWrapper defaultWrapper = new PatternWrapper(factType,
+                                                                 boundName,
+                                                                 false);
+
+        return getPatterns()
+                .stream()
+                .filter(wrapper -> wrapper.getBoundName().equals(boundName))
+                .findFirst()
+                .orElse(defaultWrapper);
+    }
+
+    ActionWrapper newActionWrapper(final DTColumnConfig52 column) {
+        if (column instanceof ActionInsertFactCol52) {
+            return new ActionInsertFactWrapper(this,
+                                               (ActionInsertFactCol52) column);
+        }
+
+        if (column instanceof ActionSetFieldCol52) {
+            return new ActionSetFactWrapper(this,
+                                            (ActionSetFieldCol52) column);
+        }
+
+        throw new UnsupportedOperationException("Unsupported column type: " + column.getClass().getSimpleName());
+    }
+
+    @Override
     public String getTitle() {
         return translate(GuidedDecisionTableErraiConstants.ActionInsertFactPlugin_SetTheValueOfAField);
     }
@@ -111,11 +164,18 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
 
     @Override
     public Boolean generateColumn() {
-        final ActionWrapper actionWrapper = editingWrapper();
-
-        presenter.appendColumn(actionWrapper.getActionCol52());
+        if (isNewColumn()) {
+            presenter.appendColumn(editingCol());
+        } else {
+            presenter.updateColumn(originalCol(),
+                                   editingCol());
+        }
 
         return true;
+    }
+
+    ActionCol52 originalCol() {
+        return (ActionCol52) getOriginalColumnConfig52();
     }
 
     @Override
@@ -165,8 +225,21 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
     public List<PatternWrapper> getPatterns() {
         final Set<PatternWrapper> patterns = new HashSet<>();
 
-        for (Pattern52 pattern52 : presenter.getModel().getPatterns()) {
-            patterns.add(new PatternWrapper(pattern52));
+        if (isNewColumn() || !isNewFactPattern()) {
+            for (Pattern52 pattern52 : presenter.getModel().getPatterns()) {
+                patterns.add(new PatternWrapper(pattern52));
+            }
+        }
+
+        if (isNewColumn() || isNewFactPattern()) {
+            for (Object o : presenter.getModel().getActionCols()) {
+                ActionCol52 col = (ActionCol52) o;
+                if (col instanceof ActionInsertFactCol52) {
+                    ActionInsertFactCol52 c = (ActionInsertFactCol52) col;
+
+                    patterns.add(new PatternWrapper(c));
+                }
+            }
         }
 
         return new ArrayList<>(patterns);
@@ -199,18 +272,24 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
 
     @Override
     public void setFactField(final String selectedValue) {
-        if (isNewFactPattern()) {
-            editingWrapper = newActionInsertFactWrapper();
-        } else {
-            editingWrapper = newActionSetFactWrapper();
+        if (isNewColumn()) {
+            editingWrapper = newActionWrapper();
         }
 
-        editingWrapper.setFactField(selectedValue);
-        editingWrapper.setFactType(patternWrapper().getFactType());
-        editingWrapper.setBoundName(patternWrapper().getBoundName());
-        editingWrapper.setType(oracle().getFieldType(editingWrapper.getFactType(),
-                                                     editingWrapper.getFactField()));
+        editingWrapper().setFactField(selectedValue);
+        editingWrapper().setFactType(patternWrapper().getFactType());
+        editingWrapper().setBoundName(patternWrapper().getBoundName());
+        editingWrapper().setType(oracle().getFieldType(editingWrapper().getFactType(),
+                                                       editingWrapper().getFactField()));
         fireChangeEvent(fieldPage);
+    }
+
+    private ActionWrapper newActionWrapper() {
+        if (isNewFactPattern()) {
+            return newActionInsertFactWrapper();
+        } else {
+            return newActionSetFactWrapper();
+        }
     }
 
     ActionSetFactWrapper newActionSetFactWrapper() {
@@ -250,8 +329,11 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
 
     @Override
     public Set<String> getAlreadyUsedColumnHeaders() {
-        return presenter.getModel().getActionCols().stream()
-                .map(actionCol52 -> actionCol52.getHeader())
+        return presenter
+                .getModel()
+                .getActionCols()
+                .stream()
+                .map(DTColumnConfig52::getHeader)
                 .collect(Collectors.toSet());
     }
 
@@ -267,12 +349,22 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
 
     @Override
     public boolean showUpdateEngineWithChanges() {
-        return !isNewFactPattern();
+        return editingWrapper() instanceof ActionSetFactWrapper;
     }
 
     @Override
     public boolean showLogicallyInsert() {
-        return isNewFactPattern();
+        return editingWrapper() instanceof ActionInsertFactWrapper;
+    }
+
+    @Override
+    public boolean isLogicallyInsert() {
+        return editingWrapper.isInsertLogical();
+    }
+
+    @Override
+    public boolean isUpdateEngine() {
+        return editingWrapper.isUpdateEngine();
     }
 
     @Override
@@ -326,9 +418,11 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
     }
 
     boolean isNewFactPattern() {
-        final BRLRuleModel validator = new BRLRuleModel(presenter.getModel());
-
-        return !validator.isVariableNameUsed(getBinding());
+        return !presenter
+                .getModel()
+                .getPatterns()
+                .stream()
+                .anyMatch(p -> p.getBoundName().equals(getBinding()));
     }
 
     private AsyncPackageDataModelOracle oracle() {
@@ -341,6 +435,11 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
 
     PatternPage initializedPatternPage() {
         patternPage.disableEntryPoint();
+        patternPage.disableNegatedPatterns();
+
+        if (getOriginalColumnConfig52() instanceof ActionSetFieldCol52) {
+            patternPage.disablePatternCreation();
+        }
 
         return patternPage;
     }

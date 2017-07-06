@@ -77,7 +77,6 @@ public class ActionRetractFactPluginTest {
     @Before
     public void setUp() throws Exception {
         model = new GuidedDecisionTable52();
-
     }
 
     @Test
@@ -120,19 +119,35 @@ public class ActionRetractFactPluginTest {
     }
 
     @Test
-    public void testGenerateColumn() throws Exception {
-        final ActionCol52 expectedColumn = (ActionCol52) plugin.editingCol();
+    public void testGenerateColumnWhenColumnIsNew() throws Exception {
+        final ActionRetractFactCol52 expectedColumn = mock(ActionRetractFactCol52.class);
 
-        final Boolean result = plugin.generateColumn();
+        doReturn(true).when(plugin).isNewColumn();
+        doReturn(expectedColumn).when(plugin).editingCol();
 
-        assertTrue(result);
+        assertTrue(plugin.generateColumn());
+
         verify(presenter).appendColumn(expectedColumn);
+    }
+
+    @Test
+    public void testGenerateColumnWhenColumnIsNotNew() throws Exception {
+        final ActionRetractFactCol52 editingCol = mock(ActionRetractFactCol52.class);
+        final ActionRetractFactCol52 originalCol = mock(ActionRetractFactCol52.class);
+
+        doReturn(false).when(plugin).isNewColumn();
+        doReturn(editingCol).when(plugin).editingCol();
+        doReturn(originalCol).when(plugin).originalCol();
+
+        assertTrue(plugin.generateColumn());
+
+        verify(presenter).updateColumn(originalCol,
+                                       editingCol);
     }
 
     @Test
     public void testSetHeader() throws Exception {
         final String header = "Header";
-
         doReturn(editingCol).when(plugin).editingCol();
 
         plugin.setHeader(header);
@@ -214,10 +229,38 @@ public class ActionRetractFactPluginTest {
         model.getActionCols().add(actionCol52("b"));
         when(presenter.getModel()).thenReturn(model);
 
-        assertEquals(2, plugin.getAlreadyUsedColumnHeaders().size());
+        assertEquals(2,
+                     plugin.getAlreadyUsedColumnHeaders().size());
         assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("a"));
         assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("b"));
+    }
 
+    @Test
+    public void testSetupDefaultValuesColumnIsNew() throws Exception {
+        final ActionRetractFactCol52 newColumn = mock(ActionRetractFactCol52.class);
+
+        doReturn(true).when(plugin).isNewColumn();
+        doReturn(newColumn).when(plugin).newColumn();
+        doReturn(newColumn).when(plugin).clone(newColumn);
+
+        plugin.setupDefaultValues();
+
+        assertEquals(plugin.editingCol(),
+                     newColumn);
+    }
+
+    @Test
+    public void testSetupDefaultValuesColumnIsNotNew() throws Exception {
+        final ActionRetractFactCol52 originalCol = mock(ActionRetractFactCol52.class);
+
+        doReturn(false).when(plugin).isNewColumn();
+        doReturn(originalCol).when(plugin).originalCol();
+        doReturn(originalCol).when(plugin).clone(originalCol);
+
+        plugin.setupDefaultValues();
+
+        assertEquals(plugin.editingCol(),
+                     originalCol);
     }
 
     private ActionCol52 actionCol52(final String header) {

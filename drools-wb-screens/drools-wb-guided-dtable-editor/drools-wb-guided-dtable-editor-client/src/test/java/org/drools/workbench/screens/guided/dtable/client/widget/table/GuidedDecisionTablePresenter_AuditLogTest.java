@@ -53,6 +53,7 @@ import org.gwtbootstrap3.client.ui.html.Text;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
@@ -69,7 +70,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@WithClassesToStub({ Text.class, DateTimeFormat.class })
+@WithClassesToStub({Text.class, DateTimeFormat.class})
 @RunWith(GwtMockitoTestRunner.class)
 public class GuidedDecisionTablePresenter_AuditLogTest {
 
@@ -112,61 +113,65 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
     @Mock
     private EnumLoaderUtilities enumLoaderUtilities;
 
+    @Mock
+    private PluginHandler pluginHandler;
+
     private GridWidgetColumnFactory gridWidgetColumnFactory = new GridWidgetColumnFactoryImpl();
     private GuidedDecisionTablePresenter dtPresenter;
     private GuidedDecisionTableEditorContent dtContent;
 
-    private GuidedDecisionTable52 model = spy( new GuidedDecisionTable52() );
+    private GuidedDecisionTable52 model = spy(new GuidedDecisionTable52());
     private List<BaseColumnFieldDiff> diffs;
 
     @Before
     public void setup() throws MoveColumnVetoException {
         setupPresenter();
 
-        for ( Entry<String, Boolean> entry : model.getAuditLog().getAuditLogFilter().getAcceptedTypes().entrySet() ) {
-            entry.setValue( Boolean.TRUE );
+        for (Entry<String, Boolean> entry : model.getAuditLog().getAuditLogFilter().getAcceptedTypes().entrySet()) {
+            entry.setValue(Boolean.TRUE);
         }
-        Mockito.reset( model );
+        Mockito.reset(model);
 
         diffs = new ArrayList();
-        diffs.add( null );
-        when( synchronizer.updateColumn( any( BaseColumn.class ),
-                                         any( BaseColumn.class ) ) ).thenReturn( diffs );
-        when( synchronizer.updateColumn( any( Pattern52.class ),
-                                         any( ConditionCol52.class ),
-                                         any( Pattern52.class ),
-                                         any( ConditionCol52.class ) ) ).thenReturn( diffs );
+        diffs.add(null);
+        when(synchronizer.updateColumn(any(BaseColumn.class),
+                                       any(BaseColumn.class))).thenReturn(diffs);
+        when(synchronizer.updateColumn(any(Pattern52.class),
+                                       any(ConditionCol52.class),
+                                       any(Pattern52.class),
+                                       any(ConditionCol52.class))).thenReturn(diffs);
     }
 
     private void setupPresenter() {
-        dtPresenter = new GuidedDecisionTablePresenter( identity,
-                                                        null,
-                                                        null,
-                                                        null,
-                                                        null,
-                                                        null,
-                                                        refreshAttributesPanelEvent,
-                                                        refreshMetaDataPanelEvent,
-                                                        refreshConditionsPanelEvent,
-                                                        refreshActionsPanelEvent,
-                                                        null,
-                                                        null,
-                                                        gridWidgetColumnFactory,
-                                                        oracleFactory,
-                                                        synchronizer,
-                                                        beanManager,
-                                                        lockManager,
-                                                        null,
-                                                        null,
-                                                        decisionTableAnalyzerProvider,
-                                                        enumLoaderUtilities ) {
+        dtPresenter = new GuidedDecisionTablePresenter(identity,
+                                                       null,
+                                                       null,
+                                                       null,
+                                                       null,
+                                                       null,
+                                                       refreshAttributesPanelEvent,
+                                                       refreshMetaDataPanelEvent,
+                                                       refreshConditionsPanelEvent,
+                                                       refreshActionsPanelEvent,
+                                                       null,
+                                                       null,
+                                                       gridWidgetColumnFactory,
+                                                       oracleFactory,
+                                                       synchronizer,
+                                                       beanManager,
+                                                       lockManager,
+                                                       null,
+                                                       null,
+                                                       decisionTableAnalyzerProvider,
+                                                       enumLoaderUtilities,
+                                                       pluginHandler) {
             @Override
             void initialiseLockManager() {
                 //Do nothing for tests
             }
 
             @Override
-            GuidedDecisionTableView makeView( final Set<PortableWorkDefinition> workItemDefinitions ) {
+            GuidedDecisionTableView makeView(final Set<PortableWorkDefinition> workItemDefinitions) {
                 return view;
             }
 
@@ -176,58 +181,57 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
             }
         };
 
-        final AsyncPackageDataModelOracle dmo = mock( AsyncPackageDataModelOracle.class );
-        final PackageDataModelOracleBaselinePayload dmoBaseline = mock( PackageDataModelOracleBaselinePayload.class );
+        final AsyncPackageDataModelOracle dmo = mock(AsyncPackageDataModelOracle.class);
+        final PackageDataModelOracleBaselinePayload dmoBaseline = mock(PackageDataModelOracleBaselinePayload.class);
         final Set<PortableWorkDefinition> workItemDefinitions = Collections.emptySet();
-        final Overview overview = mock( Overview.class );
+        final Overview overview = mock(Overview.class);
 
-        dtContent = new GuidedDecisionTableEditorContent( model,
-                                                          workItemDefinitions,
-                                                          overview,
-                                                          dmoBaseline );
+        dtContent = new GuidedDecisionTableEditorContent(model,
+                                                         workItemDefinitions,
+                                                         overview,
+                                                         dmoBaseline);
 
-        when( oracleFactory.makeAsyncPackageDataModelOracle( any( Path.class ),
-                                                             any( GuidedDecisionTable52.class ),
-                                                             eq( dmoBaseline ) ) ).thenReturn( dmo );
+        when(oracleFactory.makeAsyncPackageDataModelOracle(any(Path.class),
+                                                           any(GuidedDecisionTable52.class),
+                                                           eq(dmoBaseline))).thenReturn(dmo);
 
-        dtPresenter.setContent( null,
-                                mock( PlaceRequest.class ),
-                                dtContent,
-                                modellerPresenter,
-                                false );
-        when( view.getLayer() ).thenReturn( mock( Layer.class ) );
+        dtPresenter.setContent(null,
+                               mock(PlaceRequest.class),
+                               dtContent,
+                               modellerPresenter,
+                               false);
+        when(view.getLayer()).thenReturn(mock(Layer.class));
     }
 
     @Test
     public void updateColumnAddsToLog() throws MoveColumnVetoException {
-        dtPresenter.updateColumn( new ActionCol52(),
-                                  new ActionCol52() );
-        dtPresenter.updateColumn( new AttributeCol52(),
-                                  new AttributeCol52() );
-        dtPresenter.updateColumn( new ConditionCol52(),
-                                  new ConditionCol52() );
-        dtPresenter.updateColumn( new MetadataCol52(),
-                                  new MetadataCol52() );
-        dtPresenter.updateColumn( new Pattern52(),
-                                  new ConditionCol52(),
-                                  new Pattern52(),
-                                  new ConditionCol52() );
+        dtPresenter.updateColumn(new ActionCol52(),
+                                 new ActionCol52());
+        dtPresenter.updateColumn(new AttributeCol52(),
+                                 new AttributeCol52());
+        dtPresenter.updateColumn(new ConditionCol52(),
+                                 new ConditionCol52());
+        dtPresenter.updateColumn(new MetadataCol52(),
+                                 new MetadataCol52());
+        dtPresenter.updateColumn(new Pattern52(),
+                                 new ConditionCol52(),
+                                 new Pattern52(),
+                                 new ConditionCol52());
 
-        verify( synchronizer,
-                times( 4 ) ).updateColumn( any( BaseColumn.class ),
-                                           any( BaseColumn.class ) );
-        verify( synchronizer ).updateColumn( any( Pattern52.class ),
-                                             any( ConditionCol52.class ),
-                                             any( Pattern52.class ),
-                                             any( ConditionCol52.class ) );
-        verify( model,
-                times( 5 ) ).getAuditLog();
-        assertEquals( 5,
-                      model.getAuditLog().size() );
-        for ( UpdateColumnAuditLogEntry entry : model.getAuditLog().toArray( new UpdateColumnAuditLogEntry[ 0 ] ) ) {
-            assertEquals( diffs,
-                          entry.getDiffs() );
+        verify(synchronizer,
+               times(4)).updateColumn(any(BaseColumn.class),
+                                      any(BaseColumn.class));
+        verify(synchronizer).updateColumn(any(Pattern52.class),
+                                          any(ConditionCol52.class),
+                                          any(Pattern52.class),
+                                          any(ConditionCol52.class));
+        verify(model,
+               times(5)).getAuditLog();
+        assertEquals(5,
+                     model.getAuditLog().size());
+        for (UpdateColumnAuditLogEntry entry : model.getAuditLog().toArray(new UpdateColumnAuditLogEntry[0])) {
+            assertEquals(diffs,
+                         entry.getDiffs());
         }
     }
-
 }

@@ -25,10 +25,6 @@ public class HideColumnCheckBox extends CheckBox {
 
     public void init(final DTColumnConfig52 column) {
         setValue(column.isHideColumn());
-        addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent sender) {
-                column.setHideColumn(getValue());
-            }
-        });
+        addClickHandler(clickEvent -> column.setHideColumn(getValue()));
     }
 }

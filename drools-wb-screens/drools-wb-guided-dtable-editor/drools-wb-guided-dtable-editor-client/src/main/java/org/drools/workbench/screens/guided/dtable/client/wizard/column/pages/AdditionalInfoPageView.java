@@ -115,13 +115,17 @@ public class AdditionalInfoPageView implements IsElement,
     }
 
     @Override
-    public void showLogicallyInsert() {
+    public void showLogicallyInsert(final boolean isLogicallyInsert) {
         logicallyInsertFormItem.setHidden(false);
+
+        logicallyInsert.setValue(isLogicallyInsert);
     }
 
     @Override
-    public void showUpdateEngineWithChanges() {
+    public void showUpdateEngineWithChanges(final boolean isUpdateEngine) {
         updateEngineWithChangesFormItem.setHidden(false);
+
+        updateEngineWithChanges.setValue(isUpdateEngine);
     }
 
     @Override

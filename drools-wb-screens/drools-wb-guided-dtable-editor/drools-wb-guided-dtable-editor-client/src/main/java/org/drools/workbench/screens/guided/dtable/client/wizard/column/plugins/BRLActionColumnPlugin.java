@@ -37,6 +37,7 @@ import org.drools.workbench.models.datamodel.rule.visitors.RuleModelVisitor;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
+import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLActionColumn;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
@@ -110,6 +111,15 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
 
     void setupEditingCol() {
         editingCol = newBRLActionColumn();
+
+        if (!isNewColumn()) {
+            editingCol().setHeader(originalCol().getHeader());
+            editingCol().setDefinition(originalCol().getDefinition());
+            editingCol().setChildColumns(originalCol().getChildColumns());
+            editingCol().setHideColumn(originalCol().isHideColumn());
+
+            fireChangeEvent(additionalInfoPage);
+        }
     }
 
     void teardownRuleModellerEvents() {
@@ -126,11 +136,20 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
     @Override
     public Boolean generateColumn() {
         getDefinedVariables(getRuleModel());
-
         editingCol().setDefinition(Arrays.asList(getRuleModel().rhs));
-        presenter.appendColumn(editingCol());
+
+        if (isNewColumn()) {
+            presenter.appendColumn(editingCol());
+        } else {
+            presenter.updateColumn(originalCol(),
+                                   editingCol());
+        }
 
         return true;
+    }
+
+    BRLActionColumn originalCol() {
+        return (BRLActionColumn) getOriginalColumnConfig52();
     }
 
     boolean getDefinedVariables(RuleModel ruleModel) {
@@ -198,8 +217,11 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
 
     @Override
     public Set<String> getAlreadyUsedColumnHeaders() {
-        return presenter.getModel().getActionCols().stream()
-                .map(actionCol52 -> actionCol52.getHeader())
+        return presenter
+                .getModel()
+                .getActionCols()
+                .stream()
+                .map(DTColumnConfig52::getHeader)
                 .collect(Collectors.toSet());
     }
 
@@ -220,6 +242,16 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
 
     @Override
     public boolean showLogicallyInsert() {
+        return false;
+    }
+
+    @Override
+    public boolean isLogicallyInsert() {
+        return false;
+    }
+
+    @Override
+    public boolean isUpdateEngine() {
         return false;
     }
 
@@ -275,7 +307,7 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
                                                   this);
     }
 
-    private BRLActionColumn newBRLActionColumn() {
+    BRLActionColumn newBRLActionColumn() {
         switch (tableFormat()) {
             case EXTENDED_ENTRY:
                 return new BRLActionColumn();

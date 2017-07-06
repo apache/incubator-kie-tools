@@ -23,8 +23,10 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
@@ -107,6 +109,54 @@ public class BRLActionColumnPluginTest {
     }
 
     @Test
+    public void testSetupEditingColWhenColumnIsNew() throws Exception {
+        final BRLActionColumn column = mock(BRLActionColumn.class);
+
+        doReturn(true).when(plugin).isNewColumn();
+        doReturn(column).when(plugin).newBRLActionColumn();
+
+        plugin.setupEditingCol();
+
+        verify(column,
+               never()).setHeader(any());
+        verify(column,
+               never()).setDefinition(any());
+        verify(column,
+               never()).setChildColumns(any());
+        verify(column,
+               never()).setHideColumn(anyBoolean());
+        assertEquals(column,
+                     plugin.editingCol());
+    }
+
+    @Test
+    public void testSetupEditingColWhenColumnIsNotNew() throws Exception {
+        final BRLActionColumn originalColumn = mock(BRLActionColumn.class);
+        final BRLActionColumn editingColumn = mock(BRLActionColumn.class);
+        final String header = "header";
+        final ArrayList<IAction> definition = new ArrayList<>();
+        final ArrayList<BRLActionVariableColumn> childColumns = new ArrayList<>();
+        final boolean isHideColumn = false;
+
+        doReturn(false).when(plugin).isNewColumn();
+        doReturn(editingColumn).when(plugin).newBRLActionColumn();
+        doReturn(originalColumn).when(plugin).getOriginalColumnConfig52();
+        doReturn(header).when(originalColumn).getHeader();
+        doReturn(definition).when(originalColumn).getDefinition();
+        doReturn(childColumns).when(originalColumn).getChildColumns();
+        doReturn(isHideColumn).when(originalColumn).isHideColumn();
+
+        plugin.setupEditingCol();
+
+        verify(editingColumn).setHeader(header);
+        verify(editingColumn).setDefinition(definition);
+        verify(editingColumn).setChildColumns(childColumns);
+        verify(editingColumn).setHideColumn(isHideColumn);
+        assertEquals(editingColumn,
+                     plugin.editingCol());
+    }
+
+    @Test
     public void testGetPages() throws Exception {
         final List<WizardPage> pages = plugin.getPages();
 
@@ -122,14 +172,14 @@ public class BRLActionColumnPluginTest {
     }
 
     @Test
-    public void testGenerateColumnWhenHeaderIsValid() throws Exception {
-        final String header = "header";
+    public void testGenerateColumnWhenColumnIsNew() throws Exception {
         final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
         final ArrayList<ActionCol52> actionCol52s = new ArrayList<>();
 
         when(model.getActionCols()).thenReturn(actionCol52s);
         when(presenter.getModel()).thenReturn(model);
-        when(editingCol.getHeader()).thenReturn(header);
+        when(editingCol.getHeader()).thenReturn("header");
+        when(plugin.isNewColumn()).thenReturn(true);
 
         final Boolean success = plugin.generateColumn();
 
@@ -138,6 +188,29 @@ public class BRLActionColumnPluginTest {
         verify(plugin).getDefinedVariables(any());
         verify(editingCol).setDefinition(any());
         verify(presenter).appendColumn(editingCol);
+        verify(translationService,
+               never()).format(any());
+    }
+
+    @Test
+    public void testGenerateColumnWhenColumnIsNotNew() throws Exception {
+        final BRLActionColumn originalCol = mock(BRLActionColumn.class);
+        final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
+
+        when(model.getActionCols()).thenReturn(new ArrayList<>());
+        when(presenter.getModel()).thenReturn(model);
+        when(editingCol.getHeader()).thenReturn("header");
+        when(plugin.originalCol()).thenReturn(originalCol);
+        when(plugin.isNewColumn()).thenReturn(false);
+
+        final Boolean success = plugin.generateColumn();
+
+        assertTrue(success);
+
+        verify(plugin).getDefinedVariables(any());
+        verify(editingCol).setDefinition(any());
+        verify(presenter).updateColumn(originalCol,
+                                       editingCol);
         verify(translationService,
                never()).format(any());
     }

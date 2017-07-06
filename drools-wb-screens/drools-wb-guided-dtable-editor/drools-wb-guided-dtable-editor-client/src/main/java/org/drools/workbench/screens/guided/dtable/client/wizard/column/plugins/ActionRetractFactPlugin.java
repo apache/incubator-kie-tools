@@ -24,8 +24,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
@@ -91,14 +89,22 @@ public class ActionRetractFactPlugin extends BaseDecisionTableColumnPlugin imple
 
     @Override
     public Boolean generateColumn() {
-
-        presenter.appendColumn(editingCol);
+        if (isNewColumn()) {
+            presenter.appendColumn(editingCol());
+        } else {
+            presenter.updateColumn(originalCol(),
+                                   editingCol());
+        }
 
         return true;
     }
 
+    ActionRetractFactCol52 originalCol() {
+        return (ActionRetractFactCol52) getOriginalColumnConfig52();
+    }
+
     @Override
-    public DTColumnConfig52 editingCol() {
+    public ActionRetractFactCol52 editingCol() {
         return editingCol;
     }
 
@@ -116,9 +122,12 @@ public class ActionRetractFactPlugin extends BaseDecisionTableColumnPlugin imple
 
     @Override
     public Set<String> getAlreadyUsedColumnHeaders() {
-        return presenter.getModel().getActionCols().stream()
-                    .map(actionCol52 -> actionCol52.getHeader())
-                    .collect(Collectors.toSet());
+        return presenter
+                .getModel()
+                .getActionCols()
+                .stream()
+                .map(DTColumnConfig52::getHeader)
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -138,6 +147,16 @@ public class ActionRetractFactPlugin extends BaseDecisionTableColumnPlugin imple
 
     @Override
     public boolean showLogicallyInsert() {
+        return false;
+    }
+
+    @Override
+    public boolean isLogicallyInsert() {
+        return false;
+    }
+
+    @Override
+    public boolean isUpdateEngine() {
         return false;
     }
 
@@ -162,10 +181,10 @@ public class ActionRetractFactPlugin extends BaseDecisionTableColumnPlugin imple
     }
 
     void setupDefaultValues() {
-        editingCol = clone(newActionRetractFactColumn());
+        editingCol = clone(isNewColumn() ? newColumn() : originalCol());
     }
 
-    void setPatternToDeletePageCompleted(Boolean completed) {
+    void setPatternToDeletePageCompleted(final Boolean completed) {
         patternToDeletePageCompleted = completed;
     }
 
@@ -182,7 +201,7 @@ public class ActionRetractFactPlugin extends BaseDecisionTableColumnPlugin imple
         return (LimitedEntryActionRetractFactCol52) editingCol();
     }
 
-    private ActionRetractFactCol52 newActionRetractFactColumn() {
+    ActionRetractFactCol52 newColumn() {
         switch (tableFormat()) {
             case EXTENDED_ENTRY:
                 return new ActionRetractFactCol52();
@@ -197,7 +216,7 @@ public class ActionRetractFactPlugin extends BaseDecisionTableColumnPlugin imple
         }
     }
 
-    private ActionRetractFactCol52 clone(final ActionRetractFactCol52 col52) {
+    ActionRetractFactCol52 clone(final ActionRetractFactCol52 col52) {
         final ActionRetractFactCol52 clone;
 
         if (col52 instanceof LimitedEntryCol) {

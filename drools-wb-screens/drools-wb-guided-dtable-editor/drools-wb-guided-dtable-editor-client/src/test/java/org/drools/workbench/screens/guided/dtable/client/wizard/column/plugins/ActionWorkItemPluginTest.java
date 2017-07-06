@@ -274,6 +274,60 @@ public class ActionWorkItemPluginTest {
         assertTrue(plugin.getAlreadyUsedColumnHeaders().contains("b"));
     }
 
+    @Test
+    public void testSetupDefaultValuesWhenColumnIsNotNew() throws Exception {
+        final ActionWorkItemCol52 column = mock(ActionWorkItemCol52.class);
+
+        doReturn(false).when(plugin).isNewColumn();
+        doReturn(column).when(plugin).clone(any());
+
+        plugin.setupDefaultValues();
+
+        assertEquals(column,
+                     plugin.editingCol());
+        verify(plugin).fireChangeEvent(workItemPage);
+        verify(plugin).fireChangeEvent(additionalInfoPage);
+    }
+
+    @Test
+    public void testSetupDefaultValuesWhenColumnIsNew() throws Exception {
+        final ActionWorkItemCol52 column = mock(ActionWorkItemCol52.class);
+
+        doReturn(true).when(plugin).isNewColumn();
+        doReturn(column).when(plugin).newActionWorkItemCol52();
+
+        plugin.setupDefaultValues();
+
+        assertEquals(column,
+                     plugin.editingCol());
+        verify(plugin,
+               never()).fireChangeEvent(workItemPage);
+        verify(plugin,
+               never()).fireChangeEvent(additionalInfoPage);
+    }
+
+    @Test
+    public void testGenerateColumnWhenColumnIsNew() throws Exception {
+        doReturn(true).when(plugin).isNewColumn();
+
+        plugin.generateColumn();
+
+        verify(presenter).appendColumn(editingCol);
+    }
+
+    @Test
+    public void testGenerateColumnWhenColumnIsNotNew() throws Exception {
+        final ActionWorkItemCol52 column = mock(ActionWorkItemCol52.class);
+
+        doReturn(false).when(plugin).isNewColumn();
+        doReturn(column).when(plugin).getOriginalColumnConfig52();
+
+        plugin.generateColumn();
+
+        verify(presenter).updateColumn(column,
+                                       editingCol);
+    }
+
     private PortableWorkDefinition getMock(final String name) {
         final PortableWorkDefinition mock = mock(PortableWorkDefinition.class);
 

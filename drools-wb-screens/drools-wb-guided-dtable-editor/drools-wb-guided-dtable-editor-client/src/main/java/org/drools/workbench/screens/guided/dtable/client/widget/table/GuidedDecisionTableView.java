@@ -26,20 +26,11 @@ import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLActionColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.EditMenuBuilder;
@@ -67,61 +58,6 @@ public interface GuidedDecisionTableView extends GridWidget,
 
     void setLocation(final double x,
                      final double y);
-
-    void newAttributeOrMetaDataColumn(final Set<String> reservedAttributeNames);
-
-    void newExtendedEntryConditionColumn();
-
-    void newExtendedEntryConditionBRLFragment();
-
-    void newExtendedEntryActionInsertColumn();
-
-    void newExtendedEntryActionSetColumn();
-
-    void newExtendedEntryActionRetractFact();
-
-    void newActionWorkItem();
-
-    void newActionWorkItemSetField();
-
-    void newActionWorkItemInsertFact();
-
-    void newExtendedEntryActionBRLFragment();
-
-    void newLimitedEntryConditionColumn();
-
-    void newLimitedEntryConditionBRLFragment();
-
-    void newLimitedEntryActionInsertColumn();
-
-    void newLimitedEntryActionSetColumn();
-
-    void newLimitedEntryActionRetractFact();
-
-    void newLimitedEntryActionBRLFragment();
-
-    void editCondition(final Pattern52 pattern,
-                       final ConditionCol52 column);
-
-    void editExtendedEntryConditionBRLFragment(final BRLConditionColumn column);
-
-    void editLimitedEntryConditionBRLFragment(final LimitedEntryBRLConditionColumn column);
-
-    void editActionInsertFact(final ActionInsertFactCol52 column);
-
-    void editActionSetField(final ActionSetFieldCol52 column);
-
-    void editActionRetractFact(final ActionRetractFactCol52 column);
-
-    void editActionWorkItemInsertFact(final ActionWorkItemInsertFactCol52 column);
-
-    void editActionWorkItemSetField(final ActionWorkItemSetFieldCol52 column);
-
-    void editActionWorkItem(final ActionWorkItemCol52 column);
-
-    void editExtendedEntryActionBRLFragment(final BRLActionColumn column);
-
-    void editLimitedEntryActionBRLFragment(final LimitedEntryBRLActionColumn column);
 
     void showDataCutNotificationEvent();
 
@@ -200,29 +136,9 @@ public interface GuidedDecisionTableView extends GridWidget,
                             final DependentEnumsUtilities.Context context,
                             final Callback<Map<String, String>> callback);
 
-        void newAttributeOrMetaDataColumn();
-
         Set<String> getReservedAttributeNames();
 
         boolean isMetaDataUnique(final String metaDataName);
-
-        void newConditionColumn();
-
-        void newConditionBRLFragment();
-
-        void newActionInsertColumn();
-
-        void newActionSetColumn();
-
-        void newActionRetractFact();
-
-        void newActionWorkItem();
-
-        void newActionWorkItemSetField();
-
-        void newActionWorkItemInsertFact();
-
-        void newActionBRLFragment();
 
         void editCondition(final Pattern52 pattern,
                            final ConditionCol52 column);
