@@ -740,26 +740,6 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 // But at the moment not entirely sure how to do that, so fixing sympton that than cause (mdp).
                 return;
             }
-//            else if (x == x1 || y == y1)
-//            {
-//                if ( buffer.size() > 2 )
-//                {
-//                    double x2 = buffer.get(buffer.size()-4);
-//                    double y2 = buffer.get(buffer.size()-3);
-//                    if ( x == x1 && x == x2 )
-//                    {
-//                        buffer.set(buffer.size()-1, y);
-//                        return;
-//
-//                    }
-//                    else
-//                    if ( y == y1 && y == y2 )
-//                    {
-//                        buffer.set(buffer.size()-2, x);
-//                        return;
-//                    }
-//                }
-//            }
         }
 
         buffer.push(x, y);

@@ -51,6 +51,11 @@ public final class BoundingPoints implements Iterable<Point2D>
 
     public final BoundingPoints transform(final Transform transform)
     {
+        return transform(0, 0, transform);
+    }
+
+    public final BoundingPoints transform(final double computedOffsetX, final double computedOffsetY, final Transform transform)
+    {
         if (null != transform)
         {
             final int leng = m_array.size();
@@ -58,8 +63,8 @@ public final class BoundingPoints implements Iterable<Point2D>
             for (int i = 0; i < leng; i++)
             {
                 final Point2D p = m_array.get(i);
-
                 transform.transform(p, p);
+                p.offset(computedOffsetX, computedOffsetY);
             }
         }
         return this;

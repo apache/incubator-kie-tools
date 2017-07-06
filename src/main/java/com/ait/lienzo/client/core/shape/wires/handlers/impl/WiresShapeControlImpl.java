@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
@@ -34,7 +37,6 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.client.widget.DragContext;
-import com.ait.tooling.nativetools.client.util.Console;
 
 /**
  * The DockingAndContainment snap is applied first and thus takes priority. If DockingAndContainment snap is applied, then AlignAndDistribute snap is only applied if the
@@ -57,6 +59,8 @@ public class WiresShapeControlImpl implements WiresShapeControl
 
     private double                            m_shapeStartY;
 
+    private WiresConnector[]                  m_connectorsWithSpecialConnections;
+
     public WiresShapeControlImpl(WiresShape shape, WiresManager wiresManager)
     {
         m_manager = wiresManager;
@@ -74,6 +78,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
     {
         this.m_dockingAndContainmentControl = m_dockingAndContainmentControl;
     }
+
 
     @Override
     public void dragStart(final DragContext context)
@@ -93,7 +98,42 @@ public class WiresShapeControlImpl implements WiresShapeControl
             m_alignAndDistributeControl.dragStart();
         }
 
+        // index nested shapes that have special connectors, to avoid searching during drag.
+        m_connectorsWithSpecialConnections = collectionSpecialConnectors(m_shape);
+
     }
+
+    public static  WiresConnector[] collectionSpecialConnectors(WiresShape shape)
+    {
+        Map<String, WiresConnector> connectors = new HashMap<String, WiresConnector>();
+        collectionSpecialConnectors(shape, connectors);
+        WiresConnector[] connectorsWithSpecialConnections = connectors.values().toArray(new WiresConnector[connectors.size()]);
+        return connectorsWithSpecialConnections;
+    }
+
+    public static void collectionSpecialConnectors(WiresShape shape, Map<String, WiresConnector> connectors)
+    {
+        // start with 0, as we can have center connections too
+        for ( int i = 0, size0 = shape.getMagnets().size(); i < size0; i++ )
+        {
+            WiresMagnet m = shape.getMagnets().getMagnet(i);
+            for ( int j = 0, size1 = m.getConnectionsSize(); j < size1; j++ )
+            {
+                WiresConnection connection = m.getConnections().get(j);
+                if (connection.isSpecialConnection())
+                {
+                    connectors.put(connection.getConnector().getGroup().uuid(), connection.getConnector());
+                }
+            }
+        }
+
+        for (WiresShape child : shape.getChildShapes())
+        {
+
+            collectionSpecialConnectors(child, connectors);
+        }
+    }
+
 
     @Override
     public boolean dragEnd(final DragContext context)
@@ -105,23 +145,24 @@ public class WiresShapeControlImpl implements WiresShapeControl
             allowed = m_dockingAndContainmentControl.dragEnd(context);
         }
 
-        if (m_alignAndDistributeControl != null)
-        {
-            m_alignAndDistributeControl.dragEnd();
-        }
-
         allowed = allowed & checkForAndApplyLineSplice();
 
         // Cancel the drag operation if docking or containment not allowed.
         if (!allowed)
         {
             context.reset();
-            return false;
         }
-        
-        updateSpecialConnections();
+        else
+        {
+            updateSpecialConnections(m_connectorsWithSpecialConnections);
+        }
 
-        return true;
+        if (m_alignAndDistributeControl != null)
+        {
+            m_alignAndDistributeControl.dragEnd();
+        }
+
+        return allowed;
     }
 
     private boolean checkForAndApplyLineSplice()
@@ -152,6 +193,28 @@ public class WiresShapeControlImpl implements WiresShapeControl
 
             if (intersectPoints != null)
             {
+                WiresConnection headCon = c.getHeadConnection();
+                WiresConnection tailCon = c.getTailConnection();
+
+                if ( intersectPoints.size() == 1)
+                {
+                    // one arrow end is enclosed in the shape, we can only splice/connect if that connection is not already connected.
+                    BoundingBox bbox = m_shape.getContainer().getComputedBoundingPoints().getBoundingBox();
+                    if ( bbox.contains(headCon.getPoint()) && headCon.getMagnet()!=null )
+                    {
+                        return accept;
+                    }
+                    else if ( bbox.contains(tailCon.getPoint()) && headCon.getMagnet()!=null)
+                    {
+                        return accept;
+                    }
+                    else
+                    {
+                        throw new RuntimeException("Defensive programming: should not be possible if there is a single intersection.");
+                    }
+
+                }
+
                 c.getWiresConnectorHandler().getControl().hideControlPoints();
 
                 Point2DArray oldPoints = c.getLine().getPoint2DArray();
@@ -174,8 +237,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
                     }
                 }
 
-                WiresConnection headCon = c.getHeadConnection();
-                WiresConnection tailCon = c.getTailConnection();
+
 
                 WiresConnector c2 = null;
 
@@ -197,7 +259,6 @@ public class WiresShapeControlImpl implements WiresShapeControl
 
                 if (firstSegmentIndex > 0)
                 {
-                    //Point2D point = new Point2D(x, y);
                     Point2DArray newPoints1 = new Point2DArray();
                     Point2DArray newPoints2 = new Point2DArray();
 
@@ -298,24 +359,30 @@ public class WiresShapeControlImpl implements WiresShapeControl
     {
         for (PathPartList pathPartList : path.getPathPartListArray())
         {
-            Point2DArray offsetLinePoints = new Point2DArray();
+            intersectPoints = getPoint2Ds(linePoints, intersectPoints, absLoc, pathPartList);
+        }
+        return intersectPoints;
+    }
 
-            for (Point2D p : linePoints)
+    private Point2DArray getPoint2Ds(Point2DArray linePoints, Point2DArray intersectPoints, Point2D absLoc, PathPartList pathPartList)
+    {
+        Point2DArray offsetLinePoints = new Point2DArray();
+
+        for (Point2D p : linePoints)
+        {
+            offsetLinePoints.push( p.copy().offset(-absLoc.getX(), -absLoc.getY()) );
+        }
+
+        Point2DArray pathPartIntersectPoints = Geometry.getIntersectPolyLinePath(offsetLinePoints, pathPartList, false);
+        if (pathPartIntersectPoints != null)
+        {
+            if (intersectPoints == null)
             {
-                offsetLinePoints.push( p.copy().offset(-absLoc.getX(), -absLoc.getY()) );
+                intersectPoints = new Point2DArray();
             }
-
-            Point2DArray pathPartIntersectPoints = Geometry.getIntersectPolyLinePath(offsetLinePoints, pathPartList);
-            if (pathPartIntersectPoints != null)
+            for (Point2D p : pathPartIntersectPoints)
             {
-                if (intersectPoints == null)
-                {
-                    intersectPoints = new Point2DArray();
-                }
-                for (Point2D p : pathPartIntersectPoints)
-                {
-                    intersectPoints.push(p);
-                }
+                intersectPoints.push(p);
             }
         }
         return intersectPoints;
@@ -359,26 +426,18 @@ public class WiresShapeControlImpl implements WiresShapeControl
             }
         }
 
-        updateSpecialConnections();
+        updateSpecialConnections(m_connectorsWithSpecialConnections);
 
 
         return adjusted1 || adjusted2;
 
     }
 
-    public void updateSpecialConnections()
+    public static void updateSpecialConnections(WiresConnector[] connectors)
     {
-        // start with 0, as we can have center connections too
-        for ( int i = 0, size0 = m_shape.getMagnets().size(); i < size0; i++ )
+        for( WiresConnector connector : connectors)
         {
-            WiresMagnet m = m_shape.getMagnets().getMagnet(i);
-            for ( int j = 0, size1 = m.getConnectionsSize(); j < size1; j++ )
-            {
-                WiresConnection connection = m.getConnections().get(j);
-
-                WiresConnector connector = connection.getConnector();
-                connector.updateForSpecialConnections();
-            }
+            connector.updateForSpecialConnections();
         }
     }
 

@@ -17,6 +17,7 @@
 
 package com.ait.lienzo.client.core.util;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +25,7 @@ import com.ait.lienzo.client.core.shape.AbstractMultiPathPartShape;
 import com.ait.lienzo.client.core.shape.BezierCurve;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.QuadraticCurve;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -102,6 +104,11 @@ public final class Geometry
 
     public static final BoundingBox getBoundingBoxOfCurve(final Point2DArray points)
     {
+        return getBoundingBoxOfCurve(0, 0, points);
+    }
+
+    public static final BoundingBox getBoundingBoxOfCurve(double computedLocationOffsetX, double computedLocationOffsetY, final Point2DArray points)
+    {
         if (null == points)
         {
             return null;
@@ -152,7 +159,7 @@ public final class Geometry
 
             maxy = Math.max(y, maxy);
         }
-        return new BoundingBox(minx, miny, maxx, maxy);
+        return new BoundingBox(computedLocationOffsetX + minx, computedLocationOffsetY + miny, computedLocationOffsetX + maxx, computedLocationOffsetY + maxy);
     }
 
     private static final NFastDoubleArrayJSO getInflections(final Point2DArray points, final NFastDoubleArrayJSO xval, final NFastDoubleArrayJSO yval)
@@ -1013,10 +1020,9 @@ public final class Geometry
         return intr.push((det * d.getY() - sgn * d.getX() * discSqrt) / dSq + pc.getX(), (-det * d.getX() - Math.abs(d.getY()) * discSqrt) / dSq + pc.getY());
     }
 
-    public static final Point2DArray intersectLineRectangle(final Point2D l0, final Point2D l1, final Point2D r0, final double r1)
+    public boolean intersectLineRectange(double l0, double l1)
     {
-
-        return null;
+        return false;
     }
 
     /**
@@ -1062,9 +1068,9 @@ public final class Geometry
         return new Point2DArray(ps, pc, pe);
     }
 
-    public static final Point2DArray getCardinalIntersects(final AbstractMultiPathPartShape<?> shape)
+    public static final Point2DArray getCardinalIntersects(final AbstractMultiPathPartShape<?> shape, Direction[] requestedCardinals)
     {
-        final Point2DArray cardinals = getCardinals(shape.getBoundingBox());
+        final Point2DArray cardinals = getCardinals(shape.getBoundingBox(), requestedCardinals);
         final Set<Point2D>[] intersections = getCardinalIntersects(shape, cardinals);
         return removeInnerPoints(cardinals.get(0), intersections);
     }
@@ -1122,12 +1128,23 @@ public final class Geometry
         return points.get(1);
     }
 
-    public static Point2DArray getIntersectPolyLinePath(Point2DArray points, PathPartList path)
+    public static Point2DArray getIntersectPolyLinePath(Point2DArray points, PathPartList path, boolean closed)
     {
         Point2DArray intersectPoints = null;
-        for (int i = 0, size = points.size(); i < size-1; i++)
+        int size = closed ? points.size():  points.size()-1;
+        for (int i = 0; i < size; i++)
         {
-            Point2DArray segmentIntersectPoints =  getIntersectLineSegmentPath(points.get(i), points.get(i+1), path);
+            Point2D p1 = points.get(i);
+            Point2D p2;
+            if(closed)
+            {
+                p2 = (i < size - 1) ? points.get(i + 1) : points.get(0);
+            }
+            else
+            {
+                p2 = points.get(i+1);
+            }
+            Point2DArray segmentIntersectPoints =  getIntersectLineSegmentPath(p1, p2, path);
             if ( segmentIntersectPoints != null)
             {
                 if (intersectPoints == null)
@@ -1268,9 +1285,9 @@ public final class Geometry
         }
     }
 
-    public static Point2DArray getCardinalIntersects(final PathPartList path)
+    public static Point2DArray getCardinalIntersects(final PathPartList path, Direction[] requestedCardinals)
     {
-        final Point2DArray cardinals = getCardinals(path.getBoundingBox());
+        final Point2DArray cardinals = getCardinals(path.getBoundingBox(), requestedCardinals);
 
         @SuppressWarnings("unchecked")
         final Set<Point2D>[] intersections = new Set[cardinals.size()];// c is removed, so -1
@@ -1346,27 +1363,66 @@ public final class Geometry
      * @param box the bounding box
      * @return [C, N, NE, E, SE, S, SW, W, NW]
      */
-    public static final Point2DArray getCardinals(final BoundingBox box)
+    public static final Point2DArray getCardinals(final BoundingBox box, Direction[] requestedCardinals)
     {
+        Set<Direction> set = new HashSet<Direction>(Arrays.asList(requestedCardinals));
+
+        Point2DArray points = new Point2DArray();
+
         final Point2D c = findCenter(box);
-
         final Point2D n = new Point2D(c.getX(), box.getY());
-
         final Point2D e = new Point2D(box.getX() + box.getWidth(), c.getY());
-
         final Point2D s = new Point2D(c.getX(), box.getY() + box.getHeight());
-
         final Point2D w = new Point2D(box.getX(), c.getY());
-
-        final Point2D ne = new Point2D(e.getX(), n.getY());
-
-        final Point2D se = new Point2D(e.getX(), s.getY());
-
         final Point2D sw = new Point2D(w.getX(), s.getY());
-
+        final Point2D se = new Point2D(e.getX(), s.getY());
+        final Point2D ne = new Point2D(e.getX(), n.getY());
         final Point2D nw = new Point2D(w.getX(), n.getY());
 
-        return new Point2DArray(c, n, ne, e, se, s, sw, w, nw);
+        points.push(c);
+
+        if (set.contains(Direction.NORTH))
+        {
+            points.push(n);
+        }
+
+
+        if (set.contains(Direction.NORTH_EAST))
+        {
+            points.push(ne);
+        }
+
+        if (set.contains(Direction.EAST))
+        {
+            points.push(e);
+        }
+
+        if (set.contains(Direction.SOUTH_EAST))
+        {
+            points.push(se);
+        }
+
+        if (set.contains(Direction.SOUTH))
+        {
+            points.push(s);
+        }
+
+        if (set.contains(Direction.SOUTH_WEST))
+        {points.push(sw);
+
+        }
+
+        if (set.contains(Direction.WEST))
+        {
+            points.push(w);
+        }
+
+        if (set.contains(Direction.NORTH_WEST))
+        {
+            points.push(nw);
+        }
+
+        return points;
     }
 
     public static final Direction getQuadrant(final Point2D c, final Point2D p1)

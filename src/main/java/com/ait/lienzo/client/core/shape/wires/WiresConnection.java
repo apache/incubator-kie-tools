@@ -211,6 +211,11 @@ public class WiresConnection extends AbstractControlHandle
         return m_magnet;
     }
 
+    public boolean isSpecialConnection()
+    {
+        return m_autoConnection || m_magnet != null && m_magnet.getIndex() == 0;
+    }
+
     @Override
     public IPrimitive<?> getControl()
     {

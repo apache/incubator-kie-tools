@@ -40,7 +40,7 @@ public final class WiresManager
 
     private final MagnetManager                              m_magnetManager       = new MagnetManager();
 
-    private final SelectionManager                           m_selectionManager    = new SelectionManager();
+    private SelectionManager                                 m_selectionManager;
 
     private final AlignAndDistribute                         m_index;
 
@@ -82,6 +82,8 @@ public final class WiresManager
         m_layer = new WiresLayer(layer);
         layer.setOnLayerBeforeDraw(new LinePreparer(this));
 
+        m_selectionManager  = new SelectionManager(this);
+
         m_index = new AlignAndDistribute(layer);
     }
 
@@ -108,6 +110,12 @@ public final class WiresManager
                 {
                     // only do this for lines that have had refresh called
                     AbstractDirectionalMultiPointShape<?> line = c.getLine();
+
+                    if ( c.isSpecialConnection() && line.getPathPartList().size() == 0)
+                    {
+                        // if getPathPartList is empty, it was refreshed due to a point change
+                        c.updateForSpecialConnections();
+                    }
 
                     final boolean prepared = line.isPathPartListPrepared(c.getLine().getAttributes());
 
@@ -153,6 +161,8 @@ public final class WiresManager
     public WiresShapeControl register(final WiresShape shape, final boolean addIntoIndex)
     {
         shape.setContainmentAcceptor(m_containmentAcceptor);
+
+        shape.setWiresManager(this);
 
         shape.setDockingAcceptor(m_dockingAcceptor);
 
@@ -316,6 +326,11 @@ public final class WiresManager
     public NFastArrayList<WiresConnector> getConnectorList()
     {
         return m_connectorList;
+    }
+
+    public NFastStringMap<WiresShape> getShapesMap()
+    {
+        return m_shapesMap;
     }
 
     HandlerRegistrationManager createHandlerRegistrationManager()

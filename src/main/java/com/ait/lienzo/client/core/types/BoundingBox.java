@@ -200,51 +200,63 @@ public final class BoundingBox
         return Math.abs(m_jso.getMaxY() - m_jso.getMinY());
     }
 
-    public final double getLeft()
+    public final double getMinX()
     {
         return getX();
     }
 
-    public final double getRight()
+    public final double getMaxX()
     {
         return  getX() + getWidth();
     }
 
-    public final double getTop()
+    public final double getMinY()
     {
         return m_jso.getMinY();
     }
 
-    public final double getBottom()
+    public final double getMaxY()
     {
         return getY() + getHeight();
     }
 
-    public final boolean overlaps(BoundingBox other)
+    public final boolean intersects(BoundingBox other)
     {
-        if (getRight() < other.getLeft())
+        if (getMaxX() < other.getMinX())
         {
             return false; // this is left of other
         }
-        if (getLeft() > other.getRight())
+        if (getMinX() > other.getMaxX())
         {
             return false; // this is right of other
         }
-        if (getBottom() < other.getTop())
+        if (getMaxY() < other.getMinY())
         {
             return false; // this is above other
         }
-        if (getTop() > other.getBottom())
+        if (getMinY() > other.getMaxY())
         {
             return false; // this is below other
         }
         return true; // boxes overlap
     }
 
+    public final boolean contains(BoundingBox other)
+    {
+        if (getMinX() <= other.getMinX() && getMaxX() >= other.getMaxX() && getMinY() <= other.getMinY() && getMaxY() >= other.getMaxY())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public final boolean contains(Point2D p)
     {
-        return getLeft() <= p.getX() && getRight() >= p.getX() &&
-               getTop() <= p.getY() && getBottom() >= p.getY();
+        return getMinX() <= p.getX() && getMaxX() >= p.getX() &&
+               getMinY() <= p.getY() && getMaxY() >= p.getY();
     }
 
     public final BoundingBoxJSO getJSO()

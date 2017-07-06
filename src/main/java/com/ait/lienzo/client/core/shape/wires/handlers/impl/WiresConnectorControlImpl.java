@@ -31,6 +31,18 @@ import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
+/**
+ * This class can be a little confusing, due to the way that drag works.
+ * All lines have a Group that is x=0, y=0. when you drag a line, you
+ * actually drag a group. So the group x,y changes, the line does not.
+ * For this reason the CPs are moved with the group, during drag. When
+ * the drag ends, the Group is re-adjusted back to 0,0 and the lines
+ * have their points adjusted to reflect the final position.
+ * However if the lines are part selection that is being dragged
+ * then the move behaviour is different, the group is not moving, so the
+ * line points must move. This differing behaviour is controlled by
+ * booleans on the relevant classes.
+ */
 public class WiresConnectorControlImpl implements WiresConnectorControl
 {
     private WiresConnector             m_connector;
@@ -68,19 +80,7 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
     @Override
     public void dragMove(final DragContext context)
     {
-
-        IControlHandleList handles = m_connector.getPointHandles();
-
-        for (int i = 0, j = 0; i < handles.size(); i++, j += 2)
-        {
-            IControlHandle h = handles.getHandle(i);
-            IPrimitive<?> prim = h.getControl();
-            prim.setX(m_startPoints.get(j) + context.getDragStartX());
-            prim.setY(m_startPoints.get(j + 1) + context.getDragStartY());
-        }
-
-        m_wiresManager.getLayer().getLayer().batch();
-
+        move(context.getDx(), context.getDy(), false, false);
     }
 
     @Override
@@ -89,28 +89,69 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
 
         m_connector.getGroup().setX(0).setY(0);
 
-        Point2DArray points = m_connector.getLine().getPoint2DArray();
-        IControlHandleList handles = m_connector.getPointHandles();
-
-        for (int i = 0, j = 0; i < handles.size(); i++, j += 2)
-        {
-            Point2D p = points.get(i);
-            p.setX(p.getX() + context.getDragStartX());
-            p.setY(p.getY() + context.getDragStartY());
-
-            IControlHandle h = handles.getHandle(i);
-            IPrimitive<?> prim = h.getControl();
-            prim.setX(m_startPoints.get(j) + context.getDragStartX());
-            prim.setY(m_startPoints.get(j + 1) + context.getDragStartY());
-        }
-
-        m_connector.getLine().refresh();
+        move(context.getDx(), context.getDy(), false, true);
 
         m_wiresManager.getLayer().getLayer().batch();
 
-        m_startPoints = null;
+        dragEnd();
 
         return true;
+    }
+
+    public void dragEnd()
+    {
+        m_startPoints = null;;
+    }
+
+    /**
+     * See class javadocs to explain why we have these booleans
+     * @param context
+     * @param midPointsOnly
+     * @param moveLinePoints
+     */
+    public void move(double dx, double dy, boolean midPointsOnly, boolean moveLinePoints)
+    {
+
+        IControlHandleList handles = m_connector.getPointHandles();
+
+        int start = 0;
+        int end = handles.size();
+        if (midPointsOnly)
+        {
+            if (m_connector.getHeadConnection().getMagnet()!=null)
+            {
+                start++;
+            }
+            if (m_connector.getTailConnection().getMagnet()!=null)
+            {
+                end--;
+            }
+        }
+
+        Point2DArray points = m_connector.getLine().getPoint2DArray();
+
+        for (int i = start, j = (start==0) ? start : 2; i < end; i++, j += 2)
+        {
+            if (moveLinePoints)
+            {
+                Point2D p = points.get(i);
+                p.setX(m_startPoints.get(j) + dx);
+                p.setY(m_startPoints.get(j + 1) + dy);
+            }
+
+            IControlHandle h = handles.getHandle(i);
+            IPrimitive<?> prim = h.getControl();
+            prim.setX(m_startPoints.get(j) + dx);
+            prim.setY(m_startPoints.get(j + 1) + dy);
+        }
+
+        if (moveLinePoints)
+        {
+            m_connector.getLine().refresh();
+        }
+
+        m_wiresManager.getLayer().getLayer().batch();
+
     }
 
     @Override

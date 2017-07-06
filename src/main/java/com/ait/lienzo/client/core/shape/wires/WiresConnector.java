@@ -206,6 +206,11 @@ public class WiresConnector
         return m_tailConnection;
     }
 
+    public boolean isSpecialConnection()
+    {
+        return (m_headConnection != null && m_headConnection.isSpecialConnection()) || (m_tailConnection != null && m_tailConnection.isSpecialConnection());
+    }
+
     public void setTailConnection(WiresConnection tailConnection)
     {
         m_tailConnection = tailConnection;
@@ -253,7 +258,10 @@ public class WiresConnector
 
     public void destroyPointHandles()
     {
-        m_pointHandles.destroy();
+        if (m_pointHandles != null)
+        {
+            m_pointHandles.destroy();
+        }
         m_pointHandles = null;
     }
 
@@ -283,7 +291,7 @@ public class WiresConnector
 
     public static void updateForCenterConnection(WiresConnector connector, WiresConnection connection, int pointIndex)
     {
-        if ( connection.getMagnet() != null && connection.getMagnet().getIndexer() == 0 )
+        if ( connection.getMagnet() != null && connection.getMagnet().getIndex() == 0 )
         {
 
             MultiPath   path              = connection.getMagnet().getMagnets().getWiresShape().getPath();
@@ -369,8 +377,8 @@ public class WiresConnector
         }
 
         WiresMagnet[] magnets;
-        BoundingBox headBox = (headS != null) ? headS.getGroup().getBoundingPoints().getBoundingBox() : null;
-        BoundingBox tailBox = (tailS != null) ? tailS.getGroup().getBoundingPoints().getBoundingBox() : null;
+        BoundingBox headBox = (headS != null) ? headS.getGroup().getComputedBoundingPoints().getBoundingBox() : null;
+        BoundingBox tailBox = (tailS != null) ? tailS.getGroup().getComputedBoundingPoints().getBoundingBox() : null;
 
         if ( getLine().getPoint2DArray().size() > 2 )
         {
@@ -378,7 +386,7 @@ public class WiresConnector
         }
         else
         {
-            if (headBox != null && tailBox != null && !headBox.overlaps(tailBox))
+            if (headBox != null && tailBox != null && !headBox.intersects(tailBox))
             {
                 magnets = getMagnetsNonOverlappedShapes(headS, tailS, headBox, tailBox);
             }
@@ -402,7 +410,7 @@ public class WiresConnector
 
         WiresMagnet headM;
         WiresMagnet tailM;
-        if (headBox != null && !headBox.overlaps(firstBB))
+        if (headBox != null && !headBox.intersects(firstBB))
         {
             WiresMagnet[] magnets = getMagnetsNonOverlappedShapes(headS, null, headBox, firstBB);
             headM = magnets[0];
@@ -414,7 +422,7 @@ public class WiresConnector
             headM = getShortestMagnetToPoint(pAfterHead, headMagnets);
         }
 
-        if (tailBox != null && !tailBox.overlaps(lastBB))
+        if (tailBox != null && !tailBox.intersects(lastBB))
         {
             WiresMagnet[] magnets = getMagnetsNonOverlappedShapes(null, tailS, lastBB, tailBox);
             tailM = magnets[1];
@@ -456,10 +464,10 @@ public class WiresConnector
         // There is no shape overlap.
         // If one box is in the corner of the other box, then use nearest corner connections
         // else use nearest mid connection.
-        boolean headAbove =  headBox.getBottom() < tailBox.getTop();
-        boolean headBelow = headBox.getTop() > tailBox.getBottom();
-        boolean headLeft = headBox.getRight() < tailBox.getLeft();
-        boolean headRight = headBox.getLeft() > tailBox.getRight();
+        boolean headAbove = headBox.getMaxY() < tailBox.getMinY();
+        boolean headBelow = headBox.getMinY() > tailBox.getMaxY();
+        boolean headLeft = headBox.getMaxX() < tailBox.getMinX();
+        boolean headRight = headBox.getMinX() > tailBox.getMaxX();
 
         WiresMagnet[] magets = null;
         if ( headAbove )
@@ -625,17 +633,29 @@ public class WiresConnector
     {
         // ony set the side if it's auto connect, else null
 
+        // it uses 9, as center is 0
+        int[] headMappng = null;
+        int[] tailMappng = null;
+        if (headS!=null)
+        {
+            headMappng = headS.getMagnets().size() == 9 ? MagnetManager.EIGHT_CARDINALS_MAPPING : MagnetManager.FOUR_CARDINALS_MAPPING;
+        }
+        if (tailS!=null)
+        {
+            tailMappng = tailS.getMagnets().size() == 9 ? MagnetManager.EIGHT_CARDINALS_MAPPING : MagnetManager.FOUR_CARDINALS_MAPPING;
+        }
+
         WiresMagnet headM = null;
         if ( headS != null && getHeadConnection().isAutoConnection())
         {
-           headM = headS.getMagnets().getMagnet(headMagnetIndex);
+           headM = headS.getMagnets().getMagnet(headMappng[headMagnetIndex]);
         }
 
 
         WiresMagnet tailM = null;
         if ( tailS != null && getTailConnection().isAutoConnection())
         {
-            tailM = tailS.getMagnets().getMagnet(tailMagnetIndex);
+            tailM = tailS.getMagnets().getMagnet(tailMappng[tailMagnetIndex]);
         }
         return new WiresMagnet[] {headM, tailM};
     }

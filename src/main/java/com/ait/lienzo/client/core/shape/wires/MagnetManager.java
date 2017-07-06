@@ -46,13 +46,19 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
 public class MagnetManager
 {
-    private static final int          CONTROL_RADIUS       = 7;
+    public static final Direction[]  FOUR_CARDINALS           = new Direction[] { Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+    public static final int[]        FOUR_CARDINALS_MAPPING   = new int[] { 0, 1, 1, 2, 3, 3, 3, 4, 1};
 
-    public static final ColorKeyRotor m_c_rotor            = new ColorKeyRotor();
+    public static final Direction[]  EIGHT_CARDINALS          = new Direction[] { Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST};
+    public static final int[]        EIGHT_CARDINALS_MAPPING  = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8};
 
-    private NFastStringMap<Magnets>   m_magnetRegistry     = new NFastStringMap<Magnets>();
+    private static final int          CONTROL_RADIUS          = 7;
 
-    private int                       m_ctrlSize           = CONTROL_RADIUS;
+    public static final ColorKeyRotor m_c_rotor               = new ColorKeyRotor();
+
+    private NFastStringMap<Magnets>   m_magnetRegistry        = new NFastStringMap<Magnets>();
+
+    private int                       m_ctrlSize              = CONTROL_RADIUS;
 
     public ImageData drawMagnetsToBack(Magnets magnets, NFastStringMap<WiresShape> shapeColors, NFastStringMap<WiresMagnet> magnetColors, ScratchPad scratch)
     {
@@ -90,8 +96,20 @@ public class MagnetManager
 
     public Magnets createMagnets(final WiresShape wiresShape)
     {
+        return createMagnets(wiresShape, EIGHT_CARDINALS);
+    }
+
+    /**
+     * Right now it only works with provided FOUR or EIGHT cardinals, anything else will break WiresConnector autoconnection
+     *
+     * @param wiresShape
+     * @param requestedCardinals
+     * @return
+     */
+    public Magnets createMagnets(final WiresShape wiresShape, Direction[] requestedCardinals)
+    {
         final IPrimitive<?> primTarget = wiresShape.getGroup();
-        final Point2DArray points = getWiresIntersectionPoints(wiresShape);
+        final Point2DArray points = getWiresIntersectionPoints(wiresShape, requestedCardinals);
         final ControlHandleList list = new ControlHandleList(primTarget);
         final BoundingBox box = wiresShape.getPath().getBoundingBox();
 
@@ -124,10 +142,10 @@ public class MagnetManager
 
     public static Direction getDirection(Point2D point, BoundingBox box)
     {
-        double left   = box.getLeft();
-        double right  = box.getRight();
-        double top    = box.getTop();
-        double bottom = box.getBottom();
+        double left   = box.getMinX();
+        double right  = box.getMaxX();
+        double top    = box.getMinY();
+        double bottom = box.getMaxY();
 
         double x = point.getX();
         double y = point.getY();
@@ -219,9 +237,9 @@ public class MagnetManager
         this.m_ctrlSize = m_ctrlSize;
     }
 
-    private static Point2DArray getWiresIntersectionPoints(final WiresShape wiresShape)
+    private static Point2DArray getWiresIntersectionPoints(final WiresShape wiresShape, Direction[] requestedCardinals)
     {
-        return Geometry.getCardinalIntersects(wiresShape.getPath());
+        return Geometry.getCardinalIntersects(wiresShape.getPath(), requestedCardinals);
     }
 
     private Circle getControlPrimitive(double x, double y)
@@ -330,7 +348,7 @@ public class MagnetManager
 
         public void shapeChanged()
         {
-            final Point2DArray points = MagnetManager.getWiresIntersectionPoints(m_wiresShape);
+            final Point2DArray points = MagnetManager.getWiresIntersectionPoints(m_wiresShape, EIGHT_CARDINALS);
 
             if (points.size() == m_list.size())
             {

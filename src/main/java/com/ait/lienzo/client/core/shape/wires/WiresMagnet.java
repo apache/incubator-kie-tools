@@ -29,17 +29,17 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
 public class WiresMagnet extends AbstractControlHandle implements Iterable<WiresConnection>
 {
-    private final int                       m_indexer;
+    private final int           m_index;
 
-    private final IPrimitive<?>             m_control;
+    private final IPrimitive<?> m_control;
 
-    private final IWiresContext             m_context;
+    private final IWiresContext m_context;
 
-    private Magnets                         m_magnets;
+    private Magnets             m_magnets;
 
-    private double                          m_x;
+    private double              m_x;
 
-    private double                          m_y;
+    private double              m_y;
 
     private double                          m_strong      = 0.5;
 
@@ -49,11 +49,11 @@ public class WiresMagnet extends AbstractControlHandle implements Iterable<Wires
 
     private Direction                       m_direction   = Direction.NONE;
 
-    public WiresMagnet(Magnets magnets, final IWiresContext context, final int indexer, final double x, final double y, final IPrimitive<?> control, final boolean active)
+    public WiresMagnet(Magnets magnets, final IWiresContext context, final int index, final double x, final double y, final IPrimitive<?> control, final boolean active)
     {
         m_context = context;
 
-        m_indexer = indexer;
+        m_index = index;
 
         m_magnets = magnets;
 
@@ -210,9 +210,9 @@ public class WiresMagnet extends AbstractControlHandle implements Iterable<Wires
         return m_y;
     }
 
-    public int getIndexer()
+    public int getIndex()
     {
-        return m_indexer;
+        return m_index;
     }
 
     @Override
