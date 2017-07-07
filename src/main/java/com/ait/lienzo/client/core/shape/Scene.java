@@ -412,6 +412,8 @@ public class Scene extends ContainerNode<Layer, Scene>
 
             getElement().appendChild(layer.getElement());
 
+            layer.getContext().getNativeContext().initDeviceRatio();
+
             super.add(layer);
 
             layer.batch();

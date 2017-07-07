@@ -87,7 +87,7 @@ public class Viewport extends ContainerNode<Scene, Viewport>
 
     private ScratchPad             m_spad    = new ScratchPad(0, 0);
 
-    private       Mediators       m_mediators;
+    private Mediators              m_mediators;
 
     private final OnEventHandlers m_onEventHandlers = new OnEventHandlers();
 
