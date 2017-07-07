@@ -1,0 +1,183 @@
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.kie.workbench.common.screens.library.client.screens;
+
+import java.util.HashMap;
+import java.util.Map;
+import javax.inject.Inject;
+
+import com.google.gwt.user.client.ui.IsWidget;
+import org.dashbuilder.displayer.client.Displayer;
+import org.jboss.errai.common.client.dom.DOMUtil;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Element;
+import org.jboss.errai.common.client.dom.Span;
+import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
+import org.kie.workbench.common.screens.library.client.util.TranslationUtils;
+
+@Templated
+public class OrgUnitsMetricsView implements OrgUnitsMetricsScreen.View, IsElement {
+
+    @Inject
+    @DataField
+    Div orgUnitSelectorDiv;
+
+    @Inject
+    @DataField
+    Div projectSelectorDiv;
+
+    @Inject
+    @DataField
+    Div topContribSelectorDiv;
+
+    @Inject
+    @DataField
+    Div dateSelectorDiv;
+
+    @Inject
+    @DataField
+    Span perOrgUnitTitleSpan;
+
+    @Inject
+    @DataField
+    Div commitsPerOrgUnitDiv;
+
+    @Inject
+    @DataField
+    Div commitsPerProjectDiv;
+
+    @Inject
+    @DataField
+    Div commitsPerAuthorDiv;
+
+    @Inject
+    @DataField
+    Div commitsOverTimeDiv;
+
+    @Inject
+    @DataField
+    Div commitsByYearDiv;
+
+    @Inject
+    @DataField
+    Div commitsByQuarterDiv;
+
+    @Inject
+    @DataField
+    Div commitsByDayDiv;
+
+    @Inject
+    @DataField
+    Div commitsAllDiv;
+
+    private Map<Element,IsWidget> widgetMap = new HashMap<>();
+    private OrgUnitsMetricsScreen presenter;
+
+    @Inject
+    public OrgUnitsMetricsView(TranslationUtils translationUtils, TranslationService translationService) {
+        String perOrgUnitTitle = translationService.format(LibraryConstants.PerOrgUnit, translationUtils.getOrganizationalUnitAliasInSingular());
+        this.perOrgUnitTitleSpan.setTextContent(perOrgUnitTitle);
+    }
+
+    @Override
+    public void init(OrgUnitsMetricsScreen presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void setCommitsOverTimeDisplayer(Displayer displayer) {
+        updateDisplayer(commitsOverTimeDiv, displayer);
+    }
+
+    @Override
+    public void setCommitsPerOrgUnitDisplayer(Displayer displayer) {
+        updateDisplayer(commitsPerOrgUnitDiv, displayer);
+    }
+
+    @Override
+    public void setCommitsPerProjectDisplayer(Displayer displayer) {
+        updateDisplayer(commitsPerProjectDiv, displayer);
+    }
+
+    @Override
+    public void setCommitsPerAuthorDisplayer(Displayer displayer) {
+        updateDisplayer(commitsPerAuthorDiv, displayer);
+    }
+
+    @Override
+    public void setCommitsByYearDisplayer(Displayer displayer) {
+        updateDisplayer(commitsByYearDiv, displayer);
+    }
+
+    @Override
+    public void setCommitsByQuarterDisplayer(Displayer displayer) {
+        updateDisplayer(commitsByQuarterDiv, displayer);
+    }
+
+    @Override
+    public void setCommitsByDayOfWeekDisplayer(Displayer displayer) {
+        updateDisplayer(commitsByDayDiv, displayer);
+    }
+
+    @Override
+    public void setAllCommitsDisplayer(Displayer displayer) {
+        updateDisplayer(commitsAllDiv, displayer);
+    }
+
+    @Override
+    public void setTopContribSelectorDisplayer(Displayer displayer) {
+        updateDisplayer(topContribSelectorDiv, displayer);
+    }
+
+    @Override
+    public void setOrgUnitSelectorDisplayer(Displayer displayer) {
+        updateDisplayer(orgUnitSelectorDiv, displayer);
+    }
+
+    @Override
+    public void setProjectSelectorDisplayer(Displayer displayer) {
+        updateDisplayer(projectSelectorDiv, displayer);
+    }
+
+    @Override
+    public void setDateSelectorDisplayer(Displayer displayer) {
+        updateDisplayer(dateSelectorDiv, displayer);
+    }
+
+    @Override
+    public void clear() {
+        for (Element element : widgetMap.keySet()) {
+            if (widgetMap.containsKey(element)) {
+                DOMUtil.removeFromParent(widgetMap.get(element));
+            }
+            DOMUtil.removeAllChildren(element);
+        }
+        widgetMap.clear();
+    }
+
+    private void updateDisplayer(Div div, Displayer displayer) {
+        if (widgetMap.containsKey(div)) {
+            DOMUtil.removeFromParent(widgetMap.get(div));
+        }
+        widgetMap.put(div, displayer);
+        DOMUtil.removeAllChildren(div);
+        DOMUtil.appendWidgetToElement(div, displayer);
+    }
+}

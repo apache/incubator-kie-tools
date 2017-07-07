@@ -64,7 +64,6 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.setPerspectiveName(SOCIAL_USER_HOME, i18n.People());
         perspectiveTreeProvider.setPerspectiveName(SECURITY_MANAGEMENT, i18n.SecurityManagement());
         perspectiveTreeProvider.setPerspectiveName(LIBRARY, i18n.ProjectAuthoring());
-        perspectiveTreeProvider.setPerspectiveName(CONTRIBUTORS, i18n.Contributors());
         perspectiveTreeProvider.setPerspectiveName(GUVNOR_M2REPO, i18n.ArtifactRepository());
         perspectiveTreeProvider.setPerspectiveName(ADMINISTRATION, i18n.Administration());
         perspectiveTreeProvider.setPerspectiveName(DROOLS_ADMIN, i18n.DroolsAdministration());

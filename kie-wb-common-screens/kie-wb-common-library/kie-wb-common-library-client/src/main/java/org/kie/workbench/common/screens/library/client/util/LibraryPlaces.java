@@ -85,6 +85,7 @@ public class LibraryPlaces {
     public static final String EMPTY_PROJECT_SCREEN = "EmptyProjectScreen";
     public static final String PROJECT_SCREEN = "ProjectScreen";
     public static final String PROJECT_DETAIL_SCREEN = "ProjectsDetailScreen";
+    public static final String ORG_UNITS_METRICS_SCREEN = "OrgUnitsMetricsScreen";
     public static final String PROJECT_METRICS_SCREEN = "ProjectMetricsScreen";
     public static final String ORGANIZATIONAL_UNITS_SCREEN = "LibraryOrganizationalUnitsScreen";
     public static final String PROJECT_SETTINGS = "projectScreen";
@@ -97,6 +98,7 @@ public class LibraryPlaces {
         add(EMPTY_LIBRARY_SCREEN);
         add(LIBRARY_SCREEN);
         add(EMPTY_PROJECT_SCREEN);
+        add(ORG_UNITS_METRICS_SCREEN);
         add(PROJECT_SCREEN);
         add(PROJECT_METRICS_SCREEN);
         add(PROJECT_DETAIL_SCREEN);
@@ -476,6 +478,16 @@ public class LibraryPlaces {
                                   () -> goToProjectMetrics(projectInfo));
     }
 
+    public void setupLibraryBreadCrumbsForOrgUnitsMetrics() {
+        breadcrumbs.clearBreadcrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                  translationUtils.getOrganizationalUnitAliasInPlural(),
+                                  () -> goToOrganizationalUnits());
+        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                  translationUtils.getOrgUnitsMetrics(),
+                                  () -> goToOrgUnitsMetrics());
+    }
+
     public void setupLibraryBreadCrumbsForAsset(final ProjectInfo projectInfo,
                                                 final Path path) {
         String assetName;
@@ -626,6 +638,14 @@ public class LibraryPlaces {
                 }
             }
         }).hasAssets(projectInfo.getProject());
+    }
+
+    public void goToOrgUnitsMetrics() {
+        final PlaceRequest metricsScreen = new DefaultPlaceRequest(LibraryPlaces.ORG_UNITS_METRICS_SCREEN);
+        final PartDefinitionImpl part = new PartDefinitionImpl(metricsScreen);
+        part.setSelectable(false);
+        placeManager.goTo(part, libraryPerspective.getRootPanel());
+        setupLibraryBreadCrumbsForOrgUnitsMetrics();
     }
 
     public void goToProjectMetrics(final ProjectInfo projectInfo) {

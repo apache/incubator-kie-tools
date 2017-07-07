@@ -20,9 +20,13 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import org.dashbuilder.displayer.client.Displayer;
+import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Button;
+import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Input;
+import org.jboss.errai.common.client.dom.Node;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -60,6 +64,14 @@ public class OrganizationalUnitsView implements OrganizationalUnitsScreen.View,
     @DataField("cards-container")
     Div cardsContainer;
 
+    @Inject
+    @DataField("contributions-div")
+    Div contributionsDiv;
+
+    @Inject
+    @DataField("view-all-metrics")
+    Anchor viewAllAnchor;
+
     @Override
     public void init(OrganizationalUnitsScreen presenter) {
         this.presenter = presenter;
@@ -95,6 +107,12 @@ public class OrganizationalUnitsView implements OrganizationalUnitsScreen.View,
         cardsContainer.appendChild(organizationalUnitTileWidget.getView().getElement());
     }
 
+    @Override
+    public void updateContributionsMetric(Displayer metric) {
+        DOMUtil.removeAllChildren(contributionsDiv);
+        contributionsDiv.appendChild((Node) metric.asWidget().getElement());
+    }
+
     @EventHandler("create-organizational-unit")
     public void createOrganizationalUnit(final ClickEvent event) {
         presenter.createOrganizationalUnit();
@@ -103,5 +121,10 @@ public class OrganizationalUnitsView implements OrganizationalUnitsScreen.View,
     @EventHandler("filter-name")
     public void filterTextChange(final KeyUpEvent event) {
         presenter.refresh();
+    }
+
+    @EventHandler("view-all-metrics")
+    public void viewAllMetrics(ClickEvent clickEvent) {
+        presenter.gotoOrgUnitsMetrics();
     }
 }

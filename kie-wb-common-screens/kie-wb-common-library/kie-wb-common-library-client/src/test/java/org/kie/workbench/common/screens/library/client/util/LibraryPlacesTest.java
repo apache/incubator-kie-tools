@@ -529,6 +529,18 @@ public class LibraryPlacesTest {
     }
 
     @Test
+    public void goToOrgUnitsMetricsTest() {
+        final PlaceRequest metricsScreen = new DefaultPlaceRequest(LibraryPlaces.ORG_UNITS_METRICS_SCREEN);
+        final PartDefinitionImpl part = new PartDefinitionImpl(metricsScreen);
+        part.setSelectable(false);
+
+        libraryPlaces.goToOrgUnitsMetrics();
+
+        verify(placeManager).goTo(eq(part), any(PanelDefinition.class));
+        verify(libraryPlaces).setupLibraryBreadCrumbsForOrgUnitsMetrics();
+    }
+
+    @Test
     public void goToProjectMetricsTest() {
         final PlaceRequest projectScreen = new DefaultPlaceRequest(LibraryPlaces.PROJECT_METRICS_SCREEN);
         final PartDefinitionImpl part = new PartDefinitionImpl(projectScreen);

@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.library.client.util;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.dashbuilder.dataset.filter.ColumnFilter;
 import org.dashbuilder.dataset.filter.FilterFactory;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSettingsFactory;
@@ -26,7 +25,6 @@ import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.DisplayerLocator;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 
 import static org.dashbuilder.dataset.date.DayOfWeek.*;
@@ -36,27 +34,29 @@ import static org.dashbuilder.dataset.sort.SortOrder.*;
 import static org.dashbuilder.displayer.Position.*;
 import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.*;
 import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSets.*;
-import static org.dashbuilder.dataset.filter.FilterFactory.*;
 
 @ApplicationScoped
-public class ProjectMetricsFactory {
+public class OrgUnitsMetricsFactory {
 
     private TranslationService translationService;
+    private TranslationUtils translationUtils;
     private DisplayerLocator displayerLocator;
 
     @Inject
-    public ProjectMetricsFactory(TranslationService translationService, DisplayerLocator displayerLocator) {
+    public OrgUnitsMetricsFactory(TranslationService translationService,
+                                  TranslationUtils translationUtils,
+                                  DisplayerLocator displayerLocator) {
         this.translationService = translationService;
         this.displayerLocator = displayerLocator;
     }
 
-    public Displayer lookupCommitsOverTimeDisplayer(ProjectInfo projectInfo) {
-        DisplayerSettings settings = buildCommitsOverTimeSettings(projectInfo);
+    public Displayer lookupCommitsOverTimeDisplayer() {
+        DisplayerSettings settings = buildCommitsOverTimeSettings();
         return displayerLocator.lookupDisplayer(settings);
     }
 
-    public Displayer lookupCommitsOverTimeDisplayer_small(ProjectInfo projectInfo) {
-        DisplayerSettings settings = buildCommitsOverTimeSettings(projectInfo);
+    public Displayer lookupCommitsOverTimeDisplayer_small() {
+        DisplayerSettings settings = buildCommitsOverTimeSettings();
         settings.setChartWidth(300);
         settings.setChartHeight(80);
         settings.setChartMarginTop(5);
@@ -67,51 +67,64 @@ public class ProjectMetricsFactory {
         return displayerLocator.lookupDisplayer(settings);
     }
 
-    public Displayer lookupCommitsPerAuthorDisplayer(ProjectInfo projectInfo) {
-        DisplayerSettings settings = buildCommitsPerAuthorSettings(projectInfo);
+    public Displayer lookupCommitsPerAuthorDisplayer() {
+        DisplayerSettings settings = buildCommitsPerAuthorSettings();
         return displayerLocator.lookupDisplayer(settings);
     }
 
-    public Displayer lookupCommitsByYearDisplayer(ProjectInfo projectInfo) {
-        DisplayerSettings settings = buildCommitsByYearSettings(projectInfo);
+    public Displayer lookupCommitsPerOrgUnitDisplayer() {
+        DisplayerSettings settings = buildCommitsPerOrgUnitSettings();
         return displayerLocator.lookupDisplayer(settings);
     }
 
-    public Displayer lookupCommitsByQuarterDisplayer(ProjectInfo projectInfo) {
-        DisplayerSettings settings = buildCommitsByQuarterSettings(projectInfo);
+    public Displayer lookupCommitsPerProjectDisplayer() {
+        DisplayerSettings settings = buildCommitsPerProjectSettings();
         return displayerLocator.lookupDisplayer(settings);
     }
 
-    public Displayer lookupCommitsByDayOfWeekDisplayer(ProjectInfo projectInfo) {
-        DisplayerSettings settings = buildCommitsByDayOfWeekSettings(projectInfo);
+    public Displayer lookupCommitsByYearDisplayer() {
+        DisplayerSettings settings = buildCommitsByYearSettings();
         return displayerLocator.lookupDisplayer(settings);
     }
 
-    public Displayer lookupTopContributorSelectorDisplayer(ProjectInfo projectInfo) {
-        DisplayerSettings settings = buildTopContributorSelectorSettings(projectInfo);
+    public Displayer lookupCommitsByQuarterDisplayer() {
+        DisplayerSettings settings = buildCommitsByQuarterSettings();
         return displayerLocator.lookupDisplayer(settings);
     }
 
-    public Displayer lookupDateSelectorDisplayer(ProjectInfo projectInfo) {
-        DisplayerSettings settings = buildDateSelectorSettings(projectInfo);
+    public Displayer lookupCommitsByDayOfWeekDisplayer() {
+        DisplayerSettings settings = buildCommitsByDayOfWeekSettings();
         return displayerLocator.lookupDisplayer(settings);
     }
 
-    public Displayer lookupAllCommitsDisplayer(ProjectInfo projectInfo) {
-        DisplayerSettings settings = buildAllCommitsSettings(projectInfo);
+    public Displayer lookupOrgUnitSelectorDisplayer() {
+        DisplayerSettings settings = buildOrgUnitSelectorSettings();
         return displayerLocator.lookupDisplayer(settings);
     }
 
-    protected ColumnFilter createProjectFilter(ProjectInfo projectInfo) {
-        String repoAlias = projectInfo.getRepository().getAlias();
-        String projectName = projectInfo.getProject().getProjectName();
-        return AND(equalsTo(COLUMN_REPO, repoAlias), equalsTo(COLUMN_PROJECT, projectName));
+    public Displayer lookupProjectSelectorDisplayer() {
+        DisplayerSettings settings = buildProjectSelectorSettings();
+        return displayerLocator.lookupDisplayer(settings);
     }
 
-    public DisplayerSettings buildCommitsPerAuthorSettings(ProjectInfo projectInfo) {
+    public Displayer lookupTopContributorSelectorDisplayer() {
+        DisplayerSettings settings = buildTopContributorSelectorSettings();
+        return displayerLocator.lookupDisplayer(settings);
+    }
+
+    public Displayer lookupDateSelectorDisplayer() {
+        DisplayerSettings settings = buildDateSelectorSettings();
+        return displayerLocator.lookupDisplayer(settings);
+    }
+
+    public Displayer lookupAllCommitsDisplayer() {
+        DisplayerSettings settings = buildAllCommitsSettings();
+        return displayerLocator.lookupDisplayer(settings);
+    }
+
+    public DisplayerSettings buildCommitsPerAuthorSettings() {
         return DisplayerSettingsFactory.newBubbleChartSettings()
                 .dataset(GIT_CONTRIB)
-                .filter(createProjectFilter(projectInfo))
                 .group(COLUMN_AUTHOR)
                 .column(COLUMN_AUTHOR, translationService.getTranslation(LibraryConstants.Author))
                 .column(COLUMN_URI, DISTINCT).format(translationService.getTranslation(LibraryConstants.Assets), "#,##0")
@@ -127,10 +140,9 @@ public class ProjectMetricsFactory {
                 .buildSettings();
     }
 
-    public DisplayerSettings buildCommitsOverTimeSettings(ProjectInfo projectInfo) {
+    public DisplayerSettings buildCommitsOverTimeSettings() {
         return DisplayerSettingsFactory.newAreaChartSettings()
                 .dataset(GIT_CONTRIB)
-                .filter(createProjectFilter(projectInfo))
                 .group(COLUMN_DATE).dynamic(80, MONTH, true)
                 .column(COLUMN_DATE, translationService.getTranslation(LibraryConstants.Date))
                 .column(COUNT, "#commits").format(translationService.getTranslation(LibraryConstants.NumberOfCommits), "#,##0")
@@ -142,11 +154,40 @@ public class ProjectMetricsFactory {
                 .buildSettings();
     }
 
-    public DisplayerSettings buildCommitsByYearSettings(ProjectInfo projectInfo) {
+    public DisplayerSettings buildCommitsPerOrgUnitSettings() {
+        return DisplayerSettingsFactory.newPieChartSettings()
+                .dataset(GIT_CONTRIB)
+                .filter(COLUMN_ORG, FilterFactory.notNull())
+                .group(COLUMN_ORG)
+                .column(COLUMN_ORG)
+                .column(COUNT, "#commits").format(translationService.getTranslation(LibraryConstants.NumberOfCommits), "#,##0")
+                .titleVisible(false)
+                .width(250).height(170)
+                .margins(10, 0, 10, 5)
+                .legendOn(RIGHT)
+                .filterOff(false)
+                .buildSettings();
+    }
+
+    public DisplayerSettings buildCommitsPerProjectSettings() {
+        return DisplayerSettingsFactory.newPieChartSettings()
+                .dataset(GIT_CONTRIB)
+                .filter(COLUMN_PROJECT, FilterFactory.notNull())
+                .group(COLUMN_PROJECT)
+                .column(COLUMN_PROJECT)
+                .column(COUNT, "#commits").format(translationService.getTranslation(LibraryConstants.NumberOfCommits), "#,##0")
+                .titleVisible(false)
+                .width(250).height(170)
+                .margins(10, 0, 10, 5)
+                .legendOn(RIGHT)
+                .filterOff(false)
+                .buildSettings();
+    }
+
+    public DisplayerSettings buildCommitsByYearSettings() {
         return DisplayerSettingsFactory.newPieChartSettings()
                 .dataset(GIT_CONTRIB)
                 .filter(COLUMN_DATE, FilterFactory.notNull())
-                .filter(createProjectFilter(projectInfo))
                 .group(COLUMN_DATE).dynamic(YEAR, false)
                 .column(COLUMN_DATE)
                 .column(COUNT, "#commits").format(translationService.getTranslation(LibraryConstants.NumberOfCommits), "#,##0")
@@ -160,11 +201,10 @@ public class ProjectMetricsFactory {
                 .buildSettings();
     }
 
-    public DisplayerSettings buildCommitsByQuarterSettings(ProjectInfo projectInfo) {
+    public DisplayerSettings buildCommitsByQuarterSettings() {
         return DisplayerSettingsFactory.newPieChartSettings()
                 .dataset(GIT_CONTRIB)
                 .filter(COLUMN_DATE, FilterFactory.notNull())
-                .filter(createProjectFilter(projectInfo))
                 .group(COLUMN_DATE).fixed(QUARTER, false)
                 .column(COLUMN_DATE)
                 .column(COUNT, "#commits").format(translationService.getTranslation(LibraryConstants.NumberOfCommits), "#,##0")
@@ -177,11 +217,10 @@ public class ProjectMetricsFactory {
                 .buildSettings();
     }
 
-    public DisplayerSettings buildCommitsByDayOfWeekSettings(ProjectInfo projectInfo) {
+    public DisplayerSettings buildCommitsByDayOfWeekSettings() {
         return DisplayerSettingsFactory.newBarChartSettings()
                 .dataset(GIT_CONTRIB)
                 .filter(COLUMN_DATE, FilterFactory.notNull())
-                .filter(createProjectFilter(projectInfo))
                 .group(COLUMN_DATE).fixed(DAY_OF_WEEK, true).firstDay(SUNDAY)
                 .column(COLUMN_DATE)
                 .column(COUNT, "#commits").format(translationService.getTranslation(LibraryConstants.NumberOfCommits), "#,##0")
@@ -195,10 +234,39 @@ public class ProjectMetricsFactory {
                 .buildSettings();
     }
 
-    public DisplayerSettings buildTopContributorSelectorSettings(ProjectInfo projectInfo) {
+    public DisplayerSettings buildOrgUnitSelectorSettings() {
         return DisplayerSettingsFactory.newSelectorSettings()
                 .dataset(GIT_CONTRIB)
-                .filter(createProjectFilter(projectInfo))
+                .group(COLUMN_ORG)
+                .column(COLUMN_ORG, translationUtils.getOrganizationalUnitAliasInSingular())
+                .column(COUNT, "#commits").format(translationService.getTranslation(LibraryConstants.NumberOfCommits), "#,##0")
+                .sort("#commits", DESCENDING)
+                .subtype(DisplayerSubType.SELECTOR_DROPDOWN).multiple(true)
+                .titleVisible(false)
+                .margins(0, 0, 10, 0)
+                .width(200)
+                .filterOn(false, true, true)
+                .buildSettings();
+    }
+
+    public DisplayerSettings buildProjectSelectorSettings() {
+        return DisplayerSettingsFactory.newSelectorSettings()
+                .dataset(GIT_CONTRIB)
+                .group(COLUMN_PROJECT)
+                .column(COLUMN_PROJECT, translationService.getTranslation(LibraryConstants.Project))
+                .column(COUNT, "#commits").format(translationService.getTranslation(LibraryConstants.NumberOfCommits), "#,##0")
+                .sort("#commits", DESCENDING)
+                .subtype(DisplayerSubType.SELECTOR_DROPDOWN).multiple(true)
+                .titleVisible(false)
+                .margins(0, 0, 10, 0)
+                .width(200)
+                .filterOn(false, true, true)
+                .buildSettings();
+    }
+
+    public DisplayerSettings buildTopContributorSelectorSettings() {
+        return DisplayerSettingsFactory.newSelectorSettings()
+                .dataset(GIT_CONTRIB)
                 .group(COLUMN_AUTHOR)
                 .column(COLUMN_AUTHOR, translationService.getTranslation(LibraryConstants.TopContributor))
                 .column(COUNT, "#commits").format(translationService.getTranslation(LibraryConstants.NumberOfCommits), "#,##0")
@@ -211,10 +279,9 @@ public class ProjectMetricsFactory {
                 .buildSettings();
     }
 
-    public DisplayerSettings buildDateSelectorSettings(ProjectInfo projectInfo) {
+    public DisplayerSettings buildDateSelectorSettings() {
         return DisplayerSettingsFactory.newSelectorSettings()
                 .dataset(GIT_CONTRIB)
-                .filter(createProjectFilter(projectInfo))
                 .column(COLUMN_DATE).format(translationService.getTranslation(LibraryConstants.Date), "dd MMM, yyyy")
                 .subtype(DisplayerSubType.SELECTOR_SLIDER)
                 .titleVisible(false)
@@ -224,10 +291,11 @@ public class ProjectMetricsFactory {
                 .buildSettings();
     }
 
-    public DisplayerSettings buildAllCommitsSettings(ProjectInfo projectInfo) {
+    public DisplayerSettings buildAllCommitsSettings() {
         return DisplayerSettingsFactory.newTableSettings()
                 .dataset(GIT_CONTRIB)
-                .filter(createProjectFilter(projectInfo))
+                .column(COLUMN_ORG, translationUtils.getOrganizationalUnitAliasInSingular())
+                .column(COLUMN_PROJECT, translationService.getTranslation(LibraryConstants.Project))
                 .column(COLUMN_AUTHOR, translationService.getTranslation(LibraryConstants.Author))
                 .column(COLUMN_DATE, translationService.getTranslation(LibraryConstants.Date))
                 .column(COLUMN_MSG, translationService.getTranslation(LibraryConstants.Message))

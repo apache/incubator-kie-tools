@@ -23,6 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.dashbuilder.displayer.client.Displayer;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
 import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
@@ -35,6 +36,7 @@ import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.popup.OrganizationalUnitPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.kie.workbench.common.screens.library.client.util.OrgUnitsMetricsFactory;
 import org.kie.workbench.common.screens.library.client.widgets.organizationalunit.OrganizationalUnitTileWidget;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -56,9 +58,13 @@ public class OrganizationalUnitsScreen {
         void hideCreateOrganizationalUnitAction();
 
         void addOrganizationalUnit(OrganizationalUnitTileWidget organizationalUnitTileWidget);
+
+        void updateContributionsMetric(Displayer metric);
     }
 
     private View view;
+
+    private LibraryPlaces libraryPlaces;
 
     private Caller<LibraryService> libraryService;
 
@@ -70,23 +76,32 @@ public class OrganizationalUnitsScreen {
 
     List<OrganizationalUnit> organizationalUnits;
 
+    private OrgUnitsMetricsFactory orgUnitsMetricsFactory;
+
+    private Displayer commitsDisplayer;
+
     @Inject
     public OrganizationalUnitsScreen(final View view,
+                                     final LibraryPlaces libraryPlaces,
                                      final Caller<LibraryService> libraryService,
                                      final OrganizationalUnitPopUpPresenter organizationalUnitPopUpPresenter,
                                      final OrganizationalUnitController organizationalUnitController,
-                                     final ManagedInstance<OrganizationalUnitTileWidget> organizationalUnitTileWidgets) {
+                                     final ManagedInstance<OrganizationalUnitTileWidget> organizationalUnitTileWidgets,
+                                     final OrgUnitsMetricsFactory orgUnitsMetricsFactory) {
         this.view = view;
+        this.libraryPlaces = libraryPlaces;
         this.libraryService = libraryService;
         this.organizationalUnitPopUpPresenter = organizationalUnitPopUpPresenter;
         this.organizationalUnitController = organizationalUnitController;
         this.organizationalUnitTileWidgets = organizationalUnitTileWidgets;
+        this.orgUnitsMetricsFactory = orgUnitsMetricsFactory;
     }
 
     @PostConstruct
     public void init() {
         setupView();
         setupOrganizationalUnits();
+        setupMetrics();
     }
 
     private void setupView() {
@@ -102,6 +117,12 @@ public class OrganizationalUnitsScreen {
                 refreshOrganizationalUnits(organizationalUnits);
             }).getOrganizationalUnits();
         }
+    }
+
+    private void setupMetrics() {
+        commitsDisplayer = orgUnitsMetricsFactory.lookupCommitsOverTimeDisplayer_small();
+        commitsDisplayer.draw();
+        view.updateContributionsMetric(commitsDisplayer);
     }
 
     private void refreshOrganizationalUnits(final List<OrganizationalUnit> organizationalUnits) {
@@ -149,6 +170,10 @@ public class OrganizationalUnitsScreen {
 
     public boolean canCreateOrganizationalUnit() {
         return organizationalUnitController.canCreateOrgUnits();
+    }
+
+    public void gotoOrgUnitsMetrics() {
+        libraryPlaces.goToOrgUnitsMetrics();
     }
 
     @WorkbenchPartTitle

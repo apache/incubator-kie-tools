@@ -162,6 +162,12 @@ public class LibraryConstants {
     public static final String ProjectName = "ProjectName";
     
     @TranslationKey(defaultValue = "")
+    public static final String OrgUnitsMetrics = "OrgUnitsMetrics";
+
+    @TranslationKey(defaultValue = "")
+    public static final String PerOrgUnit = "PerOrgUnit";
+
+    @TranslationKey(defaultValue = "")
     public static final String ProjectMetrics = "ProjectMetrics";
 
     @TranslationKey(defaultValue = "")
@@ -190,6 +196,9 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String NumberOfAssets = "NumberOfAssets";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Project = "Project";
 
     @TranslationKey(defaultValue = "")
     public static final String Author = "Author";

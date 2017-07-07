@@ -39,8 +39,6 @@ public interface DefaultWorkbenchConstants
 
     String ProjectAuthoring();
 
-    String Contributors();
-
     String ArtifactRepository();
 
     String Administration();

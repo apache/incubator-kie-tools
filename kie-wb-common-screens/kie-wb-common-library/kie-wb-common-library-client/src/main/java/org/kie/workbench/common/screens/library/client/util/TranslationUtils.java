@@ -76,6 +76,10 @@ public class TranslationUtils {
         return organizationalUnitAliasInPlural;
     }
 
+    public String getOrgUnitsMetrics() {
+        return ts.getTranslation(LibraryConstants.Metrics);
+    }
+
     public String getProjectMetrics() {
         return ts.getTranslation(LibraryConstants.Metrics);
     }

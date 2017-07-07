@@ -132,32 +132,28 @@ public class ContributorsManager implements DataSetGenerator {
         Collection<OrganizationalUnit> orgUnitList = organizationalUnitService.getOrganizationalUnits();
         for (OrganizationalUnit orgUnit : orgUnitList) {
             String org = orgUnit.getName();
+
             Collection<Repository> repoList = orgUnit.getRepositories();
+            for (Repository repo : repoList) {
+                String repoAlias = repo.getAlias();
+                Set<Project> repoProjects = projectService.getAllProjects(repo, repo.getDefaultBranch());
 
-            if (repoList.isEmpty()) {
-                dsBuilder.row(org, null, null, "Empty organizational unit", null);
-            } else {
-                for (Repository repo : repoList) {
-                    String repoAlias = repo.getAlias();
-                    Set<Project> repoProjects = projectService.getAllProjects(repo, repo.getDefaultBranch());
+                for (Project project : repoProjects) {
+                    String projectName = project.getProjectName();
+                    Path projectRoot = Paths.convert(project.getRootPath());
+                    List<VersionRecord> recordList = recordService.loadVersionRecords(projectRoot);
 
-                    for (Project project : repoProjects) {
-                        String projectName = project.getProjectName();
-                        Path projectRoot = Paths.convert(project.getRootPath());
-                        List<VersionRecord> recordList = recordService.loadVersionRecords(projectRoot);
-
-                        if (recordList.isEmpty()) {
-                            dsBuilder.row(org, repoAlias, null, "Empty repository", null);
-                        } else {
-                            for (VersionRecord record : recordList) {
-                                String alias = record.author();
-                                String uri = record.uri();
-                                String author = authorMappings.getProperty(alias);
-                                author = author == null ? alias : author;
-                                String msg = record.comment();
-                                Date date = record.date();
-                                dsBuilder.row(org, repoAlias, projectName, uri, author, msg, date);
-                            }
+                    if (recordList.isEmpty()) {
+                        dsBuilder.row(org, repoAlias, null, null, null, "Empty project", null);
+                    } else {
+                        for (VersionRecord record : recordList) {
+                            String alias = record.author();
+                            String uri = record.uri();
+                            String author = authorMappings.getProperty(alias);
+                            author = author == null ? alias : author;
+                            String msg = record.comment();
+                            Date date = record.date();
+                            dsBuilder.row(org, repoAlias, projectName, uri, author, msg, date);
                         }
                     }
                 }

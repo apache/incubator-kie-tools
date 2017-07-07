@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.library.client.screens.organizationalun
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dashbuilder.displayer.client.Displayer;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
 import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
@@ -33,6 +34,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.popup.OrganizationalUnitPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.kie.workbench.common.screens.library.client.util.OrgUnitsMetricsFactory;
 import org.kie.workbench.common.screens.library.client.widgets.organizationalunit.OrganizationalUnitTileWidget;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -49,6 +52,9 @@ public class OrganizationalUnitsScreenTest {
     private OrganizationalUnitsScreen.View view;
 
     @Mock
+    private LibraryPlaces libraryPlaces;
+
+    @Mock
     private LibraryService libraryService;
     private Caller<LibraryService> libraryServiceCaller;
 
@@ -63,6 +69,12 @@ public class OrganizationalUnitsScreenTest {
 
     @Mock
     private OrganizationalUnitTileWidget organizationalUnitTileWidget;
+
+    @Mock
+    private OrgUnitsMetricsFactory orgUnitsMetricsFactory;
+
+    @Mock
+    private Displayer commmitsDisplayer;
 
     private OrganizationalUnitsScreen presenter;
 
@@ -90,11 +102,15 @@ public class OrganizationalUnitsScreenTest {
         organizationalUnits.add(organizationalUnit3);
         doReturn(organizationalUnits).when(libraryService).getOrganizationalUnits();
 
+        when(orgUnitsMetricsFactory.lookupCommitsOverTimeDisplayer_small()).thenReturn(commmitsDisplayer);
+
         presenter = spy(new OrganizationalUnitsScreen(view,
+                                                      libraryPlaces,
                                                       libraryServiceCaller,
                                                       organizationalUnitPopUpPresenter,
                                                       organizationalUnitController,
-                                                      organizationalUnitTileWidgets));
+                                                      organizationalUnitTileWidgets,
+                                                      orgUnitsMetricsFactory));
 
         doReturn(true).when(organizationalUnitController).canCreateOrgUnits();
         doReturn(true).when(organizationalUnitController).canReadOrgUnits();
@@ -115,6 +131,9 @@ public class OrganizationalUnitsScreenTest {
                never()).clearOrganizationalUnits();
         verify(view,
                never()).addOrganizationalUnit(any());
+
+        verify(commmitsDisplayer).draw();
+        verify(view).updateContributionsMetric(commmitsDisplayer);
     }
 
     @Test
@@ -134,6 +153,9 @@ public class OrganizationalUnitsScreenTest {
         verify(organizationalUnitTileWidget).init(organizationalUnit3);
         verify(view,
                times(3)).addOrganizationalUnit(any());
+
+        verify(commmitsDisplayer).draw();
+        verify(view).updateContributionsMetric(commmitsDisplayer);
     }
 
     @Test

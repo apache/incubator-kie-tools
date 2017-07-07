@@ -136,7 +136,6 @@ public class DefaultWorkbenchFeaturesMenusHelper {
         final List<MenuItem> result = new ArrayList<>( 4 );
 
         result.add( MenuFactory.newSimpleItem( constants.ProjectAuthoring() ).perspective( LIBRARY ).endMenu().build().getItems().get( 0 ) );
-        result.add( MenuFactory.newSimpleItem( constants.Contributors() ).perspective( CONTRIBUTORS ).endMenu().build().getItems().get( 0 ) );
         result.add( MenuFactory.newSimpleItem( constants.ArtifactRepository() ).perspective( GUVNOR_M2REPO ).endMenu().build().getItems().get( 0 ) );
         result.add( MenuFactory.newSimpleItem( constants.Administration() ).perspective( ADMINISTRATION ).endMenu().build().getItems().get( 0 ) );
 

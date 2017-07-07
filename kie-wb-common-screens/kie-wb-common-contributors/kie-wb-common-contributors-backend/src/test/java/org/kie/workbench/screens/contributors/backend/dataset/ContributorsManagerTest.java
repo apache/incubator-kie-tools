@@ -18,6 +18,7 @@ package org.kie.workbench.screens.contributors.backend.dataset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +27,7 @@ import javax.enterprise.event.Event;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataColumn;
 import org.dashbuilder.dataset.DataSet;
+import org.dashbuilder.dataset.DataSetMetadata;
 import org.dashbuilder.dataset.def.DataSetDefRegistry;
 import org.dashbuilder.dataset.events.DataSetStaleEvent;
 import org.guvnor.common.services.project.model.Project;
@@ -163,9 +165,12 @@ public class ContributorsManagerTest {
                 .thenReturn(repositoryHistory2);
 
         OrganizationalUnit org1 = mock(OrganizationalUnit.class);
-        when(org1.getName()).thenReturn("test");
-        when(organizationalUnitService.getOrganizationalUnits()).thenReturn(Arrays.asList(org1));
+        OrganizationalUnit org2 = mock(OrganizationalUnit.class);
+        when(org1.getName()).thenReturn("test1");
+        when(org2.getName()).thenReturn("test2");
         when(org1.getRepositories()).thenReturn(Arrays.asList(repo1));
+        when(org2.getRepositories()).thenReturn(Collections.emptyList());
+        when(organizationalUnitService.getOrganizationalUnits()).thenReturn(Arrays.asList(org1, org2));
     }
 
     @Test
@@ -201,5 +206,8 @@ public class ContributorsManagerTest {
         column = dataSet.getColumns().get(6);
         assertEquals(column.getColumnType(), ColumnType.DATE);
         assertEquals(column.getId(), COLUMN_DATE);
+
+        DataSetMetadata metadata = dataSet.getMetadata();
+        assertNotNull(metadata);
     }
 }
