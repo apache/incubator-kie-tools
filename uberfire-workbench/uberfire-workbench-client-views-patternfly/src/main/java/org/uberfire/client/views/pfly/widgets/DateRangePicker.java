@@ -133,5 +133,8 @@ public class DateRangePicker implements IsElement {
         Moment getEndDate();
 
         void setEndDate(Moment endDate);
+
+        @JsProperty
+        String getChosenLabel();
     }
 }

@@ -107,6 +107,8 @@ public class WidgetsShowcaseView implements UberElement<WidgetsShowcasePresenter
                         p.getStartDate());
             logger.info("picker end date: {}",
                         p.getEndDate());
+            logger.info("picker label: {}",
+                        p.getChosenLabel());
         });
     }
 
