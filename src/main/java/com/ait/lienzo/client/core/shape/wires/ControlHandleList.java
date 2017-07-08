@@ -52,7 +52,7 @@ public class ControlHandleList extends Activatable implements IControlHandleList
     @Override
     public final boolean isEmpty()
     {
-        return (size() > 0);
+        return (size() == 0);
     }
 
     @Override

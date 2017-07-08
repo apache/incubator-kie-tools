@@ -43,6 +43,7 @@ import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.tooling.nativetools.client.util.Console;
 
 public class MagnetManager
 {
@@ -129,6 +130,8 @@ public class MagnetManager
 
         String uuid = primTarget.uuid();
         m_magnetRegistry.put(uuid, magnets);
+
+        Console.get().info("size" + magnets.size());
 
         wiresShape.setMagnets(magnets);
 
@@ -266,6 +269,10 @@ public class MagnetManager
 
         private final HandlerRegistrationManager m_registrationManager = new HandlerRegistrationManager();
 
+        public Magnets(MagnetManager magnetManager, WiresShape wiresShape)
+        {
+            this(magnetManager, new ControlHandleList(wiresShape.getGroup()), wiresShape);
+        }
         public Magnets(MagnetManager magnetManager, IControlHandleList list, WiresShape wiresShape)
         {
             m_list = list;
@@ -278,6 +285,11 @@ public class MagnetManager
             m_registrationManager.register(shapeGroup.addNodeDragStartHandler(this));
             m_registrationManager.register(shapeGroup.addNodeDragMoveHandler(this));
             m_registrationManager.register(shapeGroup.addNodeDragEndHandler(this));
+        }
+
+        public boolean isEmpty()
+        {
+            return m_list.isEmpty();
         }
 
         public WiresShape getWiresShape()
@@ -348,18 +360,20 @@ public class MagnetManager
 
         public void shapeChanged()
         {
-            final Point2DArray points = MagnetManager.getWiresIntersectionPoints(m_wiresShape, EIGHT_CARDINALS);
-
-            if (points.size() == m_list.size())
+            if (m_list.isEmpty())
             {
-                for (int i = 0; i < m_list.size(); i++)
-                {
-                    Point2D p = points.get(i);
-                    WiresMagnet m = (WiresMagnet) m_list.getHandle(i);
-                    m.setRx(p.getX()).setRy(p.getY());
-                }
-                this.shapeMoved();
+                return ;
             }
+            Direction[] cardinals = m_list.size() == 9 ? EIGHT_CARDINALS: FOUR_CARDINALS;
+            final Point2DArray points = MagnetManager.getWiresIntersectionPoints(m_wiresShape, cardinals);
+
+            for (int i = 0; i < m_list.size(); i++)
+            {
+                Point2D p = points.get(i);
+                WiresMagnet m = (WiresMagnet) m_list.getHandle(i);
+                m.setRx(p.getX()).setRy(p.getY());
+            }
+            this.shapeMoved();
         }
 
         public void show()

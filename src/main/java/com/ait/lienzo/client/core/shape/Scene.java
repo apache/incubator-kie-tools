@@ -412,7 +412,8 @@ public class Scene extends ContainerNode<Layer, Scene>
 
             getElement().appendChild(layer.getElement());
 
-            layer.getContext().getNativeContext().initDeviceRatio();
+//  TODO This is disable until it's working for all layers (drag, selction etc)
+//            layer.getContext().getNativeContext().initDeviceRatio();
 
             super.add(layer);
 

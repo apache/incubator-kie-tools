@@ -19,6 +19,11 @@ package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
+import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
@@ -167,7 +172,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
 
     private boolean checkForAndApplyLineSplice()
     {
-        if (m_shape.getMagnets() == null)
+        if (!m_manager.isSpliceEnabled() || m_shape.getMagnets().isEmpty())
         {
             // cannot connect to a shape with no magnets.
             return true;
@@ -442,21 +447,28 @@ public class WiresShapeControlImpl implements WiresShapeControl
     }
 
     @Override
-    public void onNodeMouseDown()
+    public void onNodeMouseDown(NodeMouseDownEvent e)
     {
         if (m_dockingAndContainmentControl != null)
         {
-            m_dockingAndContainmentControl.onNodeMouseDown();
+            m_dockingAndContainmentControl.onNodeMouseDown(e);
         }
     }
 
     @Override
-    public void onNodeMouseUp()
+    public void onNodeMouseUp(NodeMouseUpEvent e)
     {
         if (m_dockingAndContainmentControl != null)
         {
-            m_dockingAndContainmentControl.onNodeMouseUp();
+            m_dockingAndContainmentControl.onNodeMouseUp(e);
         }
+    }
+
+    @Override
+    public void onNodeClick(NodeMouseClickEvent e)
+    {
+        m_manager.getSelectionManager().selected(m_shape, e);
+        m_shape.getGroup().getLayer().draw();
     }
 
 }

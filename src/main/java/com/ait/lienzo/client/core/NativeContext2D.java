@@ -69,8 +69,8 @@ public final class NativeContext2D extends JavaScriptObject
                 canvas.width = Math.round(oldWidth * this.scalingRatio);
                 canvas.height = Math.round(oldHeight * this.scalingRatio);
 
-                canvas.style.width = oldWidth;
-                canvas.style.height = oldHeight;
+                canvas.style.width = oldWidth + "px";
+                canvas.style.height = oldHeight + "px";
 
                 this.scale(this.scalingRatio, this.scalingRatio);
             }

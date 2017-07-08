@@ -31,6 +31,7 @@ import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.tooling.nativetools.client.util.Console;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 
@@ -39,7 +40,7 @@ import java.util.Objects;
 
 public class WiresShape extends WiresContainer
 {
-    interface WiresShapeHandler extends NodeMouseDownHandler, NodeMouseUpHandler, NodeDragEndHandler, DragConstraintEnforcer
+    interface WiresShapeHandler extends NodeMouseDownHandler, NodeMouseUpHandler, NodeMouseClickHandler, NodeDragEndHandler, DragConstraintEnforcer
     {
 
         void setAlignAndDistributeControl(AlignAndDistributeControl alignAndDistributeHandler);
@@ -185,6 +186,7 @@ public class WiresShape extends WiresContainer
     public void addWiresShapeHandler( final HandlerRegistrationManager registrationManager,
                                       final WiresShapeHandler handler )
     {
+        registrationManager.register(getGroup().addNodeMouseClickHandler(handler));
         registrationManager.register(getGroup().addNodeMouseDownHandler(handler));
         registrationManager.register(getGroup().addNodeMouseUpHandler(handler));
         registrationManager.register(getGroup().addNodeDragEndHandler(handler));
@@ -302,6 +304,18 @@ public class WiresShape extends WiresContainer
         }
     }
 
+    public void select()
+    {
+        Console.get().info("select " + getGroup().getUserData());
+        // do nothing, this has no lienzo action right now.
+    }
+
+    public void unselect()
+    {
+        Console.get().info("unselect " + getGroup().getUserData());
+        // do nothing, this has no lienzo action right now.
+    }
+
     LayoutContainer getLayoutContainer()
     {
         return m_innerLayoutContainer;
@@ -350,13 +364,18 @@ public class WiresShape extends WiresContainer
         @Override
         public void onNodeMouseDown(NodeMouseDownEvent event)
         {
-            this.shapeControl.onNodeMouseDown();
+            this.shapeControl.onNodeMouseDown(event);
         }
 
         @Override
         public void onNodeMouseUp(NodeMouseUpEvent event)
         {
-            this.shapeControl.onNodeMouseUp();
+            this.shapeControl.onNodeMouseUp(event);
+        }
+
+        @Override public void onNodeMouseClick(NodeMouseClickEvent event)
+        {
+            this.shapeControl.onNodeClick(event);
         }
 
         public WiresShapeControl getControl()
@@ -365,4 +384,24 @@ public class WiresShape extends WiresContainer
         }
     }
 
+    @Override public boolean equals(Object o)
+    {
+        if (this == o)
+        {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass())
+        {
+            return false;
+        }
+
+        WiresShape that = (WiresShape) o;
+
+        return getGroup().uuid() == that.getGroup().uuid();
+    }
+
+    @Override public int hashCode()
+    {
+        return getGroup().uuid().hashCode();
+    }
 }

@@ -60,6 +60,8 @@ public final class WiresManager
 
     private IDockingAcceptor                                 m_dockingAcceptor     = IDockingAcceptor.NONE;
 
+    private boolean                                          m_spliceEnabled;
+
     public static final WiresManager get(Layer layer)
     {
         String uuid = layer.uuid();
@@ -82,9 +84,25 @@ public final class WiresManager
         m_layer = new WiresLayer(layer);
         layer.setOnLayerBeforeDraw(new LinePreparer(this));
 
-        m_selectionManager  = new SelectionManager(this);
-
         m_index = new AlignAndDistribute(layer);
+    }
+
+    public void enableSelectionManager()
+    {
+        if (m_selectionManager==null)
+        {
+            m_selectionManager = new SelectionManager(this);
+        }
+    }
+
+    public boolean isSpliceEnabled()
+    {
+        return m_spliceEnabled;
+    }
+
+    public void setSpliceEnabled(boolean spliceEnabled)
+    {
+        m_spliceEnabled = spliceEnabled;
     }
 
     public static class LinePreparer implements OnLayerBeforeDraw
@@ -192,6 +210,11 @@ public final class WiresManager
         final HandlerRegistrationManager registrationManager = createHandlerRegistrationManager();
 
         shape.addWiresShapeHandler( registrationManager, handler );
+
+        if (shape.getMagnets() == null)
+        {
+            shape.setMagnets( new MagnetManager.Magnets(m_magnetManager, shape));
+        }
 
         // Shapes added to the canvas layer by default.
         getLayer().add(shape);

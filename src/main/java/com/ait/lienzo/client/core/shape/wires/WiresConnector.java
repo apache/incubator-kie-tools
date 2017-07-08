@@ -27,6 +27,8 @@ import com.ait.lienzo.client.core.event.NodeDragStartEvent;
 import com.ait.lienzo.client.core.event.NodeDragStartHandler;
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
@@ -45,7 +47,7 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
 public class WiresConnector
 {
-    public interface WiresConnectorHandler extends NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler, NodeMouseClickHandler
+    public interface WiresConnectorHandler extends NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler, NodeMouseClickHandler, NodeMouseDoubleClickHandler
     {
 
         public WiresConnectorControl getControl();
@@ -120,6 +122,19 @@ public class WiresConnector
             m_tailConnection.setMagnet(tailMagnet);
         }
         return this;
+    }
+
+
+    public void select()
+    {
+        m_wiresConnectorHandler.getControl().showControlPoints();
+        m_group.getLayer().batch();
+    }
+
+    public void unselect()
+    {
+        m_wiresConnectorHandler.getControl().hideControlPoints();
+        m_group.getLayer().batch();
     }
 
     public IConnectionAcceptor getConnectionAcceptor()
@@ -667,10 +682,13 @@ public class WiresConnector
 
         private final WiresConnector        m_connector;
 
+        private final WiresManager          m_wiresManager;
+
         WiresConnectorHandlerImpl(WiresConnector connector, WiresManager wiresManager)
         {
             this.m_control = wiresManager.getControlFactory().newConnectorControl(connector, wiresManager);
             this.m_connector = connector;
+            m_wiresManager = wiresManager;
             init();
         }
 
@@ -684,6 +702,7 @@ public class WiresConnector
             m_connector.m_HandlerRegistrationManager = new HandlerRegistrationManager();
 
             m_connector.m_HandlerRegistrationManager.register(m_connector.getLine().addNodeMouseClickHandler(this));
+            m_connector.m_HandlerRegistrationManager.register(m_connector.getLine().addNodeMouseDoubleClickHandler(this));
             m_connector.m_HandlerRegistrationManager.register(m_connector.getHead().addNodeMouseClickHandler(this));
             m_connector.m_HandlerRegistrationManager.register(m_connector.getTail().addNodeMouseClickHandler(this));
         }
@@ -710,29 +729,38 @@ public class WiresConnector
         @Override
         public void onNodeMouseClick(NodeMouseClickEvent event)
         {
+            m_wiresManager.getSelectionManager().selected(m_connector, event);
+        }
 
-            if (m_connector.getPointHandles().isVisible())
-            {
-                if (event.isShiftKeyDown())
-                {
-                    this.m_control.addControlPoint(event.getX(), event.getY());
-                }
-                else
-                {
-                    this.m_control.hideControlPoints();
-                }
-            }
-            else if (((Node<?> ) event.getSource()).getParent() == m_connector.getGroup() )
-            {
-                this.m_control.showControlPoints();
-            }
+        @Override public void onNodeMouseDoubleClick(NodeMouseDoubleClickEvent event)
+        {
+            m_control.addControlPoint(event.getX(), event.getY());
         }
 
         public WiresConnectorControl getControl()
         {
             return m_control;
         }
-
     }
 
+    @Override public boolean equals(Object o)
+    {
+        if (this == o)
+        {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass())
+        {
+            return false;
+        }
+
+        WiresConnector that = (WiresConnector) o;
+
+        return getGroup().uuid() == that.getGroup().uuid();
+    }
+
+    @Override public int hashCode()
+    {
+        return getGroup().uuid().hashCode();
+    }
 }

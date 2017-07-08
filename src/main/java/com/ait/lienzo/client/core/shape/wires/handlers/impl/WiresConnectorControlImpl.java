@@ -190,10 +190,12 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
         }
 
         showPointHandles();
+
+        m_connector.getLine().getLayer().batch();
     }
 
     @Override
-    public void destroyControlPoint(final Object control)
+    public void destroyControlPoint(final IPrimitive<?> control)
     {
         // Connection (line) need at least 2 points to be drawn
         if (m_connector.getPointHandles().size() <= 2)
@@ -250,7 +252,6 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
     @Override
     public void hideControlPoints()
     {
-
         if (m_HandlerRegistrationManager != null)
         {
             m_HandlerRegistrationManager.destroy();
@@ -462,7 +463,10 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
         public void onNodeMouseDoubleClick(final NodeMouseDoubleClickEvent event)
         {
             if (m_connector.getPointHandles().isVisible()) {
-                WiresConnectorControlImpl.this.destroyControlPoint(event.getSource());
+
+                //addControlPoint(event.getX(), event.getY());
+                destroyControlPoint((IPrimitive<?>)event.getSource());
+                m_connector.getLine().getLayer().batch();
             }
         }
 

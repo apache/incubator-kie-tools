@@ -1,5 +1,7 @@
 package com.ait.lienzo.client.core.shape.wires.handlers;
 
+import com.ait.lienzo.client.core.shape.IPrimitive;
+
 /**
  * Connector control handler provides user interaction common functions/logic in a way that they're decoupled
  * from the concrete event types fired, and these calls be reused programatically as well.
@@ -14,7 +16,7 @@ public interface WiresConnectorControl extends DragControl {
 
     void addControlPoint( double x, double y );
 
-    void destroyControlPoint( Object control );
+    void destroyControlPoint( IPrimitive<?> control);
 
     void showControlPoints();
 

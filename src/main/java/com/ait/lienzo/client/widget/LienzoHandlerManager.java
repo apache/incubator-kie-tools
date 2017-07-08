@@ -182,6 +182,9 @@ final class LienzoHandlerManager
             {
                 if (!m_viewport.getOnEventHandlers().getOnMouseClickEventHandle().onMouseEventBefore(event))
                 {
+                    m_dragging_mouse_pressed = false; // could have been set previously by a mousedown, it will need cleaning up
+                    m_dragging_ignore_clicks = false;
+                    m_dragging = false;
                     return;
                 }
 
@@ -258,6 +261,7 @@ final class LienzoHandlerManager
                 if (!m_viewport.getOnEventHandlers().getOnMouseUpEventHandle().onMouseEventBefore(event))
                 {
                     m_dragging_mouse_pressed = false; // could have been set previously by a mousedown, it will need cleaning up
+                    m_dragging_ignore_clicks = false;
                     m_dragging = false;
                     return;
                 }
