@@ -131,8 +131,6 @@ public class MagnetManager
         String uuid = primTarget.uuid();
         m_magnetRegistry.put(uuid, magnets);
 
-        Console.get().info("size" + magnets.size());
-
         wiresShape.setMagnets(magnets);
 
         return magnets;
