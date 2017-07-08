@@ -373,8 +373,6 @@ public class MagnetManager
             Direction[] cardinals = m_list.size() == 9 ? EIGHT_CARDINALS: FOUR_CARDINALS;
             final Point2DArray points = MagnetManager.getWiresIntersectionPoints(m_wiresShape, cardinals);
 
-            Console.get().info("" + m_list.size() + ":" + points.size());
-
             for (int i = 0; i < m_list.size(); i++)
             {
                 Point2D p = points.get(i);

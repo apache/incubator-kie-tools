@@ -1074,12 +1074,6 @@ public final class Geometry
         final Set<Point2D>[] intersections = getCardinalIntersects(shape, cardinals);
         Point2DArray points = removeInnerPoints(cardinals.get(0), intersections);
 
-        Console.get().info("---");
-        for ( Point2D p : points )
-        {
-            Console.get().info("p " + p);
-        }
-
         return points;
     }
 
