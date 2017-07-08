@@ -269,7 +269,7 @@ public class MagnetManager
 
         public Magnets(MagnetManager magnetManager, WiresShape wiresShape)
         {
-            this(magnetManager, new ControlHandleList(wiresShape.getGroup()), wiresShape);
+            this(magnetManager, null, wiresShape);
         }
         public Magnets(MagnetManager magnetManager, IControlHandleList list, WiresShape wiresShape)
         {
@@ -277,12 +277,20 @@ public class MagnetManager
             m_magnetManager = magnetManager;
             m_wiresShape = wiresShape;
 
-            Group shapeGroup = wiresShape.getGroup();
-            m_registrationManager.register(shapeGroup.addAttributesChangedHandler(Attribute.X, this));
-            m_registrationManager.register(shapeGroup.addAttributesChangedHandler(Attribute.Y, this));
-            m_registrationManager.register(shapeGroup.addNodeDragStartHandler(this));
-            m_registrationManager.register(shapeGroup.addNodeDragMoveHandler(this));
-            m_registrationManager.register(shapeGroup.addNodeDragEndHandler(this));
+            if (list != null)
+            {
+                Group shapeGroup = wiresShape.getGroup();
+                m_registrationManager.register(shapeGroup.addAttributesChangedHandler(Attribute.X, this));
+                m_registrationManager.register(shapeGroup.addAttributesChangedHandler(Attribute.Y, this));
+                m_registrationManager.register(shapeGroup.addNodeDragStartHandler(this));
+                m_registrationManager.register(shapeGroup.addNodeDragMoveHandler(this));
+                m_registrationManager.register(shapeGroup.addNodeDragEndHandler(this));
+            }
+            else
+            {
+                // create an empty list to avoid future nullpointers
+                m_list = new ControlHandleList(wiresShape.getGroup());
+            }
         }
 
         public boolean isEmpty()
@@ -358,12 +366,14 @@ public class MagnetManager
 
         public void shapeChanged()
         {
-            if (m_list.isEmpty())
+            if (m_list.isEmpty() )
             {
-                return ;
+                return;
             }
             Direction[] cardinals = m_list.size() == 9 ? EIGHT_CARDINALS: FOUR_CARDINALS;
             final Point2DArray points = MagnetManager.getWiresIntersectionPoints(m_wiresShape, cardinals);
+
+            Console.get().info("" + m_list.size() + ":" + points.size());
 
             for (int i = 0; i < m_list.size(); i++)
             {

@@ -304,18 +304,6 @@ public class WiresShape extends WiresContainer
         }
     }
 
-    public void select()
-    {
-        Console.get().info("select " + getGroup().getUserData());
-        // do nothing, this has no lienzo action right now.
-    }
-
-    public void unselect()
-    {
-        Console.get().info("unselect " + getGroup().getUserData());
-        // do nothing, this has no lienzo action right now.
-    }
-
     LayoutContainer getLayoutContainer()
     {
         return m_innerLayoutContainer;

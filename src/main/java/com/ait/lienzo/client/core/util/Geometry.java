@@ -1072,7 +1072,15 @@ public final class Geometry
     {
         final Point2DArray cardinals = getCardinals(shape.getBoundingBox(), requestedCardinals);
         final Set<Point2D>[] intersections = getCardinalIntersects(shape, cardinals);
-        return removeInnerPoints(cardinals.get(0), intersections);
+        Point2DArray points = removeInnerPoints(cardinals.get(0), intersections);
+
+        Console.get().info("---");
+        for ( Point2D p : points )
+        {
+            Console.get().info("p " + p);
+        }
+
+        return points;
     }
 
     public static Set<Point2D>[] getCardinalIntersects(AbstractMultiPathPartShape<?> shape, Point2DArray cardinals)

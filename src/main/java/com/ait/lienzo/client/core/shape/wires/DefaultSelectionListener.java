@@ -84,12 +84,18 @@ public class DefaultSelectionListener implements SelectionListener
 
     private void select(WiresShape shape)
     {
-
+        if (shape.getControls() != null)
+        {
+            shape.getControls().show();
+        }
     }
 
     private void unselect(WiresShape shape)
     {
-
+        if (shape.getControls() != null)
+        {
+            shape.getControls().hide();
+        }
     }
 
     private void select(WiresConnector connector)
