@@ -16,12 +16,19 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import java.util.HashMap;
+
+import com.ait.lienzo.client.core.Attribute;
+import com.ait.lienzo.client.core.event.AttributesChangedEvent;
+import com.ait.lienzo.client.core.event.AttributesChangedHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.tooling.common.api.java.util.UUID;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Basic layout container implementation.
@@ -49,6 +56,19 @@ public class WiresLayoutContainer implements LayoutContainer
     private double                           height;
 
     private final NFastArrayList<ChildEntry> children;
+
+    protected HandlerRegistrationManager attrHandlerRegs = new HandlerRegistrationManager();
+
+    protected HashMap<ObjectAttribute, HandlerRegistration> registrations = new HashMap<ObjectAttribute,HandlerRegistration>();
+
+    private final AttributesChangedHandler ShapeAttributesChangedHandler = new AttributesChangedHandler()
+    {
+        @Override
+        public void onAttributesChanged(AttributesChangedEvent event)
+        {
+            refresh();
+        }
+    };
 
     public WiresLayoutContainer()
     {
@@ -109,6 +129,11 @@ public class WiresLayoutContainer implements LayoutContainer
 
             final ChildEntry entry = new ChildEntry(child.getID(), layout);
             children.add(entry);
+            for (Attribute attribute : child.getTransformingAttributes()) {
+                HandlerRegistration reg = child.addAttributesChangedHandler(attribute,ShapeAttributesChangedHandler);
+                registrations.put(new ObjectAttribute(child,attribute), reg);
+                attrHandlerRegs.register(reg);
+            }
 
             doPositionChild(child, true);
 
@@ -123,9 +148,12 @@ public class WiresLayoutContainer implements LayoutContainer
 
         if (null != entry)
         {
-
             children.remove(entry);
 
+            for (Attribute attribute : child.getTransformingAttributes()) {
+                ObjectAttribute key = new ObjectAttribute(child,attribute);
+                attrHandlerRegs.deregister(registrations.remove(key));
+            }
         }
 
         group.remove(child);
@@ -163,6 +191,8 @@ public class WiresLayoutContainer implements LayoutContainer
     {
         children.clear();
         group.removeAll();
+        registrations.clear();
+        attrHandlerRegs.clear();
         return this;
     }
 
@@ -170,6 +200,7 @@ public class WiresLayoutContainer implements LayoutContainer
     public void destroy()
     {
         clear();
+        attrHandlerRegs.destroy();
         group.removeFromParent();
     }
 
@@ -401,4 +432,32 @@ public class WiresLayoutContainer implements LayoutContainer
         }
     }
 
+    private final static class ObjectAttribute
+    {
+        private final Object obj;
+        private final Attribute attr;
+
+        private ObjectAttribute(Object obj, Attribute attr)
+        {
+            this.obj = obj;
+            this.attr = attr;
+        }
+
+        @Override
+        public final int hashCode()
+        {
+            return obj.hashCode() ^ attr.hashCode();
+        }
+
+        @Override
+        public final boolean equals(Object o)
+        {
+            if (o instanceof ObjectAttribute)
+            {
+                ObjectAttribute other = (ObjectAttribute) o;
+                return obj.equals(other.obj) && attr.equals(other.attr);
+            }
+            return false;
+        }
+    }
 }
