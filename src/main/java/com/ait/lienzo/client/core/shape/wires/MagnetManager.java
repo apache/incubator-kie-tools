@@ -267,30 +267,18 @@ public class MagnetManager
 
         private final HandlerRegistrationManager m_registrationManager = new HandlerRegistrationManager();
 
-        public Magnets(MagnetManager magnetManager, WiresShape wiresShape)
-        {
-            this(magnetManager, null, wiresShape);
-        }
         public Magnets(MagnetManager magnetManager, IControlHandleList list, WiresShape wiresShape)
         {
             m_list = list;
             m_magnetManager = magnetManager;
             m_wiresShape = wiresShape;
 
-            if (list != null)
-            {
-                Group shapeGroup = wiresShape.getGroup();
-                m_registrationManager.register(shapeGroup.addAttributesChangedHandler(Attribute.X, this));
-                m_registrationManager.register(shapeGroup.addAttributesChangedHandler(Attribute.Y, this));
-                m_registrationManager.register(shapeGroup.addNodeDragStartHandler(this));
-                m_registrationManager.register(shapeGroup.addNodeDragMoveHandler(this));
-                m_registrationManager.register(shapeGroup.addNodeDragEndHandler(this));
-            }
-            else
-            {
-                // create an empty list to avoid future nullpointers
-                m_list = new ControlHandleList(wiresShape.getGroup());
-            }
+            Group shapeGroup = wiresShape.getGroup();
+            m_registrationManager.register(shapeGroup.addAttributesChangedHandler(Attribute.X, this));
+            m_registrationManager.register(shapeGroup.addAttributesChangedHandler(Attribute.Y, this));
+            m_registrationManager.register(shapeGroup.addNodeDragStartHandler(this));
+            m_registrationManager.register(shapeGroup.addNodeDragMoveHandler(this));
+            m_registrationManager.register(shapeGroup.addNodeDragEndHandler(this));
         }
 
         public boolean isEmpty()

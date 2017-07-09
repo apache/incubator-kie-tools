@@ -211,11 +211,6 @@ public final class WiresManager
 
         shape.addWiresShapeHandler( registrationManager, handler );
 
-        if (shape.getMagnets() == null)
-        {
-            shape.setMagnets( new MagnetManager.Magnets(m_magnetManager, shape));
-        }
-
         // Shapes added to the canvas layer by default.
         getLayer().add(shape);
 

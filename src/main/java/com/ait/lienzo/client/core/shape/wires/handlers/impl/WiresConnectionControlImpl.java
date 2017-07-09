@@ -139,8 +139,7 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
             if (m_colorKey != null)
             {
                 shape = m_shape_color_map.get(m_colorKey);
-                Console.get().info("size"+ shape.getMagnets().size() + ":" + shape.getMagnets().isEmpty());
-                if (shape != null && !shape.getMagnets().isEmpty())
+                if (shape != null && shape.getMagnets() != null)
                 {
                     // no magnet is selected, but if we are over a shape, then auto connect
                     connection.setAutoConnection(true);

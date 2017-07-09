@@ -172,7 +172,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
 
     private boolean checkForAndApplyLineSplice()
     {
-        if (!m_manager.isSpliceEnabled() || m_shape.getMagnets().isEmpty())
+        if (!m_manager.isSpliceEnabled() || m_shape.getMagnets() == null)
         {
             // cannot connect to a shape with no magnets.
             return true;
@@ -467,7 +467,10 @@ public class WiresShapeControlImpl implements WiresShapeControl
     @Override
     public void onNodeClick(NodeMouseClickEvent e)
     {
-        m_manager.getSelectionManager().selected(m_shape, e);
+        if ( m_manager.getSelectionManager() != null )
+        {
+            m_manager.getSelectionManager().selected(m_shape, e);
+        }
         m_shape.getGroup().getLayer().draw();
     }
 

@@ -254,7 +254,8 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
         m_layer.draw();
     }
 
-    @Override public void onNodeMouseClick(NodeMouseClickEvent event)
+    @Override
+    public void onNodeMouseClick(NodeMouseClickEvent event)
     {
         m_selected.clear();
         m_selected.notifyListener();
@@ -262,7 +263,8 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
         m_layer.draw();
     }
 
-    @Override public void onNodeMouseDoubleClick(NodeMouseDoubleClickEvent event)
+    @Override
+    public void onNodeMouseDoubleClick(NodeMouseDoubleClickEvent event)
     {
         m_selected.clear();
         m_selected.notifyListener();
@@ -566,6 +568,8 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
                 }
                 else
                 {
+                    // the above checked the line, also check the head and tail.
+
                     // head is rotated around an offset with also set. The reverse of this must be applied to the
                     // selection rectangle, to ensure thinsg are all in the same space,  for intersection to work
                     MultiPath path = connector.getHead();

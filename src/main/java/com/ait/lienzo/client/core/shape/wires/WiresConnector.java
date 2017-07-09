@@ -729,7 +729,10 @@ public class WiresConnector
         @Override
         public void onNodeMouseClick(NodeMouseClickEvent event)
         {
-            m_wiresManager.getSelectionManager().selected(m_connector, event);
+            if (m_wiresManager.getSelectionManager() != null )
+            {
+                m_wiresManager.getSelectionManager().selected(m_connector, event);
+            }
         }
 
         @Override public void onNodeMouseDoubleClick(NodeMouseDoubleClickEvent event)
