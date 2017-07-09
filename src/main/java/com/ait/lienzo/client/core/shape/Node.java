@@ -547,7 +547,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
     /**
      * Returns the absolute transform by concatenating the transforms
-     * of all its ancestors from the Viewport down to this node's teLparent.
+     * of all its ancestors from the Viewport down to this node's parent.
      * 
      * @return {@link Transform}
      */
