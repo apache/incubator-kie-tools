@@ -170,7 +170,7 @@ public class WiresShape extends WiresContainer
 
     /**
      * If the shape's path parts/points have been updated programmatically (not via human events interactions),
-     * you can call this method to update the children layouts, controls and m_magnets.
+     * you can call this method to update the children layouts, controls and magnets.
      * The WiresResizeEvent event is not fired as this method is supposed to be called by the developer.
      */
     public void refresh()

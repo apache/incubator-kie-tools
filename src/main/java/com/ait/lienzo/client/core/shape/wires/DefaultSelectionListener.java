@@ -61,9 +61,9 @@ public class DefaultSelectionListener implements SelectionListener
             unselect(connector);
         }
 
-        if (selectedItems.size() == 1)
+        if (!selectedItems.isSelectionGroup() && selectedItems.size() == 1)
         {
-            if (!selectedItems.getShapes().isEmpty())
+            if (selectedItems.getShapes().size() == 1)
             {
                 for (WiresShape shape : selectedItems.getShapes())
                 {

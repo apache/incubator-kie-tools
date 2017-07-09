@@ -355,8 +355,12 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
 
     public static class SelectedItems
     {
+        private boolean             selectionGroup;
         private Set<WiresShape>     m_shapes;
         private Set<WiresConnector> m_connectors;
+        // external coupled connectors are connectors who are connected to a shape, not part of the selection
+        // these will not be part of selection rectangle BoundingBox, but would be part of any copy/paste
+        private Set<WiresConnector> m_externallyConnected;
         private BoundingBox         m_bbox;
         private SelectionManager    m_selManager;
         private Layer               m_layer;
@@ -369,6 +373,7 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
             m_layer = layer;
             m_shapes = new HashSet<WiresShape>();
             m_connectors = new HashSet<WiresConnector>();
+            m_externallyConnected = new HashSet<WiresConnector>();
             m_bbox = new BoundingBox();
         }
 
@@ -379,6 +384,7 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
 
         public void selected(WiresShape shape, AbstractNodeMouseEvent<MouseEvent<?>, ?> event)
         {
+            selectionGroup = false;
             if (m_shapes.contains(shape))
             {
                 if (m_shapes.size() == 1)
@@ -401,7 +407,7 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
 
         public void selected(WiresConnector connector, AbstractNodeMouseEvent<MouseEvent<?>, ?> event)
         {
-
+            selectionGroup = false;
             if (m_connectors.contains(connector))
             {
                 if (m_connectors.size() == 1)
@@ -440,6 +446,13 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
             return m_connectors.add(connector);
         }
 
+        public boolean addExternallyConnected(WiresConnector connector)
+        {
+            m_changed.getAddedConnectors().add(connector);
+            return m_externallyConnected.add(connector);
+        }
+
+
         public boolean remove(WiresConnector connector)
         {
             m_changed.getRemovedConnectors().add(connector);
@@ -454,6 +467,26 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
         public Set<WiresConnector> getConnectors()
         {
             return m_connectors;
+        }
+
+        public Set<WiresConnector> getExternallyConnected()
+        {
+            return m_externallyConnected;
+        }
+
+        public boolean isExternallyConnector(WiresConnector connector)
+        {
+            return m_externallyConnected.contains(connector);
+        }
+
+        public boolean isSelectionGroup()
+        {
+            return selectionGroup;
+        }
+
+        public void setSelectionGroup(boolean selectionGroup)
+        {
+            this.selectionGroup = selectionGroup;
         }
 
         public int size()
@@ -471,6 +504,8 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
             // selection controls can only exist, if there is single entry
             m_changed.clear(); // clear first
             recordPrevious();
+
+            selectionGroup  = false;
 
             m_shapes.clear();
             m_connectors.clear();
@@ -504,6 +539,7 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
 
     public void getItemsInBoundingBox(BoundingBox selectionBox)
     {
+        m_selected.setSelectionGroup(true);
         BoundingBox box = m_selected.getBoundingBox();
 
         BoundingBox      nodeBox    = null;
@@ -512,6 +548,8 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
 
         Map<String, WiresShape> shapesMap = new HashMap<String, WiresShape>();
         Map<String, BoundingBox> uuidMap = new HashMap<String, BoundingBox>();
+
+        // first build a map of all shapes that intersect with teh selection rectangle. Nested shapes will be used later.
         for (WiresShape shape : m_wiresManager.getShapesMap().values())
         {
             nodeBox = shape.getContainer().getComputedBoundingPoints().getBoundingBox();
@@ -523,6 +561,7 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
             }
         }
 
+        // add to removal list any shape whose parent is also in the selection
         for (WiresShape shape : shapesMap.values())
         {
             if (shapesMap.containsKey(shape.getParent().getContainer().uuid()))
@@ -531,6 +570,7 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
             }
         }
 
+        // now the list is built, safely remove the shapes
         for (WiresShape shape : toBeRemoved)
         {
             shapesMap.remove(shape.getContainer().uuid());
@@ -545,6 +585,16 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
 
         for (WiresConnector connector : m_wiresManager.getConnectorList())
         {
+
+            boolean externallyConnected = false;
+            if ( connector.getLine().getPoint2DArray().size() == 2 )
+            {
+                boolean hasHeadShapeNotInSelection = connector.getHeadConnection().getMagnet() != null && !m_selected.m_shapes.contains(connector.getHeadConnection().getMagnet().getMagnets().getWiresShape());
+                boolean hasTailShapeNotInSelection = connector.getTailConnection().getMagnet() != null && !m_selected.m_shapes.contains(connector.getTailConnection().getMagnet().getMagnets().getWiresShape());
+
+                externallyConnected = hasHeadShapeNotInSelection || hasTailShapeNotInSelection;
+            }
+
             Point2DArray points = new Point2DArray();
             Point2D      loc    = m_rect.getLocation();
             points.push(loc.getX(), loc.getY());
@@ -555,16 +605,15 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
             nodeBox = connector.getGroup().getComputedBoundingPoints().getBoundingBox();
             if (selectionBox.contains(nodeBox))
             {
-                m_selected.add(connector);
-                box.add(nodeBox);
+                addConnector(connector, externallyConnected, box, nodeBox);
+
             }
             else
             {
                 Point2DArray intersections = Geometry.getIntersectPolyLinePath(points, connector.getLine().getPathPartList(), true);
                 if (intersections!=null && intersections.size()> 0)
                 {
-                    m_selected.add(connector);
-                    box.add(nodeBox);
+                    addConnector(connector, externallyConnected, box, nodeBox);
                 }
                 else
                 {
@@ -588,8 +637,7 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
                     intersections = Geometry.getIntersectPolyLinePath(transformedPoints, connector.getHead().getPathPartListArray().get(0), true);
                     if (intersections!=null && intersections.size()> 0)
                     {
-                        m_selected.add(connector);
-                        box.add(nodeBox);
+                        addConnector(connector, externallyConnected, box, nodeBox);
                     }
                     else
                     {
@@ -611,13 +659,26 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
                         intersections = Geometry.getIntersectPolyLinePath(transformedPoints, connector.getTail().getPathPartListArray().get(0), true);
                         if (intersections!=null && intersections.size()> 0)
                         {
-                            m_selected.add(connector);
-                            box.add(nodeBox);
+                            addConnector(connector, externallyConnected, box, nodeBox);
                         }
                     }
                 }
             }
         }
+    }
+
+    private void addConnector(WiresConnector connector, boolean externallyCoupled, BoundingBox box, BoundingBox nodeBox)
+    {
+        if (!externallyCoupled)
+        {
+            m_selected.add(connector);
+            box.add(nodeBox);
+        }
+        else
+        {
+            m_selected.addExternallyConnected(connector);
+        }
+
     }
 
     private void destroySelectionRectangle()
