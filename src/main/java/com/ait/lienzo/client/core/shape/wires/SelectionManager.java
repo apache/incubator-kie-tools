@@ -385,6 +385,7 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
         public void selected(WiresShape shape, AbstractNodeMouseEvent<MouseEvent<?>, ?> event)
         {
             selectionGroup = false;
+
             if (m_shapes.contains(shape))
             {
                 if (m_shapes.size() == 1)

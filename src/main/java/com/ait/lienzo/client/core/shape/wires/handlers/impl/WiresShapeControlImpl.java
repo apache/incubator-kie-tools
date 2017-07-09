@@ -110,6 +110,10 @@ public class WiresShapeControlImpl implements WiresShapeControl
 
     public static  WiresConnector[] collectionSpecialConnectors(WiresShape shape)
     {
+        if (shape.getMagnets() == null)
+        {
+            return null;
+        }
         Map<String, WiresConnector> connectors = new HashMap<String, WiresConnector>();
         collectionSpecialConnectors(shape, connectors);
         WiresConnector[] connectorsWithSpecialConnections = connectors.values().toArray(new WiresConnector[connectors.size()]);
