@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.enterprise.concurrent.ManagedExecutorService;
+import java.util.concurrent.ExecutorService;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
@@ -58,6 +58,7 @@ import org.uberfire.backend.server.VFSLockServiceImpl;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.concurrent.Managed;
 import org.uberfire.ext.editor.commons.backend.service.helper.CopyHelper;
 import org.uberfire.ext.editor.commons.backend.service.helper.RenameHelper;
 import org.uberfire.ext.editor.commons.service.CopyService;
@@ -140,7 +141,8 @@ public class ExplorerServiceImpl
     private AuthorizationManager authorizationManager;
 
     @Inject
-    private ManagedExecutorService executorService;
+    @Managed
+    private ExecutorService executorService;
 
     private XStream xs = new XStream();
 

@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.inject.Instance;
 
 import org.apache.commons.io.FileUtils;
@@ -221,15 +221,10 @@ public abstract class BaseLibraryIndexingTest {
                 config = configBuilder.build();
             }
 
-            ManagedExecutorService executorService = mock(ManagedExecutorService.class);
-            doAnswer(invocationOnMock -> {
-                Executors.newCachedThreadPool(new DescriptiveThreadFactory())
-                        .execute(invocationOnMock.getArgumentAt(0,
-                                                                Runnable.class));
-                return null;
-            }).when(executorService).execute(any());
+            ExecutorService executorService = Executors.newCachedThreadPool(new DescriptiveThreadFactory());
 
-            ioService = new IOServiceIndexedImpl(config.getIndexEngine(),executorService);
+            ioService = new IOServiceIndexedImpl(config.getIndexEngine(),
+                                                 executorService);
 
             final LibraryIndexer indexer = new LibraryIndexer(new LibraryAssetTypeDefinition());
             IndexersFactory.clear();

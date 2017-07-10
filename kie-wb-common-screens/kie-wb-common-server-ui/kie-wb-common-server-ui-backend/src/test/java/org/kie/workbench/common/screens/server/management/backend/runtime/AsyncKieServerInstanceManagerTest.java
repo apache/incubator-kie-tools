@@ -20,21 +20,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.event.Event;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.server.api.model.KieContainerStatus;
-import org.kie.server.api.model.KieScannerStatus;
 import org.kie.server.api.model.Message;
 import org.kie.server.api.model.ReleaseId;
 import org.kie.server.api.model.Severity;
@@ -43,24 +41,17 @@ import org.kie.server.controller.api.model.runtime.ServerInstanceKey;
 import org.kie.server.controller.api.model.spec.Capability;
 import org.kie.server.controller.api.model.spec.ContainerConfig;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
-import org.kie.server.controller.api.model.spec.ProcessConfig;
-import org.kie.server.controller.api.model.spec.RuleConfig;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.model.spec.ServerTemplateKey;
 import org.kie.server.controller.api.service.NotificationService;
-import org.kie.server.controller.impl.KieServerInstanceManager;
-import org.kie.server.controller.impl.storage.InMemoryKieServerTemplateStorage;
 import org.kie.workbench.common.screens.server.management.model.ContainerRuntimeOperation;
 import org.kie.workbench.common.screens.server.management.model.ContainerRuntimeState;
 import org.kie.workbench.common.screens.server.management.model.ContainerUpdateEvent;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AsyncKieServerInstanceManagerTest {
@@ -80,13 +71,12 @@ public class AsyncKieServerInstanceManagerTest {
     private Event<ContainerUpdateEvent> containerUpdateEvent = new EventSourceMock<ContainerUpdateEvent>() {
 
         @Override
-        public void fire( ContainerUpdateEvent event ) {
+        public void fire(ContainerUpdateEvent event) {
             receivedEvents.add(event);
         }
-
     };
 
-    private ManagedExecutorService executor = new ManagedExecutorService() {
+    private ExecutorService executor = new ExecutorService() {
         @Override
         public void shutdown() {
 
@@ -169,22 +159,27 @@ public class AsyncKieServerInstanceManagerTest {
 
         containerSpec = new ContainerSpec();
         containerSpec.setId("test container");
-        containerSpec.setServerTemplateKey(new ServerTemplateKey(serverTemplate.getId(), serverTemplate.getName()));
-        containerSpec.setReleasedId(new ReleaseId("org.kie", "kie-server-kjar", "1.0"));
+        containerSpec.setServerTemplateKey(new ServerTemplateKey(serverTemplate.getId(),
+                                                                 serverTemplate.getName()));
+        containerSpec.setReleasedId(new ReleaseId("org.kie",
+                                                  "kie-server-kjar",
+                                                  "1.0"));
         containerSpec.setStatus(KieContainerStatus.STOPPED);
         containerSpec.setConfigs(new HashMap<Capability, ContainerConfig>());
 
         serverTemplate.addContainerSpec(containerSpec);
 
-
-        this.kieServerInstanceManager = new AsyncKieServerInstanceManager(notificationService, containerUpdateEvent,executor) {
+        this.kieServerInstanceManager = new AsyncKieServerInstanceManager(notificationService,
+                                                                          containerUpdateEvent,
+                                                                          executor) {
             @Override
-            protected List<Container> callRemoteKieServerOperation(ServerTemplate serverTemplate, ContainerSpec containerSpec, RemoteKieServerOperation operation) {
+            protected List<Container> callRemoteKieServerOperation(ServerTemplate serverTemplate,
+                                                                   ContainerSpec containerSpec,
+                                                                   RemoteKieServerOperation operation) {
                 return returnedContainers;
             }
         };
         this.kieServerInstanceManager.setExecutor(executor);
-
     }
 
     @Test
@@ -264,124 +259,178 @@ public class AsyncKieServerInstanceManagerTest {
 
     private void testContainerOperationSuccess(ContainerRuntimeOperation operation) {
         List<Message> messages = new ArrayList<Message>();
-        returnedContainers.addAll(createContainers(KieContainerStatus.STARTED, messages, 1));
+        returnedContainers.addAll(createContainers(KieContainerStatus.STARTED,
+                                                   messages,
+                                                   1));
 
         switch (operation) {
             case STOP_CONTAINER:
-                this.kieServerInstanceManager.stopContainer(serverTemplate, containerSpec);
+                this.kieServerInstanceManager.stopContainer(serverTemplate,
+                                                            containerSpec);
                 break;
             case START_CONTAINER:
-                this.kieServerInstanceManager.startContainer(serverTemplate, containerSpec);
+                this.kieServerInstanceManager.startContainer(serverTemplate,
+                                                             containerSpec);
                 break;
             case UPGRADE_CONTAINER:
-                this.kieServerInstanceManager.upgradeContainer(serverTemplate, containerSpec);
+                this.kieServerInstanceManager.upgradeContainer(serverTemplate,
+                                                               containerSpec);
                 break;
             case SCAN:
-                this.kieServerInstanceManager.scanNow(serverTemplate, containerSpec);
+                this.kieServerInstanceManager.scanNow(serverTemplate,
+                                                      containerSpec);
                 break;
             case START_SCANNER:
-                this.kieServerInstanceManager.startScanner(serverTemplate, containerSpec, 10);
+                this.kieServerInstanceManager.startScanner(serverTemplate,
+                                                           containerSpec,
+                                                           10);
                 break;
             case STOP_SCANNER:
-                this.kieServerInstanceManager.stopScanner(serverTemplate, containerSpec);
+                this.kieServerInstanceManager.stopScanner(serverTemplate,
+                                                          containerSpec);
                 break;
         }
 
-
         assertFalse(receivedEvents.isEmpty());
-        assertEquals(1, receivedEvents.size());
+        assertEquals(1,
+                     receivedEvents.size());
 
         ContainerUpdateEvent updateEvent = receivedEvents.get(0);
-        assertContainerUpdateEvent(updateEvent, ContainerRuntimeState.ONLINE, 0);
+        assertContainerUpdateEvent(updateEvent,
+                                   ContainerRuntimeState.ONLINE,
+                                   0);
     }
 
     private void testContainerOperationFailure(ContainerRuntimeOperation operation) {
         List<Message> messages = new ArrayList<Message>();
-        messages.add(new Message(Severity.ERROR, "No kmodule found"));
-        returnedContainers.addAll(createContainers(KieContainerStatus.FAILED, messages, 1));
+        messages.add(new Message(Severity.ERROR,
+                                 "No kmodule found"));
+        returnedContainers.addAll(createContainers(KieContainerStatus.FAILED,
+                                                   messages,
+                                                   1));
 
         switch (operation) {
             case STOP_CONTAINER:
-                this.kieServerInstanceManager.stopContainer(serverTemplate, containerSpec);
+                this.kieServerInstanceManager.stopContainer(serverTemplate,
+                                                            containerSpec);
                 break;
             case START_CONTAINER:
-                this.kieServerInstanceManager.startContainer(serverTemplate, containerSpec);
+                this.kieServerInstanceManager.startContainer(serverTemplate,
+                                                             containerSpec);
                 break;
             case UPGRADE_CONTAINER:
-                this.kieServerInstanceManager.upgradeContainer(serverTemplate, containerSpec);
+                this.kieServerInstanceManager.upgradeContainer(serverTemplate,
+                                                               containerSpec);
                 break;
             case SCAN:
-                this.kieServerInstanceManager.scanNow(serverTemplate, containerSpec);
+                this.kieServerInstanceManager.scanNow(serverTemplate,
+                                                      containerSpec);
                 break;
             case START_SCANNER:
-                this.kieServerInstanceManager.startScanner(serverTemplate, containerSpec, 10);
+                this.kieServerInstanceManager.startScanner(serverTemplate,
+                                                           containerSpec,
+                                                           10);
                 break;
             case STOP_SCANNER:
-                this.kieServerInstanceManager.stopScanner(serverTemplate, containerSpec);
+                this.kieServerInstanceManager.stopScanner(serverTemplate,
+                                                          containerSpec);
                 break;
         }
 
         assertFalse(receivedEvents.isEmpty());
-        assertEquals(1, receivedEvents.size());
+        assertEquals(1,
+                     receivedEvents.size());
 
         ContainerUpdateEvent updateEvent = receivedEvents.get(0);
-        assertContainerUpdateEvent(updateEvent, ContainerRuntimeState.OFFLINE, 1);
+        assertContainerUpdateEvent(updateEvent,
+                                   ContainerRuntimeState.OFFLINE,
+                                   1);
     }
-
 
     private void testContainerOperationPartialFailure(ContainerRuntimeOperation operation) {
         List<Message> messages = new ArrayList<Message>();
-        messages.add(new Message(Severity.ERROR, "No kmodule found"));
-        returnedContainers.addAll(createContainers(KieContainerStatus.FAILED, messages, 1));
+        messages.add(new Message(Severity.ERROR,
+                                 "No kmodule found"));
+        returnedContainers.addAll(createContainers(KieContainerStatus.FAILED,
+                                                   messages,
+                                                   1));
 
         messages.clear();
-        returnedContainers.addAll(createContainers(KieContainerStatus.STARTED, messages, 1));
+        returnedContainers.addAll(createContainers(KieContainerStatus.STARTED,
+                                                   messages,
+                                                   1));
 
         switch (operation) {
             case STOP_CONTAINER:
-                this.kieServerInstanceManager.stopContainer(serverTemplate, containerSpec);
+                this.kieServerInstanceManager.stopContainer(serverTemplate,
+                                                            containerSpec);
                 break;
             case START_CONTAINER:
-                this.kieServerInstanceManager.startContainer(serverTemplate, containerSpec);
+                this.kieServerInstanceManager.startContainer(serverTemplate,
+                                                             containerSpec);
                 break;
             case UPGRADE_CONTAINER:
-                this.kieServerInstanceManager.upgradeContainer(serverTemplate, containerSpec);
+                this.kieServerInstanceManager.upgradeContainer(serverTemplate,
+                                                               containerSpec);
                 break;
             case SCAN:
-                this.kieServerInstanceManager.scanNow(serverTemplate, containerSpec);
+                this.kieServerInstanceManager.scanNow(serverTemplate,
+                                                      containerSpec);
                 break;
             case START_SCANNER:
-                this.kieServerInstanceManager.startScanner(serverTemplate, containerSpec, 10);
+                this.kieServerInstanceManager.startScanner(serverTemplate,
+                                                           containerSpec,
+                                                           10);
                 break;
             case STOP_SCANNER:
-                this.kieServerInstanceManager.stopScanner(serverTemplate, containerSpec);
+                this.kieServerInstanceManager.stopScanner(serverTemplate,
+                                                          containerSpec);
                 break;
         }
 
         assertFalse(receivedEvents.isEmpty());
-        assertEquals(1, receivedEvents.size());
+        assertEquals(1,
+                     receivedEvents.size());
 
         ContainerUpdateEvent updateEvent = receivedEvents.get(0);
-        assertContainerUpdateEvent(updateEvent, ContainerRuntimeState.PARTIAL_ONLINE, 1);
+        assertContainerUpdateEvent(updateEvent,
+                                   ContainerRuntimeState.PARTIAL_ONLINE,
+                                   1);
     }
 
     /*
      * helper methods
      */
 
-    protected void assertContainerUpdateEvent(ContainerUpdateEvent updateEvent, ContainerRuntimeState state, int failedInstances) {
-        assertEquals(state, updateEvent.getContainerRuntimeState());
-        assertEquals(failedInstances, updateEvent.getFailedServerInstances().size());
+    protected void assertContainerUpdateEvent(ContainerUpdateEvent updateEvent,
+                                              ContainerRuntimeState state,
+                                              int failedInstances) {
+        assertEquals(state,
+                     updateEvent.getContainerRuntimeState());
+        assertEquals(failedInstances,
+                     updateEvent.getFailedServerInstances().size());
         assertNotNull(updateEvent.getContainerSpec());
-        assertEquals(containerSpec.getId(), updateEvent.getContainerSpec().getId());
+        assertEquals(containerSpec.getId(),
+                     updateEvent.getContainerSpec().getId());
         assertNotNull(updateEvent.getServerTemplateKey());
-        assertEquals(serverTemplate.getId(), updateEvent.getServerTemplateKey().getId());
+        assertEquals(serverTemplate.getId(),
+                     updateEvent.getServerTemplateKey().getId());
     }
 
-    protected List<Container> createContainers(KieContainerStatus status, List<Message> messages, int instances) {
+    protected List<Container> createContainers(KieContainerStatus status,
+                                               List<Message> messages,
+                                               int instances) {
         List<Container> containerList = new ArrayList<Container>();
         for (int i = 0; i < instances; i++) {
-            Container container = new Container("c" + i, "name"+i, new ServerInstanceKey(serverTemplate.getId(), serverTemplate.getName(), serverTemplate.getId(), "http://testurl.com"), messages, null, "");
+            Container container = new Container("c" + i,
+                                                "name" + i,
+                                                new ServerInstanceKey(serverTemplate.getId(),
+                                                                      serverTemplate.getName(),
+                                                                      serverTemplate.getId(),
+                                                                      "http://testurl.com"),
+                                                messages,
+                                                null,
+                                                "");
             container.setStatus(status);
 
             containerList.add(container);
@@ -389,5 +438,4 @@ public class AsyncKieServerInstanceManagerTest {
 
         return containerList;
     }
-
 }

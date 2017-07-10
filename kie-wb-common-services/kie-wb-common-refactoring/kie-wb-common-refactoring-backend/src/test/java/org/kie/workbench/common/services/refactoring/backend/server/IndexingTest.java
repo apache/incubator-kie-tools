@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.enterprise.concurrent.ManagedExecutorService;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.analysis.Analyzer;
@@ -169,13 +169,7 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
                 config = configBuilder.build();
             }
 
-            ManagedExecutorService executorService = mock(ManagedExecutorService.class);
-            doAnswer(invocationOnMock -> {
-                Executors.newCachedThreadPool(new DescriptiveThreadFactory())
-                        .execute(invocationOnMock.getArgumentAt(0,
-                                                                Runnable.class));
-                return null;
-            }).when(executorService).execute(any());
+            ExecutorService executorService = Executors.newCachedThreadPool(new DescriptiveThreadFactory());
 
             ioService = new IOServiceIndexedImpl(config.getIndexEngine(),
                                                  executorService);

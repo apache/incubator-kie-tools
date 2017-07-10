@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
@@ -78,176 +77,172 @@ public class ResourceChangeIncrementalBuilderTest extends BuilderTestBase {
     @Before
     public void setUp() throws Exception {
         //Define mandatory properties
-        List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
+        List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration(ConfigType.GLOBAL);
         boolean globalSettingsDefined = false;
-        for ( ConfigGroup globalConfigGroup : globalConfigGroups ) {
-            if ( GLOBAL_SETTINGS.equals( globalConfigGroup.getName() ) ) {
+        for (ConfigGroup globalConfigGroup : globalConfigGroups) {
+            if (GLOBAL_SETTINGS.equals(globalConfigGroup.getName())) {
                 globalSettingsDefined = true;
                 break;
             }
         }
-        if ( !globalSettingsDefined ) {
-            configurationService.addConfiguration( getGlobalConfiguration() );
+        if (!globalSettingsDefined) {
+            configurationService.addConfiguration(getGlobalConfiguration());
         }
     }
 
     private ConfigGroup getGlobalConfiguration() {
         //Global Configurations used by many of Drools Workbench editors
-        final ConfigGroup group = configurationFactory.newConfigGroup( ConfigType.GLOBAL,
-                                                                       GLOBAL_SETTINGS,
-                                                                       "" );
-        group.addConfigItem( configurationFactory.newConfigItem( "build.enable-incremental",
-                                                                 "true" ) );
+        final ConfigGroup group = configurationFactory.newConfigGroup(ConfigType.GLOBAL,
+                                                                      GLOBAL_SETTINGS,
+                                                                      "");
+        group.addConfigItem(configurationFactory.newConfigItem("build.enable-incremental",
+                                                               "true"));
         return group;
     }
 
     @Test
     public void testResourceAdded() throws Exception {
-        final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/add.drl" );
-        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
-        final Path resourcePath = paths.convert( nioResourcePath );
+        final URL resourceUrl = this.getClass().getResource("/BuildChangeListenerRepo/src/main/resources/add.drl");
+        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath(resourceUrl.toURI());
+        final Path resourcePath = paths.convert(nioResourcePath);
 
         //Force full build before attempting incremental changes
-        final KieProject project = projectService.resolveProject( resourcePath );
-        final BuildResults buildResults = buildService.build( project );
-        assertNotNull( buildResults );
-        assertEquals( 0,
-                      buildResults.getErrorMessages().size() );
-        assertEquals( 1,
-                      buildResults.getInformationMessages().size() );
+        final KieProject project = projectService.resolveProject(resourcePath);
+        final BuildResults buildResults = buildService.build(project);
+        assertNotNull(buildResults);
+        assertEquals(0,
+                     buildResults.getErrorMessages().size());
+        assertEquals(1,
+                     buildResults.getInformationMessages().size());
 
         //Perform incremental build
-        buildChangeListener.addResource( resourcePath );
+        buildChangeListener.addResource(resourcePath);
         waitForIncrementalBuildResults(buildResultsObserver);
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
-        assertNotNull( incrementalBuildResults );
-        assertEquals( 0,
-                      incrementalBuildResults.getAddedMessages().size() );
-        assertEquals( 0,
-                      incrementalBuildResults.getRemovedMessages().size() );
-
+        assertNotNull(incrementalBuildResults);
+        assertEquals(0,
+                     incrementalBuildResults.getAddedMessages().size());
+        assertEquals(0,
+                     incrementalBuildResults.getRemovedMessages().size());
     }
 
     @Test
     public void testResourceUpdated() throws Exception {
-        final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/update.drl" );
-        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
-        final Path resourcePath = paths.convert( nioResourcePath );
+        final URL resourceUrl = this.getClass().getResource("/BuildChangeListenerRepo/src/main/resources/update.drl");
+        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath(resourceUrl.toURI());
+        final Path resourcePath = paths.convert(nioResourcePath);
 
         //Force full build before attempting incremental changes
-        final KieProject project = projectService.resolveProject( resourcePath );
-        final BuildResults buildResults = buildService.build( project );
-        assertNotNull( buildResults );
-        assertEquals( 0,
-                      buildResults.getErrorMessages().size() );
-        assertEquals( 1,
-                      buildResults.getInformationMessages().size() );
+        final KieProject project = projectService.resolveProject(resourcePath);
+        final BuildResults buildResults = buildService.build(project);
+        assertNotNull(buildResults);
+        assertEquals(0,
+                     buildResults.getErrorMessages().size());
+        assertEquals(1,
+                     buildResults.getInformationMessages().size());
 
         //Perform incremental build
-        buildChangeListener.updateResource( resourcePath );
+        buildChangeListener.updateResource(resourcePath);
         waitForIncrementalBuildResults(buildResultsObserver);
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
-        assertNotNull( incrementalBuildResults );
-        assertEquals( 0,
-                      incrementalBuildResults.getAddedMessages().size() );
-        assertEquals( 0,
-                      incrementalBuildResults.getRemovedMessages().size() );
-
+        assertNotNull(incrementalBuildResults);
+        assertEquals(0,
+                     incrementalBuildResults.getAddedMessages().size());
+        assertEquals(0,
+                     incrementalBuildResults.getRemovedMessages().size());
     }
 
     @Test
     public void testNonPackageResourceUpdated() throws Exception {
         //This tests changes to a resource that is neither pom.xml nor kmodule.xml nor within a Package
-        final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/project.imports" );
-        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
-        final Path resourcePath = paths.convert( nioResourcePath );
+        final URL resourceUrl = this.getClass().getResource("/BuildChangeListenerRepo/project.imports");
+        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath(resourceUrl.toURI());
+        final Path resourcePath = paths.convert(nioResourcePath);
 
         //Force full build before attempting incremental changes
-        final KieProject project = projectService.resolveProject( resourcePath );
-        final BuildResults buildResults = buildService.build( project );
-        assertNotNull( buildResults );
-        assertEquals( 0,
-                      buildResults.getErrorMessages().size() );
-        assertEquals( 1,
-                      buildResults.getInformationMessages().size() );
+        final KieProject project = projectService.resolveProject(resourcePath);
+        final BuildResults buildResults = buildService.build(project);
+        assertNotNull(buildResults);
+        assertEquals(0,
+                     buildResults.getErrorMessages().size());
+        assertEquals(1,
+                     buildResults.getInformationMessages().size());
 
         //Perform incremental build (Without a full Build first)
-        buildChangeListener.updateResource( resourcePath );
+        buildChangeListener.updateResource(resourcePath);
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
-        assertNull( incrementalBuildResults );
-
+        assertNull(incrementalBuildResults);
     }
 
     @Test
     public void testPomResourceUpdated() throws Exception {
         //This tests changes pom.xml
-        final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/pom.xml" );
-        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
-        final Path resourcePath = paths.convert( nioResourcePath );
+        final URL resourceUrl = this.getClass().getResource("/BuildChangeListenerRepo/pom.xml");
+        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath(resourceUrl.toURI());
+        final Path resourcePath = paths.convert(nioResourcePath);
 
         //Force full build before attempting incremental changes
-        final KieProject project = projectService.resolveProject( resourcePath );
-        final BuildResults buildResults = buildService.build( project );
-        assertNotNull( buildResults );
-        assertEquals( 0,
-                      buildResults.getErrorMessages().size() );
-        assertEquals( 1,
-                      buildResults.getInformationMessages().size() );
+        final KieProject project = projectService.resolveProject(resourcePath);
+        final BuildResults buildResults = buildService.build(project);
+        assertNotNull(buildResults);
+        assertEquals(0,
+                     buildResults.getErrorMessages().size());
+        assertEquals(1,
+                     buildResults.getInformationMessages().size());
 
         //Perform incremental build (Without a full Build first)
-        buildChangeListener.updateResource( resourcePath );
+        buildChangeListener.updateResource(resourcePath);
 
         waitForBuildResults(buildResultsObserver);
         final BuildResults buildResults2 = buildResultsObserver.getBuildResults();
-        assertNotNull( buildResults2 );
-        assertEquals( 0,
-                      buildResults.getErrorMessages().size() );
-        assertEquals( 1,
-                      buildResults.getInformationMessages().size() );
+        assertNotNull(buildResults2);
+        assertEquals(0,
+                     buildResults.getErrorMessages().size());
+        assertEquals(1,
+                     buildResults.getInformationMessages().size());
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
-        assertNull( incrementalBuildResults );
+        assertNull(incrementalBuildResults);
     }
 
     @Test
     public void testResourceDeleted() throws Exception {
-        final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/delete.drl" );
-        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
-        final Path resourcePath = paths.convert( nioResourcePath );
+        final URL resourceUrl = this.getClass().getResource("/BuildChangeListenerRepo/src/main/resources/delete.drl");
+        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath(resourceUrl.toURI());
+        final Path resourcePath = paths.convert(nioResourcePath);
 
         //Force full build before attempting incremental changes
-        final KieProject project = projectService.resolveProject( resourcePath );
-        final BuildResults buildResults = buildService.build( project );
-        assertNotNull( buildResults );
-        assertEquals( 0,
-                      buildResults.getErrorMessages().size() );
-        assertEquals( 1,
-                      buildResults.getInformationMessages().size() );
+        final KieProject project = projectService.resolveProject(resourcePath);
+        final BuildResults buildResults = buildService.build(project);
+        assertNotNull(buildResults);
+        assertEquals(0,
+                     buildResults.getErrorMessages().size());
+        assertEquals(1,
+                     buildResults.getInformationMessages().size());
 
         //Perform incremental build
-        buildChangeListener.deleteResource( resourcePath );
+        buildChangeListener.deleteResource(resourcePath);
         waitForIncrementalBuildResults(buildResultsObserver);
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
-        assertNotNull( incrementalBuildResults );
-        assertEquals( 0,
-                      incrementalBuildResults.getAddedMessages().size() );
-        assertEquals( 0,
-                      incrementalBuildResults.getRemovedMessages().size() );
-
+        assertNotNull(incrementalBuildResults);
+        assertEquals(0,
+                     incrementalBuildResults.getAddedMessages().size());
+        assertEquals(0,
+                     incrementalBuildResults.getRemovedMessages().size());
     }
 
     @Test
     public void testBatchResourceChanges() throws Exception {
-        final URL resourceUrl1 = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/add.drl" );
-        final org.uberfire.java.nio.file.Path nioResourcePath1 = fs.getPath( resourceUrl1.toURI() );
-        final Path resourcePath1 = paths.convert( nioResourcePath1 );
+        final URL resourceUrl1 = this.getClass().getResource("/BuildChangeListenerRepo/src/main/resources/add.drl");
+        final org.uberfire.java.nio.file.Path nioResourcePath1 = fs.getPath(resourceUrl1.toURI());
+        final Path resourcePath1 = paths.convert(nioResourcePath1);
 
-        final URL resourceUrl2 = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/update.drl" );
-        final org.uberfire.java.nio.file.Path nioResourcePath2 = fs.getPath( resourceUrl2.toURI() );
-        final Path resourcePath2 = paths.convert( nioResourcePath2 );
+        final URL resourceUrl2 = this.getClass().getResource("/BuildChangeListenerRepo/src/main/resources/update.drl");
+        final org.uberfire.java.nio.file.Path nioResourcePath2 = fs.getPath(resourceUrl2.toURI());
+        final Path resourcePath2 = paths.convert(nioResourcePath2);
 
-        final URL resourceUrl3 = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/delete.drl" );
-        final org.uberfire.java.nio.file.Path nioResourcePath3 = fs.getPath( resourceUrl3.toURI() );
-        final Path resourcePath3 = paths.convert( nioResourcePath3 );
+        final URL resourceUrl3 = this.getClass().getResource("/BuildChangeListenerRepo/src/main/resources/delete.drl");
+        final org.uberfire.java.nio.file.Path nioResourcePath3 = fs.getPath(resourceUrl3.toURI());
+        final Path resourcePath3 = paths.convert(nioResourcePath3);
 
 //        final Set<ResourceChange> batch = new HashSet<ResourceChange>();
 //        batch.add( new ResourceChange( ChangeType.ADD,
@@ -266,36 +261,38 @@ public class ResourceChangeIncrementalBuilderTest extends BuilderTestBase {
 //                                                            new IdentityImpl( "user",
 //                                                                              Collections.<Role>emptyList() ) ) ) );
         final Map<Path, Collection<ResourceChange>> batch = new HashMap<Path, Collection<ResourceChange>>();
-        batch.put( resourcePath1, new ArrayList<ResourceChange>() {{
-            add( new ResourceAdded( "" ) );
-        }} );
+        batch.put(resourcePath1,
+                  new ArrayList<ResourceChange>() {{
+                      add(new ResourceAdded(""));
+                  }});
 
-        batch.put( resourcePath2, new ArrayList<ResourceChange>() {{
-            add( new ResourceUpdated( "" ) );
-        }} );
+        batch.put(resourcePath2,
+                  new ArrayList<ResourceChange>() {{
+                      add(new ResourceUpdated(""));
+                  }});
 
-        batch.put( resourcePath3, new ArrayList<ResourceChange>() {{
-            add( new ResourceUpdated( "" ) );
-        }} );
+        batch.put(resourcePath3,
+                  new ArrayList<ResourceChange>() {{
+                      add(new ResourceUpdated(""));
+                  }});
 
         //Force full build before attempting incremental changes
-        final KieProject project = projectService.resolveProject( resourcePath1 );
-        final BuildResults buildResults = buildService.build( project );
-        assertNotNull( buildResults );
-        assertEquals( 0,
-                      buildResults.getErrorMessages().size() );
-        assertEquals( 1,
-                      buildResults.getInformationMessages().size() );
+        final KieProject project = projectService.resolveProject(resourcePath1);
+        final BuildResults buildResults = buildService.build(project);
+        assertNotNull(buildResults);
+        assertEquals(0,
+                     buildResults.getErrorMessages().size());
+        assertEquals(1,
+                     buildResults.getInformationMessages().size());
 
         //Perform incremental build
-        buildChangeListener.batchResourceChanges( batch );
+        buildChangeListener.batchResourceChanges(batch);
         waitForIncrementalBuildResults(buildResultsObserver);
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
-        assertNotNull( incrementalBuildResults );
-        assertEquals( 0,
-                      incrementalBuildResults.getAddedMessages().size() );
-        assertEquals( 0,
-                      incrementalBuildResults.getRemovedMessages().size() );
+        assertNotNull(incrementalBuildResults);
+        assertEquals(0,
+                     incrementalBuildResults.getAddedMessages().size());
+        assertEquals(0,
+                     incrementalBuildResults.getRemovedMessages().size());
     }
-
 }

@@ -16,8 +16,8 @@
 
 package org.kie.workbench.screens.workbench.backend.impl;
 
+import java.util.concurrent.ExecutorService;
 import javax.annotation.PostConstruct;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
@@ -32,6 +32,7 @@ import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.kie.workbench.screens.workbench.backend.ApplicationScopedProducer;
 import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
+import org.uberfire.commons.concurrent.Unmanaged;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
@@ -58,7 +59,7 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
     private IOWatchServiceNonDotImpl watchService;
     private AuthenticationService authenticationService;
     private DefaultIndexEngineObserver defaultIndexEngineObserver;
-    private ManagedExecutorService managedExecutorService;
+    private ExecutorService executorService;
 
     public DefaultApplicationScopedProducer() {
         if (System.getProperty("org.uberfire.watcher.autostart") == null) {
@@ -78,14 +79,14 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
                                             IOWatchServiceNonDotImpl watchService,
                                             AuthenticationService authenticationService,
                                             DefaultIndexEngineObserver defaultIndexEngineObserver,
-                                            ManagedExecutorService managedExecutorService) {
+                                            @Unmanaged ExecutorService executorService) {
         this();
         this.config = config;
         this.clusterServiceFactory = clusterServiceFactory;
         this.watchService = watchService;
         this.authenticationService = authenticationService;
         this.defaultIndexEngineObserver = defaultIndexEngineObserver;
-        this.managedExecutorService = managedExecutorService;
+        this.executorService = executorService;
     }
 
     @PostConstruct
@@ -93,7 +94,7 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
         final IOService service = new IOServiceIndexedImpl(watchService,
                                                            config.getIndexEngine(),
                                                            defaultIndexEngineObserver,
-                                                           managedExecutorService,
+                                                           executorService,
                                                            DublinCoreView.class,
                                                            VersionAttributeView.class,
                                                            OtherMetaView.class);
@@ -104,7 +105,7 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
             ioService = new IOServiceClusterImpl(service,
                                                  clusterServiceFactory,
                                                  false,
-                                                 managedExecutorService);
+                                                 executorService);
         }
 
         this.ioSearchService = new IOSearchServiceImpl(config.getSearchIndex(),
