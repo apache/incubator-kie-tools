@@ -444,6 +444,10 @@ public class WiresShapeControlImpl implements WiresShapeControl
 
     public static void updateSpecialConnections(WiresConnector[] connectors)
     {
+        if (connectors == null)
+        {
+            return;
+        }
         for( WiresConnector connector : connectors)
         {
             connector.updateForSpecialConnections();
