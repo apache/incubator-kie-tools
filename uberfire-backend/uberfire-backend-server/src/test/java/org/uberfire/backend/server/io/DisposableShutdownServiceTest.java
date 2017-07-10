@@ -19,7 +19,7 @@ package org.uberfire.backend.server.io;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import javax.enterprise.concurrent.ManagedExecutorService;
+import java.util.concurrent.ExecutorService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,15 +44,17 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
         FileSystemProviders.class})
 public class DisposableShutdownServiceTest {
 
-    private ManagedExecutorService managedExecutorService;
+    private ExecutorService executorService;
+    private ExecutorService unmanagedExecutorService;
     private DisposableShutdownService disposableShutdownService;
 
     @Before
-    public void setUp(){
+    public void setUp() {
 
-        managedExecutorService = mock(ManagedExecutorService.class);
+        executorService = mock(ExecutorService.class);
+        unmanagedExecutorService = mock(ExecutorService.class);
 
-        disposableShutdownService = new DisposableShutdownService(this.managedExecutorService);
+        disposableShutdownService = new DisposableShutdownService(this.executorService,this.unmanagedExecutorService);
 
         mockStatic(PriorityDisposableRegistry.class);
         mockStatic(FileSystemProviders.class);
@@ -60,7 +62,6 @@ public class DisposableShutdownServiceTest {
 
     @Test
     public void testGeneralStatic() {
-
 
         final JGitFileSystemProvider disposableProvider = mock(JGitFileSystemProvider.class);
 
@@ -72,8 +73,11 @@ public class DisposableShutdownServiceTest {
         verify(disposableProvider,
                times(1)).dispose();
 
+        verify(executorService,
+               times(1)).shutdown();
 
-        verify(managedExecutorService,times(1)).shutdown();
+        verify(unmanagedExecutorService,
+               times(1)).shutdown();
 
         PowerMockito.verifyStatic();
         PriorityDisposableRegistry.clear();

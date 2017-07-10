@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.enterprise.concurrent.ManagedExecutorService;
 
 import org.apache.sshd.common.Session;
 import org.apache.sshd.common.channel.ChannelOutputStream;
@@ -61,12 +60,13 @@ public abstract class BaseGitCommand implements Command,
 
     public BaseGitCommand(final String command,
                           final FileSystemAuthorizer fileSystemAuthorizer,
-                          final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver) {
+                          final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver,
+                          final ExecutorService executorService) {
         this.command = command;
         this.fileSystemAuthorizer = fileSystemAuthorizer;
         this.repositoryName = buildRepositoryName(command);
         this.repositoryResolver = repositoryResolver;
-        this.executorService = Executors.newCachedThreadPool(new DescriptiveThreadFactory());
+        this.executorService = executorService;
     }
 
     private String buildRepositoryName(String command) {

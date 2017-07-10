@@ -19,6 +19,7 @@ package org.uberfire.ext.metadata.io;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
+import java.util.concurrent.Executors;
 
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
@@ -27,6 +28,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.junit.Test;
+import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.engine.Index;
@@ -208,7 +210,7 @@ public class BatchIndexTest extends BaseIndexTest {
 
                            }
                        },
-                       new MockManagedExecutorService(),
+                       Executors.newCachedThreadPool(new DescriptiveThreadFactory()),
                        DublinCoreView.class).run(ioService().get("git://temp-repo-test/"),
                                                  () -> {
                                                      try {

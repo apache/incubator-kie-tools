@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import javax.enterprise.concurrent.ManagedExecutorService;
+import java.util.concurrent.ExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
@@ -50,6 +50,7 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
+import org.uberfire.commons.concurrent.Unmanaged;
 import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.commons.services.cdi.Startable;
 import org.uberfire.commons.services.cdi.Startup;
@@ -368,7 +369,10 @@ public class SystemConfigProducer implements Extension {
                                                                                                             ClusterServiceFactory.class,
                                                                                                             _ctx);
 
-                final ManagedExecutorService managedExecutorService = getBean(bm,ManagedExecutorService.class);
+                final ExecutorService executorService = getBean(bm,
+                                                                ExecutorService.class,
+                                                                new AnnotationLiteral<Unmanaged>() {
+                                                                });
 
                 final IOService result;
 
@@ -377,7 +381,7 @@ public class SystemConfigProducer implements Extension {
                 } else {
                     result = new IOServiceClusterImpl(new IOServiceNio2WrapperImpl(),
                                                       clusterServiceFactory,
-                                                      managedExecutorService);
+                                                      executorService);
                 }
 
                 return result;
@@ -391,8 +395,27 @@ public class SystemConfigProducer implements Extension {
         });
     }
 
-    private <T> T getBean(BeanManager bm,Class<T> clazz) {
+    private <T> T getBean(BeanManager bm,
+                          Class<T> clazz) {
         final Bean<T> bean = (Bean<T>) bm.getBeans(clazz).iterator().next();
+        return getBeanReference(bm,
+                                clazz,
+                                bean);
+    }
+
+    private <T> T getBean(BeanManager bm,
+                          Class<T> clazz,
+                          Annotation qualifier) {
+        final Bean<T> bean = (Bean<T>) bm.getBeans(clazz,
+                                                   qualifier).iterator().next();
+        return getBeanReference(bm,
+                                clazz,
+                                bean);
+    }
+
+    private <T> T getBeanReference(BeanManager bm,
+                                   Class<T> clazz,
+                                   Bean<T> bean) {
         final CreationalContext<T> creationalContext = bm.createCreationalContext(bean);
         return (T) bm.getReference(bean,
                                    clazz,

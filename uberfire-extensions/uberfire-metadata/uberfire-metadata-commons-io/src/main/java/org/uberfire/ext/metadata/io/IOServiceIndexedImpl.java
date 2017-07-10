@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import javax.enterprise.concurrent.ManagedExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,55 +70,55 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     private final List<WatchService> watchServices = new ArrayList<WatchService>();
 
     private final Observer observer;
-    private ManagedExecutorService managedExecutorService;
+    private ExecutorService executorService;
 
     public IOServiceIndexedImpl(final MetaIndexEngine indexEngine,
-                                final ManagedExecutorService managedExecutorService,
+                                final ExecutorService executorService,
                                 final Class<? extends FileAttributeView>... views) {
         this(indexEngine,
              new NOPObserver(),
-             managedExecutorService,
+             executorService,
              views);
     }
 
     public IOServiceIndexedImpl(final String id,
                                 final MetaIndexEngine indexEngine,
-                                final ManagedExecutorService managedExecutorService,
+                                final ExecutorService executorService,
                                 final Class<? extends FileAttributeView>... views) {
         this(id,
              indexEngine,
              new NOPObserver(),
-             managedExecutorService,
+             executorService,
              views);
     }
 
     public IOServiceIndexedImpl(final IOWatchService watchService,
                                 final MetaIndexEngine indexEngine,
-                                final ManagedExecutorService managedExecutorService,
+                                final ExecutorService executorService,
                                 final Class<? extends FileAttributeView>... views) {
         this(watchService,
              indexEngine,
              new NOPObserver(),
-             managedExecutorService,
+             executorService,
              views);
     }
 
     public IOServiceIndexedImpl(final String id,
                                 final IOWatchService watchService,
                                 final MetaIndexEngine indexEngine,
-                                final ManagedExecutorService managedExecutorService,
+                                final ExecutorService executorService,
                                 final Class<? extends FileAttributeView>... views) {
         this(id,
              watchService,
              indexEngine,
              new NOPObserver(),
-             managedExecutorService,
+             executorService,
              views);
     }
 
     public IOServiceIndexedImpl(final MetaIndexEngine indexEngine,
                                 final Observer observer,
-                                final ManagedExecutorService managedExecutorService,
+                                final ExecutorService executorService,
                                 final Class<? extends FileAttributeView>... views) {
         super();
         this.indexEngine = checkNotNull("indexEngine",
@@ -129,17 +128,17 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.batchIndex = new BatchIndex(indexEngine,
                                          this,
                                          observer,
-                                         managedExecutorService,
+                                         executorService,
                                          views);
         this.views = views;
 
-        this.managedExecutorService = managedExecutorService;
+        this.executorService = executorService;
     }
 
     public IOServiceIndexedImpl(final String id,
                                 final MetaIndexEngine indexEngine,
                                 final Observer observer,
-                                final ManagedExecutorService managedExecutorService,
+                                final ExecutorService executorService,
                                 final Class<? extends FileAttributeView>... views) {
         super(id);
         this.indexEngine = checkNotNull("indexEngine",
@@ -149,16 +148,16 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.batchIndex = new BatchIndex(indexEngine,
                                          this,
                                          observer,
-                                         managedExecutorService,
+                                         executorService,
                                          views);
         this.views = views;
-        this.managedExecutorService = managedExecutorService;
+        this.executorService = executorService;
     }
 
     public IOServiceIndexedImpl(final IOWatchService watchService,
                                 final MetaIndexEngine indexEngine,
                                 final Observer observer,
-                                final ManagedExecutorService managedExecutorService,
+                                final ExecutorService executorService,
                                 final Class<? extends FileAttributeView>... views) {
         super(watchService);
         this.indexEngine = checkNotNull("indexEngine",
@@ -168,18 +167,18 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.batchIndex = new BatchIndex(indexEngine,
                                          this,
                                          observer,
-                                         managedExecutorService,
+                                         executorService,
                                          views);
         this.views = views;
 
-        this.managedExecutorService = managedExecutorService;
+        this.executorService = executorService;
     }
 
     public IOServiceIndexedImpl(final String id,
                                 final IOWatchService watchService,
                                 final MetaIndexEngine indexEngine,
                                 final Observer observer,
-                                final ManagedExecutorService managedExecutorService,
+                                final ExecutorService executorService,
                                 final Class<? extends FileAttributeView>... views) {
         super(id,
               watchService);
@@ -190,11 +189,11 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.batchIndex = new BatchIndex(indexEngine,
                                          this,
                                          observer,
-                                         managedExecutorService,
+                                         executorService,
                                          views);
         this.views = views;
 
-        this.managedExecutorService = managedExecutorService;
+        this.executorService = executorService;
     }
 
     @Override
@@ -262,7 +261,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         watchedList.add(fs);
         watchServices.add(ws);
 
-        final ExecutorService defaultInstance = this.managedExecutorService;
+        final ExecutorService defaultInstance = this.executorService;
 
         defaultInstance.execute(new DescriptiveRunnable() {
             @Override

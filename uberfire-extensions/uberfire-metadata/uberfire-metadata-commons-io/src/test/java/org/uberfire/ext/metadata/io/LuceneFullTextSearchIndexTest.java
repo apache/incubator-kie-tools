@@ -17,6 +17,7 @@
 package org.uberfire.ext.metadata.io;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
 
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
@@ -26,6 +27,7 @@ import org.apache.lucene.search.WildcardQuery;
 import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.engine.Index;
@@ -57,7 +59,7 @@ public class LuceneFullTextSearchIndexTest extends BaseIndexTest {
                     .build();
 
             ioService = new IOServiceIndexedImpl(config.getIndexEngine(),
-                                                 new MockManagedExecutorService(),
+                                                 Executors.newCachedThreadPool(new DescriptiveThreadFactory()),
                                                  DublinCoreView.class,
                                                  VersionAttributeView.class);
 

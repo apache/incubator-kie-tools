@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.search.IndexSearcher;
@@ -31,6 +32,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.ext.metadata.model.KObject;
@@ -82,7 +84,7 @@ public abstract class BaseIndexTest {
                     .build();
 
             ioService = new IOServiceIndexedImpl(config.getIndexEngine(),
-                                                 new MockManagedExecutorService(),
+                                                 Executors.newCachedThreadPool(new DescriptiveThreadFactory() ),
                                                  DublinCoreView.class,
                                                  VersionAttributeView.class);
         }

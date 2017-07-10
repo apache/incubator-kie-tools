@@ -19,6 +19,7 @@ package org.uberfire.java.nio.fs.jgit.daemon.ssh;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.ExecutorService;
 import java.util.zip.Deflater;
 
 import org.eclipse.jgit.lib.Repository;
@@ -34,10 +35,12 @@ public class GitUploadCommand extends BaseGitCommand {
 
     public GitUploadCommand(final String command,
                             final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver,
-                            final FileSystemAuthorizer fileSystemAuthorizer) {
+                            final FileSystemAuthorizer fileSystemAuthorizer,
+                            final ExecutorService executorService) {
         super(command,
               fileSystemAuthorizer,
-              repositoryResolver);
+              repositoryResolver,
+              executorService);
     }
 
     @Override

@@ -17,28 +17,35 @@
 
 package org.uberfire.backend.server.cdi.workspace;
 
-import javax.enterprise.concurrent.ManagedExecutorService;
+import java.util.concurrent.ExecutorService;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.Specializes;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
-import org.uberfire.commons.concurrent.ManagedExecutorServiceProducer;
+import org.uberfire.commons.concurrent.ExecutorServiceProducer;
+import org.uberfire.commons.concurrent.Managed;
 
-public class WorkspaceManagedExecutorServiceProducer extends ManagedExecutorServiceProducer {
+public class WorkspaceExecutorServiceProducer extends ExecutorServiceProducer {
 
-    private final WorkspaceNameResolver workspaceNameResolver;
+    private WorkspaceNameResolver workspaceNameResolver;
 
     @Inject
-    public WorkspaceManagedExecutorServiceProducer(WorkspaceNameResolver workspaceNameResolver) {
+    public WorkspaceExecutorServiceProducer(WorkspaceNameResolver workspaceNameResolver) {
         this.workspaceNameResolver = workspaceNameResolver;
     }
 
     @Produces
+    @ApplicationScoped
+    @Managed
     @Specializes
     @Override
-    public ManagedExecutorService produceExecutorService(InjectionPoint injectionPoint) {
-        return new WorkspaceManagedExecutorService(workspaceNameResolver,
-                                                   this.getManagedExecutorService());
+    public ExecutorService produceExecutorService() {
+        return new WorkspaceExecutorService(workspaceNameResolver,
+                                            this.getManagedExecutorService());
+    }
+
+    protected WorkspaceNameResolver getWorkspaceNameResolver() {
+        return workspaceNameResolver;
     }
 }

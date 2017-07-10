@@ -21,16 +21,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
+import org.uberfire.commons.concurrent.ExecutorServiceProducer;
 
 import static org.junit.Assert.*;
 
 public class DaemonTest {
 
+    private final ExecutorService executorService = new ExecutorServiceProducer().produceUnmanagedExecutorService();
+
     @Test
     public void testShutdownByStop() throws Exception {
         ExecutorService executor = Executors.newCachedThreadPool();
         Daemon d = new Daemon(null,
-                              executor);
+                              executor,
+                              executorService);
         d.start();
         assertTrue(d.isRunning());
 
@@ -43,7 +47,8 @@ public class DaemonTest {
     public void testShutdownByThreadPoolTermination() throws Exception {
         ExecutorService executor = Executors.newCachedThreadPool();
         Daemon d = new Daemon(null,
-                              executor);
+                              executor,
+                              executorService);
         d.start();
         assertTrue(d.isRunning());
 

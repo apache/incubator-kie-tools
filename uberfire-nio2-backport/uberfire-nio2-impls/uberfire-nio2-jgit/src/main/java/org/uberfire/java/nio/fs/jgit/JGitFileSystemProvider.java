@@ -261,7 +261,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
      * this class during startup.
      */
     public JGitFileSystemProvider() {
-        this(new ConfigProperties(System.getProperties()));
+        this(new ConfigProperties(System.getProperties()),Executors.newCachedThreadPool(new DescriptiveThreadFactory()));
     }
 
     /**
@@ -270,7 +270,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
      * this class during startup.
      */
     public JGitFileSystemProvider(final Map<String, String> gitPrefs) {
-        this(new ConfigProperties(gitPrefs));
+        this(new ConfigProperties(gitPrefs),Executors.newCachedThreadPool(new DescriptiveThreadFactory()));
     }
 
     /**
@@ -278,8 +278,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
      * For a list of properties that affect the configuration of JGitFileSystemProvider, see the DEBUG log output of
      * this class during startup.
      */
-    public JGitFileSystemProvider(final ConfigProperties gitPrefs) {
-        this.executorService = Executors.newCachedThreadPool(new DescriptiveThreadFactory());
+    public JGitFileSystemProvider(final ConfigProperties gitPrefs,ExecutorService executorService) {
+        this.executorService = executorService;
         loadConfig(gitPrefs);
         CredentialsProvider.setDefault(new UsernamePasswordCredentialsProvider("guest",
                                                                                ""));
@@ -704,7 +704,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                             sshIdleTimeout,
                             sshAlgorithm,
                             receivePackFactory,
-                            new RepositoryResolverImpl<BaseGitCommand>());
+                            new RepositoryResolverImpl<BaseGitCommand>(),
+                            executorService);
 
         gitSSHService.start();
     }
@@ -713,7 +714,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         if (daemonService == null || !daemonService.isRunning()) {
             daemonService = new Daemon(new InetSocketAddress(daemonHostAddr,
                                                              daemonPort),
-                                       new ExecutorWrapper(executorService));
+                                       new ExecutorWrapper(executorService),
+                                       executorService);
             daemonService.setRepositoryResolver(new RepositoryResolverImpl<DaemonClient>());
             try {
                 daemonService.start();

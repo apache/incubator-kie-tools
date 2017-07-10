@@ -16,9 +16,8 @@
 
 package org.uberfire.ext.metadata.io;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.enterprise.concurrent.ManagedExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,12 +53,12 @@ public final class BatchIndex {
     private final Class<? extends FileAttributeView>[] views;
     private final AtomicBoolean indexDisposed = new AtomicBoolean(false);
     private final Observer observer;
-    private final ManagedExecutorService managedExecutorService;
+    private final ExecutorService executorService;
 
     public BatchIndex(final MetaIndexEngine indexEngine,
                       final IOService ioService,
                       final Observer observer,
-                      final ManagedExecutorService managedExecutorService,
+                      final ExecutorService executorService,
                       final Class<? extends FileAttributeView>... views) {
         this.indexEngine = checkNotNull("indexEngine",
                                         indexEngine);
@@ -69,12 +68,12 @@ public final class BatchIndex {
                                      observer);
         this.views = views;
 
-        this.managedExecutorService = managedExecutorService;
+        this.executorService = executorService;
     }
 
     public void runAsync(final FileSystem fs) {
         if (fs != null && fs.getRootDirectories().iterator().hasNext()) {
-            managedExecutorService.execute(new DescriptiveRunnable() {
+            executorService.execute(new DescriptiveRunnable() {
                 @Override
                 public String getDescription() {
                     return "FS BatchIndex [" + ((FileSystemId) fs).id() + "]";
@@ -111,7 +110,7 @@ public final class BatchIndex {
     }
 
     public void runAsync(final Path root) {
-        this.managedExecutorService.execute(new DescriptiveRunnable() {
+        this.executorService.execute(new DescriptiveRunnable() {
             @Override
             public String getDescription() {
                 return "Path BatchIndex [" + root.toString() + "]";

@@ -16,12 +16,14 @@
 
 package org.uberfire.backend.server;
 
-import javax.enterprise.concurrent.ManagedExecutorService;
+import java.util.concurrent.ExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.uberfire.backend.server.io.watch.AbstractIOWatchService;
+import org.uberfire.commons.concurrent.Managed;
+import org.uberfire.commons.concurrent.Unmanaged;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
@@ -32,7 +34,8 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 @ApplicationScoped
 public class IOWatchServiceAllImpl extends AbstractIOWatchService {
 
-    public IOWatchServiceAllImpl(){}
+    public IOWatchServiceAllImpl() {
+    }
 
     @Inject
     public IOWatchServiceAllImpl(Event<ResourceBatchChangesEvent> resourceBatchChanges,
@@ -40,14 +43,14 @@ public class IOWatchServiceAllImpl extends AbstractIOWatchService {
                                  Event<ResourceRenamedEvent> resourceRenamedEvent,
                                  Event<ResourceDeletedEvent> resourceDeletedEvent,
                                  Event<ResourceAddedEvent> resourceAddedEvent,
-                                 ManagedExecutorService managedExecutorService) {
+                                 @Unmanaged ExecutorService executorService) {
 
         super(resourceBatchChanges,
               resourceUpdatedEvent,
               resourceRenamedEvent,
               resourceDeletedEvent,
               resourceAddedEvent,
-              managedExecutorService);
+              executorService);
     }
 
     @Override

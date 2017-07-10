@@ -816,12 +816,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.jboss.spec.javax.enterprise.concurrent</groupId>
-        <artifactId>jboss-concurrency-api_1.0_spec</artifactId>
-        <version>${version.org.jboss.spec.javax.enterprise.concurrent}</version>
-      </dependency>
-
-      <dependency>
         <groupId>com.google.gwt.gwtmockito</groupId>
         <artifactId>gwtmockito</artifactId>
         <version>${version.com.google.gwt.gwtmockito}</version>

@@ -77,12 +77,13 @@ public class Daemon {
      * restarted, a new task will be submitted to this pool. When the daemon is stopped, the task completes.
      */
     public Daemon(final InetSocketAddress addr,
-                  Executor acceptThreadPool) {
+                  Executor acceptThreadPool,
+                  ExecutorService executorService) {
         myAddress = addr;
         this.acceptThreadPool = checkNotNull("acceptThreadPool",
                                              acceptThreadPool);
 
-        this.executorService = Executors.newCachedThreadPool(new DescriptiveThreadFactory());
+        this.executorService = executorService;
 
         repositoryResolver = (RepositoryResolver<DaemonClient>) RepositoryResolver.NONE;
 

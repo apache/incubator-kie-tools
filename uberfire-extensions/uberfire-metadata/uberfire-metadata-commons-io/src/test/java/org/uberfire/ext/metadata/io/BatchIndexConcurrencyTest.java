@@ -19,10 +19,12 @@ package org.uberfire.ext.metadata.io;
 import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 
 import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.ext.metadata.engine.MetaIndexEngine;
 import org.uberfire.ext.metadata.model.KCluster;
@@ -59,7 +61,7 @@ public class BatchIndexConcurrencyTest extends BaseIndexTest {
             metaIndexEngine = spy(config.getIndexEngine());
 
             ioService = new IOServiceIndexedImpl(metaIndexEngine,
-                                                 new MockManagedExecutorService(),
+                                                 Executors.newCachedThreadPool(new DescriptiveThreadFactory()),
                                                  DublinCoreView.class,
                                                  VersionAttributeView.class) {
                 @Override

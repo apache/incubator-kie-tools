@@ -26,7 +26,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -36,6 +35,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Filter;
 import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.concurrent.Managed;
+import org.uberfire.commons.concurrent.Unmanaged;
 import org.uberfire.commons.services.cdi.ApplicationStarted;
 import org.uberfire.io.IOWatchService;
 import org.uberfire.java.nio.file.FileSystem;
@@ -67,7 +68,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
     private Event<ResourceRenamedEvent> resourceRenamedEvent;
     private Event<ResourceDeletedEvent> resourceDeletedEvent;
     private Event<ResourceAddedEvent> resourceAddedEvent;
-    private ManagedExecutorService managedExecutorService;
+    private ExecutorService executorService;
 
     private IOWatchServiceExecutor executor = null;
 
@@ -82,14 +83,14 @@ public abstract class AbstractIOWatchService implements IOWatchService,
                                   Event<ResourceRenamedEvent> resourceRenamedEvent,
                                   Event<ResourceDeletedEvent> resourceDeletedEvent,
                                   Event<ResourceAddedEvent> resourceAddedEvent,
-                                  ManagedExecutorService managedExecutorService) {
+                                  @Unmanaged ExecutorService executorService) {
 
         this.resourceBatchChanges = resourceBatchChanges;
         this.resourceUpdatedEvent = resourceUpdatedEvent;
         this.resourceRenamedEvent = resourceRenamedEvent;
         this.resourceDeletedEvent = resourceDeletedEvent;
         this.resourceAddedEvent = resourceAddedEvent;
-        this.managedExecutorService = managedExecutorService;
+        this.executorService = executorService;
     }
 
     @PostConstruct
@@ -106,7 +107,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
             this.started = true;
             for (final AsyncWatchService watchThread : watchThreads) {
                 final IOWatchServiceExecutor watchServiceExecutor = getWatchServiceExecutor();
-                jobs.add(managedExecutorService.submit(new DescriptiveRunnable() {
+                jobs.add(executorService.submit(new DescriptiveRunnable() {
                     @Override
                     public String getDescription() {
                         return watchThread.getDescription();
@@ -133,21 +134,21 @@ public abstract class AbstractIOWatchService implements IOWatchService,
                 job.cancel(true);
             }
         }
-        managedExecutorService.shutdown(); // Disable new tasks from being submitted
+        executorService.shutdown(); // Disable new tasks from being submitted
         try {
             // Wait a while for existing tasks to terminate
-            if (!managedExecutorService.awaitTermination(AWAIT_TERMINATION_TIMEOUT,
+            if (!executorService.awaitTermination(AWAIT_TERMINATION_TIMEOUT,
                                                   TimeUnit.SECONDS)) {
-                managedExecutorService.shutdownNow(); // Cancel currently executing tasks
+                executorService.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
-                if (!managedExecutorService.awaitTermination(AWAIT_TERMINATION_TIMEOUT,
+                if (!executorService.awaitTermination(AWAIT_TERMINATION_TIMEOUT,
                                                       TimeUnit.SECONDS)) {
                     LOG.error("Thread pool did not terminate");
                 }
             }
         } catch (InterruptedException ie) {
             // (Re-)Cancel if current thread also interrupted
-            managedExecutorService.shutdownNow();
+            executorService.shutdownNow();
             // Preserve interrupt status
             Thread.currentThread().interrupt();
         }
@@ -201,7 +202,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
 
         if (started) {
             final IOWatchServiceExecutor watchServiceExecutor = getWatchServiceExecutor();
-            managedExecutorService.execute(new DescriptiveRunnable() {
+            executorService.execute(new DescriptiveRunnable() {
                 @Override
                 public String getDescription() {
                     return asyncWatchService.getDescription();

@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.sshd.SshServer;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
@@ -27,6 +28,7 @@ import org.eclipse.jgit.util.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.uberfire.commons.concurrent.ExecutorServiceProducer;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -36,6 +38,8 @@ import static org.mockito.Mockito.*;
 public class GitSSHServiceTest {
 
     private static final List<File> tempFiles = new ArrayList<File>();
+
+    private final ExecutorService executorService = new ExecutorServiceProducer().produceUnmanagedExecutorService();
 
     protected static File createTempDirectory()
             throws IOException {
@@ -76,7 +80,8 @@ public class GitSSHServiceTest {
                          "10000",
                          "RSA",
                          mock(ReceivePackFactory.class),
-                         mock(JGitFileSystemProvider.RepositoryResolverImpl.class));
+                         mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
+                         executorService);
 
         sshService.start();
         assertTrue(sshService.isRunning());
@@ -96,7 +101,8 @@ public class GitSSHServiceTest {
                          "10000",
                          "DSA",
                          mock(ReceivePackFactory.class),
-                         mock(JGitFileSystemProvider.RepositoryResolverImpl.class));
+                         mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
+                         executorService);
 
         sshService.start();
         assertTrue(sshService.isRunning());
@@ -116,7 +122,8 @@ public class GitSSHServiceTest {
                          "10000",
                          "RSA",
                          mock(ReceivePackFactory.class),
-                         mock(JGitFileSystemProvider.RepositoryResolverImpl.class));
+                         mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
+                         executorService);
 
         sshService.start();
         assertTrue(sshService.isRunning());
@@ -139,7 +146,8 @@ public class GitSSHServiceTest {
                              "10000",
                              "xxxx",
                              mock(ReceivePackFactory.class),
-                             mock(JGitFileSystemProvider.RepositoryResolverImpl.class));
+                             mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
+                             executorService);
             fail("has to fail");
         } catch (final Exception ex) {
             assertThat(ex.getMessage()).contains("'xxxx'");
@@ -157,7 +165,8 @@ public class GitSSHServiceTest {
                              "10000",
                              "RSA",
                              mock(ReceivePackFactory.class),
-                             mock(JGitFileSystemProvider.RepositoryResolverImpl.class));
+                             mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
+                             executorService);
             fail("has to fail");
         } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage()).contains("'certDir'");
@@ -169,7 +178,8 @@ public class GitSSHServiceTest {
                              null,
                              "RSA",
                              mock(ReceivePackFactory.class),
-                             mock(JGitFileSystemProvider.RepositoryResolverImpl.class));
+                             mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
+                             executorService);
             fail("has to fail");
         } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage()).contains("'sshIdleTimeout'");
@@ -181,7 +191,8 @@ public class GitSSHServiceTest {
                              "",
                              "RSA",
                              mock(ReceivePackFactory.class),
-                             mock(JGitFileSystemProvider.RepositoryResolverImpl.class));
+                             mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
+                             executorService);
             fail("has to fail");
         } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage()).contains("'sshIdleTimeout'");
@@ -193,7 +204,8 @@ public class GitSSHServiceTest {
                              "1000",
                              null,
                              mock(ReceivePackFactory.class),
-                             mock(JGitFileSystemProvider.RepositoryResolverImpl.class));
+                             mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
+                             executorService);
             fail("has to fail");
         } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage()).contains("'algorithm'");
@@ -205,7 +217,8 @@ public class GitSSHServiceTest {
                              "1000",
                              "",
                              mock(ReceivePackFactory.class),
-                             mock(JGitFileSystemProvider.RepositoryResolverImpl.class));
+                             mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
+                             executorService);
             fail("has to fail");
         } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage()).contains("'algorithm'");
@@ -217,7 +230,8 @@ public class GitSSHServiceTest {
                              "100",
                              "RSA",
                              null,
-                             mock(JGitFileSystemProvider.RepositoryResolverImpl.class));
+                             mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
+                             executorService);
             fail("has to fail");
         } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage()).contains("'receivePackFactory'");
@@ -229,7 +243,8 @@ public class GitSSHServiceTest {
                              "100",
                              "RSA",
                              mock(ReceivePackFactory.class),
-                             null);
+                             null,
+                             executorService);
             fail("has to fail");
         } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage()).contains("'repositoryResolver'");
@@ -241,7 +256,8 @@ public class GitSSHServiceTest {
                              "10000",
                              "RSA",
                              mock(ReceivePackFactory.class),
-                             mock(JGitFileSystemProvider.RepositoryResolverImpl.class));
+                             mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
+                             executorService);
         } catch (IllegalArgumentException ex) {
             fail("should not fail");
         }

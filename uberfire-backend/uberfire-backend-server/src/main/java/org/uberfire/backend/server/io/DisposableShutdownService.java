@@ -20,12 +20,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import javax.enterprise.concurrent.ManagedExecutorService;
+import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.uberfire.commons.cluster.ClusterService;
+import org.uberfire.commons.concurrent.Managed;
+import org.uberfire.commons.concurrent.Unmanaged;
 import org.uberfire.commons.lifecycle.Disposable;
 import org.uberfire.commons.lifecycle.PriorityDisposable;
 import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
@@ -34,14 +36,17 @@ import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
 public class DisposableShutdownService implements ServletContextListener {
 
-    private ManagedExecutorService executorService;
+    private ExecutorService unmanagedExecutorService;
+    private ExecutorService executorService;
 
     public DisposableShutdownService() {
     }
 
     @Inject
-    public DisposableShutdownService(ManagedExecutorService managedExecutorService) {
-        this.executorService = managedExecutorService;
+    public DisposableShutdownService(@Managed ExecutorService executorService,
+                                     @Unmanaged ExecutorService unmanagedExecutorService) {
+        this.executorService = executorService;
+        this.unmanagedExecutorService = unmanagedExecutorService;
     }
 
     @Override
@@ -71,6 +76,7 @@ public class DisposableShutdownService implements ServletContextListener {
         }
 
         executorService.shutdown();
+        unmanagedExecutorService.shutdown();
 
         for (final FileSystemProvider fileSystemProvider : FileSystemProviders.installedProviders()) {
             if (fileSystemProvider instanceof Disposable) {

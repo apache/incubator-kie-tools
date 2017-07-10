@@ -33,11 +33,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.enterprise.concurrent.ManagedExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +89,7 @@ public class IOServiceClusterImpl implements IOService {
 
     private static final Logger logger = LoggerFactory.getLogger(IOServiceClusterImpl.class);
     protected final Set<String> batchFileSystems = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
-    private ManagedExecutorService managedExecutorService;
+    private ExecutorService executorService;
     protected IOServiceLockable service;
     protected ClusterService clusterService;
     private NewFileSystemListener newFileSystemListener = null;
@@ -100,17 +99,17 @@ public class IOServiceClusterImpl implements IOService {
 
     public IOServiceClusterImpl(final IOService service,
                                 final ClusterServiceFactory clusterServiceFactory,
-                                final ManagedExecutorService managedExecutorService) {
+                                final ExecutorService executorService) {
         this(service,
              clusterServiceFactory,
              true,
-             managedExecutorService);
+             executorService);
     }
 
     public IOServiceClusterImpl(final IOService service,
                                 final ClusterServiceFactory clusterServiceFactory,
                                 final boolean autoStart,
-                                final ManagedExecutorService managedExecutorService) {
+                                final ExecutorService executorService) {
         checkNotNull("clusterServiceFactory",
                      clusterServiceFactory);
         this.service = checkInstanceOf("service",
@@ -120,7 +119,7 @@ public class IOServiceClusterImpl implements IOService {
         logger.debug("Creating instance of cluster service with auto start {}",
                      autoStart);
 
-        this.managedExecutorService = managedExecutorService;
+        this.executorService = executorService;
 
         this.clusterService = clusterServiceFactory.build(new MessageHandlerResolver() {
 
@@ -191,7 +190,7 @@ public class IOServiceClusterImpl implements IOService {
 
                                                                                                        onSync.set(true);
 
-                                                                                                       managedExecutorService.execute(new DescriptiveRunnable() {
+                                                                                                       executorService.execute(new DescriptiveRunnable() {
                                                                                                            @Override
                                                                                                            public String getDescription() {
                                                                                                                return "Cluster Messaging Reply [" + service.getId() + "/QUERY_FOR_FS]";

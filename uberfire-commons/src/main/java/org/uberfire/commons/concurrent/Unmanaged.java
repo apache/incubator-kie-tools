@@ -17,22 +17,14 @@
 
 package org.uberfire.commons.concurrent;
 
-import javax.annotation.Resource;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import javax.inject.Qualifier;
 
-public class ManagedExecutorServiceProducer {
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Qualifier
+public @interface Unmanaged {
 
-    @Resource
-    private ManagedExecutorService executorService;
-
-    @Produces
-    public ManagedExecutorService produceExecutorService(InjectionPoint injectionPoint) {
-        return executorService;
-    }
-
-    protected ManagedExecutorService getManagedExecutorService(){
-        return this.executorService;
-    }
 }

@@ -18,6 +18,7 @@ package org.uberfire.java.nio.fs.jgit.daemon.ssh;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.ExecutorService;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
@@ -36,10 +37,12 @@ public class GitReceiveCommand extends BaseGitCommand {
     public GitReceiveCommand(final String command,
                              final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver,
                              final FileSystemAuthorizer fileSystemAuthorizer,
-                             final ReceivePackFactory<BaseGitCommand> receivePackFactory) {
+                             final ReceivePackFactory<BaseGitCommand> receivePackFactory,
+                             final ExecutorService executorService) {
         super(command,
               fileSystemAuthorizer,
-              repositoryResolver);
+              repositoryResolver,
+              executorService);
         this.receivePackFactory = receivePackFactory;
     }
 

@@ -16,8 +16,8 @@
 
 package org.uberfire.ext.wires.backend.server.impl;
 
+import java.util.concurrent.ExecutorService;
 import javax.annotation.PostConstruct;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
@@ -28,6 +28,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
+import org.uberfire.commons.concurrent.Unmanaged;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
@@ -43,7 +44,7 @@ public class ApplicationScopedProducer {
 
     private IOService ioService;
 
-    private ManagedExecutorService managedExecutorService;
+    private ExecutorService executorService;
 
     public ApplicationScopedProducer() {
     }
@@ -52,11 +53,11 @@ public class ApplicationScopedProducer {
     public ApplicationScopedProducer(IOWatchServiceNonDotImpl watchService,
                                      AuthenticationService authenticationService,
                                      @Named("clusterServiceFactory") ClusterServiceFactory clusterServiceFactory,
-                                     ManagedExecutorService managedExecutorService) {
+                                     @Unmanaged ExecutorService executorService) {
         this.watchService = watchService;
         this.authenticationService = authenticationService;
         this.clusterServiceFactory = clusterServiceFactory;
-        this.managedExecutorService = managedExecutorService;
+        this.executorService = executorService;
     }
 
     @PostConstruct
@@ -66,7 +67,7 @@ public class ApplicationScopedProducer {
         } else {
             ioService = new IOServiceClusterImpl(new IOServiceDotFileImpl(watchService),
                                                  clusterServiceFactory,
-                                                 managedExecutorService);
+                                                 executorService);
         }
     }
 

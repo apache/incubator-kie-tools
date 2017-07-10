@@ -19,11 +19,12 @@ package org.uberfire.backend.server.io.watch;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.uberfire.backend.server.util.Filter;
-import org.uberfire.backend.server.util.MockManagedExecutorService;
+import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.ClosedWatchServiceException;
 import org.uberfire.java.nio.file.InterruptedException;
@@ -48,7 +49,7 @@ public class AbstractIOWatchServiceTest {
                                                                         null,
                                                                         null,
                                                                         null,
-                                                                        new MockManagedExecutorService()) {
+                                                                        Executors.newCachedThreadPool(new DescriptiveThreadFactory())) {
 
                 @Override
                 public boolean doFilter(WatchEvent<?> t) {

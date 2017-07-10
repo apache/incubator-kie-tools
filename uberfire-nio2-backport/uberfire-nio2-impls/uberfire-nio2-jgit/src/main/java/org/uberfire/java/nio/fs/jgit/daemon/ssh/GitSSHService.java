@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.sshd.SshServer;
 import org.apache.sshd.common.util.SecurityUtils;
@@ -45,13 +46,15 @@ public class GitSSHService {
     private final SshServer sshd = SshServer.setUpDefaultServer();
     private FileSystemAuthenticator fileSystemAuthenticator;
     private FileSystemAuthorizer fileSystemAuthorizer;
+    private ExecutorService executorService;
 
     public void setup(final File certDir,
                       final InetSocketAddress inetSocketAddress,
                       final String sshIdleTimeout,
                       final String algorithm,
                       final ReceivePackFactory receivePackFactory,
-                      final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver) {
+                      final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver,
+                      final ExecutorService executorService) {
         checkNotNull("certDir",
                      certDir);
         checkNotEmpty("sshIdleTimeout",
@@ -62,6 +65,10 @@ public class GitSSHService {
                      receivePackFactory);
         checkNotNull("repositoryResolver",
                      repositoryResolver);
+        checkNotNull("executorService",
+                     executorService);
+
+        this.executorService = executorService;
 
         sshd.getProperties().put(SshServer.IDLE_TIMEOUT,
                                  sshIdleTimeout);
@@ -94,12 +101,14 @@ public class GitSSHService {
                 if (command.startsWith("git-upload-pack")) {
                     return new GitUploadCommand(command,
                                                 repositoryResolver,
-                                                getAuthorizationManager());
+                                                getAuthorizationManager(),
+                                                executorService);
                 } else if (command.startsWith("git-receive-pack")) {
                     return new GitReceiveCommand(command,
                                                  repositoryResolver,
                                                  getAuthorizationManager(),
-                                                 receivePackFactory);
+                                                 receivePackFactory,
+                                                 executorService);
                 } else {
                     return new UnknownCommand(command);
                 }
