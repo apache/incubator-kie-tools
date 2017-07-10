@@ -245,7 +245,7 @@ public class WiresShape extends WiresContainer
                                                   @Override
                                                   public void onShapeResizeEnd(WiresResizeEndEvent event) {
                                                       handler.onShapeResizeEnd(event);
-                                                      innerLayoutContainer.refresh();
+                                                      m_innerLayoutContainer.refresh();
                                                       refresh();
                                                   }
                                               });
