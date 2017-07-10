@@ -41,3 +41,8 @@
     font-size: 12px;
     font-weight: 600;
 }
+
+.pm-card-metric {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
