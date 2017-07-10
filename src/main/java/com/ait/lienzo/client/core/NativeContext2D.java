@@ -52,15 +52,41 @@ public final class NativeContext2D extends JavaScriptObject
     {
     }
 
+    public final native void initDeviceRatio()
+        /*-{
+            var canvas = this.canvas;
+
+            var devicePixelRatio = window.devicePixelRatio || 1
+            var backingStoreRatio = this.backingStorePixelRatio
+
+            if (devicePixelRatio !== backingStoreRatio)
+            {
+                this.scalingRatio = devicePixelRatio / backingStoreRatio;
+
+                var oldWidth = canvas.width;
+                var oldHeight = canvas.height;
+
+                canvas.width = Math.round(oldWidth * this.scalingRatio);
+                canvas.height = Math.round(oldHeight * this.scalingRatio);
+
+                canvas.style.width = oldWidth + "px";
+                canvas.style.height = oldHeight + "px";
+
+                this.scale(this.scalingRatio, this.scalingRatio);
+            }
+
+         }-*/;
+
     private final native NativeContext2D init()
     /*-{
 		this.imageSmoothingEnabled = false;
+        this.scalingRatio = 1;
 
-		this.backingStorePixelRatio = this.backingStorePixelRatio
-				|| this.webkitBackingStorePixelRatio
-				|| this.mozBackingStorePixelRatio
-				|| this.msBackingStorePixelRatio
-				|| this.oBackingStorePixelRatio || 1;
+        this.backingStorePixelRatio = this.backingStorePixelRatio
+            || this.webkitBackingStorePixelRatio
+            || this.mozBackingStorePixelRatio
+            || this.msBackingStorePixelRatio
+            || this.oBackingStorePixelRatio || 1;
 
 		if (this.setLineDash) {
 			this.setLineDashOffset = function(d) {
@@ -91,7 +117,7 @@ public final class NativeContext2D extends JavaScriptObject
 				this.save();
 				this.translate(x, y);
 				this.rotate(ro);
-				this.scale(rx, ry);
+				this.scale(rx*scalingRatio, ry*scalingRatio);
 				this.arc(0, 0, 1, sa, ea, ac);
 				this.restore();
 			};
@@ -253,7 +279,7 @@ public final class NativeContext2D extends JavaScriptObject
 
     public final native void scale(double sx, double sy)
     /*-{
-		this.scale(sx, sy);
+		this.scale(sx*scalingRatio, sy*scalingRatio);
     }-*/;
 
     public final native void setStrokeColor(String color)

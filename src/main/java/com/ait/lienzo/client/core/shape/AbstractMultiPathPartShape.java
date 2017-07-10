@@ -1031,6 +1031,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                             }
                         }
                     }
+                    list.resetBoundingBox();
                 }
                 m_handle.updateOtherHandles(dx, dy, m_offsetX, m_offsetY, m_boxStartX, m_boxStartY, m_boxStartWidth, m_boxStartHeight);
 

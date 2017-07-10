@@ -19,7 +19,6 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
 
-import com.ait.lienzo.client.core.event.AbstractNodeDragEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -30,27 +29,28 @@ import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
-import com.ait.lienzo.client.core.event.NodeMouseEnterEvent;
-import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
-import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
-import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.Node;
+import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
+import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
+import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
 public class WiresConnector
 {
-    interface WiresConnectorHandler extends NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler, NodeMouseClickHandler
+    public interface WiresConnectorHandler extends NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler, NodeMouseClickHandler, NodeMouseDoubleClickHandler
     {
 
-        WiresConnectorControl getControl();
+        public WiresConnectorControl getControl();
 
     }
 
@@ -71,6 +71,8 @@ public class WiresConnector
     private Group                                 m_group;
 
     private IConnectionAcceptor                   m_connectionAcceptor = IConnectionAcceptor.ALL;
+
+    private WiresConnectorHandler                 m_wiresConnectorHandler;
 
     public WiresConnector(AbstractDirectionalMultiPointShape<?> line, MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator)
     {
@@ -122,6 +124,19 @@ public class WiresConnector
         return this;
     }
 
+
+    public void select()
+    {
+        m_wiresConnectorHandler.getControl().showControlPoints();
+        m_group.getLayer().batch();
+    }
+
+    public void unselect()
+    {
+        m_wiresConnectorHandler.getControl().hideControlPoints();
+        m_group.getLayer().batch();
+    }
+
     public IConnectionAcceptor getConnectionAcceptor()
     {
         return m_connectionAcceptor;
@@ -133,7 +148,8 @@ public class WiresConnector
     }
 
     public void setWiresConnectorHandler( final HandlerRegistrationManager m_registrationManager,
-                                          final WiresConnectorHandler handler ) {
+                                          final WiresConnectorHandler handler )
+    {
 
         final Group group = getGroup();
 
@@ -142,6 +158,13 @@ public class WiresConnector
         m_registrationManager.register(group.addNodeDragMoveHandler(handler));
 
         m_registrationManager.register(group.addNodeDragEndHandler(handler));
+
+        m_wiresConnectorHandler = handler;
+    }
+
+    public WiresConnectorHandler getWiresConnectorHandler()
+    {
+        return m_wiresConnectorHandler;
     }
 
     public void destroy()
@@ -198,6 +221,11 @@ public class WiresConnector
         return m_tailConnection;
     }
 
+    public boolean isSpecialConnection()
+    {
+        return (m_headConnection != null && m_headConnection.isSpecialConnection()) || (m_tailConnection != null && m_tailConnection.isSpecialConnection());
+    }
+
     public void setTailConnection(WiresConnection tailConnection)
     {
         m_tailConnection = tailConnection;
@@ -245,7 +273,10 @@ public class WiresConnector
 
     public void destroyPointHandles()
     {
-        m_pointHandles.destroy();
+        if (m_pointHandles != null)
+        {
+            m_pointHandles.destroy();
+        }
         m_pointHandles = null;
     }
 
@@ -258,6 +289,391 @@ public class WiresConnector
         return m_pointHandles;
     }
 
+    public void updateForSpecialConnections()
+    {
+        updateForCenterConnection();
+        updateForAutoConnections();
+    }
+
+    public void updateForCenterConnection()
+    {
+        WiresConnection headC = getHeadConnection();
+        WiresConnection tailC = getTailConnection();
+
+        updateForCenterConnection(this, headC, 1);
+        updateForCenterConnection(this, tailC, getLine().getPoint2DArray().size()-2);
+    }
+
+    public static void updateForCenterConnection(WiresConnector connector, WiresConnection connection, int pointIndex)
+    {
+        if ( connection.getMagnet() != null && connection.getMagnet().getIndex() == 0 )
+        {
+
+            MultiPath   path              = connection.getMagnet().getMagnets().getWiresShape().getPath();
+            BoundingBox box               = path.getBoundingBox();
+            Point2D c = Geometry.findCenter(box);
+            Point2D     intersectPoint    = Geometry.getPathIntersect(connection, path, c, pointIndex);
+            Direction   d                 = MagnetManager.getDirection(intersectPoint, box);
+
+            Point2D loc = path.getComputedLocation().copy();
+
+            connection.setXOffset(intersectPoint.getX()-c.getX());
+            connection.setYOffset(intersectPoint.getY()-c.getY());
+
+            if ( connector.getHeadConnection() == connection )
+            {
+                connector.getLine().setHeadDirection(d);
+            }
+            else
+            {
+                connector.getLine().setTailDirection(d);
+            }
+            connection.move(loc.getX() + c.getX(), loc.getY() + c.getY());
+        }
+    }
+
+    public boolean updateForAutoConnections()
+    {
+        // used when a connection is not being dragged
+        WiresConnection headC = getHeadConnection();
+        WiresConnection tailC = getTailConnection();
+
+        WiresShape headS = (headC.getMagnet() != null ) ? headC.getMagnet().getMagnets().getWiresShape() : null;
+        WiresShape tailS = (tailC.getMagnet() != null ) ? tailC.getMagnet().getMagnets().getWiresShape() : null;
+
+        return updateForAutoConnections(headS, tailS);
+    }
+
+    public boolean updateForAutoConnections(WiresShape headS, WiresShape tailS)
+    {
+        boolean accept = true;
+
+        // Allowed conections has already been checked, but for consistency and notifications will be rechecked via acceptor
+        // Will not set a magnet if the connection is already set to that returned magnet
+        WiresMagnet[] magnets = getMagnetsOnAutoConnection(headS, tailS);
+        if ( magnets != null )
+        {
+            if (magnets[0] != null && getHeadConnection().getMagnet() != magnets[0])
+            {
+                accept = accept && getConnectionAcceptor().acceptHead(getHeadConnection(), magnets[0]);
+                if (accept)
+                {
+                    getHeadConnection().setMagnet(magnets[0]);
+                }
+            }
+
+            if (accept && magnets[1] != null && getTailConnection().getMagnet() != magnets[1])
+            {
+                accept = accept && getConnectionAcceptor().acceptTail(getTailConnection(), magnets[1]);
+                if (accept)
+                {
+                   getTailConnection().setMagnet(magnets[1]);
+                }
+            }
+        }
+
+        return accept;
+    }
+
+    /**
+     * This is making some assumptions that will have to be fixed for anythign other than 8 Magnets at compass ordinal points.
+     * If there is no shape overlap, and one box is in the corner of the other box, then use nearest corner connections, else use nearest mid connection.
+     * Else there is overlap. This is now much more difficult, so just pick which every has the the shortest distanceto connections not contained by the other shape.
+     */
+    public WiresMagnet[] getMagnetsOnAutoConnection(WiresShape headS, WiresShape tailS)
+    {
+        WiresConnection headC = getHeadConnection();
+        WiresConnection tailC = getTailConnection();
+
+        if (!(headC.isAutoConnection() || tailC.isAutoConnection()))
+        {
+            // at least one side must be connected with auto connection on
+            return null;
+        }
+
+        WiresMagnet[] magnets;
+        BoundingBox headBox = (headS != null) ? headS.getGroup().getComputedBoundingPoints().getBoundingBox() : null;
+        BoundingBox tailBox = (tailS != null) ? tailS.getGroup().getComputedBoundingPoints().getBoundingBox() : null;
+
+        if ( getLine().getPoint2DArray().size() > 2 )
+        {
+            magnets = getMagnetsWithMidPoint(headC, tailC, headS, tailS, headBox, tailBox);
+        }
+        else
+        {
+            if (headBox != null && tailBox != null && !headBox.intersects(tailBox))
+            {
+                magnets = getMagnetsNonOverlappedShapes(headS, tailS, headBox, tailBox);
+            }
+            else
+            {
+                magnets = getMagnetsOverlappedShapesOrNoShape(headC, tailC, headS, tailS, headBox, tailBox);
+            }
+        }
+
+        return magnets;
+    }
+
+    private WiresMagnet[] getMagnetsWithMidPoint(WiresConnection headC, WiresConnection tailC, WiresShape headS, WiresShape tailS, BoundingBox headBox, BoundingBox tailBox)
+    {
+        // make BB's of 1 Point2D, then we can reuse existing code.
+        Point2D pAfterHead = getLine().getPoint2DArray().get(1);
+        Point2D pBeforeTail = getLine().getPoint2DArray().get(getLine().getPoint2DArray().size()-2);
+
+        BoundingBox firstBB = new BoundingBox(pAfterHead, pAfterHead);
+        BoundingBox lastBB = new BoundingBox(pBeforeTail, pBeforeTail);
+
+        WiresMagnet headM;
+        WiresMagnet tailM;
+        if (headBox != null && !headBox.intersects(firstBB))
+        {
+            WiresMagnet[] magnets = getMagnetsNonOverlappedShapes(headS, null, headBox, firstBB);
+            headM = magnets[0];
+
+        }
+        else
+        {
+            WiresMagnet[] headMagnets = getMagnets(headC, headS);
+            headM = getShortestMagnetToPoint(pAfterHead, headMagnets);
+        }
+
+        if (tailBox != null && !tailBox.intersects(lastBB))
+        {
+            WiresMagnet[] magnets = getMagnetsNonOverlappedShapes(null, tailS, lastBB, tailBox);
+            tailM = magnets[1];
+        }
+        else
+        {
+            WiresMagnet[] tailMagnets = getMagnets(tailC, tailS);
+            tailM = getShortestMagnetToPoint(pAfterHead, tailMagnets);
+        }
+
+        return new WiresMagnet[] {headM, tailM};
+    }
+
+    private WiresMagnet getShortestMagnetToPoint(Point2D point, WiresMagnet[] magnets)
+    {
+        double shortest = Double.MAX_VALUE;
+        WiresMagnet shortestM = null;
+
+        // Start at 1, as we don't include the center
+        for (int i = 1, size0 = magnets.length; i < size0; i++)
+        {
+            WiresMagnet m = magnets[i];
+            if (m != null)
+            {
+                double distance = point.distance(m.getControl().getComputedLocation());
+                if (distance < shortest)
+                {
+                    shortest = distance;
+                    shortestM = m;
+                }
+            }
+        }
+
+        return shortestM;
+    }
+
+    private WiresMagnet[] getMagnetsNonOverlappedShapes(WiresShape headS, WiresShape tailS, BoundingBox headBox, BoundingBox tailBox)
+    {
+        // There is no shape overlap.
+        // If one box is in the corner of the other box, then use nearest corner connections
+        // else use nearest mid connection.
+        boolean headAbove = headBox.getMaxY() < tailBox.getMinY();
+        boolean headBelow = headBox.getMinY() > tailBox.getMaxY();
+        boolean headLeft = headBox.getMaxX() < tailBox.getMinX();
+        boolean headRight = headBox.getMinX() > tailBox.getMaxX();
+
+        WiresMagnet[] magets = null;
+        if ( headAbove )
+        {
+            if ( headLeft )
+            {
+                magets = getMagnets(headS, 4, tailS, 8);
+            }
+            else if ( headRight )
+            {
+                magets = getMagnets(headS, 6, tailS, 2);
+            }
+            else
+            {
+                magets = getMagnets(headS, 5, tailS, 1);
+            }
+        }
+        else if ( headBelow )
+        {
+            if ( headLeft )
+            {
+                magets = getMagnets(headS, 2, tailS, 6);
+            }
+            else if ( headRight )
+            {
+                magets = getMagnets(headS, 8, tailS, 4);
+            }
+            else
+            {
+                magets = getMagnets(headS, 1, tailS, 5);
+            }
+        }
+        else
+        {
+            if ( headLeft )
+            {
+                magets = getMagnets(headS, 3, tailS, 7);
+            }
+            else if ( headRight )
+            {
+                magets = getMagnets(headS, 7, tailS, 3);
+            }
+        }
+
+        return magets;
+    }
+
+    private WiresMagnet[] getMagnetsOverlappedShapesOrNoShape(WiresConnection headC, WiresConnection tailC, WiresShape headS, WiresShape tailS, BoundingBox headBox, BoundingBox tailBox)
+    {
+        // There is shape overlap, this is now much more difficult, so just pick which every has the the shortest distance
+        // while giving preference to connections not contained by the other shape.
+        double      shortest         = Double.MAX_VALUE;
+        WiresMagnet shortestHeadM    = null;
+        WiresMagnet shortestTailM    = null;
+        double      headOffset       = headC.getLine().getHeadOffset();
+        double      tailOffset       = tailC.getLine().getTailOffset();
+        double      correction       = headC.getLine().getCorrectionOffset();
+
+        int minContained = Integer.MAX_VALUE;
+
+        // to be able to handle auto connection and fixed, in the same logic. simply copy the available magnets to an array. Fixed is an array of 1
+        WiresMagnet[] headMagnets = getMagnets(headC, headS);
+        WiresMagnet[] tailMagnets = getMagnets(tailC, tailS);
+
+        // Start at 1, as we don't include the center
+        for (int i = 1, size0 = headMagnets.length; i < size0; i++)
+        {
+            WiresMagnet headM              = headMagnets[i];
+            Point2D     headOffSettedPoint;
+            Point2D     headOriginalPoint;
+
+            if ( headS != null && headM != null)
+            {
+
+
+                headOriginalPoint = headM.getControl().getComputedLocation();
+                headOffSettedPoint = headOriginalPoint.copy();
+                OrthogonalPolyLine.correctEndWithOffset(headOffset, headM.getDirection(), headOffSettedPoint);
+                OrthogonalPolyLine.correctEndWithOffset(correction, headM.getDirection(), headOffSettedPoint);
+            }
+            else
+            {
+                // Ideally this would have also applied corrections, but at this point it's not easy to determine the Direction,
+                // but should probably be done at some point in the future (TODO).
+                headOriginalPoint =  headC.getControl().getComputedLocation();
+                headOffSettedPoint = headOriginalPoint.copy();
+            }
+
+            boolean headContained = (tailBox != null) ? tailBox.contains(headOriginalPoint) : false;
+
+            for (int j = 1, size1 = tailMagnets.length; j < size1; j++)
+            {
+                WiresMagnet tailM = tailMagnets[j];
+
+                Point2D tailOffSettedPoint;
+                Point2D tailOriginalPoint;
+
+                if ( tailS != null && tailM != null)
+                {
+                    tailOriginalPoint = tailM.getControl().getComputedLocation();
+                    tailOffSettedPoint = tailOriginalPoint.copy();
+                    OrthogonalPolyLine.correctEndWithOffset(tailOffset, tailM.getDirection(), tailOffSettedPoint);
+                    OrthogonalPolyLine.correctEndWithOffset(correction, tailM.getDirection(), tailOffSettedPoint);
+                }
+                else
+                {
+                    // Ideally this would have also applied corrections, but at this point it's not easy to determine the Direction,
+                    // but should probably be done at some point in the future (TODO).
+                    tailOriginalPoint =  tailC.getControl().getComputedLocation();
+                    tailOffSettedPoint = tailOriginalPoint.copy();
+                }
+
+                boolean tailContained = (headBox != null) ? headBox.contains(tailOriginalPoint) : false;
+
+                double distance  = headOffSettedPoint.distance(tailOffSettedPoint);
+                int    contained = 0;
+                if (headContained)
+                {
+                    contained++;
+                }
+                if (tailContained)
+                {
+                    contained++;
+                }
+                if (contained < minContained || (contained == minContained && distance <= shortest))
+                {
+                    minContained = contained;
+                    shortest = distance;
+                    shortestHeadM = headM;
+                    shortestTailM = tailM;
+                }
+            }
+        }
+
+        return new WiresMagnet[] {shortestHeadM, shortestTailM};
+    }
+
+    private WiresMagnet[] getMagnets(WiresConnection connection, WiresShape shape)
+    {
+        WiresMagnet[] magnets;
+        if ( connection.isAutoConnection() )
+        {
+            magnets = new WiresMagnet[shape.getMagnets().size()];
+            for ( int i = 0, size = shape.getMagnets().size(); i < size; i++)
+            {
+                magnets[i] = shape.getMagnets().getMagnet(i);
+            }
+        }
+        else if (shape == null)
+        {
+            // set it to 2, as centre is first, which is skipped.
+            magnets = new WiresMagnet[2];
+        }
+        else
+        {
+            // set it to 2, as centre is first, which is skipped. And only populate the second
+            magnets = new WiresMagnet[] {null, connection.getMagnet()};
+        }
+        return magnets;
+    }
+
+    private WiresMagnet[] getMagnets(WiresShape headS, int headMagnetIndex, WiresShape tailS, int tailMagnetIndex)
+    {
+        // ony set the side if it's auto connect, else null
+
+        // it uses 9, as center is 0
+        int[] headMappng = null;
+        int[] tailMappng = null;
+        if (headS!=null)
+        {
+            headMappng = headS.getMagnets().size() == 9 ? MagnetManager.EIGHT_CARDINALS_MAPPING : MagnetManager.FOUR_CARDINALS_MAPPING;
+        }
+        if (tailS!=null)
+        {
+            tailMappng = tailS.getMagnets().size() == 9 ? MagnetManager.EIGHT_CARDINALS_MAPPING : MagnetManager.FOUR_CARDINALS_MAPPING;
+        }
+
+        WiresMagnet headM = null;
+        if ( headS != null && getHeadConnection().isAutoConnection())
+        {
+           headM = headS.getMagnets().getMagnet(headMappng[headMagnetIndex]);
+        }
+
+
+        WiresMagnet tailM = null;
+        if ( tailS != null && getTailConnection().isAutoConnection())
+        {
+            tailM = tailS.getMagnets().getMagnet(tailMappng[tailMagnetIndex]);
+        }
+        return new WiresMagnet[] {headM, tailM};
+    }
 
 
     static class WiresConnectorHandlerImpl implements WiresConnectorHandler
@@ -266,10 +682,13 @@ public class WiresConnector
 
         private final WiresConnector        m_connector;
 
+        private final WiresManager          m_wiresManager;
+
         WiresConnectorHandlerImpl(WiresConnector connector, WiresManager wiresManager)
         {
             this.m_control = wiresManager.getControlFactory().newConnectorControl(connector, wiresManager);
             this.m_connector = connector;
+            m_wiresManager = wiresManager;
             init();
         }
 
@@ -283,6 +702,7 @@ public class WiresConnector
             m_connector.m_HandlerRegistrationManager = new HandlerRegistrationManager();
 
             m_connector.m_HandlerRegistrationManager.register(m_connector.getLine().addNodeMouseClickHandler(this));
+            m_connector.m_HandlerRegistrationManager.register(m_connector.getLine().addNodeMouseDoubleClickHandler(this));
             m_connector.m_HandlerRegistrationManager.register(m_connector.getHead().addNodeMouseClickHandler(this));
             m_connector.m_HandlerRegistrationManager.register(m_connector.getTail().addNodeMouseClickHandler(this));
         }
@@ -309,29 +729,41 @@ public class WiresConnector
         @Override
         public void onNodeMouseClick(NodeMouseClickEvent event)
         {
+            if (m_wiresManager.getSelectionManager() != null )
+            {
+                m_wiresManager.getSelectionManager().selected(m_connector, event);
+            }
+        }
 
-            if (m_connector.getPointHandles().isVisible())
-            {
-                if (event.isShiftKeyDown())
-                {
-                    this.m_control.addControlPoint(event.getX(), event.getY());
-                }
-                else
-                {
-                    this.m_control.hideControlPoints();
-                }
-            }
-            else if (((Node<?> ) event.getSource()).getParent() == m_connector.getGroup() )
-            {
-                this.m_control.showControlPoints();
-            }
+        @Override public void onNodeMouseDoubleClick(NodeMouseDoubleClickEvent event)
+        {
+            m_control.addControlPoint(event.getX(), event.getY());
         }
 
         public WiresConnectorControl getControl()
         {
             return m_control;
         }
-
     }
 
+    @Override public boolean equals(Object o)
+    {
+        if (this == o)
+        {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass())
+        {
+            return false;
+        }
+
+        WiresConnector that = (WiresConnector) o;
+
+        return getGroup().uuid() == that.getGroup().uuid();
+    }
+
+    @Override public int hashCode()
+    {
+        return getGroup().uuid().hashCode();
+    }
 }

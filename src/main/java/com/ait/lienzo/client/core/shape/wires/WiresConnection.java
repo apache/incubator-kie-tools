@@ -20,6 +20,8 @@ package com.ait.lienzo.client.core.shape.wires;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
 import com.ait.lienzo.shared.core.types.Direction;
@@ -34,9 +36,15 @@ public class WiresConnection extends AbstractControlHandle
 
     private MultiPath                             m_endPath;
 
-    Point2D                                       m_point;
+    private Point2D                               m_point;
 
-    ArrowEnd                                      m_end;
+    private ArrowEnd                              m_end;
+
+    private boolean                               m_autoConnection;
+
+    private double                                m_xOffset;
+
+    private double                                m_yOffset;
 
     public WiresConnection(WiresConnector connector, MultiPath endPath, ArrowEnd end)
     {
@@ -55,9 +63,9 @@ public class WiresConnection extends AbstractControlHandle
 
     public WiresConnection move(final double x, final double y)
     {
-        m_point.setX(x);
+        m_point.setX(x+m_xOffset);
 
-        m_point.setY(y);
+        m_point.setY(y+m_yOffset);
 
         m_line.refresh();
 
@@ -73,9 +81,9 @@ public class WiresConnection extends AbstractControlHandle
         }
         if (handle != null && handle.getControl() != null)
         {
-            handle.getControl().setX(x);
+            handle.getControl().setX(x+m_xOffset);
 
-            handle.getControl().setY(y);
+            handle.getControl().setY(y+m_yOffset);
         }
         if (m_line.getLayer() != null)
         {
@@ -114,6 +122,36 @@ public class WiresConnection extends AbstractControlHandle
         return m_connector;
     }
 
+    public boolean isAutoConnection()
+    {
+        return m_autoConnection;
+    }
+
+    public void setAutoConnection(boolean m_autoConnection)
+    {
+        this.m_autoConnection = m_autoConnection;
+    }
+
+    public double getXOffset()
+    {
+        return m_xOffset;
+    }
+
+    public void setXOffset(double m_xOffset)
+    {
+        this.m_xOffset = m_xOffset;
+    }
+
+    public double getYOffset()
+    {
+        return m_yOffset;
+    }
+
+    public void setYOffset(double m_yOffset)
+    {
+        this.m_yOffset = m_yOffset;
+    }
+
     public WiresConnection setMagnet(final WiresMagnet magnet)
     {
         if (m_magnet != null)
@@ -127,7 +165,7 @@ public class WiresConnection extends AbstractControlHandle
 
             Point2D absLoc = magnet.getControl().getComputedLocation();
 
-            move(absLoc.getX(), absLoc.getY());
+            move(absLoc.getX()+m_xOffset, absLoc.getY()+m_yOffset);
 
             if (m_end == ArrowEnd.TAIL)
             {
@@ -158,9 +196,24 @@ public class WiresConnection extends AbstractControlHandle
         return this;
     }
 
+    public Point2D getPoint()
+    {
+        return m_point;
+    }
+
+    public void setPoint(Point2D point)
+    {
+        this.m_point = point;
+    }
+
     public WiresMagnet getMagnet()
     {
         return m_magnet;
+    }
+
+    public boolean isSpecialConnection()
+    {
+        return m_autoConnection || m_magnet != null && m_magnet.getIndex() == 0;
     }
 
     @Override

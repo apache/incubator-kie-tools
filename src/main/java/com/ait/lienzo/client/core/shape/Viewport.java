@@ -22,6 +22,7 @@ import java.util.List;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
+import com.ait.lienzo.client.core.event.OnEventHandlers;
 import com.ait.lienzo.client.core.event.OrientationChangeEvent;
 import com.ait.lienzo.client.core.event.OrientationChangeHandler;
 import com.ait.lienzo.client.core.event.ResizeChangeEvent;
@@ -30,6 +31,7 @@ import com.ait.lienzo.client.core.event.ResizeEndEvent;
 import com.ait.lienzo.client.core.event.ResizeEndHandler;
 import com.ait.lienzo.client.core.event.ResizeStartEvent;
 import com.ait.lienzo.client.core.event.ResizeStartHandler;
+import com.ait.lienzo.client.core.event.OnMouseEventHandler;
 import com.ait.lienzo.client.core.event.ViewportTransformChangedEvent;
 import com.ait.lienzo.client.core.event.ViewportTransformChangedHandler;
 import com.ait.lienzo.client.core.mediator.IMediator;
@@ -69,23 +71,26 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class Viewport extends ContainerNode<Scene, Viewport>
 {
-    private int              m_wide    = 0;
+    private int                    m_wide    = 0;
 
-    private int              m_high    = 0;
+    private int                    m_high    = 0;
 
-    private Widget           m_owns    = null;
+    private Widget                 m_owns    = null;
 
-    private final DivElement m_element = Document.get().createDivElement();
+    private final DivElement       m_element = Document.get().createDivElement();
 
-    private Scene            m_drag    = new Scene();
+    private Scene                  m_drag    = new Scene();
 
-    private Scene            m_main    = null;
+    private Scene                  m_main    = null;
 
-    private Scene            m_back    = new Scene();
+    private Scene                  m_back    = new Scene();
 
-    private ScratchPad       m_spad    = new ScratchPad(0, 0);
+    private ScratchPad             m_spad    = new ScratchPad(0, 0);
 
-    private Mediators        m_mediators;
+    private Mediators              m_mediators;
+
+    private final OnEventHandlers m_onEventHandlers = new OnEventHandlers();
+
 
     public Viewport()
     {
@@ -251,6 +256,11 @@ public class Viewport extends ContainerNode<Scene, Viewport>
         m_spad.setPixelSize(wide, high);
 
         return this;
+    }
+
+    public OnEventHandlers getOnEventHandlers()
+    {
+        return m_onEventHandlers;
     }
 
     /**

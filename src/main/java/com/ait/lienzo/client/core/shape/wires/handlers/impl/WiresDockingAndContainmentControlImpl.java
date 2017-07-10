@@ -16,6 +16,11 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
+import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
@@ -312,18 +317,24 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
     }
 
     @Override
-    public void onNodeMouseDown()
+    public void onNodeMouseDown(NodeMouseDownEvent e)
     {
         m_parent = m_shape.getParent();
     }
 
     @Override
-    public void onNodeMouseUp()
+    public void onNodeMouseUp(NodeMouseUpEvent e)
     {
         if (m_parent != m_shape.getParent())
         {
             addShapeToParent();
         }
+    }
+
+    @Override
+    public void onNodeClick(NodeMouseClickEvent e)
+    {
+        // no-op
     }
 
     protected boolean addShapeToParent()

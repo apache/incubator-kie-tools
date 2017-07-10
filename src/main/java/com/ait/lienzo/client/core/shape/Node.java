@@ -100,6 +100,7 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.touch.client.Point;
 
 /**
  * Node is the base class for {@link ContainerNode} and {@link Shape}.
@@ -665,7 +666,29 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     }
 
     @Override
+    public BoundingPoints getComputedBoundingPoints()
+    {
+        double computedXOffset = 0;
+        double computedYOffset = 0;
+        Node parent = getParent();
+        if (parent != null)
+        {
+            Point2D computedLocation = parent.getComputedLocation();
+            computedXOffset = computedLocation.getX();
+            computedYOffset = computedLocation.getY();
+
+        }
+
+        return getBoundingPoints(computedXOffset, computedYOffset);
+    }
+
+    @Override
     public BoundingPoints getBoundingPoints()
+    {
+        return getBoundingPoints(0, 0);
+    }
+
+    public BoundingPoints getBoundingPoints(final double computedOffsetX, final double computedOffsetY)
     {
         final BoundingBox bbox = getBoundingBox();
 
@@ -675,7 +698,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
             if (null != transform)
             {
-                return new BoundingPoints(bbox).transform(transform);
+                return new BoundingPoints(bbox).transform(computedOffsetX, computedOffsetY, transform);
             }
             return new BoundingPoints(bbox);
         }

@@ -40,7 +40,7 @@ public final class WiresManager
 
     private final MagnetManager                              m_magnetManager       = new MagnetManager();
 
-    private final SelectionManager                           m_selectionManager    = new SelectionManager();
+    private SelectionManager                                 m_selectionManager;
 
     private final AlignAndDistribute                         m_index;
 
@@ -59,6 +59,8 @@ public final class WiresManager
     private IContainmentAcceptor                             m_containmentAcceptor = IContainmentAcceptor.ALL;
 
     private IDockingAcceptor                                 m_dockingAcceptor     = IDockingAcceptor.NONE;
+
+    private boolean                                          m_spliceEnabled;
 
     public static final WiresManager get(Layer layer)
     {
@@ -85,6 +87,24 @@ public final class WiresManager
         m_index = new AlignAndDistribute(layer);
     }
 
+    public void enableSelectionManager()
+    {
+        if (m_selectionManager==null)
+        {
+            m_selectionManager = new SelectionManager(this);
+        }
+    }
+
+    public boolean isSpliceEnabled()
+    {
+        return m_spliceEnabled;
+    }
+
+    public void setSpliceEnabled(boolean spliceEnabled)
+    {
+        m_spliceEnabled = spliceEnabled;
+    }
+
     public static class LinePreparer implements OnLayerBeforeDraw
     {
         private WiresManager m_wiresManager;
@@ -109,6 +129,12 @@ public final class WiresManager
                     // only do this for lines that have had refresh called
                     AbstractDirectionalMultiPointShape<?> line = c.getLine();
 
+                    if ( c.isSpecialConnection() && line.getPathPartList().size() == 0)
+                    {
+                        // if getPathPartList is empty, it was refreshed due to a point change
+                        c.updateForSpecialConnections();
+                    }
+
                     final boolean prepared = line.isPathPartListPrepared(c.getLine().getAttributes());
 
                     if (!prepared)
@@ -132,6 +158,7 @@ public final class WiresManager
 
             return true;
         }
+
     }
 
     public MagnetManager getMagnetManager()
@@ -152,6 +179,8 @@ public final class WiresManager
     public WiresShapeControl register(final WiresShape shape, final boolean addIntoIndex)
     {
         shape.setContainmentAcceptor(m_containmentAcceptor);
+
+        shape.setWiresManager(this);
 
         shape.setDockingAcceptor(m_dockingAcceptor);
 
@@ -224,6 +253,7 @@ public final class WiresManager
 
     public void deregister(final WiresConnector connector)
     {
+        connector.removeFromLayer();
         final String uuid = connector.uuid();
         removeHandlers(uuid);
         connector.destroy();
@@ -311,9 +341,14 @@ public final class WiresManager
         }
     }
 
-    NFastArrayList<WiresConnector> getConnectorList()
+    public NFastArrayList<WiresConnector> getConnectorList()
     {
         return m_connectorList;
+    }
+
+    public NFastStringMap<WiresShape> getShapesMap()
+    {
+        return m_shapesMap;
     }
 
     HandlerRegistrationManager createHandlerRegistrationManager()

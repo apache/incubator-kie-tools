@@ -442,11 +442,17 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                 getElement().getStyle().setHeight(high, Unit.PX);
             }
+
             final CanvasElement element = getCanvasElement();
 
             element.setWidth(wide);
 
             element.setHeight(high);
+
+            if (false == isSelection())
+            {
+                getContext().getNativeContext().initDeviceRatio();
+            }
 
             if ((false == isSelection()) && (null != m_select))
             {

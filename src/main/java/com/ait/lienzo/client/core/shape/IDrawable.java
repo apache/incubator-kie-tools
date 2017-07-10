@@ -109,6 +109,8 @@ public interface IDrawable<T extends IDrawable<T>> extends NObjectOnWire, IJSONS
     public BoundingBox getBoundingBox();
 
     public BoundingPoints getBoundingPoints();
+
+    public BoundingPoints getComputedBoundingPoints();
     
     public Point2D getComputedLocation();
 

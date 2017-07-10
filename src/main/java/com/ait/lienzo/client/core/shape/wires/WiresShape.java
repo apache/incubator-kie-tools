@@ -31,6 +31,7 @@ import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.tooling.nativetools.client.util.Console;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 
@@ -39,7 +40,7 @@ import java.util.Objects;
 
 public class WiresShape extends WiresContainer
 {
-    interface WiresShapeHandler extends NodeMouseDownHandler, NodeMouseUpHandler, NodeDragEndHandler, DragConstraintEnforcer
+    interface WiresShapeHandler extends NodeMouseDownHandler, NodeMouseUpHandler, NodeMouseClickHandler, NodeDragEndHandler, DragConstraintEnforcer
     {
 
         void setAlignAndDistributeControl(AlignAndDistributeControl alignAndDistributeHandler);
@@ -50,15 +51,19 @@ public class WiresShape extends WiresContainer
 
     }
 
-    private MultiPath drawnObject;
+    private MultiPath                   m_drawnObject;
 
-    private Magnets magnets;
+    private Magnets                     m_magnets;
 
-    private LayoutContainer innerLayoutContainer;
+    private LayoutContainer             m_innerLayoutContainer;
 
     private WiresShapeControlHandleList m_ctrls;
 
-    private boolean resizable;
+    private boolean                     m_resizable;
+
+    private WiresManager                m_wiresManager;
+
+    private WiresShapeHandler           m_handler;
 
     public WiresShape(final MultiPath path)
     {
@@ -68,8 +73,8 @@ public class WiresShape extends WiresContainer
     public WiresShape(final MultiPath path, final LayoutContainer layoutContainer)
     {
         super(layoutContainer.getGroup());
-        this.drawnObject = path;
-        this.innerLayoutContainer = layoutContainer;
+        this.m_drawnObject = path;
+        this.m_innerLayoutContainer = layoutContainer;
         this.m_ctrls = null;
         init();
 
@@ -78,9 +83,9 @@ public class WiresShape extends WiresContainer
     WiresShape(final MultiPath path, final LayoutContainer layoutContainer, final HandlerManager manager, final HandlerRegistrationManager registrationManager, final IAttributesChangedBatcher attributesChangedBatcher)
     {
         super(layoutContainer.getGroup(), manager, registrationManager, attributesChangedBatcher);
-        this.drawnObject = path;
+        this.m_drawnObject = path;
         this.m_ctrls = null;
-        this.innerLayoutContainer = layoutContainer;
+        this.m_innerLayoutContainer = layoutContainer;
         init();
     }
 
@@ -106,21 +111,31 @@ public class WiresShape extends WiresContainer
         return this;
     }
 
+    public WiresManager getWiresManager()
+    {
+        return m_wiresManager;
+    }
+
+    public void setWiresManager(WiresManager wiresManager)
+    {
+        m_wiresManager = wiresManager;
+    }
+
     public WiresShape addChild(final IPrimitive<?> child)
     {
-        innerLayoutContainer.add(child);
+        m_innerLayoutContainer.add(child);
         return this;
     }
 
     public WiresShape addChild(final IPrimitive<?> child, final LayoutContainer.Layout layout)
     {
-        innerLayoutContainer.add(child, layout);
+        m_innerLayoutContainer.add(child, layout);
         return this;
     }
 
     public WiresShape removeChild(final IPrimitive<?> child)
     {
-        innerLayoutContainer.remove(child);
+        m_innerLayoutContainer.remove(child);
         return this;
     }
 
@@ -144,13 +159,13 @@ public class WiresShape extends WiresContainer
 
     public WiresShape setResizable(final boolean resizable)
     {
-        this.resizable = resizable;
+        this.m_resizable = resizable;
         return this;
     }
 
     public boolean isResizable()
     {
-        return resizable;
+        return m_resizable;
     }
 
     /**
@@ -171,25 +186,32 @@ public class WiresShape extends WiresContainer
     public void addWiresShapeHandler( final HandlerRegistrationManager registrationManager,
                                       final WiresShapeHandler handler )
     {
+        registrationManager.register(getGroup().addNodeMouseClickHandler(handler));
         registrationManager.register(getGroup().addNodeMouseDownHandler(handler));
         registrationManager.register(getGroup().addNodeMouseUpHandler(handler));
         registrationManager.register(getGroup().addNodeDragEndHandler(handler));
         getGroup().setDragConstraints(handler);
+        m_handler = handler;
+    }
+
+    public WiresShapeHandler getHandler()
+    {
+        return m_handler;
     }
 
     public MultiPath getPath()
     {
-        return drawnObject;
+        return m_drawnObject;
     }
 
     public Magnets getMagnets()
     {
-        return magnets;
+        return m_magnets;
     }
 
     public void setMagnets(Magnets magnets)
     {
-        this.magnets = magnets;
+        this.m_magnets = magnets;
     }
 
     public void removeFromParent()
@@ -236,15 +258,15 @@ public class WiresShape extends WiresContainer
 
     private void init()
     {
-        resizable = true;
+        m_resizable = true;
 
-        innerLayoutContainer.getGroup().setEventPropagationMode(EventPropagationMode.FIRST_ANCESTOR);
+        m_innerLayoutContainer.getGroup().setEventPropagationMode(EventPropagationMode.FIRST_ANCESTOR);
 
-        innerLayoutContainer.add(getPath());
+        m_innerLayoutContainer.add(getPath());
 
         BoundingBox box = getPath().refresh().getBoundingBox();
 
-        innerLayoutContainer.setOffset(new Point2D(box.getX(), box.getY())).setSize(box.getWidth(), box.getHeight()).execute();
+        m_innerLayoutContainer.setOffset(new Point2D(box.getX(), box.getY())).setSize(box.getWidth(), box.getHeight()).execute();
     }
 
     private void _loadControls(final IControlHandle.ControlHandleType type)
@@ -277,7 +299,7 @@ public class WiresShape extends WiresContainer
     protected void preDestroy()
     {
         super.preDestroy();
-        innerLayoutContainer.destroy();
+        m_innerLayoutContainer.destroy();
         removeHandlers();
         removeFromParent();
     }
@@ -292,16 +314,19 @@ public class WiresShape extends WiresContainer
 
     LayoutContainer getLayoutContainer()
     {
-        return innerLayoutContainer;
+        return m_innerLayoutContainer;
     }
 
     static class WiresShapeHandlerImpl implements WiresShape.WiresShapeHandler
     {
         private final WiresShapeControl shapeControl;
 
+        private WiresManager m_wiresManager;
+
         WiresShapeHandlerImpl(WiresShape shape, WiresManager wiresManager )
         {
             this.shapeControl = wiresManager.getControlFactory().newShapeControl(shape, wiresManager);
+            m_wiresManager = wiresManager;
         }
 
         public void setAlignAndDistributeControl(AlignAndDistributeControl alignAndDistributeHandler)
@@ -335,13 +360,18 @@ public class WiresShape extends WiresContainer
         @Override
         public void onNodeMouseDown(NodeMouseDownEvent event)
         {
-            this.shapeControl.onNodeMouseDown();
+            this.shapeControl.onNodeMouseDown(event);
         }
 
         @Override
         public void onNodeMouseUp(NodeMouseUpEvent event)
         {
-            this.shapeControl.onNodeMouseUp();
+            this.shapeControl.onNodeMouseUp(event);
+        }
+
+        @Override public void onNodeMouseClick(NodeMouseClickEvent event)
+        {
+            this.shapeControl.onNodeClick(event);
         }
 
         public WiresShapeControl getControl()
@@ -350,4 +380,24 @@ public class WiresShape extends WiresContainer
         }
     }
 
+    @Override public boolean equals(Object o)
+    {
+        if (this == o)
+        {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass())
+        {
+            return false;
+        }
+
+        WiresShape that = (WiresShape) o;
+
+        return getGroup().uuid() == that.getGroup().uuid();
+    }
+
+    @Override public int hashCode()
+    {
+        return getGroup().uuid().hashCode();
+    }
 }

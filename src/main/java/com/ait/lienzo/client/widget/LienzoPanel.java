@@ -95,7 +95,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
     public LienzoPanel(final int wide, final int high)
     {
-        this(new Viewport(), wide, high);
+        this(new Viewport(wide, high), wide, high);
     }
 
     public LienzoPanel(final Scene scene, final int wide, final int high)

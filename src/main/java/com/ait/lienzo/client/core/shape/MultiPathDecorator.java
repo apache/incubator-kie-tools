@@ -34,4 +34,9 @@ public class MultiPathDecorator {
         m_path.setRotation(angle);
     }
 
+    public MultiPathDecorator copy()
+    {
+       return new MultiPathDecorator(m_path.copy());
+    }
+
 }

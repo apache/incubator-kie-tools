@@ -180,12 +180,22 @@ final class LienzoHandlerManager
             @Override
             public void onClick(final ClickEvent event)
             {
+                if (!m_viewport.getOnEventHandlers().getOnMouseClickEventHandle().onMouseEventBefore(event))
+                {
+                    m_dragging_mouse_pressed = false; // could have been set previously by a mousedown, it will need cleaning up
+                    m_dragging_ignore_clicks = false;
+                    m_dragging = false;
+                    return;
+                }
+
                 onNodeMouseClick(new NodeMouseClickEvent(event));
                 m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
                 m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
                 m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
 
                 event.preventDefault();
+
+                m_viewport.getOnEventHandlers().getOnMouseClickEventHandle().onMouseEventAfter(event);
             }
         });
         m_lienzo.addDoubleClickHandler(new DoubleClickHandler()
@@ -193,12 +203,19 @@ final class LienzoHandlerManager
             @Override
             public void onDoubleClick(final DoubleClickEvent event)
             {
+                if (!m_viewport.getOnEventHandlers().getOnMouseDoubleClickEventHandle().onMouseEventBefore(event))
+                {
+                    return;
+                }
+
                 onNodeMouseDoubleClick(new NodeMouseDoubleClickEvent(event));
                 m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
                 m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
                 m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
 
                 event.preventDefault();
+
+                m_viewport.getOnEventHandlers().getOnMouseDoubleClickEventHandle().onMouseEventBefore(event);
             }
         });
         m_lienzo.addMouseMoveHandler(new MouseMoveHandler()
@@ -206,6 +223,11 @@ final class LienzoHandlerManager
             @Override
             public void onMouseMove(final MouseMoveEvent event)
             {
+                if (!m_viewport.getOnEventHandlers().getOnMouseMoveEventHandle().onMouseEventBefore(event))
+                {
+                    return;
+                }
+
                 if ((m_dragging) && (m_dragging_using_touches))
                 {
                     event.preventDefault();
@@ -227,6 +249,8 @@ final class LienzoHandlerManager
                 onNodeMouseMove(nevent);
 
                 event.preventDefault();
+
+                m_viewport.getOnEventHandlers().getOnMouseMoveEventHandle().onMouseEventBefore(event);
             }
         });
         m_lienzo.addMouseUpHandler(new MouseUpHandler()
@@ -234,6 +258,14 @@ final class LienzoHandlerManager
             @Override
             public void onMouseUp(final MouseUpEvent event)
             {
+                if (!m_viewport.getOnEventHandlers().getOnMouseUpEventHandle().onMouseEventBefore(event))
+                {
+                    m_dragging_mouse_pressed = false; // could have been set previously by a mousedown, it will need cleaning up
+                    m_dragging_ignore_clicks = false;
+                    m_dragging = false;
+                    return;
+                }
+
                 final NodeMouseUpEvent nevent = new NodeMouseUpEvent(event);
 
                 if (m_mediators.handleEvent(nevent))
@@ -246,6 +278,8 @@ final class LienzoHandlerManager
                 m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
 
                 onNodeMouseUp(nevent);
+
+                m_viewport.getOnEventHandlers().getOnMouseUpEventHandle().onMouseEventBefore(event);
             }
         });
         m_lienzo.addMouseDownHandler(new MouseDownHandler()
@@ -253,6 +287,11 @@ final class LienzoHandlerManager
             @Override
             public void onMouseDown(final MouseDownEvent event)
             {
+                if (!m_viewport.getOnEventHandlers().getOnMouseDownEventHandle().onMouseEventBefore(event))
+                {
+                    return;
+                }
+
                 final NodeMouseDownEvent nevent = new NodeMouseDownEvent(event);
 
                 if (m_mediators.handleEvent(nevent))
@@ -269,6 +308,8 @@ final class LienzoHandlerManager
                 onNodeMouseDown(nevent);
 
                 event.preventDefault();
+
+                m_viewport.getOnEventHandlers().getOnMouseDownEventHandle().onMouseEventBefore(event);
             }
         });
         m_lienzo.addMouseOutHandler(new MouseOutHandler()

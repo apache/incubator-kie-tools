@@ -342,6 +342,7 @@ public class Scene extends ContainerNode<Layer, Scene>
                 }
             }
         }
+
     }
 
     /**

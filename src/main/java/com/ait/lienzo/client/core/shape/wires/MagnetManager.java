@@ -43,16 +43,23 @@ import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.tooling.nativetools.client.util.Console;
 
 public class MagnetManager
 {
-    private static final int          CONTROL_RADIUS       = 7;
+    public static final Direction[]  FOUR_CARDINALS           = new Direction[] { Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+    public static final int[]        FOUR_CARDINALS_MAPPING   = new int[] { 0, 1, 1, 2, 3, 3, 3, 4, 1};
 
-    public static final ColorKeyRotor m_c_rotor            = new ColorKeyRotor();
+    public static final Direction[]  EIGHT_CARDINALS          = new Direction[] { Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST};
+    public static final int[]        EIGHT_CARDINALS_MAPPING  = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8};
 
-    private NFastStringMap<Magnets>   m_magnetRegistry     = new NFastStringMap<Magnets>();
+    private static final int          CONTROL_RADIUS          = 7;
 
-    private int                       m_ctrlSize           = CONTROL_RADIUS;
+    public static final ColorKeyRotor m_c_rotor               = new ColorKeyRotor();
+
+    private NFastStringMap<Magnets>   m_magnetRegistry        = new NFastStringMap<Magnets>();
+
+    private int                       m_ctrlSize              = CONTROL_RADIUS;
 
     public ImageData drawMagnetsToBack(Magnets magnets, NFastStringMap<WiresShape> shapeColors, NFastStringMap<WiresMagnet> magnetColors, ScratchPad scratch)
     {
@@ -90,25 +97,33 @@ public class MagnetManager
 
     public Magnets createMagnets(final WiresShape wiresShape)
     {
+        return createMagnets(wiresShape, EIGHT_CARDINALS);
+    }
+
+    /**
+     * Right now it only works with provided FOUR or EIGHT cardinals, anything else will break WiresConnector autoconnection
+     *
+     * @param wiresShape
+     * @param requestedCardinals
+     * @return
+     */
+    public Magnets createMagnets(final WiresShape wiresShape, Direction[] requestedCardinals)
+    {
         final IPrimitive<?> primTarget = wiresShape.getGroup();
-        final Point2DArray points = getWiresIntersectionPoints(wiresShape);
+        final Point2DArray points = getWiresIntersectionPoints(wiresShape, requestedCardinals);
         final ControlHandleList list = new ControlHandleList(primTarget);
         final BoundingBox box = wiresShape.getPath().getBoundingBox();
-
-        double left = box.getX();
-        double right = left + box.getWidth();
-        double top = box.getY();
-        double bottom = top + box.getHeight();
 
         final Point2D primLoc = primTarget.getComputedLocation();
         final Magnets magnets = new Magnets(this, list, wiresShape);
 
+        int i = 0;
         for (Point2D p : points)
         {
             final double mx = primLoc.getX() + p.getX();
             final double my = primLoc.getY() + p.getY();
-            WiresMagnet m = new WiresMagnet(magnets, null, 0, p.getX(), p.getY(), getControlPrimitive(mx, my), true);
-            Direction d = getDirection(p, left, right, top, bottom);
+            WiresMagnet m = new WiresMagnet(magnets, null, i++, p.getX(), p.getY(), getControlPrimitive(mx, my), true);
+            Direction d = getDirection(p, box);
             m.setDirection(d);
             list.add(m);
         }
@@ -126,8 +141,13 @@ public class MagnetManager
         return m_magnetRegistry.get(shape.uuid());
     }
 
-    public Direction getDirection(Point2D point, double left, double right, double top, double bottom)
+    public static Direction getDirection(Point2D point, BoundingBox box)
     {
+        double left   = box.getMinX();
+        double right  = box.getMaxX();
+        double top    = box.getMinY();
+        double bottom = box.getMaxY();
+
         double x = point.getX();
         double y = point.getY();
 
@@ -159,7 +179,7 @@ public class MagnetManager
                 }
                 else
                 {
-                    return Direction.NORTH_WEST;
+                    return Direction.WEST;//Direction.NORTH_WEST;
                 }
             }
             else
@@ -174,7 +194,7 @@ public class MagnetManager
                 }
                 else
                 {
-                    return Direction.SOUTH_WEST;
+                    return Direction.WEST;//Direction.SOUTH_WEST;
                 }
             }
         }
@@ -192,7 +212,7 @@ public class MagnetManager
                 }
                 else
                 {
-                    return Direction.NORTH_EAST;
+                    return Direction.EAST;//Direction.NORTH_EAST;
                 }
             }
             else
@@ -207,7 +227,7 @@ public class MagnetManager
                 }
                 else
                 {
-                    return Direction.SOUTH_EAST;
+                    return Direction.EAST;//Direction.SOUTH_EAST;
                 }
             }
         }
@@ -218,9 +238,9 @@ public class MagnetManager
         this.m_ctrlSize = m_ctrlSize;
     }
 
-    private static Point2DArray getWiresIntersectionPoints(final WiresShape wiresShape)
+    private static Point2DArray getWiresIntersectionPoints(final WiresShape wiresShape, Direction[] requestedCardinals)
     {
-        return Geometry.getCardinalIntersects(wiresShape.getPath());
+        return Geometry.getCardinalIntersects(wiresShape.getPath(), requestedCardinals);
     }
 
     private Circle getControlPrimitive(double x, double y)
@@ -259,6 +279,11 @@ public class MagnetManager
             m_registrationManager.register(shapeGroup.addNodeDragStartHandler(this));
             m_registrationManager.register(shapeGroup.addNodeDragMoveHandler(this));
             m_registrationManager.register(shapeGroup.addNodeDragEndHandler(this));
+        }
+
+        public boolean isEmpty()
+        {
+            return m_list.isEmpty();
         }
 
         public WiresShape getWiresShape()
@@ -329,18 +354,20 @@ public class MagnetManager
 
         public void shapeChanged()
         {
-            final Point2DArray points = MagnetManager.getWiresIntersectionPoints(m_wiresShape);
-
-            if (points.size() == m_list.size())
+            if (m_list.isEmpty() )
             {
-                for (int i = 0; i < m_list.size(); i++)
-                {
-                    Point2D p = points.get(i);
-                    WiresMagnet m = (WiresMagnet) m_list.getHandle(i);
-                    m.setRx(p.getX()).setRy(p.getY());
-                }
-                this.shapeMoved();
+                return;
             }
+            Direction[] cardinals = m_list.size() == 9 ? EIGHT_CARDINALS: FOUR_CARDINALS;
+            final Point2DArray points = MagnetManager.getWiresIntersectionPoints(m_wiresShape, cardinals);
+
+            for (int i = 0; i < m_list.size(); i++)
+            {
+                Point2D p = points.get(i);
+                WiresMagnet m = (WiresMagnet) m_list.getHandle(i);
+                m.setRx(p.getX()).setRy(p.getY());
+            }
+            this.shapeMoved();
         }
 
         public void show()

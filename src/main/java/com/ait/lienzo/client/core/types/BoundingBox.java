@@ -200,6 +200,65 @@ public final class BoundingBox
         return Math.abs(m_jso.getMaxY() - m_jso.getMinY());
     }
 
+    public final double getMinX()
+    {
+        return getX();
+    }
+
+    public final double getMaxX()
+    {
+        return  getX() + getWidth();
+    }
+
+    public final double getMinY()
+    {
+        return m_jso.getMinY();
+    }
+
+    public final double getMaxY()
+    {
+        return getY() + getHeight();
+    }
+
+    public final boolean intersects(BoundingBox other)
+    {
+        if (getMaxX() < other.getMinX())
+        {
+            return false; // this is left of other
+        }
+        if (getMinX() > other.getMaxX())
+        {
+            return false; // this is right of other
+        }
+        if (getMaxY() < other.getMinY())
+        {
+            return false; // this is above other
+        }
+        if (getMinY() > other.getMaxY())
+        {
+            return false; // this is below other
+        }
+        return true; // boxes overlap
+    }
+
+    public final boolean contains(BoundingBox other)
+    {
+        if (getMinX() <= other.getMinX() && getMaxX() >= other.getMaxX() && getMinY() <= other.getMinY() && getMaxY() >= other.getMaxY())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public final boolean contains(Point2D p)
+    {
+        return getMinX() <= p.getX() && getMaxX() >= p.getX() &&
+               getMinY() <= p.getY() && getMaxY() >= p.getY();
+    }
+
     public final BoundingBoxJSO getJSO()
     {
         return m_jso;
