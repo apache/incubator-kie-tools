@@ -40,4 +40,7 @@ public class Constants {
 
     @TranslationKey(defaultValue = "")
     public static final String UnexpectedErrorWhileSaving = "UnexpectedErrorWhileSaving";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Admin = "Admin";
 }

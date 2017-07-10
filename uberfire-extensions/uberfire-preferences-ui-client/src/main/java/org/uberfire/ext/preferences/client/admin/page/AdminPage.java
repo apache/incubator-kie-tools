@@ -76,12 +76,14 @@ public interface AdminPage {
      * @param title Preference title that will be displayed on the tool accessor.
      * @param iconCss CSS class related to the shortcut icon.
      * @param category Defines the group inside which the shortcut will be.
+     * @param options Defines options to customize the preference accessor.
      */
     void addPreference(String screen,
                        String identifier,
                        String title,
                        String iconCss,
-                       String category);
+                       String category,
+                       AdminPageOptions... options);
 
     /**
      * Adds a new admin tool that links to a preference to the admin page.
@@ -92,41 +94,7 @@ public interface AdminPage {
      * @param category Defines the group inside which the shortcut will be.
      * @param customScopeResolutionStrategySupplier Supplier for a custom preference scope resolution strategy.
      * It will be used when the tool is selected.
-     */
-    void addPreference(String screen,
-                       String identifier,
-                       String title,
-                       String iconCss,
-                       String category,
-                       Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier);
-
-    /**
-     * Adds a new admin tool that links to a preference to the admin page.
-     * @param screen Identifier for the admin screen where the preference will be inserted.
-     * @param identifier Preference identifier.
-     * @param title Preference title that will be displayed on the tool accessor.
-     * @param iconCss CSS class related to the shortcut icon.
-     * @param category Defines the group inside which the shortcut will be.
-     * @param preferenceScope Scope where the preferences will be saved when edited.
-     * It will be used when the tool is selected.
-     */
-    void addPreference(String screen,
-                       String identifier,
-                       String title,
-                       String iconCss,
-                       String category,
-                       PreferenceScope preferenceScope);
-
-    /**
-     * Adds a new admin tool that links to a preference to the admin page.
-     * @param screen Identifier for the admin screen where the preference will be inserted.
-     * @param identifier Preference identifier.
-     * @param title Preference title that will be displayed on the tool accessor.
-     * @param iconCss CSS class related to the shortcut icon.
-     * @param category Defines the group inside which the shortcut will be.
-     * @param customScopeResolutionStrategySupplier Supplier for a custom preference scope resolution strategy.
-     * @param preferenceScope Scope where the preferences will be saved when edited.
-     * It will be used when the tool is selected.
+     * @param options Defines options to customize the preference accessor.
      */
     void addPreference(String screen,
                        String identifier,
@@ -134,7 +102,47 @@ public interface AdminPage {
                        String iconCss,
                        String category,
                        Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier,
-                       PreferenceScope preferenceScope);
+                       AdminPageOptions... options);
+
+    /**
+     * Adds a new admin tool that links to a preference to the admin page.
+     * @param screen Identifier for the admin screen where the preference will be inserted.
+     * @param identifier Preference identifier.
+     * @param title Preference title that will be displayed on the tool accessor.
+     * @param iconCss CSS class related to the shortcut icon.
+     * @param category Defines the group inside which the shortcut will be.
+     * @param preferenceScope Scope where the preferences will be saved when edited.
+     * It will be used when the tool is selected.
+     * @param options Defines options to customize the preference accessor.
+     */
+    void addPreference(String screen,
+                       String identifier,
+                       String title,
+                       String iconCss,
+                       String category,
+                       PreferenceScope preferenceScope,
+                       AdminPageOptions... options);
+
+    /**
+     * Adds a new admin tool that links to a preference to the admin page.
+     * @param screen Identifier for the admin screen where the preference will be inserted.
+     * @param identifier Preference identifier.
+     * @param title Preference title that will be displayed on the tool accessor.
+     * @param iconCss CSS class related to the shortcut icon.
+     * @param category Defines the group inside which the shortcut will be.
+     * @param customScopeResolutionStrategySupplier Supplier for a custom preference scope resolution strategy.
+     * @param preferenceScope Scope where the preferences will be saved when edited.
+     * It will be used when the tool is selected.
+     * @param options Defines options to customize the preference accessor.
+     */
+    void addPreference(String screen,
+                       String identifier,
+                       String title,
+                       String iconCss,
+                       String category,
+                       Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier,
+                       PreferenceScope preferenceScope,
+                       AdminPageOptions... options);
 
     /**
      * Returns all added admin tools, grouped by their category.

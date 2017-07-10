@@ -26,10 +26,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.annotations.Customizable;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
 import org.uberfire.ext.preferences.client.central.PreferencesCentralPerspective;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralInitializationEvent;
+import org.uberfire.ext.preferences.client.resources.i18n.Constants;
+import org.uberfire.ext.widgets.common.client.breadcrumbs.UberfireBreadcrumbs;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -46,6 +50,10 @@ public class AdminPageImpl implements AdminPage {
 
     private PreferenceScopeResolutionStrategy resolutionStrategy;
 
+    private UberfireBreadcrumbs breadcrumbs;
+
+    private TranslationService translationService;
+
     private Map<String, String> screenTitleByIdentifier;
 
     private Map<String, Map<String, List<AdminTool>>> toolsByCategoryByScreen;
@@ -55,16 +63,22 @@ public class AdminPageImpl implements AdminPage {
     public AdminPageImpl() {
         this(null,
              null,
+             null,
+             null,
              null);
     }
 
     @Inject
     public AdminPageImpl(final PlaceManager placeManager,
                          final Event<PreferencesCentralInitializationEvent> preferencesCentralInitializationEvent,
-                         @Customizable final PreferenceScopeResolutionStrategy resolutionStrategy) {
+                         @Customizable final PreferenceScopeResolutionStrategy resolutionStrategy,
+                         final UberfireBreadcrumbs breadcrumbs,
+                         final TranslationService translationService) {
         this.placeManager = placeManager;
         this.preferencesCentralInitializationEvent = preferencesCentralInitializationEvent;
         this.resolutionStrategy = resolutionStrategy;
+        this.breadcrumbs = breadcrumbs;
+        this.translationService = translationService;
         this.toolsByCategoryByScreen = new HashMap<>();
         this.screenTitleByIdentifier = new HashMap<>();
     }
@@ -137,45 +151,15 @@ public class AdminPageImpl implements AdminPage {
                               final String identifier,
                               final String title,
                               final String iconCss,
-                              final String category) {
-        addPreference(screen,
-                      identifier,
-                      title,
-                      iconCss,
-                      category,
-                      (Supplier<PreferenceScopeResolutionStrategyInfo>) null);
-    }
-
-    @Override
-    public void addPreference(final String screen,
-                              final String identifier,
-                              final String title,
-                              final String iconCss,
                               final String category,
-                              final Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier) {
+                              final AdminPageOptions... options) {
         addPreference(screen,
                       identifier,
                       title,
                       iconCss,
                       category,
-                      customScopeResolutionStrategySupplier,
-                      null);
-    }
-
-    @Override
-    public void addPreference(final String screen,
-                              final String identifier,
-                              final String title,
-                              final String iconCss,
-                              final String category,
-                              final PreferenceScope preferenceScope) {
-        addPreference(screen,
-                      identifier,
-                      title,
-                      iconCss,
-                      category,
-                      null,
-                      preferenceScope);
+                      (Supplier<PreferenceScopeResolutionStrategyInfo>) null,
+                      options);
     }
 
     @Override
@@ -185,19 +169,71 @@ public class AdminPageImpl implements AdminPage {
                               final String iconCss,
                               final String category,
                               final Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier,
-                              final PreferenceScope preferenceScope) {
+                              final AdminPageOptions... options) {
+        addPreference(screen,
+                      identifier,
+                      title,
+                      iconCss,
+                      category,
+                      customScopeResolutionStrategySupplier,
+                      null,
+                      options);
+    }
+
+    @Override
+    public void addPreference(final String screen,
+                              final String identifier,
+                              final String title,
+                              final String iconCss,
+                              final String category,
+                              final PreferenceScope preferenceScope,
+                              final AdminPageOptions... options) {
+        addPreference(screen,
+                      identifier,
+                      title,
+                      iconCss,
+                      category,
+                      null,
+                      preferenceScope,
+                      options);
+    }
+
+    @Override
+    public void addPreference(final String screen,
+                              final String identifier,
+                              final String title,
+                              final String iconCss,
+                              final String category,
+                              final Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier,
+                              final PreferenceScope preferenceScope,
+                              final AdminPageOptions... options) {
 
         addTool(screen,
                 title,
                 iconCss,
                 category,
                 () -> {
-                    final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy = customScopeResolutionStrategySupplier != null ? customScopeResolutionStrategySupplier.get() : null;
-                    final PreferencesCentralInitializationEvent initEvent = new PreferencesCentralInitializationEvent(identifier,
-                                                                                                                      customScopeResolutionStrategy,
-                                                                                                                      preferenceScope);
-                    placeManager.goTo(new DefaultPlaceRequest(PreferencesCentralPerspective.IDENTIFIER));
-                    preferencesCentralInitializationEvent.fire(initEvent);
+                    final Command accessCommand = () -> {
+                        final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy = customScopeResolutionStrategySupplier != null ? customScopeResolutionStrategySupplier.get() : null;
+                        final PreferencesCentralInitializationEvent initEvent = new PreferencesCentralInitializationEvent(identifier,
+                                                                                                                          customScopeResolutionStrategy,
+                                                                                                                          preferenceScope);
+                        placeManager.goTo(new DefaultPlaceRequest(PreferencesCentralPerspective.IDENTIFIER));
+                        preferencesCentralInitializationEvent.fire(initEvent);
+                    };
+
+                    accessCommand.execute();
+
+                    if (hasOption(options,
+                                  AdminPageOptions.WITH_BREADCRUMBS)) {
+                        breadcrumbs.clearBreadcrumbs(PreferencesCentralPerspective.IDENTIFIER);
+                        breadcrumbs.addBreadCrumb(PreferencesCentralPerspective.IDENTIFIER,
+                                                  translationService.format(Constants.Admin),
+                                                  new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER));
+                        breadcrumbs.addBreadCrumb(PreferencesCentralPerspective.IDENTIFIER,
+                                                  title,
+                                                  accessCommand);
+                    }
                 });
     }
 
@@ -219,5 +255,18 @@ public class AdminPageImpl implements AdminPage {
     @Override
     public void setDefaultScreen(final String defaultScreen) {
         this.defaultScreen = defaultScreen;
+    }
+
+    private boolean hasOption(final AdminPageOptions[] options,
+                              final AdminPageOptions option) {
+        if (options != null) {
+            for (final AdminPageOptions o : options) {
+                if (o.equals(option)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

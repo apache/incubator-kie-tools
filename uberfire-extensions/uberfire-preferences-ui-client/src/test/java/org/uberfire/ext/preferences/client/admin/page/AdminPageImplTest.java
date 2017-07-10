@@ -21,16 +21,19 @@ import java.util.Map;
 import java.util.function.Supplier;
 import javax.enterprise.event.Event;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
 import org.uberfire.ext.preferences.client.central.PreferencesCentralPerspective;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralInitializationEvent;
+import org.uberfire.ext.widgets.common.client.breadcrumbs.UberfireBreadcrumbs;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.PreferenceScopeResolutionStrategy;
 import org.uberfire.preferences.shared.UsernameProvider;
 import org.uberfire.preferences.shared.impl.DefaultPreferenceScopeResolutionStrategy;
@@ -52,6 +55,12 @@ public class AdminPageImplTest {
     @Mock
     private Event<PreferencesCentralInitializationEvent> preferencesCentralInitializationEvent;
 
+    @Mock
+    private UberfireBreadcrumbs uberfireBreadcrumbs;
+
+    @Mock
+    private TranslationService translationService;
+
     private PreferenceScopeResolutionStrategy resolutionStrategy;
 
     private AdminPageImpl adminPage;
@@ -65,7 +74,9 @@ public class AdminPageImplTest {
                                                                           null);
         adminPage = new AdminPageImpl(placeManager,
                                       preferencesCentralInitializationEvent,
-                                      resolutionStrategy);
+                                      resolutionStrategy,
+                                      uberfireBreadcrumbs,
+                                      translationService);
     }
 
     @Test
@@ -290,6 +301,46 @@ public class AdminPageImplTest {
         verify(preferencesCentralInitializationEvent).fire(eq(new PreferencesCentralInitializationEvent("MyPreference",
                                                                                                         null,
                                                                                                         preferenceScope)));
+    }
+
+    @Test
+    public void addPreferenceWithBreadcrumbsTest() {
+        adminPage.addScreen("screen1",
+                            "Screen 1");
+        adminPage.addPreference("screen1",
+                                "MyPreference",
+                                "My Preference",
+                                "fa-map",
+                                "category1",
+                                AdminPageOptions.WITH_BREADCRUMBS);
+
+        final Map<String, List<AdminTool>> toolsByCategory1 = adminPage.getToolsByCategory("screen1");
+
+        assertNotNull(toolsByCategory1);
+        assertEquals(1,
+                     toolsByCategory1.size());
+
+        final List<AdminTool> category1Tools = toolsByCategory1.get("category1");
+        assertEquals(1,
+                     category1Tools.size());
+        assertEquals("My Preference",
+                     category1Tools.get(0).getTitle());
+        assertEquals("fa-map",
+                     category1Tools.get(0).getIconCss());
+
+        category1Tools.get(0).getOnClickCommand().execute();
+
+        verify(placeManager).goTo(eq(new DefaultPlaceRequest(PreferencesCentralPerspective.IDENTIFIER)));
+        verify(preferencesCentralInitializationEvent).fire(eq(new PreferencesCentralInitializationEvent("MyPreference",
+                                                                                                        null,
+                                                                                                        null)));
+        verify(uberfireBreadcrumbs).clearBreadcrumbs(PreferencesCentralPerspective.IDENTIFIER);
+        verify(uberfireBreadcrumbs).addBreadCrumb(eq(PreferencesCentralPerspective.IDENTIFIER),
+                                                  anyString(),
+                                                  eq(new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER)));
+        verify(uberfireBreadcrumbs).addBreadCrumb(eq(PreferencesCentralPerspective.IDENTIFIER),
+                                                  anyString(),
+                                                  any(Command.class));
     }
 
     @Test
