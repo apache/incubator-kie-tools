@@ -20,8 +20,6 @@ package com.ait.lienzo.client.core.shape.wires;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
-import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
 import com.ait.lienzo.shared.core.types.Direction;
@@ -213,8 +211,16 @@ public class WiresConnection extends AbstractControlHandle
 
     public boolean isSpecialConnection()
     {
-        return m_autoConnection || m_magnet != null && m_magnet.getIndex() == 0;
+        return isSpecialConnection(m_autoConnection,
+                                   null != m_magnet ? m_magnet.getIndex() : null);
     }
+
+    public static boolean isSpecialConnection(boolean auto,
+                                              Integer magnet)
+    {
+        return auto ||  magnet != null && magnet == 0;
+    }
+
 
     @Override
     public IPrimitive<?> getControl()

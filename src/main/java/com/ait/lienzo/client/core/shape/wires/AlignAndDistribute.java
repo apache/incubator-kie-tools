@@ -217,6 +217,11 @@ public class AlignAndDistribute
         }
     }
 
+    public boolean isShapeIndexed(final String uuid)
+    {
+        return m_shapes.containsKey(uuid);
+    }
+
     public AlignAndDistributeControl getControlForShape(final String uuid)
     {
         return m_shapes.get(uuid);

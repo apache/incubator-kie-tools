@@ -774,7 +774,8 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
                 ((WiresConnectorControlImpl)handler.getControl()).move(event.getDragContext().getDx(), event.getDragContext().getDy(), true, true);
             }
 
-            WiresShapeControlImpl.updateSpecialConnections(m_connectorsWithSpecialConnections);
+            WiresShapeControlImpl.updateSpecialConnections(m_connectorsWithSpecialConnections,
+                                                           false);
 
             m_selectionManager.m_layer.batch();
         }
@@ -802,7 +803,8 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
                 ((WiresConnectorControlImpl)handler.getControl()).dragEnd(); // must be called to null the  points array
             }
 
-            WiresShapeControlImpl.updateSpecialConnections(m_connectorsWithSpecialConnections);
+            WiresShapeControlImpl.updateSpecialConnections(m_connectorsWithSpecialConnections,
+                                                           true);
 
             m_connectorsWithSpecialConnections = null;
             m_shapeStartLocations = null;

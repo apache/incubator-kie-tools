@@ -133,7 +133,7 @@ public final class WiresManager
                     if ( c.isSpecialConnection() && line.getPathPartList().size() == 0)
                     {
                         // if getPathPartList is empty, it was refreshed due to a point change
-                        c.updateForSpecialConnections();
+                        c.updateForSpecialConnections(false);
                     }
 
                     final boolean prepared = line.isPathPartListPrepared(c.getLine().getAttributes());
