@@ -33,8 +33,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
+import org.kie.workbench.common.services.backend.builder.core.LRUPomModelCache;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
@@ -48,7 +50,6 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -85,6 +86,12 @@ public class ProjectScreenModelSaverTest {
     private CommentedOptionFactory commentedOptionFactory;
 
     @Mock
+    private LRUPomModelCache pomModelCache;
+
+    @Mock
+    private KieProject project;
+
+    @Mock
     private IOService ioService;
 
     private Path pathToPom;
@@ -96,29 +103,30 @@ public class ProjectScreenModelSaverTest {
     @BeforeClass
     public static void setupSystemProperties() {
         //These are not needed for the tests
-        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
-                            "false" );
-        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
-                            "false" );
-        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
-                            "true" );
+        System.setProperty("org.uberfire.nio.git.daemon.enabled",
+                           "false");
+        System.setProperty("org.uberfire.nio.git.ssh.enabled",
+                           "false");
+        System.setProperty("org.uberfire.sys.repo.monitor.disabled",
+                           "true");
     }
 
     @Before
     public void setUp() throws Exception {
         testFileSystem = new TestFileSystem();
 
-        saver = new ProjectScreenModelSaver( pomService,
-                                             kModuleService,
-                                             importsService,
-                                             repositoriesService,
-                                             whiteListService,
-                                             ioService,
-                                             projectService,
-                                             repositoryResolver,
-                                             commentedOptionFactory );
+        saver = new ProjectScreenModelSaver(pomService,
+                                            kModuleService,
+                                            importsService,
+                                            repositoriesService,
+                                            whiteListService,
+                                            ioService,
+                                            projectService,
+                                            repositoryResolver,
+                                            commentedOptionFactory,
+                                            pomModelCache);
 
-        pathToPom = testFileSystem.createTempFile( "testproject/pom.xml" );
+        pathToPom = testFileSystem.createTempFile("testproject/pom.xml");
     }
 
     @After
@@ -127,119 +135,142 @@ public class ProjectScreenModelSaverTest {
     }
 
     @Test
-    public void testPatchSave() throws Exception {
-        final CommentedOption commentedOption = new CommentedOption( "hello" );
-        when( commentedOptionFactory.makeCommentedOption( "message" ) ).thenReturn( commentedOption );
+    public void testBatchSave() throws Exception {
+        final CommentedOption commentedOption = new CommentedOption("hello");
+        when(commentedOptionFactory.makeCommentedOption("message")).thenReturn(commentedOption);
 
-        saver.save( pathToPom,
-                    new ProjectScreenModel(),
-                    DeploymentMode.FORCED,
-                    "message" );
+        saver.save(pathToPom,
+                   new ProjectScreenModel(),
+                   DeploymentMode.FORCED,
+                   "message");
 
-        verify( ioService ).startBatch( any( FileSystem.class ),
-                                        eq( commentedOption ) );
+        verify(ioService).startBatch(any(FileSystem.class),
+                                     eq(commentedOption));
 
-        verify( ioService ).endBatch();
+        verify(ioService).endBatch();
     }
 
     @Test
     public void testPOMSave() throws Exception {
         final ProjectScreenModel model = new ProjectScreenModel();
         final POM pom = new POM();
-        model.setPOM( pom );
+        model.setPOM(pom);
         final Metadata pomMetaData = new Metadata();
-        model.setPOMMetaData( pomMetaData );
+        model.setPOMMetaData(pomMetaData);
 
-        saver.save( pathToPom,
-                    model,
-                    DeploymentMode.FORCED,
-                    "message" );
+        saver.save(pathToPom,
+                   model,
+                   DeploymentMode.FORCED,
+                   "message");
 
-        verify( pomService ).save( eq( pathToPom ),
-                                   eq( pom ),
-                                   eq( pomMetaData ),
-                                   eq( "message" ) );
+        verify(pomService).save(eq(pathToPom),
+                                eq(pom),
+                                eq(pomMetaData),
+                                eq("message"));
+    }
+
+    @Test
+    public void checkPOMSaveInvalidatesPomModelCache() {
+        // See https://issues.jboss.org/browse/RHBRMS-2822
+        // Saving the pom.xml (eventually) triggers an InvalidateDMOProjectCacheEvent once VFS's WatchService
+        // has observed the file change after the batch has been committed. The InvalidateDMOProjectCacheEvent then
+        // invalidates the PomModelCache. The PomModelCache is used to find the Project's GAV when the Project is
+        // "Built (& Deployed)" and if it's content is stale can lead to the generated KJAR containing the
+        // wrong GAV. Therefore invalidate the PomModelCache as soon as the save starts.
+        final ProjectScreenModel model = new ProjectScreenModel();
+        final Metadata pomMetaData = new Metadata();
+        final POM pom = new POM();
+        model.setPOM(pom);
+        model.setPOMMetaData(pomMetaData);
+
+        when(projectService.resolveProject(pathToPom)).thenReturn(project);
+
+        saver.save(pathToPom,
+                   model,
+                   DeploymentMode.FORCED,
+                   "message");
+
+        verify(pomModelCache).invalidateCache(project);
     }
 
     @Test
     public void testKModuleSave() throws Exception {
         final ProjectScreenModel model = new ProjectScreenModel();
         final KModuleModel kModule = new KModuleModel();
-        model.setKModule( kModule );
-        final Path pathToKModule = mock( Path.class );
-        model.setPathToKModule( pathToKModule );
+        model.setKModule(kModule);
+        final Path pathToKModule = mock(Path.class);
+        model.setPathToKModule(pathToKModule);
         final Metadata metadata = new Metadata();
-        model.setKModuleMetaData( metadata );
+        model.setKModuleMetaData(metadata);
 
-        saver.save( pathToPom,
-                    model,
-                    DeploymentMode.FORCED,
-                    "message kmodule" );
+        saver.save(pathToPom,
+                   model,
+                   DeploymentMode.FORCED,
+                   "message kmodule");
 
-        verify( kModuleService ).save( eq( pathToKModule ),
-                                       eq( kModule ),
-                                       eq( metadata ),
-                                       eq( "message kmodule" ) );
+        verify(kModuleService).save(eq(pathToKModule),
+                                    eq(kModule),
+                                    eq(metadata),
+                                    eq("message kmodule"));
     }
 
     @Test
     public void testImportsSave() throws Exception {
         final ProjectScreenModel model = new ProjectScreenModel();
         final ProjectImports projectImports = new ProjectImports();
-        model.setProjectImports( projectImports );
-        final Path pathToImports = mock( Path.class );
-        model.setPathToImports( pathToImports );
+        model.setProjectImports(projectImports);
+        final Path pathToImports = mock(Path.class);
+        model.setPathToImports(pathToImports);
         final Metadata metadata = new Metadata();
-        model.setProjectImportsMetaData( metadata );
+        model.setProjectImportsMetaData(metadata);
 
-        saver.save( pathToPom,
-                    model,
-                    DeploymentMode.FORCED,
-                    "message imports" );
+        saver.save(pathToPom,
+                   model,
+                   DeploymentMode.FORCED,
+                   "message imports");
 
-        verify( importsService ).save( eq( pathToImports ),
-                                       eq( projectImports ),
-                                       eq( metadata ),
-                                       eq( "message imports" ) );
+        verify(importsService).save(eq(pathToImports),
+                                    eq(projectImports),
+                                    eq(metadata),
+                                    eq("message imports"));
     }
 
     @Test
     public void testRepositoriesSave() throws Exception {
         final ProjectScreenModel model = new ProjectScreenModel();
         final ProjectRepositories projectRepositories = new ProjectRepositories();
-        model.setRepositories( projectRepositories );
-        final Path pathToRepositories = mock( Path.class );
-        model.setPathToRepositories( pathToRepositories );
+        model.setRepositories(projectRepositories);
+        final Path pathToRepositories = mock(Path.class);
+        model.setPathToRepositories(pathToRepositories);
 
-        saver.save( pathToPom,
-                    model,
-                    DeploymentMode.FORCED,
-                    "message repositories" );
+        saver.save(pathToPom,
+                   model,
+                   DeploymentMode.FORCED,
+                   "message repositories");
 
-        verify( repositoriesService ).save( eq( pathToRepositories ),
-                                            eq( projectRepositories ),
-                                            eq( "message repositories" ) );
+        verify(repositoriesService).save(eq(pathToRepositories),
+                                         eq(projectRepositories),
+                                         eq("message repositories"));
     }
 
     @Test
     public void testWhiteListSave() throws Exception {
         final ProjectScreenModel model = new ProjectScreenModel();
         final WhiteList whiteList = new WhiteList();
-        model.setWhiteList( whiteList );
-        final Path pathToWhiteList = mock( Path.class );
-        model.setPathToWhiteList( pathToWhiteList );
+        model.setWhiteList(whiteList);
+        final Path pathToWhiteList = mock(Path.class);
+        model.setPathToWhiteList(pathToWhiteList);
         final Metadata metadata = new Metadata();
-        model.setWhiteListMetaData( metadata );
+        model.setWhiteListMetaData(metadata);
 
-        saver.save( pathToPom,
-                    model,
-                    DeploymentMode.FORCED,
-                    "message white list" );
+        saver.save(pathToPom,
+                   model,
+                   DeploymentMode.FORCED,
+                   "message white list");
 
-        verify( whiteListService ).save( eq( pathToWhiteList ),
-                                         eq( whiteList ),
-                                         eq( metadata ),
-                                         eq( "message white list" ) );
+        verify(whiteListService).save(eq(pathToWhiteList),
+                                      eq(whiteList),
+                                      eq(metadata),
+                                      eq("message white list"));
     }
-
 }

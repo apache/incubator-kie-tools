@@ -30,6 +30,7 @@ import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectRepositoriesService;
 import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
+import org.kie.workbench.common.services.backend.builder.core.LRUPomModelCache;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -52,19 +53,22 @@ public class ProjectScreenModelSaver {
     private ProjectRepositoryResolver repositoryResolver;
     private CommentedOptionFactory commentedOptionFactory;
 
+    private LRUPomModelCache pomModelCache;
+
     public ProjectScreenModelSaver() {
     }
 
     @Inject
-    public ProjectScreenModelSaver( final POMService pomService,
-                                    final KModuleService kModuleService,
-                                    final ProjectImportsService importsService,
-                                    final ProjectRepositoriesService repositoriesService,
-                                    final PackageNameWhiteListService whiteListService,
-                                    final @Named("ioStrategy") IOService ioService,
-                                    final KieProjectService projectService,
-                                    final ProjectRepositoryResolver repositoryResolver,
-                                    final CommentedOptionFactory commentedOptionFactory ) {
+    public ProjectScreenModelSaver(final POMService pomService,
+                                   final KModuleService kModuleService,
+                                   final ProjectImportsService importsService,
+                                   final ProjectRepositoriesService repositoriesService,
+                                   final PackageNameWhiteListService whiteListService,
+                                   final @Named("ioStrategy") IOService ioService,
+                                   final KieProjectService projectService,
+                                   final ProjectRepositoryResolver repositoryResolver,
+                                   final CommentedOptionFactory commentedOptionFactory,
+                                   final LRUPomModelCache pomModelCache) {
         this.pomService = pomService;
         this.kModuleService = kModuleService;
         this.importsService = importsService;
@@ -75,66 +79,69 @@ public class ProjectScreenModelSaver {
         this.projectService = projectService;
         this.repositoryResolver = repositoryResolver;
         this.commentedOptionFactory = commentedOptionFactory;
+
+        this.pomModelCache = pomModelCache;
     }
 
-    public void save( final Path pathToPomXML,
-                      final ProjectScreenModel model,
-                      final DeploymentMode mode,
-                      final String comment ) {
-        if ( DeploymentMode.VALIDATED.equals( mode ) ) {
-            checkRepositories( pathToPomXML,
-                               model );
+    public void save(final Path pathToPomXML,
+                     final ProjectScreenModel model,
+                     final DeploymentMode mode,
+                     final String comment) {
+        if (DeploymentMode.VALIDATED.equals(mode)) {
+            checkRepositories(pathToPomXML,
+                              model);
         }
 
         try {
-            ioService.startBatch( Paths.convert( pathToPomXML ).getFileSystem(),
-                                  commentedOptionFactory.makeCommentedOption( comment ) );
-            pomService.save( pathToPomXML,
-                             model.getPOM(),
-                             model.getPOMMetaData(),
-                             comment );
-            kModuleService.save( model.getPathToKModule(),
-                                 model.getKModule(),
-                                 model.getKModuleMetaData(),
-                                 comment );
-            importsService.save( model.getPathToImports(),
-                                 model.getProjectImports(),
-                                 model.getProjectImportsMetaData(),
-                                 comment );
-            repositoriesService.save( model.getPathToRepositories(),
-                                      model.getRepositories(),
-                                      comment );
-            whiteListService.save( model.getPathToWhiteList(),
-                                   model.getWhiteList(),
-                                   model.getWhiteListMetaData(),
-                                   comment );
+            final KieProject project = projectService.resolveProject(pathToPomXML);
+            pomModelCache.invalidateCache(project);
 
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
+            ioService.startBatch(Paths.convert(pathToPomXML).getFileSystem(),
+                                 commentedOptionFactory.makeCommentedOption(comment));
+            pomService.save(pathToPomXML,
+                            model.getPOM(),
+                            model.getPOMMetaData(),
+                            comment);
+            kModuleService.save(model.getPathToKModule(),
+                                model.getKModule(),
+                                model.getKModuleMetaData(),
+                                comment);
+            importsService.save(model.getPathToImports(),
+                                model.getProjectImports(),
+                                model.getProjectImportsMetaData(),
+                                comment);
+            repositoriesService.save(model.getPathToRepositories(),
+                                     model.getRepositories(),
+                                     comment);
+            whiteListService.save(model.getPathToWhiteList(),
+                                  model.getWhiteList(),
+                                  model.getWhiteListMetaData(),
+                                  comment);
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
         } finally {
             ioService.endBatch();
         }
     }
 
-    private void checkRepositories( final Path pathToPomXML,
-                                    final ProjectScreenModel model ) {
+    private void checkRepositories(final Path pathToPomXML,
+                                   final ProjectScreenModel model) {
         // Check is the POM's GAV has been changed.
         final GAV gav = model.getPOM().getGav();
-        final KieProject project = projectService.resolveProject( pathToPomXML );
-        if ( gav.equals( project.getPom().getGav() ) ) {
+        final KieProject project = projectService.resolveProject(pathToPomXML);
+        if (gav.equals(project.getPom().getGav())) {
             return;
         }
 
         // Check is the Project's "proposed" GAV resolves to any pre-existing artifacts.
         // Use the Repositories in the model since the User may update the Repositories filter and save.
         final ProjectRepositories projectRepositories = model.getRepositories();
-        final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact( gav,
-                                                                                                               project,
-                                                                                                               projectRepositories.filterByIncluded() );
-        if ( repositories.size() > 0 ) {
-            throw new GAVAlreadyExistsException( gav,
-                                                 repositories );
+        final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact(gav,
+                                                                                                              project,
+                                                                                                              projectRepositories.filterByIncluded());
+        if (repositories.size() > 0) {
+            throw new GAVAlreadyExistsException(gav,
+                                                repositories);
         }
     }
-
 }
