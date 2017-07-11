@@ -396,7 +396,6 @@ public class WiresShapeControlImpl implements WiresShapeControl
     @Override
     public void dragMove(final DragContext context)
     {
-        // Nothing to do.
     }
 
     @Override
@@ -433,7 +432,18 @@ public class WiresShapeControlImpl implements WiresShapeControl
 
         updateSpecialConnections(m_connectorsWithSpecialConnections);
 
-        return adjusted1 || adjusted2;
+        if (m_shape.getChildShapes() != null && !m_shape.getChildShapes().isEmpty())
+        {
+            for (WiresShape child : m_shape.getChildShapes())
+            {
+                if (child.getMagnets() != null)
+                {
+                    child.getMagnets().shapeMoved();
+                }
+            }
+        }
+
+        return adjusted1 && adjusted2;
 
     }
 
