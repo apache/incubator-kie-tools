@@ -115,7 +115,7 @@ public class AlignAndDistribute
 
     public static BoundingBox getBoundingBox(IDrawable<?> prim)
     {
-        return prim.getBoundingPoints().getBoundingBox();
+        return prim.getComputedBoundingPoints().getBoundingBox();
     }
 
     public static Attributes getAttributes(IPrimitive<?> prim)

@@ -82,17 +82,13 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 
         // circles xy are in centre, where as others are top left.
         // For this reason we must use getBoundingBox, which uses BoundingPoints underneath, when ensures the shape x/y is now top left.
-        // use this to determine an offset used for later get x/y
         m_box = AlignAndDistribute.getBoundingBox(group);
-        m_leftOffset = group.getX() - m_box.getX();
-        m_topOffset = group.getY() - m_box.getY();
 
-        Point2D absLoc = group.getComputedLocation();
+        double left = m_box.getMinX();
+        double right = m_box.getMaxX();
+        double top = m_box.getMinY();
+        double bottom = m_box.getMaxY();
 
-        double left = absLoc.getX() + m_leftOffset;
-        double right = left + m_box.getWidth();
-        double top = absLoc.getY() + m_topOffset;
-        double bottom = top + m_box.getHeight();
 
         captureHorizontalPositions(left, right);
         captureVerticalPositions(top, bottom);
@@ -260,18 +256,21 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 
         // circles xy are in centre, where as others are top left.
         // For this reason we must use getBoundingBox, which uses BoundingPoints underneath, when ensures the shape x/y is now top left.
-        // However getBoundingBox here is still relative to parent, so must offset against parent absolute xy
-        Point2D absLoc = m_group.getComputedLocation();
+        m_box = AlignAndDistribute.getBoundingBox(m_group);
 
-        double left = absLoc.getX() + m_leftOffset;
-        double right = left + m_box.getWidth();
-        double top = absLoc.getY() + m_topOffset;
-        double bottom = top + m_box.getHeight();
+
+        double left = m_box.getMinX();
+        double right = m_box.getMaxX();
+        double bottom = m_box.getMaxY();
+        double top = m_box.getMinY();
 
         boolean leftChanged = left != m_left;
         boolean rightChanged = right != m_right;
         boolean topChanged = top != m_top;
         boolean bottomChanged = bottom != m_bottom;
+
+
+
 
         if (!leftChanged && !rightChanged && !topChanged && !bottomChanged)
         {
