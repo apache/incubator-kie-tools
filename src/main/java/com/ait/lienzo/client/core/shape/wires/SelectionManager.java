@@ -732,12 +732,15 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
 
             for (WiresShape shape : m_selectionManager.m_selected.m_shapes)
             {
-                WiresShapeControlImpl.collectionSpecialConnectors(shape, connectors);
+                if ( shape.getMagnets() != null)
+                {
+                    WiresShapeControlImpl.collectionSpecialConnectors(shape, connectors);
 
-                shape.getMagnets().onNodeDragStart(event); // must do magnets first, to avoid attribute change updates being processed
+                    shape.getMagnets().onNodeDragStart(event); // must do magnets first, to avoid attribute change updates being processed
+                }
                 m_shapeStartLocations.push(shape.getX(), shape.getY());
 
-                ((WiresShapeControlImpl)shape.getHandler().getControl()).dragStart(event.getDragContext());
+                ((WiresShapeControlImpl) shape.getHandler().getControl()).dragStart(event.getDragContext());
             }
 
             m_connectorsWithSpecialConnections = connectors.values().toArray(new WiresConnector[connectors.size()]);
@@ -757,7 +760,10 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
                 shape.setX(m_shapeStartLocations.get(i++) + event.getDragContext().getDx());
                 shape.setY(m_shapeStartLocations.get(i++) + event.getDragContext().getDy());
 
-                shape.getMagnets().onNodeDragMove(event);
+                if ( shape.getMagnets() != null)
+                {
+                    shape.getMagnets().onNodeDragMove(event);
+                }
 
                 ((WiresShapeControlImpl)shape.getHandler().getControl()).dragMove(event.getDragContext());
             }
@@ -769,6 +775,8 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
             }
 
             WiresShapeControlImpl.updateSpecialConnections(m_connectorsWithSpecialConnections);
+
+            m_selectionManager.m_layer.batch();
         }
 
         @Override public void onNodeDragEnd(NodeDragEndEvent event)
@@ -779,7 +787,10 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
                 shape.setX(m_shapeStartLocations.get(i++) + event.getDragContext().getDx());
                 shape.setY(m_shapeStartLocations.get(i++) + event.getDragContext().getDy());
 
-                shape.getMagnets().onNodeDragEnd(event);
+                if ( shape.getMagnets() != null)
+                {
+                    shape.getMagnets().onNodeDragEnd(event);
+                }
 
                 ((WiresShapeControlImpl)shape.getHandler().getControl()).dragEnd(event.getDragContext());
             }
@@ -796,6 +807,8 @@ public class SelectionManager implements NodeMouseDownHandler, NodeMouseDoubleCl
             m_connectorsWithSpecialConnections = null;
             m_shapeStartLocations = null;
             m_selectionManager.m_ignoreMouseClick = true; // need to ignore the click event after
+
+            m_selectionManager.m_layer.batch();
         }
     }
 }

@@ -341,14 +341,6 @@ public class MagnetManager
                 m.shapeMoved(x, y);
             }
 
-            if (m_wiresShape.getChildShapes() != null && !m_wiresShape.getChildShapes().isEmpty())
-            {
-                for (WiresShape child : m_wiresShape.getChildShapes())
-                {
-                    child.getMagnets().shapeMoved();
-                }
-            }
-
             batch();
         }
 

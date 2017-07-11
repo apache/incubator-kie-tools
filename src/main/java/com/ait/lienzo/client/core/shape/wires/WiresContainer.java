@@ -51,6 +51,8 @@ public class WiresContainer
 
     private final HandlerManager             m_events;
 
+    private WiresManager                     m_wiresManager;
+
     private boolean                          m_drag_initialized;
 
     private boolean                          m_dragging;
@@ -75,6 +77,16 @@ public class WiresContainer
         this.m_childShapes = new NFastArrayList<WiresShape>();
         this.m_registrationManager = m_registrationManager;
         this.attributesChangedBatcher = attributesChangedBatcher;
+    }
+
+    public WiresManager getWiresManager()
+    {
+        return m_wiresManager;
+    }
+
+    public void setWiresManager(WiresManager wiresManager)
+    {
+        m_wiresManager = wiresManager;
     }
 
     public IContainer<?, IPrimitive<?>> getContainer()
@@ -158,6 +170,8 @@ public class WiresContainer
         {
             shape.getMagnets().shapeMoved();
         }
+
+        m_wiresManager.getAlignAndDistribute().getControlForShape(shape.uuid()).refresh();
 
         getLayoutHandler().requestLayout( this );
     }
