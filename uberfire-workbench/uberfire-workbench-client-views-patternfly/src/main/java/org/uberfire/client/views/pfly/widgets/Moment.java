@@ -33,6 +33,10 @@ public interface Moment {
 
     Moment minutes(int minutes);
 
+    Moment seconds(int seconds);
+
+    Moment milliseconds(int milliseconds);
+
     Moment subtract(int number,
                     String period);
 
