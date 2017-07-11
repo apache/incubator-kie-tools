@@ -345,7 +345,10 @@ public class MagnetManager
             {
                 for (WiresShape child : m_wiresShape.getChildShapes())
                 {
-                    child.getMagnets().shapeMoved();
+                    if (child.getMagnets() != null)
+                    {
+                        child.getMagnets().shapeMoved();
+                    }
                 }
             }
 

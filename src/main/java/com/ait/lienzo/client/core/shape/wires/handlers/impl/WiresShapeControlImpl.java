@@ -122,23 +122,25 @@ public class WiresShapeControlImpl implements WiresShapeControl
 
     public static void collectionSpecialConnectors(WiresShape shape, Map<String, WiresConnector> connectors)
     {
-        // start with 0, as we can have center connections too
-        for ( int i = 0, size0 = shape.getMagnets().size(); i < size0; i++ )
+        if (shape.getMagnets() != null)
         {
-            WiresMagnet m = shape.getMagnets().getMagnet(i);
-            for ( int j = 0, size1 = m.getConnectionsSize(); j < size1; j++ )
+            // start with 0, as we can have center connections too
+            for (int i = 0, size0 = shape.getMagnets().size(); i < size0; i++)
             {
-                WiresConnection connection = m.getConnections().get(j);
-                if (connection.isSpecialConnection())
+                WiresMagnet m = shape.getMagnets().getMagnet(i);
+                for (int j = 0, size1 = m.getConnectionsSize(); j < size1; j++)
                 {
-                    connectors.put(connection.getConnector().getGroup().uuid(), connection.getConnector());
+                    WiresConnection connection = m.getConnections().get(j);
+                    if (connection.isSpecialConnection())
+                    {
+                        connectors.put(connection.getConnector().getGroup().uuid(), connection.getConnector());
+                    }
                 }
             }
         }
 
         for (WiresShape child : shape.getChildShapes())
         {
-
             collectionSpecialConnectors(child, connectors);
         }
     }
@@ -181,8 +183,6 @@ public class WiresShapeControlImpl implements WiresShapeControl
             // cannot connect to a shape with no magnets.
             return true;
         }
-
-
 
         boolean accept = true;
         for (WiresConnector c : m_manager.getConnectorList())
@@ -246,10 +246,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
                     }
                 }
 
-
-
                 WiresConnector c2 = null;
-
 
                 // record these, as they may need restoring later.
                 double      tailXOffset = 0;
@@ -279,7 +276,6 @@ public class WiresShapeControlImpl implements WiresShapeControl
                     }
 
                     WiresMagnet cmagnet = m_shape.getMagnets().getMagnet(1);
-
 
 
                     // check if isAllowed
@@ -436,7 +432,6 @@ public class WiresShapeControlImpl implements WiresShapeControl
         }
 
         updateSpecialConnections(m_connectorsWithSpecialConnections);
-
 
         return adjusted1 || adjusted2;
 
