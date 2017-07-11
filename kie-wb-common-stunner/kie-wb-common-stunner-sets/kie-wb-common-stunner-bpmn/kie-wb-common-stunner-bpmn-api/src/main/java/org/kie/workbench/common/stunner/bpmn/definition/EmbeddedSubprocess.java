@@ -45,6 +45,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
+import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -52,6 +53,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = EmbeddedSubprocess.EmbeddedSubprocessBuilder.class)
+@Morph(base = BaseSubprocess.class)
 @CanContain(roles = {"all"})
 @FormDefinition(
         startElement = "general",
@@ -71,7 +73,7 @@ public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel {
         @Override
         public EmbeddedSubprocess build() {
             return new EmbeddedSubprocess(
-                    new BPMNGeneralSet("Subprocess"),
+                    new BPMNGeneralSet("Sub-process"),
                     new BackgroundSet("#FFFFFF",
                                       BORDER_COLOR,
                                       BORDER_SIZE),

@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.Shape;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.client.lienzo.util.SVGUtils;
+import org.kie.workbench.common.stunner.client.lienzo.util.LirnzoSvgPaths;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.ToolboxCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions.RemoveToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder.NewConnectorCommand;
@@ -47,7 +47,7 @@ public class LienzoToolboxCommandFactory extends ToolboxCommandFactory {
     @SuppressWarnings("unchecked")
     public RemoveToolboxCommand<?> newRemoveToolboxCommand() {
         final RemoveToolboxCommand<Shape<?>> c = removeToolboxCommands.get();
-        c.setIcon(SVGUtils.createSVGIcon(SVGUtils.getTrashIcon()));
+        c.setIcon(LirnzoSvgPaths.createSVGIcon(LirnzoSvgPaths.getTrashIcon()));
         return c;
     }
 

@@ -32,15 +32,15 @@ public class BPMNPaletteViewFactory extends AbstractBS3PaletteViewFactory {
 
     private static final Map<String, Glyph> CATEGORY_GLYPHS = new HashMap<String, Glyph>(5) {{
         put(Categories.ACTIVITIES,
-            SvgDataUriGlyph.create(BPMNImageResources.INSTANCE.categoryActivity().getSafeUri()));
+            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.categoryActivity().getSafeUri()));
         put(Categories.CONTAINERS,
-            SvgDataUriGlyph.create(BPMNImageResources.INSTANCE.categoryContainer().getSafeUri()));
+            SvgDataUriGlyph.Builder.build((BPMNImageResources.INSTANCE.categoryContainer().getSafeUri())));
         put(Categories.GATEWAYS,
-            SvgDataUriGlyph.create(BPMNImageResources.INSTANCE.categoryGateway().getSafeUri()));
+            SvgDataUriGlyph.Builder.build((BPMNImageResources.INSTANCE.categoryGateway().getSafeUri())));
         put(Categories.EVENTS,
-            SvgDataUriGlyph.create(BPMNImageResources.INSTANCE.cagetoryEvents().getSafeUri()));
+            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.cagetoryEvents().getSafeUri()));
         put(Categories.CONNECTING_OBJECTS,
-            SvgDataUriGlyph.create(BPMNImageResources.INSTANCE.categorySequence().getSafeUri()));
+            SvgDataUriGlyph.Builder.build((BPMNImageResources.INSTANCE.categorySequence().getSafeUri())));
     }};
 
     @Override

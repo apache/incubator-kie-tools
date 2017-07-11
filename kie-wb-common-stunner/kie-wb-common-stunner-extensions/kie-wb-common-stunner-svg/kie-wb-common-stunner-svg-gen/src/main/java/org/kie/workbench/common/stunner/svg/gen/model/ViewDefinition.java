@@ -28,7 +28,7 @@ public interface ViewDefinition<V> extends PrimitiveDefinition<V>,
         double getMinY();
     }
 
-    String getName();
+    String getFactoryMethodName();
 
     String getPath();
 

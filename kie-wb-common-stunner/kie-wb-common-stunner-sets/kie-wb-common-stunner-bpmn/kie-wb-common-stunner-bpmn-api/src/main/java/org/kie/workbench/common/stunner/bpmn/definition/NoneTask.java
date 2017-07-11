@@ -54,7 +54,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 public class NoneTask extends BaseTask {
 
     @Title
-    public static final transient String title = "None Task";
+    public static final transient String title = "Task";
 
     @PropertySet
     @Valid

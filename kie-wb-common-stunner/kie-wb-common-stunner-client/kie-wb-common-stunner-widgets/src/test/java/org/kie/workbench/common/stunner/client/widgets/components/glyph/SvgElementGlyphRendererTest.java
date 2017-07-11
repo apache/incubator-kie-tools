@@ -24,7 +24,9 @@ import org.jboss.errai.common.client.util.Base64Util;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.components.views.ImageElementRendererView;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
+import org.kie.workbench.common.stunner.core.client.util.SvgDataUriGenerator;
 import org.mockito.Mock;
 
 import static org.junit.Assert.*;
@@ -38,6 +40,7 @@ public class SvgElementGlyphRendererTest {
             Base64Util.encode(SVG_CONTENT.getBytes(),
                               0,
                               SVG_CONTENT.length());
+    private static final SvgDataUriGenerator DATA_URI_UTIL = new SvgDataUriGenerator();
 
     @Mock
     private SafeUri uri;
@@ -54,7 +57,8 @@ public class SvgElementGlyphRendererTest {
     public void setup() throws Exception {
         when(uri.asString()).thenReturn(DATA_URI);
         when(viewSupplier.get()).thenReturn(view);
-        this.tested = new SvgElementGlyphRenderer(viewSupplier);
+        this.tested = new SvgElementGlyphRenderer(DATA_URI_UTIL,
+                                                  viewSupplier);
     }
 
     @Test
@@ -65,7 +69,7 @@ public class SvgElementGlyphRendererTest {
 
     @Test
     public void testRender() {
-        final SvgDataUriGlyph glyph = SvgDataUriGlyph.create(uri);
+        final SvgDataUriGlyph glyph = SvgDataUriGlyph.Builder.build(uri);
         tested.render(glyph,
                       100,
                       200);
@@ -80,7 +84,7 @@ public class SvgElementGlyphRendererTest {
     @Test(expected = IllegalArgumentException.class)
     public void testSvgDataUriGlyphWrong() {
         when(uri.asString()).thenReturn("someBadUri::d");
-        tested.render(SvgDataUriGlyph.create(uri),
+        tested.render(SvgDataUriGlyph.Builder.build(uri),
                       100,
                       200);
     }

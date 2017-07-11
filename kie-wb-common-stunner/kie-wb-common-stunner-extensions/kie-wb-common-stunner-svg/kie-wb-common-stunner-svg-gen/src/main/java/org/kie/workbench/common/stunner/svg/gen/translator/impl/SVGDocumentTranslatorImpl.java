@@ -36,6 +36,7 @@ import org.w3c.dom.NodeList;
 public class SVGDocumentTranslatorImpl implements SVGDocumentTranslator {
 
     private static final String SVG_TAG = "svg";
+    public static final String ID = "id";
     public static final String X = "x";
     public static final double X_DEFAULT = 0d;
     public static final String Y = "y";
@@ -71,12 +72,21 @@ public class SVGDocumentTranslatorImpl implements SVGDocumentTranslator {
         if (null != svgNodes && 1 == svgNodes.getLength()) {
             final Element svgNode = (Element) svgNodes.item(0);
             // SVG id.
-            svgId = svgNode.getAttribute(X);
+            svgId = svgNode.getAttribute(ID);
+            if (isEmpty(svgId)) {
+                throw new TranslatorException("The SVG node must contain a valid ID attribute.");
+            }
             // View box.
             final String x = svgNode.getAttribute(X);
             final String y = svgNode.getAttribute(Y);
             final String width = svgNode.getAttribute(WIDTH);
+            if (isEmpty(width)) {
+                throw new TranslatorException("The SVG node [" + svgId + "] must contain a valid WIDTH attribute.");
+            }
             final String height = svgNode.getAttribute(HEIGHT);
+            if (isEmpty(height)) {
+                throw new TranslatorException("The SVG node [" + svgId + "] must contain a valid HEIGHT attribute.");
+            }
             svgCoord[0] = SVGAttributeParserUtils.toPixelValue(x,
                                                                X_DEFAULT);
             svgCoord[1] = SVGAttributeParserUtils.toPixelValue(y,
@@ -84,7 +94,12 @@ public class SVGDocumentTranslatorImpl implements SVGDocumentTranslator {
             svgSize[0] = SVGAttributeParserUtils.toPixelValue(width);
             svgSize[1] = SVGAttributeParserUtils.toPixelValue(height);
             final String vbox = svgNode.getAttribute(VIEW_BOX);
+            if (isEmpty(vbox)) {
+                throw new TranslatorException("The SVG node [" + svgId + "] must contain a valid VIEWBOX attribute.");
+            }
             viewBox[0] = SVGViewBoxTranslator.translate(vbox);
+        } else if (null != svgNodes && svgNodes.getLength() > 1) {
+            throw new TranslatorException("Only a single SVG node supported.!");
         } else {
             throw new TranslatorException("No SVG root node found!");
         }
@@ -145,5 +160,9 @@ public class SVGDocumentTranslatorImpl implements SVGDocumentTranslator {
                                        result.toArray(new PrimitiveDefinition<?>[result.size()]));
         viewDefinition.getSVGViewRefs().addAll(context.viewRefDefinitions);
         return viewDefinition;
+    }
+
+    private static boolean isEmpty(final String s) {
+        return null == s || s.trim().length() == 0;
     }
 }

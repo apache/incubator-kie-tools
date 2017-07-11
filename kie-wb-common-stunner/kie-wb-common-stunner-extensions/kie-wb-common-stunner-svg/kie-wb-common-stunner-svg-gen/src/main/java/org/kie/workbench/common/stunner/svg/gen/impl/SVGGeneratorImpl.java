@@ -53,41 +53,37 @@ public class SVGGeneratorImpl implements SVGGenerator {
         final String pkg = request.getPkg();
         final String typeOf = request.getImplementedType();
         final Map<String, String> viewSources = request.getViewSources();
-
         final ViewFactory viewFactory = new ViewFactoryImpl(name,
                                                             pkg,
                                                             typeOf);
         viewSources.entrySet().forEach(svgEntry -> {
-            final String svgName = svgEntry.getKey();
+            final String fMethodName = svgEntry.getKey();
             final String svgPath = svgEntry.getValue();
             final InputStream svgStream = getClass().getClassLoader().getResourceAsStream(svgPath);
             if (null != svgStream) {
                 try {
-                    final ViewDefinition<SVGShapeView> viewDefinition = parseSVGView(svgName,
+                    final ViewDefinition<SVGShapeView> viewDefinition = parseSVGView(fMethodName,
                                                                                      svgPath,
                                                                                      svgStream);
                     viewFactory.getViewDefinitions().add(viewDefinition);
                 } catch (Exception e) {
-                    throw new RuntimeException("Error while processing the SVG [" + svgName + "]",
+                    throw new RuntimeException("Error while processing the SVG [" + svgPath + "]",
                                                e);
                 }
             } else {
                 throw new RuntimeException("No SVG file found at [" + svgPath + "]");
             }
         });
-
         return viewFactoryGenerator.generate(viewFactory);
     }
 
-    private ViewDefinition<SVGShapeView> parseSVGView(final String name,
+    private ViewDefinition<SVGShapeView> parseSVGView(final String fMethodName,
                                                       final String svgPath,
                                                       final InputStream svgStream) throws Exception {
         ViewDefinition<SVGShapeView> svgShapeViewSource = null;
         try {
-            Document root = parse(name,
-                                  svgPath,
-                                  svgStream);
-            svgShapeViewSource = translate(name,
+            Document root = parse(svgStream);
+            svgShapeViewSource = translate(fMethodName,
                                            svgPath,
                                            root);
         } catch (final Exception e) {
@@ -96,19 +92,17 @@ public class SVGGeneratorImpl implements SVGGenerator {
         return svgShapeViewSource;
     }
 
-    private Document parse(final String name,
-                           final String svgPath,
-                           final InputStream inputStream) throws Exception {
+    private Document parse(final InputStream inputStream) throws Exception {
         Document root = documentBuilder.parse(inputStream);
         root.getDocumentElement().normalize();
         return root;
     }
 
-    private ViewDefinition<SVGShapeView> translate(final String name,
+    private ViewDefinition<SVGShapeView> translate(final String fMethodName,
                                                    final String svgPath,
                                                    final Document document) throws Exception {
         final ViewDefinitionImpl viewDefinition = (ViewDefinitionImpl) translator.translate(document);
-        viewDefinition.setName(name);
+        viewDefinition.setFactoryMethodName(fMethodName);
         viewDefinition.setPath(svgPath);
         return viewDefinition;
     }

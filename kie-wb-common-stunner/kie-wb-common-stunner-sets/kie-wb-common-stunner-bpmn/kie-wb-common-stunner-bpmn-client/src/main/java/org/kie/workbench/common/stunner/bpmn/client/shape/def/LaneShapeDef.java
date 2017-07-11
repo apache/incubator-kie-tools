@@ -123,6 +123,6 @@ public class LaneShapeDef
 
     @Override
     public Glyph getGlyph(final Class<? extends Lane> type) {
-        return SvgDataUriGlyph.create(BPMNImageResources.INSTANCE.lane().getSafeUri());
+        return SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.laneIcon().getSafeUri());
     }
 }

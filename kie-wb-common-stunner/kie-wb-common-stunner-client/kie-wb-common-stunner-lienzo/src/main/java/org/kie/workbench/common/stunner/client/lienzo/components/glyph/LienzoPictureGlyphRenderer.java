@@ -33,7 +33,7 @@ import static org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUti
 @ApplicationScoped
 public class LienzoPictureGlyphRenderer implements LienzoGlyphRenderer<ImageDataUriGlyph> {
 
-    BiConsumer<String, Consumer<Picture>> pictureBuilder;
+    private final BiConsumer<String, Consumer<Picture>> pictureBuilder;
 
     public LienzoPictureGlyphRenderer() {
         this.pictureBuilder = (uri,
@@ -54,14 +54,22 @@ public class LienzoPictureGlyphRenderer implements LienzoGlyphRenderer<ImageData
     public Group render(final ImageDataUriGlyph glyph,
                         final double width,
                         final double height) {
+        return this.render(glyph.getUri().asString(),
+                           width,
+                           height);
+    }
+
+    public Group render(final String data,
+                        final double width,
+                        final double height) {
         final DestroyableGroup group = new DestroyableGroup();
         final Rectangle decorator =
                 new Rectangle(width,
                               height)
                         .setCornerRadius(5)
                         .setFillColor(ColorName.LIGHTGREY)
-                        .setFillAlpha(0.2d);
-        pictureBuilder.accept(glyph.getUri().asString(),
+                        .setFillAlpha(0.7d);
+        pictureBuilder.accept(data,
                               picture -> {
                                   group.picture = picture;
                                   scalePicture(picture,

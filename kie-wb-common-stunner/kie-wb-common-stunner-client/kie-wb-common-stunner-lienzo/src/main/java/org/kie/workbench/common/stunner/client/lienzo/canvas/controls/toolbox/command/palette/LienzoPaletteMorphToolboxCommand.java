@@ -25,7 +25,7 @@ import com.ait.lienzo.client.core.shape.Shape;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.LienzoGlyphsHoverPalette;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.LienzoPalette;
-import org.kie.workbench.common.stunner.client.lienzo.util.SVGUtils;
+import org.kie.workbench.common.stunner.client.lienzo.util.LirnzoSvgPaths;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
@@ -74,7 +74,7 @@ public class LienzoPaletteMorphToolboxCommand extends AbstractPaletteMorphComman
               nodeDragProxyFactory,
               nodeBuilderControl,
               graphBoundsIndexer,
-              SVGUtils.createSVGIcon(SVGUtils.getGearIcon()),
+              LirnzoSvgPaths.createSVGIcon(LirnzoSvgPaths.getGearIcon()),
               elementSelectedEvent);
         this.canvasTooltip = canvasTooltip;
     }

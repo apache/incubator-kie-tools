@@ -21,6 +21,7 @@ import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.components.glyph.DOMGlyphRenderer;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeGlyph;
 import org.mockito.Mock;

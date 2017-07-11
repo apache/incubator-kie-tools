@@ -14,16 +14,25 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-     x="0px" y="0px" width="448px" height="448px" viewBox="0 0 448 448">
-  <rect x="0px" y="0px" width="448px" height="448px" rx="5" ry="5" style="fill:none; stroke: black; stroke-width: 5;"/>
-  <g id="userTask" transform="scale(0.25,0.25) translate(8,8)" style="opacity:1">
-    <use xlink:href="task-user.svg#Layer_1"/>
+<svg id="task" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     x="0" y="0" width="68px" height="68px" viewBox="0 0 73 73">
+  <defs>
+    <filter id="svg_task_blackShadow" x="0" y="0" width="200%" height="200%">
+      <feOffset result="offOut" in="SourceAlpha" dx="10" dy="10" />
+      <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
+      <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+    </filter>
+  </defs>
+  <rect x="0" y="0" width="68px" height="68px" rx="5" ry="5"
+        style="fill:white; stroke: black; stroke-width: 5px;"
+        filter="url(#svg_task_blackShadow)"/>
+  <g transform="translate(5,5) scale(0.03,0.03)" style="opacity:1">
+    <use xlink:href="task-user.svg#taskUser"/>
   </g>
-  <g id="scriptTask" transform="scale(0.25,0.25) translate(8,8)" style="opacity:1">
-    <use xlink:href="task-script.svg#Layer_1"/>
+  <g transform="translate(5,5) scale(0.03,0.03)" style="opacity:1">
+    <use xlink:href="task-script.svg#taskScript"/>
   </g>
-  <g id="businessRuleTask" transform="scale(0.25,0.25) translate(8,8)" style="opacity:1">
-    <use xlink:href="task-business-rule.svg#Layer_1"/>
+  <g transform="translate(5,5) scale(0.03,0.03)" style="opacity:1">
+    <use xlink:href="task-business-rule.svg#taskBusinessRule"/>
   </g>
 </svg>

@@ -19,11 +19,9 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
-import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -33,8 +31,16 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 public class EndEventShapeDef
         implements BPMNSvgShapeDef<BaseEndEvent> {
 
-    private static final String EVENT_END_NONE = "eventEndNone";
-    private static final String EVENT_END_TERMINATE = "eventEndTerminate";
+    public final static Map<Class<? extends BaseEndEvent>, String> VIEWS = new HashMap<Class<? extends BaseEndEvent>, String>(1) {{
+        put(EndTerminateEvent.class,
+            BPMNSVGViewFactory.VIEW_EVENT_END_TERMINATE);
+    }};
+
+    private static final SvgDataUriGlyph.Builder GLYPH_BUILDER =
+            SvgDataUriGlyph.Builder.create()
+                    .setUri(BPMNImageResources.INSTANCE.eventEnd().getSafeUri())
+                    .addUri(BPMNSVGViewFactory.VIEW_EVENT_END_TERMINATE,
+                            BPMNImageResources.INSTANCE.eventEndTerminate().getSafeUri());
 
     @Override
     public double getAlpha(final BaseEndEvent element) {
@@ -101,16 +107,9 @@ public class EndEventShapeDef
         return 0;
     }
 
-    private final static Map<Class<? extends BaseEndEvent>, SafeUri> ICONS = new HashMap<Class<? extends BaseEndEvent>, SafeUri>(2) {{
-        put(EndNoneEvent.class,
-            BPMNImageResources.INSTANCE.eventEndNone().getSafeUri());
-        put(EndTerminateEvent.class,
-            BPMNImageResources.INSTANCE.eventEndTerminate().getSafeUri());
-    }};
-
     @Override
     public Glyph getGlyph(final Class<? extends BaseEndEvent> type) {
-        return SvgDataUriGlyph.create(ICONS.get(type));
+        return GLYPH_BUILDER.build(VIEWS.get(type));
     }
 
     @Override
@@ -126,13 +125,7 @@ public class EndEventShapeDef
     @Override
     public boolean isSVGViewVisible(final String viewName,
                                     final BaseEndEvent element) {
-        switch (viewName) {
-            case EVENT_END_NONE:
-                return element instanceof EndNoneEvent;
-            case EVENT_END_TERMINATE:
-                return element instanceof EndTerminateEvent;
-        }
-        return false;
+        return viewName.equals(VIEWS.get(element.getClass()));
     }
 
     @Override

@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.widgets.components.glyph;
+package org.kie.workbench.common.stunner.core.client.components.glyph;
 
 import org.jboss.errai.common.client.api.IsElement;
-import org.kie.workbench.common.stunner.core.client.components.glyph.GlyphRenderer;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 /**

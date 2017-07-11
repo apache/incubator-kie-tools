@@ -39,7 +39,7 @@ public class ViewDefinitionImpl implements ViewDefinition<SVGShapeView> {
     private final double height;
     private final ViewBoxDefinition viewBox;
     private TransformDefinition transformDefinition;
-    private String name;
+    private String factoryMethodName;
     private String path;
 
     public ViewDefinitionImpl(final String id,
@@ -63,13 +63,13 @@ public class ViewDefinitionImpl implements ViewDefinition<SVGShapeView> {
         }
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public void setFactoryMethodName(final String name) {
+        this.factoryMethodName = name;
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getFactoryMethodName() {
+        return factoryMethodName;
     }
 
     @Override

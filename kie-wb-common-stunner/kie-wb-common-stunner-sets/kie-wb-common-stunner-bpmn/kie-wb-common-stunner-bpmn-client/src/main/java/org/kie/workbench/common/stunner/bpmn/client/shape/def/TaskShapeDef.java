@@ -27,7 +27,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
@@ -36,9 +35,25 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 public class TaskShapeDef
         implements BPMNSvgShapeDef<BaseTask> {
 
-    private static final String SVG_TASK_BR = "taskBusinessRule";
-    private static final String SVG_TASK_SCRIPT = "taskScript";
-    private static final String SVG_TASK_USER = "taskUser";
+    public final static Map<Class<? extends BaseTask>, String> VIEWS = new HashMap<Class<? extends BaseTask>, String>(3) {{
+        put(UserTask.class,
+            BPMNSVGViewFactory.VIEW_TASK_USER);
+        put(ScriptTask.class,
+            BPMNSVGViewFactory.VIEW_TASK_SCRIPT);
+        put(BusinessRuleTask.class,
+            BPMNSVGViewFactory.VIEW_TASK_BUSINESS_RULE);
+    }};
+
+    public final static Map<Class<? extends BaseTask>, SafeUri> ICONS = new HashMap<Class<? extends BaseTask>, SafeUri>(4) {{
+        put(NoneTask.class,
+            BPMNImageResources.INSTANCE.task().getSafeUri());
+        put(UserTask.class,
+            BPMNImageResources.INSTANCE.taskUser().getSafeUri());
+        put(ScriptTask.class,
+            BPMNImageResources.INSTANCE.taskScript().getSafeUri());
+        put(BusinessRuleTask.class,
+            BPMNImageResources.INSTANCE.taskBusinessRule().getSafeUri());
+    }};
 
     @Override
     public double getAlpha(final BaseTask element) {
@@ -105,20 +120,9 @@ public class TaskShapeDef
         return 0;
     }
 
-    public final static Map<Class<? extends BaseTask>, SafeUri> ICONS = new HashMap<Class<? extends BaseTask>, SafeUri>(2) {{
-        put(NoneTask.class,
-            BPMNImageResources.INSTANCE.taskUser().getSafeUri());
-        put(UserTask.class,
-            BPMNImageResources.INSTANCE.taskUser().getSafeUri());
-        put(ScriptTask.class,
-            BPMNImageResources.INSTANCE.taskScript().getSafeUri());
-        put(BusinessRuleTask.class,
-            BPMNImageResources.INSTANCE.taskBusinessRule().getSafeUri());
-    }};
-
     @Override
     public Glyph getGlyph(final Class<? extends BaseTask> type) {
-        return SvgDataUriGlyph.create(ICONS.get(type));
+        return SvgDataUriGlyph.Builder.build(ICONS.get(type));
     }
 
     @Override
@@ -134,23 +138,7 @@ public class TaskShapeDef
     @Override
     public boolean isSVGViewVisible(final String viewName,
                                     final BaseTask element) {
-        switch (viewName) {
-            case SVG_TASK_USER:
-                return isTaskType(element,
-                                  TaskTypes.USER);
-            case SVG_TASK_SCRIPT:
-                return isTaskType(element,
-                                  TaskTypes.SCRIPT);
-            case SVG_TASK_BR:
-                return isTaskType(element,
-                                  TaskTypes.BUSINESS_RULE);
-        }
-        return false;
-    }
-
-    private boolean isTaskType(final BaseTask element,
-                               final TaskTypes types) {
-        return element.getTaskType().getValue().equals(types);
+        return viewName.equals(VIEWS.get(element.getClass()));
     }
 
     @Override

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.svg.gen.translator.impl;
 
+import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.svg.gen.exception.TranslatorException;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewRefDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.GroupDefinition;
@@ -40,7 +41,8 @@ public class SVGGroupTranslator
         final NodeList childNodes = element.getElementsByTagName(SVGUseTranslator.TAG_NAME);
         // Only look for view references inside the group. Discard the group itself for any other elements.
         if (null != childNodes && childNodes.getLength() > 0) {
-            final GroupDefinition groupDefinition = new GroupDefinition(getId(element));
+            final String id = getOrSetId(element);
+            final GroupDefinition groupDefinition = new GroupDefinition(id);
             for (int i = 0; i < childNodes.getLength(); i++) {
                 final Node child = childNodes.item(i);
                 final SVGElementTranslator<Element, Object> elementTranslator = context.getElementTranslator(SVGUseTranslator.TAG_NAME);
@@ -51,6 +53,17 @@ public class SVGGroupTranslator
             return groupDefinition;
         }
         return null;
+    }
+
+    private String getOrSetId(final Element element) {
+        final String id = getId(element);
+        if (null == id || id.trim().length() == 0) {
+            final String uuid = UUID.uuid(4);
+            element.setAttribute(ID,
+                                 uuid);
+            return uuid;
+        }
+        return id;
     }
 
     @Override

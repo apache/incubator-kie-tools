@@ -23,6 +23,8 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.widget.LienzoPanel;
 import org.jboss.errai.common.client.api.IsElement;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGlyphRenderer;
+import org.kie.workbench.common.stunner.core.client.components.glyph.DOMGlyphRenderer;
+import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 public abstract class LienzoElementGlyphRenderer<G extends Glyph> implements DOMGlyphRenderer<G> {

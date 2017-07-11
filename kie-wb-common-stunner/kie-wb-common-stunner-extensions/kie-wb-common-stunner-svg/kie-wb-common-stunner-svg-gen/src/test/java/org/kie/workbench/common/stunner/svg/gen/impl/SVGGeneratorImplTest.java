@@ -64,6 +64,7 @@ public class SVGGeneratorImplTest {
 
     @Test
     public void testGenerate() throws Exception {
+        when(viewDefinition.getId()).thenReturn("svg-cancel");
         doAnswer(new Answer<StringBuffer>() {
             @Override
             public StringBuffer answer(final InvocationOnMock invocationOnMock) throws Throwable {
@@ -85,9 +86,9 @@ public class SVGGeneratorImplTest {
                                                                     SVG_FQCN);
         request.getViewSources().put(SVG_CANCEL_NAME,
                                      SVG_CANCEL_PATH);
-        final StringBuffer result = tested.generate(request);
+        tested.generate(request);
         verify(viewDefinition,
-               times(1)).setName(eq(SVG_CANCEL_NAME));
+               times(1)).setFactoryMethodName(eq(SVG_CANCEL_NAME));
         verify(viewFactoryGenerator,
                times(1)).generate(any(ViewFactory.class));
     }

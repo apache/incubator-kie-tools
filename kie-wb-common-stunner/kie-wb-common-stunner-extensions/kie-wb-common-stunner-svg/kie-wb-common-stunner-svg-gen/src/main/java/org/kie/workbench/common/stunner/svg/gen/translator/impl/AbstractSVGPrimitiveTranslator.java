@@ -32,9 +32,9 @@ import org.w3c.dom.Element;
 public abstract class AbstractSVGPrimitiveTranslator<E extends Element, O extends AbstractPrimitiveDefinition<?>>
         implements SVGElementTranslator<E, O> {
 
-    private static final String ID = "id";
-    private static final String X = "x";
-    private static final String Y = "y";
+    protected static final String ID = "id";
+    protected static final String X = "x";
+    protected static final String Y = "y";
 
     protected abstract O doTranslate(final E pathElement,
                                      final SVGTranslatorContext context) throws TranslatorException;

@@ -76,15 +76,17 @@ public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
     @NonPortable
     public static class ReusableSubprocessBuilder extends BaseSubprocessBuilder<ReusableSubprocess> {
 
+        public static final Double REUSABLE_SUBPROCESS_BORDER_SIZE = 3d;
+
         @Override
         public ReusableSubprocess build() {
             return new ReusableSubprocess(
-                    new BPMNGeneralSet("Subprocess"),
+                    new BPMNGeneralSet("Sub-process"),
                     new ReusableSubprocessTaskExecutionSet(),
                     new DataIOSet(),
                     new BackgroundSet(COLOR,
                                       BORDER_COLOR,
-                                      BORDER_SIZE),
+                                      REUSABLE_SUBPROCESS_BORDER_SIZE),
                     new FontSet(),
                     new RectangleDimensionsSet(WIDTH,
                                                HEIGHT),

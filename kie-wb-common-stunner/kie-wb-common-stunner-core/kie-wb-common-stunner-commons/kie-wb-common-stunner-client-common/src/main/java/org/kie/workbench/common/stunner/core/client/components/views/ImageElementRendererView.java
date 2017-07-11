@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.widgets.components.glyph;
+package org.kie.workbench.common.stunner.core.client.components.views;
 
 import com.google.gwt.safehtml.shared.SafeUri;
 import org.jboss.errai.common.client.api.IsElement;

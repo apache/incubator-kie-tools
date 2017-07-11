@@ -21,14 +21,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.BPMNDiagramShapeDef;
-import org.kie.workbench.common.stunner.bpmn.client.shape.def.EmbeddedSubprocessShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.EndEventShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.GatewayShapeDef;
-import org.kie.workbench.common.stunner.bpmn.client.shape.def.IntermediateTimerEventShapeDef;
+import org.kie.workbench.common.stunner.bpmn.client.shape.def.IntermediateEventShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.LaneShapeDef;
-import org.kie.workbench.common.stunner.bpmn.client.shape.def.ReusableSubprocessShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SequenceFlowConnectorDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.StartEventShapeDef;
+import org.kie.workbench.common.stunner.bpmn.client.shape.def.SubprocessShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.TaskShapeDef;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
@@ -116,10 +115,10 @@ public class BPMNShapeFactory
                           new LaneShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(ReusableSubprocess.class,
-                          new ReusableSubprocessShapeDef(),
+                          new SubprocessShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(EmbeddedSubprocess.class,
-                          new EmbeddedSubprocessShapeDef(),
+                          new SubprocessShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(EndNoneEvent.class,
                           new EndEventShapeDef(),
@@ -128,7 +127,7 @@ public class BPMNShapeFactory
                           new EndEventShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(IntermediateTimerEvent.class,
-                          new IntermediateTimerEventShapeDef(),
+                          new IntermediateEventShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(SequenceFlow.class,
                           new SequenceFlowConnectorDef(),

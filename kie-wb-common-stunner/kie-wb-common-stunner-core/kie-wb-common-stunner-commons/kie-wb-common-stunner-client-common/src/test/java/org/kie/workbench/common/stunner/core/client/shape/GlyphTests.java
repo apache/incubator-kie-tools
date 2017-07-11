@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.shape;
 
+import java.util.Collection;
 import java.util.function.Supplier;
 
 import com.google.gwt.safehtml.shared.SafeUri;
@@ -41,6 +42,12 @@ public class GlyphTests {
 
     @Mock
     private SafeUri svgUri;
+
+    @Mock
+    private SafeUri svgUri2;
+
+    @Mock
+    private SafeUri svgUri3;
 
     @Mock
     private Supplier<ShapeFactory> factorySupplier;
@@ -71,8 +78,65 @@ public class GlyphTests {
 
     @Test
     public void testSvgDataUriGlyph() {
-        final SvgDataUriGlyph svgDataUriGlyph = SvgDataUriGlyph.create(svgUri);
+        final SvgDataUriGlyph svgDataUriGlyph = SvgDataUriGlyph.Builder.build(svgUri);
         assertEquals(svgUri,
-                     svgDataUriGlyph.getUri());
+                     svgDataUriGlyph.getSvg());
+        assertTrue(svgDataUriGlyph.getDefs().isEmpty());
+        assertTrue(svgDataUriGlyph.getValidUseRefIds().isEmpty());
+    }
+
+    @Test
+    public void testSvgDataUriGlyphComposite() {
+        final SvgDataUriGlyph.Builder builder = SvgDataUriGlyph.Builder.create()
+                .setUri(svgUri)
+                .addUri("uri2",
+                        svgUri2)
+                .addUri("uri3",
+                        svgUri3);
+        final SvgDataUriGlyph svgDataUriGlyph = builder.build();
+        final Collection<SafeUri> defs = svgDataUriGlyph.getDefs();
+        final Collection<String> ids = svgDataUriGlyph.getValidUseRefIds();
+        assertEquals(svgUri,
+                     svgDataUriGlyph.getSvg());
+        assertEquals(2,
+                     defs.size());
+        assertEquals(2,
+                     ids.size());
+        assertTrue(defs.contains(svgUri2));
+        assertTrue(defs.contains(svgUri3));
+        assertTrue(ids.contains("uri2"));
+        assertTrue(ids.contains("uri3"));
+    }
+
+    @Test
+    public void testSvgDataUriGlyphFilterComposite() {
+        final SvgDataUriGlyph.Builder builder = SvgDataUriGlyph.Builder.create()
+                .setUri(svgUri)
+                .addUri("uri2",
+                        svgUri2)
+                .addUri("uri3",
+                        svgUri3);
+        final SvgDataUriGlyph svgDataUriGlyph1 = builder.build("uri3");
+        final Collection<SafeUri> defs1 = svgDataUriGlyph1.getDefs();
+        final Collection<String> ids1 = svgDataUriGlyph1.getValidUseRefIds();
+        assertEquals(svgUri,
+                     svgDataUriGlyph1.getSvg());
+        assertEquals(1,
+                     defs1.size());
+        assertEquals(1,
+                     defs1.size());
+        assertTrue(defs1.contains(svgUri3));
+        assertTrue(ids1.contains("uri3"));
+        final SvgDataUriGlyph svgDataUriGlyph2 = builder.build("uri2");
+        final Collection<SafeUri> defs2 = svgDataUriGlyph2.getDefs();
+        final Collection<String> ids2 = svgDataUriGlyph2.getValidUseRefIds();
+        assertEquals(svgUri,
+                     svgDataUriGlyph2.getSvg());
+        assertEquals(1,
+                     defs2.size());
+        assertEquals(1,
+                     defs2.size());
+        assertTrue(defs2.contains(svgUri2));
+        assertTrue(ids2.contains("uri2"));
     }
 }

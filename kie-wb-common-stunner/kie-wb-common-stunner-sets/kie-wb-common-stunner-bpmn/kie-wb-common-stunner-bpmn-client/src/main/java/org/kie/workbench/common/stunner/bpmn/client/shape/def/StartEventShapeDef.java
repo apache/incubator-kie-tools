@@ -19,11 +19,9 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
-import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
@@ -34,9 +32,20 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 public class StartEventShapeDef
         implements BPMNSvgShapeDef<BaseStartEvent> {
 
-    private static final String EVENT_START = "eventStart";
-    private static final String EVENT_START_SIGNAL = "eventStartSignal";
-    private static final String EVENT_START_TIMER = "eventStartTimer";
+    public final static Map<Class<? extends BaseStartEvent>, String> VIEWS = new HashMap<Class<? extends BaseStartEvent>, String>(2) {{
+        put(StartSignalEvent.class,
+            BPMNSVGViewFactory.VIEW_EVENT_SIGNAL);
+        put(StartTimerEvent.class,
+            BPMNSVGViewFactory.VIEW_EVENT_TIMER);
+    }};
+
+    private static final SvgDataUriGlyph.Builder GLYPH_BUILDER =
+            SvgDataUriGlyph.Builder.create()
+                    .setUri(BPMNImageResources.INSTANCE.eventStart().getSafeUri())
+                    .addUri(BPMNSVGViewFactory.VIEW_EVENT_SIGNAL,
+                            BPMNImageResources.INSTANCE.eventSignal().getSafeUri())
+                    .addUri(BPMNSVGViewFactory.VIEW_EVENT_TIMER,
+                            BPMNImageResources.INSTANCE.eventTimer().getSafeUri());
 
     @Override
     public double getAlpha(final BaseStartEvent element) {
@@ -103,15 +112,6 @@ public class StartEventShapeDef
         return 0;
     }
 
-    private final static Map<Class<? extends BaseStartEvent>, SafeUri> ICONS = new HashMap<Class<? extends BaseStartEvent>, SafeUri>(2) {{
-        put(StartNoneEvent.class,
-            BPMNImageResources.INSTANCE.eventStart().getSafeUri());
-        put(StartSignalEvent.class,
-            BPMNImageResources.INSTANCE.eventStartSignal().getSafeUri());
-        put(StartTimerEvent.class,
-            BPMNImageResources.INSTANCE.eventStartTimer().getSafeUri());
-    }};
-
     @Override
     public double getWidth(final BaseStartEvent element) {
         return element.getDimensionsSet().getRadius().getValue() * 2;
@@ -119,7 +119,7 @@ public class StartEventShapeDef
 
     @Override
     public Glyph getGlyph(final Class<? extends BaseStartEvent> type) {
-        return SvgDataUriGlyph.create(ICONS.get(type));
+        return GLYPH_BUILDER.build(VIEWS.get(type));
     }
 
     @Override
@@ -130,15 +130,7 @@ public class StartEventShapeDef
     @Override
     public boolean isSVGViewVisible(final String viewName,
                                     final BaseStartEvent element) {
-        switch (viewName) {
-            case EVENT_START:
-                return element instanceof StartNoneEvent;
-            case EVENT_START_SIGNAL:
-                return element instanceof StartSignalEvent;
-            case EVENT_START_TIMER:
-                return element instanceof StartTimerEvent;
-        }
-        return false;
+        return viewName.equals(VIEWS.get(element.getClass()));
     }
 
     @Override

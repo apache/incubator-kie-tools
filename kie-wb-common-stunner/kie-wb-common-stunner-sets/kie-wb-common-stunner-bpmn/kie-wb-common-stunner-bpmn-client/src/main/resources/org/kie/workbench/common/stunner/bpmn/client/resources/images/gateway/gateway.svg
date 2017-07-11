@@ -14,15 +14,15 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg id="gateway" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
      xmlns:stunner="http://www.kie.org/2017/stunner"
-     x="0px" y="0px" width="448px" height="448px" viewBox="0 0 448 448">
-  <path style="fill:none; stroke:black; stroke-width:5;" d="M224.4,0.5c-8.1,0-16.3,3.1-22.5,9.3l-192,192c-12.4,12.4-12.4,32.6,0,45l192,192c6.2,6.2,14.4,9.3,22.5,9.3
+     x="0" y="0" width="40px" height="40px" viewBox="0 0 40 40">
+  <path transform="translate(0,0) scale(0.09,0.09)" style="fill:white; stroke:black; stroke-width:5;" d="M224.4,0.5c-8.1,0-16.3,3.1-22.5,9.3l-192,192c-12.4,12.4-12.4,32.6,0,45l192,192c6.2,6.2,14.4,9.3,22.5,9.3
 	s16.3-3.1,22.5-9.3l192-192c12.4-12.4,12.4-32.6,0-45l-192-192C240.7,3.6,232.5,0.5,224.4,0.5L224.4,0.5z"/>
-  <g id="multiple" stunner:layout="CENTER" transform="scale(0.35,0.35)">
-    <use xlink:href="parallel_multiple.svg#Layer_1" style="opacity:1"/>
+  <g stunner:layout="CENTER" transform="translate(12,10) scale(0.05,0.05)" style="opacity:1">
+    <use xlink:href="parallel_multiple.svg#gwParallelMultiple"/>
   </g>
-  <g id="exclusive" stunner:layout="CENTER" transform="scale(0.35,0.35)">
-    <use xlink:href="exclusive.svg#Layer_1" style="opacity:1"/>
+  <g stunner:layout="CENTER" transform="translate(9,9) scale(0.05,0.05)" style="opacity:1">
+    <use xlink:href="exclusive.svg#gwExclusive"/>
   </g>
 </svg>

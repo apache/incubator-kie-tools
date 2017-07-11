@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.widgets.components.glyph;
+package org.kie.workbench.common.stunner.client.widgets.views;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -28,6 +28,7 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.stunner.core.client.components.views.ImageElementRendererView;
 
 @Templated
 @Dependent

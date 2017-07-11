@@ -23,6 +23,8 @@ import javax.inject.Inject;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.core.client.components.glyph.DOMGlyphRenderer;
+import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
 
 /**
  * Renders a BS3 icon using the given icon type from the glyph definition.

@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGlyphRenderer;
+import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeGlyph;
 import org.mockito.Mock;
 

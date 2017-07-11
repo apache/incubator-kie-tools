@@ -44,7 +44,8 @@ public class SVGViewDefinitionGenerator
                                  final ViewDefinition<SVGShapeView> viewDefinition) throws GeneratorException {
         StringBuffer result = null;
         final String factoryName = viewFactory.getSimpleName();
-        final String name = viewDefinition.getName();
+        final String viewId = viewDefinition.getId();
+        final String methodName = viewDefinition.getFactoryMethodName();
         final double x = viewDefinition.getX();
         final double y = viewDefinition.getY();
         final double width = viewDefinition.getWidth();
@@ -86,20 +87,30 @@ public class SVGViewDefinitionGenerator
             svgViewRefs.forEach(viewRef -> {
                 final String parent = viewRef.getParent();
                 final String svgName = viewRef.getViewName();
-                final String viewName = getFactoryName(viewFactory,
-                                                       svgName);
-                if (null != viewName) {
+                final String viewRefId = viewRef.getViewId();
+                final boolean existReferencedView = viewFactory
+                        .getViewDefinitions().stream()
+                        .filter(def -> viewRefId.equals(def.getId()))
+                        .findAny()
+                        .isPresent();
+                if (existReferencedView) {
                     final String childRaw = formatString(CHILD_TEMPLATE,
                                                          parent,
                                                          factoryName,
-                                                         viewName);
+                                                         viewRefId);
                     rawChildren.add(childRaw);
+                } else {
+                    throw new RuntimeException("The view [" + viewRefId + "] references " +
+                                                       "another the view [" + svgName + "], but no factory method " +
+                                                       "for it exists in [" + viewFactory.getImplementedType() + "]");
                 }
             });
 
             // Populate the context and generate using the template.
+            root.put("viewId",
+                     viewId);
             root.put("name",
-                     name);
+                     methodName);
             root.put("main",
                      mainBuffer.toString());
             root.put("width",
@@ -120,19 +131,6 @@ public class SVGViewDefinitionGenerator
         }
 
         return result;
-    }
-
-    private String getFactoryName(final ViewFactory viewFactory,
-                                  final String path) {
-        final List<ViewDefinition<?>> viewDefinitions = viewFactory.getViewDefinitions();
-        final ViewDefinition<?> d = viewDefinitions.stream()
-                .filter(def -> def.getPath().endsWith(path))
-                .findFirst()
-                .orElse(null);
-        if (null != d) {
-            return d.getName();
-        }
-        return null;
     }
 
     @SuppressWarnings("unchecked")

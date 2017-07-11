@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 import org.kie.workbench.common.stunner.svg.gen.codegen.impl.ViewGenerators;
+import org.kie.workbench.common.stunner.svg.gen.exception.TranslatorException;
 import org.kie.workbench.common.stunner.svg.gen.model.PrimitiveDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewRefDefinition;
@@ -44,12 +45,14 @@ import static org.junit.Assert.*;
 @RunWith(MockitoJUnitRunner.class)
 public class SVGDocumentTranslatorTest {
 
-    private static Document root;
+    private static Document svgTest;
+    private static Document svgTestError;
     private SVGDocumentTranslator translator;
 
     @BeforeClass
     public static void init() throws Exception {
-        root = parse(loadStream(SVGTranslationTestAssertions.SVG_TEST_PATH));
+        svgTest = parse(loadStream(SVGTranslationTestAssertions.SVG_TEST_PATH));
+        svgTestError = parse(loadStream(SVGTranslationTestAssertions.SVG_TEST_PATH_ERRORS));
     }
 
     @Before
@@ -59,8 +62,10 @@ public class SVGDocumentTranslatorTest {
 
     @Test
     public void testTranslate() throws Exception {
-        final ViewDefinition<SVGShapeView> viewDefinition = translator.translate(root);
+        final ViewDefinition<SVGShapeView> viewDefinition = translator.translate(svgTest);
         assertNotNull(viewDefinition);
+        assertEquals("svg-test-file",
+                     viewDefinition.getId());
         // View definition's viewBox.
         final ViewDefinition.ViewBoxDefinition viewBox = viewDefinition.getViewBox();
         assertNotNull(viewBox);
@@ -106,6 +111,11 @@ public class SVGDocumentTranslatorTest {
         assertTrue(svgViewRefs.size() == 1);
         final ViewRefDefinition viewRefDef = svgViewRefs.get(0);
         SVGTranslationTestAssertions.assertViewRef(viewRefDef);
+    }
+
+    @Test(expected = TranslatorException.class)
+    public void testCheckTranslateErrors() throws Exception {
+        translator.translate(svgTestError);
     }
 
     private static Document parse(final InputStream inputStream) throws Exception {

@@ -33,8 +33,19 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 public class GatewayShapeDef
         implements BPMNSvgShapeDef<BaseGateway> {
 
-    private static final String GW_EXCLUSIVE = "gwExclusive";
-    private static final String GW_MULTIPLE = "gwParallelMultiple";
+    public final static Map<Class<? extends BaseGateway>, String> VIEWS = new HashMap<Class<? extends BaseGateway>, String>(2) {{
+        put(ParallelGateway.class,
+            BPMNSVGViewFactory.VIEW_GATEWAY_PARALLEL_MULTIPLE);
+        put(ExclusiveDatabasedGateway.class,
+            BPMNSVGViewFactory.VIEW_GATEWAY_EXCLUSIVE);
+    }};
+
+    private final static Map<Class<? extends BaseGateway>, SafeUri> ICONS = new HashMap<Class<? extends BaseGateway>, SafeUri>(2) {{
+        put(ParallelGateway.class,
+            BPMNImageResources.INSTANCE.gatewayParallelEvent().getSafeUri());
+        put(ExclusiveDatabasedGateway.class,
+            BPMNImageResources.INSTANCE.gatewayExclusive().getSafeUri());
+    }};
 
     @Override
     public double getAlpha(final BaseGateway element) {
@@ -114,13 +125,7 @@ public class GatewayShapeDef
     @Override
     public boolean isSVGViewVisible(final String viewName,
                                     final BaseGateway element) {
-        switch (viewName) {
-            case GW_EXCLUSIVE:
-                return element instanceof ExclusiveDatabasedGateway;
-            case GW_MULTIPLE:
-                return element instanceof ParallelGateway;
-        }
-        return false;
+        return viewName.equals(VIEWS.get(element.getClass()));
     }
 
     @Override
@@ -136,15 +141,8 @@ public class GatewayShapeDef
         return BPMNSVGViewFactory.class;
     }
 
-    private final static Map<Class<? extends BaseGateway>, SafeUri> ICONS = new HashMap<Class<? extends BaseGateway>, SafeUri>(2) {{
-        put(ParallelGateway.class,
-            BPMNImageResources.INSTANCE.gatewayParallelEvent().getSafeUri());
-        put(ExclusiveDatabasedGateway.class,
-            BPMNImageResources.INSTANCE.gatewayExclusive().getSafeUri());
-    }};
-
     @Override
     public Glyph getGlyph(final Class<? extends BaseGateway> type) {
-        return SvgDataUriGlyph.create(ICONS.get(type));
+        return SvgDataUriGlyph.Builder.build(ICONS.get(type));
     }
 }

@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
+import org.kie.workbench.common.stunner.core.client.util.SvgDataUriGenerator;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
@@ -36,7 +37,8 @@ import static org.mockito.Mockito.*;
 @RunWith(LienzoMockitoTestRunner.class)
 public class LienzoSvgDataUriGlyphRendererTest {
 
-    private static final String URI = "data:image/svg+xml;base64,c3ZnLWNvbnRlbnQ=";
+    private static final String URI_B64 = "data:image/svg+xml;base64,c3ZnLWNvbnRlbnQ=";
+    private static final SvgDataUriGenerator DATA_URI_UTIL = new SvgDataUriGenerator();
 
     @Mock
     private SafeUri uri;
@@ -53,12 +55,16 @@ public class LienzoSvgDataUriGlyphRendererTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        when(uri.asString()).thenReturn(URI);
+        when(uri.asString()).thenReturn(URI_B64);
         when(lienzoPictureGlyphRenderer.render(any(ImageDataUriGlyph.class),
                                                anyDouble(),
                                                anyDouble())).thenReturn(group);
-        this.glyph = SvgDataUriGlyph.create(uri);
-        this.tested = new LienzoSvgDataUriGlyphRenderer(lienzoPictureGlyphRenderer);
+        when(lienzoPictureGlyphRenderer.render(anyString(),
+                                               anyDouble(),
+                                               anyDouble())).thenReturn(group);
+        this.glyph = SvgDataUriGlyph.Builder.build(uri);
+        this.tested = new LienzoSvgDataUriGlyphRenderer(DATA_URI_UTIL,
+                                                        lienzoPictureGlyphRenderer);
     }
 
     @Test
@@ -75,13 +81,12 @@ public class LienzoSvgDataUriGlyphRendererTest {
                                               200);
         assertEquals(group,
                      glyphView);
-        final ArgumentCaptor<ImageDataUriGlyph> imageGlyphCaptor = ArgumentCaptor.forClass(ImageDataUriGlyph.class);
+        final ArgumentCaptor<String> imageGlyphCaptor = ArgumentCaptor.forClass(String.class);
         verify(lienzoPictureGlyphRenderer,
                times(1)).render(imageGlyphCaptor.capture(),
                                 eq(100d),
                                 eq(200d));
-        final ImageDataUriGlyph imageGlyph = imageGlyphCaptor.getValue();
-        assertEquals(URI,
-                     imageGlyph.getUri().asString());
+        assertEquals(URI_B64,
+                     imageGlyphCaptor.getValue());
     }
 }

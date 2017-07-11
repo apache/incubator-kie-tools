@@ -57,15 +57,19 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     DataResource categorySequence();
 
     // ******* Task *******
-    @ClientBundle.Source(BPMNSVGViewFactory.TASK_USER)
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_TASK)
+    @DataResource.MimeType("image/svg+xml")
+    DataResource task();
+
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_TASK_USER)
     @DataResource.MimeType("image/svg+xml")
     DataResource taskUser();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.TASK_SCRIPT)
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_TASK_SCRIPT)
     @DataResource.MimeType("image/svg+xml")
     DataResource taskScript();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.TASK_BUSINESS_RULE)
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_TASK_BUSINESS_RULE)
     @DataResource.MimeType("image/svg+xml")
     DataResource taskBusinessRule();
 
@@ -78,56 +82,40 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     DataResource taskService();
 
     // ******* Event *******
-    @ClientBundle.Source(BPMNSVGViewFactory.EVENT_END)
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_EVENT_END)
     @DataResource.MimeType("image/svg+xml")
     DataResource eventEnd();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.EVENT_END_NONE)
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventEndNone();
-
-    @ClientBundle.Source(BPMNSVGViewFactory.EVENT_END_TERMINATE)
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_EVENT_END_TERMINATE)
     @DataResource.MimeType("image/svg+xml")
     DataResource eventEndTerminate();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.EVENT_INTERMEDIATE)
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_EVENT_INTERMEDIATE)
     @DataResource.MimeType("image/svg+xml")
     DataResource eventIntermediate();
 
-    @ClientBundle.Source("images/event/event-intermediate-non-interrupting.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventIntermediateNonInterrupting();
-
-    @ClientBundle.Source(BPMNSVGViewFactory.EVENT_START)
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_EVENT_START)
     @DataResource.MimeType("image/svg+xml")
     DataResource eventStart();
 
-    @ClientBundle.Source("images/event/event-start-non-interrupting.svg")
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_EVENT_SIGNAL)
     @DataResource.MimeType("image/svg+xml")
-    DataResource eventStartNonInterrupting();
+    DataResource eventSignal();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.EVENT_START_SIGNAL)
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_EVENT_TIMER)
     @DataResource.MimeType("image/svg+xml")
-    DataResource eventStartSignal();
-
-    @ClientBundle.Source(BPMNSVGViewFactory.EVENT_START_TIMER)
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventStartTimer();
-
-    @ClientBundle.Source("images/event/event-intermediate-timer.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventIntermediateTimer();
+    DataResource eventTimer();
 
     // ******* Gateway *******
     @ClientBundle.Source("images/gateway/parallel-event.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource gatewayParallelEvent();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.GATEWAY_PARALLEL_MULTIPLE)
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_GATEWAY_PARALLEL_MULTIPLE)
     @DataResource.MimeType("image/svg+xml")
     DataResource gatewayParallelMultiple();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.GATEWAY_EXCLUSIVE)
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_GATEWAY_EXCLUSIVE)
     @DataResource.MimeType("image/svg+xml")
     DataResource gatewayExclusive();
 
@@ -145,21 +133,31 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
 
     // ******* Containers *******
 
-    @ClientBundle.Source(BPMNSVGViewFactory.LANE)
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_LANE)
     @DataResource.MimeType("image/svg+xml")
     DataResource lane();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.LANE_ICON)
+    @ClientBundle.Source("images/lane/lane_icon.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource laneIcon();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.SUBPROCESS_REUSABLE)
+    // ******* Subprocesses *******
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_SUBPROCESS)
+    @DataResource.MimeType("image/svg+xml")
+    DataResource subProcess();
+
+    //
+    @ClientBundle.Source("images/subprocess/subprocess-glyph.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource subProcessGlyph();
+
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_SUBPROCESS_REUSABLE)
     @DataResource.MimeType("image/svg+xml")
     DataResource subProcessReusable();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.SUBPROCESS_EMBEDDED)
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_SUBPROCESS_ADHOC)
     @DataResource.MimeType("image/svg+xml")
-    DataResource subProcessEmbedded();
+    DataResource subProcessAdHoc();
 
     // ******* Connectors *******
 
@@ -169,11 +167,11 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
 
     // ******* Misc *******
 
-    @ClientBundle.Source(BPMNSVGViewFactory.RECTANGLE)
+    @ClientBundle.Source(BPMNSVGViewFactory.PATH_RECTANGLE)
     @DataResource.MimeType("image/svg+xml")
     DataResource rectangle();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.CIRCLE)
+    @ClientBundle.Source("images/misc/circle.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource cagetoryEvents();
 

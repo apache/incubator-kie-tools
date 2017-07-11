@@ -24,6 +24,7 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
 import org.mockito.Mock;
 
 import static org.junit.Assert.*;

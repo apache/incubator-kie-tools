@@ -23,14 +23,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.BPMNDiagramShapeDef;
-import org.kie.workbench.common.stunner.bpmn.client.shape.def.EmbeddedSubprocessShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.EndEventShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.GatewayShapeDef;
-import org.kie.workbench.common.stunner.bpmn.client.shape.def.IntermediateTimerEventShapeDef;
+import org.kie.workbench.common.stunner.bpmn.client.shape.def.IntermediateEventShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.LaneShapeDef;
-import org.kie.workbench.common.stunner.bpmn.client.shape.def.ReusableSubprocessShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SequenceFlowConnectorDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.StartEventShapeDef;
+import org.kie.workbench.common.stunner.bpmn.client.shape.def.SubprocessShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.TaskShapeDef;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
@@ -139,11 +138,11 @@ public class BPMNShapeFactoryTest {
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
                times(1)).delegate(eq(ReusableSubprocess.class),
-                                  any(ReusableSubprocessShapeDef.class),
+                                  any(SubprocessShapeDef.class),
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
                times(1)).delegate(eq(EmbeddedSubprocess.class),
-                                  any(EmbeddedSubprocessShapeDef.class),
+                                  any(SubprocessShapeDef.class),
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
                times(1)).delegate(eq(EndNoneEvent.class),
@@ -155,7 +154,7 @@ public class BPMNShapeFactoryTest {
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
                times(1)).delegate(eq(IntermediateTimerEvent.class),
-                                  any(IntermediateTimerEventShapeDef.class),
+                                  any(IntermediateEventShapeDef.class),
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
                times(1)).delegate(eq(SequenceFlow.class),

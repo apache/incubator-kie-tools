@@ -76,8 +76,8 @@ public abstract class BaseIntermediateEvent implements BPMNDefinition,
     @NonPortable
     static abstract class BaseIntermediateEventBuilder<T extends BaseIntermediateEvent> implements Builder<T> {
 
-        public static final String BG_COLOR = "#FFFFFF";
-        public static final Double BORDER_SIZE = 4d;
+        public static final String BG_COLOR = "#f5deb3";
+        public static final Double BORDER_SIZE = 1.5d;
         public static final String BORDER_COLOR = "#000000";
         public static final Double RADIUS = 14d;
     }

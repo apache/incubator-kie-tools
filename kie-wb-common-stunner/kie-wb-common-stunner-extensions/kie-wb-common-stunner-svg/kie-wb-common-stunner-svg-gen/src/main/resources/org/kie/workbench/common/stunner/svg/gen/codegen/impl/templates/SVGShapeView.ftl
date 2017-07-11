@@ -4,7 +4,7 @@ public SVGShapeView ${name}(final boolean resizable) {
 
 public SVGShapeView ${name}(final double width, final double height, final boolean resizable) {
 
-    final SVGShapeViewImpl view = new SVGShapeViewImpl("${name}", ${main}, width, height, resizable);
+    final SVGShapeViewImpl view = new SVGShapeViewImpl("${viewId}", ${main}, width, height, resizable);
     <#list scalableChildren as sc>
         view.addScalableChild(${sc});
     </#list>
@@ -26,7 +26,7 @@ private SVGBasicShapeView ${name}BasicView() {
 
 private SVGBasicShapeView ${name}BasicView(final double width, final double height) {
 
-    final SVGBasicShapeViewImpl view = new SVGBasicShapeViewImpl("${name}", ${main}, width, height);
+    final SVGBasicShapeViewImpl view = new SVGBasicShapeViewImpl("${viewId}", ${main}, width, height);
 
     <#list children as c>
         view.addChild(${c});

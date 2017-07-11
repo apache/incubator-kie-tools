@@ -23,123 +23,137 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 @SVGViewFactory
 public interface BPMNSVGViewFactory {
 
-    String TASK = "images/task/task.svg";
-    String TASK_USER = "images/task/task-user.svg";
-    String TASK_SCRIPT = "images/task/task-script.svg";
-    String TASK_BUSINESS_RULE = "images/task/task-business-rule.svg";
-    String GATEWAY = "images/gateway/gateway.svg";
-    String GATEWAY_PARALLEL_MULTIPLE = "images/gateway/parallel_multiple.svg";
-    String GATEWAY_EXCLUSIVE = "images/gateway/exclusive.svg";
-    String EVENT_START = "images/event/event-start.svg";
-    String EVENT_START_SIGNAL = "images/event/event-start-signal.svg";
-    String EVENT_START_TIMER = "images/event/event-start-timer.svg";
-    String EVENT_END = "images/event/event-end.svg";
-    String EVENT_END_NONE = "images/event/event-end-none.svg";
-    String EVENT_END_TERMINATE = "images/event/event-end-terminate.svg";
-    String EVENT_INTERMEDIATE = "images/event/event-intermediate.svg";
-    String LANE = "images/lane/lane.svg";
-    String LANE_ICON = "images/lane/lane_icon.svg";
-    String SUBPROCESS_REUSABLE = "images/subprocess/sub-process-reusable.svg";
-    String SUBPROCESS_EMBEDDED = "images/subprocess/sub-process-embedded.svg";
-    String CIRCLE = "images/misc/circle.svg";
-    String RECTANGLE = "images/misc/rectangle.svg";
+    /**
+     * SVG View names (for referencing, if necessary, from ShapeDef instances)
+     * MUST match with each of the SVG element identifier in the source files.
+     */
+    String VIEW_TASK = "task";
+    String VIEW_TASK_USER = "taskUser";
+    String VIEW_TASK_SCRIPT = "taskScript";
+    String VIEW_TASK_BUSINESS_RULE = "taskBusinessRule";
+    String VIEW_GATEWAY = "gateway";
+    String VIEW_GATEWAY_PARALLEL_MULTIPLE = "gwParallelMultiple";
+    String VIEW_GATEWAY_EXCLUSIVE = "gwExclusive";
+    String VIEW_EVENT_START = "eventStart";
+    String VIEW_EVENT_SIGNAL = "eventSignal";
+    String VIEW_EVENT_TIMER = "eventTimer";
+    String VIEW_EVENT_END = "eventEnd";
+    String VIEW_EVENT_END_TERMINATE = "eventEndTerminate";
+    String VIEW_EVENT_INTERMEDIATE = "eventIntermediate";
+    String VIEW_LANE = "lane";
+    String VIEW_SUBPROCESS = "subProcess";
+    String VIEW_SUBPROCESS_REUSABLE = "subProcessReusable";
+    String VIEW_SUBPROCESS_ADHOC = "subProcessAdHoc";
+    String VIEW_RECTANGLE = "rectangle";
 
-    @SVGSource(TASK)
+    /**
+     * The file paths for the SVG views.
+     */
+    String PATH_TASK = "images/task/task.svg";
+    String PATH_TASK_USER = "images/task/task-user.svg";
+    String PATH_TASK_SCRIPT = "images/task/task-script.svg";
+    String PATH_TASK_BUSINESS_RULE = "images/task/task-business-rule.svg";
+    String PATH_GATEWAY = "images/gateway/gateway.svg";
+    String PATH_GATEWAY_PARALLEL_MULTIPLE = "images/gateway/parallel_multiple.svg";
+    String PATH_GATEWAY_EXCLUSIVE = "images/gateway/exclusive.svg";
+    String PATH_EVENT_START = "images/event/event-start.svg";
+    String PATH_EVENT_SIGNAL = "images/event/event-signal.svg";
+    String PATH_EVENT_TIMER = "images/event/event-timer.svg";
+    String PATH_EVENT_END = "images/event/event-end.svg";
+    String PATH_EVENT_END_TERMINATE = "images/event/event-end-terminate.svg";
+    String PATH_EVENT_INTERMEDIATE = "images/event/event-intermediate.svg";
+    String PATH_LANE = "images/lane/lane.svg";
+    String PATH_SUBPROCESS = "images/subprocess/subprocess.svg";
+    String PATH_SUBPROCESS_REUSABLE = "images/subprocess/subprocess-reusable.svg";
+    String PATH_SUBPROCESS_ADHOC = "images/subprocess/subprocess-adhoc.svg";
+    String PATH_RECTANGLE = "images/misc/rectangle.svg";
+
+    @SVGSource(PATH_TASK)
     SVGShapeView task(final double width,
                       final double height,
                       final boolean resizable);
 
-    @SVGSource(TASK_USER)
+    @SVGSource(PATH_TASK_USER)
     SVGShapeView taskUser(final double width,
                           final double height,
                           final boolean resizable);
 
-    @SVGSource(TASK_SCRIPT)
+    @SVGSource(PATH_TASK_SCRIPT)
     SVGShapeView taskScript(final double width,
                             final double height,
                             final boolean resizable);
 
-    @SVGSource(TASK_BUSINESS_RULE)
+    @SVGSource(PATH_TASK_BUSINESS_RULE)
     SVGShapeView taskBusinessRule(final double width,
                                   final double height,
                                   final boolean resizable);
 
-    @SVGSource(GATEWAY)
+    @SVGSource(PATH_GATEWAY)
     SVGShapeView gateway(final double width,
                          final double height,
                          final boolean resizable);
 
-    @SVGSource(GATEWAY_PARALLEL_MULTIPLE)
+    @SVGSource(PATH_GATEWAY_PARALLEL_MULTIPLE)
     SVGShapeView gwParallelMultiple(final double width,
                                     final double height,
                                     final boolean resizable);
 
-    @SVGSource(GATEWAY_EXCLUSIVE)
+    @SVGSource(PATH_GATEWAY_EXCLUSIVE)
     SVGShapeView gwExclusive(final double width,
                              final double height,
                              final boolean resizable);
 
-    @SVGSource(EVENT_START)
+    @SVGSource(PATH_EVENT_START)
     SVGShapeView eventStart(final double width,
                             final double height,
                             final boolean resizable);
 
-    @SVGSource(EVENT_START_SIGNAL)
-    SVGShapeView eventStartSignal(final double width,
-                                  final double height,
-                                  final boolean resizable);
+    @SVGSource(PATH_EVENT_SIGNAL)
+    SVGShapeView eventSignal(final double width,
+                             final double height,
+                             final boolean resizable);
 
-    @SVGSource(EVENT_START_TIMER)
-    SVGShapeView eventStartTimer(final double width,
-                                 final double height,
-                                 final boolean resizable);
+    @SVGSource(PATH_EVENT_TIMER)
+    SVGShapeView eventTimer(final double width,
+                            final double height,
+                            final boolean resizable);
 
-    @SVGSource(EVENT_END)
+    @SVGSource(PATH_EVENT_END)
     SVGShapeView eventEnd(final double width,
                           final double height,
                           final boolean resizable);
 
-    @SVGSource(EVENT_END_NONE)
-    SVGShapeView eventEndNone(final double width,
-                              final double height,
-                              final boolean resizable);
-
-    @SVGSource(EVENT_END_TERMINATE)
+    @SVGSource(PATH_EVENT_END_TERMINATE)
     SVGShapeView eventEndTerminate(final double width,
                                    final double height,
                                    final boolean resizable);
 
-    @SVGSource(EVENT_INTERMEDIATE)
+    @SVGSource(PATH_EVENT_INTERMEDIATE)
     SVGShapeView eventIntermediate(final double width,
                                    final double height,
                                    final boolean resizable);
 
-    @SVGSource(LANE)
+    @SVGSource(PATH_LANE)
     SVGShapeView lane(final double width,
                       final double height,
                       final boolean resizable);
 
-    @SVGSource(LANE_ICON)
-    SVGShapeView laneIcon(final double width,
-                          final double height,
-                          final boolean resizable);
+    @SVGSource(PATH_SUBPROCESS)
+    SVGShapeView subProcess(final double width,
+                            final double height,
+                            final boolean resizable);
 
-    @SVGSource(SUBPROCESS_REUSABLE)
-    SVGShapeView subprocessReusable(final double width,
+    @SVGSource(PATH_SUBPROCESS_REUSABLE)
+    SVGShapeView subProcessReusable(final double width,
                                     final double height,
                                     final boolean resizable);
 
-    @SVGSource(SUBPROCESS_EMBEDDED)
-    SVGShapeView subprocessEmbedded(final double width,
-                                    final double height,
-                                    final boolean resizable);
+    @SVGSource(PATH_SUBPROCESS_ADHOC)
+    SVGShapeView subProcessAdHoc(final double width,
+                                 final double height,
+                                 final boolean resizable);
 
-    @SVGSource(CIRCLE)
-    SVGShapeView circle(final double width,
-                        final double height,
-                        final boolean resizable);
-
-    @SVGSource(RECTANGLE)
+    @SVGSource(PATH_RECTANGLE)
     SVGShapeView rectangle(final double width,
                            final double height,
                            final boolean resizable);

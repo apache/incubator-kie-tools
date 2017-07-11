@@ -34,6 +34,7 @@ import static org.junit.Assert.*;
 public class SVGTranslationTestAssertions {
 
     public static final String SVG_TEST_PATH = "org/kie/workbench/common/stunner/svg/gen/svg-elements-test.svg";
+    public static final String SVG_TEST_PATH_ERRORS = "org/kie/workbench/common/stunner/svg/gen/svg-elements-test-errors.svg";
 
     public static void assertPath(final MultiPathDefinition pathDefinition) {
         assertEquals("M150 0 L75 200 L225 200 Z",

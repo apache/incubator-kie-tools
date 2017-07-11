@@ -16,11 +16,20 @@
 
 package org.kie.workbench.common.stunner.core.client.shape;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import com.google.gwt.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 /**
  * A glyph that represents an SVG image.
+ * Additional SVG declarations can be added for inserting
+ * into the <code>SVG def</code> generated.
  * <p>
  * Default renderers display this image by parsing or attaching the svg declarations
  * into the client response, this way it provides full DOM support for the SVG, as it's not
@@ -29,16 +38,84 @@ import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 public final class SvgDataUriGlyph implements Glyph {
 
     private final SafeUri uri;
+    private final Collection<SafeUri> defUris;
+    private final Collection<String> validUseRefIds;
 
-    public static SvgDataUriGlyph create(final SafeUri uri) {
-        return new SvgDataUriGlyph(uri);
+    public static class Builder {
+
+        private SafeUri mainUri;
+        private final Map<String, SafeUri> useRefIds;
+
+        public static Builder create() {
+            return new Builder(new HashMap<>());
+        }
+
+        private Builder(final Map<String, SafeUri> useRefIds) {
+            this.useRefIds = useRefIds;
+        }
+
+        public Builder setUri(final SafeUri uri) {
+            this.mainUri = uri;
+            return this;
+        }
+
+        public Builder addUri(final String useRefId,
+                              final SafeUri uri) {
+            if (null != uri) {
+                useRefIds.put(useRefId,
+                              uri);
+            }
+            return this;
+        }
+
+        public SvgDataUriGlyph build(final String refId) {
+            assert null != mainUri;
+            final SafeUri safeUri = useRefIds.get(refId);
+            return null != safeUri ?
+                    new SvgDataUriGlyph(mainUri,
+                                        Optional.of(Arrays.asList(safeUri)),
+                                        Optional.of(Arrays.asList(refId))) :
+                    new SvgDataUriGlyph(mainUri,
+                                        Optional.empty(),
+                                        Optional.empty());
+        }
+
+        public SvgDataUriGlyph build() {
+            assert null != mainUri;
+            return new SvgDataUriGlyph(mainUri,
+                                       useRefIds.isEmpty() ?
+                                               Optional.empty() :
+                                               Optional.of(useRefIds.values()),
+                                       useRefIds.isEmpty() ?
+                                               Optional.empty() :
+                                               Optional.of(useRefIds.keySet()));
+        }
+
+        public static SvgDataUriGlyph build(final SafeUri uri) {
+            return Builder.create()
+                    .setUri(uri)
+                    .build();
+        }
     }
 
-    private SvgDataUriGlyph(final SafeUri uri) {
+    @SuppressWarnings("unchecked")
+    private SvgDataUriGlyph(final SafeUri uri,
+                            final Optional<Collection<SafeUri>> defUris,
+                            final Optional<Collection<String>> validUseRefIds) {
         this.uri = uri;
+        this.defUris = defUris.orElse(Collections.EMPTY_LIST);
+        this.validUseRefIds = validUseRefIds.orElse(Collections.EMPTY_LIST);
     }
 
-    public SafeUri getUri() {
+    public SafeUri getSvg() {
         return uri;
+    }
+
+    public Collection<SafeUri> getDefs() {
+        return defUris;
+    }
+
+    public Collection<String> getValidUseRefIds() {
+        return validUseRefIds;
     }
 }

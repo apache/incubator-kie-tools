@@ -20,20 +20,24 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.Group;
-import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
+import org.kie.workbench.common.stunner.core.client.util.SvgDataUriGenerator;
 
 @ApplicationScoped
 public class LienzoSvgDataUriGlyphRenderer implements LienzoGlyphRenderer<SvgDataUriGlyph> {
 
+    private final SvgDataUriGenerator svgDataUriUtil;
     private final LienzoPictureGlyphRenderer pictureGlyphRenderer;
 
     protected LienzoSvgDataUriGlyphRenderer() {
-        this(null);
+        this(null,
+             null);
     }
 
     @Inject
-    public LienzoSvgDataUriGlyphRenderer(final LienzoPictureGlyphRenderer pictureGlyphRenderer) {
+    public LienzoSvgDataUriGlyphRenderer(final SvgDataUriGenerator svgDataUriUtil,
+                                         final LienzoPictureGlyphRenderer pictureGlyphRenderer) {
+        this.svgDataUriUtil = svgDataUriUtil;
         this.pictureGlyphRenderer = pictureGlyphRenderer;
     }
 
@@ -46,9 +50,14 @@ public class LienzoSvgDataUriGlyphRenderer implements LienzoGlyphRenderer<SvgDat
     public Group render(final SvgDataUriGlyph glyph,
                         final double width,
                         final double height) {
-        final ImageDataUriGlyph imageGlyph = ImageDataUriGlyph.create(glyph.getUri());
-        return pictureGlyphRenderer.render(imageGlyph,
-                                           width,
-                                           height);
+        final String content = svgDataUriUtil
+                .generate(glyph.getSvg(),
+                          glyph.getDefs(),
+                          glyph.getValidUseRefIds());
+        final String encoded = SvgDataUriGenerator.encodeBase64(content);
+        return pictureGlyphRenderer
+                .render(encoded,
+                        width,
+                        height);
     }
 }

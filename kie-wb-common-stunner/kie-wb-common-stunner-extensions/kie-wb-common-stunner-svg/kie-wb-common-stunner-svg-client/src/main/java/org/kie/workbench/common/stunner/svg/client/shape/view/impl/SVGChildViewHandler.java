@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 import com.ait.lienzo.client.core.shape.ContainerNode;
 import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGBasicShapeView;
 
@@ -54,7 +53,7 @@ public class SVGChildViewHandler {
             final ContainerNode container = (ContainerNode) getPrimitive(parent);
             if (null != container) {
                 final IPrimitive childContainer = (IPrimitive) child.getContainer();
-                container.add(resize(childContainer));
+                container.add(childContainer);
             } else {
                 LOGGER.log(Level.SEVERE,
                            "The expected container node [" + parent + "] has not been found.");
@@ -98,19 +97,5 @@ public class SVGChildViewHandler {
             }
         }
         return null;
-    }
-
-    private IPrimitive resize(final IPrimitive p) {
-        final BoundingBox bb = p.getBoundingBox();
-        final double bbw = bb.getWidth();
-        final double bbh = bb.getHeight();
-        if (bbw > 0 && bbh > 0) {
-            final double sx = width / bbw;
-            final double sy = height / bbh;
-            final double s = sx > sy ? sy : sx;
-            p.setScale(s,
-                       s);
-        }
-        return p;
     }
 }
