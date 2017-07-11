@@ -82,6 +82,7 @@ public final class WiresManager
     private WiresManager(final Layer layer)
     {
         m_layer = new WiresLayer(layer);
+        m_layer.setWiresManager(this);
         layer.setOnLayerBeforeDraw(new LinePreparer(this));
 
         m_index = new AlignAndDistribute(layer);

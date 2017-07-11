@@ -61,8 +61,6 @@ public class WiresShape extends WiresContainer
 
     private boolean                     m_resizable;
 
-    private WiresManager                m_wiresManager;
-
     private WiresShapeHandler           m_handler;
 
     public WiresShape(final MultiPath path)
@@ -109,16 +107,6 @@ public class WiresShape extends WiresContainer
     {
         getGroup().setY(y);
         return this;
-    }
-
-    public WiresManager getWiresManager()
-    {
-        return m_wiresManager;
-    }
-
-    public void setWiresManager(WiresManager wiresManager)
-    {
-        m_wiresManager = wiresManager;
     }
 
     public WiresShape addChild(final IPrimitive<?> child)

@@ -258,18 +258,15 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         // For this reason we must use getBoundingBox, which uses BoundingPoints underneath, when ensures the shape x/y is now top left.
         m_box = AlignAndDistribute.getBoundingBox(m_group);
 
-
         double left = m_box.getMinX();
         double right = m_box.getMaxX();
-        double bottom = m_box.getMaxY();
         double top = m_box.getMinY();
+        double bottom = m_box.getMaxY();
 
         boolean leftChanged = left != m_left;
         boolean rightChanged = right != m_right;
         boolean topChanged = top != m_top;
         boolean bottomChanged = bottom != m_bottom;
-
-
 
 
         if (!leftChanged && !rightChanged && !topChanged && !bottomChanged)
