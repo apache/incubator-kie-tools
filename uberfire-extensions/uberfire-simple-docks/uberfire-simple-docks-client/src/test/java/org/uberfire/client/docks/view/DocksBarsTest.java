@@ -202,26 +202,25 @@ public class DocksBarsTest {
         Mockito.doNothing().when(docksBarsSpy).openDock(dock0,
                                                         docksBars.getDockBar(dock0));
         Mockito.doNothing().when(docksBarsSpy).closeDock(dock0,
-                                                docksBars.getDockBar(dock0));
+                                                         docksBars.getDockBar(dock0));
 
         docksBarsSpy.toggle(dock0);
 
         verify(docksBarsSpy).openDock(dock0,
                                       docksBars.getDockBar(dock0));
 
-        when(docksBarsSpy.isOpenWith(dock0,docksBars.getDockBar(dock0))).thenReturn(true);
+        when(docksBarsSpy.isOpenWith(dock0,
+                                     docksBars.getDockBar(dock0))).thenReturn(true);
 
         docksBarsSpy.toggle(dock0);
 
         verify(docksBarsSpy).closeDockProcess(dock0,
-                                      docksBars.getDockBar(dock0));
+                                              docksBars.getDockBar(dock0));
 
         docksBarsSpy.toggle(dock0);
 
         verify(docksBarsSpy).openDock(dock0,
                                       docksBars.getDockBar(dock0));
-
-
     }
 
     @Test
@@ -372,6 +371,33 @@ public class DocksBarsTest {
         verify(dockInteractionEvent,
                times(1)).fire(new UberfireDocksInteractionEvent(UberfireDockPosition.SOUTH,
                                                                 UberfireDocksInteractionEvent.InteractionType.RESIZED));
+    }
+
+    @Test
+    public void isReadyTest() {
+
+        final DocksBars docksBarsSpy = spy(docksBars);
+
+        when(uberfireDocksContainer.isReady()).thenReturn(false);
+        assertFalse(docksBarsSpy.isReady(UberfireDockPosition.EAST));
+
+        when(uberfireDocksContainer.isReady()).thenReturn(true);
+        assertFalse(docksBarsSpy.isReady(UberfireDockPosition.EAST));
+
+        docksBars.setup();
+        when(uberfireDocksContainer.isReady()).thenReturn(true);
+        assertTrue(docksBarsSpy.isReady(UberfireDockPosition.EAST));
+    }
+
+    @Test
+    public void emptyDockBarShouldBeReady() {
+        final DocksBars docksBarsSpy = spy(docksBars);
+        docksBars.setup();
+        when(uberfireDocksContainer.isReady()).thenReturn(true);
+        DocksBar dockBar = docksBarsSpy.getDockBar(UberfireDockPosition.EAST);
+
+        assertFalse(dockBar.hasDocksItems());
+        assertTrue(docksBarsSpy.isReady(UberfireDockPosition.EAST));
     }
 
     private DocksBar createDocksBarMock() {

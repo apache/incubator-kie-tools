@@ -378,7 +378,7 @@ public class DocksBars {
 
     private boolean docksBarIsReady(UberfireDockPosition dockPosition) {
         DocksBar dockBar = getDockBar(dockPosition);
-        return dockBar != null && dockBar.hasDocksItems();
+        return dockBar != null;
     }
 
     void show(Widget widget) {
