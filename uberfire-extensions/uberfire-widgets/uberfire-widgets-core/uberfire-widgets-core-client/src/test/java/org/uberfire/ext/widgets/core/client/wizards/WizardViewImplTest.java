@@ -31,18 +31,24 @@ public class WizardViewImplTest {
     @Mock
     WizardPopupFooter footer;
 
+    @Mock
+    AbstractWizard presenter;
+
     @GwtMock
     WizardViewImpl view;
 
     @Before
     public void init() {
         view.footer = footer;
+
         doCallRealMethod().when(view).setCompletionStatus(anyBoolean());
+        doCallRealMethod().when(view).onUnload();
     }
 
     @Test
     public void testSetCompletionStatusTrue() {
         view.setCompletionStatus(true);
+
         verify(view.footer,
                times(1)).enableFinishButton(true);
     }
@@ -50,7 +56,18 @@ public class WizardViewImplTest {
     @Test
     public void testSetCompletionStatusFalse() {
         view.setCompletionStatus(false);
+
         verify(view.footer,
                times(1)).enableFinishButton(false);
+    }
+
+    @Test
+    public void testOnUnload() {
+        doReturn(presenter).when(view).getPresenter();
+
+        view.onUnload();
+
+        verify(presenter).close();
+        verify(view).parentOnUnload();
     }
 }

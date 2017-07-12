@@ -98,6 +98,20 @@ public class WizardViewImpl extends BaseModal
     }
 
     @Override
+    protected void onUnload() {
+        parentOnUnload();
+        getPresenter().close();
+    }
+
+    void parentOnUnload() {
+        super.onUnload();
+    }
+
+    AbstractWizard getPresenter() {
+        return presenter;
+    }
+
+    @Override
     public void init(final AbstractWizard presenter) {
         this.presenter = presenter;
     }
