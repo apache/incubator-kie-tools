@@ -238,3 +238,6 @@
     max-width: none;
     padding: 0;
 }
+.uf-le-overflow{
+    overflow: auto;
+}

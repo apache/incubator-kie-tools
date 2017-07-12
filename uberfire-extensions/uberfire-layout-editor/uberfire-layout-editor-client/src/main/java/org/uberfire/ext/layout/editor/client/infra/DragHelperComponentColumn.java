@@ -68,6 +68,8 @@ public class DragHelperComponentColumn {
         HTMLElement div = document.createElement("div");
         addCSSClass(div,
                     "uf-perspective-col");
+        addCSSClass(div,
+                    "uf-le-overflow");
         FlowPanel gwtDivWrapper = GWT.create(FlowPanel.class);
         gwtDivWrapper.getElement().addClassName("uf-perspective-col");
         gwtDivWrapper.add(getLayoutDragComponent()

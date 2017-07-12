@@ -20,6 +20,7 @@
 
 .rowUpper {
     height: 10px;
+    display: flex;
 }
 
 .rowMovePreview {
