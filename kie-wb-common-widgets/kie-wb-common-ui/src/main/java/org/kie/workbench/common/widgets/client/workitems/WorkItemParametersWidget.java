@@ -21,13 +21,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
+import org.gwtbootstrap3.client.ui.html.Div;
 
 /**
  * A Widget to display a list of Work Item parameters
  */
-public class WorkItemParametersWidget extends VerticalPanel {
+public class WorkItemParametersWidget extends Div {
 
     private List<PortableParameterDefinition> parameters;
 
@@ -35,36 +35,34 @@ public class WorkItemParametersWidget extends VerticalPanel {
 
     private final boolean isReadOnly;
 
-    public WorkItemParametersWidget( final IBindingProvider bindingProvider,
-                                     final boolean isReadOnly ) {
+    public WorkItemParametersWidget(final IBindingProvider bindingProvider,
+                                    final boolean isReadOnly) {
         this.bindingProvider = bindingProvider;
         this.isReadOnly = isReadOnly;
     }
 
-    public void setParameters( Collection<PortableParameterDefinition> parameters ) {
+    public void setParameters(Collection<PortableParameterDefinition> parameters) {
         this.clear();
-        this.parameters = sort( parameters );
-        for ( PortableParameterDefinition ppd : this.parameters ) {
-            WorkItemParameterWidget pw = WorkItemParameterWidgetFactory.getWidget( ppd,
-                                                                                   bindingProvider,
-                                                                                   isReadOnly );
-            add( pw );
+        this.parameters = sort(parameters);
+        for (PortableParameterDefinition ppd : this.parameters) {
+            WorkItemParameterWidget pw = WorkItemParameterWidgetFactory.getWidget(ppd,
+                                                                                  bindingProvider,
+                                                                                  isReadOnly);
+            add(pw);
         }
     }
 
-    private List<PortableParameterDefinition> sort( Collection<PortableParameterDefinition> parameters ) {
+    private List<PortableParameterDefinition> sort(Collection<PortableParameterDefinition> parameters) {
         List<PortableParameterDefinition> sortedParameters = new ArrayList<PortableParameterDefinition>();
-        sortedParameters.addAll( parameters );
-        Collections.sort( sortedParameters,
-                          new Comparator<PortableParameterDefinition>() {
+        sortedParameters.addAll(parameters);
+        Collections.sort(sortedParameters,
+                         new Comparator<PortableParameterDefinition>() {
 
-                              public int compare( PortableParameterDefinition o1,
-                                                  PortableParameterDefinition o2 ) {
-                                  return o1.getName().compareTo( o2.getName() );
-                              }
-
-                          } );
+                             public int compare(PortableParameterDefinition o1,
+                                                PortableParameterDefinition o2) {
+                                 return o1.getName().compareTo(o2.getName());
+                             }
+                         });
         return sortedParameters;
     }
-
 }

@@ -24,8 +24,6 @@ public interface CommonsCss
         extends
         CssResource {
 
-    String workItemParameter();
-
     String greyBorderWithRoundCorners();
 
     String infoContainer();

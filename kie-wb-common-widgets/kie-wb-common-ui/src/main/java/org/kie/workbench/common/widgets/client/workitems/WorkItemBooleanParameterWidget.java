@@ -22,11 +22,12 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.HTMLPanel;
+
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.workitems.PortableBooleanParameterDefinition;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 /**
@@ -36,12 +37,12 @@ public class WorkItemBooleanParameterWidget extends WorkItemParameterWidget {
 
     interface WorkItemBooleanParameterWidgetBinder
             extends
-            UiBinder<HorizontalPanel, WorkItemBooleanParameterWidget> {
+            UiBinder<HTMLPanel, WorkItemBooleanParameterWidget> {
 
     }
 
     @UiField
-    Label parameterName;
+    FormLabel parameterName;
 
     @UiField
     ListBox parameterValues;
@@ -49,79 +50,77 @@ public class WorkItemBooleanParameterWidget extends WorkItemParameterWidget {
     @UiField
     ListBox lstAvailableBindings;
 
-    private static WorkItemBooleanParameterWidgetBinder uiBinder = GWT.create( WorkItemBooleanParameterWidgetBinder.class );
+    private static WorkItemBooleanParameterWidgetBinder uiBinder = GWT.create(WorkItemBooleanParameterWidgetBinder.class);
 
-    public WorkItemBooleanParameterWidget( PortableBooleanParameterDefinition ppd,
-                                           IBindingProvider bindingProvider,
-                                           boolean isReadOnly ) {
-        super( ppd,
-               bindingProvider );
-        this.parameterName.setText( ppd.getName() );
-        this.parameterValues.setEnabled( !isReadOnly );
+    public WorkItemBooleanParameterWidget(PortableBooleanParameterDefinition ppd,
+                                          IBindingProvider bindingProvider,
+                                          boolean isReadOnly) {
+        super(ppd,
+              bindingProvider);
+        this.parameterName.setText(ppd.getName());
+        this.parameterValues.setEnabled(!isReadOnly);
 
         //Setup widget to select a literal value
         boolean isItemSelected = false;
         Boolean selectedItem = ppd.getValue();
-        if ( ppd.getValues() != null ) {
-            for ( int index = 0; index < ppd.getValues().length; index++ ) {
-                Boolean item = ppd.getValues()[ index ];
-                this.parameterValues.addItem( Boolean.toString( item ) );
-                if ( item.equals( selectedItem ) ) {
-                    this.parameterValues.setSelectedIndex( index );
+        if (ppd.getValues() != null) {
+            for (int index = 0; index < ppd.getValues().length; index++) {
+                Boolean item = ppd.getValues()[index];
+                this.parameterValues.addItem(Boolean.toString(item));
+                if (item.equals(selectedItem)) {
+                    this.parameterValues.setSelectedIndex(index);
                     isItemSelected = true;
                 }
             }
-            if ( !isItemSelected ) {
-                this.parameterValues.setSelectedIndex( 0 );
-                ppd.setValue( Boolean.valueOf( this.parameterValues.getItemText( 0 ) ) );
+            if (!isItemSelected) {
+                this.parameterValues.setSelectedIndex(0);
+                ppd.setValue(Boolean.valueOf(this.parameterValues.getItemText(0)));
             }
         }
 
         //Setup widget to use bindings
-        Set<String> bindings = bindingProvider.getBindings( ppd.getClassName() );
-        if ( bindings.size() > 0 ) {
+        Set<String> bindings = bindingProvider.getBindings(ppd.getClassName());
+        if (bindings.size() > 0) {
             lstAvailableBindings.clear();
-            lstAvailableBindings.addItem( CommonConstants.INSTANCE.Choose() );
-            lstAvailableBindings.setEnabled( true && !isReadOnly );
-            lstAvailableBindings.setVisible( true );
+            lstAvailableBindings.addItem(CommonConstants.INSTANCE.Choose());
+            lstAvailableBindings.setEnabled(true && !isReadOnly);
+            lstAvailableBindings.setVisible(true);
             int selectedIndex = 0;
-            for ( String binding : bindings ) {
-                lstAvailableBindings.addItem( binding );
-                if ( binding.equals( ppd.getBinding() ) ) {
+            for (String binding : bindings) {
+                lstAvailableBindings.addItem(binding);
+                if (binding.equals(ppd.getBinding())) {
                     selectedIndex = lstAvailableBindings.getItemCount() - 1;
                 }
             }
-            lstAvailableBindings.setSelectedIndex( selectedIndex );
-            parameterValues.setEnabled( selectedIndex == 0 && !isReadOnly );
+            lstAvailableBindings.setSelectedIndex(selectedIndex);
+            parameterValues.setEnabled(selectedIndex == 0 && !isReadOnly);
         }
-
     }
 
     @Override
     protected Widget getWidget() {
-        return uiBinder.createAndBindUi( this );
+        return uiBinder.createAndBindUi(this);
     }
 
     @UiHandler("parameterValues")
-    void parameterValuesOnChange( ChangeEvent event ) {
+    void parameterValuesOnChange(ChangeEvent event) {
         int index = this.parameterValues.getSelectedIndex();
-        if ( index == -1 ) {
-            ( (PortableBooleanParameterDefinition) ppd ).setValue( null );
+        if (index == -1) {
+            ((PortableBooleanParameterDefinition) ppd).setValue(null);
         } else {
-            ( (PortableBooleanParameterDefinition) ppd ).setValue( Boolean.valueOf( this.parameterValues.getItemText( index ) ) );
+            ((PortableBooleanParameterDefinition) ppd).setValue(Boolean.valueOf(this.parameterValues.getItemText(index)));
         }
     }
 
     @UiHandler("lstAvailableBindings")
-    void lstAvailableBindingsOnChange( ChangeEvent event ) {
+    void lstAvailableBindingsOnChange(ChangeEvent event) {
         int index = lstAvailableBindings.getSelectedIndex();
-        parameterValues.setEnabled( index == 0 );
-        if ( index > 0 ) {
-            ( (PortableBooleanParameterDefinition) ppd ).setValue( null );
-            ( (PortableBooleanParameterDefinition) ppd ).setBinding( lstAvailableBindings.getItemText( index ) );
+        parameterValues.setEnabled(index == 0);
+        if (index > 0) {
+            ((PortableBooleanParameterDefinition) ppd).setValue(null);
+            ((PortableBooleanParameterDefinition) ppd).setBinding(lstAvailableBindings.getItemText(index));
         } else {
-            ( (PortableBooleanParameterDefinition) ppd ).setBinding( "" );
+            ((PortableBooleanParameterDefinition) ppd).setBinding("");
         }
     }
-
 }

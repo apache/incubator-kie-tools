@@ -22,11 +22,11 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.workitems.PortableObjectParameterDefinition;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 /**
@@ -36,57 +36,55 @@ public class WorkItemObjectParameterWidget extends WorkItemParameterWidget {
 
     interface WorkItemObjectParameterWidgetBinder
             extends
-            UiBinder<HorizontalPanel, WorkItemObjectParameterWidget> {
+            UiBinder<HTMLPanel, WorkItemObjectParameterWidget> {
 
     }
 
     @UiField
-    Label parameterName;
+    FormLabel parameterName;
 
     @UiField
     ListBox lstAvailableBindings;
 
-    private static WorkItemObjectParameterWidgetBinder uiBinder = GWT.create( WorkItemObjectParameterWidgetBinder.class );
+    private static WorkItemObjectParameterWidgetBinder uiBinder = GWT.create(WorkItemObjectParameterWidgetBinder.class);
 
-    public WorkItemObjectParameterWidget( PortableObjectParameterDefinition ppd,
-                                          IBindingProvider bindingProvider,
-                                          boolean isReadOnly ) {
-        super( ppd,
-               bindingProvider );
+    public WorkItemObjectParameterWidget(PortableObjectParameterDefinition ppd,
+                                         IBindingProvider bindingProvider,
+                                         boolean isReadOnly) {
+        super(ppd,
+              bindingProvider);
 
         //Setup widget to use bindings
-        this.parameterName.setText( ppd.getName() );
-        Set<String> bindings = bindingProvider.getBindings( ppd.getClassName() );
-        if ( bindings.size() > 0 ) {
+        this.parameterName.setText(ppd.getName());
+        Set<String> bindings = bindingProvider.getBindings(ppd.getClassName());
+        if (bindings.size() > 0) {
             lstAvailableBindings.clear();
-            lstAvailableBindings.addItem( CommonConstants.INSTANCE.Choose() );
-            lstAvailableBindings.setEnabled( true && !isReadOnly );
-            lstAvailableBindings.setVisible( true );
+            lstAvailableBindings.addItem(CommonConstants.INSTANCE.Choose());
+            lstAvailableBindings.setEnabled(true && !isReadOnly);
+            lstAvailableBindings.setVisible(true);
             int selectedIndex = 0;
-            for ( String binding : bindings ) {
-                lstAvailableBindings.addItem( binding );
-                if ( binding.equals( ppd.getBinding() ) ) {
+            for (String binding : bindings) {
+                lstAvailableBindings.addItem(binding);
+                if (binding.equals(ppd.getBinding())) {
                     selectedIndex = lstAvailableBindings.getItemCount() - 1;
                 }
             }
-            lstAvailableBindings.setSelectedIndex( selectedIndex );
+            lstAvailableBindings.setSelectedIndex(selectedIndex);
         }
-
     }
 
     @Override
     protected Widget getWidget() {
-        return uiBinder.createAndBindUi( this );
+        return uiBinder.createAndBindUi(this);
     }
 
     @UiHandler("lstAvailableBindings")
-    void lstAvailableBindingsOnChange( ChangeEvent event ) {
+    void lstAvailableBindingsOnChange(ChangeEvent event) {
         int index = lstAvailableBindings.getSelectedIndex();
-        if ( index > 0 ) {
-            ( (PortableObjectParameterDefinition) ppd ).setBinding( lstAvailableBindings.getItemText( index ) );
+        if (index > 0) {
+            ((PortableObjectParameterDefinition) ppd).setBinding(lstAvailableBindings.getItemText(index));
         } else {
-            ( (PortableObjectParameterDefinition) ppd ).setBinding( "" );
+            ((PortableObjectParameterDefinition) ppd).setBinding("");
         }
     }
-
 }

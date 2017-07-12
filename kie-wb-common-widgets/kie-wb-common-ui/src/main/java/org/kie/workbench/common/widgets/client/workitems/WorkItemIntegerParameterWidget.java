@@ -22,11 +22,11 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.workitems.PortableIntegerParameterDefinition;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.common.client.common.NumericIntegerTextBox;
 
@@ -37,12 +37,12 @@ public class WorkItemIntegerParameterWidget extends WorkItemParameterWidget {
 
     interface WorkItemIntegerParameterWidgetBinder
             extends
-            UiBinder<HorizontalPanel, WorkItemIntegerParameterWidget> {
+            UiBinder<HTMLPanel, WorkItemIntegerParameterWidget> {
 
     }
 
     @UiField
-    Label parameterName;
+    FormLabel parameterName;
 
     @UiField
     NumericIntegerTextBox parameterEditor;
@@ -50,65 +50,63 @@ public class WorkItemIntegerParameterWidget extends WorkItemParameterWidget {
     @UiField
     ListBox lstAvailableBindings;
 
-    private static WorkItemIntegerParameterWidgetBinder uiBinder = GWT.create( WorkItemIntegerParameterWidgetBinder.class );
+    private static WorkItemIntegerParameterWidgetBinder uiBinder = GWT.create(WorkItemIntegerParameterWidgetBinder.class);
 
-    public WorkItemIntegerParameterWidget( PortableIntegerParameterDefinition ppd,
-                                           IBindingProvider bindingProvider,
-                                           boolean isReadOnly ) {
-        super( ppd,
-               bindingProvider );
-        this.parameterName.setText( ppd.getName() );
-        this.parameterEditor.setEnabled( !isReadOnly );
+    public WorkItemIntegerParameterWidget(PortableIntegerParameterDefinition ppd,
+                                          IBindingProvider bindingProvider,
+                                          boolean isReadOnly) {
+        super(ppd,
+              bindingProvider);
+        this.parameterName.setText(ppd.getName());
+        this.parameterEditor.setEnabled(!isReadOnly);
 
         //Setup widget to select a literal value
-        if ( ppd.getValue() != null ) {
-            this.parameterEditor.setText( Integer.toString( ppd.getValue() ) );
+        if (ppd.getValue() != null) {
+            this.parameterEditor.setText(Integer.toString(ppd.getValue()));
         }
 
         //Setup widget to use bindings
-        Set<String> bindings = bindingProvider.getBindings( ppd.getClassName() );
-        if ( bindings.size() > 0 ) {
+        Set<String> bindings = bindingProvider.getBindings(ppd.getClassName());
+        if (bindings.size() > 0) {
             lstAvailableBindings.clear();
-            lstAvailableBindings.addItem( CommonConstants.INSTANCE.Choose() );
-            lstAvailableBindings.setEnabled( true && !isReadOnly );
-            lstAvailableBindings.setVisible( true );
+            lstAvailableBindings.addItem(CommonConstants.INSTANCE.Choose());
+            lstAvailableBindings.setEnabled(true && !isReadOnly);
+            lstAvailableBindings.setVisible(true);
             int selectedIndex = 0;
-            for ( String binding : bindings ) {
-                lstAvailableBindings.addItem( binding );
-                if ( binding.equals( ppd.getBinding() ) ) {
+            for (String binding : bindings) {
+                lstAvailableBindings.addItem(binding);
+                if (binding.equals(ppd.getBinding())) {
                     selectedIndex = lstAvailableBindings.getItemCount() - 1;
                 }
             }
-            lstAvailableBindings.setSelectedIndex( selectedIndex );
-            parameterEditor.setEnabled( selectedIndex == 0 && !isReadOnly );
+            lstAvailableBindings.setSelectedIndex(selectedIndex);
+            parameterEditor.setEnabled(selectedIndex == 0 && !isReadOnly);
         }
-
     }
 
     @Override
     protected Widget getWidget() {
-        return uiBinder.createAndBindUi( this );
+        return uiBinder.createAndBindUi(this);
     }
 
     @UiHandler("parameterEditor")
-    void parameterEditorOnChange( ChangeEvent event ) {
+    void parameterEditorOnChange(ChangeEvent event) {
         try {
-            ( (PortableIntegerParameterDefinition) ppd ).setValue( Integer.parseInt( parameterEditor.getText() ) );
-        } catch ( NumberFormatException nfe ) {
-            ( (PortableIntegerParameterDefinition) ppd ).setValue( null );
+            ((PortableIntegerParameterDefinition) ppd).setValue(Integer.parseInt(parameterEditor.getText()));
+        } catch (NumberFormatException nfe) {
+            ((PortableIntegerParameterDefinition) ppd).setValue(null);
         }
     }
 
     @UiHandler("lstAvailableBindings")
-    void lstAvailableBindingsOnChange( ChangeEvent event ) {
+    void lstAvailableBindingsOnChange(ChangeEvent event) {
         int index = lstAvailableBindings.getSelectedIndex();
-        parameterEditor.setEnabled( index == 0 );
-        if ( index > 0 ) {
-            ( (PortableIntegerParameterDefinition) ppd ).setValue( null );
-            ( (PortableIntegerParameterDefinition) ppd ).setBinding( lstAvailableBindings.getItemText( index ) );
+        parameterEditor.setEnabled(index == 0);
+        if (index > 0) {
+            ((PortableIntegerParameterDefinition) ppd).setValue(null);
+            ((PortableIntegerParameterDefinition) ppd).setBinding(lstAvailableBindings.getItemText(index));
         } else {
-            ( (PortableIntegerParameterDefinition) ppd ).setBinding( "" );
+            ((PortableIntegerParameterDefinition) ppd).setBinding("");
         }
     }
-
 }

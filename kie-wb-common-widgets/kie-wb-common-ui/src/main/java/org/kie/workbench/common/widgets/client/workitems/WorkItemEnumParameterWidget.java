@@ -20,11 +20,11 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.workitems.PortableEnumParameterDefinition;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.ListBox;
 
 /**
  * A Widget to display a Work Item Enum parameter
@@ -33,57 +33,56 @@ public class WorkItemEnumParameterWidget extends WorkItemParameterWidget {
 
     interface WorkItemEnumParameterWidgetBinder
             extends
-            UiBinder<HorizontalPanel, WorkItemEnumParameterWidget> {
+            UiBinder<HTMLPanel, WorkItemEnumParameterWidget> {
 
     }
 
     @UiField
-    Label parameterName;
+    FormLabel parameterName;
 
     @UiField
     ListBox parameterValues;
 
-    private static WorkItemEnumParameterWidgetBinder uiBinder = GWT.create( WorkItemEnumParameterWidgetBinder.class );
+    private static WorkItemEnumParameterWidgetBinder uiBinder = GWT.create(WorkItemEnumParameterWidgetBinder.class);
 
-    public WorkItemEnumParameterWidget( PortableEnumParameterDefinition ppd,
-                                        IBindingProvider bindingProvider,
-                                        boolean isReadOnly ) {
-        super( ppd,
-               bindingProvider );
-        this.parameterName.setText( ppd.getName() );
-        this.parameterValues.setEnabled( !isReadOnly );
+    public WorkItemEnumParameterWidget(PortableEnumParameterDefinition ppd,
+                                       IBindingProvider bindingProvider,
+                                       boolean isReadOnly) {
+        super(ppd,
+              bindingProvider);
+        this.parameterName.setText(ppd.getName());
+        this.parameterValues.setEnabled(!isReadOnly);
 
         boolean isItemSelected = false;
         String selectedItem = ppd.getValue();
-        if ( ppd.getValues() != null ) {
-            for ( int index = 0; index < ppd.getValues().length; index++ ) {
-                String item = ppd.getValues()[ index ];
-                this.parameterValues.addItem( item );
-                if ( item.equals( selectedItem ) ) {
-                    this.parameterValues.setSelectedIndex( index );
+        if (ppd.getValues() != null) {
+            for (int index = 0; index < ppd.getValues().length; index++) {
+                String item = ppd.getValues()[index];
+                this.parameterValues.addItem(item);
+                if (item.equals(selectedItem)) {
+                    this.parameterValues.setSelectedIndex(index);
                     isItemSelected = true;
                 }
             }
-            if ( !isItemSelected ) {
-                this.parameterValues.setSelectedIndex( 0 );
-                ppd.setValue( this.parameterValues.getItemText( 0 ) );
+            if (!isItemSelected) {
+                this.parameterValues.setSelectedIndex(0);
+                ppd.setValue(this.parameterValues.getItemText(0));
             }
         }
     }
 
     @Override
     protected Widget getWidget() {
-        return uiBinder.createAndBindUi( this );
+        return uiBinder.createAndBindUi(this);
     }
 
     @UiHandler("parameterValues")
-    void parameterValuesOnChange( ChangeEvent event ) {
+    void parameterValuesOnChange(ChangeEvent event) {
         int index = this.parameterValues.getSelectedIndex();
-        if ( index == -1 ) {
-            ( (PortableEnumParameterDefinition) ppd ).setValue( null );
+        if (index == -1) {
+            ((PortableEnumParameterDefinition) ppd).setValue(null);
         } else {
-            ( (PortableEnumParameterDefinition) ppd ).setValue( this.parameterValues.getItemText( index ) );
+            ((PortableEnumParameterDefinition) ppd).setValue(this.parameterValues.getItemText(index));
         }
     }
-
 }
