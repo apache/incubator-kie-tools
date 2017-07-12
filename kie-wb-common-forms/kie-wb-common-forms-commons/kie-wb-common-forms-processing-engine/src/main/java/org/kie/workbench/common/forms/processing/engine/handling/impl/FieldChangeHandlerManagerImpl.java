@@ -79,6 +79,25 @@ public class FieldChangeHandlerManagerImpl implements FieldChangeHandlerManager 
     public void processFieldChange(String fieldName,
                                    Object newValue,
                                    Object model) {
+        validateAndNotify(fieldName,
+                          newValue,
+                          model,
+                          true);
+    }
+
+    @Override
+    public void notifyFieldChange(String fieldName,
+                                  Object newValue) {
+        validateAndNotify(fieldName,
+                          newValue,
+                          null,
+                          false);
+    }
+
+    protected void validateAndNotify(String fieldName,
+                                     Object newValue,
+                                     Object model,
+                                     boolean validate) {
         assert fieldName != null;
 
         String realFieldName = fieldName;
@@ -91,7 +110,7 @@ public class FieldChangeHandlerManagerImpl implements FieldChangeHandlerManager 
         FieldChangeProcessor executor = fieldExecutors.get(realFieldName);
 
         if (executor != null) {
-            if (executor.isRequiresValidation()) {
+            if (validate && executor.isRequiresValidation()) {
                 if (validator != null && !validator.validate(realFieldName,
                                                              model)) {
                     return;

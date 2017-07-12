@@ -85,6 +85,11 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
                 }
 
                 @Override
+                public boolean isRequired() {
+                    return field.getRequired();
+                }
+
+                @Override
                 public boolean isContentValid() {
                     return FieldRenderer.this.isContentValid();
                 }

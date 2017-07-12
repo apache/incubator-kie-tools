@@ -14,32 +14,49 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.labelManaged;
+package org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.checkbox;
 
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+import org.jboss.errai.common.client.dom.DOMUtil;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Document;
+import org.jboss.errai.common.client.dom.Label;
+import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Templated
-public class LabelManagedFormGroupDisplayerViewImpl extends Composite implements LabelManagedFormGroupDisplayerView {
+public class CheckBoxFormGroupDisplayerViewImpl extends Composite implements CheckBoxFormGroupDisplayerView {
+
+    @Inject
+    protected Document document;
 
     @Inject
     @DataField
-    protected FlowPanel fieldContainer;
+    protected Label fieldLabel;
+
+    @Inject
     @DataField
-    protected Element helpBlock = DOM.createDiv();
+    protected Div helpBlock;
+
+    @Inject
+    protected Span labelText;
 
     public void render(Widget widget,
                        FieldDefinition field) {
         this.getElement().setId(generateFormGroupId(field));
-        fieldContainer.add(widget);
+        DOMUtil.appendWidgetToElement(fieldLabel,
+                                      widget);
+        labelText.setTextContent(field.getLabel());
+
+        if (field.getRequired()) {
+            labelText.appendChild(getRequiredElement(document));
+        }
+        fieldLabel.appendChild(labelText);
         helpBlock.setId(generateHelpBlockId(field));
     }
 }

@@ -23,10 +23,10 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.checkbox.CheckBoxFormGroupDisplayer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.configError.ConfigErrorFormGroupDisplayer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.def.DefaultFormGroupDisplayer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.fieldSet.FieldSetFormGroupDisplayer;
-import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.labelManaged.LabelManagedFormGroupDisplayer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.slider.SliderFormGroupDisplayer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.CheckBoxFieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.SliderFieldRenderer;
@@ -48,7 +48,7 @@ public class FormGroupDisplayerFactory {
         formGroups.put(SliderFieldRenderer.class,
                        beanManager.lookupBean(SliderFormGroupDisplayer.class));
         formGroups.put(CheckBoxFieldRenderer.class,
-                       beanManager.lookupBean(LabelManagedFormGroupDisplayer.class));
+                       beanManager.lookupBean(CheckBoxFormGroupDisplayer.class));
         formGroups.put(MultipleSubFormFieldRenderer.class,
                        beanManager.lookupBean(FieldSetFormGroupDisplayer.class));
         formGroups.put(SubFormFieldRenderer.class,

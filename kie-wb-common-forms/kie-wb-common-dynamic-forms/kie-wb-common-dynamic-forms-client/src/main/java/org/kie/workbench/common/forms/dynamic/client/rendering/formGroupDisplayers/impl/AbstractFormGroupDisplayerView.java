@@ -18,36 +18,44 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplay
 
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.LabelElement;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+import org.jboss.errai.common.client.dom.DOMUtil;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Document;
+import org.jboss.errai.common.client.dom.Label;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.FormGroupDisplayerView;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 public abstract class AbstractFormGroupDisplayerView extends Composite implements FormGroupDisplayerView {
 
+    @Inject
     @DataField
-    protected LabelElement fieldLabel = Document.get().createLabelElement();
+    protected Label fieldLabel;
 
     @Inject
     @DataField
-    protected FlowPanel fieldContainer;
+    protected Div fieldContainer;
 
+    @Inject
     @DataField
-    protected Element helpBlock = DOM.createDiv();
+    protected Div helpBlock;
+
+    @Inject
+    protected Document document;
 
     @Override
     public void render(Widget widget,
                        FieldDefinition field) {
         this.getElement().setId(generateFormGroupId(field));
         fieldLabel.setHtmlFor(widget.getElement().getId());
-        fieldLabel.setInnerHTML(field.getLabel());
-        fieldContainer.add(widget);
+        fieldLabel.setTextContent(field.getLabel());
+        if (field.getRequired()) {
+            fieldLabel.appendChild(getRequiredElement(document));
+        }
+        DOMUtil.appendWidgetToElement(fieldContainer,
+                                      widget);
         helpBlock.setId(generateHelpBlockId(field));
     }
 }

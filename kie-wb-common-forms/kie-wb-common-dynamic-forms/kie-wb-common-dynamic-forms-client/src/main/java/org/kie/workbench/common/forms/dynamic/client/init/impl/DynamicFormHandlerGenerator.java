@@ -27,6 +27,7 @@ import org.kie.workbench.common.forms.dynamic.service.shared.DynamicContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.validation.DynamicModelConstraints;
 import org.kie.workbench.common.forms.model.JavaModel;
+import org.kie.workbench.common.forms.processing.engine.handling.FieldStateValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FormValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.impl.FieldChangeHandlerManagerImpl;
@@ -41,10 +42,14 @@ public class DynamicFormHandlerGenerator implements FormHandlerGenerator<MapMode
 
     private MapModelBindingHelper helper;
 
+    protected FieldStateValidator fieldStateValidator;
+
     @Inject
     public DynamicFormHandlerGenerator(DynamicValidator validator,
+                                       FieldStateValidator fieldStateValidator,
                                        MapModelBindingHelper helper) {
         this.validator = validator;
+        this.fieldStateValidator = fieldStateValidator;
         this.helper = helper;
     }
 
@@ -61,7 +66,8 @@ public class DynamicFormHandlerGenerator implements FormHandlerGenerator<MapMode
             }
         }
 
-        FormValidator formValidator = new FormValidatorImpl(dynamicValidator);
+        FormValidator formValidator = new FormValidatorImpl(dynamicValidator,
+                                                            fieldStateValidator);
 
         FormHandler handler = new FormHandlerImpl(formValidator,
                                                   new FieldChangeHandlerManagerImpl());

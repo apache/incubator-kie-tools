@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.processing.engine.handling.impl;
 import java.util.Arrays;
 import java.util.Date;
 
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import junit.framework.TestCase;
@@ -145,7 +146,8 @@ public abstract class AbstractFormEngineTest extends TestCase {
 
         Widget widget = mock(Widget.class);
 
-        IsWidget isWidget = mock(IsWidget.class);
+        IsWidget isWidget = mock(IsWidget.class,
+                                 withSettings().extraInterfaces(HasValue.class));
 
         when(isWidget.asWidget()).thenReturn(widget);
 
@@ -156,6 +158,7 @@ public abstract class AbstractFormEngineTest extends TestCase {
         when(field.isValidateOnChange()).thenReturn(validateOnChange);
         when(field.isBindable()).thenReturn(true);
         when(field.getWidget()).thenReturn(isWidget);
+        when(field.isContentValid()).thenReturn(true);
 
         return field;
     }

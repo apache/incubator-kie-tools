@@ -147,10 +147,9 @@ public class FormHandlerImpl<T> implements FormHandler<T>,
 
         if (widget instanceof IsNestedModel) {
             IsNestedModel nestedModelWidget = (IsNestedModel) widget;
-            nestedModelWidget.addFieldChangeHandler((childFieldName, newValue) -> fieldChangeManager.processFieldChange(
+            nestedModelWidget.addFieldChangeHandler((childFieldName, newValue) -> fieldChangeManager.notifyFieldChange(
                     fieldName + "." + childFieldName,
-                    newValue,
-                    getModel()));
+                    newValue));
         } else {
             PropertyChangeUnsubscribeHandle unsubscribeHandle = binder.addPropertyChangeHandler(
                     formField.getFieldBinding(),
@@ -162,7 +161,7 @@ public class FormHandlerImpl<T> implements FormHandler<T>,
     }
 
     protected Object readPropertyValue(BindableProxy proxy,
-                                     String fieldBinding) {
+                                       String fieldBinding) {
         if (fieldBinding.indexOf(".") != -1) {
             // Nested property
 

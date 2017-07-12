@@ -32,6 +32,9 @@ public interface FieldChangeHandlerManager {
                             Object newValue,
                             Object model);
 
+    void notifyFieldChange(String fieldName,
+                           Object newValue);
+
     void clear();
 
     void setValidator(FormValidator validator);

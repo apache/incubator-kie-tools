@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.labelManaged;
+package org.kie.workbench.common.forms.processing.engine.handling;
 
-import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.FormGroupDisplayerView;
+import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.jboss.errai.ui.shared.api.annotations.Bundle;
 
-public interface LabelManagedFormGroupDisplayerView extends FormGroupDisplayerView {
+@EntryPoint
+@Bundle("resources/i18n/ProcessingEngineConstants.properties")
+public class ProcessingEngineEntryPoint {
 
 }

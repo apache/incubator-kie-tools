@@ -37,6 +37,8 @@ public interface FormField {
 
     void setReadOnly(boolean readOnly);
 
+    boolean isRequired();
+
     void clearError();
 
     void setError(String error);

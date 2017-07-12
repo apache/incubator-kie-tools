@@ -82,6 +82,11 @@ public abstract class DefaultDynamicFormField<F extends FieldDefinition, W exten
         }
     }
 
+    @Override
+    public boolean isRequired() {
+        return field.getRequired();
+    }
+
     protected abstract void doSetReadOnly(boolean readOnly);
 
     @Override

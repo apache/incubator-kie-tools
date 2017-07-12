@@ -87,7 +87,7 @@ public interface FormHandler<T> {
     boolean validate(String propertyName);
 
     /**
-     * Clears the status of th
+     * Clears the status of the FormHandler
      */
     void clear();
 
@@ -106,8 +106,6 @@ public interface FormHandler<T> {
      */
     void addFieldChangeHandler(String fieldName,
                                FieldChangeHandler handler);
-
-    ;
 
     /**
      * Sets the form widgets into readOnly mode

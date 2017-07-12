@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.labelManaged;
+package org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.checkbox;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.AbstractFormGroupDisplayerTest;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class LabelManagedFormGroupDisplayerTest extends AbstractFormGroupDisplayerTest<LabelManagedFormGroupDisplayer, LabelManagedFormGroupDisplayerView> {
+public class LabelManagedFormGroupDisplayerTest extends AbstractFormGroupDisplayerTest<CheckBoxFormGroupDisplayer, CheckBoxFormGroupDisplayerView> {
 
     @Override
-    protected Class<LabelManagedFormGroupDisplayerView> getViewClass() {
-        return LabelManagedFormGroupDisplayerView.class;
+    protected Class<CheckBoxFormGroupDisplayerView> getViewClass() {
+        return CheckBoxFormGroupDisplayerView.class;
     }
 
     @Override
-    protected LabelManagedFormGroupDisplayer getDisplayerInstance(LabelManagedFormGroupDisplayerView view) {
-        return new LabelManagedFormGroupDisplayer(view);
+    protected CheckBoxFormGroupDisplayer getDisplayerInstance(CheckBoxFormGroupDisplayerView view) {
+        return new CheckBoxFormGroupDisplayer(view);
     }
 }

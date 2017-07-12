@@ -19,7 +19,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.SimpleCheckBox;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
@@ -27,7 +27,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.de
 @Dependent
 public class CheckBoxFieldRenderer extends FieldRenderer<CheckBoxFieldDefinition> {
 
-    private CheckBox checkbox;
+    private SimpleCheckBox checkbox;
 
     @Override
     public String getName() {
@@ -36,7 +36,7 @@ public class CheckBoxFieldRenderer extends FieldRenderer<CheckBoxFieldDefinition
 
     @Override
     public void initInputWidget() {
-        checkbox = new CheckBox(field.getLabel());
+        checkbox = new SimpleCheckBox();
         checkbox.setEnabled(!field.getReadOnly() && renderingContext.getRenderMode().equals(RenderMode.EDIT_MODE));
     }
 

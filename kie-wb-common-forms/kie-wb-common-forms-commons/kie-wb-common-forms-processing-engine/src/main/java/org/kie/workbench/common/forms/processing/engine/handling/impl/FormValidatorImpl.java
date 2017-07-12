@@ -16,34 +16,38 @@
 
 package org.kie.workbench.common.forms.processing.engine.handling.impl;
 
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.processing.engine.handling.FieldStateValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 import org.kie.workbench.common.forms.processing.engine.handling.FormFieldProvider;
 import org.kie.workbench.common.forms.processing.engine.handling.FormValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.ModelValidator;
 
-@Dependent
 public class FormValidatorImpl implements FormValidator {
 
     private ModelValidator modelValidator;
 
     private FormFieldProvider formFieldProvider;
 
+    private FieldStateValidator fieldStateValidator;
+
     @Inject
-    public FormValidatorImpl(ModelValidator modelValidator) {
+    public FormValidatorImpl(ModelValidator modelValidator,
+                             FieldStateValidator fieldStateValidator) {
         this.modelValidator = modelValidator;
+        this.fieldStateValidator = fieldStateValidator;
     }
 
     @Override
     public boolean validate(Object model) {
-        boolean isValid = true;
 
         clearAllFieldErrors();
 
+        boolean isFieldStateValid = fieldStateValidator.validate(formFieldProvider.getAll());
+
         return modelValidator.validate(formFieldProvider.getAll(),
-                                       model);
+                                       model) && isFieldStateValid;
     }
 
     @Override
@@ -52,7 +56,12 @@ public class FormValidatorImpl implements FormValidator {
 
         clearFieldError(fieldName);
 
-        return modelValidator.validate(formFieldProvider.findFormField(fieldName),
+        FormField field = formFieldProvider.findFormField(fieldName);
+        if (!fieldStateValidator.validate(field)) {
+            return false;
+        }
+
+        return modelValidator.validate(field,
                                        model);
     }
 
@@ -75,5 +84,9 @@ public class FormValidatorImpl implements FormValidator {
 
     public void setModelValidator(ModelValidator modelValidator) {
         this.modelValidator = modelValidator;
+    }
+
+    public ModelValidator getModelValidator() {
+        return this.modelValidator;
     }
 }

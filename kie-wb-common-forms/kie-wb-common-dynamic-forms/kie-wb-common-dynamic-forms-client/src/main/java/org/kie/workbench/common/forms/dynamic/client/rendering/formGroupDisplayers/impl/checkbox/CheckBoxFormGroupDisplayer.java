@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.labelManaged;
+package org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.checkbox;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -22,10 +22,10 @@ import javax.inject.Inject;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.AbstractFormGroupDisplayer;
 
 @Dependent
-public class LabelManagedFormGroupDisplayer extends AbstractFormGroupDisplayer<LabelManagedFormGroupDisplayerView> {
+public class CheckBoxFormGroupDisplayer extends AbstractFormGroupDisplayer<CheckBoxFormGroupDisplayerView> {
 
     @Inject
-    public LabelManagedFormGroupDisplayer(LabelManagedFormGroupDisplayerView view) {
+    public CheckBoxFormGroupDisplayer(CheckBoxFormGroupDisplayerView view) {
         super(view);
     }
 }

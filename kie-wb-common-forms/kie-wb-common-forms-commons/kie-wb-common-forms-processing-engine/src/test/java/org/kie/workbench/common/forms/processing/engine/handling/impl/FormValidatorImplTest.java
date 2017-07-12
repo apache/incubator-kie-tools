@@ -20,12 +20,25 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.forms.processing.engine.handling.FieldStateValidator;
+import org.kie.workbench.common.forms.processing.engine.handling.FormField;
+import org.kie.workbench.common.forms.processing.engine.handling.ModelValidator;
+import org.mockito.Mock;
+
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class FormValidatorImplTest extends AbstractFormEngineTest {
+
+    @Mock
+    protected TranslationService translationService;
+
+    @Mock
+    protected FieldStateValidator fieldStateValidator;
 
     protected Validator validator;
 
@@ -37,9 +50,13 @@ public class FormValidatorImplTest extends AbstractFormEngineTest {
 
         validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-        formValidator = new FormValidatorImpl(new DefaultModelValidator(validator));
+        formValidator = new FormValidatorImpl(new DefaultModelValidator(validator),
+                                              fieldStateValidator);
 
         formValidator.setFormFieldProvider(formFieldProvider);
+
+        when(fieldStateValidator.validate(any(FormField.class))).thenReturn(true);
+        when(fieldStateValidator.validate(anyCollection())).thenReturn(true);
     }
 
     @Test
@@ -47,6 +64,12 @@ public class FormValidatorImplTest extends AbstractFormEngineTest {
         assertTrue(formValidator.validate(model));
         checkClearedFields(ALL_FIELDS);
         checkValidFields(ALL_FIELDS);
+    }
+
+    @Test
+    public void testModelStateFailedValidation() {
+        when(fieldStateValidator.validate(anyCollection())).thenReturn(false);
+        assertFalse(formValidator.validate(model));
     }
 
     @Test
@@ -108,5 +131,26 @@ public class FormValidatorImplTest extends AbstractFormEngineTest {
 
         checkClearedFields(USER_LAST_NAME_FIELD);
         checkWrongFields(USER_LAST_NAME_FIELD);
+    }
+
+    @Test
+    public void testPropertyStateFailedValidation() {
+
+        when(fieldStateValidator.validate(any(FormField.class))).thenReturn(false);
+
+        assertFalse(formValidator.validate(VALUE_FIELD,
+                                           model));
+        assertFalse(formValidator.validate(USER_NAME_FIELD,
+                                           model));
+        assertFalse(formValidator.validate(USER_LAST_NAME_FIELD,
+                                           model));
+    }
+
+    @Test
+    public void testSetModelValidator() {
+        ModelValidator modelValidator = mock(ModelValidator.class);
+        formValidator.setModelValidator(modelValidator);
+        assertSame(formValidator.getModelValidator(),
+                   modelValidator);
     }
 }

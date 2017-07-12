@@ -56,7 +56,7 @@ public class DynamicModelValidator implements ModelValidator<Map<String, Object>
 
         for (FormField formField : fields) {
             boolean validField = validate(formField,
-                                          model) && formField.isContentValid();
+                                          model);
             if (!validField) {
                 isValid = false;
             }

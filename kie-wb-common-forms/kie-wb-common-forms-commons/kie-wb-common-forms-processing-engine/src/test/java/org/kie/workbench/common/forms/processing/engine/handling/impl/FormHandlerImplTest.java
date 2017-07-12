@@ -23,6 +23,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.databinding.client.PropertyChangeUnsubscribeHandle;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.jboss.errai.databinding.client.api.DataBinder;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,6 +43,9 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
 
     @Mock
     protected PropertyChangeUnsubscribeHandle unsubscribeHandle;
+
+    @Mock
+    protected TranslationService translationService;
 
     protected FormHandlerImpl formHandler;
 
@@ -63,7 +67,8 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
 
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-        FormValidatorImpl formValidator = new FormValidatorImpl(new DefaultModelValidator(validator));
+        FormValidatorImpl formValidator = new FormValidatorImpl(new DefaultModelValidator(validator),
+                                                                new FieldStateValidatorImpl(translationService));
 
         formValidator.setFormFieldProvider(formFieldProvider);
 

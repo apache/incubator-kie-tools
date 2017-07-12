@@ -18,10 +18,14 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplay
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.dom.Document;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 
 public interface FormGroupDisplayerView extends IsWidget {
+
+    static final String REQUIRED_ASTERISK_CLASSNAME = "fa fa-star required-asterisk";
 
     void render(Widget widget,
                 FieldDefinition field);
@@ -32,5 +36,13 @@ public interface FormGroupDisplayerView extends IsWidget {
 
     default String generateHelpBlockId(FieldDefinition field) {
         return field.getName() + FormField.HELP_BLOCK_SUFFIX;
+    }
+
+    default HTMLElement getRequiredElement(Document document) {
+        HTMLElement asteriskSup = document.createElement("sup");
+        HTMLElement asteriskI = document.createElement("i");
+        asteriskI.setClassName(REQUIRED_ASTERISK_CLASSNAME);
+        asteriskSup.appendChild(asteriskI);
+        return asteriskSup;
     }
 }
