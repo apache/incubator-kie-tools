@@ -22,13 +22,13 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.preferences.config.WorkbenchPreferenceScopes;
 import org.kie.workbench.common.services.shared.preferences.scopes.GlobalPreferenceScope;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
+import org.uberfire.ext.preferences.client.admin.page.AdminPageOptions;
 import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.ResourceRef;
@@ -136,19 +136,23 @@ public class DefaultAdminPageHelperTest {
 
         defaultAdminPageHelper.setup();
 
-        verify(adminPage, times(3)).addPreference(anyString(),
-                                                  anyString(),
-                                                  anyString(),
-                                                  anyString(),
-                                                  anyString(),
-                                                  any(PreferenceScope.class));
+        verify(adminPage,
+               times(3)).addPreference(anyString(),
+                                       anyString(),
+                                       anyString(),
+                                       anyString(),
+                                       anyString(),
+                                       any(PreferenceScope.class),
+                                       eq(AdminPageOptions.WITH_BREADCRUMBS));
 
-        verify(adminPage, times(3)).addPreference(anyString(),
-                                                  anyString(),
-                                                  anyString(),
-                                                  anyString(),
-                                                  anyString(),
-                                                  eq(globalScope));
+        verify(adminPage,
+               times(3)).addPreference(anyString(),
+                                       anyString(),
+                                       anyString(),
+                                       anyString(),
+                                       anyString(),
+                                       eq(globalScope),
+                                       eq(AdminPageOptions.WITH_BREADCRUMBS));
     }
 
     private void mockConstants() {
