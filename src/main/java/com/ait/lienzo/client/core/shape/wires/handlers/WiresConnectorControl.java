@@ -22,4 +22,8 @@ public interface WiresConnectorControl extends DragControl {
 
     void hideControlPoints();
 
+    WiresConnectionControl getHeadConnectionControl();
+
+    WiresConnectionControl getTailConnectionControl();
+
 }
