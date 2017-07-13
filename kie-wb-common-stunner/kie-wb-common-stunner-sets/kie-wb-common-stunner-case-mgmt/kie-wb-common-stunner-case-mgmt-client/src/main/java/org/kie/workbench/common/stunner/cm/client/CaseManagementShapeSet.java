@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.cm.client;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -39,8 +38,8 @@ public class CaseManagementShapeSet extends AbstractBindableShapeSet<CaseManagem
     @Inject
     public CaseManagementShapeSet(final DefinitionManager definitionManager,
                                   final CaseManagementShapeFactory factory) {
-       this.definitionManager = definitionManager;
-       this.factory= factory;
+        this.definitionManager = definitionManager;
+        this.factory = factory;
     }
 
     @Override

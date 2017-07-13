@@ -39,6 +39,7 @@ public abstract class AbstractElementShape<W, C extends View<W>, E extends Eleme
                                       new ShapeStateHelper<V, Shape<V>>());
         this.defViewHandler = new ShapeDefViewHandler<W, V, D>(shapeDef,
                                                                view);
+        getShape().getShapeStateHelper().forShape(this);
     }
 
     protected AbstractElementShape(final D shapeDef,
@@ -48,9 +49,7 @@ public abstract class AbstractElementShape<W, C extends View<W>, E extends Eleme
                                       shapeStateHelper);
         this.defViewHandler = new ShapeDefViewHandler<W, V, D>(shapeDef,
                                                                view);
-    }
-
-    private void init() {
+        getShape().getShapeStateHelper().forShape(this);
     }
 
     @Override
@@ -87,7 +86,7 @@ public abstract class AbstractElementShape<W, C extends View<W>, E extends Eleme
                                 final MutationContext mutationContext) {
         getDefViewHandler().applyProperties(getDefinition(element),
                                             mutationContext);
-        getShape().getShapeStateHelper().save(ShapeState.NONE::equals);
+        getShape().getShapeStateHelper().save((state) -> state.equals(ShapeState.NONE) || state.equals(ShapeState.SELECTED));
     }
 
     @Override

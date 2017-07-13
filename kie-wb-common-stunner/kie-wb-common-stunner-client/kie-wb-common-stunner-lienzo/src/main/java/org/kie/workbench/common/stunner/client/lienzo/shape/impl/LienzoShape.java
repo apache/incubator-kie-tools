@@ -27,13 +27,15 @@ public class LienzoShape<V extends ShapeView> extends ShapeWrapper<V, ShapeImpl<
 
     public LienzoShape(final V view) {
         this.wrapped = new ShapeImpl<V>(view,
-                                        new AnimationShapeStateHelper<>(this));
+                                        new AnimationShapeStateHelper<>());
+        this.wrapped.getShapeStateHelper().forShape(this);
     }
 
     public LienzoShape(final V view,
                        final AnimationShapeStateHelper<V, Shape<V>> shapeStateHelper) {
         this.wrapped = new ShapeImpl<V>(view,
                                         shapeStateHelper);
+        this.wrapped.getShapeStateHelper().forShape(this);
     }
 
     @Override

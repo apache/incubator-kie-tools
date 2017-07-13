@@ -32,6 +32,8 @@ import org.kie.workbench.common.stunner.client.widgets.components.glyph.DOMGlyph
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
@@ -56,9 +58,12 @@ import org.uberfire.client.mvp.UberView;
 @Dependent
 public class TreeExplorer implements IsWidget {
 
+    static final String NO_NAME = "- No name -";
+
     private final int icoHeight = 16;
     private final int icoWidth = 16;
     private final ChildrenTraverseProcessor childrenTraverseProcessor;
+    private final TextPropertyProviderFactory textPropertyProviderFactory;
     private final DefinitionUtils definitionUtils;
     private final ShapeManager shapeManager;
     private final Event<CanvasElementSelectedEvent> elementSelectedEventEvent;
@@ -70,12 +75,14 @@ public class TreeExplorer implements IsWidget {
 
     @Inject
     public TreeExplorer(final ChildrenTraverseProcessor childrenTraverseProcessor,
+                        final TextPropertyProviderFactory textPropertyProviderFactory,
                         final Event<CanvasElementSelectedEvent> elementSelectedEventEvent,
                         final DefinitionUtils definitionUtils,
                         final ShapeManager shapeManager,
                         final DOMGlyphRenderers domGlyphRenderers,
                         final View view) {
         this.childrenTraverseProcessor = childrenTraverseProcessor;
+        this.textPropertyProviderFactory = textPropertyProviderFactory;
         this.elementSelectedEventEvent = elementSelectedEventEvent;
         this.definitionUtils = definitionUtils;
         this.shapeManager = shapeManager;
@@ -289,7 +296,7 @@ public class TreeExplorer implements IsWidget {
             }
         }
 
-        final ElementWrapperWidget<?> widget = ElementWrapperWidget.getWidget(icon.getElement());
+        final ElementWrapperWidget<?> widget = wrapIconElement(icon);
 
         // Create and add the tree item.
         if (isValidParentItem) {
@@ -306,6 +313,10 @@ public class TreeExplorer implements IsWidget {
                          isContainer,
                          expand);
         }
+    }
+
+    ElementWrapperWidget<?> wrapIconElement(final IsElement icon) {
+        return ElementWrapperWidget.getWidget(icon.getElement());
     }
 
     private Predicate<Node> isContainer() {
@@ -391,14 +402,14 @@ public class TreeExplorer implements IsWidget {
     }
 
     private String getItemName(final Element<org.kie.workbench.common.stunner.core.graph.content.view.View> item) {
-        final String name = definitionUtils.getName(item.getContent().getDefinition());
-
+        final TextPropertyProvider provider = textPropertyProviderFactory.getProvider(item);
+        final String name = provider.getText(item);
         final String title = definitionUtils.getDefinitionManager().adapters().forDefinition().getTitle(item.getContent().getDefinition());
 
-        if (name != null && name.trim().equals("") && title != null) {
+        if ((name == null || name.trim().equals("")) && title != null) {
             return title;
         }
-        return (name != null ? name : "- No name -");
+        return (name != null ? name : NO_NAME);
     }
 
     public interface View extends UberView<TreeExplorer> {

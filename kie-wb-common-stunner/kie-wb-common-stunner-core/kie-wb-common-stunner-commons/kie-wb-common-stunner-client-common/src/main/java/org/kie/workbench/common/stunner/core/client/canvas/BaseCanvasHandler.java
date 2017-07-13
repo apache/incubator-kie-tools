@@ -24,6 +24,8 @@ import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.shape.ElementShape;
@@ -32,10 +34,8 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
@@ -60,6 +60,7 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     private final DefinitionManager definitionManager;
     private final GraphUtils graphUtils;
     private final ShapeManager shapeManager;
+    private final TextPropertyProviderFactory textPropertyProviderFactory;
 
     private C canvas;
     private D diagram;
@@ -67,10 +68,12 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
 
     public BaseCanvasHandler(final DefinitionManager definitionManager,
                              final GraphUtils graphUtils,
-                             final ShapeManager shapeManager) {
+                             final ShapeManager shapeManager,
+                             final TextPropertyProviderFactory textPropertyProviderFactory) {
         this.definitionManager = definitionManager;
         this.graphUtils = graphUtils;
         this.shapeManager = shapeManager;
+        this.textPropertyProviderFactory = textPropertyProviderFactory;
     }
 
     /**
@@ -242,16 +245,11 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     protected void applyElementTitle(final ElementShape shape,
                                      final Element candidate,
                                      final MutationContext mutationContext) {
-        final Definition<Object> content = (Definition<Object>) candidate.getContent();
-        final Object definition = content.getDefinition();
-        final Object nameProperty = getDefinitionManager().adapters().forDefinition().getMetaProperty(PropertyMetaTypes.NAME,
-                                                                                                      definition);
-        if (null != nameProperty) {
-            final String name = (String) getDefinitionManager().adapters().forProperty().getValue(nameProperty);
-            shape.applyTitle(name,
-                             candidate,
-                             mutationContext);
-        }
+        final TextPropertyProvider textPropertyProvider = textPropertyProviderFactory.getProvider(candidate);
+        final String name = textPropertyProvider.getText(candidate);
+        shape.applyTitle(name,
+                         candidate,
+                         mutationContext);
     }
 
     protected void beforeDraw(final Element element,
@@ -403,6 +401,11 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     @Override
     public DefinitionManager getDefinitionManager() {
         return definitionManager;
+    }
+
+    @Override
+    public TextPropertyProviderFactory getTextPropertyProviderFactory() {
+        return this.textPropertyProviderFactory;
     }
 
     public GraphUtils getGraphUtils() {

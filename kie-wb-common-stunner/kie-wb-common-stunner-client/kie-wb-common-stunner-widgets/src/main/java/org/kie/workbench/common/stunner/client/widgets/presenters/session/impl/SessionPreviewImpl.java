@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
@@ -69,6 +70,7 @@ public class SessionPreviewImpl
 
     private DefinitionManager definitionManager;
     private ShapeManager shapeManager;
+    private TextPropertyProviderFactory textPropertyProviderFactory;
     private CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
     private DefinitionUtils definitionUtils;
     private GraphUtils graphUtils;
@@ -81,6 +83,7 @@ public class SessionPreviewImpl
     @SuppressWarnings("unchecked")
     public SessionPreviewImpl(final DefinitionManager definitionManager,
                               final ShapeManager shapeManager,
+                              final TextPropertyProviderFactory textPropertyProviderFactory,
                               final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                               final DefinitionUtils definitionUtils,
                               final GraphUtils graphUtils,
@@ -90,6 +93,7 @@ public class SessionPreviewImpl
                               final WidgetWrapperView view) {
         this.definitionManager = definitionManager;
         this.shapeManager = shapeManager;
+        this.textPropertyProviderFactory=textPropertyProviderFactory;
         this.canvasCommandManager = canvasCommandManager;
 
         this.definitionUtils = definitionUtils;
@@ -165,7 +169,8 @@ public class SessionPreviewImpl
             canvasHandler = new SessionPreviewCanvasHandlerProxy(handler,
                                                                  definitionManager,
                                                                  graphUtils,
-                                                                 shapeManager);
+                                                                 shapeManager,
+                                                                 textPropertyProviderFactory);
         }
 
         return canvasHandler;

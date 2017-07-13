@@ -35,8 +35,8 @@ import org.kie.workbench.common.stunner.cm.client.canvas.controls.builder.CaseMa
 import org.kie.workbench.common.stunner.cm.client.canvas.controls.containment.CaseManagementContainmentAcceptorControlImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControlImpl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControlImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
@@ -58,7 +58,7 @@ public class CaseManagementCanvasFactoryTest {
     private ManagedInstance<ConnectionAcceptorControl> connectionAcceptorControls;
     private ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls;
     private ManagedInstance<DockingAcceptorControl> dockingAcceptorControls;
-    private ManagedInstance<CanvasNameEditionControl> nameEditionControls;
+    private ManagedInstance<CanvasInPlaceTextEditorControl> nameEditionControls;
     private ManagedInstance<SelectionControl> selectionControls;
     private ManagedInstance<ElementBuilderControl> elementBuilderControls;
     private ManagedInstance<NodeBuilderControl> nodeBuilderControls;
@@ -86,7 +86,7 @@ public class CaseManagementCanvasFactoryTest {
         this.connectionAcceptorControls = mockManagedInstance(ConnectionAcceptorControlImpl.class);
         this.containmentAcceptorControls = mockManagedInstance(CaseManagementContainmentAcceptorControlImpl.class);
         this.dockingAcceptorControls = mockManagedInstance(DockingAcceptorControlImpl.class);
-        this.nameEditionControls = mockManagedInstance(CanvasNameEditionControlImpl.class);
+        this.nameEditionControls = mockManagedInstance(CanvasInPlaceTextEditorControlImpl.class);
         this.selectionControls = mockManagedInstance(SelectionControl.class);
         this.elementBuilderControls = mockManagedInstance(CaseManagementElementBuilderControl.class);
         this.nodeBuilderControls = mockManagedInstance(CaseManagementNodeBuilderControl.class);

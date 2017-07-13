@@ -27,7 +27,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
@@ -59,7 +59,7 @@ public class CanvasFactoryImpl implements CanvasFactory<AbstractCanvas, Abstract
     private final ManagedInstance<ConnectionAcceptorControl> connectionAcceptorControls;
     private final ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls;
     private final ManagedInstance<DockingAcceptorControl> dockingAcceptorControls;
-    private final ManagedInstance<CanvasNameEditionControl> nameEditionControls;
+    private final ManagedInstance<CanvasInPlaceTextEditorControl> inPlaceTextEditorControls;
     private final ManagedInstance<SelectionControl> selectionControls;
     private final ManagedInstance<DragControl> dragControls;
     private final ManagedInstance<ToolboxControl> toolboxControls;
@@ -96,7 +96,7 @@ public class CanvasFactoryImpl implements CanvasFactory<AbstractCanvas, Abstract
                              final ManagedInstance<ConnectionAcceptorControl> connectionAcceptorControls,
                              final ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls,
                              final ManagedInstance<DockingAcceptorControl> dockingAcceptorControls,
-                             final ManagedInstance<CanvasNameEditionControl> nameEditionControls,
+                             final ManagedInstance<CanvasInPlaceTextEditorControl> inPlaceTextEditorControls,
                              final ManagedInstance<SelectionControl> selectionControls,
                              final ManagedInstance<DragControl> dragControls,
                              final ManagedInstance<ToolboxControl> toolboxControls,
@@ -111,7 +111,7 @@ public class CanvasFactoryImpl implements CanvasFactory<AbstractCanvas, Abstract
         this.connectionAcceptorControls = connectionAcceptorControls;
         this.containmentAcceptorControls = containmentAcceptorControls;
         this.dockingAcceptorControls = dockingAcceptorControls;
-        this.nameEditionControls = nameEditionControls;
+        this.inPlaceTextEditorControls = inPlaceTextEditorControls;
         this.selectionControls = selectionControls;
         this.dragControls = dragControls;
         this.toolboxControls = toolboxControls;
@@ -134,8 +134,8 @@ public class CanvasFactoryImpl implements CanvasFactory<AbstractCanvas, Abstract
                      containmentAcceptorControls);
         controls.put(DockingAcceptorControl.class,
                      dockingAcceptorControls);
-        controls.put(CanvasNameEditionControl.class,
-                     nameEditionControls);
+        controls.put(CanvasInPlaceTextEditorControl.class,
+                     inPlaceTextEditorControls);
         controls.put(SelectionControl.class,
                      selectionControls);
         controls.put(DragControl.class,

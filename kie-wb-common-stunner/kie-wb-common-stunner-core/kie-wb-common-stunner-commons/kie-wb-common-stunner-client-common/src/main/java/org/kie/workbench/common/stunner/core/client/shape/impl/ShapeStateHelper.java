@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.impl;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -45,19 +46,20 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
     private String strokeColor;
     private ShapeState state;
     private double activeStrokeWidth;
-    private S shape;
+    private Optional<S> shape = Optional.empty();
 
     public ShapeStateHelper() {
-        init();
+        forShape(null);
     }
 
     public ShapeStateHelper(final S shape) {
-        this();
-        this.shape = shape;
+        forShape(shape);
     }
 
     public ShapeStateHelper forShape(final S shape) {
-        this.shape = shape;
+        this.shape = Optional.ofNullable(shape);
+        this.state = ShapeState.NONE;
+        save((state) -> true);
         return this;
     }
 
@@ -67,10 +69,10 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
 
     public ShapeStateHelper save(final Predicate<ShapeState> stateFilter) {
         if (stateFilter.test(this.state)) {
-            this.strokeWidth = getShapeView().getStrokeWidth();
-            this.activeStrokeWidth = strokeWidth + (strokeWidth * ACTIVE_STROKE_WIDTH_PCT);
-            this.strokeAlpha = getShapeView().getStrokeAlpha();
-            this.strokeColor = getShapeView().getStrokeColor();
+            shape.ifPresent((s) -> this.strokeWidth = s.getShapeView().getStrokeWidth());
+            shape.ifPresent((s) -> this.activeStrokeWidth = strokeWidth + (strokeWidth * ACTIVE_STROKE_WIDTH_PCT));
+            shape.ifPresent((s) -> this.strokeAlpha = s.getShapeView().getStrokeAlpha());
+            shape.ifPresent((s) -> this.strokeColor = s.getShapeView().getStrokeColor());
         }
         return this;
     }
@@ -111,15 +113,8 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
         getShapeView().setStrokeAlpha(alpha);
     }
 
-    protected void init() {
-        this.state = ShapeState.NONE;
-        this.activeStrokeWidth = 1;
-        this.strokeWidth = 1;
-        this.strokeAlpha = 1;
-    }
-
     protected S getShape() {
-        return shape;
+        return shape.orElseThrow(() -> new IllegalArgumentException("Shape has not been set."));
     }
 
     protected double getActiveStrokeWidth() {
@@ -143,6 +138,6 @@ public class ShapeStateHelper<V extends ShapeView, S extends Shape<V>> {
     }
 
     private V getShapeView() {
-        return shape.getShapeView();
+        return shape.orElseThrow(() -> new IllegalArgumentException("Shape has not been set.")).getShapeView();
     }
 }

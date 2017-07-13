@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
@@ -92,7 +92,7 @@ public class CaseManagementClientFullSessionTest {
     private DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
 
     @Mock
-    private CanvasNameEditionControl<AbstractCanvasHandler, Element> canvasNameEditionControl;
+    private CanvasInPlaceTextEditorControl<AbstractCanvasHandler, Element> canvasInPlaceTextEditorControl;
 
     @Mock
     private ToolboxControl<AbstractCanvasHandler, Element> toolboxControl;
@@ -113,7 +113,7 @@ public class CaseManagementClientFullSessionTest {
         when(factory.newControl(eq(ConnectionAcceptorControl.class))).thenReturn(connectionAcceptorControl);
         when(factory.newControl(eq(ContainmentAcceptorControl.class))).thenReturn(containmentAcceptorControl);
         when(factory.newControl(eq(DockingAcceptorControl.class))).thenReturn(dockingAcceptorControl);
-        when(factory.newControl(eq(CanvasNameEditionControl.class))).thenReturn(canvasNameEditionControl);
+        when(factory.newControl(eq(CanvasInPlaceTextEditorControl.class))).thenReturn(canvasInPlaceTextEditorControl);
         when(factory.newControl(eq(ToolboxControl.class))).thenReturn(toolboxControl);
         when(factory.newControl(eq(ElementBuilderControl.class))).thenReturn(builderControl);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
@@ -146,8 +146,8 @@ public class CaseManagementClientFullSessionTest {
                      session.getDockingAcceptorControl());
         assertEquals(builderControl,
                      session.getBuilderControl());
-        assertEquals(canvasNameEditionControl,
-                     session.getCanvasNameEditionControl());
+        assertEquals(canvasInPlaceTextEditorControl,
+                     session.getCanvasInPlaceTextEditorControl());
     }
 
     @Test
@@ -170,7 +170,7 @@ public class CaseManagementClientFullSessionTest {
                times(1)).enable(eq(canvasHandler));
         verify(dockingAcceptorControl,
                times(1)).enable(eq(canvasHandler));
-        verify(canvasNameEditionControl,
+        verify(canvasInPlaceTextEditorControl,
                times(1)).enable(eq(canvasHandler));
         verify(builderControl,
                times(1)).enable(eq(canvasHandler));
@@ -201,7 +201,7 @@ public class CaseManagementClientFullSessionTest {
                times(1)).disable();
         verify(dockingAcceptorControl,
                times(1)).disable();
-        verify(canvasNameEditionControl,
+        verify(canvasInPlaceTextEditorControl,
                times(1)).disable();
         verify(builderControl,
                times(1)).disable();

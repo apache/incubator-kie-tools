@@ -40,6 +40,7 @@ import static org.mockito.Mockito.*;
 public class NodeShapeImplTest {
 
     private final static String COLOR = "c1";
+    private final static String COLOR2 = "c2";
 
     @Mock
     MutableShapeDef<Object> def;
@@ -59,9 +60,6 @@ public class NodeShapeImplTest {
     public void setup() throws Exception {
         when(def.getBackgroundColor(any(Object.class))).thenReturn(COLOR);
         when(def.getBackgroundAlpha(any(Object.class))).thenReturn(1d);
-        when(def.getBorderColor(any(Object.class))).thenReturn(COLOR);
-        when(def.getBorderAlpha(any(Object.class))).thenReturn(1d);
-        when(def.getBorderSize(any(Object.class))).thenReturn(2d);
         when(def.getFontFamily(any(Object.class))).thenReturn(COLOR);
         when(def.getFontColor(any(Object.class))).thenReturn(COLOR);
         when(def.getFontSize(any(Object.class))).thenReturn(1d);
@@ -75,9 +73,26 @@ public class NodeShapeImplTest {
                                                              20d));
         when(bounds.getLowerRight()).thenReturn(new BoundImpl(50d,
                                                               60d));
+
         this.view = spy(new ShapeViewExtStub());
+
+        mockBorderProperties(COLOR,
+                             2d,
+                             1d);
+
         this.tested = new NodeShapeImpl<Object, MutableShapeDef<Object>, ShapeView<?>>(def,
                                                                                        view);
+    }
+
+    private void mockBorderProperties(final String borderColour,
+                                      final double borderWidth,
+                                      final double borderAlpha) {
+        when(def.getBorderColor(any(Object.class))).thenReturn(borderColour);
+        when(def.getBorderSize(any(Object.class))).thenReturn(borderWidth);
+        when(def.getBorderAlpha(any(Object.class))).thenReturn(borderAlpha);
+        when(view.getStrokeColor()).thenReturn(borderColour);
+        when(view.getStrokeWidth()).thenReturn(borderWidth);
+        when(view.getStrokeAlpha()).thenReturn(borderAlpha);
     }
 
     @Test
@@ -127,13 +142,63 @@ public class NodeShapeImplTest {
                                MutationContext.STATIC);
         tested.applyState(ShapeState.INVALID);
         tested.applyState(ShapeState.NONE);
+
         verify(view,
                times(1)).setStrokeColor(eq(ShapeState.INVALID.getColor()));
         verify(view,
+               times(2)).setStrokeColor(eq(COLOR));
+        verify(view,
                times(3)).setStrokeWidth(anyDouble());
         verify(view,
-               times(1)).setStrokeColor(eq(COLOR));
+               times(3)).setStrokeAlpha(eq(1d));
+    }
+
+    @Test
+    public void statePropertiesUpdatedForSelectedShape() {
+        //Default mocked values for selection
+        tested.applyState(ShapeState.SELECTED);
+
         verify(view,
-               times(2)).setStrokeAlpha(eq(1d));
+               times(1)).setStrokeColor(eq(ShapeState.SELECTED.getColor()));
+        //Selected border width = shapeDef stroke width * 2
+        verify(view,
+               times(1)).setStrokeWidth(eq(4d));
+        verify(view,
+               atLeast(1)).setStrokeAlpha(eq(1d));
+
+        //New mocked values emulating a change to the Shapes properties
+        mockBorderProperties(COLOR2,
+                             5d,
+                             0.5d);
+        tested.applyProperties(element,
+                               MutationContext.STATIC);
+
+        verify(view,
+               times(1)).setStrokeColor(eq(COLOR2));
+        verify(view,
+               times(1)).setStrokeWidth(eq(5d));
+        verify(view,
+               times(1)).setStrokeAlpha(eq(0.5d));
+
+        //Mock deselection
+        tested.applyState(ShapeState.NONE);
+
+        verify(view,
+               times(2)).setStrokeColor(eq(COLOR2));
+        verify(view,
+               times(2)).setStrokeWidth(eq(5d));
+        verify(view,
+               times(2)).setStrokeAlpha(eq(0.5d));
+
+        //Mock re-selection
+        tested.applyState(ShapeState.SELECTED);
+
+        verify(view,
+               times(2)).setStrokeColor(eq(ShapeState.SELECTED.getColor()));
+        //Selected border width = shapeDef stroke width * 2
+        verify(view,
+               times(1)).setStrokeWidth(eq(10d));
+        verify(view,
+               times(2)).setStrokeAlpha(eq(0.5d));
     }
 }

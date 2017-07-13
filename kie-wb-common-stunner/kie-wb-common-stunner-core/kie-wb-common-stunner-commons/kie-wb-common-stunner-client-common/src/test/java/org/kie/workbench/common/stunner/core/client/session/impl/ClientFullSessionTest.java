@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
@@ -81,7 +81,7 @@ public class ClientFullSessionTest {
     @Mock
     DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
     @Mock
-    CanvasNameEditionControl<AbstractCanvasHandler, Element> canvasNameEditionControl;
+    CanvasInPlaceTextEditorControl<AbstractCanvasHandler, Element> canvasInPlaceTextEditorControl;
     @Mock
     DragControl<AbstractCanvasHandler, Element> dragControl;
     @Mock
@@ -103,7 +103,7 @@ public class ClientFullSessionTest {
         when(factory.newControl(eq(ContainmentAcceptorControl.class))).thenReturn(containmentAcceptorControl);
         when(factory.newControl(eq(DockingAcceptorControl.class))).thenReturn(dockingAcceptorControl);
         when(factory.newControl(eq(DragControl.class))).thenReturn(dragControl);
-        when(factory.newControl(eq(CanvasNameEditionControl.class))).thenReturn(canvasNameEditionControl);
+        when(factory.newControl(eq(CanvasInPlaceTextEditorControl.class))).thenReturn(canvasInPlaceTextEditorControl);
         when(factory.newControl(eq(ToolboxControl.class))).thenReturn(toolboxControl);
         when(factory.newControl(eq(ElementBuilderControl.class))).thenReturn(builderControl);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
@@ -134,8 +134,8 @@ public class ClientFullSessionTest {
                      tested.getContainmentAcceptorControl());
         assertEquals(dockingAcceptorControl,
                      tested.getDockingAcceptorControl());
-        assertEquals(canvasNameEditionControl,
-                     tested.getCanvasNameEditionControl());
+        assertEquals(canvasInPlaceTextEditorControl,
+                     tested.getCanvasInPlaceTextEditorControl());
         assertEquals(dragControl,
                      tested.getDragControl());
         assertEquals(toolboxControl,
@@ -187,7 +187,7 @@ public class ClientFullSessionTest {
                      toolbox.getValue().getCommandManager());
         final ArgumentCaptor<RequiresCommandManager.CommandManagerProvider> name =
                 ArgumentCaptor.forClass(RequiresCommandManager.CommandManagerProvider.class);
-        verify(canvasNameEditionControl,
+        verify(canvasInPlaceTextEditorControl,
                times(1)).setCommandManagerProvider(name.capture());
         assertEquals(sessionCommandManager,
                      name.getValue().getCommandManager());
@@ -215,7 +215,7 @@ public class ClientFullSessionTest {
                times(1)).enable(eq(canvasHandler));
         verify(dockingAcceptorControl,
                times(1)).enable(eq(canvasHandler));
-        verify(canvasNameEditionControl,
+        verify(canvasInPlaceTextEditorControl,
                times(1)).enable(eq(canvasHandler));
         verify(dragControl,
                times(1)).enable(eq(canvasHandler));
@@ -252,7 +252,7 @@ public class ClientFullSessionTest {
                times(1)).disable();
         verify(dockingAcceptorControl,
                times(1)).disable();
-        verify(canvasNameEditionControl,
+        verify(canvasInPlaceTextEditorControl,
                times(1)).disable();
         verify(dragControl,
                times(1)).disable();

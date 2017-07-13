@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
@@ -73,13 +74,15 @@ public class CanvasHandlerImpl<D extends Diagram, C extends AbstractCanvas> exte
                              final GraphUtils graphUtils,
                              final GraphIndexBuilder<? extends MutableIndex<Node, Edge>> indexBuilder,
                              final ShapeManager shapeManager,
+                             final TextPropertyProviderFactory textPropertyProviderFactory,
                              final Event<CanvasElementAddedEvent> canvasElementAddedEvent,
                              final Event<CanvasElementRemovedEvent> canvasElementRemovedEvent,
                              final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent,
                              final Event<CanvasElementsClearEvent> canvasElementsClearEvent) {
         super(clientDefinitionManager,
               graphUtils,
-              shapeManager);
+              shapeManager,
+              textPropertyProviderFactory);
         this.commandFactory = commandFactory;
         this.indexBuilder = indexBuilder;
         this.ruleManager = ruleManager;

@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.HasCanvasListeners;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
@@ -46,10 +47,12 @@ public class SessionPreviewCanvasHandlerProxy<D extends Diagram, C extends Abstr
     public SessionPreviewCanvasHandlerProxy(final BaseCanvasHandler wrapped,
                                             final DefinitionManager definitionManager,
                                             final GraphUtils graphUtils,
-                                            final ShapeManager shapeManager) {
+                                            final ShapeManager shapeManager,
+                                            final TextPropertyProviderFactory textPropertyProviderFactory) {
         super(definitionManager,
               graphUtils,
-              shapeManager);
+              shapeManager,
+              textPropertyProviderFactory);
         this.wrapped = wrapped;
     }
 
@@ -88,6 +91,11 @@ public class SessionPreviewCanvasHandlerProxy<D extends Diagram, C extends Abstr
     @Override
     public DefinitionManager getDefinitionManager() {
         return wrapped.getDefinitionManager();
+    }
+
+    @Override
+    public TextPropertyProviderFactory getTextPropertyProviderFactory() {
+        return wrapped.getTextPropertyProviderFactory();
     }
 
     @Override

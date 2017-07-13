@@ -24,6 +24,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.shape.ElementShape;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
@@ -80,6 +82,10 @@ public class BaseCanvasHandlerTest {
     GraphUtils graphUtils;
     @Mock
     ShapeManager shapeManager;
+    @Mock
+    TextPropertyProviderFactory textPropertyProviderFactory;
+    @Mock
+    TextPropertyProvider textPropertyProvider;
     @Mock
     RuleManager ruleManager;
     @Mock
@@ -139,6 +145,7 @@ public class BaseCanvasHandlerTest {
         when(canvas.getShape(eq(CANDIDATE_ID))).thenReturn(shape);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getDefinitionSetId()).thenReturn("ds1");
+        when(textPropertyProviderFactory.getProvider(any(Element.class))).thenReturn(textPropertyProvider);
         this.tested = spy(new BaseCanvasHandlerStub());
         tested.handle(canvas);
         assertEquals(canvas,
@@ -355,7 +362,8 @@ public class BaseCanvasHandlerTest {
         public BaseCanvasHandlerStub() {
             super(definitionManager,
                   graphUtils,
-                  shapeManager);
+                  shapeManager,
+                  textPropertyProviderFactory);
         }
 
         @Override

@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
@@ -56,7 +56,7 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
     private final ManagedInstance<ConnectionAcceptorControl> connectionAcceptorControls;
     private final ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls;
     private final ManagedInstance<DockingAcceptorControl> dockingAcceptorControls;
-    private final ManagedInstance<CanvasNameEditionControl> nameEditionControls;
+    private final ManagedInstance<CanvasInPlaceTextEditorControl> nameEditionControls;
     private final ManagedInstance<SelectionControl> selectionControls;
     private final ManagedInstance<ElementBuilderControl> elementBuilderControls;
     private final ManagedInstance<NodeBuilderControl> nodeBuilderControls;
@@ -89,7 +89,7 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
     public CaseManagementCanvasFactory(final ManagedInstance<ConnectionAcceptorControl> connectionAcceptorControls,
                                        final @CaseManagementEditor ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls,
                                        final ManagedInstance<DockingAcceptorControl> dockingAcceptorControls,
-                                       final ManagedInstance<CanvasNameEditionControl> nameEditionControls,
+                                       final ManagedInstance<CanvasInPlaceTextEditorControl> nameEditionControls,
                                        final ManagedInstance<SelectionControl> selectionControls,
                                        final @CaseManagementEditor @Observer ManagedInstance<ElementBuilderControl> elementBuilderControls,
                                        final @CaseManagementEditor ManagedInstance<NodeBuilderControl> nodeBuilderControls,
@@ -122,7 +122,7 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
                      containmentAcceptorControls);
         controls.put(DockingAcceptorControl.class,
                      dockingAcceptorControls);
-        controls.put(CanvasNameEditionControl.class,
+        controls.put(CanvasInPlaceTextEditorControl.class,
                      nameEditionControls);
         controls.put(SelectionControl.class,
                      selectionControls);

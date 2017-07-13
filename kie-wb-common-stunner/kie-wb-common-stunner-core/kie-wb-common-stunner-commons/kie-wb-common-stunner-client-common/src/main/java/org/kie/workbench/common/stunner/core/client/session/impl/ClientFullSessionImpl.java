@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
@@ -45,7 +45,7 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
 
     private DragControl<AbstractCanvasHandler, Element> dragControl;
     private ResizeControl<AbstractCanvasHandler, Element> resizeControl;
-    private CanvasNameEditionControl<AbstractCanvasHandler, Element> canvasNameEditionControl;
+    private CanvasInPlaceTextEditorControl<AbstractCanvasHandler, Element> canvasInPlaceTextEditorControl;
     private ToolboxControl<AbstractCanvasHandler, Element> toolboxControl;
 
     @Inject
@@ -70,7 +70,7 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
               factory.newControl(ElementBuilderControl.class));
         this.dragControl = factory.newControl(DragControl.class);
         this.resizeControl = factory.newControl(ResizeControl.class);
-        this.canvasNameEditionControl = factory.newControl(CanvasNameEditionControl.class);
+        this.canvasInPlaceTextEditorControl = factory.newControl(CanvasInPlaceTextEditorControl.class);
         this.toolboxControl = factory.newControl(ToolboxControl.class);
         getRegistrationHandler().registerCanvasHandlerControl(dragControl);
         dragControl.setCommandManagerProvider(() -> requestCommandManager);
@@ -78,8 +78,8 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
         resizeControl.setCommandManagerProvider(() -> sessionCommandManager);
         getRegistrationHandler().registerCanvasHandlerControl(toolboxControl);
         toolboxControl.setCommandManagerProvider(() -> sessionCommandManager);
-        getRegistrationHandler().registerCanvasHandlerControl(canvasNameEditionControl);
-        canvasNameEditionControl.setCommandManagerProvider(() -> sessionCommandManager);
+        getRegistrationHandler().registerCanvasHandlerControl(canvasInPlaceTextEditorControl);
+        canvasInPlaceTextEditorControl.setCommandManagerProvider(() -> sessionCommandManager);
     }
 
     public DragControl<AbstractCanvasHandler, Element> getDragControl() {
@@ -94,7 +94,7 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
         return toolboxControl;
     }
 
-    public CanvasNameEditionControl<AbstractCanvasHandler, Element> getCanvasNameEditionControl() {
-        return canvasNameEditionControl;
+    public CanvasInPlaceTextEditorControl<AbstractCanvasHandler, Element> getCanvasInPlaceTextEditorControl() {
+        return canvasInPlaceTextEditorControl;
     }
 }

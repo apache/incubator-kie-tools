@@ -29,6 +29,8 @@ import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
@@ -92,6 +94,12 @@ public class CaseManagementCanvasHandlerTest {
     private ShapeManager shapeManager;
 
     @Mock
+    private TextPropertyProviderFactory textPropertyProviderFactory;
+
+    @Mock
+    private TextPropertyProvider textPropertyProvider;
+
+    @Mock
     private EventSourceMock<CanvasElementAddedEvent> canvasElementAddedEvent;
 
     @Mock
@@ -123,6 +131,7 @@ public class CaseManagementCanvasHandlerTest {
                                                        graphUtils,
                                                        indexBuilder,
                                                        shapeManager,
+                                                       textPropertyProviderFactory,
                                                        canvasElementAddedEvent,
                                                        canvasElementRemovedEvent,
                                                        canvasElementUpdatedEvent,
@@ -130,6 +139,7 @@ public class CaseManagementCanvasHandlerTest {
                                                        canvasCommandFactory);
         this.handler.handle(canvas);
         when(canvas.getLayer()).thenReturn(layer);
+        when(textPropertyProviderFactory.getProvider(any(Element.class))).thenReturn(textPropertyProvider);
     }
 
     @Test

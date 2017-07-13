@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -70,6 +71,9 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
 
     @Mock
     private ShapeManager shapeManager;
+
+    @Mock
+    private TextPropertyProviderFactory textPropertyProviderFactory;
 
     @Mock
     private CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
@@ -194,6 +198,7 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
 
         this.preview = new SessionPreviewImpl(definitionManager,
                                               shapeManager,
+                                              textPropertyProviderFactory,
                                               canvasCommandManager,
                                               definitionUtils,
                                               graphUtils,

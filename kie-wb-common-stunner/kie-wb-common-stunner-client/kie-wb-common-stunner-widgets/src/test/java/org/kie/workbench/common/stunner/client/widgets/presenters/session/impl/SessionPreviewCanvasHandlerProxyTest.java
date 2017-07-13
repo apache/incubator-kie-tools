@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -53,6 +54,9 @@ public class SessionPreviewCanvasHandlerProxyTest {
     @Mock
     private ShapeManager shapeManager;
 
+    @Mock
+    private TextPropertyProviderFactory textPropertyProviderFactory;
+
     private SessionPreviewCanvasHandlerProxy proxy;
 
     @Before
@@ -60,7 +64,8 @@ public class SessionPreviewCanvasHandlerProxyTest {
         proxy = new SessionPreviewCanvasHandlerProxy(wrapped,
                                                      definitionManager,
                                                      graphUtils,
-                                                     shapeManager);
+                                                     shapeManager,
+                                                     textPropertyProviderFactory);
     }
 
     @Test

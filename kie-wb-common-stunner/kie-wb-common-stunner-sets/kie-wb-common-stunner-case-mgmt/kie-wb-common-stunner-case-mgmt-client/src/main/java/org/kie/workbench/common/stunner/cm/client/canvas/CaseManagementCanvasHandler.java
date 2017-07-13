@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandlerImpl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
@@ -56,6 +57,7 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
                                        final GraphUtils graphUtils,
                                        final GraphIndexBuilder<? extends MutableIndex<Node, Edge>> indexBuilder,
                                        final ShapeManager shapeManager,
+                                       final TextPropertyProviderFactory textPropertyProviderFactory,
                                        final Event<CanvasElementAddedEvent> canvasElementAddedEvent,
                                        final Event<CanvasElementRemovedEvent> canvasElementRemovedEvent,
                                        final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent,
@@ -68,6 +70,7 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
               graphUtils,
               indexBuilder,
               shapeManager,
+              textPropertyProviderFactory,
               canvasElementAddedEvent,
               canvasElementRemovedEvent,
               canvasElementUpdatedEvent,

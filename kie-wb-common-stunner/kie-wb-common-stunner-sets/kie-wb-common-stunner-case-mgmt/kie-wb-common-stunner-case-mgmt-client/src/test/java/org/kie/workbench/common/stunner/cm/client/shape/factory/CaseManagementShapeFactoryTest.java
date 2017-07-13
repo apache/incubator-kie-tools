@@ -68,6 +68,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.Bindable
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.shapes.client.ConnectorShape;
 import org.kie.workbench.common.stunner.shapes.client.factory.BasicShapesFactory;
+import org.kie.workbench.common.stunner.shapes.client.view.ConnectorView;
 import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
 import org.kie.workbench.common.stunner.shapes.client.view.ShapeViewFactory;
 import org.mockito.Mock;
@@ -100,6 +101,9 @@ public class CaseManagementShapeFactoryTest {
     @Mock
     private Glyph glyph;
 
+    @Mock
+    private ConnectorView connectorShapeView;
+
     private Consumer<Shape> nullAssertions = (shape) -> {
         assertNotNull(shape.getShapeView());
         assertTrue(shape instanceof NullShape);
@@ -129,6 +133,12 @@ public class CaseManagementShapeFactoryTest {
         assertTrue(shape.getShapeView() instanceof ActivityView);
         assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementReusableSubprocessTaskShapeDef);
         assertShapeSize((ActivityView) shape.getShapeView());
+    };
+
+    private Consumer<Shape> connectorAssertions = (shape) -> {
+        assertNotNull(shape.getShapeView());
+        assertTrue(shape instanceof ConnectorShape);
+        assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof SequenceFlowConnectorDef);
     };
 
     private CaseManagementShapeFactory factory;
@@ -161,6 +171,10 @@ public class CaseManagementShapeFactoryTest {
         when(basicViewFactory.pictureFromUri(any(SafeUri.class),
                                              anyDouble(),
                                              anyDouble())).thenReturn(pictureShapeView);
+        when(basicViewFactory.connector(anyDouble(),
+                                        anyDouble(),
+                                        anyDouble(),
+                                        anyDouble())).thenReturn(connectorShapeView);
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
     }
@@ -257,11 +271,7 @@ public class CaseManagementShapeFactoryTest {
     @Test
     public void checkSequenceFlow() {
         assertShapeConstruction(new SequenceFlow.SequenceFlowBuilder().build(),
-                                (shape) -> {
-                                    assertNull(shape.getShapeView());
-                                    assertTrue(shape instanceof ConnectorShape);
-                                    assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof SequenceFlowConnectorDef);
-                                });
+                                connectorAssertions);
         assertShapeGlyph(new SequenceFlow.SequenceFlowBuilder().build());
     }
 

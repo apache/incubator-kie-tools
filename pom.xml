@@ -22,6 +22,7 @@
     <module>kie-wb-common-services</module>
     <module>kie-wb-common-forms</module>
     <module>kie-wb-common-stunner</module>
+    <module>kie-wb-common-dmn</module>
   </modules>
 
   <properties>
@@ -35,6 +36,7 @@
         <groupId>org.jboss.errai</groupId>
         <artifactId>wildfly-dist</artifactId>
         <version>${version.org.jboss.errai.wildfly}</version>
+        <type>pom</type>
         <scope>import</scope>
       </dependency>
 

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.HasCanvasListeners;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
@@ -61,6 +62,11 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
      * Provides a definition manager instance in this context.
      */
     public abstract DefinitionManager getDefinitionManager();
+
+    /**
+     * Provides a Text Property Provider Factory instance in this context.
+     */
+    public abstract TextPropertyProviderFactory getTextPropertyProviderFactory();
 
     /**
      * Provides the rule manager instance.

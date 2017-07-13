@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
@@ -42,7 +42,7 @@ import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 @CaseManagementEditor
 public class CaseManagementClientFullSession extends AbstractClientFullSession {
 
-    private CanvasNameEditionControl<AbstractCanvasHandler, Element> canvasNameEditionControl;
+    private CanvasInPlaceTextEditorControl<AbstractCanvasHandler, Element> canvasInPlaceTextEditorControl;
 
     @Inject
     @SuppressWarnings("unchecked")
@@ -65,12 +65,12 @@ public class CaseManagementClientFullSession extends AbstractClientFullSession {
               factory.newControl(DockingAcceptorControl.class),
               factory.newControl(ElementBuilderControl.class));
 
-        this.canvasNameEditionControl = factory.newControl(CanvasNameEditionControl.class);
-        getRegistrationHandler().registerCanvasHandlerControl(canvasNameEditionControl);
-        canvasNameEditionControl.setCommandManagerProvider(() -> sessionCommandManager);
+        this.canvasInPlaceTextEditorControl = factory.newControl(CanvasInPlaceTextEditorControl.class);
+        getRegistrationHandler().registerCanvasHandlerControl(canvasInPlaceTextEditorControl);
+        canvasInPlaceTextEditorControl.setCommandManagerProvider(() -> sessionCommandManager);
     }
 
-    CanvasNameEditionControl<AbstractCanvasHandler, Element> getCanvasNameEditionControl() {
-        return canvasNameEditionControl;
+    CanvasInPlaceTextEditorControl<AbstractCanvasHandler, Element> getCanvasInPlaceTextEditorControl() {
+        return canvasInPlaceTextEditorControl;
     }
 }

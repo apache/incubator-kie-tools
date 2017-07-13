@@ -35,10 +35,14 @@ import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSubpro
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementTaskShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.NullShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.view.ActivityView;
+import org.kie.workbench.common.stunner.cm.client.shape.view.DiagramView;
+import org.kie.workbench.common.stunner.cm.client.shape.view.NullView;
+import org.kie.workbench.common.stunner.cm.client.shape.view.StageView;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFunctionalFactory;
+import org.kie.workbench.common.stunner.shapes.client.view.ConnectorView;
 import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
 import org.kie.workbench.common.stunner.shapes.client.view.ShapeViewFactory;
 import org.mockito.Mock;
@@ -58,17 +62,26 @@ public class CaseManagementShapeDefFactoryTest {
     private ShapeViewFactory basicShapeViewFactory;
 
     @Mock
-    private ActivityShape activityShape;
+    private NullView nullView;
+
+    @Mock
+    private DiagramView diagramView;
+
+    @Mock
+    private StageView stageView;
+
+    @Mock
+    private ActivityView activityView;
+
+    @Mock
+    private ConnectorView connectorShapeView;
 
     private CaseManagementShapeDefFactory tested;
-    private ActivityView activityView;
     private PictureShapeView pictureShapeView;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        this.activityView = new ActivityView(100,
-                                             100);
         this.pictureShapeView = new PictureShapeView(new MultiPath().rect(0,
                                                                           0,
                                                                           10,
@@ -76,8 +89,18 @@ public class CaseManagementShapeDefFactoryTest {
         when(basicShapeViewFactory.pictureFromUri(any(SafeUri.class),
                                                   anyDouble(),
                                                   anyDouble())).thenReturn(pictureShapeView);
+        when(basicShapeViewFactory.connector(anyDouble(),
+                                             anyDouble(),
+                                             anyDouble(),
+                                             anyDouble())).thenReturn(connectorShapeView);
+        when(cmShapeViewFactory.newNullView()).thenReturn(nullView);
+        when(cmShapeViewFactory.newStageView(anyDouble(),
+                                             anyDouble(),
+                                             anyDouble())).thenReturn(stageView);
         when(cmShapeViewFactory.newActivityView(anyDouble(),
                                                 anyDouble())).thenReturn(activityView);
+        when(cmShapeViewFactory.newDiagramView(anyDouble(),
+                                               anyDouble())).thenReturn(diagramView);
         this.tested = new CaseManagementShapeDefFactory(cmShapeViewFactory,
                                                         basicShapeViewFactory,
                                                         new ShapeDefFunctionalFactory<>());
@@ -90,18 +113,22 @@ public class CaseManagementShapeDefFactoryTest {
                                                 new NullShapeDef());
         assertNotNull(nullShape);
         assertTrue(nullShape instanceof NullShape);
+
         final Shape diagramShape = tested.newShape(new CaseManagementDiagram.CaseManagementDiagramBuilder().build(),
                                                    new CaseManagementDiagramShapeDef());
         assertNotNull(diagramShape);
         assertTrue(diagramShape instanceof DiagramShape);
+
         final Shape subprocessShape = tested.newShape(new AdHocSubprocess.AdHocSubprocessBuilder().build(),
                                                       new CaseManagementSubprocessShapeDef());
         assertNotNull(subprocessShape);
         assertTrue(subprocessShape instanceof StageShape);
+
         final Shape activityShape = tested.newShape(new UserTask.UserTaskBuilder().build(),
                                                     new CaseManagementTaskShapeDef());
         assertNotNull(activityShape);
         assertTrue(activityShape instanceof ActivityShape);
+
         final Shape activityShape2 = tested.newShape(new ReusableSubprocess.ReusableSubprocessBuilder().build(),
                                                      new CaseManagementReusableSubprocessTaskShapeDef());
         assertNotNull(activityShape2);
