@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.layout.editor.client.components.container;
 
+import java.util.function.Supplier;
+
 import org.junit.Test;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -259,5 +261,18 @@ public class ContainerTest extends AbstractLayoutEditorTest {
                               "value");
         assertNotNull(container.getProperty("key"));
         assertTrue(container.getProperties().containsKey("key"));
+    }
+
+    @Test
+    public void createCurrentLayoutTemplateSupplierTest() throws Exception {
+        LayoutTemplate expected = loadLayout(SAMPLE_FULL_FLUID_LAYOUT);
+
+        LayoutTemplate toLayoutTemplate = container.toLayoutTemplate();
+        Supplier<LayoutTemplate> currentLayoutTemplateSupplier = container.createCurrentLayoutTemplateSupplier();
+
+        assertEquals(expected,
+                     toLayoutTemplate);
+        assertEquals(expected,
+                     currentLayoutTemplateSupplier.get());
     }
 }

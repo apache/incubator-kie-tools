@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.layout.editor.client.components.columns;
 
+import java.util.function.Supplier;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -32,6 +33,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
 import org.uberfire.ext.layout.editor.client.infra.ContainerResizeEvent;
@@ -518,9 +520,11 @@ public class ComponentColumnView
 
     @Override
     public void showConfigComponentModal(Command configurationFinish,
-                                         Command configurationCanceled) {
+                                         Command configurationCanceled,
+                                         Supplier<LayoutTemplate> currentLayoutTemplateSupplier) {
         helper.showConfigModal(configurationFinish,
-                               configurationCanceled);
+                               configurationCanceled,
+                               currentLayoutTemplateSupplier);
     }
 
     @Override

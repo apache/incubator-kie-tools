@@ -18,6 +18,7 @@ package org.uberfire.ext.layout.editor.client.components.rows;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
@@ -70,6 +71,7 @@ public class Row {
     private ParameterizedCommand<Row> removeRowCommand;
 
     private ParameterizedCommand<ColumnDrop> removeComponentCommand;
+    private Supplier<LayoutTemplate> currentLayoutTemplateSupplier;
 
     private ColumnWithComponents parentColumnWithComponents;
 
@@ -107,10 +109,12 @@ public class Row {
     public void init(ParameterizedCommand<RowDrop> dropOnRowCommand,
                      ParameterizedCommand<Row> removeCommand,
                      ParameterizedCommand<ColumnDrop> removeComponentCommand,
+                     Supplier<LayoutTemplate> currentLayoutTemplateSupplier,
                      Integer height) {
         this.dropOnRowCommand = dropOnRowCommand;
         this.removeRowCommand = removeCommand;
         this.removeComponentCommand = removeComponentCommand;
+        this.currentLayoutTemplateSupplier = currentLayoutTemplateSupplier;
         this.parentColumnWithComponents = null;
         this.height = height;
         setupPageLayout(height);
@@ -120,11 +124,13 @@ public class Row {
                      ParameterizedCommand<Row> removeCommand,
                      ParameterizedCommand<ColumnDrop> removeComponentCommand,
                      ColumnWithComponents parentColumnWithComponents,
+                     Supplier<LayoutTemplate> currentLayoutTemplateSupplier,
                      Integer height) {
         this.dropOnRowCommand = dropOnRowCommand;
         this.removeRowCommand = removeCommand;
         this.removeComponentCommand = removeComponentCommand;
         this.parentColumnWithComponents = parentColumnWithComponents;
+        this.currentLayoutTemplateSupplier = currentLayoutTemplateSupplier;
         this.height = height;
         setupPageLayout(height);
     }
@@ -132,10 +138,12 @@ public class Row {
     public void load(ParameterizedCommand<RowDrop> dropOnRowCommand,
                      LayoutRow layoutRow,
                      ParameterizedCommand<Row> removeCommand,
-                     ParameterizedCommand<ColumnDrop> removeComponentCommand) {
+                     ParameterizedCommand<ColumnDrop> removeComponentCommand,
+                     Supplier<LayoutTemplate> currentLayoutTemplateSupplier) {
         this.dropOnRowCommand = dropOnRowCommand;
         this.removeRowCommand = removeCommand;
         this.removeComponentCommand = removeComponentCommand;
+        this.currentLayoutTemplateSupplier = currentLayoutTemplateSupplier;
         this.height = getHeight(layoutRow.getHeight());
         setupPageLayout(height);
         extractColumns(layoutRow);
@@ -186,6 +194,7 @@ public class Row {
                           dropCommand(),
                           removeComponentCommand,
                           removeColumnCommand(),
+                          currentLayoutTemplateSupplier,
                           getHeight(layoutColumn.getHeight()));
 
             for (LayoutColumn column : row.getLayoutColumns()) {
@@ -248,6 +257,7 @@ public class Row {
                     layoutComponent,
                     dropCommand(),
                     removeColumnCommand(),
+                    currentLayoutTemplateSupplier,
                     newComponent);
         columns.add(column);
         setupColumnResizeActions();
@@ -568,6 +578,7 @@ public class Row {
                        drop.getComponent(),
                        dropCommand(),
                        removeColumnCommand(),
+                       currentLayoutTemplateSupplier,
                        drop.newComponent());
         newColumn.setColumnHeight(innerColumnHeight);
         return newColumn;
@@ -588,6 +599,7 @@ public class Row {
                           dropCommand(),
                           removeComponentCommand,
                           removeColumnCommand(),
+                          currentLayoutTemplateSupplier,
                           currentColumn.getColumnHeight());
 
             final ComponentColumn newColumn = createComponentColumn(
@@ -642,6 +654,7 @@ public class Row {
                        layoutComponent,
                        dropCommand(),
                        removeColumnCommand(),
+                       currentLayoutTemplateSupplier,
                        newComponent);
         return newColumn;
     }

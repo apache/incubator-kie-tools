@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.layout.editor.client.infra;
 
+import java.util.function.Supplier;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -27,6 +28,7 @@ import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Document;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
@@ -81,11 +83,12 @@ public class DragHelperComponentColumn {
     }
 
     public void showConfigModal(Command configurationFinish,
-                                Command configurationCanceled) {
+                                Command configurationCanceled,
+                                Supplier<LayoutTemplate> currentLayoutTemplateSupplier) {
         ModalConfigurationContext ctx = new ModalConfigurationContext(layoutComponent,
                                                                       configurationFinish,
-                                                                      configurationCanceled
-        );
+                                                                      configurationCanceled,
+                                                                      currentLayoutTemplateSupplier);
         Modal configModal = ((HasModalConfiguration)
                 getLayoutDragComponent()).getConfigurationModal(ctx);
         configModal.show();

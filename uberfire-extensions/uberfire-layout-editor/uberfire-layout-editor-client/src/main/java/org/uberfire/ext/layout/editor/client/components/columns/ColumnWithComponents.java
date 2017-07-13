@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.layout.editor.client.components.columns;
 
+import java.util.function.Supplier;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
@@ -54,6 +55,7 @@ public class ColumnWithComponents implements Column {
     private boolean canResizeRight;
     private Event<ColumnResizeEvent> columnResizeEvent;
     private LayoutTemplate.Style pageStyle;
+    private Supplier<LayoutTemplate> currentLayoutTemplateSupplier;
     private Integer columnHeight = DEFAULT_COLUMN_HEIGHT;
     private Integer columnWidth;
 
@@ -86,6 +88,7 @@ public class ColumnWithComponents implements Column {
                      ParameterizedCommand<ColumnDrop> dropCommand,
                      ParameterizedCommand<ColumnDrop> removeComponentCommand,
                      ParameterizedCommand<Column> removeCommand,
+                     Supplier<LayoutTemplate> currentLayoutTemplateSupplier,
                      Integer columnHeight) {
         this.columnWidth = columnWidth;
         this.parentId = parentId;
@@ -93,6 +96,7 @@ public class ColumnWithComponents implements Column {
         this.removeComponentCommand = removeComponentCommand;
         this.removeColumnCommand = removeCommand;
         this.pageStyle = pageStyle;
+        this.currentLayoutTemplateSupplier = currentLayoutTemplateSupplier;
         this.columnHeight = columnHeight;
         view.setWidth(columnWidth);
         setupPageLayout();
@@ -103,7 +107,7 @@ public class ColumnWithComponents implements Column {
         row.init(createDropCommand(),
                  createRowRemoveCommand(),
                  createComponentRemoveCommand(),
-                 this,
+                 currentLayoutTemplateSupplier,
                  Row.ROW_DEFAULT_HEIGHT);
     }
 

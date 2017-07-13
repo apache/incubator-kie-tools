@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.layout.editor.client.components.columns;
 
+import java.util.function.Supplier;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -44,6 +45,7 @@ public class ComponentColumn implements Column {
     private ParameterizedCommand<ColumnDrop> dropCommand;
     private boolean innerColumn = false;
     private LayoutComponent layoutComponent;
+    private Supplier<LayoutTemplate> currentLayoutTemplateSupplier;
     private boolean componentReady;
     private ParameterizedCommand<Column> removeCommand;
     private LayoutDragComponentHelper layoutDragComponentHelper;
@@ -73,8 +75,10 @@ public class ComponentColumn implements Column {
                      LayoutComponent layoutComponent,
                      ParameterizedCommand<ColumnDrop> dropCommand,
                      ParameterizedCommand<Column> removeCommand,
+                     Supplier<LayoutTemplate> currentLayoutTemplateSupplier,
                      boolean newComponent) {
         this.layoutComponent = layoutComponent;
+        this.currentLayoutTemplateSupplier = currentLayoutTemplateSupplier;
         view.setup(layoutComponent);
         this.parentId = parentId;
         this.columnWidth = columnWidth;
@@ -107,7 +111,8 @@ public class ComponentColumn implements Column {
 
         if (hasModalConfiguration(newComponent)) {
             view.showConfigComponentModal(this::configurationFinish,
-                                          this::configurationCanceled);
+                                          this::configurationCanceled,
+                                          currentLayoutTemplateSupplier);
         } else {
             configurationFinish();
         }
@@ -332,7 +337,8 @@ public class ComponentColumn implements Column {
         void setContent();
 
         void showConfigComponentModal(Command configurationFinish,
-                                      Command configurationCanceled);
+                                      Command configurationCanceled,
+                                      Supplier<LayoutTemplate> createCurrentLayoutTemplateSupplier);
 
         boolean hasModalConfiguration();
 

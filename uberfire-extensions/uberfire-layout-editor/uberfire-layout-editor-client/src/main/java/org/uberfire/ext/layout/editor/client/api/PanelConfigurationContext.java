@@ -15,7 +15,10 @@
  */
 package org.uberfire.ext.layout.editor.client.api;
 
+import java.util.function.Supplier;
+
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.infra.ConfigurationContext;
 import org.uberfire.mvp.Command;
 
@@ -26,9 +29,11 @@ public class PanelConfigurationContext extends ConfigurationContext {
 
     public PanelConfigurationContext(LayoutComponent component,
                                      Command configurationFinish,
-                                     Command configurationCanceled) {
+                                     Command configurationCanceled,
+                                     Supplier<LayoutTemplate> currentLayoutTemplateSupplier) {
         super(component,
               configurationFinish,
-              configurationCanceled);
+              configurationCanceled,
+              currentLayoutTemplateSupplier);
     }
 }

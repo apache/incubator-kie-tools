@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
@@ -179,11 +180,16 @@ public class Container {
         row.init(createRowDropCommand(),
                  createRemoveRowCommand(),
                  createRemoveComponentCommand(),
+                 createCurrentLayoutTemplateSupplier(),
                  height);
         row.withOneColumn(drop.getComponent(),
                           drop.newComponent());
         view.addRow(row.getView());
         return row;
+    }
+
+    Supplier<LayoutTemplate> createCurrentLayoutTemplateSupplier() {
+        return () -> toLayoutTemplate();
     }
 
     private ParameterizedCommand<Row> createRemoveRowCommand() {
@@ -383,7 +389,8 @@ public class Container {
         row.load(createRowDropCommand(),
                  layoutRow,
                  createRemoveRowCommand(),
-                 createRemoveComponentCommand());
+                 createRemoveComponentCommand(),
+                 createCurrentLayoutTemplateSupplier());
         return row;
     }
 
