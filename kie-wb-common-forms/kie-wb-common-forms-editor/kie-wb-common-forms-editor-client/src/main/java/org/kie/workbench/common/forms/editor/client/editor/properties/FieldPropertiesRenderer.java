@@ -149,6 +149,14 @@ public class FieldPropertiesRenderer implements IsWidget {
         return view;
     }
 
+    public FieldDefinition getCurrentField() {
+        return fieldCopy;
+    }
+
+    public List<String> getCompatibleFieldTypes() {
+        return helper.getCompatibleFieldTypes(fieldCopy);
+    }
+
     @Override
     public Widget asWidget() {
         return view.asWidget();

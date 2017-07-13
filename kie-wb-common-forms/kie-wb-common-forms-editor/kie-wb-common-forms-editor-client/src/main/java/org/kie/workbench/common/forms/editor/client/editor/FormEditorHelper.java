@@ -23,15 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorContextRequest;
-import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorContextResponse;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
@@ -40,6 +37,7 @@ import org.kie.workbench.common.forms.model.DynamicModel;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.service.FieldManager;
+import org.uberfire.commons.data.Pair;
 
 @Dependent
 public class FormEditorHelper {
@@ -48,22 +46,19 @@ public class FormEditorHelper {
 
     private FieldManager fieldManager;
 
-    private Event<FormEditorContextResponse> responseEvent;
-
     private ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents;
 
     private FormModelerContent content;
 
     private Map<String, FieldDefinition> availableFields = new HashMap<>();
 
-    private List<EditorFieldLayoutComponent> fieldLayoutComponents;
+    protected Map<String, Pair<EditorFieldLayoutComponent, FieldDefinition>> unbindedFields = new HashMap<>();
+
 
     @Inject
     public FormEditorHelper(FieldManager fieldManager,
-                            Event<FormEditorContextResponse> responseEvent,
                             ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents) {
         this.fieldManager = fieldManager;
-        this.responseEvent = responseEvent;
         this.editorFieldLayoutComponents = editorFieldLayoutComponents;
     }
 
@@ -74,20 +69,22 @@ public class FormEditorHelper {
     public void initHelper(FormModelerContent content) {
         this.content = content;
 
-        if (fieldLayoutComponents != null && !fieldLayoutComponents.isEmpty()) {
+        if (unbindedFields != null && !unbindedFields.isEmpty()) {
             return;
         }
-        fieldLayoutComponents = new ArrayList<>();
 
         for (String baseType : fieldManager.getBaseFieldTypes()) {
             EditorFieldLayoutComponent layoutComponent = editorFieldLayoutComponents.get();
             if (layoutComponent != null) {
                 FieldDefinition field = fieldManager.getDefinitionByFieldTypeName(baseType);
-                field.setId(baseType);
+                field.setName(generateUnbindedFieldName(field));
+
                 layoutComponent.init(content.getRenderingContext(),
                                      field);
-                layoutComponent.setDisabled(true);
-                fieldLayoutComponents.add(layoutComponent);
+
+                unbindedFields.put(field.getId(),
+                                   new Pair<>(layoutComponent,
+                                              field));
             }
         }
     }
@@ -113,17 +110,6 @@ public class FormEditorHelper {
         availableFields.remove(field.getId());
     }
 
-    public FieldDefinition getDroppedField(String fieldId) {
-        FieldDefinition result = getFormField(fieldId);
-
-        if (result != null) {
-            responseEvent.fire(new FormEditorContextResponse(getFormDefinition().getId(),
-                                                             result.getId(),
-                                                             this));
-        }
-        return result;
-    }
-
     public FieldDefinition getFormField(String fieldId) {
         FieldDefinition result = content.getDefinition().getFieldById(fieldId);
         if (result == null) {
@@ -132,14 +118,26 @@ public class FormEditorHelper {
             if (result != null) {
                 availableFields.remove(fieldId);
             } else {
-                result = fieldManager.getDefinitionByFieldTypeName(fieldId);
+                if (unbindedFields.containsKey(fieldId)) {
+                    Pair<EditorFieldLayoutComponent, FieldDefinition> pair = unbindedFields.get(fieldId);
 
-                if (result != null) {
-                    result.setName(generateUnbindedFieldName(result));
+                    result = pair.getK2();
+
                     result.setLabel(result.getFieldType().getTypeName());
                     if (result instanceof HasPlaceHolder) {
                         ((HasPlaceHolder) result).setPlaceHolder(result.getFieldType().getTypeName());
                     }
+
+                    unbindedFields.remove(result.getId());
+
+                    FieldDefinition newField = fieldManager.getDefinitionByFieldType(result.getFieldType());
+                    newField.setName(generateUnbindedFieldName(newField));
+
+                    EditorFieldLayoutComponent component = pair.getK1();
+
+                    component.init(content.getRenderingContext(), newField);
+
+                    unbindedFields.put(newField.getId(), new Pair<>(component, newField));
                 }
             }
             if (result != null) {
@@ -166,17 +164,6 @@ public class FormEditorHelper {
         return null;
     }
 
-    public void onFieldRequest(@Observes FormEditorContextRequest request) {
-        if (content == null) {
-            return;
-        }
-        if (request.getFormId().equals(content.getDefinition().getId())) {
-            responseEvent.fire(new FormEditorContextResponse(request.getFormId(),
-                                                             request.getFieldId(),
-                                                             this));
-        }
-    }
-
     public List<String> getCompatibleModelFields(FieldDefinition field) {
         Collection<String> compatibles = fieldManager.getCompatibleFields(field);
 
@@ -194,8 +181,8 @@ public class FormEditorHelper {
         return new ArrayList<>(result);
     }
 
-    public Collection<String> getCompatibleFieldTypes(FieldDefinition field) {
-        return fieldManager.getCompatibleFields(field);
+    public List<String> getCompatibleFieldTypes(FieldDefinition field) {
+        return new ArrayList<>(fieldManager.getCompatibleFields(field));
     }
 
     public FieldDefinition switchToField(FieldDefinition originalField,
@@ -262,8 +249,8 @@ public class FormEditorHelper {
         return UNBINDED_FIELD_NAME_PREFFIX + field.getId();
     }
 
-    public List<EditorFieldLayoutComponent> getBaseFieldsDraggables() {
-        return fieldLayoutComponents;
+    public Collection<EditorFieldLayoutComponent> getBaseFieldsDraggables() {
+        return unbindedFields.values().stream().map(Pair::getK1).collect(Collectors.toList());
     }
 
     public Map<String, FieldDefinition> getAvailableFields() {

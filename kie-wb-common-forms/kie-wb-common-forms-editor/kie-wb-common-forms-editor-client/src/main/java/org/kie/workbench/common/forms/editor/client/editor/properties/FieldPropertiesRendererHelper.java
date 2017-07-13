@@ -31,7 +31,7 @@ public interface FieldPropertiesRendererHelper {
 
     List<String> getAvailableModelFields();
 
-    Collection<String> getCompatibleFieldTypes();
+    List<String> getCompatibleFieldTypes(FieldDefinition fieldDefinition);
 
     void onClose();
 

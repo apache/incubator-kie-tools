@@ -32,7 +32,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
-import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorContextResponse;
 import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorSyncPaletteEvent;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.client.resources.images.FormEditorImageResources;
@@ -54,7 +53,6 @@ import org.mockito.Mock;
 import org.mockito.verification.VerificationMode;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
-import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -112,9 +110,6 @@ public class FormEditorPresenterTest {
     private ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents;
 
     @Mock
-    protected EventSourceMock<FormEditorContextResponse> eventMock;
-
-    @Mock
     protected FormEditorService formEditorService;
 
     @Mock
@@ -166,13 +161,13 @@ public class FormEditorPresenterTest {
         editorServiceCallerMock = new CallerMock<>(formEditorService);
 
         editorContext = spy(new FormEditorHelper(new TestFieldManager(),
-                                                 eventMock,
                                                  editorFieldLayoutComponents));
 
         when(layoutEditorMock.getLayout()).thenReturn(new LayoutTemplate());
 
         when(menuBuilderMock.addSave(any(MenuItem.class))).thenReturn(menuBuilderMock);
-        when(menuBuilderMock.addCopy(any(ObservablePath.class), any(DefaultFileNameValidator.class))).thenReturn(menuBuilderMock);
+        when(menuBuilderMock.addCopy(any(ObservablePath.class),
+                                     any(DefaultFileNameValidator.class))).thenReturn(menuBuilderMock);
         when(menuBuilderMock.addRename(any(ObservablePath.class),
                                        any(DefaultFileNameValidator.class))).thenReturn(menuBuilderMock);
         when(menuBuilderMock.addDelete(any(ObservablePath.class))).thenReturn(menuBuilderMock);
@@ -187,7 +182,7 @@ public class FormEditorPresenterTest {
             {
                 kieView = mock(KieEditorWrapperView.class);
                 versionRecordManager = FormEditorPresenterTest.this.versionRecordManager;
-                editorContext = FormEditorPresenterTest.this.editorContext;
+                editorHelper = FormEditorPresenterTest.this.editorContext;
                 busyIndicatorView = mock(BusyIndicatorView.class);
                 overviewWidget = mock(OverviewWidgetPresenter.class);
                 layoutEditor = layoutEditorMock;
@@ -575,7 +570,7 @@ public class FormEditorPresenterTest {
     @Test
     public void testSave() {
         loadContent();
-        presenter.editorContext.getContent().getDefinition().setLayoutTemplate(mock(LayoutTemplate.class));
+        presenter.editorHelper.getContent().getDefinition().setLayoutTemplate(mock(LayoutTemplate.class));
         presenter.save("");
 
         //verify(layoutEditorMock).getLayout();

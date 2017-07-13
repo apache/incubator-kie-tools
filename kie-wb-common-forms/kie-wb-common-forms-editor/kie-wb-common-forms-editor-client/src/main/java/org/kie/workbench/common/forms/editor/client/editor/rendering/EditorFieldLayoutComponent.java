@@ -15,14 +15,12 @@
  */
 package org.kie.workbench.common.forms.editor.client.editor.rendering;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Specializes;
 import javax.inject.Inject;
 
@@ -30,9 +28,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.editor.client.editor.FormEditorContext;
 import org.kie.workbench.common.forms.editor.client.editor.FormEditorHelper;
-import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorContextRequest;
-import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorContextResponse;
 import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorSyncPaletteEvent;
 import org.kie.workbench.common.forms.editor.client.editor.properties.FieldPropertiesRenderer;
 import org.kie.workbench.common.forms.editor.client.editor.properties.FieldPropertiesRendererHelper;
@@ -57,8 +54,6 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
 
     protected LayoutDragComponentHelper layoutDragComponentHelper;
 
-    protected Event<FormEditorContextRequest> fieldRequest;
-
     protected Event<FormEditorSyncPaletteEvent> syncPaletteEvent;
 
     protected FieldManager fieldManager;
@@ -75,17 +70,13 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
 
     private Optional<String> formId = Optional.empty();
 
-    private boolean disabled = false;
-
     @Inject
     public EditorFieldLayoutComponent(FieldPropertiesRenderer propertiesRenderer,
                                       LayoutDragComponentHelper layoutDragComponentHelper,
-                                      Event<FormEditorContextRequest> fieldRequest,
                                       FieldManager fieldManager,
                                       Event<FormEditorSyncPaletteEvent> syncPaletteEvent) {
         this.propertiesRenderer = propertiesRenderer;
         this.layoutDragComponentHelper = layoutDragComponentHelper;
-        this.fieldRequest = fieldRequest;
         this.fieldManager = fieldManager;
         this.syncPaletteEvent = syncPaletteEvent;
     }
@@ -117,8 +108,8 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
             }
 
             @Override
-            public Collection<String> getCompatibleFieldTypes() {
-                return editorHelper.getCompatibleFieldTypes(field);
+            public List<String> getCompatibleFieldTypes(FieldDefinition fieldDefinition) {
+                return editorHelper.getCompatibleFieldTypes(fieldDefinition);
             }
 
             @Override
@@ -255,7 +246,7 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
         configContext = ctx;
 
         if (field == null) {
-            getEditionContext(ctx.getComponentProperties());
+            initContent(ctx.getComponentProperties());
         } else {
             propertiesRenderer.render(propertiesRendererHelper);
         }
@@ -265,44 +256,32 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
 
     @Override
     protected IsWidget generateContent(RenderingContext ctx) {
-        if (fieldRenderer != null) {
-            renderContent();
+        if (fieldRenderer == null) {
+            initContent(ctx.getComponent().getProperties());
         } else {
-            getEditionContext(ctx.getComponent().getProperties());
+            renderContent();
         }
         return content;
     }
 
-    protected void getEditionContext(Map<String, String> properties) {
+    protected void initContent(Map<String, String> properties) {
+
         if (field != null) {
             return;
         }
 
         if (!fieldId.isPresent()) {
-            fieldId = Optional.of(properties.get(FIELD_ID));
+            fieldId = Optional.ofNullable(properties.get(FIELD_ID));
         }
 
         if (!formId.isPresent()) {
-            formId = Optional.of(properties.get(FORM_ID));
+            formId = Optional.ofNullable(properties.get(FORM_ID));
         }
 
-        fieldRequest.fire(new FormEditorContextRequest(formId.get(),
-                                                       fieldId.get()));
-    }
-
-    public void onFieldResponse(@Observes FormEditorContextResponse response) {
-        if (disabled) {
-            return;
-        } else if (!formId.filter(s -> response.getFormId().equals(s)).isPresent()) {
-            return;
-        } else if (field != null && !fieldId.filter(s -> response.getFieldId().equals(s)).isPresent()) {
-            return;
-        }
-
-        editorHelper = response.getEditorHelper();
+        editorHelper = getHelperInstance();
 
         init(editorHelper.getRenderingContext(),
-             editorHelper.getFormField(response.getFieldId()));
+             editorHelper.getFormField(fieldId.get()));
 
         renderContent();
 
@@ -311,8 +290,8 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
         }
     }
 
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
+    protected FormEditorHelper getHelperInstance() {
+        return FormEditorContext.get().getActiveEditorHelper();
     }
 
     FieldPropertiesRendererHelper getPropertiesRendererHelper() {

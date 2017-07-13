@@ -53,6 +53,7 @@ import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditor;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
@@ -84,7 +85,7 @@ public class FormEditorPresenter extends KieEditor {
     protected BusyIndicatorView busyIndicatorView;
 
     @Inject
-    protected FormEditorHelper editorContext;
+    protected FormEditorHelper editorHelper;
 
     protected ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents;
 
@@ -116,6 +117,11 @@ public class FormEditorPresenter extends KieEditor {
              resourceType);
     }
 
+    @OnFocus
+    public void onFocus() {
+        FormEditorContext.get().setActiveEditorHelper(editorHelper);
+    }
+
     @Override
     protected void loadContent() {
         editorService.call(new RemoteCallback<FormModelerContent>() {
@@ -130,26 +136,26 @@ public class FormEditorPresenter extends KieEditor {
     @Override
     protected void save(String commitMessage) {
         synchronizeFormLayout();
-        editorService.call(getSaveSuccessCallback(editorContext.getContent().getDefinition().hashCode()))
+        editorService.call(getSaveSuccessCallback(editorHelper.getContent().getDefinition().hashCode()))
                 .save(versionRecordManager.getCurrentPath(),
-                      editorContext.getContent(),
+                      editorHelper.getContent(),
                       metadata,
                       commitMessage);
     }
 
     protected void synchronizeFormLayout() {
-        editorContext.getFormDefinition().setLayoutTemplate(layoutEditor.getLayout());
+        editorHelper.getFormDefinition().setLayoutTemplate(layoutEditor.getLayout());
     }
 
     public void doLoadContent(FormModelerContent content) {
         busyIndicatorView.hideBusyIndicator();
 
         // Clear LayoutEditor before loading new content.
-        if (editorContext.getContent() != null) {
+        if (editorHelper.getContent() != null) {
             layoutEditor.clear();
         }
 
-        editorContext.initHelper(content);
+        editorHelper.initHelper(content);
 
         layoutEditor.init(content.getDefinition().getName(),
                           getLayoutComponent(),
@@ -176,13 +182,13 @@ public class FormEditorPresenter extends KieEditor {
     }
 
     protected LayoutDragComponentGroup getLayoutComponent() {
-        LayoutDragComponentGroup group = new LayoutDragComponentGroup("Tools");
-        group.addLayoutDragComponent("id",
+        LayoutDragComponentGroup group = new LayoutDragComponentGroup(translationService.getTranslation(FormEditorConstants.FormEditorPresenterComponentsPalette));
+        group.addLayoutDragComponent("html",
                                      htmlLayoutDragComponent);
-        for (EditorFieldLayoutComponent drag : editorContext.getBaseFieldsDraggables()) {
-            group.addLayoutDragComponent(drag.getFieldId(),
-                                         drag);
-        }
+
+        editorHelper.getBaseFieldsDraggables().forEach(component -> group.addLayoutDragComponent(component.getFieldId(),
+                                                                                                          component));
+
         return group;
     }
 
@@ -236,7 +242,7 @@ public class FormEditorPresenter extends KieEditor {
     }
 
     public FormDefinition getFormDefinition() {
-        return editorContext.getFormDefinition();
+        return editorHelper.getFormDefinition();
     }
 
     private void loadAvailableFields(FormModelerContent content) {
@@ -253,15 +259,14 @@ public class FormEditorPresenter extends KieEditor {
 
     protected void addAvailableFields(String model,
                                       List<FieldDefinition> fields) {
-        editorContext.addAvailableFields(fields);
+        editorHelper.addAvailableFields(fields);
 
         LayoutDragComponentGroup group = new LayoutDragComponentGroup(model);
 
         for (FieldDefinition field : fields) {
             EditorFieldLayoutComponent layoutFieldComponent = editorFieldLayoutComponents.get();
             if (layoutFieldComponent != null) {
-                layoutFieldComponent.setDisabled(true);
-                layoutFieldComponent.init(editorContext.getRenderingContext(),
+                layoutFieldComponent.init(editorHelper.getRenderingContext(),
                                           field);
                 group.addLayoutDragComponent(field.getId(),
                                              layoutFieldComponent);
@@ -272,16 +277,16 @@ public class FormEditorPresenter extends KieEditor {
     }
 
     public void onRemoveComponent(@Observes ComponentRemovedEvent event) {
-        if (editorContext == null || editorContext.getContent() == null) {
+        if (editorHelper == null || editorHelper.getContent() == null) {
             return;
         }
 
         String formId = event.getLayoutComponent().getProperties().get(FieldLayoutComponent.FORM_ID);
 
-        if (editorContext.getFormDefinition().getId().equals(formId)) {
+        if (editorHelper.getFormDefinition().getId().equals(formId)) {
             String fieldId = event.getLayoutComponent().getProperties().get(FieldLayoutComponent.FIELD_ID);
-            editorContext.removeField(fieldId,
-                                      true);
+            editorHelper.removeField(fieldId,
+                                     true);
             onSyncPalette(formId);
         }
     }
@@ -306,7 +311,7 @@ public class FormEditorPresenter extends KieEditor {
             EditorFieldLayoutComponent layoutFieldComponent = editorFieldLayoutComponents.get();
 
             if (layoutFieldComponent != null) {
-                layoutFieldComponent.init(editorContext.getRenderingContext(),
+                layoutFieldComponent.init(editorHelper.getRenderingContext(),
                                           field);
                 layoutEditor.addDraggableComponentToGroup(getFormDefinition().getModel().getName(),
                                                           field.getId(),
@@ -320,19 +325,19 @@ public class FormEditorPresenter extends KieEditor {
     }
 
     public void onSyncPalette(String formId) {
-        if (editorContext == null || editorContext.getContent() == null) {
+        if (editorHelper == null || editorHelper.getContent() == null) {
             return;
         }
-        if (editorContext.getFormDefinition().getId().equals(formId)) {
+        if (editorHelper.getFormDefinition().getId().equals(formId)) {
             removeAllDraggableGroupComponent(getFormDefinition().getFields());
-            removeAllDraggableGroupComponent(editorContext.getAvailableFields().values());
-            addAllDraggableGroupComponent(editorContext.getAvailableFields().values());
+            removeAllDraggableGroupComponent(editorHelper.getAvailableFields().values());
+            addAllDraggableGroupComponent(editorHelper.getAvailableFields().values());
         }
     }
 
     @OnMayClose
     public Boolean onMayClose() {
-        return mayClose(editorContext.getContent().getDefinition().hashCode());
+        return mayClose(editorHelper.getContent().getDefinition().hashCode());
     }
 
     @PreDestroy

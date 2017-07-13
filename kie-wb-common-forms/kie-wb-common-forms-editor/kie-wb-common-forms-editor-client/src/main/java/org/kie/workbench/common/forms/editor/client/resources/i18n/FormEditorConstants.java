@@ -39,6 +39,10 @@ public interface FormEditorConstants {
     String FormEditorPresenterTitle = "FormEditorPresenter.title";
 
     @TranslationKey(defaultValue = "")
+    String FormEditorPresenterComponentsPalette = "FormEditorPresenter.componentsPalette";
+
+
+    @TranslationKey(defaultValue = "")
     String FormEditorViewImplDataObjects = "FormEditorViewImpl.dataObjects";
 
     @TranslationKey(defaultValue = "")
