@@ -19,13 +19,16 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.databinding.client.api.Converter;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.slider.Slider;
+import org.kie.workbench.common.forms.common.rendering.client.widgets.slider.converters.IntegerToDoubleConverter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.definition.SliderBaseDefinition;
 
 @Dependent
-public class SliderFieldRenderer extends FieldRenderer<SliderBaseDefinition> {
+public class SliderFieldRenderer extends FieldRenderer<SliderBaseDefinition>
+        implements RequiresValueConverter {
 
     private Slider slider;
 
@@ -62,5 +65,14 @@ public class SliderFieldRenderer extends FieldRenderer<SliderBaseDefinition> {
     @Override
     protected void setReadOnly(boolean readOnly) {
         slider.setEnabled(!readOnly);
+    }
+
+    @Override
+    public Converter getConverter() {
+        if (field.getStandaloneClassName() == Integer.class.getName()
+                || field.getStandaloneClassName() == "int") {
+            return new IntegerToDoubleConverter();
+        }
+        return null;
     }
 }
