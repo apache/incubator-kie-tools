@@ -63,6 +63,8 @@ public class FieldPropertiesRenderer implements IsWidget {
 
     private FieldManager fieldManager;
 
+    private boolean acceptChanges = false;
+
     @Inject
     public FieldPropertiesRenderer(FieldPropertiesRendererView view,
                                    DynamicFormModelGenerator dynamicFormModelGenerator,
@@ -84,6 +86,7 @@ public class FieldPropertiesRenderer implements IsWidget {
     public void render(final FieldPropertiesRendererHelper helper) {
         this.helper = helper;
         this.fieldCopy = resetFieldCopy(helper.getCurrentField());
+        this.acceptChanges = false;
         render();
     }
 
@@ -108,7 +111,18 @@ public class FieldPropertiesRenderer implements IsWidget {
     }
 
     public void onPressOk() {
+        acceptChanges = true;
+    }
 
+    public void onClose() {
+        if (acceptChanges) {
+            doAcceptChanges();
+        } else {
+            doCancel();
+        }
+    }
+
+    private void doAcceptChanges() {
         // apply the changes to the current field
         List<FieldDefinition> fields = helper.getCurrentRenderingContext().getRootForm().getFields();
         fields.remove(helper.getCurrentField());
@@ -117,7 +131,7 @@ public class FieldPropertiesRenderer implements IsWidget {
         helper.onPressOk(fieldCopy);
     }
 
-    public void onPressCancel() {
+    private void doCancel() {
         helper.onClose();
     }
 

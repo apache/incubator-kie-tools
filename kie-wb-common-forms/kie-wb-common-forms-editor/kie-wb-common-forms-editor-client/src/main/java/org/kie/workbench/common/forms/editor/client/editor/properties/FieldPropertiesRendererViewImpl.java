@@ -78,16 +78,9 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
         modal.setClosable(false);
         modal.setBody(this);
         modal.add(new ModalFooterOKCancelButtons(
-                () -> {
-                    if (formRenderer.isValid()) {
-                        presenter.onPressOk();
-                        modal.hide();
-                    }
-                },
-                () -> {
-                    presenter.onPressCancel();
-                    modal.hide();
-                }));
+                this::maybeOk,
+                this::close));
+        modal.addHideHandler(evt -> presenter.onClose());
         formContent.add(formRenderer);
     }
 
@@ -111,6 +104,17 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
     @Override
     public Modal getPropertiesModal() {
         return modal;
+    }
+
+    private void maybeOk() {
+        if (formRenderer.isValid()) {
+            presenter.onPressOk();
+            modal.hide();
+        }
+    }
+
+    private void close() {
+        modal.hide();
     }
 
     protected void initFieldTypeList() {
