@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -250,6 +251,67 @@ public class ActionWorkItemPluginTest {
         }};
 
         when(presenter.getWorkItemDefinitions()).thenReturn(fakeDefinitions);
+        when(presenter.getModel()).thenReturn(model);
+        when(model.getActionCols()).thenReturn(Collections.emptyList());
+
+        plugin.forEachWorkItem(actualWorkItems::put);
+
+        assertEquals(expectedWorkItems,
+                     actualWorkItems);
+    }
+
+    @Test
+    public void testForEachWorkItemWhenOneHasBeenExecutedNewColumn() {
+        final PortableWorkDefinition workItem1 = getMock("workItem1");
+        final PortableWorkDefinition workItem2 = getMock("workItem2");
+        final HashMap<String, String> actualWorkItems = new HashMap<>();
+        final HashMap<String, String> expectedWorkItems = new HashMap<String, String>() {{
+            put("workItem2",
+                "workItem2");
+        }};
+        final HashSet<PortableWorkDefinition> fakeDefinitions = new HashSet<PortableWorkDefinition>() {{
+            add(workItem1);
+            add(workItem2);
+        }};
+
+        when(presenter.getWorkItemDefinitions()).thenReturn(fakeDefinitions);
+        when(presenter.getModel()).thenReturn(model);
+        when(model.getActionCols()).thenReturn(Collections.singletonList(new ActionWorkItemCol52() {{
+            setWorkItemDefinition(workItem1);
+        }}));
+
+        when(plugin.isNewColumn()).thenReturn(true);
+
+        plugin.forEachWorkItem(actualWorkItems::put);
+
+        assertEquals(expectedWorkItems,
+                     actualWorkItems);
+    }
+
+    @Test
+    public void testForEachWorkItemWhenOneHasBeenExecutedUpdatedColumn() {
+        final PortableWorkDefinition workItem1 = getMock("workItem1");
+        final PortableWorkDefinition workItem2 = getMock("workItem2");
+        final HashMap<String, String> actualWorkItems = new HashMap<>();
+        final HashMap<String, String> expectedWorkItems = new HashMap<String, String>() {{
+            put("workItem1",
+                "workItem1");
+            put("workItem2",
+                "workItem2");
+        }};
+        final HashSet<PortableWorkDefinition> fakeDefinitions = new HashSet<PortableWorkDefinition>() {{
+            add(workItem1);
+            add(workItem2);
+        }};
+
+        when(presenter.getWorkItemDefinitions()).thenReturn(fakeDefinitions);
+        when(presenter.getModel()).thenReturn(model);
+        when(model.getActionCols()).thenReturn(Collections.singletonList(new ActionWorkItemCol52() {{
+            setWorkItemDefinition(workItem1);
+        }}));
+
+        when(plugin.isNewColumn()).thenReturn(false);
+        when(plugin.getWorkItemDefinition()).thenReturn(workItem1);
 
         plugin.forEachWorkItem(actualWorkItems::put);
 

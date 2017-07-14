@@ -34,7 +34,6 @@ import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
@@ -198,7 +197,7 @@ public class ActionWorkItemSetFieldPlugin extends BaseDecisionTableColumnPlugin 
                             .stream()
                             .filter(this::acceptParameterType)
                             .forEach(parameterDefinition -> {
-                                final String key = trim((workItemDefinition.getName() + "" + parameterDefinition.getName()));
+                                final String key = trim((workItemDefinition.getName() + ":" + parameterDefinition.getName()));
 
                                 workItems.put(key,
                                               new WorkItemParameter(workItemDefinition,
@@ -213,7 +212,7 @@ public class ActionWorkItemSetFieldPlugin extends BaseDecisionTableColumnPlugin 
     }
 
     private void setupWorkItems(final ActionWorkItemWrapper wrapper) {
-        final String workItemKey = wrapper.getWorkItemName() + wrapper.getWorkItemResultParameterName();
+        final String workItemKey = wrapper.getWorkItemName() + ":" + wrapper.getWorkItemResultParameterName();
 
         setupWorkItems();
         setWorkItem(workItemKey);
@@ -261,7 +260,7 @@ public class ActionWorkItemSetFieldPlugin extends BaseDecisionTableColumnPlugin 
         workItems.forEach((key, workItemParameter) -> {
             final PortableWorkDefinition workItemDefinition = workItemParameter.getWorkDefinition();
             final PortableParameterDefinition parameterDefinition = workItemParameter.getWorkParameterDefinition();
-            final String name = workItemDefinition.getName() + " - " + parameterDefinition.getName();
+            final String name = workItemDefinition.getDisplayName() + " - " + parameterDefinition.getName();
 
             biConsumer.accept(name,
                               key);

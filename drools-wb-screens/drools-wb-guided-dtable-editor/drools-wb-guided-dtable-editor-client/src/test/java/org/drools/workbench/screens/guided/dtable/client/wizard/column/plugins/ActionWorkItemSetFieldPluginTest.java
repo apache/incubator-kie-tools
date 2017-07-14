@@ -492,10 +492,10 @@ public class ActionWorkItemSetFieldPluginTest {
         verify(biConsumer,
                times(2)).accept(anyString(),
                                 anyString());
-        verify(biConsumer).accept("StringWorkItem - StringResult",
-                                  "StringWorkItemStringResult");
-        verify(biConsumer).accept("FloatWorkItem - FloatResult",
-                                  "FloatWorkItemFloatResult");
+        verify(biConsumer).accept("StringWorkItemDisplayName - StringResult",
+                                  "StringWorkItemName:StringResult");
+        verify(biConsumer).accept("FloatWorkItemDisplayName - FloatResult",
+                                  "FloatWorkItemName:FloatResult");
     }
 
     @Test
@@ -510,8 +510,8 @@ public class ActionWorkItemSetFieldPluginTest {
         verify(biConsumer,
                times(1)).accept(anyString(),
                                 anyString());
-        verify(biConsumer).accept("FloatWorkItem - FloatResult",
-                                  "FloatWorkItemFloatResult");
+        verify(biConsumer).accept("FloatWorkItemDisplayName - FloatResult",
+                                  "FloatWorkItemName:FloatResult");
     }
 
     @Test
@@ -609,7 +609,7 @@ public class ActionWorkItemSetFieldPluginTest {
         plugin.setupValues();
 
         verify(plugin).setupWorkItems();
-        verify(plugin).setWorkItem("WorkItemNameWorkItemResultParameterName");
+        verify(plugin).setWorkItem("WorkItemName:WorkItemResultParameterName");
         verify(plugin).setWorkItemPageAsCompleted();
         verify(plugin).fireChangeEvent(patternPage);
         verify(plugin).fireChangeEvent(fieldPage);
@@ -644,6 +644,20 @@ public class ActionWorkItemSetFieldPluginTest {
                                                              secondFakeWorkItem()));
     }
 
+    private ActionWorkItemCol52 firstFakeWorkItem() {
+        final ActionWorkItemCol52 workItemCol52 = new ActionWorkItemCol52();
+        final PortableWorkDefinition portableWorkDefinition = new PortableWorkDefinition();
+        final PortableParameterDefinition portableStringParameterDefinition = new PortableStringParameterDefinition();
+        portableStringParameterDefinition.setName("StringResult");
+
+        portableWorkDefinition.setResults(Collections.singleton(portableStringParameterDefinition));
+        portableWorkDefinition.setName("StringWorkItemName");
+        portableWorkDefinition.setDisplayName("StringWorkItemDisplayName");
+        workItemCol52.setWorkItemDefinition(portableWorkDefinition);
+
+        return workItemCol52;
+    }
+
     private ActionWorkItemCol52 secondFakeWorkItem() {
         final ActionWorkItemCol52 workItemCol52 = new ActionWorkItemCol52();
         final PortableWorkDefinition portableWorkDefinition = new PortableWorkDefinition();
@@ -651,22 +665,8 @@ public class ActionWorkItemSetFieldPluginTest {
 
         portableFloatParameterDefinition.setName("FloatResult");
         portableWorkDefinition.setResults(Collections.singleton(portableFloatParameterDefinition));
-        portableWorkDefinition.setName("FloatWorkItem");
-        portableWorkDefinition.setDisplayName("SecondWorkItem");
-        workItemCol52.setWorkItemDefinition(portableWorkDefinition);
-
-        return workItemCol52;
-    }
-
-    private ActionWorkItemCol52 firstFakeWorkItem() {
-        final ActionWorkItemCol52 workItemCol52 = new ActionWorkItemCol52();
-        final PortableWorkDefinition portableWorkDefinition = new PortableWorkDefinition();
-        final PortableParameterDefinition portableStringParameterDefinition = new PortableStringParameterDefinition();
-
-        portableStringParameterDefinition.setName("StringResult");
-        portableWorkDefinition.setResults(Collections.singleton(portableStringParameterDefinition));
-        portableWorkDefinition.setName("StringWorkItem");
-        portableWorkDefinition.setDisplayName("FirstWorkItem");
+        portableWorkDefinition.setName("FloatWorkItemName");
+        portableWorkDefinition.setDisplayName("FloatWorkItemDisplayName");
         workItemCol52.setWorkItemDefinition(portableWorkDefinition);
 
         return workItemCol52;

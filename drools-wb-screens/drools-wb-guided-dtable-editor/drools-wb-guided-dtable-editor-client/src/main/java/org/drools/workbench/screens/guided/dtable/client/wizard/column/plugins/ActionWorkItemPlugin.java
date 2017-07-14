@@ -173,8 +173,29 @@ public class ActionWorkItemPlugin extends BaseDecisionTableColumnPlugin implemen
     public void forEachWorkItem(final BiConsumer<String, String> biConsumer) {
         getPresenter()
                 .getWorkItemDefinitions()
+                .stream()
+                .filter(this::isWorkItemAvailable)
                 .forEach(workDefinition -> biConsumer.accept(workDefinition.getDisplayName(),
                                                              workDefinition.getName()));
+    }
+
+    private boolean isWorkItemAvailable(final PortableWorkDefinition pwd) {
+        final boolean isUsedInModel = getPresenter()
+                .getModel()
+                .getActionCols()
+                .stream()
+                .filter(a -> a instanceof ActionWorkItemCol52)
+                .map(a -> ((ActionWorkItemCol52) a).getWorkItemDefinition())
+                .anyMatch(p -> p.getName().equals(pwd.getName()));
+
+        if (isNewColumn()) {
+            return !isUsedInModel;
+        } else if (!isWorkItemSet()) {
+            return !isUsedInModel;
+        } else {
+            final String pwdName = pwd.getName();
+            return pwdName.equals(getWorkItemDefinition().getName()) || !isUsedInModel;
+        }
     }
 
     @Override
