@@ -46,7 +46,6 @@ import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
 import org.uberfire.mocks.EventSourceMock;
-import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -228,9 +227,9 @@ public class EditorFieldLayoutComponentTest {
 
     @Test
     public void testOpenFieldPropertiesBeforeDrop() {
-        ModalConfigurationContext modalConfigurationContext = new ModalConfigurationContext(layoutComponent,
-                                                                                            mock(Command.class),
-                                                                                            mock(Command.class));
+        ModalConfigurationContext modalConfigurationContext = mock(ModalConfigurationContext.class);
+
+        when(modalConfigurationContext.getComponentProperties()).thenReturn(layoutComponent.getProperties());
 
         editorFieldLayoutComponent.getConfigurationModal(modalConfigurationContext);
 
@@ -246,10 +245,9 @@ public class EditorFieldLayoutComponentTest {
     public void testOpenFieldProperties() {
         testDroppingNewField();
 
-        ModalConfigurationContext modalConfigurationContext = new ModalConfigurationContext(layoutComponent,
-                                                                                            mock(Command.class),
-                                                                                            mock(Command.class));
+        ModalConfigurationContext modalConfigurationContext = mock(ModalConfigurationContext.class);
 
+        when(modalConfigurationContext.getComponentProperties()).thenReturn(layoutComponent.getProperties());
         editorFieldLayoutComponent.getConfigurationModal(modalConfigurationContext);
 
         verify(propertiesRenderer).render(any());
