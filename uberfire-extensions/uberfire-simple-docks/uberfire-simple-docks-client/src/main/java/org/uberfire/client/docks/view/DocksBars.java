@@ -156,21 +156,30 @@ public class DocksBars {
         return max;
     }
 
+    public void clearAndCollapseDocks(final UberfireDockPosition position) {
+        collapsePosition(position);
+        clearPosition(position);
+    }
+
     public void clearAndHideAllDocks() {
-        hideAll();
-        clearAll();
+        clearAndCollapseDocks(null);
     }
 
-    private void clearAll() {
-        for (DocksBar docksBar : getDocksBars()) {
-            docksBar.clearAll();
-        }
+    private void clearPosition(final UberfireDockPosition position) {
+        getDocksBars().forEach(docksBar -> {
+            if (position == null || docksBar.getPosition().equals(position)) {
+                docksBar.clearAll();
+            }
+        });
     }
 
-    private void hideAll() {
-        for (DocksBar docksBar : getDocksBars()) {
-            hide(docksBar);
-        }
+    private void collapsePosition(final UberfireDockPosition position) {
+        getDocksBars().forEach(docksBar -> {
+            // if position is null or equals the docksBar we must collapse the docksBar
+            if (position == null || docksBar.getPosition().equals(position)) {
+                hide(docksBar);
+            }
+        });
     }
 
     private void hide(DocksBar docksBar) {

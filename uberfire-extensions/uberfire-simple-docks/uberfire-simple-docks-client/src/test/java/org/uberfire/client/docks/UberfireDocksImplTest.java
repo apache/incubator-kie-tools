@@ -128,9 +128,11 @@ public class UberfireDocksImplTest {
         assertEquals(SOME_PERSPECTIVE,
                      uberfireDocks.currentPerspective);
         verify(this.docksBars,
-               times(2)).clearAndHideAllDocks();
-        verify(this.docksBars).addDock(dock0);
-        verify(this.docksBars).addDock(dock1);
+               times(1)).clearAndHideAllDocks();
+        verify(this.docksBars,
+               times(1)).addDock(dock0);
+        verify(this.docksBars,
+               times(1)).addDock(dock1);
 
         verify(this.docksBars,
                times(docksBars.size())).show(any(DocksBar.class));
@@ -145,12 +147,17 @@ public class UberfireDocksImplTest {
         uberfireDocks.currentPerspective = SOME_PERSPECTIVE;
 
         uberfireDocks.remove(dock0);
+
         verify(docksBars,
-               times(2)).clearAndHideAllDocks();
+               times(2)).isReady(any());
+
+        verify(docksBars,
+               times(1)).clearAndCollapseDocks(any());
 
         verify(docksBars,
                never()).addDock(dock0);
-        verify(docksBars).addDock(dock1);
+        verify(docksBars,
+               never()).addDock(dock1);
     }
 
     @Test
@@ -219,7 +226,6 @@ public class UberfireDocksImplTest {
         uberfireDocks.toggle(dock0);
         verify(this.docksBars).toggle(dock0);
     }
-
 
     @Test
     public void openCloseDelayedOperationsTest() {

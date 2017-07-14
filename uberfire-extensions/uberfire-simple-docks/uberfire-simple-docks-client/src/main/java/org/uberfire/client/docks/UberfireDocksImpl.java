@@ -49,7 +49,8 @@ public class UberfireDocksImpl implements UberfireDocks {
     private Event<UberfireDockReadyEvent> dockReadyEvent;
 
     @Inject
-    public UberfireDocksImpl(DocksBars docksBars, Event<UberfireDockReadyEvent> dockReadyEvent) {
+    public UberfireDocksImpl(DocksBars docksBars,
+                             Event<UberfireDockReadyEvent> dockReadyEvent) {
         this.docksBars = docksBars;
         this.dockReadyEvent = dockReadyEvent;
     }
@@ -71,12 +72,12 @@ public class UberfireDocksImpl implements UberfireDocks {
                                         uberfireDocks);
             }
         }
-        updateDocks();
+        clearAndCollapseDocks(docks);
     }
 
     public void perspectiveChangeEvent(@Observes PerspectiveChange perspectiveChange) {
         this.currentPerspective = perspectiveChange.getIdentifier();
-        updateDocks();
+        updateAllDocks();
         executeDelayedCommands(perspectiveChange.getIdentifier());
         fireDockReadyEvent();
     }
@@ -105,7 +106,7 @@ public class UberfireDocksImpl implements UberfireDocks {
                                         uberfireDocks);
             }
         }
-        updateDocks();
+        clearAndCollapseDocks(docks);
     }
 
     @Override
@@ -190,14 +191,26 @@ public class UberfireDocksImpl implements UberfireDocks {
         }
     }
 
-    private void updateDocks() {
+    private void clearAndCollapseDocks(UberfireDock... docks) {
+        if (docks != null) {
+            List<UberfireDockPosition> processedPositions = new ArrayList<>();
+            for (UberfireDock dock : docks) {
+                if (!processedPositions.contains(dock.getDockPosition())) {
+                    processedPositions.add(dock.getDockPosition());
+                    if (docksBars.isReady(dock.getDockPosition())) {
+                        docksBars.clearAndCollapseDocks(dock.getDockPosition());
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateAllDocks() {
         docksBars.clearAndHideAllDocks();
         if (currentPerspective != null) {
-            List<UberfireDock> docks = docksPerPerspective.get(currentPerspective);
-            if (docks != null && !docks.isEmpty()) {
-                for (UberfireDock dock : docks) {
-                    docksBars.addDock(dock);
-                }
+            List<UberfireDock> activeDocks = docksPerPerspective.get(currentPerspective);
+            if (activeDocks != null && !activeDocks.isEmpty()) {
+                activeDocks.forEach(activeDock -> docksBars.addDock(activeDock));
                 expandAllAvailableDocks();
             }
         }
