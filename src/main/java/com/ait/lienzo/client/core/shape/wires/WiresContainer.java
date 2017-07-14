@@ -171,7 +171,9 @@ public class WiresContainer
             shape.getMagnets().shapeMoved();
         }
 
-        m_wiresManager.getAlignAndDistribute().getControlForShape(shape.uuid()).refresh();
+        if (null != m_wiresManager && m_wiresManager.getAlignAndDistribute().isShapeIndexed(shape.uuid())) {
+            m_wiresManager.getAlignAndDistribute().getControlForShape(shape.uuid()).refresh();
+        }
 
         getLayoutHandler().requestLayout( this );
     }

@@ -15,7 +15,6 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-import com.ait.tooling.nativetools.client.util.Console;
 
 public class WiresConnectionControlImpl implements WiresConnectionControl
 {
@@ -104,7 +103,7 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
             connection.setAutoConnection(m_initialAutoConnect);
             connection.setMagnet(m_initial_magnet);
             WiresConnector connector = connection.getConnector();
-            connector.updateForSpecialConnections();
+            connector.updateForSpecialConnections(false);
         }
 
         if (m_magnets != null)
@@ -198,7 +197,8 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
         boolean accept = true;
 
         // Only set the current magnet, if auto connection is false
-        if (!connection.isAutoConnection())
+        final boolean isAuto = connection.isAutoConnection();
+        if (!isAuto)
         {
             // m_current_magnet could also be null, and it's seeing if that's accepted
             // technically all connections have been checked and allowed, but for consistency and notifications will be rechecked via acceptor
@@ -223,7 +223,7 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
         {
             // can be used during drag, as we know the current connection will have a null shape
             // this will cause the other side to be updated
-            accept = accept && connector.updateForAutoConnections(headS, tailS);
+            accept = accept && connector.updateForAutoConnections(headS, tailS, isAuto);
             connector.updateForCenterConnection();
         }
 
@@ -258,7 +258,7 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
 
         // can be used during drag, as we know the current connection will have a null shape
         // this will cause the other side to be updated
-        m_connector.updateForSpecialConnections();
+        m_connector.updateForSpecialConnections(false);
 
         if (isAllowed)
         {

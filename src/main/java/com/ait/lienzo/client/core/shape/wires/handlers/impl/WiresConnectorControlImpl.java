@@ -52,7 +52,11 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
     private WiresManager               m_wiresManager;
 
     private NFastDoubleArray           m_startPoints;
-    
+
+    private WiresConnectionControl     m_headConnectionControl;
+
+    private WiresConnectionControl     m_tailConnectionControl;
+
     public WiresConnectorControlImpl(final WiresConnector connector, final WiresManager wiresManager)
     {
         this.m_connector = connector;
@@ -105,9 +109,6 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
 
     /**
      * See class javadocs to explain why we have these booleans
-     * @param context
-     * @param midPointsOnly
-     * @param moveLinePoints
      */
     public void move(double dx, double dy, boolean midPointsOnly, boolean moveLinePoints)
     {
@@ -233,20 +234,16 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
             }
         }
 
-        m_connector.destroyPointHandles();
         m_connector.getLine().setPoint2DArray(newPoints);
+
+        destroyPointHandles();
         showPointHandles();
     }
 
     @Override
     public void showControlPoints()
     {
-
-        if (this.m_HandlerRegistrationManager == null)
-        {
-            showPointHandles();
-        }
-
+        showPointHandles();
     }
 
     @Override
@@ -254,11 +251,18 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
     {
         if (m_HandlerRegistrationManager != null)
         {
-            m_HandlerRegistrationManager.destroy();
+            destroyPointHandles();
         }
-        m_HandlerRegistrationManager = null;
-        m_connector.destroyPointHandles();
+    }
 
+    @Override
+    public WiresConnectionControl getHeadConnectionControl() {
+        return m_headConnectionControl;
+    }
+
+    @Override
+    public WiresConnectionControl getTailConnectionControl() {
+        return m_tailConnectionControl;
     }
 
     public HandlerRegistrationManager getHandlerRegistrationManager()
@@ -398,37 +402,48 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
         if (m_HandlerRegistrationManager == null)
         {
             m_HandlerRegistrationManager = m_connector.getPointHandles().getHandlerRegistrationManager();
+            m_connector.getPointHandles().show();
+
+            m_headConnectionControl = m_wiresManager.getControlFactory().newConnectionControl(m_connector, m_wiresManager);
+            ConnectionHandler headConnectionHandler = new ConnectionHandler(m_headConnectionControl);
+            Shape<?> head = m_connector.getHeadConnection().getControl().asShape();
+            head.setDragConstraints(headConnectionHandler);
+            m_HandlerRegistrationManager.register(head.addNodeDragEndHandler(headConnectionHandler));
+
+            m_tailConnectionControl = m_wiresManager.getControlFactory().newConnectionControl(m_connector, m_wiresManager);
+            ConnectionHandler tailConnectionHandler = new ConnectionHandler(m_tailConnectionControl);
+            Shape<?> tail = m_connector.getTailConnection().getControl().asShape();
+            tail.setDragConstraints(tailConnectionHandler);
+            m_HandlerRegistrationManager.register(tail.addNodeDragEndHandler(tailConnectionHandler));
+
+            final WiresConnectorControlHandler controlPointsHandler = new WiresConnectorControlHandler();
+
+            for (IControlHandle handle : m_connector.getPointHandles())
+            {
+                Shape<?> shape = handle.getControl().asShape();
+                m_HandlerRegistrationManager.register(shape.addNodeMouseDoubleClickHandler(controlPointsHandler));
+            }
         }
-        m_connector.getPointHandles().show();
-
-        final ConnectionHandler connectionHandler = new ConnectionHandler();
-
-        Shape<?> head = m_connector.getHeadConnection().getControl().asShape();
-        head.setDragConstraints(connectionHandler);
-        m_HandlerRegistrationManager.register(head.addNodeDragEndHandler(connectionHandler));
-
-        Shape<?> tail = m_connector.getTailConnection().getControl().asShape();
-        tail.setDragConstraints(connectionHandler);
-        m_HandlerRegistrationManager.register(tail.addNodeDragEndHandler(connectionHandler));
-
-        final WiresConnectorControlHandler controlPointsHandler = new WiresConnectorControlHandler();
-
-        for (IControlHandle handle : m_connector.getPointHandles())
-        {
-            Shape<?> shape = handle.getControl().asShape();
-            m_HandlerRegistrationManager.register(shape.addNodeMouseDoubleClickHandler(controlPointsHandler));
-        }
-
     }
+
+    private void destroyPointHandles()
+    {
+        m_HandlerRegistrationManager.destroy();
+        m_HandlerRegistrationManager = null;
+        m_headConnectionControl = null;
+        m_tailConnectionControl = null;
+        m_connector.destroyPointHandles();
+    }
+
 
     private final class ConnectionHandler implements DragConstraintEnforcer, NodeDragEndHandler
     {
 
-        private WiresConnectionControl connectionControl;
+        private final WiresConnectionControl connectionControl;
 
-        ConnectionHandler()
+        private ConnectionHandler(final WiresConnectionControl connectionControl)
         {
-            this.connectionControl = m_wiresManager.getControlFactory().newConnectionControl(m_connector, m_wiresManager);
+            this.connectionControl = connectionControl;
         }
 
         @Override

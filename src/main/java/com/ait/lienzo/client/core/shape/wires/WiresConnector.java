@@ -17,8 +17,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
-
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -34,7 +32,6 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
-import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -44,6 +41,8 @@ import com.ait.lienzo.shared.core.types.ArrowEnd;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+
+import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
 
 public class WiresConnector
 {
@@ -108,19 +107,13 @@ public class WiresConnector
 
     public WiresConnector setHeadMagnet(WiresMagnet headMagnet)
     {
-        if (null != headMagnet)
-        {
-            m_headConnection.setMagnet(headMagnet);
-        }
+        m_headConnection.setMagnet(headMagnet);
         return this;
     }
 
     public WiresConnector setTailMagnet(WiresMagnet tailMagnet)
     {
-        if (null != tailMagnet)
-        {
-            m_tailConnection.setMagnet(tailMagnet);
-        }
+        m_tailConnection.setMagnet(tailMagnet);
         return this;
     }
 
@@ -289,10 +282,10 @@ public class WiresConnector
         return m_pointHandles;
     }
 
-    public void updateForSpecialConnections()
+    public void updateForSpecialConnections(boolean isAcceptOp)
     {
         updateForCenterConnection();
-        updateForAutoConnections();
+        updateForAutoConnections(isAcceptOp);
     }
 
     public void updateForCenterConnection()
@@ -332,7 +325,7 @@ public class WiresConnector
         }
     }
 
-    public boolean updateForAutoConnections()
+    public boolean updateForAutoConnections(boolean isAcceptOp)
     {
         // used when a connection is not being dragged
         WiresConnection headC = getHeadConnection();
@@ -341,10 +334,10 @@ public class WiresConnector
         WiresShape headS = (headC.getMagnet() != null ) ? headC.getMagnet().getMagnets().getWiresShape() : null;
         WiresShape tailS = (tailC.getMagnet() != null ) ? tailC.getMagnet().getMagnets().getWiresShape() : null;
 
-        return updateForAutoConnections(headS, tailS);
+        return updateForAutoConnections(headS, tailS, isAcceptOp);
     }
 
-    public boolean updateForAutoConnections(WiresShape headS, WiresShape tailS)
+    public boolean updateForAutoConnections(WiresShape headS, WiresShape tailS, boolean isAcceptOp)
     {
         boolean accept = true;
 
@@ -355,7 +348,7 @@ public class WiresConnector
         {
             if (magnets[0] != null && getHeadConnection().getMagnet() != magnets[0])
             {
-                accept = accept && getConnectionAcceptor().acceptHead(getHeadConnection(), magnets[0]);
+                accept = accept && executeHeadConnectionOperation(headS, magnets[0], isAcceptOp);
                 if (accept)
                 {
                     getHeadConnection().setMagnet(magnets[0]);
@@ -364,7 +357,7 @@ public class WiresConnector
 
             if (accept && magnets[1] != null && getTailConnection().getMagnet() != magnets[1])
             {
-                accept = accept && getConnectionAcceptor().acceptTail(getTailConnection(), magnets[1]);
+                accept = accept && executeTailConnectionOperation(tailS, magnets[1], isAcceptOp);
                 if (accept)
                 {
                    getTailConnection().setMagnet(magnets[1]);
@@ -373,6 +366,22 @@ public class WiresConnector
         }
 
         return accept;
+    }
+
+    private boolean executeHeadConnectionOperation(final WiresShape shape,
+                                                   final WiresMagnet magnet,
+                                                   final boolean isAcceptOp) {
+        return isAcceptOp ?
+                getConnectionAcceptor().acceptHead(getHeadConnection(), magnet) :
+                getConnectionAcceptor().headConnectionAllowed(getHeadConnection(), shape);
+    }
+
+    private boolean executeTailConnectionOperation(final WiresShape shape,
+                                                   final WiresMagnet magnet,
+                                                   final boolean isAcceptOp) {
+        return isAcceptOp ?
+                getConnectionAcceptor().acceptTail(getTailConnection(), magnet) :
+                getConnectionAcceptor().tailConnectionAllowed(getTailConnection(), shape);
     }
 
     /**

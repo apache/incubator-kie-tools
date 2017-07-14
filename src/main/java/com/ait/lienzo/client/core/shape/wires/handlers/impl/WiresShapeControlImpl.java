@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
-import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
-import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
 import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
@@ -165,7 +163,8 @@ public class WiresShapeControlImpl implements WiresShapeControl
         }
         else
         {
-            updateSpecialConnections(m_connectorsWithSpecialConnections);
+            updateSpecialConnections(m_connectorsWithSpecialConnections,
+                                     false);
         }
 
         if (m_alignAndDistributeControl != null)
@@ -430,7 +429,8 @@ public class WiresShapeControlImpl implements WiresShapeControl
             }
         }
 
-        updateSpecialConnections(m_connectorsWithSpecialConnections);
+        updateSpecialConnections(m_connectorsWithSpecialConnections,
+                                 false);
 
         if (m_shape.getChildShapes() != null && !m_shape.getChildShapes().isEmpty())
         {
@@ -447,7 +447,8 @@ public class WiresShapeControlImpl implements WiresShapeControl
 
     }
 
-    public static void updateSpecialConnections(WiresConnector[] connectors)
+    public static void updateSpecialConnections(WiresConnector[] connectors,
+                                                boolean isAcceptOp)
     {
         if (connectors == null)
         {
@@ -455,7 +456,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
         }
         for( WiresConnector connector : connectors)
         {
-            connector.updateForSpecialConnections();
+            connector.updateForSpecialConnections(isAcceptOp);
         }
     }
 
