@@ -177,6 +177,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             addLogicalInsertions();
             addGlobalCollections();
             addFreeFormDRL();
+            addCallMethodOn();
             addCustomActionPlugins();
         }
 
@@ -184,7 +185,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
     }
 
     // Add DSL sentences
-    private void addDSLSentences() {
+    void addDSLSentences() {
         //DSL might be prohibited (e.g. editing a DRL file. Only DSLR files can contain DSL)
         if (!ruleModeller.isDSLEnabled()) {
             return;
@@ -208,8 +209,8 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
     }
 
     //Add update, not modify
-    private void addUpdateNotModify() {
-        List<String> vars = model.getAllLHSVariables();
+    void addUpdateNotModify() {
+        List<String> vars = model.getLHSPatternVariables();
         if (vars.size() == 0) {
             return;
         }
@@ -233,7 +234,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
     }
 
     //Add Globals
-    private void addGlobals() {
+    void addGlobals() {
         String[] globals = oracle.getGlobalVariables();
         if (globals.length == 0) {
             return;
@@ -256,8 +257,8 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
     }
 
     //Add Retractions
-    private void addRetractions() {
-        List<String> vars = model.getLHSBoundFacts();
+    void addRetractions() {
+        List<String> vars = model.getLHSPatternVariables();
         if (vars.size() == 0) {
             return;
         }
@@ -279,8 +280,8 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
     }
 
     //Add Modifies
-    private void addModifies() {
-        List<String> vars = model.getAllLHSVariables();
+    void addModifies() {
+        List<String> vars = model.getLHSPatternVariables();
         if (vars.size() == 0) {
             return;
         }
@@ -303,7 +304,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
     }
 
     //Add insertions
-    private void addInsertions() {
+    void addInsertions() {
         if (oracle.getFactTypes().length == 0) {
             return;
         }
@@ -325,7 +326,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
     }
 
     //Add logical insertions
-    private void addLogicalInsertions() {
+    void addLogicalInsertions() {
         if (oracle.getFactTypes().length == 0) {
             return;
         }
@@ -347,7 +348,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
     }
 
     //Add global collections
-    private void addGlobalCollections() {
+    void addGlobalCollections() {
         List<String> vars = model.getLHSBoundFacts();
         if (vars.size() == 0) {
             return;
@@ -380,11 +381,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
     }
 
     //Add free-form DRL
-    private void addFreeFormDRL() {
-        List<String> lhsVars = model.getAllLHSVariables();
-        List<String> rhsVars = model.getRHSBoundFacts();
-        String[] globals = oracle.getGlobalVariables();
-
+    void addFreeFormDRL() {
         choices.addItem(SECTION_SEPARATOR);
         choices.addItem(GuidedRuleEditorResources.CONSTANTS.AddFreeFormDrl(),
                         "FF");
@@ -397,6 +394,13 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
                          hide();
                      }
                  });
+    }
+
+    //Add "Call method on.." options
+    void addCallMethodOn() {
+        List<String> lhsVars = model.getAllLHSVariables();
+        List<String> rhsVars = model.getRHSBoundFacts();
+        String[] globals = oracle.getGlobalVariables();
 
         //Add globals
         if (globals.length > 0) {

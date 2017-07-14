@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.rule.client.editor;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -48,9 +49,9 @@ public abstract class AbstractRuleModellerSelectorPopup extends BaseModal {
     protected final Map<String, Command> cmds = new HashMap<String, Command>();
     protected Integer position;
 
-    protected final SimplePanel choicesPanel = new SimplePanel();
-    protected final FormStyleLayout layoutPanel = new FormStyleLayout();
-    protected final ListBox positionCbo = new ListBox();
+    protected final SimplePanel choicesPanel = GWT.create(SimplePanel.class);
+    protected final FormStyleLayout layoutPanel = GWT.create(FormStyleLayout.class);
+    protected final ListBox positionCbo = GWT.create(ListBox.class);
     protected ListBox choices;
 
     public AbstractRuleModellerSelectorPopup(final RuleModel model,
