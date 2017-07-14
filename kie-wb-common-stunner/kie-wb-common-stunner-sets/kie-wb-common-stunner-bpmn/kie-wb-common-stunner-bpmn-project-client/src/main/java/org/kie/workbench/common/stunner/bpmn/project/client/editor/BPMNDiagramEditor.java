@@ -32,6 +32,8 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientR
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.editor.ProjectDiagramEditorMenuItemsBuilder;
+import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
+import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -69,7 +71,9 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                              final SessionManager sessionManager,
                              final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
                              final SessionCommandFactory sessionCommandFactory,
-                             final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder) {
+                             final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder,
+                             final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
+                             final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent) {
         super(view,
               placeManager,
               errorPopupPresenter,
@@ -80,7 +84,9 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
               sessionManager,
               sessionPresenterFactory,
               sessionCommandFactory,
-              menuItemsBuilder);
+              menuItemsBuilder,
+              onDiagramFocusEvent,
+              onDiagramLostFocusEvent);
     }
 
     @OnStartup
@@ -98,6 +104,11 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
     @Override
     protected int getCanvasHeight() {
         return (int) BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT;
+    }
+
+    @Override
+    protected String getEditorIdentifier() {
+        return EDITOR_ID;
     }
 
     @OnOpen

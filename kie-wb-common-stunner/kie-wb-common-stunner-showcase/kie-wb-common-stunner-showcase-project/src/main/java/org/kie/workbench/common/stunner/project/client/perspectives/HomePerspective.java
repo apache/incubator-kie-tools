@@ -21,10 +21,10 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.screens.projecteditor.client.menu.ProjectMenu;
-import org.kie.workbench.common.stunner.project.client.screens.ProjectDiagramWorkbenchDocks;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcesMenu;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
+import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -61,21 +61,22 @@ public class HomePerspective {
     private ProjectMenu projectMenu;
 
     @Inject
-    private ProjectDiagramWorkbenchDocks stunnerWorkbenchEditorDocks;
+    private AuthoringWorkbenchDocks docks;
 
-    private PerspectiveDefinition perspective;
     private Menus menus;
 
     @PostConstruct
     public void init() {
-        buildPerspective();
+        docks.setup(PerspectiveIds.HOME,
+                    new DefaultPlaceRequest("org.kie.guvnor.explorer"));
         buildMenuBar();
-        buildDocks();
     }
 
     @Perspective
     public PerspectiveDefinition getPerspective() {
-        return this.perspective;
+        PerspectiveDefinitionImpl perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        perspective.setName("Administration");
+        return perspective;
     }
 
     @WorkbenchMenu
@@ -83,30 +84,8 @@ public class HomePerspective {
         return this.menus;
     }
 
-    private void buildPerspective() {
-
-        this.perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        this.perspective.setName("Administration");
-
-        final PanelDefinition west = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
-        west.setWidth(400);
-        west.setMinWidth(350);
-        west.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("org.kie.guvnor.explorer")));
-
-        this.perspective.getRoot().insertChild(CompassPosition.WEST,
-                                               west);
-    }
-
-    private void buildDocks() {
-        stunnerWorkbenchEditorDocks.setup(PerspectiveIds.HOME);
-    }
-
     private void buildMenuBar() {
         this.menus = MenuFactory
-                .newTopLevelMenu("Projects")
-                .respondsWith(() -> placeManager.goTo("org.kie.guvnor.explorer"))
-                .endMenu()
-
                 .newTopLevelMenu("New")
                 .withItems(newResourcesMenu.getMenuItems())
                 .endMenu()

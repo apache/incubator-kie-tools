@@ -32,18 +32,15 @@ import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedE
 import org.kie.workbench.common.stunner.core.client.session.event.SessionPausedEvent;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionResumedEvent;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.kie.workbench.common.stunner.project.client.screens.ProjectDiagramWorkbenchDocks;
 
 @ApplicationScoped
 @Specializes
 public class ClientProjectSessionManager extends ClientSessionManagerImpl {
 
     private static Logger LOGGER = Logger.getLogger(ClientProjectSessionManager.class.getName());
-    private final ProjectDiagramWorkbenchDocks editorDocks;
 
     protected ClientProjectSessionManager() {
         this(null,
-             null,
              null,
              null,
              null,
@@ -54,7 +51,6 @@ public class ClientProjectSessionManager extends ClientSessionManagerImpl {
 
     @Inject
     public ClientProjectSessionManager(final DefinitionUtils definitionUtils,
-                                       final ProjectDiagramWorkbenchDocks editorDocks,
                                        final @Any ManagedInstance<ClientSessionFactory> sessionFactoriesInstances,
                                        final Event<SessionOpenedEvent> sessionOpenedEvent,
                                        final Event<SessionDestroyedEvent> sessionDestroyedEvent,
@@ -68,27 +64,20 @@ public class ClientProjectSessionManager extends ClientSessionManagerImpl {
               sessionPausedEvent,
               sessionResumedEvent,
               sessionErrorEvent);
-        this.editorDocks = editorDocks;
     }
 
     @Override
     protected void postOpen() {
-        // Ensure docks are enabled before firing session events, so inner dock components, if opened, could be able to observe those.
-        editorDocks.enableDocks();
         super.postOpen();
     }
 
     @Override
     protected void postResume() {
-        // Ensure docks are enabled before firing session events, so inner dock components, if opened, could be able to observe those.
-        editorDocks.enableDocks();
         super.postResume();
     }
 
     @Override
     protected void postDestroy() {
         super.postDestroy();
-        // Once session is destroyed, disable the docks area for the Stunner's editor.
-        editorDocks.disableDocks();
     }
 }

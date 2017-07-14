@@ -16,99 +16,69 @@
 
 package org.kie.workbench.common.workbench.client.docks;
 
+import java.util.Collection;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
-import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContext;
-import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContextChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
-import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
-import org.kie.workbench.common.workbench.client.resources.images.WorkbenchImageResources;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDockReadyEvent;
 import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.authz.AuthorizationManager;
 
-@Dependent
+@ApplicationScoped
 public class AuthoringWorkbenchDocks {
 
     protected DefaultWorkbenchConstants constants = DefaultWorkbenchConstants.INSTANCE;
 
     protected UberfireDocks uberfireDocks;
 
-    protected DataModelerWorkbenchContext dataModelerWBContext;
-
-    protected SessionInfo sessionInfo;
-
-    protected LibraryInternalPreferences libraryInternalPreferences;
-
-    protected AuthorizationManager authorizationManager;
-
     protected String authoringPerspectiveIdentifier;
 
     protected UberfireDock projectExplorerDock;
 
-    protected boolean dataModelerIsHidden;
-
-    protected DataModelerContext lastActiveContext;
-
-    protected UberfireDock plannerDock = null;
+    protected LibraryInternalPreferences libraryInternalPreferences;
 
     protected String currentPerspectiveIdentifier = null;
 
-    protected boolean dataModelerDocksEnabled = true;
-
     protected boolean projectExplorerEnabled = true;
+
+    protected ManagedInstance<WorkbenchDocksHandler> installedHandlers;
+
+    protected WorkbenchDocksHandler activeHandler = null;
+
+    protected UberfireDock[] activeDocks;
 
     @Inject
     public AuthoringWorkbenchDocks(final UberfireDocks uberfireDocks,
-                                   final DataModelerWorkbenchContext dataModelerWBContext,
-                                   final AuthorizationManager authorizationManager,
-                                   final SessionInfo sessionInfo,
+                                   final ManagedInstance<WorkbenchDocksHandler> installedHandlers,
                                    final LibraryInternalPreferences libraryInternalPreferences) {
         this.uberfireDocks = uberfireDocks;
-        this.dataModelerWBContext = dataModelerWBContext;
-        this.authorizationManager = authorizationManager;
-        this.sessionInfo = sessionInfo;
+        this.installedHandlers = installedHandlers;
         this.libraryInternalPreferences = libraryInternalPreferences;
+    }
+
+    @PostConstruct
+    public void initialize() {
+        // Initializing the handlers
+        installedHandlers.iterator().forEachRemaining(handler ->
+                                                              handler.init(() -> setActiveHandler(handler)));
     }
 
     public void perspectiveChangeEvent(@Observes UberfireDockReadyEvent dockReadyEvent) {
         currentPerspectiveIdentifier = dockReadyEvent.getCurrentPerspective();
         if (authoringPerspectiveIdentifier != null && dockReadyEvent.getCurrentPerspective().equals(authoringPerspectiveIdentifier)) {
-            updatePlannerDock(authoringPerspectiveIdentifier);
             if (projectExplorerEnabled) {
                 expandProjectExplorer();
             }
-        }
-    }
-
-    private void updatePlannerDock(String perspectiveIdentifier) {
-        if (authorizationManager.authorize(WorkbenchFeatures.PLANNER_AVAILABLE,
-                                           sessionInfo.getIdentity())) {
-            if (plannerDock == null) {
-                plannerDock = new UberfireDock(UberfireDockPosition.EAST,
-                                               WorkbenchImageResources.INSTANCE.optaPlannerDisabledIcon(),
-                                               WorkbenchImageResources.INSTANCE.optaPlannerEnabledIcon(),
-                                               new DefaultPlaceRequest("PlannerDomainScreen"),
-                                               perspectiveIdentifier)
-                        .withSize(450).withLabel(constants.DocksOptaPlannerTitle());
-            } else {
-                //avoid duplications
-                uberfireDocks.remove(plannerDock);
-            }
-            uberfireDocks.add(plannerDock);
-        } else if (plannerDock != null) {
-            uberfireDocks.remove(plannerDock);
         }
     }
 
@@ -120,49 +90,43 @@ public class AuthoringWorkbenchDocks {
                                                projectExplorerPlaceRequest,
                                                authoringPerspectiveIdentifier).withSize(400).withLabel(constants.DocksProjectExplorerTitle());
         uberfireDocks.add(
-                projectExplorerDock,
-                new UberfireDock(UberfireDockPosition.EAST,
-                                 "RANDOM",
-                                 new DefaultPlaceRequest("DroolsDomainScreen"),
-                                 authoringPerspectiveIdentifier).withSize(450).withLabel(constants.DocksDroolsJBPMTitle()),
-                new UberfireDock(UberfireDockPosition.EAST,
-                                 "BRIEFCASE",
-                                 new DefaultPlaceRequest("JPADomainScreen"),
-                                 authoringPerspectiveIdentifier).withSize(450).withLabel(constants.DocksPersistenceTitle()),
-                new UberfireDock(UberfireDockPosition.EAST,
-                                 "COG",
-                                 new DefaultPlaceRequest("AdvancedDomainScreen"),
-                                 authoringPerspectiveIdentifier).withSize(450).withLabel(constants.DocksAdvancedTitle()),
-                new UberfireDock(UberfireDockPosition.EAST,
-                                 "PENCIL_SQUARE_O",
-                                 new DefaultPlaceRequest("ProjectDiagramPropertiesScreen"),
-                                 authoringPerspectiveIdentifier).withSize(450).withLabel(constants.DocksStunnerPropertiesTitle()),
-                new UberfireDock(UberfireDockPosition.EAST,
-                                 "EYE",
-                                 new DefaultPlaceRequest("ProjectDiagramExplorerScreen"),
-                                 authoringPerspectiveIdentifier).withSize(450).withLabel(constants.DocksStunnerExplorerTitle())
+                projectExplorerDock
         );
-        updatePlannerDock(authoringPerspectiveIdentifier);
         uberfireDocks.hide(UberfireDockPosition.EAST,
                               authoringPerspectiveIdentifier);
-        dataModelerDocksEnabled = false;
     }
 
-    public void onContextChange(@Observes DataModelerWorkbenchContextChangeEvent contextEvent) {
-        if (isAuthoringActive()) {
-            handleDocks();
+    public void setActiveHandler(WorkbenchDocksHandler handler) {
+        if (!isAuthoringActive()) {
+            return;
         }
-    }
 
-    public void onDataModelerWorkbenchFocusEvent(@Observes DataModelerWorkbenchFocusEvent event) {
-        if (isAuthoringActive()) {
-            if (!event.isFocused()) {
-                this.dataModelerIsHidden = true;
-                enableDocks(false);
-            } else {
-                this.dataModelerIsHidden = false;
-                handleDocks();
+        // If there's an active handler let's check if it should refresh docks
+        if (activeHandler != null) {
+            if (activeHandler.equals(handler) && !activeHandler.shouldRefreshDocks()) {
+                return;
             }
+        }
+
+        // setting the new handler as active
+        activeHandler = handler;
+
+        if (activeHandler.shouldDisableDocks()) {
+            // disable docks
+            uberfireDocks.hide(UberfireDockPosition.EAST,
+                                  currentPerspectiveIdentifier);
+        } else {
+            // first remove the existing docks
+            if (activeDocks != null) {
+                uberfireDocks.remove(activeDocks);
+            }
+
+            // getting docks from the handler and  refreshing
+            Collection<UberfireDock> docks = activeHandler.provideDocks(currentPerspectiveIdentifier);
+            activeDocks = docks.toArray(new UberfireDock[docks.size()]);
+            uberfireDocks.add(activeDocks);
+            uberfireDocks.show(UberfireDockPosition.EAST,
+                                 currentPerspectiveIdentifier);
         }
     }
 
@@ -171,45 +135,15 @@ public class AuthoringWorkbenchDocks {
                 authoringPerspectiveIdentifier.equals(currentPerspectiveIdentifier);
     }
 
-    private void enableDocks(boolean enabled) {
-        if (enabled != dataModelerDocksEnabled) {
-            dataModelerDocksEnabled = enabled;
-            if (enabled) {
-                uberfireDocks.show(UberfireDockPosition.EAST,
-                                     authoringPerspectiveIdentifier);
-            } else {
-                uberfireDocks.hide(UberfireDockPosition.EAST,
-                                      authoringPerspectiveIdentifier);
-            }
-        }
-    }
-
-    private void handleDocks() {
-        DataModelerContext context = dataModelerWBContext.getActiveContext();
-        if (!dataModelerIsHidden && shouldDisplayWestDocks(context) && lastActiveContext != context) {
-            enableDocks(true);
-            lastActiveContext = context;
-        } else if (dataModelerIsHidden || !shouldDisplayWestDocks(context)) {
-            enableDocks(false);
-            lastActiveContext = null;
-        }
-    }
-
-    private boolean shouldDisplayWestDocks(DataModelerContext context) {
-        return context != null && context.getEditionMode() == DataModelerContext.EditionMode.GRAPHICAL_MODE;
-    }
-
     public void hide() {
         uberfireDocks.hide(UberfireDockPosition.WEST,
                               authoringPerspectiveIdentifier);
-        enableDocks(false);
         projectExplorerEnabled = false;
     }
 
     public void show() {
         uberfireDocks.show(UberfireDockPosition.WEST,
                              authoringPerspectiveIdentifier);
-        handleDocks();
         projectExplorerEnabled = true;
 
         libraryInternalPreferences.load(loadedLibraryInternalPreferences -> {
@@ -251,5 +185,12 @@ public class AuthoringWorkbenchDocks {
                                         },
                                         error -> {
                                         });
+    }
+
+    @PreDestroy
+    public void clear() {
+        activeDocks = null;
+        activeHandler = null;
+        installedHandlers.destroyAll();
     }
 }

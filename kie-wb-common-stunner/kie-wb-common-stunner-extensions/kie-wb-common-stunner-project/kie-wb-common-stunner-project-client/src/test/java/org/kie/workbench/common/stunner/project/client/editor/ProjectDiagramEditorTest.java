@@ -42,17 +42,19 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientF
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ClientFullSessionImpl;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
+import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
@@ -63,8 +65,7 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -139,6 +140,10 @@ public class ProjectDiagramEditorTest {
     ClientSessionFactory<ClientFullSession> clientSessionFactory;
     @Mock
     AbstractCanvasHandler canvasHandler;
+    @Mock
+    EventSourceMock<OnDiagramFocusEvent> onDiagramFocusEvent;
+    @Mock
+    EventSourceMock<OnDiagramLoseFocusEvent> onDiagramLostFocusEven;
 
     private ProjectDiagramEditorStub tested;
 
@@ -168,6 +173,9 @@ public class ProjectDiagramEditorTest {
         when(metadata.getTitle()).thenReturn("Title");
         when(fullSession.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
+
+        when(placeRequest.getIdentifier()).thenReturn(ProjectDiagramEditorStub.EDITOR_ID);
+
         ClientProjectDiagramService mock = Mockito.mock(ClientProjectDiagramService.class);
 
         this.tested = new ProjectDiagramEditorStub(view,
@@ -180,10 +188,13 @@ public class ProjectDiagramEditorTest {
                                                    clientSessionManager,
                                                    presenterFactory,
                                                    sessionCommandFactory,
-                                                   menuItemsBuilder) {
+                                                   menuItemsBuilder,
+                                                   onDiagramFocusEvent,
+                                                   onDiagramLostFocusEven) {
             {
                 overviewWidget = overviewWidgetMock;
                 versionRecordManager = versionRecordManagerMock;
+                place = placeRequest;
             }
         };
     }
@@ -249,5 +260,53 @@ public class ProjectDiagramEditorTest {
         assertTrue(tested.hasUnsavedChanges());
         tested.setOriginalHash(~~(tested.getCurrentDiagramHash()));
         assertFalse(tested.hasUnsavedChanges());
+    }
+
+    @Test
+    public void testOnPlaceHiddenEvent() {
+        PlaceHiddenEvent event = new PlaceHiddenEvent(placeRequest);
+
+        tested.hideDiagramEditorDocks(event);
+
+        verify(onDiagramLostFocusEven).fire(any(OnDiagramLoseFocusEvent.class));
+    }
+
+    @Test
+    public void testNotValidOnPlaceHiddenEvent() {
+
+        PlaceRequest anotherRequest = mock(PlaceRequest.class);
+
+        when(anotherRequest.getIdentifier()).thenReturn("");
+
+        PlaceHiddenEvent event = new PlaceHiddenEvent(anotherRequest);
+
+        tested.hideDiagramEditorDocks(event);
+
+        verify(onDiagramLostFocusEven,
+               never()).fire(any(OnDiagramLoseFocusEvent.class));
+    }
+
+    @Test
+    public void testOnPlaceGainFocusEvent() {
+        PlaceGainFocusEvent event = new PlaceGainFocusEvent(placeRequest);
+
+        tested.showDiagramEditorDocks(event);
+
+        verify(onDiagramFocusEvent).fire(any(OnDiagramFocusEvent.class));
+    }
+
+    @Test
+    public void testNotValidOnPlaceGainFocusEvent() {
+
+        PlaceRequest anotherRequest = mock(PlaceRequest.class);
+
+        when(anotherRequest.getIdentifier()).thenReturn("");
+
+        PlaceGainFocusEvent event = new PlaceGainFocusEvent(anotherRequest);
+
+        tested.showDiagramEditorDocks(event);
+
+        verify(onDiagramFocusEvent,
+               never()).fire(any(OnDiagramFocusEvent.class));
     }
 }

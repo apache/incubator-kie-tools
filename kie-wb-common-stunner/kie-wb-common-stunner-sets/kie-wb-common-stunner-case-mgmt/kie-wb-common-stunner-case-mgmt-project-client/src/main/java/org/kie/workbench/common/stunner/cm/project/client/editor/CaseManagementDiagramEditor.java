@@ -32,6 +32,8 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientR
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.editor.ProjectDiagramEditorMenuItemsBuilder;
+import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
+import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -70,7 +72,9 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
                                        final SessionManager sessionManager,
                                        final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
                                        final SessionCommandFactory sessionCommandFactory,
-                                       final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder) {
+                                       final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder,
+                                       final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
+                                       final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent) {
         super(view,
               placeManager,
               errorPopupPresenter,
@@ -81,7 +85,9 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
               sessionManager,
               sessionPresenterFactory,
               sessionCommandFactory,
-              menuItemsBuilder);
+              menuItemsBuilder,
+              onDiagramFocusEvent,
+              onDiagramLostFocusEvent);
     }
 
     @OnStartup
@@ -99,6 +105,11 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
     @Override
     protected int getCanvasHeight() {
         return (int) BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT;
+    }
+
+    @Override
+    protected String getEditorIdentifier() {
+        return CaseManagementDiagramEditor.EDITOR_ID;
     }
 
     @OnOpen

@@ -26,7 +26,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
@@ -60,6 +59,8 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.kie.workbench.common.stunner.core.validation.impl.ValidationUtils;
+import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
+import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -69,6 +70,8 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
@@ -113,6 +116,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private final ExportToPngSessionCommand sessionExportImagePNGCommand;
     private final ExportToJpgSessionCommand sessionExportImageJPGCommand;
     private final ExportToPdfSessionCommand sessionExportPDFCommand;
+    private Event<OnDiagramFocusEvent> onDiagramFocusEvent;
+    private Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent;
 
     protected SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter;
 
@@ -129,7 +134,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                         final SessionManager sessionManager,
                                         final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
                                         final SessionCommandFactory sessionCommandFactory,
-                                        final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder) {
+                                        final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder,
+                                        final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
+                                        final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent) {
         super(view);
         this.placeManager = placeManager;
         this.errorPopupPresenter = errorPopupPresenter;
@@ -152,6 +159,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.sessionExportImagePNGCommand = sessionCommandFactory.newExportToPngSessionCommand();
         this.sessionExportImageJPGCommand = sessionCommandFactory.newExportToJpgSessionCommand();
         this.sessionExportPDFCommand = sessionCommandFactory.newExportToPdfSessionCommand();
+        this.onDiagramFocusEvent = onDiagramFocusEvent;
+        this.onDiagramLostFocusEvent = onDiagramLostFocusEvent;
     }
 
     protected abstract int getCanvasWidth();
@@ -330,7 +339,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         sessionExportImageJPGCommand.listen(() -> exportsItem.setEnabled(sessionExportImageJPGCommand.isEnabled()));
         sessionExportPDFCommand.listen(() -> exportsItem.setEnabled(sessionExportPDFCommand.isEnabled()));
 
-
         // Build the menu.
         fileMenuBuilder
                 // Specific Stunner toolbar items.
@@ -478,6 +486,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         return null != other && null != getSession() && other.equals(getSession());
     }
 
+    protected abstract String getEditorIdentifier();
+
     public String getTitleText() {
         return title;
     }
@@ -495,10 +505,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     @Override
     protected void onSave() {
-        if (hasUnsavedChanges()){
+        if (hasUnsavedChanges()) {
             super.onSave();
-        }
-        else {
+        } else {
             final String message = CommonConstants.INSTANCE.NoChangesSinceLastSave();
             log(Level.INFO,
                 message);
@@ -570,9 +579,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         Collection<Shape> collectionOfShapes = getCanvasHandler().getCanvas().getShapes();
         ArrayList<Shape> shapes = new ArrayList<>();
         shapes.addAll(collectionOfShapes);
-        shapes.sort((a,b) -> (a.getShapeView().getShapeX() == b.getShapeView().getShapeX())?
-                (int)Math.round(a.getShapeView().getShapeY() - b.getShapeView().getShapeY()) :
-                (int)Math.round(a.getShapeView().getShapeX() - b.getShapeView().getShapeX()));
+        shapes.sort((a, b) -> (a.getShapeView().getShapeX() == b.getShapeView().getShapeX()) ?
+                (int) Math.round(a.getShapeView().getShapeY() - b.getShapeView().getShapeY()) :
+                (int) Math.round(a.getShapeView().getShapeX() - b.getShapeView().getShapeX()));
         for (Shape shape : shapes) {
             hash = HashUtil.combineHashCodes(hash,
                                              Double.hashCode(shape.getShapeView().getShapeX()),
@@ -651,5 +660,19 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     protected boolean hasUnsavedChanges() {
         return getCurrentDiagramHash() != originalHash;
+    }
+
+    public void hideDiagramEditorDocks(@Observes PlaceHiddenEvent event) {
+        if (getEditorIdentifier().equals(event.getPlace().getIdentifier()) &&
+                place != null && place.equals(event.getPlace())) {
+            onDiagramLostFocusEvent.fire(new OnDiagramLoseFocusEvent());
+        }
+    }
+
+    public void showDiagramEditorDocks(@Observes PlaceGainFocusEvent event) {
+        if (getEditorIdentifier().equals(event.getPlace().getIdentifier()) &&
+                place != null && place.equals(event.getPlace())) {
+            onDiagramFocusEvent.fire(new OnDiagramFocusEvent());
+        }
     }
 }

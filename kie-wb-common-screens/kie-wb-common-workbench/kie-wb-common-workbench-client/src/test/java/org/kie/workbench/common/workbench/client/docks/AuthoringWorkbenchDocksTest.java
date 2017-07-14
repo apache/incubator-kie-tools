@@ -16,45 +16,35 @@
 
 package org.kie.workbench.common.workbench.client.docks;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.security.shared.api.Role;
-import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
-import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContext;
-import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContextChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
-import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
-import org.kie.workbench.common.workbench.client.resources.images.WorkbenchImageResources;
-import org.mockito.InjectMocks;
+import org.kie.workbench.common.workbench.client.docks.test.TestWorkbenchDocksHandler;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDockReadyEvent;
 import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class AuthoringWorkbenchDocksTest {
 
-    @Mock
-    private UberfireDocks uberfireDocks;
+    public static final String AUTHORING_PERSPECTIVE = "authoring";
 
     @Mock
-    private DataModelerWorkbenchContext dataModelerWBContext;
+    private UberfireDocks uberfireDocks;
 
     @Mock
     private SessionInfo sessionInfo;
@@ -63,235 +53,145 @@ public class AuthoringWorkbenchDocksTest {
     private PlaceRequest placeRequest;
 
     @Mock
-    private AuthorizationManager authorizationManager;
-
-    @Mock
-    private User user;
-
-    @Mock
     private LibraryInternalPreferences libraryInternalPreferences;
 
-    private UberfireDock plannerDock;
+    @Mock
+    private ManagedInstance<WorkbenchDocksHandler> handlers;
 
-    @Spy
-    @InjectMocks
-    private AuthoringWorkbenchDocks authoringDocks;
+    private TestWorkbenchDocksHandler handler;
+
+    private AuthoringWorkbenchDocks authoringWorkbenchDocks;
 
     @Before
     public void initTest() {
-        authoringDocks.setup("authoring",
-                             placeRequest);
-        plannerDock = new UberfireDock(UberfireDockPosition.EAST,
-                                       WorkbenchImageResources.INSTANCE.optaPlannerDisabledIcon(),
-                                       WorkbenchImageResources.INSTANCE.optaPlannerEnabledIcon(),
-                                       new DefaultPlaceRequest("PlannerDomainScreen"),
-                                       "authoring").withSize(450).withLabel(authoringDocks.constants.DocksOptaPlannerTitle());
+
+        handler = createNewWorkbenchDocksHandler();
+
+        List<WorkbenchDocksHandler> list = new ArrayList<>();
+
+        list.add(handler);
+
+        when(handlers.iterator()).thenReturn(list.iterator());
+
+        authoringWorkbenchDocks = spy(new AuthoringWorkbenchDocks(uberfireDocks,
+                                                                  handlers,
+                                                                  libraryInternalPreferences));
+
+        authoringWorkbenchDocks.initialize();
+
+        verify(handlers).iterator();
+
+        authoringWorkbenchDocks.setup(AUTHORING_PERSPECTIVE,
+                                      placeRequest);
+
+        verify(uberfireDocks).add(any());
+        verify(uberfireDocks).hide(any(),
+                                   any());
+
+        authoringWorkbenchDocks.perspectiveChangeEvent(new UberfireDockReadyEvent(AUTHORING_PERSPECTIVE));
+
+        verify(uberfireDocks).hide(any(),
+                                   anyString());
     }
 
     @Test
-    public void plannerRoleGrantedTest() {
-        when(sessionInfo.getId()).thenReturn("logged_user");
-        when(sessionInfo.getIdentity()).thenReturn(user);
-        when(authorizationManager.authorize(WorkbenchFeatures.PLANNER_AVAILABLE,
-                                            user)).thenReturn(true);
+    public void testLoadHandler() {
+        handler.refresh(true,
+                        false);
 
-        UberfireDockReadyEvent event = new UberfireDockReadyEvent("authoring");
-        authoringDocks.perspectiveChangeEvent(event);
-
-        verify(uberfireDocks,
-               times(1)).add(plannerDock);
-    }
-
-    @Test
-    public void plannerRoleNotGrantedNeverVisitedTest() {
-        testPlannerNotGranted(false);
-    }
-
-    @Test
-    public void plannerRoleNotGrantedVisitedTest() {
-        testPlannerNotGranted(true);
-    }
-
-    private void testPlannerNotGranted(boolean visited) {
-
-        if (visited) {
-            //make that a user with the grants visits the authoring perspective
-            plannerRoleGrantedTest();
-        }
-        //user hasn't the planner role in this case
-        Set<Role> userRoles = new HashSet<Role>();
-
-        when(sessionInfo.getId()).thenReturn("logged_user");
-        when(sessionInfo.getIdentity()).thenReturn(user);
-        when(user.getRoles()).thenReturn(userRoles);
-
-        UberfireDockReadyEvent event = new UberfireDockReadyEvent("authoring");
-        authoringDocks.perspectiveChangeEvent(event);
-
-        if (visited) {
-            //if the authoring was visited at least once by a user with the planner role
-            //ensure the dock is removed
-            verify(uberfireDocks,
-                   times(1)).remove(plannerDock);
-        }
-        //if not, do nothing
-    }
-
-    @Test
-    public void setup() {
-        when(sessionInfo.getIdentity()).thenReturn(user);
-        when(authorizationManager.authorize(WorkbenchFeatures.PLANNER_AVAILABLE,
-                                            user)).thenReturn(true);
-
-        authoringDocks.setup("authoring",
-                             placeRequest);
-
-        verify(uberfireDocks,
-               times(1)).add(plannerDock);
-    }
-
-    /**
-     * This test checks that docks operations resulting from the event processing only occurs on the docks belonging
-     * to the given active perspective.
-     */
-    @Test
-    public void avoidDocksManipulationInNonActivePerspective() {
-
-        //authoringDocks docks was previously configured to manage the "authoring" perspective docks.
-
-        //emulates current perspective has now changed.
-        authoringDocks.perspectiveChangeEvent(new UberfireDockReadyEvent("some_other_authoring"));
-
-        //emulate the different events that can modify the docks
-        DataModelerContext context1 = mock(DataModelerContext.class);
-        when(context1.getEditionMode()).thenReturn(DataModelerContext.EditionMode.GRAPHICAL_MODE);
-        DataModelerContext context2 = mock(DataModelerContext.class);
-        when(context2.getEditionMode()).thenReturn(DataModelerContext.EditionMode.GRAPHICAL_MODE);
-
-        when(dataModelerWBContext.getActiveContext()).thenReturn(context1);
-        authoringDocks.onDataModelerWorkbenchFocusEvent(new DataModelerWorkbenchFocusEvent());
-        authoringDocks.onContextChange(new DataModelerWorkbenchContextChangeEvent());
-
-        when(dataModelerWBContext.getActiveContext()).thenReturn(context2);
-        authoringDocks.onDataModelerWorkbenchFocusEvent(new DataModelerWorkbenchFocusEvent().lostFocus());
-        authoringDocks.onContextChange(new DataModelerWorkbenchContextChangeEvent());
-
-        //disable operation should have been invoked only one time as part of the setup process, but never again.
         verify(uberfireDocks,
                times(1)).hide(any(UberfireDockPosition.class),
-                                 anyString());
+                              anyString());
         //no other docks operations should have been invoked.
+        verify(uberfireDocks).show(any(UberfireDockPosition.class),
+                                   anyString());
         verify(uberfireDocks,
-               times(0)).show(any(UberfireDockPosition.class),
-                                anyString());
+               times(1)).add(any(),
+                             any());
     }
 
-    /**
-     * This test checks that unnecessary operations on the docks are performed. e.g. if the docks are already enabled
-     * then subsequent enabling operation will be skipped, and the same for disabling operations.
-     */
     @Test
-    public void avoidDuplicatedStateChangeOnDocksStatusTest() {
+    public void testLoadHandlerReloadingDocks() {
+        testLoadHandler();
 
-        //authoringDocks docks was previously configured to manage the "authoring" perspective docks.
+        handler.refresh(true,
+                        false);
 
-        //at this point the docks were disabled as part of the initialization procedure.
-        verify(uberfireDocks,
-               times(1)).hide(UberfireDockPosition.EAST,
-                                 "authoring");
-
-        //emulates that "authoring" perspective was selected.
-        authoringDocks.perspectiveChangeEvent(new UberfireDockReadyEvent("authoring"));
-
-        //emulates the different events that typically may cause the docks to be set on "enabled"
-        DataModelerContext context1 = mock(DataModelerContext.class);
-        when(context1.getEditionMode()).thenReturn(DataModelerContext.EditionMode.GRAPHICAL_MODE);
-        DataModelerContext context2 = mock(DataModelerContext.class);
-        when(context2.getEditionMode()).thenReturn(DataModelerContext.EditionMode.GRAPHICAL_MODE);
-
-        when(dataModelerWBContext.getActiveContext()).thenReturn(context1);
-        authoringDocks.onDataModelerWorkbenchFocusEvent(new DataModelerWorkbenchFocusEvent());
-        authoringDocks.onContextChange(new DataModelerWorkbenchContextChangeEvent());
-
-        when(dataModelerWBContext.getActiveContext()).thenReturn(context2);
-        authoringDocks.onDataModelerWorkbenchFocusEvent(new DataModelerWorkbenchFocusEvent());
-        authoringDocks.onContextChange(new DataModelerWorkbenchContextChangeEvent());
-
-        //the docks should have been enabled only one time.
-        verify(uberfireDocks,
-               times(1)).show(UberfireDockPosition.EAST,
-                                "authoring");
-
-        //now let's the dock to be disabled multiple times
-        when(dataModelerWBContext.getActiveContext()).thenReturn(context1);
-        authoringDocks.onDataModelerWorkbenchFocusEvent(new DataModelerWorkbenchFocusEvent().lostFocus());
-        authoringDocks.onContextChange(new DataModelerWorkbenchContextChangeEvent());
-
-        when(dataModelerWBContext.getActiveContext()).thenReturn(context2);
-        authoringDocks.onDataModelerWorkbenchFocusEvent(new DataModelerWorkbenchFocusEvent().lostFocus());
-        authoringDocks.onContextChange(new DataModelerWorkbenchContextChangeEvent());
-
-        //the docks should have been disabled only one two times (the initial disabling that was part of the setup
-        // procedure) + only one additional that derives from the multiple context changes.
-
-        verify(uberfireDocks,
-               times(2)).hide(UberfireDockPosition.EAST,
-                                 "authoring");
+        verify(uberfireDocks).hide(UberfireDockPosition.EAST,
+                                   "authoring");
     }
 
     @Test
     public void hideTest() {
-        authoringDocks.hide();
+        authoringWorkbenchDocks.hide();
 
         verify(uberfireDocks).hide(UberfireDockPosition.WEST,
-                                      "authoring");
+                                   "authoring");
         verify(uberfireDocks).hide(UberfireDockPosition.EAST,
-                                      "authoring");
+                                   "authoring");
     }
 
     @Test
-    public void showWithDataModelerActiveTest() {
-        final DataModelerContext dataModelerContext = mock(DataModelerContext.class);
-        doReturn(DataModelerContext.EditionMode.GRAPHICAL_MODE).when(dataModelerContext).getEditionMode();
-        doReturn(dataModelerContext).when(dataModelerWBContext).getActiveContext();
+    public void testLoadHandlerDisablingDocks() {
+        testLoadHandler();
 
-        authoringDocks.show();
+        handler.refresh(true,
+                        true);
 
-        verify(uberfireDocks).show(UberfireDockPosition.WEST,
-                                     "authoring");
+        verify(uberfireDocks,
+               never()).remove(any(),
+                               any());
+        verify(uberfireDocks,
+               times(1)).show(any(),
+                              any());
+        verify(uberfireDocks,
+               times(1)).add(any(),
+                             any());
+
         verify(uberfireDocks).show(UberfireDockPosition.EAST,
-                                     "authoring");
+                                   "authoring");
+        // it's also disabled on setup!
+        verify(uberfireDocks,
+               times(2)).hide(any(),
+                              any());
     }
 
     @Test
-    public void showWithDataModelerInactiveTest() {
-        authoringDocks.show();
+    public void testVerifyShowAndHide() {
+        authoringWorkbenchDocks.show();
 
         verify(uberfireDocks).show(UberfireDockPosition.WEST,
-                                     "authoring");
+                                   "authoring");
         verify(uberfireDocks,
                never()).show(UberfireDockPosition.EAST,
-                               "authoring");
+                             "authoring");
+
+        authoringWorkbenchDocks.hide();
+
+        // it's also disabled on setup!
+        verify(uberfireDocks,
+               times(2)).hide(any(),
+                              any());
     }
 
-    @Test
-    public void perspectiveChangedExpandProjectExplorerWhenEnabledTest() {
-        UberfireDockReadyEvent event = new UberfireDockReadyEvent("authoring");
-        authoringDocks.perspectiveChangeEvent(event);
+    protected TestWorkbenchDocksHandler createNewWorkbenchDocksHandler() {
+        List<UberfireDock> docks = new ArrayList<>();
 
-        verify(authoringDocks,
-               times(1)).expandProjectExplorer();
+        docks.add(new UberfireDock(UberfireDockPosition.EAST,
+                                   "RANDOM",
+                                   placeRequest,
+                                   AUTHORING_PERSPECTIVE));
+        docks.add(new UberfireDock(UberfireDockPosition.EAST,
+                                   "RANDOM",
+                                   placeRequest,
+                                   AUTHORING_PERSPECTIVE));
+
+        return new TestWorkbenchDocksHandler(docks);
     }
 
-    @Test
-    public void perspectiveChangedDoesNotExpandProjectExplorerWhenDisabledTest() {
-        authoringDocks.hide();
-
-        UberfireDockReadyEvent event = new UberfireDockReadyEvent("authoring");
-        authoringDocks.perspectiveChangeEvent(event);
-
-        verify(authoringDocks,
-               never()).expandProjectExplorer();
+    @After
+    public void afterTest() {
+        authoringWorkbenchDocks.clear();
     }
 
     @Test
@@ -299,40 +199,40 @@ public class AuthoringWorkbenchDocksTest {
         final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(mock(UberfireDock.class),
                                                                                                                 UberfireDocksInteractionEvent.InteractionType.OPENED);
 
-        authoringDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
+        authoringWorkbenchDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
 
-        verify(authoringDocks,
+        verify(authoringWorkbenchDocks,
                never()).setProjectExplorerExpandedPreference(anyBoolean());
     }
 
     @Test
     public void projectExplorerExpandedEvent_SelectedInteraction() {
-        final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(authoringDocks.projectExplorerDock,
+        final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(authoringWorkbenchDocks.projectExplorerDock,
                                                                                                                 UberfireDocksInteractionEvent.InteractionType.OPENED);
 
-        authoringDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
+        authoringWorkbenchDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
 
-        verify(authoringDocks).setProjectExplorerExpandedPreference(true);
+        verify(authoringWorkbenchDocks).setProjectExplorerExpandedPreference(true);
     }
 
     @Test
     public void projectExplorerExpandedEvent_DeselectedInteraction() {
-        final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(authoringDocks.projectExplorerDock,
+        final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(authoringWorkbenchDocks.projectExplorerDock,
                                                                                                                 UberfireDocksInteractionEvent.InteractionType.CLOSED);
 
-        authoringDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
+        authoringWorkbenchDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
 
-        verify(authoringDocks).setProjectExplorerExpandedPreference(false);
+        verify(authoringWorkbenchDocks).setProjectExplorerExpandedPreference(false);
     }
 
     @Test
     public void projectExplorerExpandedEvent_ResizeInteraction() {
-        final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(authoringDocks.projectExplorerDock,
+        final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(authoringWorkbenchDocks.projectExplorerDock,
                                                                                                                 UberfireDocksInteractionEvent.InteractionType.RESIZED);
 
-        authoringDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
+        authoringWorkbenchDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
 
-        verify(authoringDocks,
+        verify(authoringWorkbenchDocks,
                never()).setProjectExplorerExpandedPreference(anyBoolean());
     }
 
@@ -341,9 +241,9 @@ public class AuthoringWorkbenchDocksTest {
         final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(UberfireDockPosition.WEST,
                                                                                                                 UberfireDocksInteractionEvent.InteractionType.RESIZED);
 
-        authoringDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
+        authoringWorkbenchDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
 
-        verify(authoringDocks,
+        verify(authoringWorkbenchDocks,
                never()).setProjectExplorerExpandedPreference(anyBoolean());
     }
 

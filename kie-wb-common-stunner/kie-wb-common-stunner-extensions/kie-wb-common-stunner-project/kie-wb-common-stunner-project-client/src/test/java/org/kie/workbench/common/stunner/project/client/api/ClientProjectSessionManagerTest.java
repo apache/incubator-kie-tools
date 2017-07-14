@@ -29,11 +29,8 @@ import org.kie.workbench.common.stunner.core.client.session.event.SessionPausedE
 import org.kie.workbench.common.stunner.core.client.session.event.SessionResumedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.kie.workbench.common.stunner.project.client.screens.ProjectDiagramWorkbenchDocks;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
-
-import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ClientProjectSessionManagerTest {
@@ -42,8 +39,6 @@ public class ClientProjectSessionManagerTest {
     DefinitionUtils definitionUtils;
     @Mock
     ManagedInstance<ClientSessionFactory> sessionFactoriesInstances;
-    @Mock
-    ProjectDiagramWorkbenchDocks editorDocks;
     @Mock
     EventSourceMock<SessionOpenedEvent> sessionOpenedEvent;
     @Mock
@@ -62,7 +57,6 @@ public class ClientProjectSessionManagerTest {
     @Before
     public void setup() throws Exception {
         this.tested = new ClientProjectSessionManager(definitionUtils,
-                                                      editorDocks,
                                                       sessionFactoriesInstances,
                                                       sessionOpenedEvent,
                                                       sessionDestroyedEvent,
@@ -74,27 +68,15 @@ public class ClientProjectSessionManagerTest {
     @Test
     public void testOpen() {
         tested.open(session);
-        verify(editorDocks,
-               times(1)).enableDocks();
-        verify(editorDocks,
-               times(0)).disableDocks();
     }
 
     @Test
     public void testResume() {
         tested.resume(session);
-        verify(editorDocks,
-               times(1)).enableDocks();
-        verify(editorDocks,
-               times(0)).disableDocks();
     }
 
     @Test
     public void testDestroy() {
         tested.postDestroy();
-        verify(editorDocks,
-               times(0)).enableDocks();
-        verify(editorDocks,
-               times(1)).disableDocks();
     }
 }
