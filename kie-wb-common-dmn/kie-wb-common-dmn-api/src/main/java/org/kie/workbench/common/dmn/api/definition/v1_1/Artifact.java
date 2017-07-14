@@ -17,7 +17,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 
 public abstract class Artifact extends DMNElement {
 
@@ -25,10 +24,8 @@ public abstract class Artifact extends DMNElement {
     }
 
     public Artifact(final Id id,
-                    final Label label,
                     final Description description) {
         super(id,
-              label,
               description);
     }
 }

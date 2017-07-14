@@ -19,7 +19,6 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 @Portable
@@ -34,14 +33,12 @@ public class OutputClause extends DMNElement {
     }
 
     public OutputClause(final @MapsTo("id") Id id,
-                        final @MapsTo("label") Label label,
                         final @MapsTo("description") Description description,
                         final @MapsTo("outputValues") UnaryTests outputValues,
                         final @MapsTo("defaultOutputEntry") LiteralExpression defaultOutputEntry,
                         final @MapsTo("name") String name,
                         final @MapsTo("typeRef") QName typeRef) {
         super(id,
-              label,
               description);
         this.outputValues = outputValues;
         this.defaultOutputEntry = defaultOutputEntry;

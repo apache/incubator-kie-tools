@@ -22,7 +22,6 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 
 @Portable
@@ -34,12 +33,10 @@ public class ElementCollection extends NamedElement {
     }
 
     public ElementCollection(final @MapsTo("id") Id id,
-                             final @MapsTo("label") Label label,
                              final @MapsTo("description") Description description,
                              final @MapsTo("name") Name name,
                              final @MapsTo("drgElement") List<DMNElementReference> drgElement) {
         super(id,
-              label,
               description,
               name);
         this.drgElement = drgElement;

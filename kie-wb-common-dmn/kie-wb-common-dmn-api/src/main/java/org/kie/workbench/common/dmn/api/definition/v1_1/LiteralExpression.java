@@ -22,7 +22,6 @@ import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
@@ -57,7 +56,6 @@ public class LiteralExpression extends Expression implements DMNPropertySet {
 
     public LiteralExpression() {
         this(new Id(),
-             new Label(),
              new Description(),
              new QName(),
              new Text(),
@@ -66,14 +64,12 @@ public class LiteralExpression extends Expression implements DMNPropertySet {
     }
 
     public LiteralExpression(final @MapsTo("id") Id id,
-                             final @MapsTo("label") Label label,
                              final @MapsTo("description") org.kie.workbench.common.dmn.api.property.dmn.Description description,
                              final @MapsTo("typeRef") QName typeRef,
                              final @MapsTo("text") Text text,
                              final @MapsTo("importedValues") ImportedValues importedValues,
                              final @MapsTo("expressionLanguage") ExpressionLanguage expressionLanguage) {
         super(id,
-              label,
               description,
               typeRef);
         this.text = text;

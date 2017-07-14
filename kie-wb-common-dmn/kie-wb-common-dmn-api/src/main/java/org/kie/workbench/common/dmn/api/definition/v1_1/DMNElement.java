@@ -24,7 +24,6 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -39,11 +38,6 @@ public abstract class DMNElement extends DMNModelInstrumentedBase {
     @Property
     @FormField(afterElement = "id")
     @Valid
-    protected Label label;
-
-    @Property
-    @FormField(afterElement = "label")
-    @Valid
     protected Description description;
 
     private Map<QName, String> otherAttributes = new HashMap<>();
@@ -54,10 +48,8 @@ public abstract class DMNElement extends DMNModelInstrumentedBase {
     }
 
     public DMNElement(final Id id,
-                      final Label label,
                       final Description description) {
         this.id = id;
-        this.label = label;
         this.description = description;
     }
 
@@ -71,14 +63,6 @@ public abstract class DMNElement extends DMNModelInstrumentedBase {
 
     public void setId(final Id id) {
         this.id = id;
-    }
-
-    public Label getLabel() {
-        return label;
-    }
-
-    public void setLabel(final Label label) {
-        this.label = label;
     }
 
     public Description getDescription() {

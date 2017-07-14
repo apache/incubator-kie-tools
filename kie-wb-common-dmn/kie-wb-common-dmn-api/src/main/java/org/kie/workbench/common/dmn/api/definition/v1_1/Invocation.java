@@ -22,7 +22,6 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 @Portable
@@ -35,13 +34,11 @@ public class Invocation extends Expression {
     }
 
     public Invocation(final @MapsTo("id") Id id,
-                      final @MapsTo("label") Label label,
                       final @MapsTo("description") Description description,
                       final @MapsTo("typeRef") QName typeRef,
                       final @MapsTo("expression") Expression expression,
                       final @MapsTo("binding") List<Binding> binding) {
         super(id,
-              label,
               description,
               typeRef);
         this.expression = expression;

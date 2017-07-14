@@ -17,7 +17,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 
 public abstract class BusinessContextElement extends NamedElement {
@@ -28,12 +27,10 @@ public abstract class BusinessContextElement extends NamedElement {
     }
 
     public BusinessContextElement(final Id id,
-                                  final Label label,
                                   final Description description,
                                   final Name name,
                                   final String uri) {
         super(id,
-              label,
               description,
               name);
         this.uri = uri;

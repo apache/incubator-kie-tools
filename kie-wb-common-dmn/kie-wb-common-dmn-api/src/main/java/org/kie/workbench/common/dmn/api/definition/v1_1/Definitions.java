@@ -22,7 +22,6 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 
 @Portable
@@ -48,7 +47,6 @@ public class Definitions extends NamedElement {
     }
 
     public Definitions(final @MapsTo("id") Id id,
-                       final @MapsTo("label") Label label,
                        final @MapsTo("description") Description description,
                        final @MapsTo("name") Name name,
                        final @MapsTo("_import") List<Import> _import,
@@ -63,7 +61,6 @@ public class Definitions extends NamedElement {
                        final @MapsTo("exporter") String exporter,
                        final @MapsTo("exporterVersion") String exporterVersion) {
         super(id,
-              label,
               description,
               name);
         this._import = _import;

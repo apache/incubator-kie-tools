@@ -23,7 +23,6 @@ import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.rules.AcyclicDirectedGraphRule;
 import org.kie.workbench.common.dmn.api.validation.NoValidation;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
@@ -69,7 +68,6 @@ public class Association extends Artifact {
         @Override
         public Association build() {
             return new Association(new Id(),
-                                   new Label(),
                                    new org.kie.workbench.common.dmn.api.property.dmn.Description());
         }
     }
@@ -78,10 +76,8 @@ public class Association extends Artifact {
     }
 
     public Association(final @MapsTo("id") Id id,
-                       final @MapsTo("label") Label label,
                        final @MapsTo("description") org.kie.workbench.common.dmn.api.property.dmn.Description description) {
         super(id,
-              label,
               description);
     }
 

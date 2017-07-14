@@ -19,7 +19,6 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 
 @Portable
 public class UnaryTests extends DMNElement {
@@ -31,12 +30,10 @@ public class UnaryTests extends DMNElement {
     }
 
     public UnaryTests(final @MapsTo("id") Id id,
-                      final @MapsTo("label") Label label,
                       final @MapsTo("description") Description description,
                       final @MapsTo("text") String text,
                       final @MapsTo("expressionLanguage") String expressionLanguage) {
         super(id,
-              label,
               description);
         this.text = text;
         this.expressionLanguage = expressionLanguage;

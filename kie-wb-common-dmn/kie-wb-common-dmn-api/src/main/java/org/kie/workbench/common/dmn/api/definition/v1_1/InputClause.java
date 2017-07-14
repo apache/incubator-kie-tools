@@ -19,7 +19,6 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 
 @Portable
 public class InputClause extends DMNElement {
@@ -31,12 +30,10 @@ public class InputClause extends DMNElement {
     }
 
     public InputClause(final @MapsTo("id") Id id,
-                       final @MapsTo("label") Label label,
                        final @MapsTo("description") Description description,
                        final @MapsTo("inputExpression") LiteralExpression inputExpression,
                        final @MapsTo("inputValues") UnaryTests inputValues) {
         super(id,
-              label,
               description);
         this.inputExpression = inputExpression;
         this.inputValues = inputValues;

@@ -26,7 +26,6 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.TextFormat;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
@@ -89,7 +88,6 @@ public class TextAnnotation extends Artifact {
         @Override
         public TextAnnotation build() {
             return new TextAnnotation(new Id(),
-                                      new Label(),
                                       new org.kie.workbench.common.dmn.api.property.dmn.Description(),
                                       new Text(),
                                       new TextFormat(),
@@ -103,7 +101,6 @@ public class TextAnnotation extends Artifact {
     }
 
     public TextAnnotation(final @MapsTo("id") Id id,
-                          final @MapsTo("label") Label label,
                           final @MapsTo("description") org.kie.workbench.common.dmn.api.property.dmn.Description description,
                           final @MapsTo("text") Text text,
                           final @MapsTo("textFormat") TextFormat textFormat,
@@ -111,7 +108,6 @@ public class TextAnnotation extends Artifact {
                           final @MapsTo("fontSet") FontSet fontSet,
                           final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
         super(id,
-              label,
               description);
         this.text = text;
         this.textFormat = textFormat;

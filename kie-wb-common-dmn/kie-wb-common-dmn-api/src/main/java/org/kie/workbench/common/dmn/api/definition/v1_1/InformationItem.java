@@ -21,7 +21,6 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
@@ -47,19 +46,16 @@ public class InformationItem extends NamedElement implements DMNPropertySet {
 
     public InformationItem() {
         this(new Id(),
-             new Label(),
              new Description(),
              new Name(),
              new QName());
     }
 
     public InformationItem(final @MapsTo("id") Id id,
-                           final @MapsTo("label") Label label,
                            final @MapsTo("description") Description description,
                            final @MapsTo("name") Name name,
                            final @MapsTo("typeRef") QName typeRef) {
         super(id,
-              label,
               description,
               name);
         this.typeRef = typeRef;

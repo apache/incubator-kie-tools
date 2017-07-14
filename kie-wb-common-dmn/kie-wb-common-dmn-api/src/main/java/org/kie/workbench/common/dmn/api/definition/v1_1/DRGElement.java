@@ -17,7 +17,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 
 public abstract class DRGElement extends NamedElement {
@@ -26,11 +25,9 @@ public abstract class DRGElement extends NamedElement {
     }
 
     public DRGElement(final Id id,
-                      final Label label,
                       final Description description,
                       final Name name) {
         super(id,
-              label,
               description,
               name);
     }

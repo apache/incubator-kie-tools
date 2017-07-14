@@ -22,7 +22,6 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 
 @Portable
 public class DecisionRule extends DMNElement {
@@ -34,12 +33,10 @@ public class DecisionRule extends DMNElement {
     }
 
     public DecisionRule(final @MapsTo("id") Id id,
-                        final @MapsTo("label") Label label,
                         final @MapsTo("description") Description description,
                         final @MapsTo("inputEntry") List<UnaryTests> inputEntry,
                         final @MapsTo("outputEntry") List<LiteralExpression> outputEntry) {
         super(id,
-              label,
               description);
         this.inputEntry = inputEntry;
         this.outputEntry = outputEntry;

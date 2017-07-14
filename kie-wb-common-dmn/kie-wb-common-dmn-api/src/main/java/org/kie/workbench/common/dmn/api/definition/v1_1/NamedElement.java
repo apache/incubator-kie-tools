@@ -19,7 +19,6 @@ import javax.validation.Valid;
 
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -35,11 +34,9 @@ public abstract class NamedElement extends DMNElement {
     }
 
     public NamedElement(final Id id,
-                        final Label label,
                         final Description description,
                         final Name name) {
         super(id,
-              label,
               description);
         this.name = name;
     }

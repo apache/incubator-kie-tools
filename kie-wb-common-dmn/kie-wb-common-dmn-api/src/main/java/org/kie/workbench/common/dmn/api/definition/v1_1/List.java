@@ -21,7 +21,6 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 @Portable
@@ -33,12 +32,10 @@ public class List extends Expression {
     }
 
     public List(final @MapsTo("id") Id id,
-                final @MapsTo("label") Label label,
                 final @MapsTo("description") Description description,
                 final @MapsTo("typeRef") QName typeRef,
                 final @MapsTo("expression") java.util.List<Expression> expression) {
         super(id,
-              label,
               description,
               typeRef);
         this.expression = expression;

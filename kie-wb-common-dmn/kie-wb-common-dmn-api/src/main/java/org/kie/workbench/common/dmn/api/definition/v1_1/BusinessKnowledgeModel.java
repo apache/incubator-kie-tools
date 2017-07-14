@@ -26,7 +26,6 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
@@ -89,7 +88,6 @@ public class BusinessKnowledgeModel extends DRGElement {
         @Override
         public BusinessKnowledgeModel build() {
             return new BusinessKnowledgeModel(new Id(),
-                                              new Label(),
                                               new org.kie.workbench.common.dmn.api.property.dmn.Description(),
                                               new Name(),
                                               new InformationItem(),
@@ -104,7 +102,6 @@ public class BusinessKnowledgeModel extends DRGElement {
     }
 
     public BusinessKnowledgeModel(final @MapsTo("id") Id id,
-                                  final @MapsTo("label") Label label,
                                   final @MapsTo("description") org.kie.workbench.common.dmn.api.property.dmn.Description description,
                                   final @MapsTo("name") Name name,
                                   final @MapsTo("variable") InformationItem variable,
@@ -113,7 +110,6 @@ public class BusinessKnowledgeModel extends DRGElement {
                                   final @MapsTo("fontSet") FontSet fontSet,
                                   final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
         super(id,
-              label,
               description,
               name);
         this.variable = variable;

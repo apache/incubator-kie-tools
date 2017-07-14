@@ -22,7 +22,6 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 
 @Portable
@@ -37,7 +36,6 @@ public class DecisionService extends NamedElement {
     }
 
     public DecisionService(final @MapsTo("id") Id id,
-                           final @MapsTo("label") Label label,
                            final @MapsTo("description") Description description,
                            final @MapsTo("name") Name name,
                            final @MapsTo("outputDecision") List<DMNElementReference> outputDecision,
@@ -45,7 +43,6 @@ public class DecisionService extends NamedElement {
                            final @MapsTo("inputDecision") List<DMNElementReference> inputDecision,
                            final @MapsTo("inputData") List<DMNElementReference> inputData) {
         super(id,
-              label,
               description,
               name);
         this.outputDecision = outputDecision;

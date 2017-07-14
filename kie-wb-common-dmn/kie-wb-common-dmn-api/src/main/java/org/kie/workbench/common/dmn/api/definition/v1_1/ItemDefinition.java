@@ -22,7 +22,6 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
@@ -39,7 +38,6 @@ public class ItemDefinition extends NamedElement {
     }
 
     public ItemDefinition(final @MapsTo("id") Id id,
-                          final @MapsTo("label") Label label,
                           final @MapsTo("description") Description description,
                           final @MapsTo("name") Name name,
                           final @MapsTo("typeRef") QName typeRef,
@@ -48,7 +46,6 @@ public class ItemDefinition extends NamedElement {
                           final @MapsTo("typeLanguage") String typeLanguage,
                           final @MapsTo("isCollection") Boolean isCollection) {
         super(id,
-              label,
               description,
               name);
         this.typeRef = typeRef;

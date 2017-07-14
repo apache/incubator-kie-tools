@@ -27,7 +27,6 @@ import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.KnowledgeSourceType;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
@@ -92,7 +91,6 @@ public class KnowledgeSource extends DRGElement {
         @Override
         public KnowledgeSource build() {
             return new KnowledgeSource(new Id(),
-                                       new Label(),
                                        new org.kie.workbench.common.dmn.api.property.dmn.Description(),
                                        new Name(),
                                        new KnowledgeSourceType(),
@@ -107,7 +105,6 @@ public class KnowledgeSource extends DRGElement {
     }
 
     public KnowledgeSource(final @MapsTo("id") Id id,
-                           final @MapsTo("label") Label label,
                            final @MapsTo("description") org.kie.workbench.common.dmn.api.property.dmn.Description description,
                            final @MapsTo("name") Name name,
                            final @MapsTo("type") KnowledgeSourceType type,
@@ -116,7 +113,6 @@ public class KnowledgeSource extends DRGElement {
                            final @MapsTo("fontSet") FontSet fontSet,
                            final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
         super(id,
-              label,
               description,
               name);
         this.type = type;

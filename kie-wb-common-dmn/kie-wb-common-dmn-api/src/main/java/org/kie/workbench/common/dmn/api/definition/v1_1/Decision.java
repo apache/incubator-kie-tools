@@ -27,7 +27,6 @@ import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.Question;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
@@ -98,7 +97,6 @@ public class Decision extends DRGElement {
         @Override
         public Decision build() {
             return new Decision(new Id(),
-                                new Label(),
                                 new org.kie.workbench.common.dmn.api.property.dmn.Description(),
                                 new Name(),
                                 new Question(),
@@ -115,7 +113,6 @@ public class Decision extends DRGElement {
     }
 
     public Decision(final @MapsTo("id") Id id,
-                    final @MapsTo("label") Label label,
                     final @MapsTo("description") org.kie.workbench.common.dmn.api.property.dmn.Description description,
                     final @MapsTo("name") Name name,
                     final @MapsTo("question") Question question,
@@ -126,7 +123,6 @@ public class Decision extends DRGElement {
                     final @MapsTo("fontSet") FontSet fontSet,
                     final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
         super(id,
-              label,
               description,
               name);
         this.question = question;

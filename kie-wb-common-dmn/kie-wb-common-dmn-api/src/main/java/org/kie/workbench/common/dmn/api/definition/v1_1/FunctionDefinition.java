@@ -24,7 +24,6 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Label;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
@@ -48,19 +47,16 @@ public class FunctionDefinition extends Expression implements DMNPropertySet {
 
     public FunctionDefinition() {
         this(new Id(),
-             new Label(),
              new Description(),
              new QName(),
              new LiteralExpression());
     }
 
     public FunctionDefinition(final @MapsTo("id") Id id,
-                              final @MapsTo("label") Label label,
                               final @MapsTo("description") Description description,
                               final @MapsTo("typeRef") QName typeRef,
                               final @MapsTo("expression") Expression expression) {
         super(id,
-              label,
               description,
               typeRef);
         this.expression = expression;
