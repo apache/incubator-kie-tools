@@ -26,13 +26,8 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.l
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SelectorOptionsProviderTest {
@@ -51,10 +46,14 @@ public class SelectorOptionsProviderTest {
 
     @Before
     public void init() {
-        field.getOptions().add(new StringSelectorOption(VAL_1, VAL_1));
-        field.getOptions().add(new StringSelectorOption(VAL_2, VAL_2));
-        field.getOptions().add(new StringSelectorOption(VAL_3, VAL_3));
-        field.getOptions().add(new StringSelectorOption(VAL_4, VAL_4));
+        field.getOptions().add(new StringSelectorOption(VAL_1,
+                                                        VAL_1));
+        field.getOptions().add(new StringSelectorOption(VAL_2,
+                                                        VAL_2));
+        field.getOptions().add(new StringSelectorOption(VAL_3,
+                                                        VAL_3));
+        field.getOptions().add(new StringSelectorOption(VAL_4,
+                                                        VAL_4));
 
         field = spy(field);
         when(context.getModel()).thenReturn(field);
@@ -70,7 +69,8 @@ public class SelectorOptionsProviderTest {
         doTestVerifications(data);
 
         assertNotNull(data.getSelectedValue());
-        assertEquals(VAL_2, data.getSelectedValue());
+        assertEquals(VAL_2,
+                     data.getSelectedValue());
     }
 
     @Test
@@ -90,12 +90,14 @@ public class SelectorOptionsProviderTest {
         assertNotNull(data);
         assertNotNull(data.getValues());
         assertFalse(data.getValues().isEmpty());
-        assertEquals(field.getOptions().size(), data.getValues().size());
+        assertEquals(field.getOptions().size(),
+                     data.getValues().size());
 
         field.getOptions().forEach(option -> {
             String selectorText = data.getValues().get(option.getValue());
             assertNotNull(selectorText);
-            assertEquals(option.getText(), selectorText);
+            assertEquals(option.getText(),
+                         selectorText);
         });
     }
 }

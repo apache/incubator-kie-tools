@@ -28,7 +28,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
 import org.kie.workbench.common.forms.editor.type.FormResourceTypeDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.JavaModel;
+import org.kie.workbench.common.forms.model.JavaFormModel;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -73,8 +73,8 @@ public class VFSFormFinderServiceImpl implements VFSFormFinderService {
                              @Override
                              public boolean accepts(FormDefinition form) {
 
-                                 if (form.getModel() instanceof JavaModel) {
-                                     return ((JavaModel) form.getModel()).getType().equals(typeName);
+                                 if (form.getModel() instanceof JavaFormModel) {
+                                     return ((JavaFormModel) form.getModel()).getType().equals(typeName);
                                  }
 
                                  return false;

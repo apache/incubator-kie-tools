@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.editor.client.handler.formModel.FormModelCreationViewManager;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
-import org.kie.workbench.common.forms.model.DefaultFormModel;
+import org.kie.workbench.common.forms.model.impl.DefaultFormModel;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberElement;
 

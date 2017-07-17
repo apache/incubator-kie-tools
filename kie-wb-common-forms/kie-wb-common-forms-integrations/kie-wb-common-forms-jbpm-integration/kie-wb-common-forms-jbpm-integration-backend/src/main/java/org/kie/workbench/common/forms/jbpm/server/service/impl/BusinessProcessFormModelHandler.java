@@ -16,19 +16,35 @@
 
 package org.kie.workbench.common.forms.jbpm.server.service.impl;
 
+import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
+import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMProcessModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.jbpm.service.shared.BPMFinderService;
+import org.kie.workbench.common.forms.model.ModelProperty;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
+import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Dependent
 public class BusinessProcessFormModelHandler extends AbstractJBPMFormModelHandler<BusinessProcessFormModel> {
 
+    private static final Logger logger = LoggerFactory.getLogger(BusinessProcessFormModelHandler.class);
+
     @Inject
-    public BusinessProcessFormModelHandler(FieldManager fieldManager) {
-        super(fieldManager);
+    public BusinessProcessFormModelHandler(KieProjectService projectService,
+                                           ProjectClassLoaderHelper classLoaderHelper,
+                                           FieldManager fieldManager,
+                                           BPMFinderService bpmFinderService) {
+        super(projectService,
+              classLoaderHelper,
+              fieldManager,
+              bpmFinderService);
     }
 
     @Override
@@ -38,6 +54,23 @@ public class BusinessProcessFormModelHandler extends AbstractJBPMFormModelHandle
 
     @Override
     public FormModelHandler<BusinessProcessFormModel> newInstance() {
-        return new BusinessProcessFormModelHandler(fieldManager);
+        return new BusinessProcessFormModelHandler(projectService,
+                                                   classLoaderHelper,
+                                                   fieldManager,
+                                                   bpmFinderService);
+    }
+
+    @Override
+    protected List<ModelProperty> getCurrentModelProperties() {
+        JBPMProcessModel processModel = bpmFinderService.getModelForProcess(formModel.getProcessId(),
+                                                                            path);
+        return processModel.getProcessFormModel().getProperties();
+    }
+
+    @Override
+    protected void log(String message,
+                       Exception e) {
+        logger.warn(message,
+                    e);
     }
 }

@@ -32,7 +32,7 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FieldType;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormLayoutComponent;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 
@@ -105,7 +105,7 @@ public class AbstractFormGenerationTest {
                 assertEquals(fieldElement.getPreferredType(),
                              field.getFieldType().getClass());
             }
-            assertEquals(fieldElement.getTypeInfo().getType(),
+            assertEquals(fieldElement.getTypeInfo().getClassName(),
                          field.getStandaloneClassName());
             assertEquals(fieldElement.isReadOnly(),
                          field.getReadOnly());

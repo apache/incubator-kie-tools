@@ -23,7 +23,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.defi
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.definition.IntegerSliderDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.definition.SliderBaseDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeInfo;
 
 @Dependent
 public class SliderFieldProvider extends BasicTypeFieldProvider<SliderBaseDefinition> {
@@ -58,9 +58,9 @@ public class SliderFieldProvider extends BasicTypeFieldProvider<SliderBaseDefini
     }
 
     @Override
-    public SliderBaseDefinition createFieldByType(FieldDataType typeInfo) {
-        if (Integer.class.getName().equals(typeInfo.getType()) ||
-                int.class.getName().equals(typeInfo.getType())) {
+    public SliderBaseDefinition createFieldByType(TypeInfo typeInfo) {
+        if (Integer.class.getName().equals(typeInfo.getClassName()) ||
+                int.class.getName().equals(typeInfo.getClassName())) {
             return new IntegerSliderDefinition();
         }
         return new DoubleSliderDefinition();

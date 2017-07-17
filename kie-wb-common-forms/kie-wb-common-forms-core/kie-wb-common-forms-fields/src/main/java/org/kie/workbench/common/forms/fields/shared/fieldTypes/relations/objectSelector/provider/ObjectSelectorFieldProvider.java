@@ -22,8 +22,9 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.EntityR
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.ModelTypeFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.objectSelector.definition.ObjectSelectorFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.objectSelector.type.ObjectSelectorFieldType;
-import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.TypeInfo;
+import org.kie.workbench.common.forms.model.TypeKind;
 
 @Dependent
 public class ObjectSelectorFieldProvider implements ModelTypeFieldProvider<ObjectSelectorFieldDefinition> {
@@ -44,11 +45,11 @@ public class ObjectSelectorFieldProvider implements ModelTypeFieldProvider<Objec
     }
 
     @Override
-    public ObjectSelectorFieldDefinition getFieldByType(FieldDataType typeInfo) {
-        if (typeInfo.isEnum()) {
-            return null;
+    public ObjectSelectorFieldDefinition getFieldByType(TypeInfo typeInfo) {
+        if (typeInfo.getType().equals(TypeKind.OBJECT)) {
+            return getDefaultField();
         }
-        return getDefaultField();
+        return null;
     }
 
     @Override

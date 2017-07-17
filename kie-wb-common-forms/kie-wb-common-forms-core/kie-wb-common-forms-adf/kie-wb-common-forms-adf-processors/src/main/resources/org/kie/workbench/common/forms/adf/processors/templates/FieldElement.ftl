@@ -1,5 +1,5 @@
         private FormElement ${methodName}() {
-            FieldElement field = new FieldElement( "${fieldName}", "${binding}", new FieldDataType( "${className}", ${isList}, ${isEnum} ) );
+            FieldElement field = new FieldElement( "${fieldName}", "${binding}", new TypeInfoImpl( TypeKind.${type}, "${className}", ${isList}) );
             field.setPreferredType( ${preferredType}.class );
             field.setLabelKey( "${labelKey}" );
             field.setRequired( ${required} );

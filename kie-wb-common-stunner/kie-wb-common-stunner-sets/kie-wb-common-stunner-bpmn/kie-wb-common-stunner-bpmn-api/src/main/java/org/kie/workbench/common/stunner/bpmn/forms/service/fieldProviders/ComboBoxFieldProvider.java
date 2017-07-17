@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders;
 import javax.enterprise.inject.Model;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeInfo;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldType;
 
@@ -37,7 +37,7 @@ public class ComboBoxFieldProvider extends BasicTypeFieldProvider<ComboBoxFieldD
     }
 
     @Override
-    public ComboBoxFieldDefinition createFieldByType(FieldDataType typeInfo) {
+    public ComboBoxFieldDefinition createFieldByType(TypeInfo typeInfo) {
         return getDefaultField();
     }
 

@@ -40,7 +40,7 @@ public class TaskFormModelVisitor extends FormModelVisitor<TaskFormModel> implem
     public void index(TaskFormModel formModel) {
         addResourceReference(formModel.getProcessId(),
                              ResourceType.BPMN2);
-        formModel.getVariables().forEach(jbpmVariable -> addResourceReference(jbpmVariable.getType(),
-                                                                              ResourceType.JAVA));
+        formModel.getProperties().forEach(property -> addResourceReference(property.getTypeInfo().getClassName(),
+                                                                           ResourceType.JAVA));
     }
 }

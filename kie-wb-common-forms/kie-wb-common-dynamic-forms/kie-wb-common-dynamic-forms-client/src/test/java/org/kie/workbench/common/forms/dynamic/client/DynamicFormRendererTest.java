@@ -28,8 +28,6 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutCompon
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.widget.SubFormWidget;
 import org.kie.workbench.common.forms.dynamic.client.test.TestDynamicFormRenderer;
-import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
-import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContextGeneratorService;
 import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.forms.dynamic.test.model.Employee;
 import org.kie.workbench.common.forms.dynamic.test.util.TestFormGenerator;
@@ -37,9 +35,6 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 
 import static org.mockito.Mockito.*;
@@ -63,11 +58,10 @@ public class DynamicFormRendererTest extends TestCase {
     @Mock
     private MapModelBindingHelper helper;
 
+    @Mock
+    private DynamicFormModelGenerator dynamicFormModelGenerator;
+
     private DynamicFormRenderer.DynamicFormRendererView view;
-
-    private FormRenderingContextGeneratorService formRenderingContextGeneratorService;
-
-    private CallerMock<FormRenderingContextGeneratorService> transformer;
 
     private DynamicFormRenderer renderer;
 
@@ -78,15 +72,6 @@ public class DynamicFormRendererTest extends TestCase {
         component = mock(FieldLayoutComponent.class);
         view = mock(DynamicFormRenderer.DynamicFormRendererView.class);
         fieldRenderer = mock(FieldRenderer.class);
-        formRenderingContextGeneratorService = mock(FormRenderingContextGeneratorService.class);
-        transformer = new CallerMock<FormRenderingContextGeneratorService>(formRenderingContextGeneratorService);
-
-        when(formRenderingContextGeneratorService.createContext(any(Employee.class))).thenAnswer(new Answer<FormRenderingContext>() {
-            @Override
-            public FormRenderingContext answer(InvocationOnMock invocationOnMock) throws Throwable {
-                return TestFormGenerator.getContextForEmployee(employee);
-            }
-        });
 
         when(view.getFieldLayoutComponentForField(any(FieldDefinition.class))).thenReturn(component);
 
@@ -96,10 +81,11 @@ public class DynamicFormRendererTest extends TestCase {
         FormHandlerGeneratorManager generatorManager = new FormHandlerGeneratorManager(context -> formHandler,
                                                                                        context -> formHandler);
 
+        when(dynamicFormModelGenerator.getContextForModel(any())).thenReturn(TestFormGenerator.getContextForEmployee(employee));
+
         renderer = new TestDynamicFormRenderer(view,
-                                               transformer,
                                                generatorManager,
-                                               mock(DynamicFormModelGenerator.class));
+                                               dynamicFormModelGenerator);
         renderer.init();
         verify(view).setPresenter(renderer);
         renderer.asWidget();
@@ -134,7 +120,6 @@ public class DynamicFormRendererTest extends TestCase {
     }
 
     protected void doBind() {
-
         Command callback = mock(Command.class);
         renderer.renderDefaultForm(employee,
                                    callback);

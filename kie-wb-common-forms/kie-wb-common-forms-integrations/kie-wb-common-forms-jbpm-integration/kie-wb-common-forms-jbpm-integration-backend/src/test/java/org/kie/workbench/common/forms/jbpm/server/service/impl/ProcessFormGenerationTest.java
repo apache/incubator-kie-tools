@@ -20,9 +20,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.model.ModelProperty;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -35,10 +35,10 @@ public class ProcessFormGenerationTest extends BPMNFormGenerationTest<BusinessPr
 
     @Override
     protected BusinessProcessFormModel getModel(String modelId,
-                                                List<JBPMVariable> variables) {
+                                                List<ModelProperty> properties) {
         return new BusinessProcessFormModel(modelId,
                                             modelId,
-                                            variables);
+                                            properties);
     }
 
     @Override

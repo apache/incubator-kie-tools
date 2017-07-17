@@ -27,7 +27,7 @@ import org.kie.workbench.common.forms.adf.service.definitions.elements.FieldElem
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FieldType;
 import org.kie.workbench.common.forms.model.FormLayoutComponent;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 
 public abstract class AbstractFieldElementProcessor implements FormElementProcessor<FieldElement> {

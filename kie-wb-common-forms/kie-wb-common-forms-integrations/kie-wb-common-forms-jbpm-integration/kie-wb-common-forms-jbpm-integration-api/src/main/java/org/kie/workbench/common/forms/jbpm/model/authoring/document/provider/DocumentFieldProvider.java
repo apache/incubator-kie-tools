@@ -21,7 +21,8 @@ import javax.enterprise.context.Dependent;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.definition.DocumentFieldDefinition;
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.type.DocumentFieldType;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeInfo;
+import org.kie.workbench.common.forms.model.util.ModelPropertiesUtil;
 
 @Dependent
 public class DocumentFieldProvider extends BasicTypeFieldProvider<DocumentFieldDefinition> {
@@ -48,12 +49,12 @@ public class DocumentFieldProvider extends BasicTypeFieldProvider<DocumentFieldD
 
     @Override
     protected void doRegisterFields() {
-        registerPropertyType("org.jbpm.document.Document");
-        registerPropertyType("org.jbpm.document.service.impl.DocumentImpl");
+        registerPropertyType(DocumentFieldType.DOCUMENT_TYPE);
+        registerPropertyType(DocumentFieldType.DOCUMENT_IMPL_TYPE);
     }
 
     @Override
-    public DocumentFieldDefinition createFieldByType(FieldDataType typeInfo) {
+    public DocumentFieldDefinition createFieldByType(TypeInfo typeInfo) {
         return new DocumentFieldDefinition();
     }
 }

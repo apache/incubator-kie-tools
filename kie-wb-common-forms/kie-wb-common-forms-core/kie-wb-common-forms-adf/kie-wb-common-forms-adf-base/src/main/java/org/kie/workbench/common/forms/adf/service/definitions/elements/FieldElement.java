@@ -19,8 +19,8 @@ package org.kie.workbench.common.forms.adf.service.definitions.elements;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldType;
+import org.kie.workbench.common.forms.model.TypeInfo;
 
 /**
  * Definition of a FormElement that represents a field on the form.
@@ -29,7 +29,7 @@ public class FieldElement extends AbstractFormElement {
 
     private Class<? extends FieldType> preferredType = FieldType.class;
 
-    private FieldDataType typeInfo;
+    private TypeInfo typeInfo;
 
     private String labelKey;
 
@@ -43,7 +43,7 @@ public class FieldElement extends AbstractFormElement {
 
     public FieldElement(String name,
                         String binding,
-                        FieldDataType typeInfo) {
+                        TypeInfo typeInfo) {
         this.name = name;
         this.binding = binding;
         this.typeInfo = typeInfo;
@@ -53,7 +53,7 @@ public class FieldElement extends AbstractFormElement {
         return binding;
     }
 
-    public FieldDataType getTypeInfo() {
+    public TypeInfo getTypeInfo() {
         return typeInfo;
     }
 

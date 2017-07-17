@@ -16,14 +16,16 @@
 
 package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.authoring;
 
+import java.io.IOException;
+
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.junit.Before;
-import org.kie.workbench.common.forms.commons.layout.FormLayoutTemplateGenerator;
-import org.kie.workbench.common.forms.commons.layout.impl.StaticFormLayoutTemplateGenerator;
+import org.kie.workbench.common.forms.commons.shared.layout.FormLayoutTemplateGenerator;
+import org.kie.workbench.common.forms.commons.shared.layout.impl.StaticFormLayoutTemplateGenerator;
 import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
-import org.kie.workbench.common.forms.data.modeller.service.impl.DataModellerFieldGenerator;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerManager;
 import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
+import org.kie.workbench.common.forms.editor.service.shared.model.impl.FormModelSynchronizationUtilImpl;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.AbstractBPMNFormGeneratorServiceTest;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.test.TestFormModelHandlerManager;
@@ -31,7 +33,10 @@ import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.forms.serialization.impl.FieldSerializer;
 import org.kie.workbench.common.forms.serialization.impl.FormDefinitionSerializerImpl;
 import org.kie.workbench.common.forms.serialization.impl.FormModelSerializer;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
+import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -51,9 +56,9 @@ public abstract class BPMNVFSFormDefinitionGeneratorServiceTest extends Abstract
 
     protected FieldManager fieldManager = new TestFieldManager();
     protected FormLayoutTemplateGenerator templateGenerator = new StaticFormLayoutTemplateGenerator();
+
     @Mock
     protected DataObjectFinderService dataObjectFinderService;
-    protected DataModellerFieldGenerator dataModellerFieldGenerator;
     protected FormModelHandlerManager formModelHandlerManager;
     protected FormDefinitionSerializer formSerializer = new FormDefinitionSerializerImpl(new FieldSerializer(),
                                                                                          new FormModelSerializer());
@@ -61,8 +66,20 @@ public abstract class BPMNVFSFormDefinitionGeneratorServiceTest extends Abstract
     @Mock
     protected CommentedOptionFactory commentedOptionFactory;
 
+    @Mock
+    private KieProjectService projectService;
+
+    @Mock
+    private KieProject project;
+
+    @Mock
+    private ProjectClassLoaderHelper projectClassLoaderHelper;
+
     @Before
-    public void setup() {
+    public void setup() throws IOException {
+
+        when(projectService.resolveProject(any())).thenReturn(project);
+        when(projectClassLoaderHelper.getProjectClassLoader(project)).thenReturn(this.getClass().getClassLoader());
 
         source = mock(Path.class);
 
@@ -74,11 +91,10 @@ public abstract class BPMNVFSFormDefinitionGeneratorServiceTest extends Abstract
         when(commentedOptionFactory.makeCommentedOption(anyString())).then(invocationOnMock -> new CommentedOption("1",
                                                                                                                    invocationOnMock.getArguments()[0].toString()));
 
-        dataModellerFieldGenerator = new DataModellerFieldGenerator(fieldManager);
-
-        formModelHandlerManager = new TestFormModelHandlerManager(fieldManager,
-                                                                  dataObjectFinderService,
-                                                                  dataModellerFieldGenerator);
+        formModelHandlerManager = new TestFormModelHandlerManager(projectService,
+                                                                  projectClassLoaderHelper,
+                                                                  fieldManager,
+                                                                  dataObjectFinderService);
 
         service = new BPMNVFSFormDefinitionGeneratorService(fieldManager,
                                                             templateGenerator,
@@ -86,6 +102,7 @@ public abstract class BPMNVFSFormDefinitionGeneratorServiceTest extends Abstract
                                                             formFinderService,
                                                             formSerializer,
                                                             ioService,
-                                                            commentedOptionFactory);
+                                                            commentedOptionFactory,
+                                                            new FormModelSynchronizationUtilImpl(fieldManager, templateGenerator));
     }
 }

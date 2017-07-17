@@ -55,7 +55,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class FormDefinitionIndexerTest extends BaseIndexingTest<FormResourceTypeDefinition> {
 
-    private static final long WAIT_TIME_MILLIS = 2000;
+    private static final long WAIT_TIME_MILLIS = 5000;
 
     private static final int MAX_WAIT_TIMES = 8;
 

@@ -43,7 +43,7 @@ public class DataObjectFinderServiceImplFinderTest extends AbstractDataObjectFin
         assertEquals(DATA_OBJECT_VALID_FIELDS, properties.size());
 
         properties.forEach(property -> {
-            assertNotEquals(DataModellerFieldGenerator.SERIAL_VERSION_UID, property.getName());
+            assertNotEquals(DataObjectFormModelHandler.SERIAL_VERSION_UID, property.getName());
             assertNotEquals(PERSISTENCE_ID_PROPERTY, property.getName());
         });
     }

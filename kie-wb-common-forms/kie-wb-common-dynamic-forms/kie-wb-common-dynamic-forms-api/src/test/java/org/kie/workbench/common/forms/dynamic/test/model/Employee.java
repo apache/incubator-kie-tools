@@ -18,24 +18,17 @@ package org.kie.workbench.common.forms.dynamic.test.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
-import org.kie.workbench.common.forms.metaModel.TextArea;
 
 @Bindable
 @Portable
 public class Employee extends Person {
 
-    @FieldDef(label = "Married")
     private Boolean married;
 
-    @FieldDef(label = "Age", position = 4, property = "value")
     private Age age = new Age(18);
 
-    @FieldDef(label = "Address")
     private Address address = new Address();
 
-    @FieldDef(label = "Role Description")
-    @TextArea(placeHolder = "Role Description")
     private String roleDescription;
 
     public Boolean getMarried() {

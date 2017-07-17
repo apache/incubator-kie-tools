@@ -30,8 +30,10 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.l
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.IsCRUDDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableColumnMeta;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.type.MultipleSubFormFieldType;
-import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.TypeInfo;
+import org.kie.workbench.common.forms.model.TypeKind;
+import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 
 @Portable
 @Bindable
@@ -111,10 +113,10 @@ public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition impl
     }
 
     @Override
-    public FieldDataType getFieldTypeInfo() {
-        return new FieldDataType(standaloneClassName,
-                                 true,
-                                 false);
+    public TypeInfo getFieldTypeInfo() {
+        return new TypeInfoImpl(TypeKind.OBJECT,
+                                standaloneClassName,
+                                true);
     }
 
     @Override

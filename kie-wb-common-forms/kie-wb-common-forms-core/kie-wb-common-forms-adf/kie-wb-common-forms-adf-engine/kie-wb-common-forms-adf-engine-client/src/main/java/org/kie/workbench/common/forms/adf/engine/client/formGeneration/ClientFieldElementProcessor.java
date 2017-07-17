@@ -26,7 +26,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.AbstractFieldElementProcessor;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.FieldInitializer;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.util.PropertyValueExtractor;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
 
 @ApplicationScoped
 public class ClientFieldElementProcessor extends AbstractFieldElementProcessor {
@@ -41,8 +41,6 @@ public class ClientFieldElementProcessor extends AbstractFieldElementProcessor {
     @PostConstruct
     public void initialize() {
         Collection<SyncBeanDef<FieldInitializer>> initializers = IOC.getBeanManager().lookupBeans(FieldInitializer.class);
-        initializers.forEach(initializerDef -> {
-            registerInitializer(initializerDef.getInstance());
-        });
+        initializers.forEach(initializerDef -> registerInitializer(initializerDef.getInstance()));
     }
 }

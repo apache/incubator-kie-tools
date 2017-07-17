@@ -22,8 +22,8 @@ import javax.annotation.PostConstruct;
 
 import org.jboss.errai.common.client.api.Assert;
 import org.kie.workbench.common.forms.fields.shared.FieldProvider;
-import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.TypeInfo;
 
 public abstract class BasicTypeFieldProvider<FIELD extends FieldDefinition> implements FieldProvider<FIELD> {
 
@@ -54,7 +54,7 @@ public abstract class BasicTypeFieldProvider<FIELD extends FieldDefinition> impl
     }
 
     @Override
-    public FIELD getFieldByType(FieldDataType typeInfo) {
+    public FIELD getFieldByType(TypeInfo typeInfo) {
         if (typeInfo.getType() == null) {
             return getDefaultField();
         }
@@ -64,7 +64,7 @@ public abstract class BasicTypeFieldProvider<FIELD extends FieldDefinition> impl
         return null;
     }
 
-    public abstract FIELD createFieldByType(FieldDataType typeInfo);
+    public abstract FIELD createFieldByType(TypeInfo typeInfo);
 
     @Override
     public boolean isCompatible(FieldDefinition field) {
@@ -78,9 +78,9 @@ public abstract class BasicTypeFieldProvider<FIELD extends FieldDefinition> impl
         return isSupported(field.getFieldTypeInfo());
     }
 
-    protected boolean isSupported(FieldDataType typeInfo) {
+    protected boolean isSupported(TypeInfo typeInfo) {
         for (String type : supportedTypes) {
-            if (type.equals(typeInfo.getType())) {
+            if (type.equals(typeInfo.getClassName())) {
                 return true;
             }
         }

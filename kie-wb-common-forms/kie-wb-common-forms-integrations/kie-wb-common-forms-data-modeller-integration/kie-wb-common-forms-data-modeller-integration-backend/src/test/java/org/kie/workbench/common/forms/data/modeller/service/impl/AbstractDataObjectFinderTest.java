@@ -71,7 +71,7 @@ public abstract class AbstractDataObjectFinderTest extends AbstractDataObjectTes
                                              DATA_OBJECT_NAME);
 
         addProperty(dataObject,
-                    DataModellerFieldGenerator.SERIAL_VERSION_UID,
+                    DataObjectFormModelHandler.SERIAL_VERSION_UID,
                     Long.class.getName(),
                     false,
                     false);
@@ -81,7 +81,7 @@ public abstract class AbstractDataObjectFinderTest extends AbstractDataObjectTes
                                               Long.class.getName(),
                                               false,
                                               false);
-        property.addAnnotation(new AnnotationImpl(new AnnotationDefinitionImpl(DataModellerFieldGenerator.PERSISTENCE_ANNOTATION)));
+        property.addAnnotation(new AnnotationImpl(new AnnotationDefinitionImpl(DataObjectFormModelHandler.PERSISTENCE_ANNOTATION)));
 
         addProperty(dataObject,
                     NAME_PROPERTY,

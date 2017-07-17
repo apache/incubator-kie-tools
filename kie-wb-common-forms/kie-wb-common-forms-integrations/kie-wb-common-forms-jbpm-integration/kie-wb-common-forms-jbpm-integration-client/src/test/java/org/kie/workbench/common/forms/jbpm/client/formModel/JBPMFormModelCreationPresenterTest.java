@@ -25,12 +25,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.jbpm.client.resources.i18n.Constants;
-import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
+import org.kie.workbench.common.forms.jbpm.model.authoring.AbstractJBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMProcessModel;
-import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.jbpm.service.shared.BPMFinderService;
+import org.kie.workbench.common.forms.model.ModelProperty;
+import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
+import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
@@ -97,20 +99,17 @@ public class JBPMFormModelCreationPresenterTest {
         verify(finderService).getAvailableProcessModels(path);
         verify(view).setProcessModels(formModels);
 
-        presenter.setModel(new JBPMFormModel() {
+        presenter.setModel(new AbstractJBPMFormModel("processId",
+                                                     null) {
+
             @Override
             public String getFormName() {
                 return "testFormName";
             }
 
             @Override
-            public List<JBPMVariable> getVariables() {
-                return null;
-            }
-
-            @Override
             public String getName() {
-                return null;
+                return "test";
             }
         });
 
@@ -126,57 +125,43 @@ public class JBPMFormModelCreationPresenterTest {
     }
 
     protected void initFormModels() {
-        List<JBPMVariable> processVariables = new ArrayList<>();
+        List<ModelProperty> processVariables = new ArrayList<>();
 
-        JBPMVariable variable = new JBPMVariable("name",
-                                                 String.class.getName());
-        processVariables.add(variable);
-        variable = new JBPMVariable("age",
-                                    Integer.class.getName());
-        processVariables.add(variable);
-        variable = new JBPMVariable("twitter",
-                                    String.class.getName());
-        processVariables.add(variable);
-        variable = new JBPMVariable("offering",
-                                    Integer.class.getName());
-        processVariables.add(variable);
-        variable = new JBPMVariable("skills",
-                                    String.class.getName());
-        processVariables.add(variable);
-        variable = new JBPMVariable("mail",
-                                    String.class.getName());
-        processVariables.add(variable);
-        variable = new JBPMVariable("hr_score",
-                                    Integer.class.getName());
-        processVariables.add(variable);
-        variable = new JBPMVariable("tech_score",
-                                    Integer.class.getName());
-        processVariables.add(variable);
-        variable = new JBPMVariable("signed",
-                                    Boolean.class.getName());
-        processVariables.add(variable);
+        processVariables.add(new ModelPropertyImpl("name",
+                                                   new TypeInfoImpl(String.class.getName())));
+        processVariables.add(new ModelPropertyImpl("age",
+                                                   new TypeInfoImpl(Integer.class.getName())));
+        processVariables.add(new ModelPropertyImpl("twitter",
+                                                   new TypeInfoImpl(String.class.getName())));
+        processVariables.add(new ModelPropertyImpl("offering",
+                                                   new TypeInfoImpl(Integer.class.getName())));
+        processVariables.add(new ModelPropertyImpl("skills",
+                                                   new TypeInfoImpl(String.class.getName())));
+        processVariables.add(new ModelPropertyImpl("mail",
+                                                   new TypeInfoImpl(String.class.getName())));
+        processVariables.add(new ModelPropertyImpl("hr_score",
+                                                   new TypeInfoImpl(Integer.class.getName())));
+        processVariables.add(new ModelPropertyImpl("tech_score",
+                                                   new TypeInfoImpl(Integer.class.getName())));
+        processVariables.add(new ModelPropertyImpl("signed",
+                                                   new TypeInfoImpl(Boolean.class.getName())));
 
         BusinessProcessFormModel processFormModel = new BusinessProcessFormModel("hiring",
                                                                                  "hiring",
                                                                                  processVariables);
 
         TaskFormModel taskFormModel;
-        JBPMVariable taskVariable;
         List<TaskFormModel> processTasks = new ArrayList<>();
-        List<JBPMVariable> taskVariables = new ArrayList<>();
+        List<ModelProperty> taskVariables = new ArrayList<>();
 
-        taskVariable = new JBPMVariable("name",
-                                        String.class.getName());
-        taskVariables.add(taskVariable);
-        taskVariable = new JBPMVariable("age",
-                                        Integer.class.getName());
-        taskVariables.add(taskVariable);
-        taskVariable = new JBPMVariable("mail",
-                                        String.class.getName());
-        taskVariables.add(taskVariable);
-        taskVariable = new JBPMVariable("hr_score",
-                                        Integer.class.getName());
-        taskVariables.add(taskVariable);
+        taskVariables.add(new ModelPropertyImpl("name",
+                                                new TypeInfoImpl(String.class.getName())));
+        taskVariables.add(new ModelPropertyImpl("age",
+                                                new TypeInfoImpl(Integer.class.getName())));
+        taskVariables.add(new ModelPropertyImpl("mail",
+                                                new TypeInfoImpl(String.class.getName())));
+        taskVariables.add(new ModelPropertyImpl("hr_score",
+                                                new TypeInfoImpl(String.class.getName())));
 
         taskFormModel = new TaskFormModel("hiring",
                                           "HRInterview",
@@ -184,24 +169,18 @@ public class JBPMFormModelCreationPresenterTest {
         processTasks.add(taskFormModel);
 
         taskVariables = new ArrayList<>();
-        taskVariable = new JBPMVariable("name",
-                                        String.class.getName());
-        taskVariables.add(taskVariable);
-        taskVariable = new JBPMVariable("age",
-                                        Integer.class.getName());
-        taskVariables.add(taskVariable);
-        taskVariable = new JBPMVariable("mail",
-                                        String.class.getName());
-        taskVariables.add(taskVariable);
-        taskVariable = new JBPMVariable("skills",
-                                        String.class.getName());
-        taskVariables.add(taskVariable);
-        taskVariable = new JBPMVariable("tech_score",
-                                        Integer.class.getName());
-        taskVariables.add(taskVariable);
-        taskVariable = new JBPMVariable("twitter",
-                                        Integer.class.getName());
-        taskVariables.add(taskVariable);
+        taskVariables.add(new ModelPropertyImpl("name",
+                                                new TypeInfoImpl(String.class.getName())));
+        taskVariables.add(new ModelPropertyImpl("age",
+                                                new TypeInfoImpl(Integer.class.getName())));
+        taskVariables.add(new ModelPropertyImpl("mail",
+                                                new TypeInfoImpl(String.class.getName())));
+        taskVariables.add(new ModelPropertyImpl("skills",
+                                                new TypeInfoImpl(String.class.getName())));
+        taskVariables.add(new ModelPropertyImpl("tech_score",
+                                                new TypeInfoImpl(Integer.class.getName())));
+        taskVariables.add(new ModelPropertyImpl("twitter",
+                                                new TypeInfoImpl(String.class.getName())));
 
         taskFormModel = new TaskFormModel("hiring",
                                           "TechInterview",

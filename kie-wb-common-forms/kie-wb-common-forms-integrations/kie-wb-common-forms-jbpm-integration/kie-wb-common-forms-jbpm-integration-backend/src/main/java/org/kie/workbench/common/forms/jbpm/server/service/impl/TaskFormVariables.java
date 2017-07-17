@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import org.eclipse.bpmn2.UserTask;
-import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
+import org.kie.workbench.common.forms.model.ModelProperty;
 
 public class TaskFormVariables {
 
@@ -75,18 +77,18 @@ public class TaskFormVariables {
         }
     }
 
-    public TaskFormModel toFormModel() {
+    public TaskFormModel toFormModel(BiFunction<String, String, ModelProperty> converterFunction) {
 
         if (!isValid()) {
             return null;
         }
 
-        List<JBPMVariable> jbpmVariables = new ArrayList<>();
-        variables.forEach((variable, type) -> jbpmVariables.add(new JBPMVariable(variable,
-                                                                                 type)));
+        List<ModelProperty> properties = variables.entrySet().stream().map(entry -> converterFunction.apply(entry.getKey(),
+                                                                                                            entry.getValue())).collect(Collectors.toList());
+
         return new TaskFormModel(processId,
                                  taskName,
-                                 jbpmVariables);
+                                 properties);
     }
 
     public void merge(TaskFormVariables other) {

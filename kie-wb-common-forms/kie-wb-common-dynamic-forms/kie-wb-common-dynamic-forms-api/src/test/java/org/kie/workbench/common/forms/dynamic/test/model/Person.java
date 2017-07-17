@@ -20,22 +20,17 @@ import java.util.Date;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
 
 @Bindable
 @Portable
 public class Person {
 
-    @FieldDef(label = "Title", position = 0)
     private Title title;
 
-    @FieldDef(label = "Name", position = 1)
     private String name;
 
-    @FieldDef(label = "Surname")
     private String surname;
 
-    @FieldDef(label = "Birthday", position = 3)
     private Date birthday;
 
     public Title getTitle() {

@@ -23,7 +23,8 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.l
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.ListBoxBaseDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.StringListBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeInfo;
+import org.kie.workbench.common.forms.model.TypeKind;
 
 @Dependent
 public class ListBoxFieldProvider extends SelectorFieldProvider<ListBoxBaseDefinition> {
@@ -54,13 +55,13 @@ public class ListBoxFieldProvider extends SelectorFieldProvider<ListBoxBaseDefin
     }
 
     @Override
-    public ListBoxBaseDefinition createFieldByType(FieldDataType typeInfo) {
-        if (typeInfo.isEnum()) {
+    public ListBoxBaseDefinition createFieldByType(TypeInfo typeInfo) {
+        if (typeInfo.getType().equals(TypeKind.ENUM)) {
             return new EnumListBoxFieldDefinition();
         }
 
         for (String type : supportedTypes) {
-            if (type.equals(typeInfo.getType())) {
+            if (type.equals(typeInfo.getClassName())) {
                 return new StringListBoxFieldDefinition();
             }
         }
@@ -74,7 +75,7 @@ public class ListBoxFieldProvider extends SelectorFieldProvider<ListBoxBaseDefin
     }
 
     @Override
-    protected boolean isSupported(FieldDataType typeInfo) {
-        return super.isSupported(typeInfo) || typeInfo.isEnum();
+    protected boolean isSupported(TypeInfo typeInfo) {
+        return super.isSupported(typeInfo) || typeInfo.getType().equals(TypeKind.ENUM);
     }
 }

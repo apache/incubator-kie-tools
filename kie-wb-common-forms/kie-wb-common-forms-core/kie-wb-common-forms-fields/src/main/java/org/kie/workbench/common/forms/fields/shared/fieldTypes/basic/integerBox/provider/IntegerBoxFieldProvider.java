@@ -22,7 +22,7 @@ import javax.enterprise.context.Dependent;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.definition.IntegerBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.type.IntegerBoxFieldType;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeInfo;
 
 @Dependent
 public class IntegerBoxFieldProvider extends BasicTypeFieldProvider<IntegerBoxFieldDefinition> {
@@ -39,7 +39,6 @@ public class IntegerBoxFieldProvider extends BasicTypeFieldProvider<IntegerBoxFi
 
     @Override
     protected void doRegisterFields() {
-
         registerPropertyType(BigInteger.class);
         registerPropertyType(Byte.class);
         registerPropertyType(byte.class);
@@ -62,7 +61,7 @@ public class IntegerBoxFieldProvider extends BasicTypeFieldProvider<IntegerBoxFi
     }
 
     @Override
-    public IntegerBoxFieldDefinition createFieldByType(FieldDataType typeInfo) {
+    public IntegerBoxFieldDefinition createFieldByType(TypeInfo typeInfo) {
         return getDefaultField();
     }
 }

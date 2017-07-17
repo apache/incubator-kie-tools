@@ -28,7 +28,7 @@ import org.kie.workbench.common.forms.editor.client.editor.properties.binding.st
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.mockito.Mock;
 
 import static org.junit.Assert.*;

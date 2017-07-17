@@ -17,11 +17,16 @@
 package org.kie.workbench.common.forms.jbpm.client.resources.i18n;
 
 import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
+import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
+import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 
 public interface Constants {
 
     @TranslationKey(defaultValue = "Business Process")
-    public static final String Process = "JBPMFormModelCreationPresenter.Process";
+    public static final String Process = BusinessProcessFormModel.class.getName();
+
+    @TranslationKey(defaultValue = "")
+    public static final String Task = TaskFormModel.class.getName();
 
     @TranslationKey(defaultValue = "Start Process Form")
     public static final String JBPMFormModelCreationViewImplStartProcessForm = "JBPMFormModelCreationViewImpl.StartProcessForm";

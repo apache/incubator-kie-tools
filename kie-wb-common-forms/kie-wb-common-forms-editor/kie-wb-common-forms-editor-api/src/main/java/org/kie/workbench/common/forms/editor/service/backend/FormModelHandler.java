@@ -18,19 +18,22 @@ package org.kie.workbench.common.forms.editor.service.backend;
 
 import java.util.List;
 
+import org.kie.workbench.common.forms.editor.model.FormModelSynchronizationResult;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
+import org.kie.workbench.common.forms.model.HasFormModelProperties;
+import org.kie.workbench.common.forms.model.ModelProperty;
 import org.uberfire.backend.vfs.Path;
 
 /**
  * Handler class that is able to get {@link FieldDefinition} for a especific {@link FormModel}
  */
-public interface FormModelHandler<F extends FormModel> {
+public interface FormModelHandler<F extends HasFormModelProperties> {
 
     /**
      * Retrieves the supported {@link FormModel} type.
      */
-    public Class<F> getModelType();
+    Class<F> getModelType();
 
     /**
      * Initializes the FormModelHandler with the {@link FormModel} and a {@link Path} to get {@link FieldDefinition}.
@@ -39,17 +42,28 @@ public interface FormModelHandler<F extends FormModel> {
               Path path);
 
     /**
+     * Synchronizes the current {@link FormModel} properties and returns the result of the syncronization
+     */
+    FormModelSynchronizationResult synchronizeFormModel();
+
+    /**
+     * Synchronizes the given {@link FormModel} with the given List of {@link ModelProperty} and returns the result of the syncronization
+     */
+    FormModelSynchronizationResult synchronizeFormModelProperties(F formModel,
+                                                                  List<ModelProperty> newProperties);
+
+    /**
      * Retrieves the available {@link FieldDefinition} for the {@link FormModel} which it's been initialized
      */
-    public List<FieldDefinition> getAllFormModelFields();
+    List<FieldDefinition> getAllFormModelFields();
 
     /**
      * Creates a {@link FieldDefinition} for the given fieldName if the {@link FormModel} allows it.
      */
-    public FieldDefinition createFieldDefinition(String fieldName);
+    FieldDefinition createFieldDefinition(ModelProperty property);
 
     /**
      * Creates a new {@link FormModelHandler} instance.
      */
-    public FormModelHandler<F> newInstance();
+    FormModelHandler<F> newInstance();
 }

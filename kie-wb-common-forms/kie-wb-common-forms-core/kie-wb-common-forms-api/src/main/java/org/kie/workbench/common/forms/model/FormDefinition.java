@@ -91,6 +91,10 @@ public class FormDefinition {
         return getFieldBy(field -> field.getId().equals(fieldId));
     }
 
+    public FieldDefinition getFieldByBoundProperty(final ModelProperty property) {
+        return getFieldByBinding(property.getName());
+    }
+
     protected FieldDefinition getFieldBy(Predicate<FieldDefinition> predicate) {
         if (predicate != null) {
             Optional<FieldDefinition> result = fields.stream().filter(predicate).findFirst();

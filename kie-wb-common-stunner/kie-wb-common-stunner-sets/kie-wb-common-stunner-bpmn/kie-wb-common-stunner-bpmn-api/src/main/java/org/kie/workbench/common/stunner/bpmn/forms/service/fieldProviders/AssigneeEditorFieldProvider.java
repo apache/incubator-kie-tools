@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders;
 import javax.enterprise.inject.Model;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeInfo;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldType;
 
@@ -47,7 +47,7 @@ public class AssigneeEditorFieldProvider extends BasicTypeFieldProvider<Assignee
     }
 
     @Override
-    public AssigneeEditorFieldDefinition createFieldByType(FieldDataType typeInfo) {
+    public AssigneeEditorFieldDefinition createFieldByType(TypeInfo typeInfo) {
         return getDefaultField();
     }
 

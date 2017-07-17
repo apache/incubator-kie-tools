@@ -16,13 +16,14 @@
 
 package org.kie.workbench.common.forms.jbpm.server.service.impl;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.bpmn2.Assignment;
@@ -38,48 +39,66 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.UserTask;
 import org.jsoup.parser.Parser;
-import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.jbpm.server.service.BPMNFormModelGenerator;
 import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
+import org.kie.workbench.common.forms.model.ModelProperty;
+import org.kie.workbench.common.forms.model.util.ModelPropertiesUtil;
+import org.kie.workbench.common.forms.service.backend.util.ModelPropertiesGenerator;
+import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.backend.vfs.Path;
 
 @Dependent
 public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(BPMNFormModelGeneratorImpl.class);
 
-    @Override
-    public BusinessProcessFormModel generateProcessFormModel(Definitions source) {
+    private KieProjectService projectService;
+    private ProjectClassLoaderHelper projectClassLoaderHelper;
 
+    @Inject
+    public BPMNFormModelGeneratorImpl(KieProjectService projectService,
+                                      ProjectClassLoaderHelper projectClassLoaderHelper) {
+        this.projectService = projectService;
+        this.projectClassLoaderHelper = projectClassLoaderHelper;
+    }
+
+    @Override
+    public BusinessProcessFormModel generateProcessFormModel(Definitions source,
+                                                             Path path) {
         Process process = getProcess(source);
 
         if (process != null) {
 
-            List<JBPMVariable> variables = new ArrayList<>();
+            final ClassLoader projectClassLoader = projectClassLoaderHelper.getProjectClassLoader(projectService.resolveProject(path));
 
-            process.getProperties().forEach(prop -> {
-                String varName = prop.getId();
-                String varType = BPMNVariableUtils.getRealTypeForInput(prop.getItemSubjectRef().getStructureRef());
-
-                variables.add(new JBPMVariable(varName,
-                                               varType));
-            });
+            List<ModelProperty> properties = process.getProperties().stream().map(property -> {
+                String varName = property.getId();
+                String varType = BPMNVariableUtils.getRealTypeForInput(property.getItemSubjectRef().getStructureRef());
+                return createModelProperty(varName,
+                                           varType,
+                                           projectClassLoader);
+            }).collect(Collectors.toList());
 
             return new BusinessProcessFormModel(process.getId(),
                                                 process.getName(),
-                                                variables);
+                                                properties);
         }
 
         return null;
     }
 
     @Override
-    public List<TaskFormModel> generateTaskFormModels(Definitions source) {
+    public List<TaskFormModel> generateTaskFormModels(Definitions source,
+                                                      Path path) {
 
         Process process = getProcess(source);
+
+        final ClassLoader projectClassLoader = projectClassLoaderHelper.getProjectClassLoader(projectService.resolveProject(path));
 
         if (process != null) {
             ProcessTaskFormsGenerationResult result = readUserTaskFormVariables(process);
@@ -89,14 +108,26 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
                     return false;
                 }
                 return true;
-            }).map(TaskFormVariables::toFormModel).collect(Collectors.toList());
+            }).map(taskFormVariables -> taskFormVariables.toFormModel((BiFunction<String, String, ModelProperty>) (name, type) -> createModelProperty(name,
+                                                                                                                                                      type,
+                                                                                                                                                      projectClassLoader))).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
 
+    protected ModelProperty createModelProperty(String name,
+                                                String type,
+                                                ClassLoader classLoader) {
+        return ModelPropertiesGenerator.createModelProperty(name,
+                                                            type,
+                                                            ModelPropertiesUtil.isListType(type),
+                                                            classLoader);
+    }
+
     @Override
     public TaskFormModel generateTaskFormModel(Definitions source,
-                                               String taskId) {
+                                               String taskId,
+                                               Path path) {
         Process process = getProcess(source);
 
         if (process != null) {
@@ -112,7 +143,11 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
                     throw new IllegalStateException(generateErrorMessage(formVariables));
                 }
 
-                return formVariables.toFormModel();
+                final ClassLoader projectClassLoader = projectClassLoaderHelper.getProjectClassLoader(projectService.resolveProject(path));
+
+                return formVariables.toFormModel((name, type) -> createModelProperty(name,
+                                                                                     type,
+                                                                                     projectClassLoader));
             }
         }
         return null;
@@ -219,11 +254,13 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
             result.registerTaskFormVariables(userTask.getId(),
                                              formVariables);
         } else {
-            logger.warn("Cannot generate a form for task '{}' since it has no form name.", userTask.getName());
+            logger.warn("Cannot generate a form for task '{}' since it has no form name.",
+                        userTask.getName());
         }
     }
 
-    protected Process getProcess(Definitions source) {
+    @Override
+    public Process getProcess(Definitions source) {
         for (RootElement re : source.getRootElements()) {
             if (re instanceof Process) {
                 return (Process) re;

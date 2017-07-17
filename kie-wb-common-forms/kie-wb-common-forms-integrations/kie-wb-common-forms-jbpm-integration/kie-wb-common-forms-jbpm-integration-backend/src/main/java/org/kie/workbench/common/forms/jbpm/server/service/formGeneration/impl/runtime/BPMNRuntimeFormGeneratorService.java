@@ -30,16 +30,21 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
-import org.kie.workbench.common.forms.commons.layout.FormLayoutTemplateGenerator;
+import org.kie.workbench.common.forms.commons.shared.layout.FormLayoutTemplateGenerator;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.AbstractBPMNFormGeneratorService;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.GenerationContext;
 import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
-import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.JavaModel;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.model.JavaFormModel;
+import org.kie.workbench.common.forms.model.ModelProperty;
+import org.kie.workbench.common.forms.model.TypeInfo;
+import org.kie.workbench.common.forms.model.TypeKind;
+import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
+import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
+import org.kie.workbench.common.forms.model.util.ModelPropertiesUtil;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFactBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.FactBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
@@ -62,15 +67,13 @@ public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorSe
         form.setId(context.getFormModel().getFormName());
         form.setName(context.getFormModel().getFormName());
 
-        context.getFormModel().getVariables().forEach(variable -> {
+        context.getFormModel().getProperties().forEach(property -> {
 
-            if (!BPMNVariableUtils.isValidInputName(variable.getName())) {
+            if (!BPMNVariableUtils.isValidInputName(property.getName())) {
                 return;
             }
 
-            FieldDefinition field = generateFieldDefinition(variable.getName(),
-                                                            new FieldDataType(BPMNVariableUtils.getRealTypeForInput(
-                                                                    variable.getType())),
+            FieldDefinition field = generateFieldDefinition(property,
                                                             context);
             if (field != null) {
                 form.getFields().add(field);
@@ -83,7 +86,7 @@ public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorSe
     }
 
     @Override
-    protected List<FieldDefinition> extractModelFields(JavaModel formModel,
+    protected List<FieldDefinition> extractModelFields(JavaFormModel formModel,
                                                        GenerationContext<ClassLoader> context) {
         Class clazz;
 
@@ -113,7 +116,6 @@ public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorSe
                 if (modelField.getName().equals("this")) {
                     return;
                 }
-                FieldDataType info;
                 String fieldType = modelField.getClassName();
                 boolean isEnunm = oracle.getProjectJavaEnumDefinitions().get(modelType + "#" + modelField.getName()) != null;
                 boolean isList = DataType.TYPE_COLLECTION.equals(modelField.getType());
@@ -122,12 +124,18 @@ public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorSe
                     fieldType = oracle.getProjectFieldParametersType().get(modelType + "#" + modelField.getName());
                 }
 
-                info = new FieldDataType(fieldType,
-                                         isList,
-                                         isEnunm);
+                TypeKind typeKind = isEnunm ? TypeKind.ENUM : ModelPropertiesUtil.isBaseType(fieldType) ? TypeKind.BASE : TypeKind.OBJECT;
 
-                FieldDefinition field = generateFieldDefinition(modelField.getName(),
-                                                                info,
+                TypeInfo info = new TypeInfoImpl(typeKind,
+                                                 fieldType,
+                                                 isList);
+
+                ModelProperty modelProperty = new ModelPropertyImpl(modelField.getName(),
+                                                                    info);
+
+                formModel.getProperties().add(modelProperty);
+
+                FieldDefinition field = generateFieldDefinition(modelProperty,
                                                                 context);
                 if (field != null) {
                     formFields.add(field);
@@ -171,20 +179,21 @@ public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorSe
         return null;
     }
 
-    protected FieldDefinition generateFieldDefinition(String fieldName,
-                                                      FieldDataType typeInfo,
+    protected FieldDefinition generateFieldDefinition(ModelProperty property,
                                                       GenerationContext<ClassLoader> context) {
-        FieldDefinition field = fieldManager.getDefinitionByDataType(typeInfo);
+        FieldDefinition field = fieldManager.getDefinitionByDataType(property.getTypeInfo());
 
         if (field == null) {
             return null;
         }
 
+        String fieldName = property.getName();
+
         String label = fieldName.substring(0,
                                            1).toUpperCase() + fieldName.substring(1);
         field.setName(fieldName);
         field.setLabel(label);
-        field.setStandaloneClassName(typeInfo.getType());
+        field.setStandaloneClassName(property.getTypeInfo().getClassName());
         field.setBinding(fieldName);
 
         if (field instanceof HasPlaceHolder) {

@@ -6,6 +6,7 @@
 
   <inherits name="org.kie.workbench.common.forms.FormsAPI"/>
   <inherits name="org.kie.workbench.common.forms.editor.service.FormEditorServiceShared"/>
+  <inherits name="org.kie.workbench.common.forms.commons.LayoutTemplateGenerator"/>
 
   <source path="model"/>
   <source path="type"/>

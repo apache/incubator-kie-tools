@@ -79,7 +79,7 @@ public interface FormEditorConstants {
     String DataObjectsAdminViewImplRemove = "DataObjectsAdminViewImpl.remove";
 
     @TranslationKey(defaultValue = "")
-    String DataObjectsAdminViewImplDataObjectIsBindedMessage = "DataObjectsAdminViewImpl.dataObjectIsBindedMessage";
+    String DataObjectsAdminViewImplDataObjectIsBoundMessage = "DataObjectsAdminViewImpl.dataObjectIsBoundMessage";
 
     @TranslationKey(defaultValue = "")
     String DataObjectsAdminViewImplAreYouSureRemoveDataObject = "DataObjectsAdminViewImpl.areYouSureRemoveDataObject";
@@ -95,4 +95,25 @@ public interface FormEditorConstants {
 
     @TranslationKey(defaultValue = "")
     String DefaultFormModelLabel = "DefaultFormModel.label";
+
+    @TranslationKey(defaultValue = "Notification")
+    String ModelChangesDisplayerViewImplTitle = "ModelChangesDisplayerViewImpl.title";
+
+    @TranslationKey(defaultValue = "")
+    String PropertiesConflictsDisplayerViewIpmlRemoved1 = "PropertiesConflictsDisplayerViewIpml.removed1";
+
+    @TranslationKey(defaultValue = "")
+    String PropertiesConflictsDisplayerViewIpmlRemoved2 = "PropertiesConflictsDisplayerViewIpml.removed2";
+
+    @TranslationKey(defaultValue = "")
+    String PropertiesConflictsDisplayerViewIpmlTypeConflict1 = "PropertiesConflictsDisplayerViewIpml.typeConflict1";
+
+    @TranslationKey(defaultValue = "")
+    String PropertiesConflictsDisplayerViewIpmlTypeConflict2 = "PropertiesConflictsDisplayerViewIpml.typeConflict2";
+
+    @TranslationKey(defaultValue = "Show more")
+    String ConflictElementViewImplShowMore= "ConflictElementViewImpl.showMore";
+
+    @TranslationKey(defaultValue = "Show less")
+    String ConflictElementViewImplShowLess= "ConflictElementViewImpl.showLess";
 }

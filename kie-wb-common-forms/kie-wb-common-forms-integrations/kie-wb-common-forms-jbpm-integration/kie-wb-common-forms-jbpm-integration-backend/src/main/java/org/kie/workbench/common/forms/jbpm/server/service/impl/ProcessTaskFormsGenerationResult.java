@@ -22,7 +22,7 @@ public class ProcessTaskFormsGenerationResult {
     }
 
     public TaskFormVariables getTaskFormVariablesByTaskId(String taskId) {
-        if(!taskIdFormNameMap.containsKey(taskId)) {
+        if (!taskIdFormNameMap.containsKey(taskId)) {
             return null;
         }
         return getTaskFormVariablesByFormName(taskIdFormNameMap.get(taskId));
@@ -36,8 +36,10 @@ public class ProcessTaskFormsGenerationResult {
         return taskFormVariablesRegistry.values();
     }
 
-    public void registerTaskFormVariables(String taskId, TaskFormVariables taskFormVariables) {
-        taskIdFormNameMap.put(taskId, taskFormVariables.getTaskName());
+    public void registerTaskFormVariables(String taskId,
+                                          TaskFormVariables taskFormVariables) {
+        taskIdFormNameMap.put(taskId,
+                              taskFormVariables.getTaskName());
 
         Optional<TaskFormVariables> optional = Optional.ofNullable(getTaskFormVariablesByFormName(taskFormVariables.getTaskName()));
 
@@ -45,7 +47,8 @@ public class ProcessTaskFormsGenerationResult {
             optional.get().merge(taskFormVariables);
         } else {
             taskFormVariables.setProcessId(processId);
-            taskFormVariablesRegistry.put(taskFormVariables.getTaskName(), taskFormVariables);
+            taskFormVariablesRegistry.put(taskFormVariables.getTaskName(),
+                                          taskFormVariables);
         }
     }
 }

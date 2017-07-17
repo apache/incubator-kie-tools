@@ -25,7 +25,9 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeInfo;
+import org.kie.workbench.common.forms.model.TypeKind;
+import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 
 @Portable
 @Bindable
@@ -62,10 +64,10 @@ public class EnumListBoxFieldDefinition extends ListBoxBaseDefinition<EnumSelect
     }
 
     @Override
-    public FieldDataType getFieldTypeInfo() {
-        return new FieldDataType(standaloneClassName,
-                                 false,
-                                 true);
+    public TypeInfo getFieldTypeInfo() {
+        return new TypeInfoImpl(TypeKind.ENUM,
+                                standaloneClassName,
+                                false);
     }
 
     @Override

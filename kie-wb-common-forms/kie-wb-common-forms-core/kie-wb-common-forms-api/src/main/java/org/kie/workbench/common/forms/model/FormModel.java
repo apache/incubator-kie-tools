@@ -21,5 +21,8 @@ package org.kie.workbench.common.forms.model;
  */
 public interface FormModel {
 
+    /**
+     * Returns the name of the FormModel
+     */
     public String getName();
 }

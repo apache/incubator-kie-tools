@@ -17,7 +17,6 @@
 package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.test;
 
 import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
-import org.kie.workbench.common.forms.data.modeller.service.impl.DataModellerFieldGenerator;
 import org.kie.workbench.common.forms.data.modeller.service.impl.DataObjectFormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerManager;
@@ -26,33 +25,53 @@ import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.jbpm.server.service.impl.BusinessProcessFormModelHandler;
 import org.kie.workbench.common.forms.jbpm.server.service.impl.TaskFormModelHandler;
 import org.kie.workbench.common.forms.model.FormModel;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
+import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 
 public class TestFormModelHandlerManager implements FormModelHandlerManager {
+
+    private KieProjectService projectService;
+
+    private ProjectClassLoaderHelper projectClassLoaderHelper;
 
     private FieldManager fieldManager;
 
     private DataObjectFinderService finderService;
 
-    private DataModellerFieldGenerator dataModellerFieldGenerator;
-
-    public TestFormModelHandlerManager(FieldManager fieldManager,
-                                       DataObjectFinderService finderService,
-                                       DataModellerFieldGenerator dataModellerFieldGenerator) {
+    public TestFormModelHandlerManager(KieProjectService projectService,
+                                       ProjectClassLoaderHelper projectClassLoaderHelper,
+                                       FieldManager fieldManager,
+                                       DataObjectFinderService finderService) {
+        this.projectService = projectService;
+        this.projectClassLoaderHelper = projectClassLoaderHelper;
         this.fieldManager = fieldManager;
         this.finderService = finderService;
-        this.dataModellerFieldGenerator = dataModellerFieldGenerator;
+    }
+
+    public TestFormModelHandlerManager(FieldManager fieldManager,
+                                       DataObjectFinderService finderService) {
+        this.fieldManager = fieldManager;
+        this.finderService = finderService;
     }
 
     @Override
     public FormModelHandler getFormModelHandler(Class<? extends FormModel> clazz) {
         if (BusinessProcessFormModel.class.equals(clazz)) {
-            return new BusinessProcessFormModelHandler(fieldManager);
+            return new BusinessProcessFormModelHandler(projectService,
+                                                       projectClassLoaderHelper,
+                                                       fieldManager,
+                                                       null);
         }
         if (TaskFormModel.class.equals(clazz)) {
-            return new TaskFormModelHandler(fieldManager);
+            return new TaskFormModelHandler(projectService,
+                                            projectClassLoaderHelper,
+                                            fieldManager,
+                                            null);
         }
-        return new DataObjectFormModelHandler(finderService,
-                                              dataModellerFieldGenerator);
+        return new DataObjectFormModelHandler(projectService,
+                                              projectClassLoaderHelper,
+                                              finderService,
+                                              fieldManager);
     }
 }

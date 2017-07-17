@@ -18,30 +18,23 @@ package org.kie.workbench.common.forms.data.modeller.model;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.forms.model.FormModel;
-import org.kie.workbench.common.forms.model.JavaModel;
+import org.kie.workbench.common.forms.model.JavaFormModel;
+import org.kie.workbench.common.forms.model.impl.AbstractFormModel;
 
 @Portable
-public class DataObjectFormModel implements FormModel,
-                                            JavaModel {
+public class DataObjectFormModel extends AbstractFormModel implements
+                                                           JavaFormModel {
 
     private String className;
 
-    private String name;
+    private DataObjectFormModel() {
+        // Only for serialization purposes
+    }
 
     public DataObjectFormModel(@MapsTo("name") String name,
                                @MapsTo("className") String className) {
         this.name = name;
         this.className = className;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getClassName() {

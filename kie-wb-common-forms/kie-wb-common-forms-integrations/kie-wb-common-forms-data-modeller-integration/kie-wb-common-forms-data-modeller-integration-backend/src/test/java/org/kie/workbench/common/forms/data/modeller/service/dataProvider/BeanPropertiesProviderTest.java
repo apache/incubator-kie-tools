@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.data.modeller.service.impl.AbstractDataObjectFinderTest;
-import org.kie.workbench.common.forms.data.modeller.service.impl.DataModellerFieldGenerator;
+import org.kie.workbench.common.forms.data.modeller.service.impl.DataObjectFormModelHandler;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
@@ -33,15 +33,9 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableCo
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BeanPropertiesProviderTest extends AbstractDataObjectFinderTest {
@@ -87,21 +81,24 @@ public class BeanPropertiesProviderTest extends AbstractDataObjectFinderTest {
 
     @Test
     public void testSomeModelProperties() {
-        testGetModelProperties(NAME_PROPERTY, LAST_NAME_PROPERTY);
+        testGetModelProperties(NAME_PROPERTY,
+                               LAST_NAME_PROPERTY);
     }
 
     @Test
     public void testSomeModelPropertiesWithExistingColumn() {
         currentEditedMeta.setProperty(MARRIED_PROPERTY);
         currentEditedMeta.setLabel(MARRIED_PROPERTY);
-        testGetModelProperties(NAME_PROPERTY, LAST_NAME_PROPERTY);
+        testGetModelProperties(NAME_PROPERTY,
+                               LAST_NAME_PROPERTY);
     }
 
     protected void testGetModelProperties(String... columns) {
-         field = new MultipleSubFormFieldDefinition();
+        field = new MultipleSubFormFieldDefinition();
 
-        for(String column : columns) {
-            field.getColumnMetas().add(new TableColumnMeta(column, column));
+        for (String column : columns) {
+            field.getColumnMetas().add(new TableColumnMeta(column,
+                                                           column));
         }
 
         List<String> bannedColumns = new ArrayList<>(Arrays.asList(columns));
@@ -122,20 +119,22 @@ public class BeanPropertiesProviderTest extends AbstractDataObjectFinderTest {
 
         SelectorData data = provider.getSelectorData(context);
 
-        verify(service).getDataObjectProperties(any(), any());
+        verify(service).getDataObjectProperties(any(),
+                                                any());
 
         assertNotNull(data);
         assertNotNull(data.getValues());
         assertNull(data.getSelectedValue());
 
         assertFalse(data.getValues().isEmpty());
-        assertEquals(expectedFields, data.getValues().size());
+        assertEquals(expectedFields,
+                     data.getValues().size());
 
-        for(String column : bannedColumns) {
+        for (String column : bannedColumns) {
             assertNull(data.getValues().get(column));
         }
 
-        assertNull(data.getValues().get(DataModellerFieldGenerator.SERIAL_VERSION_UID));
+        assertNull(data.getValues().get(DataObjectFormModelHandler.SERIAL_VERSION_UID));
         assertNull(data.getValues().get(PERSISTENCE_ID_PROPERTY));
     }
 
@@ -143,7 +142,9 @@ public class BeanPropertiesProviderTest extends AbstractDataObjectFinderTest {
     public void testWithoutParentContext() {
         SelectorData data = provider.getSelectorData(context);
 
-        verify(service, never()).getDataObjectProperties(any(), any());
+        verify(service,
+               never()).getDataObjectProperties(any(),
+                                                any());
 
         assertNotNull(data);
         assertNotNull(data.getValues());

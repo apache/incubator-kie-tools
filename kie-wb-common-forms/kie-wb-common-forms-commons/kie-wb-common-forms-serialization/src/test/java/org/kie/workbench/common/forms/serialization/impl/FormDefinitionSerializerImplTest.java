@@ -26,9 +26,9 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.l
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
-import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
@@ -58,7 +58,7 @@ public class FormDefinitionSerializerImplTest extends TestCase {
 
         for (BasicTypeFieldProvider provider : fieldManager.getAllBasicTypeProviders()) {
             for (String type : provider.getSupportedTypes()) {
-                FieldDefinition field = provider.getFieldByType(new FieldDataType(type));
+                FieldDefinition field = provider.getFieldByType(new TypeInfoImpl(type));
 
                 assertNotNull(field);
 

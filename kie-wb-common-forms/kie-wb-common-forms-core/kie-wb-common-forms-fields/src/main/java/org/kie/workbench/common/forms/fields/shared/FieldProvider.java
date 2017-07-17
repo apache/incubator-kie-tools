@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.forms.fields.shared;
 
-import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FieldType;
+import org.kie.workbench.common.forms.model.TypeInfo;
 
 public interface FieldProvider<FIELD extends FieldDefinition> {
 
@@ -28,7 +28,7 @@ public interface FieldProvider<FIELD extends FieldDefinition> {
 
     FIELD getDefaultField();
 
-    FIELD getFieldByType(FieldDataType typeInfo);
+    FIELD getFieldByType(TypeInfo typeInfo);
 
     boolean isCompatible(FieldDefinition field);
 }

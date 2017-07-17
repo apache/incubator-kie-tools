@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,13 +17,13 @@ package org.kie.workbench.common.forms.editor.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.model.ModelProperty;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
@@ -32,8 +32,9 @@ public class FormModelerContent {
     private Path path;
     private Overview overview;
     private FormDefinition definition;
-    private List<String> modelProperties = new ArrayList<>();
-    private Map<String, List<FieldDefinition>> availableFields;
+    private FormModelSynchronizationResult synchronizationResult;
+    private List<ModelProperty> modelProperties = new ArrayList<>();
+    private List<FieldDefinition> availableFields = new ArrayList<>();
     private FormEditorRenderingContext renderingContext;
 
     public Path getPath() {
@@ -60,10 +61,6 @@ public class FormModelerContent {
         this.definition = definition;
     }
 
-    public void setAvailableFields(Map<String, List<FieldDefinition>> availableFields) {
-        this.availableFields = availableFields;
-    }
-
     public FormEditorRenderingContext getRenderingContext() {
         return renderingContext;
     }
@@ -72,11 +69,23 @@ public class FormModelerContent {
         this.renderingContext = renderingContext;
     }
 
-    public Map<String, List<FieldDefinition>> getAvailableFields() {
+    public FormModelSynchronizationResult getSynchronizationResult() {
+        return synchronizationResult;
+    }
+
+    public void setSynchronizationResult(FormModelSynchronizationResult synchronizationResult) {
+        this.synchronizationResult = synchronizationResult;
+    }
+
+    public void setAvailableFields(List<FieldDefinition> availableFields) {
+        this.availableFields = availableFields;
+    }
+
+    public List<FieldDefinition> getAvailableFields() {
         return availableFields;
     }
 
-    public List<String> getModelProperties() {
+    public List<ModelProperty> getModelProperties() {
         return modelProperties;
     }
 

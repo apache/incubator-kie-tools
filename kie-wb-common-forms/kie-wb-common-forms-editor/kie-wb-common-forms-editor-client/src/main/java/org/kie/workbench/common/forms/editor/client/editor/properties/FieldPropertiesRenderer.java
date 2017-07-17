@@ -33,7 +33,7 @@ import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingC
 import org.kie.workbench.common.forms.model.DynamicModel;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
 
 @Dependent
 public class FieldPropertiesRenderer implements IsWidget {

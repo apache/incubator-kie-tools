@@ -22,18 +22,22 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.jboss.errai.common.client.api.Assert;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.EntityRelationField;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
-import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FieldType;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.model.ModelProperty;
+import org.kie.workbench.common.forms.model.TypeInfo;
+import org.kie.workbench.common.forms.model.TypeKind;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,19 +113,21 @@ public abstract class AbstractFieldManager implements FieldManager {
     }
 
     @Override
-    public FieldDefinition getDefinitionByDataType(FieldDataType typeInfo) {
+    public FieldDefinition getDefinitionByDataType(TypeInfo typeInfo) {
 
-        for (BasicTypeFieldProvider basicProvider : basicProviders) {
-            FieldDefinition field = basicProvider.getFieldByType(typeInfo);
-            if (field != null) {
-                field.setStandaloneClassName(typeInfo.getType());
-                return field;
+        if (!TypeKind.OBJECT.equals(typeInfo.getType())) {
+            for (BasicTypeFieldProvider basicProvider : basicProviders) {
+                FieldDefinition field = basicProvider.getFieldByType(typeInfo);
+                if (field != null) {
+                    field.setStandaloneClassName(typeInfo.getClassName());
+                    return field;
+                }
             }
         }
 
         FieldProvider provider;
 
-        if (typeInfo.isList()) {
+        if (typeInfo.isMultiple()) {
             provider = multipleEntityTypeFieldProvider.get(defaultMultipleEntity);
         } else {
             provider = entityTypeFieldProvider.get(defaultSingleEntity);
@@ -129,8 +135,25 @@ public abstract class AbstractFieldManager implements FieldManager {
 
         if (provider != null) {
             FieldDefinition instance = provider.getFieldByType(typeInfo);
-            instance.setStandaloneClassName(typeInfo.getType());
+            instance.setStandaloneClassName(typeInfo.getClassName());
             return instance;
+        }
+        return null;
+    }
+
+    @Override
+    public FieldDefinition getDefinitionByModelProperty(ModelProperty modelProperty) {
+        Optional<FieldDefinition> optional = Optional.ofNullable(getDefinitionByDataType(modelProperty.getTypeInfo()));
+
+        if(optional.isPresent()) {
+            FieldDefinition fieldDefinition = optional.get();
+            fieldDefinition.setName(modelProperty.getName());
+            fieldDefinition.setBinding(modelProperty.getName());
+            fieldDefinition.setLabel(modelProperty.getName());
+            if (fieldDefinition instanceof HasPlaceHolder) {
+                ((HasPlaceHolder)fieldDefinition).setPlaceHolder(modelProperty.getName());
+            }
+            return fieldDefinition;
         }
         return null;
     }
@@ -139,7 +162,7 @@ public abstract class AbstractFieldManager implements FieldManager {
     public Collection<String> getCompatibleFields(FieldDefinition fieldDefinition) {
         if (fieldDefinition.getStandaloneClassName() != null) {
             if (fieldDefinition instanceof EntityRelationField) {
-                if (fieldDefinition.getFieldTypeInfo().isList()) {
+                if (fieldDefinition.getFieldTypeInfo().isMultiple()) {
                     return new TreeSet<>(multipleEntityTypeFieldProvider.keySet());
                 }
                 return new TreeSet<>(entityTypeFieldProvider.keySet());
@@ -155,7 +178,7 @@ public abstract class AbstractFieldManager implements FieldManager {
             return result;
         } else {
             if (fieldDefinition instanceof EntityRelationField) {
-                if (fieldDefinition.getFieldTypeInfo().isList()) {
+                if (fieldDefinition.getFieldTypeInfo().isMultiple()) {
                     return new TreeSet<>(multipleEntityTypeFieldProvider.keySet());
                 }
                 return new TreeSet<>(entityTypeFieldProvider.keySet());
@@ -173,7 +196,7 @@ public abstract class AbstractFieldManager implements FieldManager {
 
     @Override
     public FieldDefinition getFieldFromProvider(String typeCode,
-                                                FieldDataType typeInfo) {
+                                                TypeInfo typeInfo) {
         Assert.notNull("TypeInfo cannot be null",
                        typeInfo);
 
@@ -202,7 +225,7 @@ public abstract class AbstractFieldManager implements FieldManager {
 
     @Override
     public FieldDefinition getFieldFromProviderWithType(String typeCode,
-                                                        FieldDataType typeInfo) {
+                                                        TypeInfo typeInfo) {
         Assert.notNull("TypeCode cannot be null",
                        typeCode);
         Assert.notNull("TypeInfo cannot be null",
@@ -229,13 +252,13 @@ public abstract class AbstractFieldManager implements FieldManager {
 
     @Override
     public FieldDefinition getDefinitionByFieldType(Class<? extends FieldType> fieldType,
-                                                    FieldDataType typeInfo) {
+                                                    TypeInfo typeInfo) {
         FieldProvider provider = providerByFieldType.get(fieldType);
 
         if (provider != null) {
             FieldDefinition field = provider.getFieldByType(typeInfo);
             if (field != null) {
-                field.setStandaloneClassName(typeInfo.getType());
+                field.setStandaloneClassName(typeInfo.getClassName());
             }
             return field;
         }

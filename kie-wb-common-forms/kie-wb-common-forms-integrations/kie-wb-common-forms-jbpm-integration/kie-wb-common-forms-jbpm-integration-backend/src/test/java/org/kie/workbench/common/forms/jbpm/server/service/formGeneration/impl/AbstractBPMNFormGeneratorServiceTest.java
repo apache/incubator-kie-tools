@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.kie.workbench.common.forms.commons.layout.FormLayoutTemplateGenerator;
-import org.kie.workbench.common.forms.commons.layout.impl.StaticFormLayoutTemplateGenerator;
+import org.kie.workbench.common.forms.commons.shared.layout.FormLayoutTemplateGenerator;
+import org.kie.workbench.common.forms.commons.shared.layout.impl.StaticFormLayoutTemplateGenerator;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition.DatePickerFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.definition.DecimalBoxFieldDefinition;
@@ -31,7 +31,6 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipl
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
-import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.FormGenerationResult;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.Client;
@@ -39,7 +38,11 @@ import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.E
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.Line;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.model.ModelProperty;
+import org.kie.workbench.common.forms.model.TypeKind;
+import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
+import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
 
 import static org.junit.Assert.*;
 
@@ -63,22 +66,22 @@ public abstract class AbstractBPMNFormGeneratorServiceTest<SERVICE extends Abstr
     protected SOURCE source;
 
     protected void checkSimpleVariableForms() {
-        List<JBPMVariable> variableList = new ArrayList<>();
+        List<ModelProperty> properties = new ArrayList<>();
 
-        variableList.add(new JBPMVariable(TEXT_VARIABLE,
-                                          String.class.getName()));
-        variableList.add(new JBPMVariable(INTEGER_VARIABLE,
-                                          Integer.class.getName()));
-        variableList.add(new JBPMVariable(DOUBLE_VARIABLE,
-                                          Double.class.getName()));
-        variableList.add(new JBPMVariable(BOOLEAN_VARIABLE,
-                                          Boolean.class.getName()));
-        variableList.add(new JBPMVariable(DATE_VARIABLE,
-                                          Date.class.getName()));
+        properties.add(new ModelPropertyImpl(TEXT_VARIABLE,
+                                             new TypeInfoImpl(String.class.getName())));
+        properties.add(new ModelPropertyImpl(INTEGER_VARIABLE,
+                                             new TypeInfoImpl(Integer.class.getName())));
+        properties.add(new ModelPropertyImpl(DOUBLE_VARIABLE,
+                                             new TypeInfoImpl(Double.class.getName())));
+        properties.add(new ModelPropertyImpl(BOOLEAN_VARIABLE,
+                                             new TypeInfoImpl(Boolean.class.getName())));
+        properties.add(new ModelPropertyImpl(DATE_VARIABLE,
+                                             new TypeInfoImpl(Date.class.getName())));
 
         BusinessProcessFormModel model = new BusinessProcessFormModel(PROCESS_ID,
                                                                       PROCESS_ID,
-                                                                      variableList);
+                                                                      properties);
 
         FormGenerationResult result = service.generateForms(model,
                                                             source);
@@ -89,12 +92,12 @@ public abstract class AbstractBPMNFormGeneratorServiceTest<SERVICE extends Abstr
 
         checkRootForm(model,
                       result,
-                      variableList);
+                      properties);
     }
 
     protected void checkRootForm(JBPMFormModel model,
                                  FormGenerationResult result,
-                                 List<JBPMVariable> variableList) {
+                                 List<ModelProperty> variableList) {
         FormDefinition form = result.getRootForm();
 
         assertEquals(model,
@@ -111,7 +114,7 @@ public abstract class AbstractBPMNFormGeneratorServiceTest<SERVICE extends Abstr
                          field.getName());
             assertEquals(variable.getName(),
                          field.getBinding());
-            assertEquals(variable.getType(),
+            assertEquals(variable.getTypeInfo().getClassName(),
                          field.getStandaloneClassName());
         });
 
@@ -121,12 +124,14 @@ public abstract class AbstractBPMNFormGeneratorServiceTest<SERVICE extends Abstr
     }
 
     protected void launchNestedFormsTest() {
-        List<JBPMVariable> variableList = new ArrayList<>();
+        List<ModelProperty> variableList = new ArrayList<>();
 
-        variableList.add(new JBPMVariable(EXPENSE_VARIABLE,
-                                          Expense.class.getName()));
-        variableList.add(new JBPMVariable(TEXT_VARIABLE,
-                                          String.class.getName()));
+        variableList.add(new ModelPropertyImpl(EXPENSE_VARIABLE,
+                                               new TypeInfoImpl(TypeKind.OBJECT,
+                                                                Expense.class.getName(),
+                                                                false)));
+        variableList.add(new ModelPropertyImpl(TEXT_VARIABLE,
+                                               new TypeInfoImpl(String.class.getName())));
 
         BusinessProcessFormModel model = new BusinessProcessFormModel(PROCESS_ID,
                                                                       PROCESS_ID,

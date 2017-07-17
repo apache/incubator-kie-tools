@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.authoring;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -26,9 +27,7 @@ import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.E
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.Line;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -38,28 +37,25 @@ import static org.mockito.Mockito.*;
 public class NestedFormsBPMNVFSFormDefinitionGeneratorServiceTest extends BPMNVFSFormDefinitionGeneratorServiceTest {
 
     @Override
-    public void setup() {
+    public void setup() throws IOException {
         super.setup();
 
         when(dataObjectFinderService.getDataObject(anyString(),
-                                                   any())).then(new Answer<DataObject>() {
-            @Override
-            public DataObject answer(InvocationOnMock invocationOnMock) throws Throwable {
-                String className = invocationOnMock.getArguments()[0].toString();
+                                                   any())).then(invocationOnMock -> {
+            String className = invocationOnMock.getArguments()[0].toString();
 
-                if (Expense.class.getName().equals(className)) {
-                    return getExpenseDataObject();
-                }
-
-                if (Client.class.getName().equals(className)) {
-                    return getClientDataObject();
-                }
-
-                if (Line.class.getName().equals(className)) {
-                    return getLineDataObject();
-                }
-                return null;
+            if (Expense.class.getName().equals(className)) {
+                return getExpenseDataObject();
             }
+
+            if (Client.class.getName().equals(className)) {
+                return getClientDataObject();
+            }
+
+            if (Line.class.getName().equals(className)) {
+                return getLineDataObject();
+            }
+            return null;
         });
     }
 

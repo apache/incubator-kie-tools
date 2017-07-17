@@ -25,13 +25,12 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.forms.commons.layout.impl.DynamicFormLayoutTemplateGenerator;
+import org.kie.workbench.common.forms.commons.shared.layout.impl.DynamicFormLayoutTemplateGenerator;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.EnumListBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
-import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.runtime.BPMNRuntimeFormGeneratorService;
 import org.kie.workbench.common.forms.jbpm.server.service.impl.model.LogEntry;
 import org.kie.workbench.common.forms.jbpm.server.service.impl.model.Person;
@@ -40,7 +39,11 @@ import org.kie.workbench.common.forms.jbpm.server.service.impl.model.PersonalDat
 import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.JavaModel;
+import org.kie.workbench.common.forms.model.JavaFormModel;
+import org.kie.workbench.common.forms.model.ModelProperty;
+import org.kie.workbench.common.forms.model.TypeKind;
+import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
+import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -70,23 +73,23 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
     protected abstract String getModelId();
 
     protected abstract MODEL getModel(String modelId,
-                                      List<JBPMVariable> variables);
+                                      List<ModelProperty> variables);
 
     protected abstract Collection<FormDefinition> getModelForms(MODEL model,
                                                                 ClassLoader classLoader);
 
     @Test
     public void testSimpleVariables() {
-        List<JBPMVariable> variables = new ArrayList<>();
+        List<ModelProperty> variables = new ArrayList<>();
 
-        variables.add(new JBPMVariable("employee",
-                                       String.class.getName()));
-        variables.add(new JBPMVariable("manager",
-                                       String.class.getName()));
-        variables.add(new JBPMVariable("performance",
-                                       Integer.class.getName()));
-        variables.add(new JBPMVariable("approved",
-                                       Boolean.class.getName()));
+        variables.add(new ModelPropertyImpl("employee",
+                                            new TypeInfoImpl(String.class.getName())));
+        variables.add(new ModelPropertyImpl("manager",
+                                            new TypeInfoImpl(String.class.getName())));
+        variables.add(new ModelPropertyImpl("performance",
+                                            new TypeInfoImpl(Integer.class.getName())));
+        variables.add(new ModelPropertyImpl("approved",
+                                            new TypeInfoImpl(Boolean.class.getName())));
 
         model = getModel(getModelId(),
                          variables);
@@ -152,12 +155,14 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
                 fail("We shouldn't be here: " + e.getMessage());
             }
         }
-        List<JBPMVariable> variables = new ArrayList<>();
-        variables.add(new JBPMVariable("person",
-                                       Person.class.getName()));
+        List<ModelProperty> properties = new ArrayList<>();
+        properties.add(new ModelPropertyImpl("person",
+                                             new TypeInfoImpl(TypeKind.OBJECT,
+                                                              Person.class.getName(),
+                                                              false)));
 
         model = getModel(getModelId(),
-                         variables);
+                         properties);
 
         Collection<FormDefinition> forms = getModelForms(model,
                                                          classLoader);
@@ -200,8 +205,8 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
     protected FormDefinition findFormForModel(String className,
                                               Map<String, FormDefinition> allForms) {
         return allForms.values().stream().filter(formDefinition -> {
-            if (formDefinition.getModel() instanceof JavaModel) {
-                return ((JavaModel) formDefinition.getModel()).getType().equals(className);
+            if (formDefinition.getModel() instanceof JavaFormModel) {
+                return ((JavaFormModel) formDefinition.getModel()).getType().equals(className);
             }
             return false;
         }).findFirst().orElse(null);
@@ -270,7 +275,7 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
                                  Map<String, FormDefinition> allForms) {
         assertNotNull(form);
 
-        assertTrue(form.getModel() instanceof JavaModel);
+        assertTrue(form.getModel() instanceof JavaFormModel);
 
         assertEquals(4,
                      form.getFields().size());
@@ -336,10 +341,10 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
     }
 
     private void assertFieldStatus(FieldDefinition field,
-                                   JBPMVariable variable) {
+                                   ModelProperty variable) {
         assertFieldStatus(field,
                           variable.getName(),
-                          variable.getType());
+                          variable.getTypeInfo().getClassName());
     }
 
     private void assertFieldStatus(FieldDefinition field,

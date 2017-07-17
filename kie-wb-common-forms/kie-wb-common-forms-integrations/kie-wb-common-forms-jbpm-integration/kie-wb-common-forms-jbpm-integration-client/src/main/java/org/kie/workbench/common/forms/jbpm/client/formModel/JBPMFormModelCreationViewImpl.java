@@ -72,9 +72,12 @@ public class JBPMFormModelCreationViewImpl implements JBPMFormModelCreationView,
 
             if (model != null) {
                 if (model instanceof BusinessProcessFormModel) {
-                    result = translationService.format(Constants.JBPMFormModelCreationViewImplStartProcessForm, model.getFormName());
+                    result = translationService.format(Constants.JBPMFormModelCreationViewImplStartProcessForm,
+                                                       model.getFormName());
                 } else if (model instanceof TaskFormModel) {
-                    result = translationService.format(Constants.JBPMFormModelCreationViewImplTaskName, ((TaskFormModel) model).getTaskName(), model.getFormName());
+                    result = translationService.format(Constants.JBPMFormModelCreationViewImplTaskName,
+                                                       ((TaskFormModel) model).getTaskName(),
+                                                       model.getFormName());
                 }
             }
 

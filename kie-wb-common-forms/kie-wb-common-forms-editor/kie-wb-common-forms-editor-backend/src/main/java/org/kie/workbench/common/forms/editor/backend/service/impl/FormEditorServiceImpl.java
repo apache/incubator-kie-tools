@@ -15,10 +15,7 @@
  */
 package org.kie.workbench.common.forms.editor.backend.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -31,6 +28,7 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.kie.workbench.common.forms.editor.model.FormModelSynchronizationResult;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerManager;
@@ -41,8 +39,9 @@ import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
+import org.kie.workbench.common.forms.model.HasFormModelProperties;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
@@ -168,45 +167,46 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
 
             FormDefinition form = findForm(kiePath);
 
-            FormModelerContent result = new FormModelerContent();
-            result.setDefinition(form);
-            result.setPath(path);
-            result.setOverview(overview);
+            FormModelerContent formModelConent = new FormModelerContent();
+            formModelConent.setDefinition(form);
+            formModelConent.setPath(path);
+            formModelConent.setOverview(overview);
 
             FormEditorRenderingContext context = createRenderingContext(form,
                                                                         path);
 
-            result.setRenderingContext(context);
+            formModelConent.setRenderingContext(context);
 
-            if (form.getModel() != null) {
+            if (Optional.ofNullable(form.getModel()).isPresent() && form.getModel() instanceof HasFormModelProperties) {
 
-                FormModelHandler formModelHandler = getHandlerForForm(form,
-                                                                      path);
+                HasFormModelProperties formModel = (HasFormModelProperties) form.getModel();
 
-                if (formModelHandler != null) {
-                    List<FieldDefinition> modelFields = formModelHandler.getAllFormModelFields();
+                Optional<FormModelHandler> modelOptional = getHandlerForForm(form,
+                                                                             path);
+                if (modelOptional.isPresent()) {
 
-                    Map<String, List<FieldDefinition>> availableFields = new HashMap<String, List<FieldDefinition>>();
-                    List<FieldDefinition> availableModelFields = new ArrayList<>();
+                    FormModelHandler formModelHandler = modelOptional.get();
 
-                    availableFields.put(form.getModel().getName(),
-                                        availableModelFields);
+                    FormModelSynchronizationResult synchronizationResult = formModelHandler.synchronizeFormModel();
 
-                    modelFields.forEach(fieldDefinition -> {
-                        result.getModelProperties().add(fieldDefinition.getBinding());
-                        if (form.getFieldByName(fieldDefinition.getName()) == null) {
-                            availableModelFields.add(fieldDefinition);
+                    formModel.getProperties().forEach(property -> {
+                        Optional<FieldDefinition> fieldOptional = Optional.ofNullable(form.getFieldByBinding(property.getName()));
+                        if (!fieldOptional.isPresent()) {
+                            formModelConent.getAvailableFields().add(formModelHandler.createFieldDefinition(property));
+                            synchronizationResult.resolveConflict(property.getName());
                         }
                     });
 
-                    result.setAvailableFields(availableFields);
+                    formModelConent.setSynchronizationResult(synchronizationResult);
+
+                    formModelConent.getModelProperties().addAll(formModel.getProperties());
                 }
             }
 
             resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
                                                              sessionInfo));
 
-            return result;
+            return formModelConent;
         } catch (Exception e) {
             log.warn("Error loading form " + path.toURI(),
                      e);
@@ -242,15 +242,19 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
         return form;
     }
 
-    protected FormModelHandler getHandlerForForm(FormDefinition form,
-                                                 Path path) {
+    protected Optional<FormModelHandler> getHandlerForForm(FormDefinition form,
+                                                           Path path) {
+
+        if (!(form.getModel() instanceof HasFormModelProperties)) {
+            return Optional.empty();
+        }
 
         Optional<FormModelHandler> optional = Optional.ofNullable(modelHandlerManager.getFormModelHandler(form.getModel().getClass()));
 
         if (optional.isPresent()) {
-            optional.get().init(form.getModel(),
+            optional.get().init((HasFormModelProperties) form.getModel(),
                                 path);
         }
-        return optional.orElse(null);
+        return optional;
     }
 }

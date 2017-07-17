@@ -18,20 +18,33 @@ package org.kie.workbench.common.forms.jbpm.server.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import org.kie.workbench.common.forms.editor.service.backend.impl.AbstractFormModelHandler;
+import org.apache.commons.lang3.StringUtils;
+import org.kie.workbench.common.forms.editor.backend.service.impl.AbstractFormModelHandler;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
-import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.jbpm.service.shared.BPMFinderService;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.model.ModelProperty;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
+import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 
 public abstract class AbstractJBPMFormModelHandler<M extends JBPMFormModel> extends AbstractFormModelHandler<M> {
 
     protected FieldManager fieldManager;
 
-    public AbstractJBPMFormModelHandler(FieldManager fieldManager) {
+    protected BPMFinderService bpmFinderService;
+
+    public AbstractJBPMFormModelHandler(KieProjectService projectService,
+                                        ProjectClassLoaderHelper classLoaderHelper,
+                                        FieldManager fieldManager,
+                                        BPMFinderService bpmFinderService) {
+        super(projectService,
+              classLoaderHelper);
         this.fieldManager = fieldManager;
+        this.bpmFinderService = bpmFinderService;
     }
 
     @Override
@@ -43,13 +56,12 @@ public abstract class AbstractJBPMFormModelHandler<M extends JBPMFormModel> exte
     protected List<FieldDefinition> doGenerateModelFields() {
         List<FieldDefinition> fields = new ArrayList<>();
 
-        formModel.getVariables().forEach(variable -> {
-            FieldDefinition field = fieldManager.getDefinitionByDataType(new FieldDataType(variable.getType()));
+        formModel.getProperties().forEach(property -> {
+            FieldDefinition field = fieldManager.getDefinitionByDataType(property.getTypeInfo());
 
             if (field != null) {
-                field.setName(variable.getName());
-                field.setBinding(variable.getName());
-                field.setLabel(variable.getName());
+                initFieldDefinition(field,
+                                    property);
                 fields.add(field);
             }
         });
@@ -58,18 +70,28 @@ public abstract class AbstractJBPMFormModelHandler<M extends JBPMFormModel> exte
     }
 
     @Override
-    protected FieldDefinition doCreateFieldDefinition(String fieldName) {
+    protected FieldDefinition doCreateFieldDefinition(ModelProperty property) {
+        Optional<ModelProperty> optional = formModel.getProperties().stream().filter(modelProperty -> modelProperty.getName().equals(property.getName())).findFirst();
 
-        for (JBPMVariable variable : formModel.getVariables()) {
-            FieldDefinition field = fieldManager.getDefinitionByDataType(new FieldDataType(variable.getType()));
-
-            if (field != null) {
-                field.setName(variable.getName());
-                field.setBinding(variable.getName());
-                field.setLabel(variable.getName());
-                return field;
-            }
+        if (optional.isPresent()) {
+            FieldDefinition field = fieldManager.getDefinitionByDataType(property.getTypeInfo());
+            initFieldDefinition(field,
+                                property);
+            return field;
         }
+
         return null;
+    }
+
+    protected void initFieldDefinition(FieldDefinition field,
+                                       ModelProperty property) {
+        String label = StringUtils.capitalize(property.getName());
+        field.setId(property.getName());
+        field.setName(property.getName());
+        field.setLabel(label);
+        field.setBinding(property.getName());
+        if (field instanceof HasPlaceHolder) {
+            ((HasPlaceHolder) field).setPlaceHolder(label);
+        }
     }
 }

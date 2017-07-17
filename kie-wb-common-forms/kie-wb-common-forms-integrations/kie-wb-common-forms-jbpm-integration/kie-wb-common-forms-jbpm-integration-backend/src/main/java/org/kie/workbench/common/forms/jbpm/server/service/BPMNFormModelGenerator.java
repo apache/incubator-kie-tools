@@ -19,15 +19,34 @@ package org.kie.workbench.common.forms.jbpm.server.service;
 import java.util.List;
 
 import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.Process;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
+import org.uberfire.backend.vfs.Path;
 
 public interface BPMNFormModelGenerator {
 
-    BusinessProcessFormModel generateProcessFormModel(Definitions source);
+    /**
+     * Generates a {@link BusinessProcessFormModel} for the given Definitions
+     */
+    BusinessProcessFormModel generateProcessFormModel(Definitions source,
+                                                      Path path);
 
-    List<TaskFormModel> generateTaskFormModels(Definitions source);
+    /**
+     * Generates a List with all the {@link TaskFormModel} on the given Definitions
+     */
+    List<TaskFormModel> generateTaskFormModels(Definitions source,
+                                               Path path);
 
+    /**
+     * Generates the {@link TaskFormModel} on the Definitions for a given taskId
+     */
     TaskFormModel generateTaskFormModel(Definitions source,
-                                        String taskId);
+                                        String taskId,
+                                        Path path);
+
+    /**
+     * Gets the Process from the Definitions
+     */
+    Process getProcess(Definitions source);
 }

@@ -15,7 +15,7 @@ import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.validation.DynamicModelConstraints;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.validation.FieldConstraint;
-import org.kie.workbench.common.forms.model.JavaModel;
+import org.kie.workbench.common.forms.model.JavaFormModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +37,8 @@ public class ContextModelConstraintsExtractorImpl implements ContextModelConstra
         }
 
         clientRenderingContext.getAvailableForms().values().forEach(formDefinition -> {
-            if (formDefinition.getModel() instanceof JavaModel) {
-                JavaModel javaModel = (JavaModel) formDefinition.getModel();
+            if (formDefinition.getModel() instanceof JavaFormModel) {
+                JavaFormModel javaModel = (JavaFormModel) formDefinition.getModel();
 
                 if (clientRenderingContext.getModelConstraints().containsKey(javaModel)) {
                     return;

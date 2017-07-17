@@ -3,14 +3,22 @@
   "model": {
     "processId": "processId",
     "processName": "processId",
-    "variables": [
+    "properties": [
       {
         "name": "text",
-        "type": "java.lang.String"
+        "typeInfo": {
+          "type": "BASE",
+          "className": "java.lang.String",
+          "multiple": false
+        }
       },
       {
         "name": "integer",
-        "type": "java.lang.Integer"
+        "typeInfo": {
+          "type": "BASE",
+          "className": "java.lang.Integer",
+          "multiple": false
+        }
       }
     ],
     "formModelType": "org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel"

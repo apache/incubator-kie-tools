@@ -39,7 +39,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.def
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.mockito.Mock;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
@@ -326,7 +326,7 @@ public class EditorFieldLayoutComponentTest {
     }
 
     @Test
-    public void testOnPressOkBinded() {
+    public void testOnPressOkBound() {
         testOnPressOk(true,
                       false);
     }
@@ -338,17 +338,17 @@ public class EditorFieldLayoutComponentTest {
     }
 
     @Test
-    public void testOnPressOkBindedWithContext() {
+    public void testOnPressOkBoundWithContext() {
         testOnPressOk(true,
                       true);
     }
 
-    protected void testOnPressOk(boolean binded,
+    protected void testOnPressOk(boolean bound,
                                  boolean withConfigContext) {
         FieldDefinition fieldCopy = setupFormEditorHelper();
         ModalConfigurationContext ctx = mock(ModalConfigurationContext.class);
 
-        if (binded) {
+        if (bound) {
             when(fieldCopy.getBinding()).thenReturn(BINDING_FIRSTNAME);
         }
         if (withConfigContext) {
@@ -362,7 +362,7 @@ public class EditorFieldLayoutComponentTest {
                    editorFieldLayoutComponent.getField());
         verify(syncPaletteEvent).fire(any());
         verify(formEditorHelper,
-               binded ? times(1) : times(0)).removeAvailableField(any());
+               bound ? times(1) : times(0)).removeAvailableField(any());
         verify(ctx,
                withConfigContext ? times(1) : times(0)).configurationFinished();
     }

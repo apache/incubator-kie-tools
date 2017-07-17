@@ -23,8 +23,9 @@ import org.kie.workbench.common.forms.fields.shared.MultipleValueFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.ModelTypeFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.type.MultipleSubFormFieldType;
-import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.TypeInfo;
+import org.kie.workbench.common.forms.model.TypeKind;
 
 @Dependent
 public class MultipleSubFormFieldProvider
@@ -47,8 +48,11 @@ public class MultipleSubFormFieldProvider
     }
 
     @Override
-    public MultipleSubFormFieldDefinition getFieldByType(FieldDataType typeInfo) {
-        return new MultipleSubFormFieldDefinition();
+    public MultipleSubFormFieldDefinition getFieldByType(TypeInfo typeInfo) {
+        if (typeInfo.getType().equals(TypeKind.OBJECT) && typeInfo.isMultiple()) {
+            return new MultipleSubFormFieldDefinition();
+        }
+        return null;
     }
 
     @Override

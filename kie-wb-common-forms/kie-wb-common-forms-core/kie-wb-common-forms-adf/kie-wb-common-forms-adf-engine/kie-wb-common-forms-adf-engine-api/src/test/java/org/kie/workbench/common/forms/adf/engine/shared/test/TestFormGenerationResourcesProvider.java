@@ -32,7 +32,8 @@ import org.kie.workbench.common.forms.adf.service.definitions.layout.LayoutColum
 import org.kie.workbench.common.forms.adf.service.definitions.layout.LayoutDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeKind;
+import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 
 public class TestFormGenerationResourcesProvider implements FormGenerationResourcesProvider {
 
@@ -51,7 +52,7 @@ public class TestFormGenerationResourcesProvider implements FormGenerationResour
 
         FieldElement name = new FieldElement("name",
                                              "name",
-                                             new FieldDataType(String.class.getName()));
+                                             new TypeInfoImpl(String.class.getName()));
         name.setLabelKey("name.label");
         name.setReadOnly(false);
         name.setRequired(true);
@@ -62,7 +63,7 @@ public class TestFormGenerationResourcesProvider implements FormGenerationResour
 
         FieldElement lastName = new FieldElement("lastName",
                                                  "lastName",
-                                                 new FieldDataType(String.class.getName()));
+                                                 new TypeInfoImpl(String.class.getName()));
         lastName.setPreferredType(TextAreaFieldType.class);
         lastName.setLabelKey("lastName.label");
         lastName.setReadOnly(false);
@@ -74,7 +75,7 @@ public class TestFormGenerationResourcesProvider implements FormGenerationResour
 
         FieldElement birthDay = new FieldElement("birthDay",
                                                  "birthDay",
-                                                 new FieldDataType(Date.class.getName()));
+                                                 new TypeInfoImpl(Date.class.getName()));
         birthDay.setLabelKey("birthDay.label");
         birthDay.setReadOnly(false);
         birthDay.setRequired(false);
@@ -83,14 +84,14 @@ public class TestFormGenerationResourcesProvider implements FormGenerationResour
 
         FieldElement married = new FieldElement("married",
                                                 "married",
-                                                new FieldDataType(Boolean.class.getName()));
+                                                new TypeInfoImpl(Boolean.class.getName()));
         married.setLabelKey("married.label");
         married.setReadOnly(false);
         married.setRequired(false);
 
         FieldElement height = new FieldElement("height",
                                                "height.value",
-                                               new FieldDataType(Double.class.getName()));
+                                               new TypeInfoImpl(Double.class.getName()));
         height.setPreferredType(SliderFieldType.class);
         height.setLabelKey("height.label");
         height.setReadOnly(false);
@@ -98,7 +99,7 @@ public class TestFormGenerationResourcesProvider implements FormGenerationResour
 
         FieldElement weight = new FieldElement("weight",
                                                "weight.value",
-                                               new FieldDataType(Integer.class.getName()));
+                                               new TypeInfoImpl(Integer.class.getName()));
         weight.setPreferredType(SliderFieldType.class);
         weight.setLabelKey("weight.label");
         weight.setReadOnly(false);
@@ -106,16 +107,15 @@ public class TestFormGenerationResourcesProvider implements FormGenerationResour
 
         FieldElement address = new FieldElement("address",
                                                 "address",
-                                                new FieldDataType(Address.class.getName()));
+                                                new TypeInfoImpl(TypeKind.OBJECT, Address.class.getName(), false));
         address.setLabelKey("address.label");
         address.setReadOnly(false);
         address.setRequired(false);
 
         FieldElement weapons = new FieldElement("weapons",
                                                 "weapons",
-                                                new FieldDataType(Weapon.class.getName(),
-                                                                  true,
-                                                                  false));
+                                                new TypeInfoImpl(TypeKind.OBJECT, Weapon.class.getName(),
+                                                                 true));
         weapons.setLabelKey("weapons.label");
         weapons.setReadOnly(false);
         weapons.setRequired(false);
@@ -133,7 +133,7 @@ public class TestFormGenerationResourcesProvider implements FormGenerationResour
         addressSettings.setLayout(new LayoutDefinition(new LayoutColumnDefinition(ColSpan.AUTO)));
         FieldElement street = new FieldElement("street",
                                                "street",
-                                               new FieldDataType(String.class.getName()));
+                                               new TypeInfoImpl(String.class.getName()));
         street.setLabelKey("street.label");
         street.setReadOnly(false);
         street.setRequired(true);
@@ -143,7 +143,7 @@ public class TestFormGenerationResourcesProvider implements FormGenerationResour
                                "street.placeHolder");
         FieldElement number = new FieldElement("number",
                                                "number",
-                                               new FieldDataType(Integer.class.getName()));
+                                               new TypeInfoImpl(Integer.class.getName()));
         number.setLabelKey("number.label");
         number.setReadOnly(false);
         number.setRequired(true);
@@ -153,7 +153,7 @@ public class TestFormGenerationResourcesProvider implements FormGenerationResour
                                "number.placeHolder");
         FieldElement city = new FieldElement("city",
                                              "city",
-                                             new FieldDataType(String.class.getName()));
+                                             new TypeInfoImpl(String.class.getName()));
         city.setLabelKey("city.label");
         city.setReadOnly(false);
         city.setRequired(true);
@@ -170,7 +170,7 @@ public class TestFormGenerationResourcesProvider implements FormGenerationResour
         weaponSettings.setLayout(new LayoutDefinition(new LayoutColumnDefinition(ColSpan.AUTO)));
         FieldElement weaponName = new FieldElement("name",
                                                    "name",
-                                                   new FieldDataType(String.class.getName()));
+                                                   new TypeInfoImpl(String.class.getName()));
         weaponName.setLabelKey("name.label");
         weaponName.setReadOnly(false);
         weaponName.setRequired(true);
@@ -180,7 +180,7 @@ public class TestFormGenerationResourcesProvider implements FormGenerationResour
                                    "name.placeHolder");
         FieldElement damage = new FieldElement("damage",
                                                "damage",
-                                               new FieldDataType(Integer.class.getName()));
+                                               new TypeInfoImpl(Integer.class.getName()));
         damage.setLabelKey("damage.label");
         damage.setReadOnly(false);
         damage.setRequired(true);

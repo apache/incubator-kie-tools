@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.data.modeller.client.resources.i18n.DataModellerIntegrationConstants;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
-import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
+import org.kie.workbench.common.forms.data.modeller.service.DataObjectFormModelCreationService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
 
@@ -36,9 +36,9 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class DataObjectFormModelCreationPresenterTest {
 
-    private DataObjectFinderService finderService;
+    private DataObjectFormModelCreationService dataObjectFormModelCreationService;
 
-    private CallerMock<DataObjectFinderService> finderServiceCallerMock;
+    private CallerMock<DataObjectFormModelCreationService> dataObjectFormModelCreationServiceCallerMock;
 
     private DataObjectFormModelCreationView view;
 
@@ -64,17 +64,17 @@ public class DataObjectFormModelCreationPresenterTest {
         formModels.add(new DataObjectFormModel("department",
                                                "org.kie.wb.test.Department"));
 
-        finderService = mock(DataObjectFinderService.class);
+        dataObjectFormModelCreationService = mock(DataObjectFormModelCreationService.class);
 
-        when(finderService.getAvailableDataObjects(path)).thenReturn(formModels);
+        when(dataObjectFormModelCreationService.getAvailableDataObjects(path)).thenReturn(formModels);
 
-        finderServiceCallerMock = new CallerMock<>(finderService);
+        dataObjectFormModelCreationServiceCallerMock = new CallerMock<>(dataObjectFormModelCreationService);
 
         view = mock(DataObjectFormModelCreationView.class);
 
         translationService = mock(TranslationService.class);
 
-        presenter = new DataObjectFormModelCreationPresenterManager(finderServiceCallerMock,
+        presenter = new DataObjectFormModelCreationPresenterManager(dataObjectFormModelCreationServiceCallerMock,
                                                                     view,
                                                                     translationService);
     }
@@ -91,7 +91,7 @@ public class DataObjectFormModelCreationPresenterTest {
         presenter.getLabel();
         verify(translationService).getTranslation(DataModellerIntegrationConstants.DataObject);
 
-        verify(finderService).getAvailableDataObjects(path);
+        verify(dataObjectFormModelCreationService).getAvailableDataObjects(path);
         verify(view).setFormModels(formModels);
 
         boolean valid = presenter.isValid();

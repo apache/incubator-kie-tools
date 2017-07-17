@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.forms.service.fieldProviders;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeInfo;
 import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldDefinition;
 import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldType;
 
@@ -34,7 +34,7 @@ public class ColorPickerFieldProvider extends BasicTypeFieldProvider<ColorPicker
     }
 
     @Override
-    public ColorPickerFieldDefinition createFieldByType(FieldDataType typeInfo) {
+    public ColorPickerFieldDefinition createFieldByType(TypeInfo typeInfo) {
         return getDefaultField();
     }
 

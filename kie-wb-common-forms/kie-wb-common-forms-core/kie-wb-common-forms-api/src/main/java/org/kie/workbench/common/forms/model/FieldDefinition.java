@@ -48,7 +48,7 @@ public interface FieldDefinition {
 
     void setStandaloneClassName(String standaloneClassName);
 
-    FieldDataType getFieldTypeInfo();
+    TypeInfo getFieldTypeInfo();
 
     Boolean getValidateOnChange();
 

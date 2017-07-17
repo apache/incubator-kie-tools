@@ -21,7 +21,7 @@ import javax.enterprise.context.Dependent;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.type.CheckBoxFieldType;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeInfo;
 
 @Dependent
 public class CheckBoxFieldProvider extends BasicTypeFieldProvider<CheckBoxFieldDefinition> {
@@ -48,7 +48,7 @@ public class CheckBoxFieldProvider extends BasicTypeFieldProvider<CheckBoxFieldD
     }
 
     @Override
-    public CheckBoxFieldDefinition createFieldByType(FieldDataType typeInfo) {
+    public CheckBoxFieldDefinition createFieldByType(TypeInfo typeInfo) {
         return getDefaultField();
     }
 

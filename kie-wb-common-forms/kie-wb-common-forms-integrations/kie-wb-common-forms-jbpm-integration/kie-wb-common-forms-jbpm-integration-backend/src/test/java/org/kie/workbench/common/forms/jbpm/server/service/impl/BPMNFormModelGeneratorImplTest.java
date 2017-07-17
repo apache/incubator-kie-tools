@@ -22,16 +22,28 @@ import java.util.Map;
 
 import org.eclipse.bpmn2.Definitions;
 import org.jbpm.simulation.util.BPMN2Utils;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.jbpm.model.authoring.AbstractJBPMFormModel;
-import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
+import org.kie.workbench.common.forms.model.ModelProperty;
+import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class BPMNFormModelGeneratorImplTest {
 
     private static final String
@@ -82,6 +94,21 @@ public class BPMNFormModelGeneratorImplTest {
             CUSTOM_TYPE);
     }};
 
+    @Mock
+    private Path path;
+
+    @Mock
+    private KieProjectService projectService;
+
+    @Mock
+    private KieProject project;
+
+    @Mock
+    private ProjectClassLoaderHelper projectClassLoaderHelper;
+
+    @Mock
+    private ClassLoader projectClassLoader;
+
     private static BPMNFormModelGeneratorImpl generator;
 
     private static Definitions
@@ -92,23 +119,34 @@ public class BPMNFormModelGeneratorImplTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        generator = new BPMNFormModelGeneratorImpl();
-
         processWithoutVariablesDefinitions = BPMN2Utils.getDefinitions(BPMNFormModelGeneratorImplTest.class.getResourceAsStream(RESOURCES_PATH + PROCESS_WITHOUT_VARIABLES_NAME + BPMN2_SUFFIX));
         processWithAllVariablesDefinitions = BPMN2Utils.getDefinitions(BPMNFormModelGeneratorImplTest.class.getResourceAsStream(RESOURCES_PATH + PROCESS_WITH_ALL_VARIABLES_NAME + BPMN2_SUFFIX));
         processWithSharedForms = BPMN2Utils.getDefinitions(BPMNFormModelGeneratorImplTest.class.getResourceAsStream(RESOURCES_PATH + PROCESS_WITH_SHARED_FORMS_NAME + BPMN2_SUFFIX));
         processWithSharedFormsWrongMappings = BPMN2Utils.getDefinitions(BPMNFormModelGeneratorImplTest.class.getResourceAsStream(RESOURCES_PATH + PROCESS_WITH_SHARED_FORMS_WRONG_MAPPINGS_NAME + BPMN2_SUFFIX));
     }
 
+    @Before
+    public void init() throws ClassNotFoundException {
+        when(projectService.resolveProject(any())).thenReturn(project);
+        when(project.getRootPath()).thenReturn(path);
+        when(projectClassLoaderHelper.getProjectClassLoader(project)).thenReturn(projectClassLoader);
+        when(projectClassLoader.loadClass(anyString())).thenAnswer(invocation -> Object.class);
+
+        generator = new BPMNFormModelGeneratorImpl(projectService,
+                                                   projectClassLoaderHelper);
+    }
+
     @Test
     public void testGenerateAllForProcessWithoutProcessVariables() {
         //generate all = generateProcessFormModel + generateTaskFormModels
-        BusinessProcessFormModel processFormModel = generator.generateProcessFormModel(processWithoutVariablesDefinitions);
+        BusinessProcessFormModel processFormModel = generator.generateProcessFormModel(processWithoutVariablesDefinitions,
+                                                                                       path);
         assertProcessFormModelFieldsAreCorrect(processFormModel,
                                                PROCESS_WITHOUT_VARIABLES_NAME);
-        assertTrue(processFormModel.getVariables().isEmpty());
+        assertTrue(processFormModel.getProperties().isEmpty());
 
-        List<TaskFormModel> taskFormModels = generator.generateTaskFormModels(processWithoutVariablesDefinitions);
+        List<TaskFormModel> taskFormModels = generator.generateTaskFormModels(processWithoutVariablesDefinitions,
+                                                                              path);
         assertTrue(taskFormModels.isEmpty());
     }
 
@@ -132,13 +170,15 @@ public class BPMNFormModelGeneratorImplTest {
         }};
 
         //generate all = generateProcessFormModel + generateTaskFormModels
-        BusinessProcessFormModel processFormModel = generator.generateProcessFormModel(processWithAllVariablesDefinitions);
+        BusinessProcessFormModel processFormModel = generator.generateProcessFormModel(processWithAllVariablesDefinitions,
+                                                                                       path);
         assertProcessFormModelFieldsAreCorrect(processFormModel,
                                                PROCESS_WITH_ALL_VARIABLES_NAME);
         assertJBPMVariablesAreCorrect(processFormModel,
                                       EXPECTED_PROCESS_VARIABLES);
 
-        List<TaskFormModel> taskFormModels = generator.generateTaskFormModels(processWithAllVariablesDefinitions);
+        List<TaskFormModel> taskFormModels = generator.generateTaskFormModels(processWithAllVariablesDefinitions,
+                                                                              path);
         final int EXPECTED_NUMBER_OF_HUMAN_TASKS = 5; // taskOnlyWithOutputs-taskform, emptyTask-taskform, taskOnlyWithInputs-taskform, taskWithDifferentInputsAndOutputs-taskform, taskWithTheSameInputsAndOutputs-taskform
         assertEquals("Forms should be generated for all human tasks including tasks in subprocesses and swimlanes",
                      EXPECTED_NUMBER_OF_HUMAN_TASKS,
@@ -152,11 +192,12 @@ public class BPMNFormModelGeneratorImplTest {
                 TASK_NAME = "emptyTask";
 
         TaskFormModel taskFormModel = generator.generateTaskFormModel(processWithAllVariablesDefinitions,
-                                                                      TASK_ID);
+                                                                      TASK_ID,
+                                                                      path);
         assertTaskFormModelIsCorrect(taskFormModel,
                                      PROCESS_WITH_ALL_VARIABLES_ID,
                                      TASK_NAME);
-        assertTrue(taskFormModel.getVariables().isEmpty());
+        assertTrue(taskFormModel.getProperties().isEmpty());
     }
 
     @Test
@@ -170,7 +211,8 @@ public class BPMNFormModelGeneratorImplTest {
         }};
 
         TaskFormModel taskFormModel = generator.generateTaskFormModel(processWithAllVariablesDefinitions,
-                                                                      TASK_ID);
+                                                                      TASK_ID,
+                                                                      path);
         assertTaskFormModelIsCorrect(taskFormModel,
                                      PROCESS_WITH_ALL_VARIABLES_ID,
                                      TASK_NAME);
@@ -200,7 +242,8 @@ public class BPMNFormModelGeneratorImplTest {
         }};
 
         TaskFormModel taskFormModel = generator.generateTaskFormModel(processWithAllVariablesDefinitions,
-                                                                      TASK_ID);
+                                                                      TASK_ID,
+                                                                      path);
         assertTaskFormModelIsCorrect(taskFormModel,
                                      PROCESS_WITH_ALL_VARIABLES_ID,
                                      TASK_NAME);
@@ -213,7 +256,8 @@ public class BPMNFormModelGeneratorImplTest {
         final String TASK_ID = "_9F3A7665-E7EF-4DC2-94F1-F9D20A38547E",
                 TASK_NAME = "taskOnlyWithInputs";
         TaskFormModel taskFormModel = generator.generateTaskFormModel(processWithAllVariablesDefinitions,
-                                                                      TASK_ID);
+                                                                      TASK_ID,
+                                                                      path);
         assertTaskFormModelIsCorrect(taskFormModel,
                                      PROCESS_WITH_ALL_VARIABLES_ID,
                                      TASK_NAME);
@@ -228,7 +272,8 @@ public class BPMNFormModelGeneratorImplTest {
                 TASK_NAME = "taskOnlyWithOutputs";
 
         TaskFormModel taskFormModel = generator.generateTaskFormModel(processWithAllVariablesDefinitions,
-                                                                      TASK_ID);
+                                                                      TASK_ID,
+                                                                      path);
         assertTaskFormModelIsCorrect(taskFormModel,
                                      PROCESS_WITH_ALL_VARIABLES_ID,
                                      TASK_NAME);
@@ -245,7 +290,8 @@ public class BPMNFormModelGeneratorImplTest {
 
         for (int i = 0; i < TASK_IDS.length; i++) {
             generatedModels[i] = generator.generateTaskFormModel(processWithSharedForms,
-                                                                 TASK_IDS[i]);
+                                                                 TASK_IDS[i],
+                                                                 path);
             assertNotNull(generatedModels[i]);
             assertTaskFormModelIsCorrect(generatedModels[i],
                                          PROCESS_WITH_SHARED_FORMS_ID,
@@ -260,7 +306,8 @@ public class BPMNFormModelGeneratorImplTest {
 
         final int EXPECTED_MODELS = 2;
 
-        List<TaskFormModel> generatedModels = generator.generateTaskFormModels(processWithSharedForms);
+        List<TaskFormModel> generatedModels = generator.generateTaskFormModels(processWithSharedForms,
+                                                                               path);
 
         assertNotNull(generatedModels);
 
@@ -271,8 +318,8 @@ public class BPMNFormModelGeneratorImplTest {
             assertNotNull(formModel);
             assertEquals(PROCESS_WITH_SHARED_FORMS_ID,
                          formModel.getProcessId());
-            assertNotNull(formModel.getVariables());
-            assertFalse(formModel.getVariables().isEmpty());
+            assertNotNull(formModel.getProperties());
+            assertFalse(formModel.getProperties().isEmpty());
             if (formModel.getFormName().equals(TASK_NAME + BPMNVariableUtils.TASK_FORM_SUFFIX)) {
                 checkExpectedMergedFormVariables(formModel);
             }
@@ -289,7 +336,8 @@ public class BPMNFormModelGeneratorImplTest {
         for (int i = 0; i < TASK_IDS.length; i++) {
             try {
                 generator.generateTaskFormModel(processWithSharedFormsWrongMappings,
-                                                TASK_IDS[i]);
+                                                TASK_IDS[i],
+                                                path);
 
                 fail("We shouldn't be here, the form generation should break!");
             } catch (Exception ex) {
@@ -307,7 +355,8 @@ public class BPMNFormModelGeneratorImplTest {
 
         final int EXPECTED_MODELS = 1;
 
-        List<TaskFormModel> generatedModels = generator.generateTaskFormModels(processWithSharedFormsWrongMappings);
+        List<TaskFormModel> generatedModels = generator.generateTaskFormModels(processWithSharedFormsWrongMappings,
+                                                                               path);
 
         assertNotNull(generatedModels);
 
@@ -318,8 +367,8 @@ public class BPMNFormModelGeneratorImplTest {
             assertNotNull(formModel);
             assertEquals(PROCESS_WITH_SHARED_FORMS_WRONG_MAPPINGS_ID,
                          formModel.getProcessId());
-            assertNotNull(formModel.getVariables());
-            assertFalse(formModel.getVariables().isEmpty());
+            assertNotNull(formModel.getProperties());
+            assertFalse(formModel.getProperties().isEmpty());
             assertNotEquals(TASK_NAME + BPMNVariableUtils.TASK_FORM_SUFFIX,
                             formModel.getFormName());
         }
@@ -337,11 +386,11 @@ public class BPMNFormModelGeneratorImplTest {
                            Boolean.class.getName());
 
         assertEquals(EXPECTED_TYPES.size(),
-                     formModel.getVariables().size());
-        for (JBPMVariable variable : formModel.getVariables()) {
-            assertNotNull(EXPECTED_TYPES.get(variable.getName()));
-            assertEquals(EXPECTED_TYPES.get(variable.getName()),
-                         variable.getType());
+                     formModel.getProperties().size());
+        for (ModelProperty property : formModel.getProperties()) {
+            assertNotNull(EXPECTED_TYPES.get(property.getName()));
+            assertEquals(EXPECTED_TYPES.get(property.getName()),
+                         property.getTypeInfo().getClassName());
         }
     }
 
@@ -357,9 +406,9 @@ public class BPMNFormModelGeneratorImplTest {
     private void assertJBPMVariablesAreCorrect(AbstractJBPMFormModel formModel,
                                                Map<String, String> expectedVariables) {
         Map<String, String> actualVariables = new HashMap<>();
-        for (JBPMVariable variable : formModel.getVariables()) {
-            actualVariables.put(variable.getName(),
-                                variable.getType());
+        for (ModelProperty modelProperty : formModel.getProperties()) {
+            actualVariables.put(modelProperty.getName(),
+                                modelProperty.getTypeInfo().getClassName());
         }
         assertEquals(expectedVariables,
                      actualVariables);

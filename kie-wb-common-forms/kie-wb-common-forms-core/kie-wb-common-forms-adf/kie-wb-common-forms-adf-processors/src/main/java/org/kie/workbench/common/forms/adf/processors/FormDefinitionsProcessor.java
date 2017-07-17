@@ -466,7 +466,9 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                 Map<String, Object> elementContext = new HashMap<>();
 
                 boolean isList = false;
-                boolean isEnum = false;
+
+                org.kie.workbench.common.forms.model.TypeKind typeKind = org.kie.workbench.common.forms.model.TypeKind.BASE;
+
                 boolean overrideI18nLabel = false;
 
                 TypeMirror finalType = fieldInfo.fieldElement.asType();
@@ -521,6 +523,7 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                                     fieldLabel = finalType.toString() + i18nSettings.separator() + labelInfo.fieldElement.getSimpleName();
                                     overrideI18nLabel = true;
                                 }
+                                typeKind = org.kie.workbench.common.forms.model.TypeKind.OBJECT;
                             }
                         }
                     }
@@ -534,8 +537,8 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                         }
                         isList = true;
                         finalType = fieldType.getTypeArguments().get(0);
-                    } else {
-                        isEnum = elementUtils.getTypeElement(finalType.toString()).getSuperclass().toString().startsWith("java.lang.Enum");
+                    } else if(elementUtils.getTypeElement(finalType.toString()).getSuperclass().toString().startsWith("java.lang.Enum")){
+                        typeKind = org.kie.workbench.common.forms.model.TypeKind.ENUM;
                     }
                 }
 
@@ -547,12 +550,12 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                                    fieldName);
                 elementContext.put("binding",
                                    binding);
+                elementContext.put("type",
+                                   typeKind.toString());
                 elementContext.put("className",
                                    finalType.toString());
                 elementContext.put("isList",
                                    String.valueOf(isList));
-                elementContext.put("isEnum",
-                                   String.valueOf(isEnum));
                 elementContext.put("fieldModifier",
                                    fieldModifier);
 

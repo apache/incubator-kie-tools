@@ -22,7 +22,7 @@ import javax.enterprise.context.Dependent;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.definition.DecimalBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.type.DecimalBoxFieldType;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeInfo;
 
 @Dependent
 public class DecimalBoxFieldProvider extends BasicTypeFieldProvider<DecimalBoxFieldDefinition> {
@@ -39,7 +39,6 @@ public class DecimalBoxFieldProvider extends BasicTypeFieldProvider<DecimalBoxFi
 
     @Override
     protected void doRegisterFields() {
-
         registerPropertyType(BigDecimal.class);
         registerPropertyType(Double.class);
         registerPropertyType(double.class);
@@ -58,7 +57,7 @@ public class DecimalBoxFieldProvider extends BasicTypeFieldProvider<DecimalBoxFi
     }
 
     @Override
-    public DecimalBoxFieldDefinition createFieldByType(FieldDataType typeInfo) {
+    public DecimalBoxFieldDefinition createFieldByType(TypeInfo typeInfo) {
         return getDefaultField();
     }
 }

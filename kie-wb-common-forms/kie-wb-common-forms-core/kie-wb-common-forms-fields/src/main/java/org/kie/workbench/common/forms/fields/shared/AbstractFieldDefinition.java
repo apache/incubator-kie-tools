@@ -18,10 +18,11 @@ package org.kie.workbench.common.forms.fields.shared;
 
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
-import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.TypeInfo;
+import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 import org.kie.workbench.common.forms.model.util.IDGenerator;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
 
 public abstract class AbstractFieldDefinition implements FieldDefinition {
 
@@ -136,8 +137,8 @@ public abstract class AbstractFieldDefinition implements FieldDefinition {
     }
 
     @Override
-    public FieldDataType getFieldTypeInfo() {
-        return new FieldDataType(standaloneClassName);
+    public TypeInfo getFieldTypeInfo() {
+        return new TypeInfoImpl(standaloneClassName);
     }
 
     @Override

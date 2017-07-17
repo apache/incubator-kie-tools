@@ -20,25 +20,19 @@ import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
 
 @Bindable
 @Portable
 public class Department {
 
-    @FieldDef(label = "Name")
     private String name;
 
-    @FieldDef(label = "Address")
     private Address address;
 
-    @FieldDef(label = "Employees")
     private List<Employee> employees;
 
-    @FieldDef(label = "Meta Address", property = "address")
     private MetaAddress metaAddress;
 
-    @FieldDef(label = "Meta Addresses", property = "addresses")
     private MetaAddresses metaAddresses;
 
     public Department(String name,

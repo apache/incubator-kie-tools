@@ -21,7 +21,7 @@ import javax.enterprise.context.Dependent;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeInfo;
 
 @Dependent
 public class TextAreaFieldProvider extends BasicTypeFieldProvider<TextAreaFieldDefinition> {
@@ -52,7 +52,7 @@ public class TextAreaFieldProvider extends BasicTypeFieldProvider<TextAreaFieldD
     }
 
     @Override
-    public TextAreaFieldDefinition createFieldByType(FieldDataType typeInfo) {
+    public TextAreaFieldDefinition createFieldByType(TypeInfo typeInfo) {
         return getDefaultField();
     }
 }

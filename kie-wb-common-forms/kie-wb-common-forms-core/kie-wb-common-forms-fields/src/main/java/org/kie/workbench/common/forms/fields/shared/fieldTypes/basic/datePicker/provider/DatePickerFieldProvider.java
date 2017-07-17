@@ -22,7 +22,7 @@ import javax.enterprise.context.Dependent;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition.DatePickerFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.type.DatePickerFieldType;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeInfo;
 
 @Dependent
 public class DatePickerFieldProvider extends BasicTypeFieldProvider<DatePickerFieldDefinition> {
@@ -40,6 +40,12 @@ public class DatePickerFieldProvider extends BasicTypeFieldProvider<DatePickerFi
     @Override
     protected void doRegisterFields() {
         registerPropertyType(Date.class);
+
+        // TODO: Replace by class.getName once GWT supports the following types
+        registerPropertyType("java.time.LocalDate");
+        registerPropertyType("java.time.LocalDateTime");
+        registerPropertyType("java.time.LocalTime");
+        registerPropertyType("java.time.OffsetDateTime");
     }
 
     @Override
@@ -53,7 +59,7 @@ public class DatePickerFieldProvider extends BasicTypeFieldProvider<DatePickerFi
     }
 
     @Override
-    public DatePickerFieldDefinition createFieldByType(FieldDataType typeInfo) {
+    public DatePickerFieldDefinition createFieldByType(TypeInfo typeInfo) {
         return getDefaultField();
     }
 }

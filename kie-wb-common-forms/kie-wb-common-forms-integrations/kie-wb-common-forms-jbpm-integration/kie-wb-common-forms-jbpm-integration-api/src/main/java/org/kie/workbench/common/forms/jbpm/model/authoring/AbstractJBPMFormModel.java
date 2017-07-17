@@ -18,26 +18,24 @@ package org.kie.workbench.common.forms.jbpm.model.authoring;
 
 import java.util.List;
 
+import org.kie.workbench.common.forms.model.ModelProperty;
+import org.kie.workbench.common.forms.model.impl.AbstractFormModel;
 
-public abstract class AbstractJBPMFormModel implements JBPMFormModel {
+public abstract class AbstractJBPMFormModel extends AbstractFormModel implements JBPMFormModel {
 
-    protected List<JBPMVariable> variables;
     protected String processId;
 
-    public AbstractJBPMFormModel(String processId, List<JBPMVariable> variables) {
+    public AbstractJBPMFormModel(String processId,
+                                 List<ModelProperty> properties) {
         this.processId = processId;
-        this.variables = variables;
+        this.properties = properties;
+    }
+
+    protected AbstractJBPMFormModel() {
+        // Only for serialization purposes
     }
 
     @Override
-    public List<JBPMVariable> getVariables() {
-        return variables;
-    }
-
-    public void setVariables(List<JBPMVariable> variables) {
-        this.variables = variables;
-    }
-
     public String getProcessId() {
         return processId;
     }

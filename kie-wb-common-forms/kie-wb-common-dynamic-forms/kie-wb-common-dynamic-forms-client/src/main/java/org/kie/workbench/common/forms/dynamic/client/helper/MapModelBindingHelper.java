@@ -79,6 +79,19 @@ public class MapModelBindingHelper {
         basicProperties.put(BigDecimal.class.getName(),
                             BigDecimal.class);
 
+        // TODO: Replace by class.getName once GWT supports the following types
+        basicProperties.put("java.time.LocalDate",
+                            Date.class);
+        basicProperties.put("java.time.LocalDateTime",
+                            Date.class);
+        basicProperties.put("java.time.LocalTime",
+                            Date.class);
+        basicProperties.put("java.time.OffsetDateTime",
+                            Date.class);
+
+
+
+
         IOC.getBeanManager().lookupBeans(PropertyGenerator.class).forEach(beanDef -> {
             PropertyGenerator generator = beanDef.getInstance();
             propertiesGenerator.put(generator.getType(),

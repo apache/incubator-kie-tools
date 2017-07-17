@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.forms.data.modeller.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.jboss.errai.bus.server.annotations.Remote;
@@ -32,6 +33,8 @@ public interface DataObjectFinderService {
 
     List<ObjectProperty> getDataObjectProperties(String typeName,
                                                  Path path);
+
+    Collection<DataObject> getProjectDataObjects(Path path);
 
     List<DataObjectFormModel> getAvailableDataObjects(Path path);
 }

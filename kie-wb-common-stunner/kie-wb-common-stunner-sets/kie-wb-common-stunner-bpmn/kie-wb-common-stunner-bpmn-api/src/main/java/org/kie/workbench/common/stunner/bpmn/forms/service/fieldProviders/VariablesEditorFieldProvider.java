@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders;
 import javax.enterprise.inject.Model;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeInfo;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldType;
 
@@ -47,7 +47,7 @@ public class VariablesEditorFieldProvider extends BasicTypeFieldProvider<Variabl
     }
 
     @Override
-    public VariablesEditorFieldDefinition createFieldByType(FieldDataType typeInfo) {
+    public VariablesEditorFieldDefinition createFieldByType(TypeInfo typeInfo) {
         return getDefaultField();
     }
 

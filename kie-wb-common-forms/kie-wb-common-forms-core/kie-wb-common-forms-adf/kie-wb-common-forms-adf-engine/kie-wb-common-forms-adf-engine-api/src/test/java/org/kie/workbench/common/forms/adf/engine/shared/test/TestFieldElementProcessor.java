@@ -27,7 +27,7 @@ import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processin
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.slider.DoubleSliderFieldInitializer;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.slider.IntegerSliderFieldInitializer;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.util.PropertyValueExtractor;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
 
 public class TestFieldElementProcessor extends AbstractFieldElementProcessor {
 

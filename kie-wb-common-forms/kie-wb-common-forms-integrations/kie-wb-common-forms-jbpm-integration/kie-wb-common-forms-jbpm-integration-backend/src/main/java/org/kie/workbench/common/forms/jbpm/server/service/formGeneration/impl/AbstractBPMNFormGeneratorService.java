@@ -19,7 +19,7 @@ package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.workbench.common.forms.commons.layout.FormLayoutTemplateGenerator;
+import org.kie.workbench.common.forms.commons.shared.layout.FormLayoutTemplateGenerator;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.editor.service.backend.util.UIDGenerator;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.EntityRelationField;
@@ -31,8 +31,8 @@ import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.BPMNFor
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.FormGenerationResult;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.JavaModel;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.model.JavaFormModel;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
 
 public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFormGeneratorService<SOURCE> {
 
@@ -144,6 +144,7 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
             form.setId(UIDGenerator.generateUID());
             form.setName(modelName);
 
+            // TODO: extract model properties & generate fields
             List<FieldDefinition> fields = extractModelFields(formModel,
                                                               context);
 
@@ -159,7 +160,7 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
 
     protected abstract FormDefinition createRootFormDefinition(GenerationContext<SOURCE> context);
 
-    protected abstract List<FieldDefinition> extractModelFields(JavaModel formModel,
+    protected abstract List<FieldDefinition> extractModelFields(JavaFormModel formModel,
                                                                 GenerationContext<SOURCE> context);
 
     protected FormDefinition findFormDefinitionForModelType(String modelType,

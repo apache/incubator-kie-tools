@@ -20,6 +20,9 @@ import org.kie.workbench.common.forms.model.FieldType;
 
 public class DocumentFieldType implements FieldType {
 
+    public static final String DOCUMENT_TYPE = "org.jbpm.document.Document";
+    public static final String DOCUMENT_IMPL_TYPE = "org.jbpm.document.service.impl.DocumentImpl";
+
     public static final String NAME = "Document";
 
     @Override

@@ -23,7 +23,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.def
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxBaseDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.type.TextBoxFieldType;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeInfo;
 
 @Dependent
 public class TextBoxFieldProvider extends BasicTypeFieldProvider<TextBoxBaseDefinition> {
@@ -56,9 +56,9 @@ public class TextBoxFieldProvider extends BasicTypeFieldProvider<TextBoxBaseDefi
     }
 
     @Override
-    public TextBoxBaseDefinition createFieldByType(FieldDataType typeInfo) {
-        if (typeInfo.getType().equals(Character.class.getName()) ||
-                typeInfo.getType().equals(char.class.getName())) {
+    public TextBoxBaseDefinition createFieldByType(TypeInfo typeInfo) {
+        if (typeInfo.getClassName().equals(Character.class.getName()) ||
+                typeInfo.getClassName().equals(char.class.getName())) {
             return new CharacterBoxFieldDefinition();
         }
         return getDefaultField();

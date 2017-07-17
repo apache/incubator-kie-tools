@@ -17,7 +17,6 @@
 package org.kie.workbench.common.forms.processing.engine.handling.impl.test;
 
 import org.jboss.errai.databinding.client.BindableProxy;
-import org.jboss.errai.databinding.client.BindableProxyFactory;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandlerManager;
 import org.kie.workbench.common.forms.processing.engine.handling.FormValidator;
@@ -45,7 +44,7 @@ public class TestFormHandler extends FormHandlerImpl {
 
     @Override
     public Object getModel() {
-        return ((ModelProxy)binder.getModel()).deepUnwrap();
+        return ((ModelProxy) binder.getModel()).deepUnwrap();
     }
 
     @Override
@@ -63,7 +62,8 @@ public class TestFormHandler extends FormHandlerImpl {
                 return null;
             }
 
-            return readPropertyValue(new UserProxy((User) nestedModel), property);
+            return readPropertyValue(new UserProxy((User) nestedModel),
+                                     property);
         }
         return proxy.get(fieldBinding);
     }

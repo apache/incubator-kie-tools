@@ -22,7 +22,7 @@ import java.util.Map;
 import org.kie.workbench.common.forms.adf.service.building.FieldStatusModifier;
 import org.kie.workbench.common.forms.adf.service.definitions.FormDefinitionSettings;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.PortableJavaModel;
+import org.kie.workbench.common.forms.model.impl.PortableJavaModel;
 
 /**
  * Context to generate a {@link FormDefinition}

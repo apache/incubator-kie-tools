@@ -31,8 +31,9 @@ import org.kie.workbench.common.forms.adf.service.definitions.elements.FieldElem
 import org.kie.workbench.common.forms.adf.service.definitions.elements.FormElement;
 import org.kie.workbench.common.forms.adf.service.definitions.layout.LayoutColumnDefinition;
 import org.kie.workbench.common.forms.adf.service.definitions.layout.LayoutDefinition;
-import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.TypeKind;
+import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 
 @Generated("${generatedByClassName}")
 @ApplicationScoped

@@ -45,17 +45,19 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.def
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
-import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.model.TypeInfo;
+import org.kie.workbench.common.forms.model.TypeKind;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.screens.datamodeller.backend.server.handler.JPADomainHandler;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
+import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
-import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataModelImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -66,7 +68,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DataObjectFormModelHandlerTest {
+public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
 
     private final String NESTED_CLASSNAME = "com.test.Address";
 
@@ -91,19 +93,32 @@ public class DataObjectFormModelHandlerTest {
 
     private DataObjectFinderService finderService;
 
+    @Mock
+    private KieProject project;
+
+    @Mock
+    private ProjectClassLoaderHelper projectClassLoaderHelper;
+
     @Before
     public void setUp() throws Exception {
+
+        when(projectService.resolveProject(any())).thenReturn(project);
+        when(projectClassLoaderHelper.getProjectClassLoader(project)).thenReturn(this.getClass().getClassLoader());
+
         createModel();
-        DataModellerFieldGenerator dataModellerFieldGenerator = new DataModellerFieldGenerator(fieldManager);
+
         finderService = new DataObjectFinderServiceImpl(projectService,
                                                         dataModelerService);
-        handler = new DataObjectFormModelHandler(finderService,
-                                                 dataModellerFieldGenerator);
+        handler = new DataObjectFormModelHandler(projectService,
+                                                 projectClassLoaderHelper,
+                                                 finderService,
+                                                 new TestFieldManager());
         when(dataModelerService.loadModel(any())).thenReturn(dataModel);
         List<DataObjectFormModel> formModels = finderService.getAvailableDataObjects(path);
         formModel = formModels.get(0);
         handler.init(formModel,
                      path);
+        handler.synchronizeFormModel();
     }
 
     @Test
@@ -135,14 +150,14 @@ public class DataObjectFormModelHandlerTest {
                                Arrays.asList(Character.class.getName(),
                                              char.class.getName()));
         expectedFieldTypes.put(DatePickerFieldDefinition.class.getSimpleName(),
-                               Collections.singletonList(Date.class.getName()));
-        //TODO: Update after JBPM-5911 is fixed (move date-types from SubFormFieldType to DatePickerFieldType)
-        expectedFieldTypes.put(SubFormFieldDefinition.class.getSimpleName(),
-                               Arrays.asList(LocalDate.class.getName(),
+                               Arrays.asList(Date.class.getName(),
+                                             LocalDate.class.getName(),
                                              LocalDateTime.class.getName(),
                                              OffsetDateTime.class.getName(),
-                                             LocalTime.class.getName(),
-                                             NESTED_CLASSNAME));
+                                             LocalTime.class.getName()));
+        //TODO: Update after JBPM-5911 is fixed (move date-types from SubFormFieldType to DatePickerFieldType)
+        expectedFieldTypes.put(SubFormFieldDefinition.class.getSimpleName(),
+                               Collections.singletonList(NESTED_CLASSNAME));
         expectedFieldTypes.put(MultipleSubFormFieldDefinition.class.getSimpleName(),
                                Collections.singletonList(NESTED_CLASSNAME));
 
@@ -216,7 +231,7 @@ public class DataObjectFormModelHandlerTest {
 
     @Test
     public void multipleSubformHasCorrectProperties() {
-        MultipleSubFormFieldDefinition multipleSubform = (MultipleSubFormFieldDefinition) checkCommonProperties("address list");
+        MultipleSubFormFieldDefinition multipleSubform = (MultipleSubFormFieldDefinition) checkCommonProperties("address_list");
         assertEquals("",
                      multipleSubform.getCreationForm());
         assertEquals("",
@@ -227,16 +242,17 @@ public class DataObjectFormModelHandlerTest {
 
     private FieldDefinition checkCommonProperties(String dataFieldName) {
         ObjectProperty dataField = dataObject.getProperty(dataFieldName);
-        FieldDefinition formField = handler.createFieldDefinition(dataFieldName);
+        FieldDefinition formField = handler.createFieldDefinition(formModel.getProperty(dataFieldName));
         String dataFieldClassName = dataField.getClassName();
-        FieldDataType fieldTypeInfo = formField.getFieldTypeInfo();
+        TypeInfo fieldTypeInfo = formField.getFieldTypeInfo();
 
         //test common properties
         assertEquals(dataFieldClassName,
-                     fieldTypeInfo.getType());
-        assertFalse(fieldTypeInfo.isEnum());
+                     fieldTypeInfo.getClassName());
+        assertNotEquals(TypeKind.ENUM,
+                        fieldTypeInfo.getType());
         assertEquals(dataField.isMultiple(),
-                     fieldTypeInfo.isList());
+                     fieldTypeInfo.isMultiple());
         assertEquals(dataField.getName(),
                      formField.getLabel());
         assertEquals(dataField.getName(),
@@ -271,19 +287,34 @@ public class DataObjectFormModelHandlerTest {
         jpaDomainHandler.setDefaultValues(dataObject,
                                           params);
 
+        // adding serialVersionUID field
+        addProperty(dataObject,
+                    DataObjectFormModelHandler.SERIAL_VERSION_UID,
+                    Long.class.getName(),
+                    false,
+                    false);
+
         //add all base type properties
         PropertyTypeFactoryImpl propertyTypeFactory = new PropertyTypeFactoryImpl();
-        List<PropertyType> basePropertyTypes = propertyTypeFactory.getBasePropertyTypes();
-        for (PropertyType baseProperty : basePropertyTypes) {
-            dataObject.addProperty(baseProperty.getName(),
-                                   baseProperty.getClassName());
-        }
+
+        propertyTypeFactory.getBasePropertyTypes().forEach(baseProperty -> addProperty(dataObject,
+                                                                                       baseProperty.getName(),
+                                                                                       baseProperty.getClassName(),
+                                                                                       false,
+                                                                                       false));
+
         //add data object property
-        dataObject.addProperty("address",
-                               NESTED_CLASSNAME);
+        addProperty(dataObject,
+                    "address",
+                    NESTED_CLASSNAME,
+                    false,
+                    false);
+
         //add list of data objects
-        dataObject.addProperty("address list",
-                               NESTED_CLASSNAME,
-                               true);
+        addProperty(dataObject,
+                    "address_list",
+                    NESTED_CLASSNAME,
+                    true,
+                    false);
     }
 }

@@ -21,7 +21,7 @@ import javax.enterprise.context.Dependent;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.image.definition.PictureFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.image.type.PictureFieldType;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeInfo;
 
 @Dependent
 public class PictureFieldProvider extends BasicTypeFieldProvider<PictureFieldDefinition> {
@@ -47,7 +47,7 @@ public class PictureFieldProvider extends BasicTypeFieldProvider<PictureFieldDef
     }
 
     @Override
-    public PictureFieldDefinition createFieldByType(FieldDataType typeInfo) {
+    public PictureFieldDefinition createFieldByType(TypeInfo typeInfo) {
         return getDefaultField();
     }
 

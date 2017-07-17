@@ -18,16 +18,13 @@ package org.kie.workbench.common.forms.dynamic.test.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
 
 @Bindable
 @Portable
 public class Address {
 
-    @FieldDef(label = "Street Name")
     private String street;
 
-    @FieldDef(label = "#")
     private Integer num;
 
     public String getStreet() {

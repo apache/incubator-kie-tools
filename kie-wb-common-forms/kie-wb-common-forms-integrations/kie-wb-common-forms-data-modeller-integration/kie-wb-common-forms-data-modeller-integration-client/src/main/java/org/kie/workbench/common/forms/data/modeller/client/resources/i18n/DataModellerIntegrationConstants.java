@@ -17,11 +17,12 @@
 package org.kie.workbench.common.forms.data.modeller.client.resources.i18n;
 
 import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
+import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 
 public interface DataModellerIntegrationConstants {
 
     @TranslationKey(defaultValue = "Data Object")
-    String DataObject = "DataObjectFormModelCreationPresenter.DataObject";
+    String DataObject = DataObjectFormModel.class.getName();
 
     @TranslationKey(defaultValue = "There's no Data Object selected")
     public static final String InvalidDataObject = "DataObjectFormModelCreationPresenter.InvalidDataObject";

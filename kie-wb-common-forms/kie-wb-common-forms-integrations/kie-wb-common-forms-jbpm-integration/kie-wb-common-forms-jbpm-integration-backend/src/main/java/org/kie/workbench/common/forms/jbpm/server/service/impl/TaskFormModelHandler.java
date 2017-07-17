@@ -16,19 +16,35 @@
 
 package org.kie.workbench.common.forms.jbpm.server.service.impl;
 
+import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
+import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMProcessModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.jbpm.service.shared.BPMFinderService;
+import org.kie.workbench.common.forms.model.ModelProperty;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
+import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Dependent
 public class TaskFormModelHandler extends AbstractJBPMFormModelHandler<TaskFormModel> {
 
+    private static final Logger logger = LoggerFactory.getLogger(BusinessProcessFormModelHandler.class);
+
     @Inject
-    public TaskFormModelHandler(FieldManager fieldManager) {
-        super(fieldManager);
+    public TaskFormModelHandler(KieProjectService projectService,
+                                ProjectClassLoaderHelper classLoaderHelper,
+                                FieldManager fieldManager,
+                                BPMFinderService bpmFinderService) {
+        super(projectService,
+              classLoaderHelper,
+              fieldManager,
+              bpmFinderService);
     }
 
     @Override
@@ -38,6 +54,29 @@ public class TaskFormModelHandler extends AbstractJBPMFormModelHandler<TaskFormM
 
     @Override
     public FormModelHandler<TaskFormModel> newInstance() {
-        return new TaskFormModelHandler(fieldManager);
+        return new TaskFormModelHandler(projectService,
+                                        classLoaderHelper,
+                                        fieldManager,
+                                        bpmFinderService);
+    }
+
+    @Override
+    protected List<ModelProperty> getCurrentModelProperties() {
+
+        JBPMProcessModel processModel = bpmFinderService.getModelForProcess(formModel.getProcessId(),
+                                                                            path);
+        for (TaskFormModel model : processModel.getTaskFormModels()) {
+            if (model.getFormName().equals(formModel.getFormName())) {
+                return model.getProperties();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected void log(String message,
+                       Exception e) {
+        logger.warn(message,
+                    e);
     }
 }

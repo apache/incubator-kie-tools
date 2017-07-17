@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.data.modeller.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
@@ -59,7 +60,13 @@ public class DataObjectFinderServiceImpl implements DataObjectFinderService {
     public List<ObjectProperty> getDataObjectProperties(String typeName,
                                                         Path path) {
         return getDataObject(typeName,
-                             path).getProperties().stream().filter(property -> DataModellerFieldGenerator.isValidDataObjectProperty(property)).collect(Collectors.toList());
+                             path).getProperties().stream().filter(property -> DataObjectFormModelHandler.isValidDataObjectProperty(property)).collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<DataObject> getProjectDataObjects(Path path) {
+        DataModel dataModel = dataModelerService.loadModel(projectService.resolveProject(path));
+        return dataModel.getDataObjects();
     }
 
     @Override

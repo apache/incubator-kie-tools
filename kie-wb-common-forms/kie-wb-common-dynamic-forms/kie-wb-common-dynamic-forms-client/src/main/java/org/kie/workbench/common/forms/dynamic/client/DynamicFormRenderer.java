@@ -23,8 +23,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Assert;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.IsFormView;
 import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGeneratorManager;
@@ -33,7 +31,6 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.RequiresValueConverter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.widget.SubFormWidget;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
-import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContextGeneratorService;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
@@ -62,8 +59,6 @@ public class DynamicFormRenderer implements IsWidget,
 
     private DynamicFormRendererView view;
 
-    private Caller<FormRenderingContextGeneratorService> transformerService;
-
     private FormHandler formHandler;
 
     private FormRenderingContext context;
@@ -74,11 +69,9 @@ public class DynamicFormRenderer implements IsWidget,
 
     @Inject
     public DynamicFormRenderer(DynamicFormRendererView view,
-                               Caller<FormRenderingContextGeneratorService> transformerService,
                                FormHandlerGeneratorManager formHandlerGenerator,
                                DynamicFormModelGenerator dynamicFormModelGenerator) {
         this.view = view;
-        this.transformerService = transformerService;
         this.formHandlerGenerator = formHandlerGenerator;
         this.dynamicFormModelGenerator = dynamicFormModelGenerator;
     }
@@ -119,16 +112,6 @@ public class DynamicFormRenderer implements IsWidget,
                                 model,
                                 renderMode,
                                 callback);
-        } else {
-            transformerService.call(new RemoteCallback<FormRenderingContext>() {
-                @Override
-                public void callback(FormRenderingContext context) {
-                    doRenderDefaultForm(context,
-                                        model,
-                                        renderMode,
-                                        callback);
-                }
-            }).createContext(model);
         }
     }
 

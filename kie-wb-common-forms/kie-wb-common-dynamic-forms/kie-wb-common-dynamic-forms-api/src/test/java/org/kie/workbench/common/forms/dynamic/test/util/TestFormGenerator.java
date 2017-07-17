@@ -17,21 +17,27 @@
 package org.kie.workbench.common.forms.dynamic.test.util;
 
 import java.util.Date;
+import java.util.stream.Collectors;
 
-import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.test.model.Address;
 import org.kie.workbench.common.forms.dynamic.test.model.Employee;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition.DatePickerFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
+import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.model.FormModel;
+import org.kie.workbench.common.forms.model.ModelProperty;
+import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
+import org.kie.workbench.common.forms.model.impl.PortableJavaModel;
 
 public class TestFormGenerator {
 
-    public static FormRenderingContext getContextForEmployee(Employee employee) {
+    public static StaticModelFormRenderingContext getContextForEmployee(Employee employee) {
         FormDefinition form = getEmployeeForm();
-        TestFormRenderingContext context = new TestFormRenderingContext();
+        StaticModelFormRenderingContext context = new StaticModelFormRenderingContext();
         context.setRootForm(form);
         context.setModel(employee);
         context.getAvailableForms().put(form.getId(),
@@ -102,6 +108,8 @@ public class TestFormGenerator {
         form.getFields().add(married);
         form.getFields().add(address);
 
+        form.setModel(generateModelFor(form));
+
         return form;
     }
 
@@ -129,6 +137,20 @@ public class TestFormGenerator {
         form.getFields().add(name);
         form.getFields().add(num);
 
+        form.setModel(generateModelFor(form));
+
         return form;
+    }
+
+    public static FormModel generateModelFor(FormDefinition form) {
+        PortableJavaModel model = new PortableJavaModel(Employee.class.getName());
+
+        model.getProperties().addAll(form.getFields().stream().map(TestFormGenerator::generatePropertyFor).collect(Collectors.toList()));
+
+        return model;
+    }
+
+    private static ModelProperty generatePropertyFor(FieldDefinition field) {
+        return new ModelPropertyImpl(field.getBinding(), field.getFieldTypeInfo());
     }
 }

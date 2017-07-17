@@ -26,11 +26,11 @@ public class UserProxy extends User implements BindableProxy<User> {
             return user.getName();
         } else if ("lastName".equals(propertyName)) {
             return user.getLastName();
-        }else if ("birtDay".equals(propertyName)) {
+        } else if ("birtDay".equals(propertyName)) {
             return user.getBirtDay();
-        }else if ("married".equals(propertyName)) {
+        } else if ("married".equals(propertyName)) {
             return user.getMarried();
-        }else if ("address".equals(propertyName)) {
+        } else if ("address".equals(propertyName)) {
             return user.getAddress();
         }
         return null;
@@ -43,11 +43,11 @@ public class UserProxy extends User implements BindableProxy<User> {
             user.setName((String) value);
         } else if ("lastName".equals(propertyName)) {
             user.setLastName((String) value);
-        }else if ("birtDay".equals(propertyName)) {
+        } else if ("birtDay".equals(propertyName)) {
             user.setBirtDay((Date) value);
-        }else if ("married".equals(propertyName)) {
+        } else if ("married".equals(propertyName)) {
             user.setMarried((Boolean) value);
-        }else if ("address".equals(propertyName)) {
+        } else if ("address".equals(propertyName)) {
             user.setAddress((String) value);
         }
     }

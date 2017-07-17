@@ -18,7 +18,6 @@ package org.kie.workbench.common.forms.editor.client.editor;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
@@ -32,14 +31,16 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorSyncPaletteEvent;
+import org.kie.workbench.common.forms.editor.client.editor.modelChanges.ModelChangesDisplayer;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.kie.workbench.common.forms.editor.client.type.FormDefinitionResourceType;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorService;
-import org.kie.workbench.common.forms.model.DefaultFormModel;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.model.FormModel;
+import org.kie.workbench.common.forms.model.HasFormModelProperties;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -90,18 +91,21 @@ public class FormEditorPresenter extends KieEditor {
     protected ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents;
 
     private FormEditorView view;
+    private ModelChangesDisplayer modelChangesDisplayer;
     private FormDefinitionResourceType resourceType;
     private Caller<FormEditorService> editorService;
     private TranslationService translationService;
 
     @Inject
     public FormEditorPresenter(FormEditorView view,
+                               ModelChangesDisplayer modelChangesDisplayer,
                                FormDefinitionResourceType resourceType,
                                Caller<FormEditorService> editorService,
                                TranslationService translationService,
                                ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents) {
         super(view);
         this.view = view;
+        this.modelChangesDisplayer = modelChangesDisplayer;
         this.resourceType = resourceType;
         this.editorService = editorService;
         this.translationService = translationService;
@@ -157,20 +161,9 @@ public class FormEditorPresenter extends KieEditor {
 
         editorHelper.initHelper(content);
 
-        layoutEditor.init(content.getDefinition().getName(),
-                          getLayoutComponent(),
-                          translationService
-                                  .getTranslation(FormEditorConstants.FormEditorPresenterLayoutTitle),
-                          translationService
-                                  .getTranslation(FormEditorConstants.FormEditorPresenterLayoutSubTitle));
-
         if (content.getDefinition().getLayoutTemplate() == null) {
             content.getDefinition().setLayoutTemplate(new LayoutTemplate());
         }
-
-        loadAvailableFields(content);
-
-        layoutEditor.loadLayout(content.getDefinition().getLayoutTemplate());
 
         resetEditorPages(content.getOverview());
 
@@ -178,7 +171,32 @@ public class FormEditorPresenter extends KieEditor {
 
         view.init(this);
 
+        loadLayoutEditor();
+
         view.setupLayoutEditor(layoutEditor);
+
+        if (content.getSynchronizationResult() != null && content.getSynchronizationResult().hasChanges()) {
+            modelChangesDisplayer.show(content,
+                                       this::synchronizeLayoutEditor);
+        }
+    }
+
+    protected void loadLayoutEditor() {
+        layoutEditor.clear();
+        layoutEditor.init(editorHelper.getContent().getDefinition().getName(),
+                          getLayoutComponent(),
+                          translationService
+                                  .getTranslation(FormEditorConstants.FormEditorPresenterLayoutTitle),
+                          translationService
+                                  .getTranslation(FormEditorConstants.FormEditorPresenterLayoutSubTitle));
+        loadAvailableFields();
+        layoutEditor.loadLayout(editorHelper.getContent().getDefinition().getLayoutTemplate());
+    }
+
+    protected void synchronizeLayoutEditor() {
+        if (editorHelper.getContent().getSynchronizationResult().hasConflicts()) {
+            loadLayoutEditor();
+        }
     }
 
     protected LayoutDragComponentGroup getLayoutComponent() {
@@ -187,7 +205,7 @@ public class FormEditorPresenter extends KieEditor {
                                      htmlLayoutDragComponent);
 
         editorHelper.getBaseFieldsDraggables().forEach(component -> group.addLayoutDragComponent(component.getFieldId(),
-                                                                                                          component));
+                                                                                                 component));
 
         return group;
     }
@@ -245,33 +263,23 @@ public class FormEditorPresenter extends KieEditor {
         return editorHelper.getFormDefinition();
     }
 
-    private void loadAvailableFields(FormModelerContent content) {
-        if (content.getDefinition().getModel() instanceof DefaultFormModel || content.getAvailableFields() == null) {
+    private void loadAvailableFields() {
+        FormModel model = editorHelper.getFormDefinition().getModel();
+        if (!(model instanceof HasFormModelProperties)) {
             return;
         }
 
-        for (String modelName : content.getAvailableFields().keySet()) {
-            List<FieldDefinition> availableFields = content.getAvailableFields().get(modelName);
-            addAvailableFields(modelName,
-                               availableFields);
-        }
-    }
+        LayoutDragComponentGroup group = new LayoutDragComponentGroup(model.getName());
 
-    protected void addAvailableFields(String model,
-                                      List<FieldDefinition> fields) {
-        editorHelper.addAvailableFields(fields);
-
-        LayoutDragComponentGroup group = new LayoutDragComponentGroup(model);
-
-        for (FieldDefinition field : fields) {
+        editorHelper.getAvailableFields().values().forEach(fieldDefinition -> {
             EditorFieldLayoutComponent layoutFieldComponent = editorFieldLayoutComponents.get();
             if (layoutFieldComponent != null) {
                 layoutFieldComponent.init(editorHelper.getRenderingContext(),
-                                          field);
-                group.addLayoutDragComponent(field.getId(),
+                                          fieldDefinition);
+                group.addLayoutDragComponent(fieldDefinition.getId(),
                                              layoutFieldComponent);
             }
-        }
+        });
 
         layoutEditor.addDraggableComponentGroup(group);
     }

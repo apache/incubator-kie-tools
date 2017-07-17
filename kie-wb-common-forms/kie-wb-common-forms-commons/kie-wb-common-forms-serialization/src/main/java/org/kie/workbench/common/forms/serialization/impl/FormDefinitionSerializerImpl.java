@@ -21,9 +21,14 @@ import javax.inject.Inject;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
+import org.kie.workbench.common.forms.model.ModelProperty;
+import org.kie.workbench.common.forms.model.TypeInfo;
+import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
+import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 
 @Dependent
@@ -60,6 +65,13 @@ public class FormDefinitionSerializerImpl implements FormDefinitionSerializer {
                                     formModelSerializer);
         builder.registerTypeAdapter(FieldDefinition.class,
                                     fieldSerializer);
+
+        builder.registerTypeAdapter(ModelProperty.class,
+                                    (JsonDeserializer<ModelProperty>) (json, typeOfT, context) -> context.deserialize(json,
+                                                                                                                      ModelPropertyImpl.class));
+        builder.registerTypeAdapter(TypeInfo.class,
+                                    (JsonDeserializer<TypeInfo>) (json, typeOfT, context) -> context.deserialize(json,
+                                                                                                                 TypeInfoImpl.class));
 
         Gson gson = builder.create();
 

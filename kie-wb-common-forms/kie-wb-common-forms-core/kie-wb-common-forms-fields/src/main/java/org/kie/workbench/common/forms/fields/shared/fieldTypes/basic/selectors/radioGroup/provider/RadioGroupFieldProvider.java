@@ -24,7 +24,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.S
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.RadioGroupBaseDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.StringRadioGroupFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.type.RadioGroupFieldType;
-import org.kie.workbench.common.forms.model.FieldDataType;
+import org.kie.workbench.common.forms.model.TypeInfo;
 
 @Dependent
 public class RadioGroupFieldProvider extends SelectorFieldProvider<RadioGroupBaseDefinition> {
@@ -73,7 +73,10 @@ public class RadioGroupFieldProvider extends SelectorFieldProvider<RadioGroupBas
     }
 
     @Override
-    public RadioGroupBaseDefinition createFieldByType(FieldDataType typeInfo) {
-        return getDefaultField();
+    public RadioGroupBaseDefinition createFieldByType(TypeInfo typeInfo) {
+        if (isSupported(typeInfo)) {
+            return getDefaultField();
+        }
+        return null;
     }
 }

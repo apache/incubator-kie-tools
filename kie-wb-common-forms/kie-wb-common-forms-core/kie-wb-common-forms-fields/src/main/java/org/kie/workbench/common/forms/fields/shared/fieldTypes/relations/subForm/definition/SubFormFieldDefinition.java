@@ -29,6 +29,9 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.l
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.HasNestedForm;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.type.SubFormFieldType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.TypeInfo;
+import org.kie.workbench.common.forms.model.TypeKind;
+import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 
 @Portable
 @Bindable
@@ -78,5 +81,10 @@ public class SubFormFieldDefinition extends AbstractFieldDefinition implements H
             otherForm.setNestedForm(nestedForm);
         }
         setStandaloneClassName(other.getStandaloneClassName());
+    }
+
+    @Override
+    public TypeInfo getFieldTypeInfo() {
+        return new TypeInfoImpl(TypeKind.OBJECT, standaloneClassName, false);
     }
 }

@@ -22,8 +22,9 @@ import org.jboss.errai.common.client.api.Assert;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.ModelTypeFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.type.SubFormFieldType;
-import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.TypeInfo;
+import org.kie.workbench.common.forms.model.TypeKind;
 
 @Dependent
 public class SubFormFieldProvider
@@ -45,8 +46,11 @@ public class SubFormFieldProvider
     }
 
     @Override
-    public SubFormFieldDefinition getFieldByType(FieldDataType typeInfo) {
-        return new SubFormFieldDefinition();
+    public SubFormFieldDefinition getFieldByType(TypeInfo typeInfo) {
+        if (typeInfo.getType().equals(TypeKind.OBJECT)) {
+            return getDefaultField();
+        }
+        return null;
     }
 
     @Override

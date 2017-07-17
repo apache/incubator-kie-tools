@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.TypeKind;
 
 public abstract class SelectorFieldProvider<DEFINITION extends SelectorFieldBaseDefinition> extends BasicTypeFieldProvider<DEFINITION> {
 
@@ -26,7 +27,7 @@ public abstract class SelectorFieldProvider<DEFINITION extends SelectorFieldBase
         if (super.isCompatible(field)) {
             return true;
         }
-        return field.getFieldTypeInfo().isEnum();
+        return field.getFieldTypeInfo().getType().equals(TypeKind.ENUM);
     }
 
     public boolean supports(Class clazz) {

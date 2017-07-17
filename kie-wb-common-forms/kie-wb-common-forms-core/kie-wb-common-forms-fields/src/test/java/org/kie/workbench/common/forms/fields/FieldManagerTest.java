@@ -27,8 +27,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
-import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.TypeInfo;
+import org.kie.workbench.common.forms.model.TypeKind;
+import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -57,7 +59,7 @@ public class FieldManagerTest extends TestCase {
             BigDecimal.class,
             Short.class,
             short.class,
-            Enum.class,
+            MyTestEnum.class,
     };
 
     @Before
@@ -81,24 +83,26 @@ public class FieldManagerTest extends TestCase {
     @Test
     public void testGetFieldByTypeInfo() {
         for (Class clazz : basicTypesSupported) {
-            FieldDataType typeInfo = new FieldDataType(clazz.getName(),
-                                                       false,
-                                                       clazz.isEnum());
+
+            TypeInfo typeInfo = new TypeInfoImpl(clazz.isEnum() ? TypeKind.ENUM : TypeKind.BASE,
+                                                 clazz.getName(),
+                                                 false);
+
             checkFieldExists(typeInfo);
         }
 
         // check nested form
-        checkFieldExists(new FieldDataType(Object.class.getName(),
-                                           false,
-                                           false));
+        checkFieldExists(new TypeInfoImpl(TypeKind.OBJECT,
+                                          Object.class.getName(),
+                                          false));
 
         // check multiple subform
-        checkFieldExists(new FieldDataType(Object.class.getName(),
-                                           true,
-                                           false));
+        checkFieldExists(new TypeInfoImpl(TypeKind.OBJECT,
+                                          Object.class.getName(),
+                                          true));
     }
 
-    protected void checkFieldExists(FieldDataType typeInfo) {
+    protected void checkFieldExists(TypeInfo typeInfo) {
         FieldDefinition fieldDefinition = fieldManager.getDefinitionByDataType(typeInfo);
         assertNotNull(fieldDefinition);
     }
@@ -111,16 +115,17 @@ public class FieldManagerTest extends TestCase {
 
     protected void testCompatiblefields(boolean addFieldType) {
         for (Class clazz : basicTypesSupported) {
-            FieldDataType typeInfo = new FieldDataType(clazz.getName(),
-                                                       false,
-                                                       clazz.isEnum());
+
+            TypeInfo typeInfo = new TypeInfoImpl(clazz.isEnum() ? TypeKind.ENUM : TypeKind.BASE,
+                                                 clazz.getName(),
+                                                 false);
 
             FieldDefinition fieldDefinition = fieldManager.getDefinitionByDataType(typeInfo);
 
             assertNotNull(fieldDefinition);
 
             if (addFieldType) {
-                fieldDefinition.setStandaloneClassName(typeInfo.getType());
+                fieldDefinition.setStandaloneClassName(typeInfo.getClassName());
             }
 
             Collection<String> compatibles = fieldManager.getCompatibleFields(fieldDefinition);
@@ -137,9 +142,9 @@ public class FieldManagerTest extends TestCase {
             for (String className : provider.getSupportedTypes()) {
                 try {
                     Class clazz = Class.forName(className);
-                    FieldDataType typeInfo = new FieldDataType(clazz.getName(),
-                                                               false,
-                                                               clazz.isEnum());
+                    TypeInfo typeInfo = new TypeInfoImpl(clazz.isEnum() ? TypeKind.ENUM : TypeKind.BASE,
+                                                         clazz.getName(),
+                                                         false);
 
                     FieldDefinition fieldDefinition = fieldManager.getFieldFromProvider(provider.getFieldTypeName(),
                                                                                         typeInfo);

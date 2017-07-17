@@ -17,24 +17,30 @@
 package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.authoring;
 
 import java.util.List;
+import java.util.Optional;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
-import org.kie.workbench.common.forms.commons.layout.FormLayoutTemplateGenerator;
+import org.kie.workbench.common.forms.commons.shared.layout.FormLayoutTemplateGenerator;
+import org.kie.workbench.common.forms.editor.model.FormModelSynchronizationResult;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerManager;
 import org.kie.workbench.common.forms.editor.service.backend.util.UIDGenerator;
 import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
+import org.kie.workbench.common.forms.editor.service.shared.model.FormModelSynchronizationUtil;
 import org.kie.workbench.common.forms.editor.type.FormResourceTypeDefinition;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.AbstractBPMNFormGeneratorService;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.GenerationContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.JavaModel;
+import org.kie.workbench.common.forms.model.HasFormModelProperties;
+import org.kie.workbench.common.forms.model.JavaFormModel;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -42,6 +48,8 @@ import org.uberfire.io.IOService;
 @Authoring
 @Dependent
 public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGeneratorService<Path> {
+
+    private static final Logger logger = LoggerFactory.getLogger(BPMNVFSFormDefinitionGeneratorService.class);
 
     private FormModelHandlerManager formModelHandlerManager;
 
@@ -53,6 +61,8 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
 
     private CommentedOptionFactory commentedOptionFactory;
 
+    private FormModelSynchronizationUtil formModelSynchronizationUtil;
+
     @Inject
     public BPMNVFSFormDefinitionGeneratorService(FieldManager fieldManager,
                                                  FormLayoutTemplateGenerator layoutTemplateGenerator,
@@ -60,7 +70,8 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
                                                  VFSFormFinderService formFinderService,
                                                  FormDefinitionSerializer formSerializer,
                                                  @Named("ioStrategy") IOService ioService,
-                                                 CommentedOptionFactory commentedOptionFactory) {
+                                                 CommentedOptionFactory commentedOptionFactory,
+                                                 FormModelSynchronizationUtil formModelSynchronizationUtil) {
         super(fieldManager,
               layoutTemplateGenerator);
         this.formModelHandlerManager = formModelHandlerManager;
@@ -68,6 +79,7 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
         this.formSerializer = formSerializer;
         this.ioService = ioService;
         this.commentedOptionFactory = commentedOptionFactory;
+        this.formModelSynchronizationUtil = formModelSynchronizationUtil;
     }
 
     public FormDefinition createRootFormDefinition(GenerationContext<Path> context) {
@@ -76,32 +88,43 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
         modelHandler.init(context.getFormModel(),
                           context.getSource());
 
-        List<FieldDefinition> modelFields = modelHandler.getAllFormModelFields();
-
-        FormDefinition form;
+        final FormDefinition form;
 
         org.uberfire.java.nio.file.Path kiePath = Paths.convert(context.getSource());
 
+        logger.info("Started form generation for '{}'",
+                    kiePath);
+
         if (ioService.exists(kiePath)) {
+
             form = formSerializer.deserialize(ioService.readAllString(kiePath));
 
-            form.getFields().forEach(originalField -> {
+            logger.warn("Already exists form '{}'. Synchronizing form fields:",
+                        kiePath);
 
-                FieldDefinition modelField = modelFields.stream().filter(field -> field.getBinding().equals(originalField.getBinding())).findFirst().orElse(null);
+            // If the form exists on the VFS let's synchronize form fields
+            FormModelSynchronizationResult synchronizationResult = modelHandler.synchronizeFormModelProperties((HasFormModelProperties) form.getModel(),
+                                                                                                               context.getFormModel().getProperties());
 
-                if (modelField != null) {
-                    originalField.setName(modelField.getName());
-                    originalField.setStandaloneClassName(modelField.getStandaloneClassName());
-                    modelFields.remove(modelField);
-                } else {
-                    originalField.setBinding(null);
-                }
-            });
+            formModelSynchronizationUtil.init(form,
+                                              synchronizationResult);
 
-            form.getFields().addAll(modelFields);
+            if (synchronizationResult.hasRemovedProperties()) {
+                logger.warn("Process/Task has removed variables, checking fields:");
+                formModelSynchronizationUtil.fixRemovedFields();
+            }
 
-            layoutTemplateGenerator.updateLayoutTemplate(form,
-                                                         modelFields);
+            if (synchronizationResult.hasConflicts()) {
+                logger.warn("Process/Task has some variables which type has changed. Checking fields:");
+                formModelSynchronizationUtil.resolveConflicts();
+            }
+
+            if (synchronizationResult.hasNewProperties()) {
+                logger.warn("Process/Task has new variables. Adding them to form:");
+                formModelSynchronizationUtil.addNewFields(modelHandler::createFieldDefinition);
+            }
+
+            form.setModel(context.getFormModel());
         } else {
             form = new FormDefinition(context.getFormModel());
 
@@ -109,7 +132,7 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
 
             form.setName(context.getSource().getFileName());
 
-            form.getFields().addAll(modelFields);
+            form.getFields().addAll(modelHandler.getAllFormModelFields());
 
             layoutTemplateGenerator.generateLayoutTemplate(form);
         }
@@ -136,25 +159,22 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
     }
 
     @Override
-    protected List<FieldDefinition> extractModelFields(JavaModel formModel,
+    protected List<FieldDefinition> extractModelFields(JavaFormModel formModel,
                                                        GenerationContext<Path> context) {
         FormModelHandler handler = formModelHandlerManager.getFormModelHandler(formModel.getClass());
         handler.init(formModel,
                      context.getSource());
+        handler.synchronizeFormModel();
         return handler.getAllFormModelFields();
     }
 
     @Override
     protected FormDefinition findFormDefinitionForModelType(String modelType,
                                                             GenerationContext<Path> context) {
-        FormDefinition form = super.findFormDefinitionForModelType(modelType,
-                                                                   context);
+        Optional<FormDefinition> formOptional = Optional.ofNullable(super.findFormDefinitionForModelType(modelType,
+                                                                                                         context));
 
-        if (form != null) {
-            return form;
-        }
-
-        return formFinderService.findFormsForType(modelType,
-                                                  context.getSource()).stream().findFirst().orElse(null);
+        return formOptional.orElseGet(() -> formFinderService.findFormsForType(modelType,
+                                                                               context.getSource()).stream().findFirst().orElse(null));
     }
 }

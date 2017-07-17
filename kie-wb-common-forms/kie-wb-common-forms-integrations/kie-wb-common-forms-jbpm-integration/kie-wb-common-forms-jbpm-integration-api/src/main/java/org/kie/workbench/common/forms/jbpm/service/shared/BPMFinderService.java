@@ -26,4 +26,7 @@ import org.uberfire.backend.vfs.Path;
 public interface BPMFinderService {
 
     List<JBPMProcessModel> getAvailableProcessModels(Path path);
+
+    JBPMProcessModel getModelForProcess(String processId,
+                                        Path path);
 }

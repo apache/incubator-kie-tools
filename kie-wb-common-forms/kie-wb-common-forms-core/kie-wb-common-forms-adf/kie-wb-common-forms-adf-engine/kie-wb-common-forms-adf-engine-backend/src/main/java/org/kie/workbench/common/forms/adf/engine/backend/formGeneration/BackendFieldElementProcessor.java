@@ -24,7 +24,7 @@ import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processin
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.FieldInitializer;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.util.PropertyValueExtractor;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.service.FieldManager;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

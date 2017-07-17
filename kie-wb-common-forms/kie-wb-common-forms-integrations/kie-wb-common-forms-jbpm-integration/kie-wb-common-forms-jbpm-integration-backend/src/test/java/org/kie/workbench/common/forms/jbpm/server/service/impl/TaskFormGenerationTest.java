@@ -20,9 +20,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.model.ModelProperty;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -35,10 +35,10 @@ public class TaskFormGenerationTest extends BPMNFormGenerationTest<TaskFormModel
 
     @Override
     protected TaskFormModel getModel(String modelId,
-                                     List<JBPMVariable> variables) {
+                                     List<ModelProperty> properties) {
         return new TaskFormModel(modelId,
                                  modelId,
-                                 variables);
+                                 properties);
     }
 
     @Override
