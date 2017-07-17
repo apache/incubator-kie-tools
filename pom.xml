@@ -27,7 +27,7 @@
 
   <groupId>org.uberfire</groupId>
   <artifactId>uberfire-parent</artifactId>
-  <version>1.1.0-SNAPSHOT</version>
+  <version>1.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>UberFire parent</name>
@@ -58,7 +58,7 @@
     <!-- Version 1.1.0.Final which is coming from ip-bom is not compatible with GWT 2.8.0 -->
     <version.javax.validation>1.0.0.GA</version.javax.validation>
 
-    <version.org.jboss.errai>4.0.1-SNAPSHOT</version.org.jboss.errai>
+    <version.org.jboss.errai>4.0.2-SNAPSHOT</version.org.jboss.errai>
     <version.org.webjars.bower.org.patternfly>3.18.1</version.org.webjars.bower.org.patternfly>
     <version.org.webjars.bower.google-code-prettify>1.0.4</version.org.webjars.bower.google-code-prettify>
     <version.org.webjars.bower.bootstrap-select>1.10.0</version.org.webjars.bower.bootstrap-select>

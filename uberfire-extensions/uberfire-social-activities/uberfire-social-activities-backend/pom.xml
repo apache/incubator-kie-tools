@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-social-activities</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>uberfire-social-activities-backend</artifactId>
