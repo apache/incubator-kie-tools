@@ -217,51 +217,59 @@ public class DecisionTableXLSEditorPresenter
 
     @Override
     protected void makeMenuBar() {
+        if (canUpdateProject()) {
+            fileMenuBuilder
+                    .addCopy(versionRecordManager.getCurrentPath(),
+                             fileNameValidator)
+                    .addRename(versionRecordManager.getPathToLatest(),
+                               fileNameValidator)
+                    .addDelete(versionRecordManager.getPathToLatest());
+        }
+
         fileMenuBuilder
-                .addCopy(versionRecordManager.getCurrentPath(),
-                         fileNameValidator)
-                .addRename(versionRecordManager.getPathToLatest(),
-                           fileNameValidator)
-                .addDelete(versionRecordManager.getPathToLatest())
                 .addValidate(onValidate())
-                .addNewTopLevelMenu(new MenuFactory.CustomMenuBuilder() {
-
-                    private Button button = new Button(DecisionTableXLSEditorConstants.INSTANCE.Convert()) {{
-                        setSize(ButtonSize.SMALL);
-                        addClickHandler(new ClickHandler() {
-                            @Override
-                            public void onClick(final ClickEvent event) {
-                                convert();
-                            }
-                        });
-                    }};
-
-                    @Override
-                    public void push(MenuFactory.CustomMenuBuilder element) {
-                        //Nothing to do. We don't support nested menus
-                    }
-
-                    @Override
-                    public MenuItem build() {
-                        return new BaseMenuCustom<IsWidget>() {
-                            @Override
-                            public IsWidget build() {
-                                return button;
-                            }
-
-                            @Override
-                            public boolean isEnabled() {
-                                return button.isEnabled();
-                            }
-
-                            @Override
-                            public void setEnabled(boolean enabled) {
-                                button.setEnabled(enabled);
-                            }
-                        };
-                    }
-                }.build())
+                .addNewTopLevelMenu(getConvertMenu())
                 .addNewTopLevelMenu(versionRecordManager.buildMenu());
+    }
+
+    protected MenuItem getConvertMenu() {
+        return new MenuFactory.CustomMenuBuilder() {
+
+            private Button button = new Button(DecisionTableXLSEditorConstants.INSTANCE.Convert()) {{
+                setSize(ButtonSize.SMALL);
+                addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(final ClickEvent event) {
+                        convert();
+                    }
+                });
+            }};
+
+            @Override
+            public void push(MenuFactory.CustomMenuBuilder element) {
+                //Nothing to do. We don't support nested menus
+            }
+
+            @Override
+            public MenuItem build() {
+                return new BaseMenuCustom<IsWidget>() {
+                    @Override
+                    public IsWidget build() {
+                        return button;
+                    }
+
+                    @Override
+                    public boolean isEnabled() {
+                        return button.isEnabled();
+                    }
+
+                    @Override
+                    public void setEnabled(boolean enabled) {
+                        button.setEnabled(enabled);
+                    }
+                };
+            }
+        }.build();
     }
 
     @OnClose

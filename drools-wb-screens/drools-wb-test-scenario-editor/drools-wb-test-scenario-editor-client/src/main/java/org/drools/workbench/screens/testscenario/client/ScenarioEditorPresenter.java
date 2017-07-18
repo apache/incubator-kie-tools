@@ -216,18 +216,22 @@ public class ScenarioEditorPresenter
 
     @Override
     protected void makeMenuBar() {
+        if (canUpdateProject()) {
+            fileMenuBuilder
+                    .addSave(new Command() {
+                        @Override
+                        public void execute() {
+                            onSave();
+                        }
+                    })
+                    .addCopy(versionRecordManager.getCurrentPath(),
+                             fileNameValidator)
+                    .addRename(versionRecordManager.getPathToLatest(),
+                               fileNameValidator)
+                    .addDelete(versionRecordManager.getPathToLatest());
+        }
+
         fileMenuBuilder
-                .addSave(new Command() {
-                    @Override
-                    public void execute() {
-                        onSave();
-                    }
-                })
-                .addCopy(versionRecordManager.getCurrentPath(),
-                         fileNameValidator)
-                .addRename(versionRecordManager.getPathToLatest(),
-                           fileNameValidator)
-                .addDelete(versionRecordManager.getPathToLatest())
                 .addNewTopLevelMenu(view.getRunScenarioMenuItem())
                 .addNewTopLevelMenu(view.getRunAllScenariosMenuItem())
                 .addNewTopLevelMenu(versionRecordManager.buildMenu());

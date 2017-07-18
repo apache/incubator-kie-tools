@@ -18,7 +18,6 @@ package org.drools.workbench.screens.testscenario.client;
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
-import java.util.HashSet;
 import javax.enterprise.event.Event;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -28,13 +27,12 @@ import org.drools.workbench.screens.testscenario.client.type.TestScenarioResourc
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
+import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.common.services.shared.test.TestService;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,20 +40,25 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
+import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
+import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.mocks.CallerMock;
-import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -98,6 +101,19 @@ public class ScenarioEditorPresenterTest {
     @Mock
     private TestService testService;
 
+    @Mock
+    private BasicFileMenuBuilder menuBuilder;
+
+    @Spy
+    @InjectMocks
+    private FileMenuBuilderImpl fileMenuBuilder;
+
+    @Mock
+    private ProjectController projectController;
+
+    @Mock
+    private ProjectContext workbenchContext;
+
     private ScenarioEditorPresenter editor;
     private ScenarioEditorView.Presenter presenter;
     private Scenario scenario;
@@ -121,10 +137,10 @@ public class ScenarioEditorPresenterTest {
                 versionRecordManager = ScenarioEditorPresenterTest.this.versionRecordManager;
                 overviewWidget = ScenarioEditorPresenterTest.this.overviewWidget;
                 notification = makeNotificationEvent();
-            }
-
-            protected void makeMenuBar() {
-
+                fileMenuBuilder = ScenarioEditorPresenterTest.this.fileMenuBuilder;
+                projectController = ScenarioEditorPresenterTest.this.projectController;
+                workbenchContext = ScenarioEditorPresenterTest.this.workbenchContext;
+                versionRecordManager = ScenarioEditorPresenterTest.this.versionRecordManager;
             }
         };
         presenter = editor;
@@ -235,6 +251,40 @@ public class ScenarioEditorPresenterTest {
         inOrder.verify(view)
                 .initKSessionSelector(eq(path),
                                       any(Scenario.class));
+    }
+
+    @Test
+    public void testMakeMenuBar() {
+        doReturn(mock(Project.class)).when(workbenchContext).getActiveProject();
+        doReturn(true).when(projectController).canUpdateProject(any());
+
+        editor.makeMenuBar();
+
+        verify(fileMenuBuilder).addSave(any(Command.class));
+        verify(fileMenuBuilder).addCopy(any(Path.class),
+                                        any(DefaultFileNameValidator.class));
+        verify(fileMenuBuilder).addRename(any(Path.class),
+                                          any(DefaultFileNameValidator.class));
+        verify(fileMenuBuilder).addDelete(any(Path.class));
+    }
+
+    @Test
+    public void testMakeMenuBarWithoutUpdateProjectPermission() {
+        doReturn(mock(Project.class)).when(workbenchContext).getActiveProject();
+        doReturn(false).when(projectController).canUpdateProject(any());
+
+        editor.makeMenuBar();
+
+        verify(fileMenuBuilder,
+               never()).addSave(any(Command.class));
+        verify(fileMenuBuilder,
+               never()).addCopy(any(Path.class),
+                                any(DefaultFileNameValidator.class));
+        verify(fileMenuBuilder,
+               never()).addRename(any(Path.class),
+                                  any(DefaultFileNameValidator.class));
+        verify(fileMenuBuilder,
+               never()).addDelete(any(Path.class));
     }
 
     private Event<NotificationEvent> makeNotificationEvent() {

@@ -90,13 +90,17 @@ public class GlobalsEditorPresenter
 
     @Override
     protected void makeMenuBar() {
+        if (canUpdateProject()) {
+            fileMenuBuilder
+                    .addSave(versionRecordManager.newSaveMenuItem(this::onSave))
+                    .addCopy(versionRecordManager.getCurrentPath(),
+                             fileNameValidator)
+                    .addRename(versionRecordManager.getPathToLatest(),
+                               fileNameValidator)
+                    .addDelete(this::onDelete);
+        }
+
         fileMenuBuilder
-                .addSave(versionRecordManager.newSaveMenuItem(this::onSave))
-                .addCopy(versionRecordManager.getCurrentPath(),
-                         fileNameValidator)
-                .addRename(versionRecordManager.getPathToLatest(),
-                           fileNameValidator)
-                .addDelete(this::onDelete)
                 .addValidate(onValidate())
                 .addNewTopLevelMenu(versionRecordManager.buildMenu());
     }

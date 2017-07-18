@@ -362,13 +362,17 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
 
     @Override
     public void makeMenuBar() {
+        if (canUpdateProject()) {
+            fileMenuBuilder
+                    .addSave(getSaveMenuItem())
+                    .addCopy(versionRecordManager::getCurrentPath,
+                             fileNameValidator)
+                    .addRename(versionRecordManager::getPathToLatest,
+                               fileNameValidator)
+                    .addDelete(versionRecordManager::getPathToLatest);
+        }
+
         this.menus = fileMenuBuilder
-                .addSave(getSaveMenuItem())
-                .addCopy(versionRecordManager::getCurrentPath,
-                         fileNameValidator)
-                .addRename(versionRecordManager::getPathToLatest,
-                           fileNameValidator)
-                .addDelete(versionRecordManager::getPathToLatest)
                 .addValidate(() -> onValidate(getActiveDocument()))
                 .addNewTopLevelMenu(getEditMenuItem())
                 .addNewTopLevelMenu(getViewMenuItem())

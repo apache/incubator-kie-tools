@@ -32,6 +32,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -212,6 +213,9 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
 
     @Mock
     protected PlaceManager placeManager;
+
+    @Mock
+    protected ProjectController projectController;
 
     @Captor
     protected ArgumentCaptor<DecisionTableSelectedEvent> dtSelectedEventCaptor;

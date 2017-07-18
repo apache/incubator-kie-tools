@@ -189,13 +189,17 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
 
     @Override
     public void makeMenuBar() {
+        if (canUpdateProject()) {
+            fileMenuBuilder
+                    .addSave(getSaveMenuItem())
+                    .addCopy(() -> getActiveDocument().getCurrentPath(),
+                             fileNameValidator)
+                    .addRename(() -> getActiveDocument().getLatestPath(),
+                               fileNameValidator)
+                    .addDelete(() -> getActiveDocument().getLatestPath());
+        }
+
         this.menus = fileMenuBuilder
-                .addSave(getSaveMenuItem())
-                .addCopy(() -> getActiveDocument().getCurrentPath(),
-                         fileNameValidator)
-                .addRename(() -> getActiveDocument().getLatestPath(),
-                           fileNameValidator)
-                .addDelete(() -> getActiveDocument().getLatestPath())
                 .addValidate(() -> onValidate(getActiveDocument()))
                 .addNewTopLevelMenu(getEditMenuItem())
                 .addNewTopLevelMenu(getViewMenuItem())

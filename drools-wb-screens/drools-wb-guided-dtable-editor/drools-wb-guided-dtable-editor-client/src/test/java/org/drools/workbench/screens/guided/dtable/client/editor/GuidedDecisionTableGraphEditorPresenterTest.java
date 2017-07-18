@@ -40,6 +40,7 @@ import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEdito
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphEditorService;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
@@ -185,6 +186,11 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                            beanManager,
                                                            placeManager,
                                                            lockManager) {
+            {
+                workbenchContext = GuidedDecisionTableGraphEditorPresenterTest.this.workbenchContext;
+                projectController = GuidedDecisionTableGraphEditorPresenterTest.this.projectController;
+            }
+
             @Override
             PathPlaceRequest getPathPlaceRequest(final Path path) {
                 //Avoid use of IOC.getBeanManager().lookupBean(..) in PathPlaceRequest for Unit Tests
@@ -321,6 +327,26 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                times(1)).addNewTopLevelMenu(eq(versionManagerMenuItem));
         verify(fileMenuBuilder,
                times(1)).addNewTopLevelMenu(eq(registeredDocumentsMenuItem));
+    }
+
+    @Test
+    public void testMakeMenuBarWithoutUpdateProjectPermission() {
+        reset(fileMenuBuilder);
+        doReturn(mock(Project.class)).when(workbenchContext).getActiveProject();
+        doReturn(false).when(projectController).canUpdateProject(any());
+
+        presenter.makeMenuBar();
+
+        verify(fileMenuBuilder,
+               never()).addSave(any(MenuItem.class));
+        verify(fileMenuBuilder,
+               never()).addCopy(any(BasicFileMenuBuilder.PathProvider.class),
+                                eq(fileNameValidator));
+        verify(fileMenuBuilder,
+               never()).addRename(any(BasicFileMenuBuilder.PathProvider.class),
+                                  eq(fileNameValidator));
+        verify(fileMenuBuilder,
+               never()).addDelete(any(BasicFileMenuBuilder.PathProvider.class));
     }
 
     @Test

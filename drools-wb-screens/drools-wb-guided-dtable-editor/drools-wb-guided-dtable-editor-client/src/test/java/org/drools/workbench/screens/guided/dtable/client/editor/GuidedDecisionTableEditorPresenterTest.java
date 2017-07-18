@@ -24,6 +24,7 @@ import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResour
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
+import org.guvnor.common.services.project.model.Project;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -56,7 +57,12 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
                                                       radarMenuBuilder,
                                                       modeller,
                                                       beanManager,
-                                                      placeManager);
+                                                      placeManager) {
+            {
+                workbenchContext = GuidedDecisionTableEditorPresenterTest.this.workbenchContext;
+                projectController = GuidedDecisionTableEditorPresenterTest.this.projectController;
+            }
+        };
     }
 
     @Test
@@ -83,6 +89,26 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
                times(1)).addNewTopLevelMenu(eq(radarMenuItem));
         verify(fileMenuBuilder,
                times(1)).addNewTopLevelMenu(eq(versionManagerMenuItem));
+    }
+
+    @Test
+    public void testMakeMenuBarWithoutUpdateProjectPermission() {
+        reset(fileMenuBuilder);
+        doReturn(mock(Project.class)).when(workbenchContext).getActiveProject();
+        doReturn(false).when(projectController).canUpdateProject(any());
+
+        presenter.makeMenuBar();
+
+        verify(fileMenuBuilder,
+               never()).addSave(any(MenuItem.class));
+        verify(fileMenuBuilder,
+               never()).addCopy(any(BasicFileMenuBuilder.PathProvider.class),
+                                eq(fileNameValidator));
+        verify(fileMenuBuilder,
+               never()).addRename(any(BasicFileMenuBuilder.PathProvider.class),
+                                  eq(fileNameValidator));
+        verify(fileMenuBuilder,
+               never()).addDelete(any(BasicFileMenuBuilder.PathProvider.class));
     }
 
     @Test
