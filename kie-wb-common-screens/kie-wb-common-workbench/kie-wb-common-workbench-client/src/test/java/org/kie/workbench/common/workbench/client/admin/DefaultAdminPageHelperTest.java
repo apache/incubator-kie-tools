@@ -22,7 +22,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.preferences.scopes.GlobalPreferenceScope;
+import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

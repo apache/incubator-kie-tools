@@ -24,7 +24,7 @@ import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.services.shared.preferences.scopes.GlobalPreferenceScope;
+import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.kie.workbench.common.workbench.client.admin.resources.i18n.PreferencesConstants;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;

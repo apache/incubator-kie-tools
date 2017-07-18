@@ -23,7 +23,7 @@ import org.guvnor.common.services.shared.preferences.GuvnorPreferenceScopes;
 
 public class WorkbenchPreferenceScopes {
 
-    public static final String GLOBAL = "global";
+    public static final String GLOBAL = GuvnorPreferenceScopes.GLOBAL;
     public static final String USER = GuvnorPreferenceScopes.USER;
     public static final String PROJECT = GuvnorPreferenceScopes.PROJECT;
 
