@@ -537,6 +537,7 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                         }
                         isList = true;
                         finalType = fieldType.getTypeArguments().get(0);
+                        typeKind = org.kie.workbench.common.forms.model.TypeKind.OBJECT;
                     } else if(elementUtils.getTypeElement(finalType.toString()).getSuperclass().toString().startsWith("java.lang.Enum")){
                         typeKind = org.kie.workbench.common.forms.model.TypeKind.ENUM;
                     }
