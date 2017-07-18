@@ -24,6 +24,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.rules.AcyclicDirectedGraphRule;
+import org.kie.workbench.common.dmn.api.rules.SingleConnectorPerTypeGraphRule;
 import org.kie.workbench.common.dmn.api.validation.NoValidation;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
@@ -45,6 +46,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.RuleExtension;
 @CanConnect(startRole = "input-data", endRole = "text-annotation")
 @CanConnect(startRole = "knowledge-source", endRole = "text-annotation")
 @RuleExtension(handler = AcyclicDirectedGraphRule.class, typeArguments = {Association.class})
+@RuleExtension(handler = SingleConnectorPerTypeGraphRule.class, typeArguments = {Association.class})
 @NoValidation
 public class Association extends Artifact {
 

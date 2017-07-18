@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.rules.AcyclicDirectedGraphRule;
+import org.kie.workbench.common.dmn.api.rules.SingleConnectorPerTypeGraphRule;
 import org.kie.workbench.common.dmn.api.validation.NoValidation;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
@@ -41,6 +42,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.RuleExtension;
 @CanConnect(startRole = "business-knowledge-model", endRole = "decision")
 @CanConnect(startRole = "business-knowledge-model", endRole = "business-knowledge-model")
 @RuleExtension(handler = AcyclicDirectedGraphRule.class, typeArguments = {KnowledgeRequirement.class})
+@RuleExtension(handler = SingleConnectorPerTypeGraphRule.class, typeArguments = {KnowledgeRequirement.class})
 @NoValidation
 public class KnowledgeRequirement extends DMNModelInstrumentedBase {
 
