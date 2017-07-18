@@ -20,12 +20,11 @@ import java.util.ArrayList;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.client.resources.i18n.AppConstants;
+import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
 import org.guvnor.common.services.shared.config.AppConfigService;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.preferences.scopes.GlobalPreferenceScope;
 import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
 import org.kie.workbench.common.workbench.client.menu.DefaultWorkbenchFeaturesMenusHelper;
 import org.mockito.ArgumentCaptor;
@@ -36,7 +35,6 @@ import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.ConstantsAnswerMock;
-import org.uberfire.mocks.IocTestingUtils;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
