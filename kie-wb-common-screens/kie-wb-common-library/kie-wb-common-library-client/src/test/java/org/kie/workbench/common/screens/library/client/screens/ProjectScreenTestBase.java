@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
@@ -65,6 +66,9 @@ public class ProjectScreenTestBase {
 
     @Mock
     protected BusyIndicatorView busyIndicatorView;
+
+    @Mock
+    protected ProjectController projectController;
 
     @Captor
     protected ArgumentCaptor<ProjectAssetsQuery> queryArgumentCaptor;

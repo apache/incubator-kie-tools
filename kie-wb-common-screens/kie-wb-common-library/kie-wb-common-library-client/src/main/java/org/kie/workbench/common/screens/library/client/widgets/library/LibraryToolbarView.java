@@ -23,8 +23,10 @@ import org.jboss.errai.common.client.dom.Label;
 import org.jboss.errai.common.client.dom.Option;
 import org.jboss.errai.common.client.dom.Select;
 import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 
 @Templated
 public class LibraryToolbarView implements LibraryToolbarPresenter.View,
@@ -32,6 +34,9 @@ public class LibraryToolbarView implements LibraryToolbarPresenter.View,
 
     @Inject
     Document document;
+
+    @Inject
+    TranslationService ts;
 
     @Inject
     @DataField("repositories-label")
@@ -108,6 +113,11 @@ public class LibraryToolbarView implements LibraryToolbarPresenter.View,
     public void setBranchSelectorVisibility(final boolean visible) {
         branches.setHidden(!visible);
         branchesLabel.setHidden(!visible);
+    }
+
+    @Override
+    public String getNotEnoughPermissionsToAccessLibraryMessage() {
+        return ts.format(LibraryConstants.NotEnoughPermissionsToAccessLibrary);
     }
 
     private Option createOption(String ou) {

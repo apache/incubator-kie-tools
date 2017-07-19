@@ -32,6 +32,7 @@ import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.events.NotificationEvent;
 
 @ApplicationScoped
 public class LibraryToolbarPresenter {
@@ -57,6 +58,8 @@ public class LibraryToolbarPresenter {
         void setSelectedBranch(final String branchName);
 
         void setBranchSelectorVisibility(boolean visible);
+
+        String getNotEnoughPermissionsToAccessLibraryMessage();
     }
 
     private View view;
@@ -66,6 +69,7 @@ public class LibraryToolbarPresenter {
     private PlaceManager placeManager;
     private LibraryPlaces libraryPlaces;
     private Event<ProjectContextChangeEvent> projectContextChangeEvent;
+    private Event<NotificationEvent> notificationEvent;
 
     private OrganizationalUnitRepositoryInfo info;
     private Repository selectedRepository;
@@ -78,7 +82,8 @@ public class LibraryToolbarPresenter {
                                    final LibraryInternalPreferences libraryInternalPreferences,
                                    final PlaceManager placeManager,
                                    final LibraryPlaces libraryPlaces,
-                                   final Event<ProjectContextChangeEvent> projectContextChangeEvent) {
+                                   final Event<ProjectContextChangeEvent> projectContextChangeEvent,
+                                   final Event<NotificationEvent> notificationEvent) {
         this.view = view;
         this.libraryService = libraryService;
         this.libraryPreferences = libraryPreferences;
@@ -86,24 +91,31 @@ public class LibraryToolbarPresenter {
         this.placeManager = placeManager;
         this.libraryPlaces = libraryPlaces;
         this.projectContextChangeEvent = projectContextChangeEvent;
+        this.notificationEvent = notificationEvent;
     }
 
     public void init(final Command callback) {
         libraryService.call((OrganizationalUnitRepositoryInfo info) -> {
             LibraryToolbarPresenter.this.info = info;
-            view.init(LibraryToolbarPresenter.this);
 
-            setupRepositories(info);
-            selectedRepository = info.getSelectedRepository();
-            selectedBranch = info.getSelectedRepository().getDefaultBranch();
+            if (info != null) {
+                view.init(LibraryToolbarPresenter.this);
+
+                setupRepositories(info);
+                selectedRepository = info.getSelectedRepository();
+                selectedBranch = info.getSelectedRepository().getDefaultBranch();
+
+                final ProjectContextChangeEvent event = new ProjectContextChangeEvent(info.getSelectedOrganizationalUnit());
+                projectContextChangeEvent.fire(event);
+
+                callback.execute();
+            } else {
+                notificationEvent.fire(new NotificationEvent(view.getNotEnoughPermissionsToAccessLibraryMessage(),
+                                                             NotificationEvent.NotificationType.ERROR));
+            }
 
             setBranchSelectorVisibility();
             setRepositorySelectorVisibility();
-
-            final ProjectContextChangeEvent event = new ProjectContextChangeEvent(info.getSelectedOrganizationalUnit());
-            projectContextChangeEvent.fire(event);
-
-            callback.execute();
         }).getDefaultOrganizationalUnitRepositoryInfo();
     }
 
@@ -180,11 +192,13 @@ public class LibraryToolbarPresenter {
     }
 
     private void setRepositorySelectorVisibility() {
-        view.setRepositorySelectorVisibility(info.getRepositories().size() > 1);
+        final boolean visible = info != null && info.getRepositories().size() > 1;
+        view.setRepositorySelectorVisibility(visible);
     }
 
     private void setBranchSelectorVisibility() {
-        view.setBranchSelectorVisibility(selectedRepository.getBranches().size() > 1);
+        final boolean visible = selectedRepository != null && selectedRepository.getBranches().size() > 1;
+        view.setBranchSelectorVisibility(visible);
     }
 
     private String getViewSelectedBranch() {

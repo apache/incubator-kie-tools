@@ -530,6 +530,7 @@ public class LibraryPlaces {
     }
 
     public void refresh(final Command callback) {
+        breadcrumbs.clearBreadcrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
         translationUtils.refresh(() -> {
             libraryToolbar.init(() -> {
                 setupToolBar();
@@ -644,7 +645,8 @@ public class LibraryPlaces {
         final PlaceRequest metricsScreen = new DefaultPlaceRequest(LibraryPlaces.ORG_UNITS_METRICS_SCREEN);
         final PartDefinitionImpl part = new PartDefinitionImpl(metricsScreen);
         part.setSelectable(false);
-        placeManager.goTo(part, libraryPerspective.getRootPanel());
+        placeManager.goTo(part,
+                          libraryPerspective.getRootPanel());
         setupLibraryBreadCrumbsForOrgUnitsMetrics();
     }
 
@@ -652,7 +654,8 @@ public class LibraryPlaces {
         final PlaceRequest metricsScreen = new DefaultPlaceRequest(LibraryPlaces.PROJECT_METRICS_SCREEN);
         final PartDefinitionImpl part = new PartDefinitionImpl(metricsScreen);
         part.setSelectable(false);
-        placeManager.goTo(part, libraryPerspective.getRootPanel());
+        placeManager.goTo(part,
+                          libraryPerspective.getRootPanel());
         setupLibraryBreadCrumbsForProjectMetrics(projectInfo);
         projectMetricsEvent.fire(new ProjectMetricsEvent(projectInfo));
     }

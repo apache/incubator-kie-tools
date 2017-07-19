@@ -48,7 +48,6 @@ public class ProjectScreenTest
 
     @Before
     public void setup() {
-
         projectScreen = spy(new ProjectScreen(view,
                                               libraryPlaces,
                                               mock(ProjectsDetailScreen.class),
@@ -56,7 +55,8 @@ public class ProjectScreenTest
                                               new CallerMock<>(libraryService),
                                               assetClassifier,
                                               assetDetailEvent,
-                                              busyIndicatorView) {
+                                              busyIndicatorView,
+                                              projectController) {
             @Override
             protected void reload() {
                 onFilterChange();
@@ -82,6 +82,8 @@ public class ProjectScreenTest
         when(view.getFilterValue()).thenReturn("");
         when(view.getStep()).thenReturn(15);
 
+        doReturn(true).when(projectController).canUpdateProject(any());
+
         projectInfo = createProjectInfo();
         projectScreen.onStartup(new ProjectDetailEvent(projectInfo));
     }
@@ -104,6 +106,20 @@ public class ProjectScreenTest
                                   any(Command.class));
         verify(busyIndicatorView).hideBusyIndicator();
         verify(view).setProjectName("projectName");
+        verify(view).setupAssetsActions();
+    }
+
+    @Test
+    public void onStartupDoesNotAddNewAssetButtonWhenUserDoesNotHaveUpdateProjectPermissionTest() {
+        reset(view);
+        when(view.getFilterValue()).thenReturn("");
+        when(view.getStep()).thenReturn(15);
+        doReturn(false).when(projectController).canUpdateProject(any());
+
+        projectScreen.onStartup(new ProjectDetailEvent(projectInfo));
+
+        verify(view,
+               never()).setupAssetsActions();
     }
 
     @Test

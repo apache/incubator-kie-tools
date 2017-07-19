@@ -168,6 +168,12 @@ public class OrganizationalUnitPopUpView implements OrganizationalUnitPopUpPrese
                          translationUtils.getOrganizationalUnitAliasInSingular().toLowerCase());
     }
 
+    @Override
+    public String getInvalidNameValidationMessage() {
+        return ts.format(LibraryConstants.InvalidFieldValidation,
+                         LibraryConstants.Name);
+    }
+
     private void modalSetup() {
         this.modal = new CommonModalBuilder()
                 .addHeader(translationUtils.getOrganizationalUnitAliasInSingular())

@@ -53,7 +53,8 @@ public class ProjectScreenReloadTest
                                           new CallerMock<>(libraryService),
                                           assetClassifier,
                                           assetDetailEvent,
-                                          busyIndicatorView) {
+                                          busyIndicatorView,
+                                          projectController) {
             @Override
             String getCreatedTime(AssetInfo asset) {
                 return "";

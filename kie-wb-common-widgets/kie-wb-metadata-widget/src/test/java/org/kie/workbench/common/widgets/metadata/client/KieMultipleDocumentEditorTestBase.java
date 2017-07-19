@@ -18,6 +18,7 @@ package org.kie.workbench.common.widgets.metadata.client;
 import java.lang.reflect.Field;
 
 import org.drools.workbench.models.datamodel.imports.Imports;
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Before;
@@ -49,7 +50,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 abstract class KieMultipleDocumentEditorTestBase {
@@ -73,6 +74,9 @@ abstract class KieMultipleDocumentEditorTestBase {
 
     @Mock
     protected ProjectContext workbenchContext;
+
+    @Mock
+    protected ProjectController projectController;
 
     @Mock
     protected EventSourceMock<RestoreEvent> restoreEvent;
@@ -131,124 +135,123 @@ abstract class KieMultipleDocumentEditorTestBase {
         concurrentRenameCommand = null;
         concurrentDeleteCommand = null;
 
-        versionServiceCaller = new CallerMock<>( versionService );
+        versionServiceCaller = new CallerMock<>(versionService);
 
-        final TestMultipleDocumentEditor wrapped = new TestMultipleDocumentEditor( editorView ) {
+        final TestMultipleDocumentEditor wrapped = new TestMultipleDocumentEditor(editorView) {
             @Override
-            void doConcurrentRename( final TestDocument document,
-                                     final ObservablePath.OnConcurrentRenameEvent info ) {
-                if ( concurrentRenameCommand != null ) {
+            void doConcurrentRename(final TestDocument document,
+                                    final ObservablePath.OnConcurrentRenameEvent info) {
+                if (concurrentRenameCommand != null) {
                     concurrentRenameCommand.execute();
                 }
             }
 
             @Override
-            void doConcurrentDelete( final TestDocument document,
-                                     final ObservablePath.OnConcurrentDelete info ) {
-                if ( concurrentDeleteCommand != null ) {
+            void doConcurrentDelete(final TestDocument document,
+                                    final ObservablePath.OnConcurrentDelete info) {
+                if (concurrentDeleteCommand != null) {
                     concurrentDeleteCommand.execute();
                 }
             }
 
             @Override
-            void doSave( final TestDocument document ) {
-                super.getSaveCommand( document ).execute( "commit" );
+            void doSave(final TestDocument document) {
+                super.getSaveCommand(document).execute("commit");
             }
         };
-        wrapped.setKieEditorWrapperView( kieEditorWrapperView );
-        wrapped.setOverviewWidget( overviewWidget );
-        wrapped.setImportsWidget( importsWidget );
-        wrapped.setNotificationEvent( notificationEvent );
-        wrapped.setChangeTitleEvent( changeTitleEvent );
-        wrapped.setWorkbenchContext( workbenchContext );
-        wrapped.setVersionRecordManager( versionRecordManager );
-        wrapped.setRegisteredDocumentsMenuBuilder( registeredDocumentsMenuBuilder );
-        wrapped.setFileMenuBuilder( fileMenuBuilder );
-        wrapped.setFileNameValidator( fileNameValidator );
+        wrapped.setKieEditorWrapperView(kieEditorWrapperView);
+        wrapped.setOverviewWidget(overviewWidget);
+        wrapped.setImportsWidget(importsWidget);
+        wrapped.setNotificationEvent(notificationEvent);
+        wrapped.setChangeTitleEvent(changeTitleEvent);
+        wrapped.setWorkbenchContext(workbenchContext);
+        wrapped.setProjectController(projectController);
+        wrapped.setVersionRecordManager(versionRecordManager);
+        wrapped.setRegisteredDocumentsMenuBuilder(registeredDocumentsMenuBuilder);
+        wrapped.setFileMenuBuilder(fileMenuBuilder);
+        wrapped.setFileNameValidator(fileNameValidator);
 
-        this.editor = spy( wrapped );
+        this.editor = spy(wrapped);
 
-        when( versionRecordManager.newSaveMenuItem( any( Command.class ) ) ).thenReturn( saveMenuItem );
-        when( versionRecordManager.buildMenu() ).thenReturn( versionManagerMenuItem );
+        when(versionRecordManager.newSaveMenuItem(any(Command.class))).thenReturn(saveMenuItem);
+        when(versionRecordManager.buildMenu()).thenReturn(versionManagerMenuItem);
     }
 
     protected TestDocument createTestDocument() {
-        final ObservablePath path = mock( ObservablePath.class );
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
-        return spy( new TestDocument( path,
-                                      placeRequest ) );
+        final ObservablePath path = mock(ObservablePath.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
+        return spy(new TestDocument(path,
+                                    placeRequest));
     }
 
-    protected void registerDocument( final TestDocument document ) {
-        editor.registerDocument( document );
+    protected void registerDocument(final TestDocument document) {
+        editor.registerDocument(document);
     }
 
-    protected void activateDocument( final TestDocument document ) {
-        final Overview overview = mock( Overview.class );
-        final AsyncPackageDataModelOracle dmo = mock( AsyncPackageDataModelOracle.class );
-        final Imports imports = mock( Imports.class );
+    protected void activateDocument(final TestDocument document) {
+        final Overview overview = mock(Overview.class);
+        final AsyncPackageDataModelOracle dmo = mock(AsyncPackageDataModelOracle.class);
+        final Imports imports = mock(Imports.class);
         final boolean isReadOnly = false;
 
-        editor.activateDocument( document,
-                                 overview,
-                                 dmo,
-                                 imports,
-                                 isReadOnly );
+        editor.activateDocument(document,
+                                overview,
+                                dmo,
+                                imports,
+                                isReadOnly);
     }
 
     private RestoreVersionCommandProvider getRestoreVersionCommandProvider() {
         final RestoreVersionCommandProvider restoreVersionCommandProvider = new RestoreVersionCommandProvider();
-        setField( restoreVersionCommandProvider,
-                  "versionService",
-                  versionServiceCaller );
-        setField( restoreVersionCommandProvider,
-                  "restoreEvent",
-                  restoreEvent );
-        setField( restoreVersionCommandProvider,
-                  "busyIndicatorView",
-                  editorView );
+        setField(restoreVersionCommandProvider,
+                 "versionService",
+                 versionServiceCaller);
+        setField(restoreVersionCommandProvider,
+                 "restoreEvent",
+                 restoreEvent);
+        setField(restoreVersionCommandProvider,
+                 "busyIndicatorView",
+                 editorView);
         return restoreVersionCommandProvider;
     }
 
     private BasicFileMenuBuilder getBasicFileMenuBuilder() {
-        final BasicFileMenuBuilder basicFileMenuBuilder = new BasicFileMenuBuilderImpl( deletePopUpPresenter,
-                                                                                        copyPopUpPresenter,
-                                                                                        renamePopUpPresenter,
-                                                                                        busyIndicatorView,
-                                                                                        notification,
-                                                                                        restoreVersionCommandProvider );
-        setField( basicFileMenuBuilder,
-                  "restoreVersionCommandProvider",
-                  restoreVersionCommandProvider );
-        setField( basicFileMenuBuilder,
-                  "notification",
-                  notificationEvent );
-        setField( restoreVersionCommandProvider,
-                  "busyIndicatorView",
-                  editorView );
+        final BasicFileMenuBuilder basicFileMenuBuilder = new BasicFileMenuBuilderImpl(deletePopUpPresenter,
+                                                                                       copyPopUpPresenter,
+                                                                                       renamePopUpPresenter,
+                                                                                       busyIndicatorView,
+                                                                                       notification,
+                                                                                       restoreVersionCommandProvider);
+        setField(basicFileMenuBuilder,
+                 "restoreVersionCommandProvider",
+                 restoreVersionCommandProvider);
+        setField(basicFileMenuBuilder,
+                 "notification",
+                 notificationEvent);
+        setField(restoreVersionCommandProvider,
+                 "busyIndicatorView",
+                 editorView);
         return basicFileMenuBuilder;
     }
 
     private FileMenuBuilder getFileMenuBuilder() {
         final FileMenuBuilder fileMenuBuilder = new FileMenuBuilderImpl();
-        setField( fileMenuBuilder,
-                  "menuBuilder",
-                  basicFileMenuBuilder );
+        setField(fileMenuBuilder,
+                 "menuBuilder",
+                 basicFileMenuBuilder);
         return fileMenuBuilder;
     }
 
-    private void setField( final Object o,
-                           final String fieldName,
-                           final Object value ) {
+    private void setField(final Object o,
+                          final String fieldName,
+                          final Object value) {
         try {
-            final Field field = o.getClass().getDeclaredField( fieldName );
-            field.setAccessible( true );
-            field.set( o,
-                       value );
-
-        } catch ( NoSuchFieldException | IllegalAccessException e ) {
-            fail( e.getMessage() );
+            final Field field = o.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(o,
+                      value);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            fail(e.getMessage());
         }
     }
-
 }

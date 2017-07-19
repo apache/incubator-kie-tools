@@ -16,13 +16,19 @@
 package org.kie.workbench.common.screens.library.client.perspective;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.widgets.client.search.ContextualSearch;
 import org.mockito.Mock;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Mockito.*;
@@ -39,13 +45,17 @@ public class LibraryPerspectiveTest {
     @Mock
     private EventSourceMock<FilterUpdateEvent> filterUpdateEvent;
 
+    @Mock
+    private PlaceManager placeManager;
+
     private LibraryPerspective perspective;
 
     @Before
     public void setup() {
         perspective = new LibraryPerspective(libraryPlaces,
                                              contextualSearch,
-                                             filterUpdateEvent);
+                                             filterUpdateEvent,
+                                             placeManager);
     }
 
     @Test
@@ -61,6 +71,62 @@ public class LibraryPerspectiveTest {
 
         verify(contextualSearch).setPerspectiveSearchBehavior(eq(LibraryPlaces.LIBRARY_PERSPECTIVE),
                                                               any());
+    }
+
+    @Test
+    public void searchBehaviorWhenProjectScreenIsOpenedTest() {
+        doReturn(new ProjectInfo(mock(OrganizationalUnit.class),
+                                 mock(Repository.class),
+                                 "master",
+                                 mock(Project.class))).when(libraryPlaces).getProjectInfo();
+        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.PROJECT_SCREEN);
+
+        perspective.getSearchBehavior().execute("asset");
+
+        verify(libraryPlaces,
+               never()).goToProject(any(),
+                                    anyBoolean(),
+                                    any());
+        verify(placeManager).goTo(LibraryPlaces.PROJECT_SCREEN);
+        verify(filterUpdateEvent).fire(any());
+    }
+
+    @Test
+    public void searchBehaviorWhenProjectScreenIsClosedTest() {
+        doReturn(new ProjectInfo(mock(OrganizationalUnit.class),
+                                 mock(Repository.class),
+                                 "master",
+                                 mock(Project.class))).when(libraryPlaces).getProjectInfo();
+        doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(LibraryPlaces.PROJECT_SCREEN);
+
+        perspective.getSearchBehavior().execute("asset");
+
+        verify(libraryPlaces).goToProject(any(),
+                                          anyBoolean(),
+                                          any());
+        verify(placeManager,
+               never()).goTo(LibraryPlaces.PROJECT_SCREEN);
+        verify(filterUpdateEvent,
+               never()).fire(any());
+    }
+
+    @Test
+    public void searchBehaviorWhenNoProjectIsOpenedTest() {
+        doReturn(new ProjectInfo(mock(OrganizationalUnit.class),
+                                 mock(Repository.class),
+                                 "master",
+                                 null)).when(libraryPlaces).getProjectInfo();
+
+        perspective.getSearchBehavior().execute("asset");
+
+        verify(libraryPlaces,
+               never()).goToProject(any(),
+                                    anyBoolean(),
+                                    any());
+        verify(placeManager,
+               never()).goTo(LibraryPlaces.PROJECT_SCREEN);
+        verify(filterUpdateEvent,
+               never()).fire(any());
     }
 
     @Test

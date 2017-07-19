@@ -160,8 +160,10 @@ public class LibraryServiceImplTest {
         projectsMock.add(mock(Project.class));
         projectsMock.add(mock(Project.class));
 
+        final LibraryRepositoryPreferences repositoryPreferences = spy(new LibraryRepositoryPreferences());
+        doReturn("myrepo").when(repositoryPreferences).getName();
         when(preferences.getOrganizationalUnitPreferences()).thenReturn(spy(new LibraryOrganizationalUnitPreferences()));
-        when(preferences.getRepositoryPreferences()).thenReturn(spy(new LibraryRepositoryPreferences()));
+        when(preferences.getRepositoryPreferences()).thenReturn(repositoryPreferences);
         when(preferences.getProjectPreferences()).thenReturn(spy(new LibraryProjectPreferences()));
 
         libraryService = spy(new LibraryServiceImpl(ouService,
@@ -234,6 +236,11 @@ public class LibraryServiceImplTest {
                                                                                                             repository5);
         organizationalUnitWithSecondaryRepositoryExistent(organizationalUnit4,
                                                           "organizationalUnit4-repository1");
+    }
+
+    @Test
+    public void getOrganizationalUnitRepositoryInfoForNullOrganizationalUnitTest() {
+        assertNull(libraryService.getOrganizationalUnitRepositoryInfo(null));
     }
 
     @Test
@@ -605,6 +612,14 @@ public class LibraryServiceImplTest {
                      gav.getArtifactId());
         assertEquals(preferences.getProjectPreferences().getVersion(),
                      gav.getVersion());
+    }
+
+    @Test
+    public void getSecondaryDefaultRepositoryNameTest() {
+        assertEquals("myalias-myrepo",
+                     libraryService.getSecondaryDefaultRepositoryName(getOrganizationalUnit("myalias")));
+        assertEquals("my-alias-myrepo",
+                     libraryService.getSecondaryDefaultRepositoryName(getOrganizationalUnit("my alias")));
     }
 
     private void organizationalUnitWithSecondaryRepositoryExistent(final OrganizationalUnit organizationalUnit,

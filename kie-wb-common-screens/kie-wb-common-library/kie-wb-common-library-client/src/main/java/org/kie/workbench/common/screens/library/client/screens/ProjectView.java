@@ -95,13 +95,18 @@ public class ProjectView
     @Override
     public void init(ProjectScreen presenter) {
         this.presenter = presenter;
-        assetsActionsWidget.init();
         projectActionsWidget.init(presenter::goToSettings);
-        filterText.setAttribute("placeholder", ts.getTranslation(LibraryConstants.FilterByName));
-        assetsToolbar.appendChild(assetsActionsWidget.getView().getElement());
+        filterText.setAttribute("placeholder",
+                                ts.getTranslation(LibraryConstants.FilterByName));
         projectToolbar.appendChild(projectActionsWidget.getView().getElement());
         assetListContainer.appendChild(assetList.getElement());
         assetList.addChangeHandler(presenter::onReload);
+    }
+
+    @Override
+    public void setupAssetsActions() {
+        assetsActionsWidget.init();
+        assetsToolbar.appendChild(assetsActionsWidget.getView().getElement());
     }
 
     @Override

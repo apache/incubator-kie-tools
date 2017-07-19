@@ -25,6 +25,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.ext.uberfire.social.activities.client.widgets.utils.SocialDateFormatter;
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -90,6 +91,8 @@ public class ProjectScreen {
         int getFirstIndex();
 
         void resetPageRangeIndicator();
+
+        void setupAssetsActions();
     }
 
     private View view;
@@ -100,6 +103,7 @@ public class ProjectScreen {
     private Classifier assetClassifier;
     private Event<AssetDetailEvent> assetDetailEvent;
     private BusyIndicatorView busyIndicatorView;
+    private ProjectController projectController;
     private ProjectInfo projectInfo;
     private List<AssetInfo> assets;
     private Reloader reloader = new Reloader();
@@ -115,7 +119,8 @@ public class ProjectScreen {
                          final Caller<LibraryService> libraryService,
                          final Classifier assetClassifier,
                          final Event<AssetDetailEvent> assetDetailEvent,
-                         final BusyIndicatorView busyIndicatorView) {
+                         final BusyIndicatorView busyIndicatorView,
+                         final ProjectController projectController) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
         this.projectsDetailScreen = projectsDetailScreen;
@@ -124,6 +129,7 @@ public class ProjectScreen {
         this.assetClassifier = assetClassifier;
         this.assetDetailEvent = assetDetailEvent;
         this.busyIndicatorView = busyIndicatorView;
+        this.projectController = projectController;
     }
 
     public void onStartup(@Observes final ProjectDetailEvent projectDetailEvent) {
@@ -131,6 +137,10 @@ public class ProjectScreen {
         loadProjectInfo();
         view.setProjectName(projectInfo.getProject().getProjectName());
         view.setProjectDetails(projectsDetailScreen.getView());
+
+        if (projectController.canUpdateProject(projectInfo.getProject())) {
+            view.setupAssetsActions();
+        }
     }
 
     public void refreshOnFocus(@Observes final PlaceGainFocusEvent placeGainFocusEvent) {

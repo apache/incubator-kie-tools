@@ -28,7 +28,9 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.imports.Imports;
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -87,6 +89,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     protected VersionRecordManager versionRecordManager;
     protected RegisteredDocumentsMenuBuilder registeredDocumentsMenuBuilder;
     protected DefaultFileNameValidator fileNameValidator;
+    protected ProjectController projectController;
 
     //Constructed
     protected BaseEditorView editorView;
@@ -189,6 +192,11 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     @Inject
     protected void setFileNameValidator(final DefaultFileNameValidator fileNameValidator) {
         this.fileNameValidator = fileNameValidator;
+    }
+
+    @Inject
+    protected void setProjectController(final ProjectController projectController) {
+        this.projectController = projectController;
     }
 
     @Override
@@ -452,17 +460,27 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     @Override
     public void makeMenuBar() {
         this.fileMenuBuilder.setLockSyncMenuStateHelper(new KieMultipleDocumentEditorLockSyncHelper(this));
+
+        if (canUpdateProject()) {
+            fileMenuBuilder
+                    .addSave(getSaveMenuItem())
+                    .addCopy(() -> getActiveDocument().getCurrentPath(),
+                             fileNameValidator)
+                    .addRename(() -> getActiveDocument().getLatestPath(),
+                               fileNameValidator)
+                    .addDelete(() -> getActiveDocument().getLatestPath());
+        }
+
         this.menus = fileMenuBuilder
-                .addSave(getSaveMenuItem())
-                .addCopy(() -> getActiveDocument().getCurrentPath(),
-                         fileNameValidator)
-                .addRename(() -> getActiveDocument().getLatestPath(),
-                           fileNameValidator)
-                .addDelete(() -> getActiveDocument().getLatestPath())
                 .addValidate(() -> onValidate(getActiveDocument()))
                 .addNewTopLevelMenu(getRegisteredDocumentsMenuItem())
                 .addNewTopLevelMenu(getVersionManagerMenuItem())
                 .build();
+    }
+
+    protected boolean canUpdateProject() {
+        final Project activeProject = workbenchContext.getActiveProject();
+        return activeProject == null || projectController.canUpdateProject(activeProject);
     }
 
     /**

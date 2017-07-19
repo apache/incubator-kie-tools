@@ -99,18 +99,22 @@ public class ProjectImportsScreenPresenter
 
     @Override
     protected void makeMenuBar() {
+        if (canUpdateProject()) {
+            fileMenuBuilder
+                    .addSave(versionRecordManager.newSaveMenuItem(new Command() {
+                        @Override
+                        public void execute() {
+                            onSave();
+                        }
+                    }))
+                    .addCopy(versionRecordManager.getCurrentPath(),
+                             fileNameValidator)
+                    .addRename(versionRecordManager.getPathToLatest(),
+                               fileNameValidator)
+                    .addDelete(versionRecordManager.getPathToLatest());
+        }
+
         fileMenuBuilder
-                .addSave(versionRecordManager.newSaveMenuItem(new Command() {
-                    @Override
-                    public void execute() {
-                        onSave();
-                    }
-                }))
-                .addCopy(versionRecordManager.getCurrentPath(),
-                         fileNameValidator)
-                .addRename(versionRecordManager.getPathToLatest(),
-                           fileNameValidator)
-                .addDelete(versionRecordManager.getPathToLatest())
                 .addNewTopLevelMenu(versionRecordManager.buildMenu());
     }
 

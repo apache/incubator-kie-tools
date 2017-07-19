@@ -160,7 +160,7 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String ProjectName = "ProjectName";
-    
+
     @TranslationKey(defaultValue = "")
     public static final String OrgUnitsMetrics = "OrgUnitsMetrics";
 
@@ -211,4 +211,7 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String TopContributor = "TopContributor";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NotEnoughPermissionsToAccessLibrary = "NotEnoughPermissionsToAccessLibrary";
 }

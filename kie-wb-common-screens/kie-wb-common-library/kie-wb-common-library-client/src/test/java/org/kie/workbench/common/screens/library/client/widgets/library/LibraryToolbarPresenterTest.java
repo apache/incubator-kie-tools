@@ -38,6 +38,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -67,6 +68,9 @@ public class LibraryToolbarPresenterTest {
     @Mock
     private Event<ProjectContextChangeEvent> projectContextChangeEvent;
 
+    @Mock
+    private Event<NotificationEvent> notificationEvent;
+
     private LibraryToolbarPresenter presenter;
 
     private OrganizationalUnit selectedOrganizationalUnit;
@@ -88,7 +92,8 @@ public class LibraryToolbarPresenterTest {
                                                 libraryInternalPreferences,
                                                 placeManager,
                                                 libraryPlaces,
-                                                projectContextChangeEvent);
+                                                projectContextChangeEvent,
+                                                notificationEvent);
 
         selectedOrganizationalUnit = mock(OrganizationalUnit.class);
         doReturn("organizationalUnit1").when(selectedOrganizationalUnit).getIdentifier();
@@ -154,6 +159,31 @@ public class LibraryToolbarPresenterTest {
         verify(view).setSelectedRepository("repository1");
 
         verify(callback).execute();
+    }
+
+    @Test
+    public void initWithoutDefaultOrganizationalUnitTest() {
+        doReturn(null).when(libraryService).getDefaultOrganizationalUnitRepositoryInfo();
+
+        presenter.init(callback);
+
+        verify(view).setRepositorySelectorVisibility(false);
+        verify(view).setBranchSelectorVisibility(false);
+
+        verify(view,
+               never()).init(presenter);
+
+        verify(view,
+               never()).clearRepositories();
+        verify(view,
+               never()).addRepository("repository1");
+        verify(view,
+               never()).addRepository("repository2");
+        verify(view,
+               never()).setSelectedRepository("repository1");
+
+        verify(callback,
+               never()).execute();
     }
 
     @Test

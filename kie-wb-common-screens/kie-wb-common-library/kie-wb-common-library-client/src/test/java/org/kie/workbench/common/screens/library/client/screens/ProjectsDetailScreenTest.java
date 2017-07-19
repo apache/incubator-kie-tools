@@ -61,29 +61,47 @@ public class ProjectsDetailScreenTest {
     public void setup() {
         when(pom.getDescription()).thenReturn("desc");
         doReturn(pom).when(project).getPom();
-        when(projectInfo.getProject() ).thenReturn(project);
+        when(projectInfo.getProject()).thenReturn(project);
         when(projectMetricsFactory.lookupCommitsOverTimeDisplayer_small(any())).thenReturn(contributionsDisplayer);
 
         projectDetailEvent = new ProjectDetailEvent(projectInfo);
-        projectsDetail = new ProjectsDetailScreen(view, projectMetricsFactory, libraryPlaces);
-        projectsDetail.update(projectDetailEvent);
+        projectsDetail = new ProjectsDetailScreen(view,
+                                                  projectMetricsFactory,
+                                                  libraryPlaces);
     }
 
     @Test
     public void testInit() throws Exception {
+        projectsDetail.update(projectDetailEvent);
         verify(view).init(projectsDetail);
     }
 
     @Test
     public void testViewMetrics() throws Exception {
+        projectsDetail.update(projectDetailEvent);
         projectsDetail.gotoProjectMetrics();
         verify(libraryPlaces).goToProjectMetrics(projectInfo);
     }
 
     @Test
     public void testUpdate() throws Exception {
+        projectsDetail.update(projectDetailEvent);
         verify(view).updateDescription("desc");
         verify(view).updateContributionsMetric(contributionsDisplayer);
-        verify(contributionsDisplayer ).draw();
+        verify(contributionsDisplayer).draw();
+    }
+
+    @Test
+    public void testUpdateNullDescription() throws Exception {
+        when(pom.getDescription()).thenReturn(null);
+        doReturn(pom).when(project).getPom();
+        when(projectInfo.getProject()).thenReturn(project);
+        projectDetailEvent = new ProjectDetailEvent(projectInfo);
+
+        projectsDetail.update(projectDetailEvent);
+
+        verify(view).updateDescription("");
+        verify(view).updateContributionsMetric(contributionsDisplayer);
+        verify(contributionsDisplayer).draw();
     }
 }

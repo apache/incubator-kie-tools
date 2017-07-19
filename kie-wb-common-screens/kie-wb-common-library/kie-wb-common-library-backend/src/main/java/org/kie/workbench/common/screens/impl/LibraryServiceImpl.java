@@ -41,6 +41,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.security.OrganizationalUnitAction;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
@@ -136,6 +137,10 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     public OrganizationalUnitRepositoryInfo getOrganizationalUnitRepositoryInfo(final OrganizationalUnit selectedOrganizationalUnit) {
+        if (selectedOrganizationalUnit == null) {
+            return null;
+        }
+
         final Repository selectedRepository = getDefaultRepository(selectedOrganizationalUnit);
         final List<OrganizationalUnit> organizationalUnits = getOrganizationalUnits();
         final OrganizationalUnit organizationalUnit = getOrganizationalUnit(selectedOrganizationalUnit.getIdentifier(),
@@ -419,6 +424,12 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     private OrganizationalUnit createDefaultOrganizationalUnit() {
+        if (!authorizationManager.authorize(OrganizationalUnit.RESOURCE_TYPE,
+                                            OrganizationalUnitAction.CREATE,
+                                            sessionInfo.getIdentity())) {
+            return null;
+        }
+
         final LibraryPreferences preferences = getPreferences();
         return ouService.createOrganizationalUnit(preferences.getOrganizationalUnitPreferences().getName(),
                                                   preferences.getOrganizationalUnitPreferences().getOwner(),
@@ -447,8 +458,13 @@ public class LibraryServiceImpl implements LibraryService {
         return getPreferences().getRepositoryPreferences().getName();
     }
 
-    private String getSecondaryDefaultRepositoryName(final OrganizationalUnit ou) {
-        return ou.getIdentifier() + "-" + getPreferences().getRepositoryPreferences().getName();
+    String getSecondaryDefaultRepositoryName(final OrganizationalUnit ou) {
+        final String sanitizedOuIdentifier = ou.getIdentifier().replaceAll("[^A-Za-z0-9]",
+                                                                           "-");
+        final String repositoryNameSuffix = getPreferences().getRepositoryPreferences().getName();
+        final String repositoryName = sanitizedOuIdentifier + "-" + repositoryNameSuffix;
+
+        return repositoryName;
     }
 
     private RepositoryEnvironmentConfigurations getDefaultRepositoryEnvironmentConfigurations() {

@@ -21,7 +21,9 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
@@ -70,6 +72,9 @@ public abstract class KieEditor
 
     @Inject
     protected CopyPopUpPresenter copyPopUpPresenter;
+
+    @Inject
+    protected ProjectController projectController;
 
     protected Metadata metadata;
 
@@ -232,15 +237,24 @@ public abstract class KieEditor
      */
     @Override
     protected void makeMenuBar() {
+        if (canUpdateProject()) {
+            fileMenuBuilder
+                    .addSave(versionRecordManager.newSaveMenuItem(this::onSave))
+                    .addCopy(versionRecordManager.getCurrentPath(),
+                             fileNameValidator)
+                    .addRename(versionRecordManager.getPathToLatest(),
+                               fileNameValidator)
+                    .addDelete(versionRecordManager.getPathToLatest());
+        }
+
         fileMenuBuilder
-                .addSave(versionRecordManager.newSaveMenuItem(this::onSave))
-                .addCopy(versionRecordManager.getCurrentPath(),
-                         fileNameValidator)
-                .addRename(versionRecordManager.getPathToLatest(),
-                           fileNameValidator)
-                .addDelete(versionRecordManager.getPathToLatest())
                 .addValidate(onValidate())
                 .addNewTopLevelMenu(versionRecordManager.buildMenu());
+    }
+
+    protected boolean canUpdateProject() {
+        final Project activeProject = workbenchContext.getActiveProject();
+        return activeProject == null || projectController.canUpdateProject(activeProject);
     }
 
     @Override

@@ -25,6 +25,8 @@ import java.util.Set;
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
@@ -52,25 +54,29 @@ import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFact
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
+import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
+import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public abstract class DataModelerScreenPresenterTestBase {
 
     @GwtMock
@@ -138,6 +144,19 @@ public abstract class DataModelerScreenPresenterTestBase {
     @Mock
     protected CopyPopUpPresenter copyPopUpPresenter;
 
+    @Mock
+    private BasicFileMenuBuilder menuBuilder;
+
+    @Spy
+    @InjectMocks
+    protected FileMenuBuilderImpl fileMenuBuilder;
+
+    @Mock
+    protected ProjectController projectController;
+
+    @Mock
+    protected ProjectContext workbenchContext;
+
     protected DataModelerScreenPresenter presenter;
 
     /**
@@ -191,19 +210,20 @@ public abstract class DataModelerScreenPresenterTestBase {
     public void setUp() throws Exception {
 
         testObject1 = DataModelerEditorsTestHelper.createTestObject1();
-        testModel = DataModelerEditorsTestHelper.createTestModel( testObject1 );
+        testModel = DataModelerEditorsTestHelper.createTestModel(testObject1);
         testErrors = createTestErrors();
         testPackages = createTestPackages();
         testAnnotationDefs = createTestAnnotations();
         testTypeDefs = createTestPropertyTypes();
 
-        presenter = new DataModelerScreenPresenter( view, sessionInfo ) {
+        presenter = new DataModelerScreenPresenter(view,
+                                                   sessionInfo) {
 
             {
-                kieView = mock( KieEditorWrapperView.class );
+                kieView = mock(KieEditorWrapperView.class);
                 this.versionRecordManager = DataModelerScreenPresenterTestBase.this.versionRecordManager;
                 this.authorizationManager = DataModelerScreenPresenterTestBase.this.authorizationManager;
-                overviewWidget = mock( OverviewWidgetPresenter.class );
+                overviewWidget = mock(OverviewWidgetPresenter.class);
                 savePopUpPresenter = DataModelerScreenPresenterTestBase.this.savePopUpPresenter;
                 renamePopUpPresenter = DataModelerScreenPresenterTestBase.this.renamePopUpPresenter;
                 copyPopUpPresenter = DataModelerScreenPresenterTestBase.this.copyPopUpPresenter;
@@ -214,18 +234,17 @@ public abstract class DataModelerScreenPresenterTestBase {
                 publishBatchMessagesEvent = DataModelerScreenPresenterTestBase.this.publishBatchMessagesEvent;
                 lockRequired = DataModelerScreenPresenterTestBase.this.lockRequired;
                 dataModelerFocusEvent = DataModelerScreenPresenterTestBase.this.dataModelerFocusEvent;
-                modelerService = new CallerMock<>( DataModelerScreenPresenterTestBase.this.modelerService );
+                modelerService = new CallerMock<>(DataModelerScreenPresenterTestBase.this.modelerService);
                 validationPopup = DataModelerScreenPresenterTestBase.this.validationPopup;
-                validationService = new CallerMock<>( DataModelerScreenPresenterTestBase.this.validationService );
+                validationService = new CallerMock<>(DataModelerScreenPresenterTestBase.this.validationService);
                 validatorService = DataModelerScreenPresenterTestBase.this.validatorService;
                 javaFileNameValidator = DataModelerScreenPresenterTestBase.this.javaFileNameValidator;
                 resourceType = DataModelerScreenPresenterTestBase.this.resourceType;
                 dataModelerWBContext = DataModelerScreenPresenterTestBase.this.dataModelerWBContext;
+                fileMenuBuilder = DataModelerScreenPresenterTestBase.this.fileMenuBuilder;
+                workbenchContext = DataModelerScreenPresenterTestBase.this.workbenchContext;
+                projectController = DataModelerScreenPresenterTestBase.this.projectController;
                 uiStarted = true;
-            }
-
-            protected void makeMenuBar() {
-
             }
 
             @Override
@@ -241,9 +260,9 @@ public abstract class DataModelerScreenPresenterTestBase {
             }
 
             @Override
-            public void setSelectedTab( int index ) {
+            public void setSelectedTab(int index) {
                 //emulates the ui action produced by the tabs events.
-                switch ( index ) {
+                switch (index) {
                     case 0:
                         onEditTabSelected();
                         break;
@@ -254,51 +273,54 @@ public abstract class DataModelerScreenPresenterTestBase {
                         onSourceTabSelected();
                         break;
                     default:
-                        throw new RuntimeException( "Tab index out of bounds: " + index );
+                        throw new RuntimeException("Tab index out of bounds: " + index);
                 }
             }
         };
     }
 
-    protected EditorModelContent createContent( boolean includeTypesInfo, boolean addParseErrors ) {
+    protected EditorModelContent createContent(boolean includeTypesInfo,
+                                               boolean addParseErrors) {
         EditorModelContent content = new EditorModelContent();
 
-        content.setDataObject( testObject1 );
-        content.setDataModel( testModel );
-        content.setSource( testSource );
-        content.setOriginalClassName( testObject1.getClassName() );
-        content.setOriginalPackageName( testObject1.getPackageName() );
-        content.setPath( path );
-        content.setCurrentProject( kieProject );
-        content.setCurrentProjectPackages( testPackages );
-        content.setOverview( overview );
+        content.setDataObject(testObject1);
+        content.setDataModel(testModel);
+        content.setSource(testSource);
+        content.setOriginalClassName(testObject1.getClassName());
+        content.setOriginalPackageName(testObject1.getPackageName());
+        content.setPath(path);
+        content.setCurrentProject(kieProject);
+        content.setCurrentProjectPackages(testPackages);
+        content.setOverview(overview);
 
-        if ( includeTypesInfo ) {
-            content.setAnnotationDefinitions( testAnnotationDefs );
-            content.setPropertyTypes( testTypeDefs );
+        if (includeTypesInfo) {
+            content.setAnnotationDefinitions(testAnnotationDefs);
+            content.setPropertyTypes(testTypeDefs);
         }
 
-        if ( addParseErrors ) {
-            content.setErrors( testErrors );
+        if (addParseErrors) {
+            content.setErrors(testErrors);
         }
         return content;
     }
 
     protected Set<String> createTestPackages() {
-        HashSet<String> packages = new HashSet<String>(  );
+        HashSet<String> packages = new HashSet<String>();
 
-        packages.add( "package1" );
-        packages.add( "package2" );
+        packages.add("package1");
+        packages.add("package2");
         return packages;
     }
 
     protected Map<String, AnnotationDefinition> createTestAnnotations() {
-        Map<String, AnnotationDefinition> annotationsDef = new HashMap<String, AnnotationDefinition>(  );
-        AnnotationDefinition annotationDefinition = DriverUtils.buildAnnotationDefinition( Label.class );
+        Map<String, AnnotationDefinition> annotationsDef = new HashMap<String, AnnotationDefinition>();
+        AnnotationDefinition annotationDefinition = DriverUtils.buildAnnotationDefinition(Label.class);
 
-        annotationsDef.put( annotationDefinition.getClassName(), annotationDefinition );
-        annotationDefinition =  DriverUtils.buildAnnotationDefinition( Description.class );
-        annotationsDef.put( annotationDefinition.getClassName(), annotationDefinition );
+        annotationsDef.put(annotationDefinition.getClassName(),
+                           annotationDefinition);
+        annotationDefinition = DriverUtils.buildAnnotationDefinition(Description.class);
+        annotationsDef.put(annotationDefinition.getClassName(),
+                           annotationDefinition);
         return annotationsDef;
     }
 
@@ -307,10 +329,25 @@ public abstract class DataModelerScreenPresenterTestBase {
     }
 
     protected List<DataModelerError> createTestErrors() {
-        List<DataModelerError> errors = new ArrayList<DataModelerError>(  );
-        errors.add( new DataModelerError( 1, "error1", Level.ERROR, path, 1, 0 ) );
-        errors.add( new DataModelerError( 2, "error2", Level.ERROR, path, 2, 0 ) );
-        errors.add( new DataModelerError( 3, "error3", Level.ERROR, path, 3, 0 ) );
+        List<DataModelerError> errors = new ArrayList<DataModelerError>();
+        errors.add(new DataModelerError(1,
+                                        "error1",
+                                        Level.ERROR,
+                                        path,
+                                        1,
+                                        0));
+        errors.add(new DataModelerError(2,
+                                        "error2",
+                                        Level.ERROR,
+                                        path,
+                                        2,
+                                        0));
+        errors.add(new DataModelerError(3,
+                                        "error3",
+                                        Level.ERROR,
+                                        path,
+                                        3,
+                                        0));
         return errors;
     }
 }

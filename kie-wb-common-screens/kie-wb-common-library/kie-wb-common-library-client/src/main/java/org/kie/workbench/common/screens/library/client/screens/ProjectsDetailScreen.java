@@ -23,8 +23,8 @@ import org.dashbuilder.displayer.client.Displayer;
 import org.guvnor.common.services.project.model.POM;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
-import org.kie.workbench.common.screens.library.client.util.ProjectMetricsFactory;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.kie.workbench.common.screens.library.client.util.ProjectMetricsFactory;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -36,7 +36,7 @@ public class ProjectsDetailScreen {
 
     public interface View extends UberElement<ProjectsDetailScreen> {
 
-        void updateDescription(String description );
+        void updateDescription(String description);
 
         void updateContributionsMetric(Displayer metric);
 
@@ -59,13 +59,15 @@ public class ProjectsDetailScreen {
         this.view.init(this);
     }
 
-    public void update( @Observes final ProjectDetailEvent event ) {
+    public void update(@Observes final ProjectDetailEvent event) {
         this.projectInfo = event.getProjectInfo();
 
         // Update the description
         final POM pom = projectInfo.getProject().getPom();
         if (pom != null && pom.getDescription() != null) {
             view.updateDescription(pom.getDescription());
+        } else {
+            view.updateDescription("");
         }
         // Update the metrics card
         commitsDisplayer = projectMetricsFactory.lookupCommitsOverTimeDisplayer_small(projectInfo);

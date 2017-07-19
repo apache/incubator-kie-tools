@@ -1279,33 +1279,35 @@ public class DataModelerScreenPresenter
 
     @Override
     protected void makeMenuBar() {
+        if (canUpdateProject()) {
+            fileMenuBuilder
+                    .addSave(versionRecordManager.newSaveMenuItem(new Command() {
+                        @Override
+                        public void execute() {
+                            onSave();
+                        }
+                    }))
+                    .addCopy(new Command() {
+                        @Override
+                        public void execute() {
+                            onCopy();
+                        }
+                    })
+                    .addRename(new Command() {
+                        @Override
+                        public void execute() {
+                            onSafeRename();
+                        }
+                    })
+                    .addDelete(new Command() {
+                        @Override
+                        public void execute() {
+                            onSafeDelete();
+                        }
+                    });
+        }
 
-        //menus =
         fileMenuBuilder
-                .addSave(versionRecordManager.newSaveMenuItem(new Command() {
-                    @Override
-                    public void execute() {
-                        onSave();
-                    }
-                }))
-                .addCopy(new Command() {
-                    @Override
-                    public void execute() {
-                        onCopy();
-                    }
-                })
-                .addRename(new Command() {
-                    @Override
-                    public void execute() {
-                        onSafeRename();
-                    }
-                })
-                .addDelete(new Command() {
-                    @Override
-                    public void execute() {
-                        onSafeDelete();
-                    }
-                })
                 .addValidate(
                         onValidate()
                 )

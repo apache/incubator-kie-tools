@@ -80,12 +80,16 @@ public class GuvnorDefaultEditorPresenter
 
     @Override
     protected void makeMenuBar() {
+        if (canUpdateProject()) {
+            fileMenuBuilder
+                    .addCopy(versionRecordManager.getCurrentPath(),
+                             fileNameValidator)
+                    .addRename(versionRecordManager.getCurrentPath(),
+                               fileNameValidator)
+                    .addDelete(versionRecordManager.getCurrentPath());
+        }
+
         fileMenuBuilder
-                .addCopy(versionRecordManager.getCurrentPath(),
-                         fileNameValidator)
-                .addRename(versionRecordManager.getCurrentPath(),
-                           fileNameValidator)
-                .addDelete(versionRecordManager.getCurrentPath())
                 .addNewTopLevelMenu(versionRecordManager.buildMenu());
     }
 

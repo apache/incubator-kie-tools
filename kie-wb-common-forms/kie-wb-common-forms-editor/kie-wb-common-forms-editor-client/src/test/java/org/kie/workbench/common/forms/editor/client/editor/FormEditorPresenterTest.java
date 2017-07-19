@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.guvnor.common.services.project.model.Project;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
@@ -29,9 +30,12 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.def
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.verification.VerificationMode;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
+import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -380,9 +384,40 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
 
     @Test
     public void testMakeMenuBar() {
+        doReturn(mock(Project.class)).when(workbenchContext).getActiveProject();
+        doReturn(true).when(projectController).canUpdateProject(any());
+
         loadContent();
 
-        presenter.makeMenuBar();
+        verify(menuBuilderMock).addSave(any(MenuItem.class));
+        verify(menuBuilderMock).addCopy(any(Path.class),
+                                        any(DefaultFileNameValidator.class));
+        verify(menuBuilderMock).addRename(any(Path.class),
+                                          any(DefaultFileNameValidator.class));
+        verify(menuBuilderMock).addDelete(any(Path.class));
+
+        assertNotNull(presenter.getMenus());
+        verify(menuBuilderMock,
+               atLeastOnce()).build();
+    }
+
+    @Test
+    public void testMakeMenuBarWithoutUpdateProjectPermission() {
+        doReturn(mock(Project.class)).when(workbenchContext).getActiveProject();
+        doReturn(false).when(projectController).canUpdateProject(any());
+
+        loadContent();
+
+        verify(menuBuilderMock,
+               never()).addSave(any(MenuItem.class));
+        verify(menuBuilderMock,
+               never()).addCopy(any(Path.class),
+                                any(DefaultFileNameValidator.class));
+        verify(menuBuilderMock,
+               never()).addRename(any(Path.class),
+                                  any(DefaultFileNameValidator.class));
+        verify(menuBuilderMock,
+               never()).addDelete(any(Path.class));
 
         assertNotNull(presenter.getMenus());
         verify(menuBuilderMock,

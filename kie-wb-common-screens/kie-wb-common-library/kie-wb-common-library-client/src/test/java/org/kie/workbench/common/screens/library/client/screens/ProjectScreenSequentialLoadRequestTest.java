@@ -54,7 +54,8 @@ public class ProjectScreenSequentialLoadRequestTest
                                               new CallerMock<>(libraryService),
                                               assetClassifier,
                                               assetDetailEvent,
-                                              busyIndicatorView) {
+                                              busyIndicatorView,
+                                              projectController) {
             @Override
             protected void reload() {
                 onFilterChange();

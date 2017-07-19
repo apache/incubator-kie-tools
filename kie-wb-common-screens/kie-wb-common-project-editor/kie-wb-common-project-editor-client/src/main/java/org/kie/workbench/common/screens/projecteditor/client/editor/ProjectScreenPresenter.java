@@ -238,8 +238,6 @@ public class ProjectScreenPresenter
         });
         this.buildOptions = view.getBuildButtons();
 
-        menus = makeMenuBar();
-
         reloadRunnable = new Runnable() {
 
             @Override
@@ -260,6 +258,8 @@ public class ProjectScreenPresenter
 
         this.buildExecutor = buildExecutor;
         this.buildExecutor.init(view);
+
+        menus = makeMenuBar();
     }
 
     protected boolean isDeploymentDescritorEditorAvailable(final Stream<ResourceTypeDefinition> resourceTypes,
@@ -446,8 +446,10 @@ public class ProjectScreenPresenter
                         view.hideBusyIndicator();
                         originalHash = model.hashCode();
 
-                        for (MenuItem mi : menus.getItemsMap().values()) {
-                            mi.setEnabled(true);
+                        if (menus != null) {
+                            for (MenuItem mi : menus.getItemsMap().values()) {
+                                mi.setEnabled(true);
+                            }
                         }
 
                         updateEditorTitle();
@@ -570,6 +572,7 @@ public class ProjectScreenPresenter
     }
 
     private Menus makeMenuBar() {
+        showCurrentProjectInfoIfAny((KieProject) workbenchContext.getActiveProject());
         return MenuFactory
                 .newTopLevelMenu(CommonConstants.INSTANCE.Save())
                 .withPermission(Project.RESOURCE_TYPE,
