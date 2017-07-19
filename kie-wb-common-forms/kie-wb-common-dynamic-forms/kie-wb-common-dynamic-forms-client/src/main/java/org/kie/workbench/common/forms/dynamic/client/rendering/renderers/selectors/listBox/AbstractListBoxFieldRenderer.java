@@ -51,7 +51,7 @@ public abstract class AbstractListBoxFieldRenderer<FIELD extends ListBoxBaseDefi
                               "");
         }
 
-        if (optionsValues.containsKey(selectedValue)) {
+        if (widgetList.getValue() == null && optionsValues.containsKey(selectedValue)) {
             widgetList.setValue(selectedValue);
         }
 

@@ -123,7 +123,7 @@ public abstract class AbstractBPMNFormGeneratorServiceTest<SERVICE extends Abstr
                      form.getLayoutTemplate().getRows().size());
     }
 
-    protected void launchNestedFormsTest() {
+    protected FormGenerationResult launchNestedFormsTest() {
         List<ModelProperty> variableList = new ArrayList<>();
 
         variableList.add(new ModelPropertyImpl(EXPENSE_VARIABLE,
@@ -146,6 +146,12 @@ public abstract class AbstractBPMNFormGeneratorServiceTest<SERVICE extends Abstr
         checkRootForm(model,
                       result,
                       variableList);
+
+        return result;
+    }
+
+    protected void launchNestedFormTestWithGeneratedFormsValidation() {
+        FormGenerationResult result = launchNestedFormsTest();
 
         assertFalse(result.getNestedForms().isEmpty());
         assertEquals(3,

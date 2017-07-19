@@ -78,7 +78,7 @@ public class SubFormFieldDefinition extends AbstractFieldDefinition implements H
     protected void doCopyFrom(FieldDefinition other) {
         if (other instanceof SubFormFieldDefinition) {
             SubFormFieldDefinition otherForm = (SubFormFieldDefinition) other;
-            otherForm.setNestedForm(nestedForm);
+            setNestedForm(otherForm.getNestedForm());
         }
         setStandaloneClassName(other.getStandaloneClassName());
     }

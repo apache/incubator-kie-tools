@@ -123,9 +123,9 @@ public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition impl
     protected void doCopyFrom(FieldDefinition other) {
         if (other instanceof MultipleSubFormFieldDefinition) {
             MultipleSubFormFieldDefinition otherForm = (MultipleSubFormFieldDefinition) other;
-            otherForm.setCreationForm(creationForm);
-            otherForm.setEditionForm(editionForm);
-            otherForm.setColumnMetas(columnMetas);
+            setCreationForm(otherForm.getCreationForm());
+            setEditionForm(otherForm.getEditionForm());
+            setColumnMetas(otherForm.getColumnMetas());
         }
         setStandaloneClassName(other.getStandaloneClassName());
     }

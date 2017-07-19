@@ -171,10 +171,17 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
     @Override
     protected FormDefinition findFormDefinitionForModelType(String modelType,
                                                             GenerationContext<Path> context) {
-        Optional<FormDefinition> formOptional = Optional.ofNullable(super.findFormDefinitionForModelType(modelType,
-                                                                                                         context));
+        FormDefinition form =  super.findFormDefinitionForModelType(modelType, context);
 
-        return formOptional.orElseGet(() -> formFinderService.findFormsForType(modelType,
-                                                                               context.getSource()).stream().findFirst().orElse(null));
+        if (form != null) {
+            return form;
+        }
+
+        List<FormDefinition> foundForms = formFinderService.findFormsForType(modelType,
+                                                                             context.getSource());
+
+        Optional<FormDefinition> validForm = foundForms.stream().filter(formDefinition -> !formDefinition.getFields().isEmpty()).findFirst();
+
+        return validForm.orElse(foundForms.stream().findFirst().orElse(null));
     }
 }

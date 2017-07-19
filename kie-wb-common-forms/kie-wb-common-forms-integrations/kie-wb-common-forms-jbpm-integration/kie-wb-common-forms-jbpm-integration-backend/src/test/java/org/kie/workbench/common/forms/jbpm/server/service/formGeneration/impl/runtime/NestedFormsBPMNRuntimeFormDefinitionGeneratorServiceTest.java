@@ -43,7 +43,7 @@ public class NestedFormsBPMNRuntimeFormDefinitionGeneratorServiceTest extends BP
     public void testCreateNewProcessFormNestedFormsFromProjectClassLoader() throws ClassNotFoundException {
         when(source.loadClass(anyString())).then(invocationOnMock -> loadClass(invocationOnMock.getArguments()[0].toString()));
 
-        launchNestedFormsTest();
+        launchNestedFormTestWithGeneratedFormsValidation();
     }
 
     protected Class loadClass(String className) {

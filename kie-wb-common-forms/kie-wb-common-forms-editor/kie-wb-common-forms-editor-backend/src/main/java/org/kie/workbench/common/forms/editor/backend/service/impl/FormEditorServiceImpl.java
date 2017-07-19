@@ -27,7 +27,6 @@ import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.forms.editor.model.FormModelSynchronizationResult;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
@@ -48,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
@@ -57,13 +57,9 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 @ApplicationScoped
 public class FormEditorServiceImpl extends KieService<FormModelerContent> implements FormEditorService {
 
-    public final static String RESOURCE_PATH = "src/main/resources/";
-
     private Logger log = LoggerFactory.getLogger(FormEditorServiceImpl.class);
 
     private IOService ioService;
-
-    private User identity;
 
     private SessionInfo sessionInfo;
 
@@ -77,18 +73,20 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
 
     protected VFSFormFinderService vfsFormFinderService;
 
+    private CommentedOptionFactory commentedOptionFactory;
+
+
     @Inject
     public FormEditorServiceImpl(@Named("ioStrategy") IOService ioService,
-                                 User identity,
                                  SessionInfo sessionInfo,
                                  Event<ResourceOpenedEvent> resourceOpenedEvent,
                                  FieldManager fieldManager,
                                  FormModelHandlerManager modelHandlerManager,
                                  KieProjectService projectService,
                                  FormDefinitionSerializer formDefinitionSerializer,
-                                 VFSFormFinderService vfsFormFinderService) {
+                                 VFSFormFinderService vfsFormFinderService,
+                                 CommentedOptionFactory commentedOptionFactory) {
         this.ioService = ioService;
-        this.identity = identity;
         this.sessionInfo = sessionInfo;
         this.resourceOpenedEvent = resourceOpenedEvent;
         this.fieldManager = fieldManager;
@@ -96,15 +94,13 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
         this.projectService = projectService;
         this.formDefinitionSerializer = formDefinitionSerializer;
         this.vfsFormFinderService = vfsFormFinderService;
+        this.commentedOptionFactory = commentedOptionFactory;
     }
 
     @Override
     public FormModelerContent loadContent(Path path) {
         return super.loadContent(path);
     }
-
-    @Inject
-    private CommentedOptionFactory commentedOptionFactory;
 
     @Override
     public Path createForm(Path path,
@@ -121,6 +117,8 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
 
             form.setName(formName.substring(0,
                                             formName.lastIndexOf(".")));
+
+            form.setLayoutTemplate(new LayoutTemplate());
 
             ioService.write(kiePath,
                             formDefinitionSerializer.serialize(form),
