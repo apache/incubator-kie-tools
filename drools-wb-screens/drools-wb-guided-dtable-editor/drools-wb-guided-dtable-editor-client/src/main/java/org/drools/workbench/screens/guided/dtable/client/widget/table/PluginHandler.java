@@ -29,7 +29,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetF
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ActionRetractFactPlugin;
@@ -99,8 +98,6 @@ public class PluginHandler {
             plugin = actionRetractFactPlugin.get();
         } else if (column instanceof ActionWorkItemCol52) {
             plugin = actionWorkItemPlugin.get();
-        } else if (column instanceof LimitedEntryBRLActionColumn) {
-            plugin = brlActionColumnPlugin.get();
         } else if (column instanceof BRLActionColumn) {
             plugin = brlActionColumnPlugin.get();
         } else {

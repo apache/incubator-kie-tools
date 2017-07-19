@@ -133,10 +133,10 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
     }
 
     private void loadPattern() {
-        patternWrapper = new PatternWrapper(editingPattern.getFactType(),
-                                            editingPattern.getBoundName(),
-                                            editingPattern.getEntryPointName(),
-                                            editingPattern.isNegated());
+        patternWrapper = new PatternWrapper(editingPattern().getFactType(),
+                                            editingPattern().getBoundName(),
+                                            editingPattern().getEntryPointName(),
+                                            editingPattern().isNegated());
     }
 
     @Override

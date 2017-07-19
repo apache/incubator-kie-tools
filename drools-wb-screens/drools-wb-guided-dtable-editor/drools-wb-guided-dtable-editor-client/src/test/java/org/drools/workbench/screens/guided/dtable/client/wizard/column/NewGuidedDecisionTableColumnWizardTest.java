@@ -17,17 +17,30 @@
 package org.drools.workbench.screens.guided.dtable.client.wizard.column;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.AdditionalInfoPage;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.OperatorPage;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.PatternPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.SummaryPage;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ActionRetractFactPlugin;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ActionSetFactPlugin;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ActionWorkItemPlugin;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ActionWorkItemSetFieldPlugin;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.BRLActionColumnPlugin;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.BRLConditionColumnPlugin;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ConditionColumnPlugin;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.DecisionTableColumnPlugin;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardView;
 
@@ -36,14 +49,43 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class NewGuidedDecisionTableColumnWizardTest {
 
-    @Mock
     private List<WizardPage> pages;
 
     @Mock
     private DecisionTableColumnPlugin plugin;
 
     @Mock
+    private ActionWorkItemSetFieldPlugin actionWorkItemSetFieldPlugin;
+
+    @Mock
+    private ActionSetFactPlugin actionSetFactPlugin;
+
+    @Mock
+    private ActionRetractFactPlugin actionRetractFactPlugin;
+
+    @Mock
+    private ActionWorkItemPlugin actionWorkItemPlugin;
+
+    @Mock
+    private BRLActionColumnPlugin brlActionColumnPlugin;
+
+    @Mock
+    private BRLConditionColumnPlugin brlConditionColumnPlugin;
+
+    @Mock
+    private ConditionColumnPlugin conditionColumnPlugin;
+
+    @Mock
     private SummaryPage summaryPage;
+
+    @Mock
+    private PatternPage patternPage;
+
+    @Mock
+    private AdditionalInfoPage additionalInfoPage;
+
+    @Mock
+    private OperatorPage operatorPage;
 
     @Mock
     private WizardView view;
@@ -59,7 +101,8 @@ public class NewGuidedDecisionTableColumnWizardTest {
                                                             summaryPage,
                                                             translationService));
 
-        when(wizard.getPages()).thenReturn(pages);
+        pages = spy(new ArrayList<>());
+        wizard.setPages(pages);
     }
 
     @Test
@@ -127,5 +170,73 @@ public class NewGuidedDecisionTableColumnWizardTest {
         wizard.setupTitle(plugin);
 
         verify(wizard).setTitle(title);
+    }
+
+    @Test
+    public void testIfIsCompleteDoNotCheckIfColumnIsNewOrEdited() {
+        doNothing().when(wizard).parentStart();
+
+        List<WizardPage> wizardPages = Arrays.asList(patternPage,
+                                                     operatorPage,
+                                                     additionalInfoPage);
+
+        when(plugin.getPages()).thenReturn(wizardPages);
+
+        wizard.start(plugin);
+
+        verify(plugin,
+               times(2)).isNewColumn();
+
+        wizard.isComplete(mock(Callback.class));
+
+        verify(plugin,
+               times(2)).isNewColumn();
+
+        wizardPages.forEach(page -> verify(page).isComplete(any()));
+    }
+
+    @Test
+    public void testWizardCompleteActionWorkItemSetFieldPlugin() {
+        testCompleteWizard(actionWorkItemSetFieldPlugin);
+    }
+
+    @Test
+    public void testWizardCompleteActionSetFactPlugin() {
+        testCompleteWizard(actionSetFactPlugin);
+    }
+
+    @Test
+    public void testCompleteWizardActionRetractFactPlugin() {
+        testCompleteWizard(actionRetractFactPlugin);
+    }
+
+    @Test
+    public void testCompleteWizardActionWorkItemPlugin() {
+        testCompleteWizard(actionWorkItemPlugin);
+    }
+
+    @Test
+    public void testCompleteWizardBRLActionColumnPlugin() {
+        testCompleteWizard(brlActionColumnPlugin);
+    }
+
+    @Test
+    public void testCompleteWizardBRLConditionColumnPlugin() {
+        testCompleteWizard(brlConditionColumnPlugin);
+    }
+
+    @Test
+    public void testCompleteWizardConditionColumnPlugin() {
+        when(conditionColumnPlugin.editingPattern()).thenReturn(new Pattern52());
+        testCompleteWizard(conditionColumnPlugin);
+    }
+
+    private void testCompleteWizard(DecisionTableColumnPlugin plugin) {
+        doCallRealMethod().when(plugin).init(wizard);
+        wizard.start(plugin);
+
+        wizard.complete();
+
+        verify(plugin).generateColumn();
     }
 }

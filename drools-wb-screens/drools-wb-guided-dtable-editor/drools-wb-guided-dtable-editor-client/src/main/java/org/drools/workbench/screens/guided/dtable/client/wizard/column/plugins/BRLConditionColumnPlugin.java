@@ -124,13 +124,13 @@ public class BRLConditionColumnPlugin extends BaseDecisionTableColumnPlugin impl
     public Boolean generateColumn() {
         getDefinedVariables(getRuleModel());
 
-        editingCol.setDefinition(Arrays.asList(getRuleModel().lhs));
+        editingCol().setDefinition(Arrays.asList(getRuleModel().lhs));
 
         if (isNewColumn()) {
-            presenter.appendColumn(editingCol);
+            presenter.appendColumn(editingCol());
         } else {
             presenter.updateColumn(getOriginalColumn(),
-                                   editingCol);
+                                   editingCol());
         }
 
         return true;

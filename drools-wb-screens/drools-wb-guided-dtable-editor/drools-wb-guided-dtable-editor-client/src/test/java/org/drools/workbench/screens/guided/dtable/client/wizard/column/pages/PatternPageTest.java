@@ -270,6 +270,8 @@ public class PatternPageTest {
         verify(view).hidePatternWarning();
         verify(view,
                never()).showPatternWarning();
+        verify(plugin,
+               never()).isNewColumn();
     }
 
     @Test
@@ -282,6 +284,8 @@ public class PatternPageTest {
         verify(view,
                never()).hidePatternWarning();
         verify(view).showPatternWarning();
+        verify(plugin,
+               never()).isNewColumn();
     }
 
     @Test

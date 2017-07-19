@@ -46,8 +46,6 @@ public class NewGuidedDecisionTableColumnWizard extends AbstractWizard {
 
     private Supplier<Boolean> finishCommand;
 
-    private WizardView view;
-
     private SummaryPage summaryPage;
 
     private TranslationService translationService;

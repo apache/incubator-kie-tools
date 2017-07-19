@@ -349,4 +349,18 @@ public class ValueOptionsPageTest {
         verify(view).enableValueList();
         verify(view).setValueListText(any());
     }
+
+    @Test
+    public void testIsCompleteWhenValueOptionsPageIsNotCompleted() throws Exception {
+        when(plugin.isValueOptionsPageCompleted()).thenReturn(false);
+
+        page.isComplete(Assert::assertFalse);
+    }
+
+    @Test
+    public void testIsCompleteWhenValueOptionsPageIsCompleted() throws Exception {
+        when(plugin.isValueOptionsPageCompleted()).thenReturn(true);
+
+        page.isComplete(Assert::assertTrue);
+    }
 }
