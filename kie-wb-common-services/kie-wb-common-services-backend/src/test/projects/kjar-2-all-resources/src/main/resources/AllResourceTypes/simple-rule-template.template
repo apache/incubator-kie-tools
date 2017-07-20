@@ -1,0 +1,23 @@
+<rule>
+  <name>test</name>
+  <modelVersion>1.0</modelVersion>
+  <attributes/>
+  <metadataList/>
+  <lhs/>
+  <rhs/>
+  <imports>
+    <imports/>
+  </imports>
+  <packageName>org.mortgages</packageName>
+  <isNegated>false</isNegated>
+  <table>
+    <entry>
+      <string>__ID_KOL_NAME__</string>
+      <list>
+        <string>1</string>
+      </list>
+    </entry>
+  </table>
+  <idCol>1</idCol>
+  <rowsCount>1</rowsCount>
+</rule>

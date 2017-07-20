@@ -23,4 +23,20 @@
   <artifactId>build-helper-test</artifactId>
   <version>1.0.0</version>
 
+  <packaging>kjar</packaging>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-takari-plugin</artifactId>
+        <version>7.1.0-SNAPSHOT</version>
+        <extensions>true</extensions>
+        <configuration>
+          <properties>
+            <drools.dialect.java.compiler.lnglevel>1.6</drools.dialect.java.compiler.lnglevel>
+          </properties>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

@@ -145,7 +145,7 @@ public class Builder implements Serializable {
         this.dependenciesClassLoaderCache = dependenciesClassLoaderCache;
         this.pomModelCache = pomModelCache;
 
-        DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = Files.newDirectoryStream( projectRoot );
+        DirectoryStream<Path> directoryStream = Files.newDirectoryStream( projectRoot );
         visitPaths( directoryStream );
     }
 
@@ -630,8 +630,8 @@ public class Builder implements Serializable {
         }
     }
 
-    private void visitPaths( final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream ) {
-        for ( final org.uberfire.java.nio.file.Path path : directoryStream ) {
+    private void visitPaths( final DirectoryStream<Path> directoryStream ) {
+        for ( final Path path : directoryStream ) {
             if ( Files.isDirectory( path ) ) {
                 visitPaths( Files.newDirectoryStream( path ) );
 

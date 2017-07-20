@@ -1,0 +1,10 @@
+package org.jboss.qa.brms.bre.functional
+
+expander sample.dsl
+
+
+rule "simple"
+	when
+	then
+		hello
+end
