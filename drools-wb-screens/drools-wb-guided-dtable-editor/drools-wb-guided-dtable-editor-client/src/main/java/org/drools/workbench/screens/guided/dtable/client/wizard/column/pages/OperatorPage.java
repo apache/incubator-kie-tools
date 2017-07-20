@@ -158,7 +158,7 @@ public class OperatorPage extends BaseDecisionTableColumnPage<ConditionColumnPlu
                                                                   box);
 
             box.addChangeHandler((ChangeEvent valueChangeEvent) -> setOperator(box.getValue(box.getSelectedIndex())));
-            if(currentValueIndex != 0) {
+            if (currentValueIndex != box.getSelectedIndex()) {
                 box.setSelectedIndex(currentValueIndex);
             }
 

@@ -190,6 +190,30 @@ public class OperatorPageTest {
     }
 
     @Test
+    public void testOperatorDropdownSelectedNotFirstItem() {
+        registerFakeProvider();
+
+        when(plugin.getFactField()).thenReturn("factField");
+        when(plugin.operatorPlaceholder()).thenReturn("please choose");
+        when(editingCol.getOperator()).thenReturn("not equal to");
+
+        mockGetOperatorCompletionsToReturn(OperatorsOracle.STANDARD_OPERATORS);
+
+        spyOperatorsDropdown();
+        mockListBox("please choose",
+                    "equal to",
+                    "not equal to");
+
+        page.operatorDropdown(widget -> {
+            assertTrue(widget instanceof CEPOperatorsDropdown);
+
+            final CEPOperatorsDropdown operatorsDropdown = (CEPOperatorsDropdown) widget;
+
+            verify(operatorsDropdown.getBox()).setSelectedIndex(2);
+        });
+    }
+
+    @Test
     public void testOperatorDropdownWhenOperatorCanBeSet() {
         final String operatorPlaceholder = "--- please choose ---";
 
@@ -220,6 +244,8 @@ public class OperatorPageTest {
             verify(dropdown).insertItem("(no operator)",
                                         "",
                                         1);
+
+            verify(dropdown.getBox()).setSelectedIndex(1);
         });
     }
 
