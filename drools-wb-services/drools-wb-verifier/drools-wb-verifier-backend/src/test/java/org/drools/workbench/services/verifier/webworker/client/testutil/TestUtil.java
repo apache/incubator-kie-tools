@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import org.drools.workbench.services.verifier.api.client.reporting.ExplanationProvider;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
-import org.drools.workbench.services.verifier.webworker.client.DecisionTableAnalyzerFromFileTest;
+import org.drools.workbench.services.verifier.webworker.client.fromfile.DecisionTableAnalyzerFromFileTest;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.services.verifier.webworker.client;
+package org.drools.workbench.services.verifier.webworker.client.fromfile;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,6 +28,8 @@ import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.core.main.Analyzer;
 import org.drools.workbench.services.verifier.plugin.client.Coordinate;
 import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
+import org.drools.workbench.services.verifier.webworker.client.AnalyzerUpdateTestBase;
+import org.drools.workbench.services.verifier.webworker.client.UpdateException;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;

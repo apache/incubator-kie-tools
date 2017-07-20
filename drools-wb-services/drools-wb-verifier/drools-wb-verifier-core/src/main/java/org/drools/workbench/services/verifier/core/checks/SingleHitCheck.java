@@ -26,12 +26,12 @@ import org.drools.workbench.services.verifier.core.checks.base.PairCheck;
 public class SingleHitCheck
         extends PairCheck {
 
-    public SingleHitCheck( final RuleInspector ruleInspector,
-                           final RuleInspector other,
-                           final AnalyzerConfiguration configuration ) {
-        super( ruleInspector,
-               other,
-               configuration );
+    public SingleHitCheck(final RuleInspector ruleInspector,
+                          final RuleInspector other,
+                          final AnalyzerConfiguration configuration) {
+        super(ruleInspector,
+              other,
+              configuration);
     }
 
     @Override
@@ -41,7 +41,10 @@ public class SingleHitCheck
 
     @Override
     public boolean check() {
-        return hasIssues = ruleInspector.getConditionsInspectors().subsumes( other.getConditionsInspectors() );
+        return hasIssues =
+                ruleInspector.getConditionsInspectors().subsumes(other.getConditionsInspectors())
+                        && ruleInspector.getBrlConditionsInspectors().subsumes(other.getBrlConditionsInspectors
+                        ());
     }
 
     @Override
@@ -50,12 +53,11 @@ public class SingleHitCheck
     }
 
     @Override
-    protected Issue makeIssue( final Severity severity,
-                               final CheckType checkType ) {
-        return new SingleHitLostIssue( severity,
-                                       checkType,
-                                       Integer.toString( ruleInspector.getRowIndex() + 1 ),
-                                       Integer.toString( other.getRowIndex() + 1 ) );
+    protected Issue makeIssue(final Severity severity,
+                              final CheckType checkType) {
+        return new SingleHitLostIssue(severity,
+                                      checkType,
+                                      Integer.toString(ruleInspector.getRowIndex() + 1),
+                                      Integer.toString(other.getRowIndex() + 1));
     }
-
 }
