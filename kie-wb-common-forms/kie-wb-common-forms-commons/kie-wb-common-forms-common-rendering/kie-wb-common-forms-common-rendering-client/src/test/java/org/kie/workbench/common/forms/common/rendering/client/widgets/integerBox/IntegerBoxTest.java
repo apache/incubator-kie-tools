@@ -165,6 +165,20 @@ public class IntegerBoxTest {
                     false);
     }
 
+    @Test
+    public void testKeyCodeTab() {
+        testKeyCode(KeyCodes.KEY_TAB,
+                    false,
+                    false);
+    }
+
+    @Test
+    public void testKeyCodeShiftTab() {
+        testKeyCode(KeyCodes.KEY_TAB,
+                    true,
+                    false);
+    }
+
     private void testKeyCode(int keyCode,
                              boolean isShiftPressed,
                              boolean expectInvalid) {
@@ -202,5 +216,26 @@ public class IntegerBoxTest {
     private void testEnable(boolean enable) {
         integerBox.setEnabled(enable);
         verify(view).setEnabled(enable);
+    }
+
+    @Test
+    public void testSetPlaceholder() {
+        String placeholder = "Random placeholder";
+        integerBox.setPlaceholder(placeholder);
+        verify(view).setPlaceholder(eq(placeholder));
+    }
+
+    @Test
+    public void testSetId() {
+        String id = "field_id";
+        integerBox.setId(id);
+        verify(view).setId(eq(id));
+    }
+
+    @Test
+    public void testSetMaxLength() {
+        int maxLength = 10;
+        integerBox.setMaxLength(maxLength);
+        verify(view).setMaxLength(eq(maxLength));
     }
 }

@@ -102,6 +102,11 @@ public class DecimalBox implements IsWidget,
         boolean isBackspace = (key == KeyCodes.KEY_BACKSPACE);
         boolean isDecimalSeparator = (key == KeyCodes.KEY_NUM_PERIOD || key == 190);
         boolean isArrowKey = (key == 37 || key == 39);
+        boolean isTabKey = (key == KeyCodes.KEY_TAB);
+
+        if (isTabKey) {
+            return false;
+        }
 
         if (!isShiftPressed) {
             if (isNumPadDigit || isKeyboardDigit || isBackspace || isArrowKey) {

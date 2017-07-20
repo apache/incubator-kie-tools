@@ -113,6 +113,11 @@ public class IntegerBox implements IsWidget,
         boolean isKeyboardDigit = (key >= KeyCodes.KEY_ZERO && key <= KeyCodes.KEY_NINE);
         boolean isBackspace = (key == KeyCodes.KEY_BACKSPACE);
         boolean isArrowKey = (key == 37 || key == 39);
+        boolean isTabKey = (key == KeyCodes.KEY_TAB);
+
+        if (isTabKey) {
+            return false;
+        }
 
         if (!isShiftPressed) {
             if (isNumPadDigit || isKeyboardDigit || isBackspace || isArrowKey) {

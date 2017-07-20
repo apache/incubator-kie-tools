@@ -150,6 +150,20 @@ public class DecimalBoxTest {
     }
 
     @Test
+    public void testKeyCodeTab() {
+        testKeyCode(KeyCodes.KEY_TAB,
+                    false,
+                    false);
+    }
+
+    @Test
+    public void testKeyCodeShiftTab() {
+        testKeyCode(KeyCodes.KEY_TAB,
+                    true,
+                    false);
+    }
+
+    @Test
     public void testDecimalSeparatorWhenNotPresent() {
 
         when(view.getTextValue()).thenReturn(VALUE_NO_SEPARATOR);
@@ -212,5 +226,26 @@ public class DecimalBoxTest {
     private void testEnable(boolean enable) {
         decimalBox.setEnabled(enable);
         verify(view).setEnabled(enable);
+    }
+
+    @Test
+    public void testSetPlaceholder() {
+        String placeholder = "Random placeholder";
+        decimalBox.setPlaceholder(placeholder);
+        verify(view).setPlaceholder(eq(placeholder));
+    }
+
+    @Test
+    public void testSetId() {
+        String id = "field_id";
+        decimalBox.setId(id);
+        verify(view).setId(eq(id));
+    }
+
+    @Test
+    public void testSetMaxLength() {
+        int maxLength = 10;
+        decimalBox.setMaxLength(maxLength);
+        verify(view).setMaxLength(eq(maxLength));
     }
 }
