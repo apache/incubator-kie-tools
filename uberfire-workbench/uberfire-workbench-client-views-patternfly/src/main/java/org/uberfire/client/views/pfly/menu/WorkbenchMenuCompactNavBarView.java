@@ -176,6 +176,7 @@ public class WorkbenchMenuCompactNavBarView extends WorkbenchMenuNavBarView {
         super.clear();
         menuLabelMap.clear();
         menuItemContextMenus.clear();
+        this.navbarNav.add(listDropDown);
     }
 
     @Override
