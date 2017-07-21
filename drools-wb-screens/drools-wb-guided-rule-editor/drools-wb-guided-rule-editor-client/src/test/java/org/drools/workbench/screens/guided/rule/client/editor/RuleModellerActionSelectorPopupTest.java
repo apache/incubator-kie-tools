@@ -74,10 +74,10 @@ public class RuleModellerActionSelectorPopupTest {
     }
 
     @Test
-    public void checkAddModifiesGetsPatternBindings() {
+    public void checkAddModifiesGetsLhsBindings() {
         popup.addModifies();
 
-        verify(model).getLHSPatternVariables();
+        verify(model).getAllLHSVariables();
     }
 
     @Test

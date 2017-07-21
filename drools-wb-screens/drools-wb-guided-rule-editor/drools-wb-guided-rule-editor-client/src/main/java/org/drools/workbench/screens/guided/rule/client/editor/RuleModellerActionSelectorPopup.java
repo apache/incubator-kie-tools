@@ -281,7 +281,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
     //Add Modifies
     void addModifies() {
-        List<String> vars = model.getLHSPatternVariables();
+        List<String> vars = model.getAllLHSVariables();
         if (vars.size() == 0) {
             return;
         }
