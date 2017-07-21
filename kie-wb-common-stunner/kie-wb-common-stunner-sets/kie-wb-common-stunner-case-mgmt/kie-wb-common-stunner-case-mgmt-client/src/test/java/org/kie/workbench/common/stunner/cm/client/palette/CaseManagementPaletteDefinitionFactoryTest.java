@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidget;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
@@ -48,12 +49,16 @@ public class CaseManagementPaletteDefinitionFactoryTest {
     @Mock
     private DefinitionSetPaletteBuilder paletteBuilder;
 
+    @Mock
+    private BS3PaletteWidget palette;
+
     private CaseManagementPaletteDefinitionFactory factory;
 
     @Before
     public void setup() {
         factory = new CaseManagementPaletteDefinitionFactory(shapeManager,
-                                                             paletteBuilder);
+                                                             paletteBuilder,
+                                                             palette);
     }
 
     @Test

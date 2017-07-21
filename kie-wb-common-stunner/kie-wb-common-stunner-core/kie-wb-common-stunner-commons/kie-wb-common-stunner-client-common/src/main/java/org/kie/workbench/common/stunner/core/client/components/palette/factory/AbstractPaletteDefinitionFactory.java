@@ -17,22 +17,33 @@
 package org.kie.workbench.common.stunner.core.client.components.palette.factory;
 
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinitionBuilder;
 
-public abstract class AbstractPaletteDefinitionFactory<B extends PaletteDefinitionBuilder>
-        implements PaletteDefinitionFactory<B> {
+public abstract class AbstractPaletteDefinitionFactory<B extends PaletteDefinitionBuilder, I extends HasPaletteItems, P extends Palette<I>>
+        implements PaletteDefinitionFactory<B, I, P> {
 
     protected ShapeManager shapeManager;
     protected B paletteBuilder;
+    protected P palette;
 
     public AbstractPaletteDefinitionFactory(final ShapeManager shapeManager,
-                                            final B paletteBuilder) {
+                                            final B paletteBuilder,
+                                            final P palette) {
         this.shapeManager = shapeManager;
         this.paletteBuilder = paletteBuilder;
+        this.palette=palette;
     }
 
     @Override
     public B newBuilder(final String defSetId) {
         return paletteBuilder;
     }
+
+    @Override
+    public P newPalette() {
+        return palette;
+    }
+
 }

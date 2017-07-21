@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.AbstractPaletteDefinitionBuilder;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
@@ -41,7 +42,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
  */
 @Dependent
 public class DefinitionSetPaletteBuilderImpl
-        extends AbstractPaletteDefinitionBuilder<Object, DefinitionSetPalette, ClientRuntimeError>
+        extends AbstractPaletteDefinitionBuilder<PaletteDefinitionBuilder.Configuration, DefinitionSetPalette, ClientRuntimeError>
         implements DefinitionSetPaletteBuilder {
 
     private final DefinitionUtils definitionUtils;
@@ -64,12 +65,11 @@ public class DefinitionSetPaletteBuilderImpl
         this.paletteMorphGroupProvider = MORPH_GROUP_PROVIDER;
     }
 
-    public void build(final Object definitionSet,
+    public void build(final PaletteDefinitionBuilder.Configuration configuration,
                       final Callback<DefinitionSetPalette, ClientRuntimeError> callback) {
-        final Object definitionSetObject = definitionSet instanceof String ?
-                getDefinitionManager().definitionSets().getDefinitionSetById((String) definitionSet) : definitionSet;
-        final String defSetId = getDefinitionManager().adapters().forDefinitionSet().getId(definitionSetObject);
-        final Collection<String> definitions = getDefinitionManager().adapters().forDefinitionSet().getDefinitions(definitionSetObject);
+        final String defSetId = configuration.getDefinitionSetId();
+        final Collection<String> definitions = configuration.getDefinitionIds();
+
         if (null != definitions) {
             final List<DefinitionPaletteCategoryImpl.DefinitionPaletteCategoryBuilder> categoryBuilders = new LinkedList<>();
             for (final String defId : definitions) {

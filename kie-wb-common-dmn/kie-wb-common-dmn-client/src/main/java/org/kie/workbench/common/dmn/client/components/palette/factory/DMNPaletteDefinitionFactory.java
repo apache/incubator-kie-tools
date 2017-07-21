@@ -15,74 +15,35 @@
  */
 package org.kie.workbench.common.dmn.client.components.palette.factory;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Categories;
+import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidget;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
-import org.kie.workbench.common.stunner.core.client.components.palette.factory.BindableDefSetPaletteDefinitionFactory;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
+import org.kie.workbench.common.stunner.core.client.components.palette.factory.BindablePaletteDefinitionFactory;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPalette;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPaletteBuilder;
 
 @Dependent
-public class DMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitionFactory {
-
-    private static final Map<String, String> CAT_TITLES = new HashMap<String, String>() {{
-        put(Categories.NODES,
-            "Nodes");
-        put(Categories.CONNECTORS,
-            "Connectors");
-    }};
-
-    private static final Map<String, Class<?>> CAT_DEF_IDS = new HashMap<String, Class<?>>() {{
-//        put(Categories.NODES,
-//            StartNoneEvent.class);
-//        put(Categories.CONNECTORS,
-//            SequenceFlow.class);
-    }};
+public class DMNPaletteDefinitionFactory extends BindablePaletteDefinitionFactory<DefinitionsPaletteBuilder, DefinitionsPalette, BS3PaletteWidget<DefinitionsPalette>> {
 
     @Inject
     public DMNPaletteDefinitionFactory(final ShapeManager shapeManager,
-                                       final DefinitionSetPaletteBuilder paletteBuilder) {
+                                       final DefinitionsPaletteBuilder paletteBuilder,
+                                       final BS3PaletteWidget<DefinitionsPalette> palette) {
         super(shapeManager,
-              paletteBuilder);
+              paletteBuilder,
+              palette);
+        this.paletteBuilder.excludeCategory(Categories.DIAGRAM);
+        this.paletteBuilder.excludeCategory(Categories.CONNECTORS);
+        this.paletteBuilder.excludeCategory(Categories.MISCELLANEOUS);
     }
 
     @Override
-    protected void configureBuilder() {
-        super.configureBuilder();
-
-        excludeCategory(Categories.DIAGRAM);
-        excludeCategory(Categories.CONNECTORS);
-    }
-
-    @Override
-    protected String getCategoryTitle(final String id) {
-        return CAT_TITLES.get(id);
-    }
-
-    @Override
-    protected Class<?> getCategoryTargetDefinitionId(final String id) {
-        return CAT_DEF_IDS.get(id);
-    }
-
-    @Override
-    protected String getCategoryDescription(final String id) {
-        return CAT_TITLES.get(id);
-    }
-
-    @Override
-    protected String getMorphGroupTitle(final String morphBaseId,
-                                        final Object definition) {
-        return null;
-    }
-
-    @Override
-    protected String getMorphGroupDescription(final String morphBaseId,
-                                              final Object definition) {
-        return null;
+    protected DefinitionsPaletteBuilder newBuilder() {
+        return paletteBuilder;
     }
 
     @Override

@@ -26,16 +26,9 @@ public final class DefinitionSetPaletteImpl
         extends AbstractPaletteDefinition<DefinitionPaletteCategory>
         implements DefinitionSetPalette {
 
-    private final String defSetId;
-
     public DefinitionSetPaletteImpl(final List<DefinitionPaletteCategory> categories,
                                     final String defSetId) {
-        super(categories);
-        this.defSetId = defSetId;
-    }
-
-    @Override
-    public String getDefinitionSetId() {
-        return defSetId;
+        super(categories,
+              defSetId);
     }
 }

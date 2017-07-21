@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.core.client.components.palette.model.de
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 
-public interface DefinitionSetPaletteBuilder extends PaletteDefinitionBuilder<Object, DefinitionSetPalette, ClientRuntimeError> {
+public interface DefinitionSetPaletteBuilder extends PaletteDefinitionBuilder<PaletteDefinitionBuilder.Configuration, DefinitionSetPalette, ClientRuntimeError> {
 
     interface PaletteCategoryProvider {
 

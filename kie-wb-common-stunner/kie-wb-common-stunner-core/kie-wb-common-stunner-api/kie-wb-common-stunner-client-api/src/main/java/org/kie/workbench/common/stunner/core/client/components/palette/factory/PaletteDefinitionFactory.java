@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette.factory;
 
+import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinitionBuilder;
 
-public interface PaletteDefinitionFactory<B extends PaletteDefinitionBuilder> {
+public interface PaletteDefinitionFactory<B extends PaletteDefinitionBuilder, I extends HasPaletteItems, P extends Palette<I>> {
 
     /**
      * Returns if this provider accepts the given Definition Set identifier.
@@ -29,4 +31,6 @@ public interface PaletteDefinitionFactory<B extends PaletteDefinitionBuilder> {
      * Builds the palette definition for the given Definition Set identifier.
      */
     B newBuilder(final String defSetId);
+
+    P newPalette();
 }

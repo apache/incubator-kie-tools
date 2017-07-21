@@ -25,13 +25,15 @@ import org.kie.workbench.common.stunner.basicset.BasicSet;
 import org.kie.workbench.common.stunner.basicset.definition.BasicConnector;
 import org.kie.workbench.common.stunner.basicset.definition.Categories;
 import org.kie.workbench.common.stunner.basicset.definition.Rectangle;
+import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidget;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.BindableDefSetPaletteDefinitionFactory;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
 
 // TODO: i18n.
 @Dependent
-public class BasicSetPaletteDefinitionFactory extends BindableDefSetPaletteDefinitionFactory {
+public class BasicSetPaletteDefinitionFactory extends BindableDefSetPaletteDefinitionFactory<DefinitionSetPalette, BS3PaletteWidget<DefinitionSetPalette>> {
 
     private static final Map<String, String> CAT_TITLES = new HashMap<String, String>(6) {{
         put(Categories.BASIC,
@@ -52,9 +54,11 @@ public class BasicSetPaletteDefinitionFactory extends BindableDefSetPaletteDefin
 
     @Inject
     public BasicSetPaletteDefinitionFactory(final ShapeManager shapeManager,
-                                            final DefinitionSetPaletteBuilder paletteBuilder) {
+                                            final DefinitionSetPaletteBuilder paletteBuilder,
+                                            final BS3PaletteWidget<DefinitionSetPalette> palette) {
         super(shapeManager,
-              paletteBuilder);
+              paletteBuilder,
+              palette);
     }
 
     @Override

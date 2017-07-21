@@ -28,6 +28,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidget;
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -36,10 +37,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.event.Canvas
 import org.kie.workbench.common.stunner.core.client.canvas.controls.event.CanvasShapeDragUpdateEvent;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.AbstractPaletteFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.DefaultDefSetPaletteDefinitionFactory;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
+import org.kie.workbench.common.stunner.core.client.components.palette.factory.PaletteDefinitionFactory;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinition;
 
 @Dependent
-public class BS3PaletteFactoryImpl extends AbstractPaletteFactory<DefinitionSetPalette, BS3PaletteWidget>
+public class BS3PaletteFactoryImpl extends AbstractPaletteFactory<PaletteDefinition, BS3PaletteWidget<PaletteDefinition>>
         implements BS3PaletteFactory {
 
     private final Event<BuildCanvasShapeEvent> buildCanvasShapeEvent;
@@ -50,15 +52,15 @@ public class BS3PaletteFactoryImpl extends AbstractPaletteFactory<DefinitionSetP
     @Inject
     public BS3PaletteFactoryImpl(final ShapeManager shapeManager,
                                  final SyncBeanManager beanManager,
+                                 final DefinitionManager definitionManager,
                                  final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
-                                 final ManagedInstance<BS3PaletteWidget> paletteInstances,
                                  final Event<BuildCanvasShapeEvent> buildCanvasShapeEvent,
                                  final Event<CanvasShapeDragStartEvent> canvasShapeDragStartEvent,
                                  final Event<CanvasShapeDragUpdateEvent> canvasShapeDragUpdateEvent) {
         super(shapeManager,
               beanManager,
-              defaultPaletteDefinitionFactoryInstance,
-              paletteInstances);
+              definitionManager,
+              defaultPaletteDefinitionFactoryInstance);
         this.buildCanvasShapeEvent = buildCanvasShapeEvent;
         this.canvasShapeDragStartEvent = canvasShapeDragStartEvent;
         this.canvasShapeDragUpdateEvent = canvasShapeDragUpdateEvent;
@@ -76,10 +78,10 @@ public class BS3PaletteFactoryImpl extends AbstractPaletteFactory<DefinitionSetP
     }
 
     @Override
-    public BS3PaletteWidget newPalette(final String shapeSetId,
-                                       final CanvasHandler canvasHandler) {
+    public BS3PaletteWidget<PaletteDefinition> newPalette(final String shapeSetId,
+                                                          final CanvasHandler canvasHandler) {
 
-        final BS3PaletteWidget palette = super.newPalette(shapeSetId);
+        final BS3PaletteWidget<PaletteDefinition> palette = super.newPalette(shapeSetId);
         if (null != canvasHandler) {
             palette.onItemDrop((definition,
                                 factory,
@@ -108,8 +110,8 @@ public class BS3PaletteFactoryImpl extends AbstractPaletteFactory<DefinitionSetP
     }
 
     @Override
-    protected void beforeBindPalette(final DefinitionSetPalette paletteDefinition,
-                                     final BS3PaletteWidget palette,
+    protected void beforeBindPalette(final PaletteDefinition paletteDefinition,
+                                     final BS3PaletteWidget<PaletteDefinition> palette,
                                      final String shapeSetId) {
         super.beforeBindPalette(paletteDefinition,
                                 palette,
@@ -119,7 +121,7 @@ public class BS3PaletteFactoryImpl extends AbstractPaletteFactory<DefinitionSetP
         palette.setViewFactory(viewFactory);
     }
 
-    private BS3PaletteViewFactory getViewFactory(final String defSetId) {
+    BS3PaletteViewFactory getViewFactory(final String defSetId) {
         for (final BS3PaletteViewFactory factory : viewFactories) {
             if (factory.accepts(defSetId)) {
                 return factory;

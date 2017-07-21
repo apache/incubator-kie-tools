@@ -16,10 +16,10 @@
 package org.kie.workbench.common.stunner.client.widgets.palette;
 
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteViewFactory;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinition;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
-public interface BS3PaletteWidget extends PaletteWidget<DefinitionSetPalette> {
+public interface BS3PaletteWidget<P extends PaletteDefinition> extends PaletteWidget<P> {
 
     BS3PaletteWidget setViewFactory(final BS3PaletteViewFactory viewFactory);
 

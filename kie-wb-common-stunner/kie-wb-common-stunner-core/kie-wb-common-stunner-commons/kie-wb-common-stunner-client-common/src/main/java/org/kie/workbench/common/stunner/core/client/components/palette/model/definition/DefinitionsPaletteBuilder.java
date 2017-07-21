@@ -16,16 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette.model.definition;
 
-import java.util.List;
-
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 
-public interface DefinitionsPaletteBuilder extends PaletteDefinitionBuilder<Iterable<String>, DefinitionsPalette, ClientRuntimeError> {
+public interface DefinitionsPaletteBuilder extends PaletteDefinitionBuilder<PaletteDefinitionBuilder.Configuration, DefinitionsPalette, ClientRuntimeError> {
 
-    void buildFromDefinitionSet(final String defintionSetId,
-                                final Callback<DefinitionsPalette, ClientRuntimeError> callback);
-
-    void buildFromPaletteItems(final List<DefinitionPaletteItem> definitionPaletteItems,
-                               final Callback<DefinitionsPalette, ClientRuntimeError> callback);
 }

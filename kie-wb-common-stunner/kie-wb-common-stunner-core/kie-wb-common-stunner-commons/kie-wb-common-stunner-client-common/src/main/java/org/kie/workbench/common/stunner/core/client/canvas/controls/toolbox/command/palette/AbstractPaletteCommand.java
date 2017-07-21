@@ -142,7 +142,22 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
         log(Level.FINE,
             "Allowed Definitions -> " + allowedDefinitions);
         if (null != allowedDefinitions && !allowedDefinitions.isEmpty()) {
-            definitionsPaletteBuilder.build(allowedDefinitions,
+
+            final String definitionSetId = canvasHandler.getDiagram().getMetadata().getDefinitionSetId();
+            final PaletteDefinitionBuilder.Configuration configuration = new PaletteDefinitionBuilder.Configuration() {
+
+                @Override
+                public String getDefinitionSetId() {
+                    return definitionSetId;
+                }
+
+                @Override
+                public Set<String> getDefinitionIds() {
+                    return allowedDefinitions;
+                }
+            };
+
+            definitionsPaletteBuilder.build(configuration,
                                             new PaletteDefinitionBuilder.Callback<DefinitionsPalette, ClientRuntimeError>() {
 
                                                 @Override

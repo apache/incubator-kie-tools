@@ -41,17 +41,18 @@ import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
+import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidget;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.BindableDefSetPaletteDefinitionFactory;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
 import org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService;
 
 // TODO: i18n.
 @Dependent
-public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitionFactory {
+public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitionFactory<DefinitionSetPalette, BS3PaletteWidget<DefinitionSetPalette>> {
 
   private final AbstractTranslationService translationService;
-
 
   private static final Map<String, Class<?>> CAT_DEF_IDS = new HashMap<String, Class<?>>(1) {{
     put(Categories.ACTIVITIES,
@@ -82,9 +83,11 @@ public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitio
   @Inject
   public BPMNPaletteDefinitionFactory(final ShapeManager shapeManager,
                                       final DefinitionSetPaletteBuilder paletteBuilder,
-                                      final AbstractTranslationService translationService) {
+                                      final AbstractTranslationService translationService,
+                                      final BS3PaletteWidget<DefinitionSetPalette> palette) {
     super(shapeManager,
-          paletteBuilder);
+          paletteBuilder,
+          palette);
     this.translationService = translationService;
   }
 
@@ -145,4 +148,5 @@ public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitio
   protected Class<?> getDefinitionSetType() {
     return BPMNDefinitionSet.class;
   }
+
 }

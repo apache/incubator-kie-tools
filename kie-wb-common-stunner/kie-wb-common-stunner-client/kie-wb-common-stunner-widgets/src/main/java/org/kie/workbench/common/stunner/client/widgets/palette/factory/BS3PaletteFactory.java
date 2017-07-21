@@ -18,8 +18,8 @@ package org.kie.workbench.common.stunner.client.widgets.palette.factory;
 
 import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidgetFactory;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinition;
 
-public interface BS3PaletteFactory extends PaletteWidgetFactory<DefinitionSetPalette, BS3PaletteWidget> {
+public interface BS3PaletteFactory extends PaletteWidgetFactory<PaletteDefinition, BS3PaletteWidget<PaletteDefinition>> {
 
 }

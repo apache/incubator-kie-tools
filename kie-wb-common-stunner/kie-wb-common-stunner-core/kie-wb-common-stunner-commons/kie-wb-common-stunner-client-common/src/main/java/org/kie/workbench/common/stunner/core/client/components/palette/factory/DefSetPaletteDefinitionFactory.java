@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette.factory;
 
+import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
 
-public interface DefSetPaletteDefinitionFactory extends PaletteDefinitionFactory<DefinitionSetPaletteBuilder> {
+public interface DefSetPaletteDefinitionFactory<I extends HasPaletteItems, P extends Palette<I>> extends PaletteDefinitionFactory<DefinitionSetPaletteBuilder, I, P> {
 
 }

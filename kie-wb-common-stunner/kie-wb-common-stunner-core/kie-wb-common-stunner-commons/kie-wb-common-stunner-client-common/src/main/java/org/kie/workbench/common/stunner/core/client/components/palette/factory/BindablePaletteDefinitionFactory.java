@@ -17,16 +17,20 @@
 package org.kie.workbench.common.stunner.core.client.components.palette.factory;
 
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 
-public abstract class BindablePaletteDefinitionFactory<B extends PaletteDefinitionBuilder>
-        extends AbstractPaletteDefinitionFactory<B> {
+public abstract class BindablePaletteDefinitionFactory<B extends PaletteDefinitionBuilder, I extends HasPaletteItems, P extends Palette<I>>
+        extends AbstractPaletteDefinitionFactory<B, I, P> {
 
     public BindablePaletteDefinitionFactory(final ShapeManager shapeManager,
-                                            final B paletteBuilder) {
+                                            final B paletteBuilder,
+                                            final P palette) {
         super(shapeManager,
-              paletteBuilder);
+              paletteBuilder,
+              palette);
     }
 
     protected abstract Class<?> getDefinitionSetType();

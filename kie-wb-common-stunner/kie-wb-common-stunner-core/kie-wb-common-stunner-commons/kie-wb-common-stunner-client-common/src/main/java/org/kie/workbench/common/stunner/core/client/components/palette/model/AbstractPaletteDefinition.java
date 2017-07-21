@@ -21,13 +21,21 @@ import java.util.List;
 public abstract class AbstractPaletteDefinition<I extends PaletteItem> implements PaletteDefinition<I> {
 
     protected final List<I> items;
+    protected String defSetId;
 
-    protected AbstractPaletteDefinition(final List<I> groups) {
+    protected AbstractPaletteDefinition(final List<I> groups,
+                                        final String defSetId) {
         this.items = groups;
+        this.defSetId = defSetId;
     }
 
     @Override
     public List<I> getItems() {
         return items;
+    }
+
+    @Override
+    public String getDefinitionSetId() {
+        return defSetId;
     }
 }

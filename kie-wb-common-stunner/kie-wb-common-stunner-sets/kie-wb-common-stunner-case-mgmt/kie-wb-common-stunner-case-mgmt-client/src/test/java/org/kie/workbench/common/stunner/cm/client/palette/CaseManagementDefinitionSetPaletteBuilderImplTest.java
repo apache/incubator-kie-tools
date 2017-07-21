@@ -55,6 +55,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent.StartTimerEventBuilder;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask.UserTaskBuilder;
+import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidget;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
@@ -106,6 +107,9 @@ public class CaseManagementDefinitionSetPaletteBuilderImplTest {
 
     @Mock
     private ShapeManager shapeManager;
+
+    @Mock
+    private BS3PaletteWidget palette;
 
     @Mock
     private DefinitionManager definitionManager;
@@ -196,13 +200,24 @@ public class CaseManagementDefinitionSetPaletteBuilderImplTest {
     public void checkConstruction() {
         //Must use PaletteDefinitionFactory to correctly initialise the builder
         final CaseManagementPaletteDefinitionFactory factory = new CaseManagementPaletteDefinitionFactory(shapeManager,
-                                                                                                          builder);
+                                                                                                          builder,
+                                                                                                          palette);
         factory.configureBuilder();
 
         //Construct palette
-        final Object definitionSet = new CaseManagementDefinitionSet();
+        final PaletteDefinitionBuilder.Configuration configuration = new PaletteDefinitionBuilder.Configuration() {
+            @Override
+            public String getDefinitionSetId() {
+                return CaseManagementDefinitionSet.class.getName();
+            }
 
-        builder.build(definitionSet,
+            @Override
+            public Set<String> getDefinitionIds() {
+                return definitions;
+            }
+        };
+
+        builder.build(configuration,
                       new PaletteDefinitionBuilder.Callback<DefinitionSetPalette, ClientRuntimeError>() {
                           @Override
                           public void onSuccess(final DefinitionSetPalette paletteDefinition) {

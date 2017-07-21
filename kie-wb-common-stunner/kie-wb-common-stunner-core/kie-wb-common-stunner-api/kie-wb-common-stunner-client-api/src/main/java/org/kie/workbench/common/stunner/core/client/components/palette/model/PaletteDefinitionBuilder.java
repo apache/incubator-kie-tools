@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette.model;
 
+import java.util.Set;
+
 public interface PaletteDefinitionBuilder<T, P, E> {
 
     interface Callback<P, E> {
@@ -23,6 +25,14 @@ public interface PaletteDefinitionBuilder<T, P, E> {
         void onSuccess(final P paletteDefinition);
 
         void onError(final E error);
+    }
+
+    interface Configuration {
+
+        String getDefinitionSetId();
+
+        Set<String> getDefinitionIds();
+
     }
 
     /**

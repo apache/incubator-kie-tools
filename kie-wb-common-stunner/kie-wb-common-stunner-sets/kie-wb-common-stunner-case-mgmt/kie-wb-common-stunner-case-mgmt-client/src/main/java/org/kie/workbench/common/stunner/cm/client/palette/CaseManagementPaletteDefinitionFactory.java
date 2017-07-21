@@ -32,15 +32,17 @@ import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidget;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.BindableDefSetPaletteDefinitionFactory;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
 
 @Dependent
-public class CaseManagementPaletteDefinitionFactory extends BindableDefSetPaletteDefinitionFactory {
+public class CaseManagementPaletteDefinitionFactory extends BindableDefSetPaletteDefinitionFactory<DefinitionSetPalette, BS3PaletteWidget<DefinitionSetPalette>> {
 
     public static final String STAGES = "Stages";
     public static final String ACTIVITIES = "Activities";
@@ -61,9 +63,11 @@ public class CaseManagementPaletteDefinitionFactory extends BindableDefSetPalett
 
     @Inject
     public CaseManagementPaletteDefinitionFactory(final ShapeManager shapeManager,
-                                                  final @CaseManagementEditor DefinitionSetPaletteBuilder paletteBuilder) {
+                                                  final @CaseManagementEditor DefinitionSetPaletteBuilder paletteBuilder,
+                                                  final BS3PaletteWidget<DefinitionSetPalette> palette) {
         super(shapeManager,
-              paletteBuilder);
+              paletteBuilder,
+              palette);
     }
 
     @Override

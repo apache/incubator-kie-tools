@@ -26,5 +26,4 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.Pal
  */
 public interface DefinitionSetPalette extends PaletteDefinition<DefinitionPaletteCategory> {
 
-    String getDefinitionSetId();
 }

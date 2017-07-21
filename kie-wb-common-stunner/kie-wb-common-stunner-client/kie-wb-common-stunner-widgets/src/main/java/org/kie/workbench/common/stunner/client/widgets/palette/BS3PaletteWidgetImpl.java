@@ -45,7 +45,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 
 @Dependent
 public class BS3PaletteWidgetImpl extends AbstractPalette<DefinitionSetPalette>
-        implements BS3PaletteWidget,
+        implements BS3PaletteWidget<DefinitionSetPalette>,
                    IsElement {
 
     public static final String BG_COLOR = "#D3D3D3";
