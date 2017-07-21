@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.ext.wires.core.grids.client.demo;
+package org.uberfire.ext.wires.client.demo.grids;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +37,7 @@ import org.gwtbootstrap3.client.ui.ListBox;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.ext.wires.core.grids.client.demo.resources.i18n.WiresGridsDemoConstants;
+import org.uberfire.ext.wires.client.resources.i18n.WiresGridsDemoConstants;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;

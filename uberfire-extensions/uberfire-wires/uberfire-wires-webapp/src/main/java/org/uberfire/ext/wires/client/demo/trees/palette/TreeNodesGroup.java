@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.core.trees.client.shapes;
+package org.uberfire.ext.wires.client.demo.trees.palette;
 
-import com.ait.lienzo.client.core.shape.Circle;
+import javax.enterprise.context.Dependent;
 
-/**
- * Example Node that can only have WiresExampleTreeNode2 types of node added as children
- */
-public class WiresExampleTreeNode2 extends WiresExampleTreeNode1 {
+import org.uberfire.ext.wires.client.demo.trees.factory.TreeNodesCategory;
+import org.uberfire.ext.wires.core.api.factories.categories.Category;
+import org.uberfire.ext.wires.core.client.palette.BaseGroup;
 
-    public WiresExampleTreeNode2(final Circle shape) {
-        super(shape);
-    }
+@Dependent
+public class TreeNodesGroup extends BaseGroup {
 
     @Override
-    public boolean acceptChildNode(final WiresBaseTreeNode child) {
-        return child instanceof WiresExampleTreeNode2;
+    public Category getCategory() {
+        return TreeNodesCategory.CATEGORY;
     }
 }

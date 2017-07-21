@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.core.grids.client.demo;
+package org.uberfire.ext.wires.client.demo.grids;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.ext.wires.core.grids.client.demo.resources.i18n.WiresGridsDemoConstants;
+import org.uberfire.ext.wires.client.resources.i18n.WiresGridsDemoConstants;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.ext.wires.core.grids.client.demo.resources.i18n;
+package org.uberfire.ext.wires.client.resources.i18n;
 
 import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 

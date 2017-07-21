@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.core.trees.client.palette;
+package org.uberfire.ext.wires.client.demo.trees.palette;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;

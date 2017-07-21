@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.ext.wires.core.grids.client.demo;
+package org.uberfire.ext.wires.client.demo.grids;
 
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickHandler;

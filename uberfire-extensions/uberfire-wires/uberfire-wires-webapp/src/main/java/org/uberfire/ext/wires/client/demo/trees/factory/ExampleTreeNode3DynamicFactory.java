@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.core.trees.client.factories;
+package org.uberfire.ext.wires.client.demo.trees.factory;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -27,8 +27,7 @@ import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;
 import org.uberfire.ext.wires.core.client.factories.AbstractBaseFactory;
 import org.uberfire.ext.wires.core.client.factories.ShapeFactoryCache;
 import org.uberfire.ext.wires.core.client.util.ShapesUtils;
-import org.uberfire.ext.wires.core.trees.client.factories.categories.TreeNodesCategory;
-import org.uberfire.ext.wires.core.trees.client.shapes.WiresExampleTreeNode3;
+import org.uberfire.ext.wires.client.demo.trees.shapes.WiresExampleTreeNode3;
 
 @ApplicationScoped
 public class ExampleTreeNode3DynamicFactory {

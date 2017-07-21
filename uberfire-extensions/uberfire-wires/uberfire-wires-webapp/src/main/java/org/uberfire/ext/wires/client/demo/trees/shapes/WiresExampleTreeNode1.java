@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.core.trees.client.shapes;
+package org.uberfire.ext.wires.client.demo.trees.shapes;
 
 import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
+import org.uberfire.ext.wires.core.trees.client.shapes.WiresBaseTreeNode;
 
 /**
  * Example Node that can have all other types of node added as children

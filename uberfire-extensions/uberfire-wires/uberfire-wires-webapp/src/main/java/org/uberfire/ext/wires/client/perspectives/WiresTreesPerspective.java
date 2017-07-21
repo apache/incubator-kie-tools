@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.ext.wires.core.trees.client.perspectives;
+package org.uberfire.ext.wires.client.perspectives;
 
 import javax.enterprise.context.ApplicationScoped;
 
