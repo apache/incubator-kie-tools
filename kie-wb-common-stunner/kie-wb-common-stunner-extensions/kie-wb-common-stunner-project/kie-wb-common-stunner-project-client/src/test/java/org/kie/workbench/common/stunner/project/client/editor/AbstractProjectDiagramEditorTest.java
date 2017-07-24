@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchG
 import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
+import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.mockito.InjectMocks;
@@ -78,6 +79,8 @@ public class AbstractProjectDiagramEditorTest {
 
     @Mock
     protected SessionCommandFactory sessionCommandFactory;
+    @Mock
+    private ProjectMessagesListener projectMessagesListener;
 
     abstract class ClientResourceTypeMock implements ClientResourceType {
 
@@ -112,7 +115,8 @@ public class AbstractProjectDiagramEditorTest {
                                                                              sessionCommandFactory,
                                                                              mock(ProjectDiagramEditorMenuItemsBuilder.class),
                                                                              new EventSourceMock<>(),
-                                                                             new EventSourceMock<>()) {
+                                                                             new EventSourceMock<>(),
+                                                                             projectMessagesListener) {
             {
                 fileMenuBuilder = AbstractProjectDiagramEditorTest.this.fileMenuBuilder;
                 workbenchContext = AbstractProjectDiagramEditorTest.this.workbenchContext;

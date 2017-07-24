@@ -61,6 +61,7 @@ import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.kie.workbench.common.stunner.core.validation.impl.ValidationUtils;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
+import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -103,6 +104,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private SessionManager sessionManager;
     private SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory;
     private ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder;
+    private ProjectMessagesListener projectMessagesListener;
 
     private ClearStatesSessionCommand sessionClearStatesCommand;
     private VisitGraphSessionCommand sessionVisitGraphCommand;
@@ -116,11 +118,10 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private ExportToPngSessionCommand sessionExportImagePNGCommand;
     private ExportToJpgSessionCommand sessionExportImageJPGCommand;
     private ExportToPdfSessionCommand sessionExportPDFCommand;
+
     private Event<OnDiagramFocusEvent> onDiagramFocusEvent;
     private Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent;
-
     protected SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter;
-
     private String title = "Project Diagram Editor";
 
     AbstractProjectDiagramEditor() {
@@ -140,7 +141,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                         final SessionCommandFactory sessionCommandFactory,
                                         final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder,
                                         final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
-                                        final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent) {
+                                        final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent,
+                                        final ProjectMessagesListener projectMessagesListener) {
         super(view);
         this.placeManager = placeManager;
         this.errorPopupPresenter = errorPopupPresenter;
@@ -151,6 +153,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.sessionManager = sessionManager;
         this.sessionPresenterFactory = sessionPresenterFactory;
         this.menuItemsBuilder = menuItemsBuilder;
+        this.projectMessagesListener = projectMessagesListener;
+
         this.sessionClearStatesCommand = sessionCommandFactory.newClearStatesCommand();
         this.sessionVisitGraphCommand = sessionCommandFactory.newVisitGraphCommand();
         this.sessionSwitchGridCommand = sessionCommandFactory.newSwitchGridCommand();
@@ -175,6 +179,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     @SuppressWarnings("unchecked")
     public void init() {
         getView().init(this);
+        projectMessagesListener.enable();
     }
 
     protected void doStartUp(final ObservablePath path,

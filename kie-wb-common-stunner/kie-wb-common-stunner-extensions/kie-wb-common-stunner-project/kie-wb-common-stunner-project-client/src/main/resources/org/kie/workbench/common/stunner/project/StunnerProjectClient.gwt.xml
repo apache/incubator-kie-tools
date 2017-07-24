@@ -24,10 +24,10 @@
   <inherits name="org.kie.workbench.common.stunner.project.StunnerProjectAPI"/>
 
   <inherits name="org.uberfire.UberfireDocksClient"/>
-  <inherits name="org.kie.workbench.common.workbench.KieDefaultWorkbenchClient"/>
   <inherits name="org.kie.workbench.common.screens.projecteditor.KieWorkbenchCommonProjectEditorClient"/>
   <inherits name="org.kie.workbench.common.screens.explorer.KieWorkbenchProjectExplorerClient"/>
   <inherits name="org.kie.workbench.common.workbench.KieDefaultWorkbenchClient"/>
+  <inherits name="org.guvnor.messageconsole.GuvnorMessageConsoleAPI"/>
 
   <source path="client"/>
 

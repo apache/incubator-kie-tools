@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientR
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
+import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
@@ -49,7 +50,8 @@ class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResour
                                     SessionCommandFactory sessionCommandFactory,
                                     ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder,
                                     Event<OnDiagramFocusEvent> onDiagramFocusEvent,
-                                    Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent) {
+                                    Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent,
+                                    ProjectMessagesListener projectMessagesListener) {
         super(view,
               placeManager,
               errorPopupPresenter,
@@ -62,7 +64,8 @@ class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResour
               sessionCommandFactory,
               menuItemsBuilder,
               onDiagramFocusEvent,
-              onDiagramLostFocusEvent);
+              onDiagramLostFocusEvent,
+              projectMessagesListener);
     }
 
     @Override

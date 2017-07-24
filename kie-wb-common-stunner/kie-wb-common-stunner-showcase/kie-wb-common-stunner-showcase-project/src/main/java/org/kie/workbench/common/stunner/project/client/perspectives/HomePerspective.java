@@ -31,7 +31,11 @@ import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.CompassPosition;
+import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
+import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
@@ -58,12 +62,16 @@ public class HomePerspective {
     @Inject
     private AuthoringWorkbenchDocks docks;
 
+
+    private PerspectiveDefinition perspective;
+    private PanelDefinition notificationsPanel;
     private Menus menus;
 
     @PostConstruct
     public void init() {
         docks.setup(PerspectiveIds.HOME,
                     new DefaultPlaceRequest("org.kie.guvnor.explorer"));
+
         buildMenuBar();
     }
 
@@ -71,6 +79,11 @@ public class HomePerspective {
     public PerspectiveDefinition getPerspective() {
         PerspectiveDefinitionImpl perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
         perspective.setName("Administration");
+
+        notificationsPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        notificationsPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("org.kie.workbench.common.screens.messageconsole.MessageConsole")));
+        perspective.getRoot().insertChild(CompassPosition.SOUTH,
+                                          notificationsPanel);
         return perspective;
     }
 

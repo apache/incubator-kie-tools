@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.ClientFullSessi
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
+import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
@@ -144,6 +145,8 @@ public class ProjectDiagramEditorTest {
     EventSourceMock<OnDiagramFocusEvent> onDiagramFocusEvent;
     @Mock
     EventSourceMock<OnDiagramLoseFocusEvent> onDiagramLostFocusEven;
+    @Mock
+    ProjectMessagesListener projectMessagesListener;
 
     private ProjectDiagramEditorStub tested;
 
@@ -190,7 +193,9 @@ public class ProjectDiagramEditorTest {
                                                    sessionCommandFactory,
                                                    menuItemsBuilder,
                                                    onDiagramFocusEvent,
-                                                   onDiagramLostFocusEven) {
+                                                   onDiagramLostFocusEven,
+                                                   projectMessagesListener
+        ) {
             {
                 overviewWidget = overviewWidgetMock;
                 versionRecordManager = versionRecordManagerMock;

@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.stunner.client.widgets.notification.CommandNotification;
 import org.kie.workbench.common.stunner.client.widgets.notification.Notification;
@@ -70,6 +71,10 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         this.hasToolbar = true;
         this.hasPalette = true;
         this.typePredicate = Optional.empty();
+    }
+
+    private static String buildHtmlEscapedText(final String message) {
+        return new SafeHtmlBuilder().appendEscapedLines(message).toSafeHtml().asString();
     }
 
     protected abstract E getDisplayer();
@@ -256,7 +261,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     private void showError(final ClientRuntimeError error) {
         if (isDisplayErrors()) {
             getView().showLoading(false);
-            getView().showError(error.getMessage());
+            getView().showError(buildHtmlEscapedText(error.getMessage()));
         }
     }
 
@@ -294,22 +299,22 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
 
     private void showNotificationMessage(final Notification notification) {
         if (isThisContext(notification)) {
-            showMessage(notification.getMessage());
+            showMessage(buildHtmlEscapedText(notification.getMessage()));
         }
     }
 
     private void showCommandError(final CommandNotification notification) {
         if (isThisContext(notification)) {
-            showError(notification.getMessage());
+            showError(buildHtmlEscapedText(notification.getMessage()));
         }
     }
 
     private void showValidationError(final ValidationFailedNotification notification) {
         if (isThisContext(notification)) {
             if (Notification.Type.ERROR.equals(notification.getType())) {
-                showError(notification.getMessage());
+                showError(buildHtmlEscapedText(notification.getMessage()));
             } else {
-                showWarning(notification.getMessage());
+                showWarning(buildHtmlEscapedText(notification.getMessage()));
             }
         }
     }

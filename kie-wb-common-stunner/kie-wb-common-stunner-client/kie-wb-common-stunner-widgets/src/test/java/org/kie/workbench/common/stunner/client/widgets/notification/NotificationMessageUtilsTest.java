@@ -20,6 +20,7 @@ import java.util.Collections;
 import javax.validation.ConstraintViolation;
 import javax.validation.Path;
 
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -98,9 +99,10 @@ public class NotificationMessageUtilsTest {
         final Iterable<CanvasViolation> violations = Collections.singletonList(canvasViolation);
         when(translationService.getKeyValue(eq("aKey"))).thenReturn("aValue");
         when(translationService.getViolationMessage(eq(canvasViolation))).thenReturn("cv1");
-        final String message = NotificationMessageUtils.getCanvasValidationsErrorMessage(translationService,
-                                                                                         "aKey",
-                                                                                         violations);
+        String message = NotificationMessageUtils.getCanvasValidationsErrorMessage(translationService,
+                                                                                   "aKey",
+                                                                                   violations);
+        message = new SafeHtmlBuilder().appendEscapedLines(message).toSafeHtml().asString();
         assertEquals("aValue." + HTML_NEW_LINE + "R" + COLON + HTML_NEW_LINE +
                              OPEN_BRA + "1" + CLOSE_BRA + "(ERROR) "
                              + "cv1" + HTML_NEW_LINE,
@@ -124,9 +126,10 @@ public class NotificationMessageUtilsTest {
         when(ruleViolation.getViolationType()).thenReturn(Violation.Type.WARNING);
         when(translationService.getViolationMessage(eq(ruleViolation))).thenReturn("rv1");
         when(translationService.getKeyValue(eq("aKey"))).thenReturn("aValue");
-        final String message = NotificationMessageUtils.getDiagramValidationsErrorMessage(translationService,
-                                                                                          "aKey",
-                                                                                          Collections.singleton(diagramViolation));
+        String message = NotificationMessageUtils.getDiagramValidationsErrorMessage(translationService,
+                                                                                    "aKey",
+                                                                                    Collections.singleton(diagramViolation));
+        message = new SafeHtmlBuilder().appendEscapedLines(message).toSafeHtml().asString();
         assertEquals("aValue." + HTML_NEW_LINE + "R" + COLON + HTML_NEW_LINE +
                              OPEN_BRA + "E" + COLON + "uuid1" + CLOSE_BRA + HTML_NEW_LINE +
                              "(WARNING) " + HTML_OPEN_COMMENT + "path1" + HTML_CLOSE_COMMENT +

@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.client.widgets.notification;
 
 import java.util.Collection;
 
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
@@ -44,7 +43,7 @@ public class NotificationMessageUtils {
                 + translationService.getKeyValue(CoreTranslationMessages.REASON) + COLON + NEW_LINE
                 + getValidationMessages(translationService,
                                         result);
-        return buildHtmlEscapedText(message);
+        return message;
     }
 
     public static String getCanvasValidationsErrorMessage(final ClientTranslationService translationService,
@@ -54,7 +53,7 @@ public class NotificationMessageUtils {
                 + translationService.getKeyValue(CoreTranslationMessages.REASON) + COLON + NEW_LINE
                 + getValidationMessages(translationService,
                                         result);
-        return buildHtmlEscapedText(message);
+        return message;
     }
 
     public static String getRuleValidationMessage(final ClientTranslationService translationService,
@@ -117,9 +116,5 @@ public class NotificationMessageUtils {
                                                          v))
                         .append(NEW_LINE));
         return message.toString();
-    }
-
-    private static String buildHtmlEscapedText(final String message) {
-        return new SafeHtmlBuilder().appendEscapedLines(message).toSafeHtml().asString();
     }
 }

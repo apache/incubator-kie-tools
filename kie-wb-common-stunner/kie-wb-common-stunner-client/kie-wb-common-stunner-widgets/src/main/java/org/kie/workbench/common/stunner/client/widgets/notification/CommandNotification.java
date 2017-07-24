@@ -62,6 +62,16 @@ public final class CommandNotification
                                            message);
         }
 
+        public static CommandNotification build(final NotificationContext context,
+                                                final Command<?, CanvasViolation> command,
+                                                final Notification.Type type,
+                                                final String message) {
+            return new CommandNotification(type,
+                                           context,
+                                           command,
+                                           message);
+        }
+
         private static String getSuccessMessage(final ClientTranslationService translationService,
                                                 final CommandResult<CanvasViolation> result) {
             return translationService.getKeyValue(CoreTranslationMessages.COMMAND_SUCCESS);

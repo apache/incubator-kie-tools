@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDia
 import org.kie.workbench.common.stunner.project.client.editor.ProjectDiagramEditorMenuItemsBuilder;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
+import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -73,7 +74,8 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                              final SessionCommandFactory sessionCommandFactory,
                              final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder,
                              final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
-                             final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent) {
+                             final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent,
+                             final ProjectMessagesListener projectMessagesListener) {
         super(view,
               placeManager,
               errorPopupPresenter,
@@ -86,7 +88,8 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
               sessionCommandFactory,
               menuItemsBuilder,
               onDiagramFocusEvent,
-              onDiagramLostFocusEvent);
+              onDiagramLostFocusEvent,
+              projectMessagesListener);
     }
 
     @OnStartup
