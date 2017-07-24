@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.common.rendering.client.widgets.decimalBox.converters;
+package org.kie.workbench.common.forms.common.rendering.client.util.valueConverters;
 
 import org.jboss.errai.databinding.client.api.Converter;
 
-public class FloatToDoubleConverter implements Converter<Float, Double> {
+public class IntegerToLongConverter implements Converter<Integer, Long> {
 
     @Override
-    public Class<Float> getModelType() {
-        return Float.class;
+    public Class<Integer> getModelType() {
+        return Integer.class;
     }
 
     @Override
-    public Class<Double> getComponentType() {
-        return Double.class;
+    public Class<Long> getComponentType() {
+        return Long.class;
     }
 
     @Override
-    public Float toModelValue(Double widgetValue) {
-        return widgetValue != null ? widgetValue.floatValue() : null;
+    public Integer toModelValue(Long widgetValue) {
+        return widgetValue != null ? widgetValue.intValue() : null;
     }
 
     @Override
-    public Double toWidgetValue(Float modelValue) {
-        return modelValue != null ? modelValue.doubleValue() : null;
+    public Long toWidgetValue(Integer modelValue) {
+        return modelValue != null ? modelValue.longValue() : null;
     }
 }

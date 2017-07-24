@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.common.rendering.client.widgets.integerBox.converters;
+package org.kie.workbench.common.forms.common.rendering.client.util.valueConverters;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 import org.jboss.errai.databinding.client.api.Converter;
 
-public class BigIntegerToLongConverter implements Converter<BigInteger, Long> {
+public class BigDecimalToDoubleConverter implements Converter<BigDecimal, Double> {
 
     @Override
-    public Class<BigInteger> getModelType() {
-        return BigInteger.class;
+    public Class<BigDecimal> getModelType() {
+        return BigDecimal.class;
     }
 
     @Override
-    public Class<Long> getComponentType() {
-        return Long.class;
+    public Class<Double> getComponentType() {
+        return Double.class;
     }
 
     @Override
-    public BigInteger toModelValue(Long widgetValue) {
-        return widgetValue != null ? BigInteger.valueOf(widgetValue) : null;
+    public BigDecimal toModelValue(Double widgetValue) {
+        return widgetValue != null ? BigDecimal.valueOf(widgetValue) : null;
     }
 
     @Override
-    public Long toWidgetValue(BigInteger modelValue) {
-        return modelValue != null ? modelValue.longValue() : null;
+    public Double toWidgetValue(BigDecimal modelValue) {
+        return modelValue != null ? modelValue.doubleValue() : null;
     }
 }

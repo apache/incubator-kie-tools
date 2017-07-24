@@ -16,15 +16,14 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 
-import java.math.BigDecimal;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.databinding.client.api.Converter;
+import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ValueConvertersFactory;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.decimalBox.DecimalBox;
-import org.kie.workbench.common.forms.common.rendering.client.widgets.decimalBox.converters.FloatToDoubleConverter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.definition.DecimalBoxFieldDefinition;
 
@@ -75,11 +74,6 @@ public class DecimalBoxFieldRenderer extends FieldRenderer<DecimalBoxFieldDefini
 
     @Override
     public Converter getConverter() {
-        if (field.getStandaloneClassName() == Float.class.getName()) {
-            return new FloatToDoubleConverter();
-        } else if (field.getStandaloneClassName() == BigDecimal.class.getName()) {
-            return new FloatToDoubleConverter();
-        }
-        return null;
+        return ValueConvertersFactory.getConverterForType(field.getStandaloneClassName());
     }
 }

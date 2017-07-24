@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.dynamic.test.util;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.test.model.Address;
 import org.kie.workbench.common.forms.dynamic.test.model.Employee;
@@ -34,6 +35,17 @@ import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
 import org.kie.workbench.common.forms.model.impl.PortableJavaModel;
 
 public class TestFormGenerator {
+
+    public static final String EMPLOYEE_NAME = "name";
+    public static final String EMPLOYEE_SURNAME = "surname";
+    public static final String EMPLOYEE_BIRTHDAY = "birthday";
+    public static final String EMPLOYEE_AGE = "age";
+    public static final String EMPLOYEE_AGE_BINDING = "age.value";
+    public static final String EMPLOYEE_MARRIED = "married";
+    public static final String EMPLOYEE_ADDRESS = "address";
+
+    public static final String ADDRESS_STREET = "street";
+    public static final String ADDRESS_NUM = "num";
 
     public static StaticModelFormRenderingContext getContextForEmployee(Employee employee) {
         FormDefinition form = getEmployeeForm();
@@ -56,48 +68,48 @@ public class TestFormGenerator {
         form.setId("Employee");
 
         TextBoxFieldDefinition name = new TextBoxFieldDefinition();
-        name.setId("name");
-        name.setName("name");
+        name.setId(EMPLOYEE_NAME);
+        name.setName(EMPLOYEE_NAME);
         name.setLabel("Name");
         name.setPlaceHolder("Name");
-        name.setBinding("name");
+        name.setBinding(EMPLOYEE_NAME);
         name.setStandaloneClassName(String.class.getName());
 
         TextBoxFieldDefinition lastName = new TextBoxFieldDefinition();
-        lastName.setId("surname");
-        lastName.setName("surname");
+        lastName.setId(EMPLOYEE_SURNAME);
+        lastName.setName(EMPLOYEE_SURNAME);
         lastName.setLabel("Surname");
         lastName.setPlaceHolder("SurName");
-        lastName.setBinding("surname");
+        lastName.setBinding(EMPLOYEE_SURNAME);
         lastName.setStandaloneClassName(String.class.getName());
 
         DatePickerFieldDefinition birthday = new DatePickerFieldDefinition();
-        birthday.setId("birthday");
-        birthday.setName("birthday");
+        birthday.setId(EMPLOYEE_BIRTHDAY);
+        birthday.setName(EMPLOYEE_BIRTHDAY);
         birthday.setLabel("Birthday");
-        birthday.setBinding("birthday");
+        birthday.setBinding(EMPLOYEE_BIRTHDAY);
         birthday.setStandaloneClassName(Date.class.getName());
 
         TextBoxFieldDefinition age = new TextBoxFieldDefinition();
-        age.setId("age");
-        age.setName("age");
+        age.setId(EMPLOYEE_AGE);
+        age.setName(EMPLOYEE_AGE);
         age.setLabel("Age");
-        age.setPlaceHolder("age");
-        age.setBinding("age.value");
+        age.setPlaceHolder("Age");
+        age.setBinding(EMPLOYEE_AGE_BINDING);
         age.setStandaloneClassName(Integer.class.getName());
 
         CheckBoxFieldDefinition married = new CheckBoxFieldDefinition();
-        married.setId("married");
-        married.setName("married");
+        married.setId(EMPLOYEE_MARRIED);
+        married.setName(EMPLOYEE_MARRIED);
         married.setLabel("Married");
-        married.setBinding("married");
+        married.setBinding(EMPLOYEE_MARRIED);
         married.setStandaloneClassName(Boolean.class.getName());
 
         SubFormFieldDefinition address = new SubFormFieldDefinition();
-        address.setId("address");
-        address.setName("address");
+        address.setId(EMPLOYEE_ADDRESS);
+        address.setName(EMPLOYEE_ADDRESS);
         address.setLabel("Address");
-        address.setBinding("address");
+        address.setBinding(EMPLOYEE_ADDRESS);
         address.setNestedForm("Address");
         address.setStandaloneClassName(Address.class.getName());
 
@@ -119,19 +131,19 @@ public class TestFormGenerator {
         form.setId("Address");
 
         TextBoxFieldDefinition name = new TextBoxFieldDefinition();
-        name.setId("street");
-        name.setName("street");
+        name.setId(ADDRESS_STREET);
+        name.setName(ADDRESS_STREET);
         name.setLabel("Street Name");
         name.setPlaceHolder("Street Name");
-        name.setBinding("street");
+        name.setBinding(ADDRESS_STREET);
         name.setStandaloneClassName(String.class.getName());
 
         TextBoxFieldDefinition num = new TextBoxFieldDefinition();
-        num.setId("num");
-        num.setName("num");
+        num.setId(ADDRESS_NUM);
+        num.setName(ADDRESS_NUM);
         num.setLabel("#");
         num.setPlaceHolder("#");
-        num.setBinding("num");
+        num.setBinding(ADDRESS_NUM);
         num.setStandaloneClassName(Integer.class.getName());
 
         form.getFields().add(name);

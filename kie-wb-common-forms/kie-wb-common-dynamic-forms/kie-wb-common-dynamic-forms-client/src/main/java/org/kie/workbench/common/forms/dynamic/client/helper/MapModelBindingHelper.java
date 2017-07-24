@@ -48,6 +48,10 @@ public class MapModelBindingHelper {
 
         basicProperties.put(String.class.getName(),
                             String.class);
+        basicProperties.put(Byte.class.getName(),
+                            Byte.class);
+        basicProperties.put(byte.class.getName(),
+                            Byte.class);
         basicProperties.put(Integer.class.getName(),
                             Integer.class);
         basicProperties.put(int.class.getName(),
@@ -56,6 +60,10 @@ public class MapModelBindingHelper {
                             Double.class);
         basicProperties.put(double.class.getName(),
                             Double.class);
+        basicProperties.put(Short.class.getName(),
+                            Short.class);
+        basicProperties.put(short.class.getName(),
+                            Short.class);
         basicProperties.put(Long.class.getName(),
                             Long.class);
         basicProperties.put(long.class.getName(),
@@ -89,9 +97,10 @@ public class MapModelBindingHelper {
         basicProperties.put("java.time.OffsetDateTime",
                             Date.class);
 
+        lookupPropertyGenerators();
+    }
 
-
-
+    protected void lookupPropertyGenerators() {
         IOC.getBeanManager().lookupBeans(PropertyGenerator.class).forEach(beanDef -> {
             PropertyGenerator generator = beanDef.getInstance();
             propertiesGenerator.put(generator.getType(),

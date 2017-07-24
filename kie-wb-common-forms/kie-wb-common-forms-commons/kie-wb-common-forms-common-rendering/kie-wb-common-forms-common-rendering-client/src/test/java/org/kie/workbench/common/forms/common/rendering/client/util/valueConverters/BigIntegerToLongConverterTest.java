@@ -14,29 +14,24 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.common.rendering.client.widgets.integerBox.converters;
+package org.kie.workbench.common.forms.common.rendering.client.util.valueConverters;
 
-import org.jboss.errai.databinding.client.api.Converter;
+import java.math.BigInteger;
 
-public class IntegerToLongConverter implements Converter<Integer, Long> {
+public class BigIntegerToLongConverterTest extends AbstractConverterTest<BigInteger, Long> {
 
     @Override
-    public Class<Integer> getModelType() {
-        return Integer.class;
+    Class<BigInteger> getConverterTye() {
+        return BigInteger.class;
     }
 
     @Override
-    public Class<Long> getComponentType() {
-        return Long.class;
+    BigInteger getModelValue() {
+        return BigInteger.valueOf(1000);
     }
 
     @Override
-    public Integer toModelValue(Long widgetValue) {
-        return widgetValue != null ? widgetValue.intValue() : null;
-    }
-
-    @Override
-    public Long toWidgetValue(Integer modelValue) {
-        return modelValue != null ? modelValue.longValue() : null;
+    Long getWidgetValue() {
+        return new Long(1000);
     }
 }

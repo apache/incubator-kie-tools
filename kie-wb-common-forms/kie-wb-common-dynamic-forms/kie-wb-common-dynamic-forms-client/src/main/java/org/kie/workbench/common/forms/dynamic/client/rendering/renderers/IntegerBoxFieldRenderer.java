@@ -16,18 +16,14 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 
-import java.math.BigInteger;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.databinding.client.api.Converter;
+import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ValueConvertersFactory;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.integerBox.IntegerBox;
-import org.kie.workbench.common.forms.common.rendering.client.widgets.integerBox.converters.BigIntegerToLongConverter;
-import org.kie.workbench.common.forms.common.rendering.client.widgets.integerBox.converters.ByteToLongConverter;
-import org.kie.workbench.common.forms.common.rendering.client.widgets.integerBox.converters.IntegerToLongConverter;
-import org.kie.workbench.common.forms.common.rendering.client.widgets.integerBox.converters.ShortToLongConverter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.definition.IntegerBoxFieldDefinition;
 
@@ -77,15 +73,6 @@ public class IntegerBoxFieldRenderer extends FieldRenderer<IntegerBoxFieldDefini
 
     @Override
     public Converter getConverter() {
-        if (field.getStandaloneClassName() == BigInteger.class.getName()) {
-            return new BigIntegerToLongConverter();
-        } else if (field.getStandaloneClassName() == Integer.class.getName()) {
-            return new IntegerToLongConverter();
-        } else if (field.getStandaloneClassName() == Short.class.getName()) {
-            return new ShortToLongConverter();
-        } else if (field.getStandaloneClassName() == Byte.class.getName()) {
-            return new ByteToLongConverter();
-        }
-        return null;
+        return ValueConvertersFactory.getConverterForType(field.getStandaloneClassName());
     }
 }

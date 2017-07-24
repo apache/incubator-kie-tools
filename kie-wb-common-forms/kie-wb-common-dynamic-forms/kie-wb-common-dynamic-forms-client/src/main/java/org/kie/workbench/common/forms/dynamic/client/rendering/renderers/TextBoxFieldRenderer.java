@@ -21,11 +21,13 @@ import javax.enterprise.context.Dependent;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.jboss.errai.databinding.client.api.Converter;
+import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ValueConvertersFactory;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxBaseDefinition;
 
 @Dependent
-public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBaseDefinition> {
+public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBaseDefinition>  implements RequiresValueConverter {
 
     private TextBox textBox = new TextBox();
 
@@ -61,5 +63,10 @@ public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBaseDefinition> {
     @Override
     protected void setReadOnly(boolean readOnly) {
         textBox.setEnabled(!readOnly);
+    }
+
+    @Override
+    public Converter getConverter() {
+        return ValueConvertersFactory.getConverterForType(field.getStandaloneClassName());
     }
 }

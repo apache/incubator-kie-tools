@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.common.rendering.client.widgets.integerBox.converters;
+package org.kie.workbench.common.forms.common.rendering.client.util.valueConverters;
+
+import java.math.BigInteger;
 
 import org.jboss.errai.databinding.client.api.Converter;
 
-public class ShortToLongConverter implements Converter<Short, Long> {
+public class BigIntegerToLongConverter implements Converter<BigInteger, Long> {
 
     @Override
-    public Class<Short> getModelType() {
-        return Short.class;
+    public Class<BigInteger> getModelType() {
+        return BigInteger.class;
     }
 
     @Override
@@ -31,12 +33,12 @@ public class ShortToLongConverter implements Converter<Short, Long> {
     }
 
     @Override
-    public Short toModelValue(Long widgetValue) {
-        return widgetValue != null ? widgetValue.shortValue() : null;
+    public BigInteger toModelValue(Long widgetValue) {
+        return widgetValue != null ? BigInteger.valueOf(widgetValue) : null;
     }
 
     @Override
-    public Long toWidgetValue(Short modelValue) {
+    public Long toWidgetValue(BigInteger modelValue) {
         return modelValue != null ? modelValue.longValue() : null;
     }
 }
