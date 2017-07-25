@@ -17,36 +17,34 @@
 package org.uberfire.java.nio.fs.jgit.util.commands;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
 
-import org.apache.commons.io.FileUtils;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.StoredConfig;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.internal.ketch.KetchLeaderCache;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
+import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
-public class Fork extends Clone {
+public class Fork {
 
     private static final String DOT_GIT_EXT = ".git";
+    private final KetchLeaderCache leaders;
+    private Logger logger = LoggerFactory.getLogger(Fork.class);
+
+    private File parentFolder;
     private final String source;
     private final String target;
-    private Logger logger = LoggerFactory.getLogger(Fork.class);
-    private File parentFolder;
     private CredentialsProvider credentialsProvider;
 
-    public Fork(File parentFolder,
-                String source,
-                String target,
-                CredentialsProvider credentialsProvider) {
-
+    public Fork(final File parentFolder,
+                final String source,
+                final String target,
+                final CredentialsProvider credentialsProvider,
+                final KetchLeaderCache leaders) {
         this.parentFolder = checkNotNull("parentFolder",
                                          parentFolder);
         this.source = checkNotEmpty("source",
@@ -55,10 +53,10 @@ public class Fork extends Clone {
                                     target);
         this.credentialsProvider = checkNotNull("credentialsProvider",
                                                 credentialsProvider);
+        this.leaders = leaders;
     }
 
-    @Override
-    public Optional<Git> execute() {
+    public Git execute() throws InvalidRemoteException {
 
         if (logger.isDebugEnabled()) {
             logger.debug("Forking repository <{}> to <{}>",
@@ -66,48 +64,22 @@ public class Fork extends Clone {
                          target);
         }
 
-        Git gitDestination;
         final File origin = new File(parentFolder,
                                      source + DOT_GIT_EXT);
         final File destination = new File(parentFolder,
                                           target + DOT_GIT_EXT);
 
-        try {
-
-            if (destination.exists()) {
-                String message = String.format("Cannot fork because destination repository <%s> already exists",
-                                               target);
-                logger.error(message);
-                throw new GitException(message);
-            }
-            FileUtils.copyDirectory(origin,
-                                    destination);
-            gitDestination = Git.open(destination);
-            this.setOriginToRepository(gitDestination,
-                                       origin);
-            JGitUtil.fetchRepository(gitDestination,
-                                     credentialsProvider);
-
-            if (logger.isDebugEnabled()) {
-                logger.debug("Repository <{}> forked successfuly from <{}>",
-                             target,
-                             source);
-            }
-        } catch (IOException | GitAPIException e) {
-            throw new GitException("Cannot fork repository",
-                                   e);
+        if (destination.exists()) {
+            String message = String.format("Cannot fork because destination repository <%s> already exists",
+                                           target);
+            logger.error(message);
+            throw new GitException(message);
         }
 
-        return Optional.ofNullable(gitDestination);
-    }
-
-    private void setOriginToRepository(final Git gitDestination,
-                                       final File origin) throws IOException {
-        final StoredConfig config = gitDestination.getRepository().getConfig();
-        config.setString("remote",
-                         "origin",
-                         "url",
-                         origin.getPath());
-        config.save();
+        return Git.clone(destination,
+                         origin.toPath().toUri().toString(),
+                         false,
+                         credentialsProvider,
+                         leaders);
     }
 }

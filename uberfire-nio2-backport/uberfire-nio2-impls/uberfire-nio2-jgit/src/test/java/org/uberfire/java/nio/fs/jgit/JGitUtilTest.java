@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.jgit.lib.ObjectId;
@@ -29,18 +29,20 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import org.junit.Test;
 import org.uberfire.java.nio.base.version.VersionAttributes;
 import org.uberfire.java.nio.base.version.VersionRecord;
-import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
+import org.uberfire.java.nio.fs.jgit.util.Git;
+import org.uberfire.java.nio.fs.jgit.util.commands.Clone;
+import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
+import org.uberfire.java.nio.fs.jgit.util.commands.CreateRepository;
+import org.uberfire.java.nio.fs.jgit.util.commands.GetTreeFromRef;
+import org.uberfire.java.nio.fs.jgit.util.commands.ListDiffs;
+import org.uberfire.java.nio.fs.jgit.util.commands.ListRefs;
 
-import static org.eclipse.jgit.api.ListBranchCommand.ListMode.ALL;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.DIRECTORY;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.FILE;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.NOT_FOUND;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.branchList;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.cloneRepository;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.commit;
+import static org.uberfire.java.nio.fs.jgit.util.model.PathType.DIRECTORY;
+import static org.uberfire.java.nio.fs.jgit.util.model.PathType.FILE;
+import static org.uberfire.java.nio.fs.jgit.util.model.PathType.NOT_FOUND;
 
 public class JGitUtilTest extends AbstractTestInfra {
 
@@ -51,203 +53,189 @@ public class JGitUtilTest extends AbstractTestInfra {
         final File gitFolder = new File(parentFolder,
                                         "mytest.git");
 
-        final Git git = JGitUtil.newRepository(gitFolder,
-                                               true);
+        final Git git = new CreateRepository(gitFolder).execute().get();
 
         assertThat(git).isNotNull();
 
-        assertThat(branchList(git).size()).isEqualTo(0);
+        assertThat(new ListRefs(git.getRepository()).execute().size()).isEqualTo(0);
 
-        commit(git,
-               "master",
-               "name",
-               "name@example.com",
-               "commit",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("file.txt",
-                       tempFile("temp"));
-               }});
+        new Commit(git,
+                   "master",
+                   "name",
+                   "name@example.com",
+                   "commit",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file.txt",
+                           tempFile("temp"));
+                   }}).execute();
 
-        assertThat(branchList(git).size()).isEqualTo(1);
+        assertThat(new ListRefs(git.getRepository()).execute().size()).isEqualTo(1);
     }
 
     @Test
-    public void testClone() throws IOException {
+    public void testClone() throws IOException, InvalidRemoteException {
         final File parentFolder = createTempDirectory();
         final File gitFolder = new File(parentFolder,
                                         "mytest.git");
 
-        final Git origin = JGitUtil.newRepository(gitFolder,
-                                                  true);
+        final Git origin = new CreateRepository(gitFolder).execute().get();
 
-        commit(origin,
-               "user_branch",
-               "name",
-               "name@example.com",
-               "commit!",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("file2.txt",
-                       tempFile("temp2222"));
-               }});
-        commit(origin,
-               "master",
-               "name",
-               "name@example.com",
-               "commit",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("file.txt",
-                       tempFile("temp"));
-               }});
-        commit(origin,
-               "master",
-               "name",
-               "name@example.com",
-               "commit",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("file3.txt",
-                       tempFile("temp3"));
-               }});
+        new Commit(origin,
+                   "user_branch",
+                   "name",
+                   "name@example.com",
+                   "commit!",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file2.txt",
+                           tempFile("temp2222"));
+                   }}).execute();
+        new Commit(origin,
+                   "master",
+                   "name",
+                   "name@example.com",
+                   "commit",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file.txt",
+                           tempFile("temp"));
+                   }}).execute();
+        new Commit(origin,
+                   "master",
+                   "name",
+                   "name@example.com",
+                   "commit",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file3.txt",
+                           tempFile("temp3"));
+                   }}).execute();
 
         final File gitClonedFolder = new File(parentFolder,
                                               "myclone.git");
 
-        final Git git = cloneRepository(gitClonedFolder,
-                                        origin.getRepository().getDirectory().toString(),
-                                        true,
-                                        CredentialsProvider.getDefault());
+        final Git git = new Clone(gitClonedFolder,
+                                  origin.getRepository().getDirectory().toString(),
+                                  false,
+                                  CredentialsProvider.getDefault(),
+                                  null).execute().get();
 
         assertThat(git).isNotNull();
 
-        assertThat(branchList(git,
-                              ALL)).hasSize(4);
+        assertThat(new ListRefs(git.getRepository()).execute()).hasSize(2);
 
-        assertThat(branchList(git,
-                              ALL).get(0).getName()).isEqualTo("refs/heads/master");
-        assertThat(branchList(git,
-                              ALL).get(1).getName()).isEqualTo("refs/heads/user_branch");
-        assertThat(branchList(git,
-                              ALL).get(2).getName()).isEqualTo("refs/remotes/origin/master");
-        assertThat(branchList(git,
-                              ALL).get(3).getName()).isEqualTo("refs/remotes/origin/user_branch");
+        assertThat(new ListRefs(git.getRepository()).execute().get(0).getName()).isEqualTo("refs/heads/master");
+        assertThat(new ListRefs(git.getRepository()).execute().get(1).getName()).isEqualTo("refs/heads/user_branch");
     }
 
     @Test
-    public void testPathResolve() throws IOException {
+    public void testPathResolve() throws IOException, InvalidRemoteException {
         final File parentFolder = createTempDirectory();
         final File gitFolder = new File(parentFolder,
                                         "mytest.git");
 
-        final Git origin = JGitUtil.newRepository(gitFolder,
-                                                  true);
+        final Git origin = new CreateRepository(gitFolder).execute().get();
 
-        commit(origin,
-               "user_branch",
-               "name",
-               "name@example.com",
-               "commit!",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("path/to/file2.txt",
-                       tempFile("temp2222"));
-               }});
-        commit(origin,
-               "user_branch",
-               "name",
-               "name@example.com",
-               "commit!",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("path/to/file3.txt",
-                       tempFile("temp2222"));
-               }});
+        new Commit(origin,
+                   "user_branch",
+                   "name",
+                   "name@example.com",
+                   "commit!",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("path/to/file2.txt",
+                           tempFile("temp2222"));
+                   }}).execute();
+        new Commit(origin,
+                   "user_branch",
+                   "name",
+                   "name@example.com",
+                   "commit!",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("path/to/file3.txt",
+                           tempFile("temp2222"));
+                   }}).execute();
 
         final File gitClonedFolder = new File(parentFolder,
                                               "myclone.git");
 
-        final Git git = cloneRepository(gitClonedFolder,
-                                        origin.getRepository().getDirectory().toString(),
-                                        true,
-                                        CredentialsProvider.getDefault());
+        final Git git = new Clone(gitClonedFolder,
+                                  origin.getRepository().getDirectory().toString(),
+                                  false,
+                                  CredentialsProvider.getDefault(),
+                                  null).execute().get();
 
-        assertThat(JGitUtil.checkPath(git,
-                                      "user_branch",
-                                      "pathx/").getK1()).isEqualTo(NOT_FOUND);
-        assertThat(JGitUtil.checkPath(git,
-                                      "user_branch",
-                                      "path/to/file2.txt").getK1()).isEqualTo(FILE);
-        assertThat(JGitUtil.checkPath(git,
-                                      "user_branch",
-                                      "path/to").getK1()).isEqualTo(DIRECTORY);
+        assertThat(git.getPathInfo("user_branch",
+                                   "pathx/").getPathType()).isEqualTo(NOT_FOUND);
+        assertThat(git.getPathInfo("user_branch",
+                                   "path/to/file2.txt").getPathType()).isEqualTo(FILE);
+        assertThat(git.getPathInfo("user_branch",
+                                   "path/to").getPathType()).isEqualTo(DIRECTORY);
     }
 
     @Test
-    public void testAmend() throws IOException {
+    public void testAmend() throws IOException, InvalidRemoteException {
         final File parentFolder = createTempDirectory();
         System.out.println("COOL!:" + parentFolder.toString());
         final File gitFolder = new File(parentFolder,
                                         "myxxxtest.git");
 
-        final Git origin = JGitUtil.newRepository(gitFolder,
-                                                  true);
+        final Git origin = new CreateRepository(gitFolder).execute().get();
 
-        commit(origin,
-               "master",
-               "name",
-               "name@example.com",
-               "commit!",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("path/to/file2.txt",
-                       tempFile("tempwdf sdf asdf asd2222"));
-               }});
-        commit(origin,
-               "master",
-               "name",
-               "name@example.com",
-               "commit!",
-               null,
-               null,
-               true,
-               new HashMap<String, File>() {{
-                   put("path/to/file3.txt",
-                       tempFile("temp2x d dasdf asdf 222"));
-               }});
+        new Commit(origin,
+                   "master",
+                   "name",
+                   "name@example.com",
+                   "commit!",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("path/to/file2.txt",
+                           tempFile("tempwdf sdf asdf asd2222"));
+                   }}).execute();
+        new Commit(origin,
+                   "master",
+                   "name",
+                   "name@example.com",
+                   "commit!",
+                   null,
+                   null,
+                   true,
+                   new HashMap<String, File>() {{
+                       put("path/to/file3.txt",
+                           tempFile("temp2x d dasdf asdf 222"));
+                   }}).execute();
 
         final File gitClonedFolder = new File(parentFolder,
                                               "myclone.git");
 
-        final Git git = cloneRepository(gitClonedFolder,
-                                        origin.getRepository().getDirectory().toString(),
-                                        true,
-                                        CredentialsProvider.getDefault());
+        final Git git = new Clone(gitClonedFolder,
+                                  origin.getRepository().getDirectory().toString(),
+                                  false,
+                                  CredentialsProvider.getDefault(),
+                                  null).execute().get();
 
-        assertThat(JGitUtil.checkPath(git,
-                                      "master",
-                                      "pathx/").getK1()).isEqualTo(NOT_FOUND);
-        assertThat(JGitUtil.checkPath(git,
-                                      "master",
-                                      "path/to/file2.txt").getK1()).isEqualTo(FILE);
-        assertThat(JGitUtil.checkPath(git,
-                                      "master",
-                                      "path/to").getK1()).isEqualTo(DIRECTORY);
+        assertThat(git.getPathInfo("master",
+                                   "pathx/").getPathType()).isEqualTo(NOT_FOUND);
+        assertThat(git.getPathInfo("master",
+                                   "path/to/file2.txt").getPathType()).isEqualTo(FILE);
+        assertThat(git.getPathInfo("master",
+                                   "path/to").getPathType()).isEqualTo(DIRECTORY);
     }
 
     @Test
@@ -257,64 +245,66 @@ public class JGitUtilTest extends AbstractTestInfra {
         final File gitFolder = new File(parentFolder,
                                         "mytest.git");
 
-        final Git git = JGitUtil.newRepository(gitFolder,
-                                               true);
+        final Git git = new CreateRepository(gitFolder).execute().get();
 
-        commit(git,
-               "master",
-               "name",
-               "name@example.com",
-               "commit 1",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("path/to/file2.txt",
-                       tempFile("who"));
-               }});
-        commit(git,
-               "master",
-               "name",
-               "name@example.com",
-               "commit 2",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("path/to/file2.txt",
-                       tempFile("you"));
-               }});
-        commit(git,
-               "master",
-               "name",
-               "name@example.com",
-               "commit 3",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("path/to/file2.txt",
-                       tempFile("gonna"));
-               }});
-        commit(git,
-               "master",
-               "name",
-               "name@example.com",
-               "commit 4",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("path/to/file2.txt",
-                       tempFile("call?"));
-               }});
+        new Commit(git,
+                   "master",
+                   "name",
+                   "name@example.com",
+                   "commit 1",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("path/to/file2.txt",
+                           tempFile("who"));
+                   }}).execute();
+        new Commit(git,
+                   "master",
+                   "name",
+                   "name@example.com",
+                   "commit 2",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("path/to/file2.txt",
+                           tempFile("you"));
+                   }}).execute();
+        new Commit(git,
+                   "master",
+                   "name",
+                   "name@example.com",
+                   "commit 3",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("path/to/file2.txt",
+                           tempFile("gonna"));
+                   }}).execute();
+        new Commit(git,
+                   "master",
+                   "name",
+                   "name@example.com",
+                   "commit 4",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("path/to/file2.txt",
+                           tempFile("call?"));
+                   }}).execute();
 
         JGitFileSystem jGitFileSystem = mock(JGitFileSystem.class);
-        when(jGitFileSystem.gitRepo()).thenReturn(git);
+        when(jGitFileSystem.getGit()).thenReturn(git);
 
-        VersionAttributes versionAttributes = JGitUtil.buildVersionAttributes(jGitFileSystem,
-                                                                              "master",
-                                                                              "path/to/file2.txt");
+        final JGitPathImpl path = mock(JGitPathImpl.class);
+        when(path.getFileSystem()).thenReturn(jGitFileSystem);
+        when(path.getRefTree()).thenReturn("master");
+        when(path.getPath()).thenReturn("path/to/file2.txt");
+
+        final VersionAttributes versionAttributes = new JGitVersionAttributeView(path).readAttributes();
 
         List<VersionRecord> records = versionAttributes.history().records();
         assertEquals("commit 1",
@@ -334,31 +324,30 @@ public class JGitUtilTest extends AbstractTestInfra {
         final File gitFolder = new File(parentFolder,
                                         "mytest.git");
 
-        final Git git = JGitUtil.newRepository(gitFolder,
-                                               true);
+        final Git git = new CreateRepository(gitFolder).execute().get();
 
-        final ObjectId oldHead = JGitUtil.getTreeRefObjectId(git.getRepository(),
-                                                             "master");
+        final ObjectId oldHead = new GetTreeFromRef(git,
+                                                    "master").execute();
 
-        commit(git,
-               "master",
-               "name",
-               "name@example.com",
-               "commit 1",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("path/to/file.txt",
-                       tempFile("who"));
-               }});
+        new Commit(git,
+                   "master",
+                   "name",
+                   "name@example.com",
+                   "commit 1",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("path/to/file.txt",
+                           tempFile("who"));
+                   }}).execute();
 
-        final ObjectId newHead = JGitUtil.getTreeRefObjectId(git.getRepository(),
-                                                             "master");
+        final ObjectId newHead = new GetTreeFromRef(git,
+                                                    "master").execute();
 
-        List<DiffEntry> diff = JGitUtil.getDiff(git.getRepository(),
-                                                oldHead,
-                                                newHead);
+        List<DiffEntry> diff = new ListDiffs(git,
+                                             oldHead,
+                                             newHead).execute();
         assertNotNull(diff);
         assertFalse(diff.isEmpty());
         assertEquals(ChangeType.ADD,

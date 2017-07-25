@@ -33,8 +33,9 @@ import static org.eclipse.jgit.lib.Constants.MASTER;
 public class JGitPathImpl extends AbstractPath<JGitFileSystem>
         implements SegmentedPath {
 
-    public final static String DEFAULT_REF_TREE = MASTER;
     private static final int BUFFER_SIZE = 8192;
+    public final static String DEFAULT_REF_TREE = MASTER;
+
     private final ObjectId objectId;
 
     private JGitPathImpl(final JGitFileSystem fs,
@@ -51,89 +52,6 @@ public class JGitPathImpl extends AbstractPath<JGitFileSystem>
               isRealPath,
               isNormalized);
         this.objectId = id;
-    }
-
-    public static JGitPathImpl create(final JGitFileSystem fs,
-                                      final String path,
-                                      final String host,
-                                      final ObjectId id,
-                                      boolean isRealPath) {
-        return new JGitPathImpl(fs,
-                                setupPath(path),
-                                setupHost(host),
-                                id,
-                                false,
-                                isRealPath,
-                                false);
-    }
-
-    public static JGitPathImpl create(final JGitFileSystem fs,
-                                      final String path,
-                                      final String host,
-                                      boolean isRealPath) {
-        return new JGitPathImpl(fs,
-                                setupPath(path),
-                                setupHost(host),
-                                null,
-                                false,
-                                isRealPath,
-                                false);
-    }
-
-    public static JGitPathImpl createRoot(final JGitFileSystem fs,
-                                          final String path,
-                                          final String host,
-                                          boolean isRealPath) {
-        return new JGitPathImpl(fs,
-                                setupPath(path),
-                                setupHost(host),
-                                null,
-                                true,
-                                isRealPath,
-                                true);
-    }
-
-    public static JGitPathImpl createFSDirect(final JGitFileSystem fs) {
-        return new JGitPathImpl(fs,
-                                null,
-                                null,
-                                null,
-                                true,
-                                true,
-                                true);
-    }
-
-    private static String setupHost(final String host) {
-        if (!host.contains("@")) {
-            return DEFAULT_REF_TREE + "@" + host;
-        }
-
-        return host;
-    }
-
-    private static String setupPath(final String path) {
-        if (path.isEmpty()) {
-            return "/";
-        }
-        return path;
-    }
-
-    private static long internalCopy(InputStream in,
-                                     OutputStream out) {
-        long read = 0L;
-        byte[] buf = new byte[BUFFER_SIZE];
-        int n;
-        try {
-            while ((n = in.read(buf)) > 0) {
-                out.write(buf,
-                          0,
-                          n);
-                read += n;
-            }
-        } catch (java.io.IOException e) {
-            throw new IOException(e);
-        }
-        return read;
     }
 
     @Override
@@ -172,9 +90,9 @@ public class JGitPathImpl extends AbstractPath<JGitFileSystem>
 
     @Override
     protected Path newRoot(final JGitFileSystem fs,
-                           String substring,
+                           final String substring,
                            final String host,
-                           boolean realPath) {
+                           final boolean realPath) {
         return new JGitPathImpl(fs,
                                 substring,
                                 host,
@@ -197,6 +115,56 @@ public class JGitPathImpl extends AbstractPath<JGitFileSystem>
                                 false,
                                 isRealPath,
                                 isNormalized);
+    }
+
+    public static JGitPathImpl create(final JGitFileSystem fs,
+                                      final String path,
+                                      final String host,
+                                      final ObjectId id,
+                                      final boolean isRealPath) {
+        return new JGitPathImpl(fs,
+                                setupPath(path),
+                                setupHost(host),
+                                id,
+                                false,
+                                isRealPath,
+                                false);
+    }
+
+    public static JGitPathImpl create(final JGitFileSystem fs,
+                                      final String path,
+                                      final String host,
+                                      final boolean isRealPath) {
+        return new JGitPathImpl(fs,
+                                setupPath(path),
+                                setupHost(host),
+                                null,
+                                false,
+                                isRealPath,
+                                false);
+    }
+
+    public static JGitPathImpl createRoot(final JGitFileSystem fs,
+                                          final String path,
+                                          final String host,
+                                          final boolean isRealPath) {
+        return new JGitPathImpl(fs,
+                                setupPath(path),
+                                setupHost(host),
+                                null,
+                                true,
+                                isRealPath,
+                                true);
+    }
+
+    public static JGitPathImpl createFSDirect(final JGitFileSystem fs) {
+        return new JGitPathImpl(fs,
+                                null,
+                                null,
+                                null,
+                                true,
+                                true,
+                                true);
     }
 
     @Override
@@ -225,6 +193,21 @@ public class JGitPathImpl extends AbstractPath<JGitFileSystem>
         return file;
     }
 
+    private static String setupHost(final String host) {
+        if (!host.contains("@")) {
+            return DEFAULT_REF_TREE + "@" + host;
+        }
+
+        return host;
+    }
+
+    private static String setupPath(final String path) {
+        if (path.isEmpty()) {
+            return "/";
+        }
+        return path;
+    }
+
     public String getRefTree() {
         return host.substring(0,
                               host.indexOf("@"));
@@ -242,6 +225,24 @@ public class JGitPathImpl extends AbstractPath<JGitFileSystem>
         } catch (IOException ioe) {
         }
         return false;
+    }
+
+    private static long internalCopy(final InputStream in,
+                                     final OutputStream out) {
+        long read = 0L;
+        byte[] buf = new byte[BUFFER_SIZE];
+        int n;
+        try {
+            while ((n = in.read(buf)) > 0) {
+                out.write(buf,
+                          0,
+                          n);
+                read += n;
+            }
+        } catch (java.io.IOException e) {
+            throw new IOException(e);
+        }
+        return read;
     }
 
     @Override

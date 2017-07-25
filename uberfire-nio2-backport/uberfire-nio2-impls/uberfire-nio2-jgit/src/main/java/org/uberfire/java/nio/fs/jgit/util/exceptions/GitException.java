@@ -18,12 +18,12 @@ package org.uberfire.java.nio.fs.jgit.util.exceptions;
 
 public class GitException extends RuntimeException {
 
-    public GitException(String message) {
+    public GitException(final String message) {
         super(message);
     }
 
-    public GitException(String message,
-                        Throwable t) {
+    public GitException(final String message,
+                        final Throwable t) {
         super(message,
               t);
     }

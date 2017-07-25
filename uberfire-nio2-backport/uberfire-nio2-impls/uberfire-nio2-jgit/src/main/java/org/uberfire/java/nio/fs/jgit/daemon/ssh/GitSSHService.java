@@ -23,15 +23,12 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
-import org.apache.sshd.SshServer;
-import org.apache.sshd.common.util.SecurityUtils;
-import org.apache.sshd.server.Command;
-import org.apache.sshd.server.CommandFactory;
-import org.apache.sshd.server.PasswordAuthenticator;
-import org.apache.sshd.server.command.UnknownCommand;
+import org.apache.sshd.common.util.security.SecurityUtils;
+import org.apache.sshd.server.SshServer;
+import org.apache.sshd.server.auth.pubkey.CachingPublicKeyAuthenticator;
 import org.apache.sshd.server.keyprovider.AbstractGeneratorHostKeyProvider;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
-import org.apache.sshd.server.session.ServerSession;
+import org.apache.sshd.server.scp.UnknownCommand;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.security.FileSystemAuthenticator;
@@ -46,7 +43,6 @@ public class GitSSHService {
     private final SshServer sshd = SshServer.setUpDefaultServer();
     private FileSystemAuthenticator fileSystemAuthenticator;
     private FileSystemAuthorizer fileSystemAuthorizer;
-    private ExecutorService executorService;
 
     public void setup(final File certDir,
                       final InetSocketAddress inetSocketAddress,
@@ -65,10 +61,6 @@ public class GitSSHService {
                      receivePackFactory);
         checkNotNull("repositoryResolver",
                      repositoryResolver);
-        checkNotNull("executorService",
-                     executorService);
-
-        this.executorService = executorService;
 
         sshd.getProperties().put(SshServer.IDLE_TIMEOUT,
                                  sshIdleTimeout);
@@ -83,7 +75,7 @@ public class GitSSHService {
         }
 
         final AbstractGeneratorHostKeyProvider keyPairProvider = new SimpleGeneratorHostKeyProvider(new File(certDir,
-                                                                                                             "hostkey.ser").getAbsolutePath());
+                                                                                                             "hostkey.ser"));
 
         try {
             SecurityUtils.getKeyPairGenerator(algorithm);
@@ -95,46 +87,39 @@ public class GitSSHService {
         }
 
         sshd.setKeyPairProvider(keyPairProvider);
-        sshd.setCommandFactory(new CommandFactory() {
-            @Override
-            public Command createCommand(String command) {
-                if (command.startsWith("git-upload-pack")) {
-                    return new GitUploadCommand(command,
-                                                repositoryResolver,
-                                                getAuthorizationManager(),
-                                                executorService);
-                } else if (command.startsWith("git-receive-pack")) {
-                    return new GitReceiveCommand(command,
-                                                 repositoryResolver,
-                                                 getAuthorizationManager(),
-                                                 receivePackFactory,
-                                                 executorService);
-                } else {
-                    return new UnknownCommand(command);
-                }
+        sshd.setCommandFactory(command -> {
+            if (command.startsWith("git-upload-pack")) {
+                return new GitUploadCommand(command,
+                                            repositoryResolver,
+                                            getAuthorizationManager(),
+                                            executorService);
+            } else if (command.startsWith("git-receive-pack")) {
+                return new GitReceiveCommand(command,
+                                             repositoryResolver,
+                                             getAuthorizationManager(),
+                                             receivePackFactory,
+                                             executorService);
+            } else {
+                return new UnknownCommand(command);
             }
         });
-        sshd.setPasswordAuthenticator(new PasswordAuthenticator() {
-            @Override
-            public boolean authenticate(final String username,
-                                        final String password,
-                                        final ServerSession session) {
-                FileSystemUser user = getUserPassAuthenticator().authenticate(username,
-                                                                              password);
-                if (user == null) {
-                    return false;
-                }
-                session.setAttribute(BaseGitCommand.SUBJECT_KEY,
-                                     user);
-                return true;
+        sshd.setPublickeyAuthenticator(new CachingPublicKeyAuthenticator((username, key, session) -> false));
+        sshd.setPasswordAuthenticator((username, password, session) -> {
+            final FileSystemUser user = getUserPassAuthenticator().authenticate(username,
+                                                                                password);
+            if (user == null) {
+                return false;
             }
+            session.setAttribute(BaseGitCommand.SUBJECT_KEY,
+                                 user);
+            return true;
         });
     }
 
     public void stop() {
         try {
             sshd.stop(true);
-        } catch (final InterruptedException ignored) {
+        } catch (IOException ignored) {
         }
     }
 
@@ -155,7 +140,7 @@ public class GitSSHService {
         return sshd;
     }
 
-    public Map<String, String> getProperties() {
+    public Map<String, Object> getProperties() {
         return Collections.unmodifiableMap(sshd.getProperties());
     }
 

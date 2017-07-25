@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.java.nio.fs.jgit.util;
+package org.uberfire.java.nio.fs.jgit.util.commands;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -33,17 +33,18 @@ import org.eclipse.jgit.lib.NullProgressMonitor;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.ProgressMonitor;
-import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.eclipse.jgit.util.io.NullOutputStream;
+import org.uberfire.java.nio.fs.jgit.util.Git;
 
 import static org.eclipse.jgit.lib.Constants.HEAD;
 
 public class CustomDiffCommand extends GitCommand<List<DiffEntry>> {
 
+    private final Git git;
     private AbstractTreeIterator oldTree;
 
     private AbstractTreeIterator newTree;
@@ -67,8 +68,9 @@ public class CustomDiffCommand extends GitCommand<List<DiffEntry>> {
     /**
      * @param repo
      */
-    protected CustomDiffCommand(Repository repo) {
-        super(repo);
+    protected CustomDiffCommand(Git git) {
+        super(git.getRepository());
+        this.git = git;
     }
 
     /**
@@ -91,7 +93,7 @@ public class CustomDiffCommand extends GitCommand<List<DiffEntry>> {
         try {
             if (cached) {
                 if (oldTree == null) {
-                    ObjectId head = repo.resolve(HEAD + "^{tree}"); //$NON-NLS-1$
+                    ObjectId head = git.getTreeFromRef(HEAD);
                     if (head == null) {
                         throw new NoHeadException(JGitText.get().cannotReadTree);
                     }

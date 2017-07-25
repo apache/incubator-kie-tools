@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import org.apache.sshd.SshServer;
+import org.apache.sshd.server.SshServer;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
 import org.eclipse.jgit.util.FileUtils;
 import org.junit.AfterClass;

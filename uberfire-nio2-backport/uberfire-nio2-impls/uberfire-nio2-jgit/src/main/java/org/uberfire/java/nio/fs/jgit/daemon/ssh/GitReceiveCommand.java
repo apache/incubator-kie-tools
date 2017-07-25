@@ -20,13 +20,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.ExecutorService;
 
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.ReceivePack;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
 import org.uberfire.java.nio.security.FileSystemUser;
 
@@ -64,9 +62,11 @@ public class GitReceiveCommand extends BaseGitCommand {
             rp.receive(in,
                        out,
                        err);
-            JGitUtil.gc(new Git(repository));
-            fileSystem.resetCommitCount();
-        } catch (Exception ex) {
+            rp.setPostReceiveHook((rp1, commands) -> {
+                fileSystem.getGit().gc();
+                fileSystem.resetCommitCount();
+            });
+        } catch (final Exception ignored) {
         }
     }
 }

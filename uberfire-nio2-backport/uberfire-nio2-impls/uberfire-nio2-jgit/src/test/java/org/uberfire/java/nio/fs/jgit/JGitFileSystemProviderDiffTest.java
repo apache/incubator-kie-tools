@@ -23,18 +23,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.base.FileDiff;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
+import org.uberfire.java.nio.fs.jgit.util.Git;
+import org.uberfire.java.nio.fs.jgit.util.GitImpl;
+import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
+import org.uberfire.java.nio.fs.jgit.util.commands.CreateBranch;
+import org.uberfire.java.nio.fs.jgit.util.commands.CreateRepository;
 
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.commit;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.createBranch;
 
 public class JGitFileSystemProviderDiffTest extends AbstractTestInfra {
 
@@ -47,78 +48,77 @@ public class JGitFileSystemProviderDiffTest extends AbstractTestInfra {
 
         final File gitSource = new File(parentFolder,
                                         "repo.git");
-        final Git origin = JGitUtil.newRepository(gitSource,
-                                                  true);
+        final Git origin = new CreateRepository(gitSource).execute().get();
         final Repository gitRepo = origin.getRepository();
 
-        commit(origin,
-               "master",
-               "name",
-               "name@example.com",
-               "master-1",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("file1.txt",
-                       tempFile("temp1\ntemp1\ntemp3\nmiddle\nmoremiddle\nmoremiddle\nmoremiddle\nother\n"));
-               }});
+        new Commit(origin,
+                   "master",
+                   "name",
+                   "name@example.com",
+                   "master-1",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file1.txt",
+                           tempFile("temp1\ntemp1\ntemp3\nmiddle\nmoremiddle\nmoremiddle\nmoremiddle\nother\n"));
+                   }}).execute();
 
-        createBranch(origin,
-                     "master",
-                     "develop");
+        new CreateBranch((GitImpl) origin,
+                         "master",
+                         "develop").execute();
 
-        commit(origin,
-               "develop",
-               "name",
-               "name@example.com",
-               "develop-1",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("file1.txt",
-                       tempFile("temp1\ntemp2\nmiddle\nmoremiddle\nmoremiddle\nmoremiddle\n"));
-               }});
+        new Commit(origin,
+                   "develop",
+                   "name",
+                   "name@example.com",
+                   "develop-1",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file1.txt",
+                           tempFile("temp1\ntemp2\nmiddle\nmoremiddle\nmoremiddle\nmoremiddle\n"));
+                   }}).execute();
 
-        commit(origin,
-               "develop",
-               "name",
-               "name@example.com",
-               "develop-2",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("file3.txt",
-                       tempFile("temp3"));
-               }});
+        new Commit(origin,
+                   "develop",
+                   "name",
+                   "name@example.com",
+                   "develop-2",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file3.txt",
+                           tempFile("temp3"));
+                   }}).execute();
 
-        commit(origin,
-               "develop",
-               "name",
-               "name@example.com",
-               "develop-3",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("file4.txt",
-                       tempFile("temp4"));
-               }});
+        new Commit(origin,
+                   "develop",
+                   "name",
+                   "name@example.com",
+                   "develop-3",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file4.txt",
+                           tempFile("temp4"));
+                   }}).execute();
 
-        commit(origin,
-               "develop",
-               "name",
-               "name@example.com",
-               "develop-4",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("file5.txt",
-                       tempFile("temp5"));
-               }});
+        new Commit(origin,
+                   "develop",
+                   "name",
+                   "name@example.com",
+                   "develop-4",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file5.txt",
+                           tempFile("temp5"));
+                   }}).execute();
 
         final URI newRepo = URI.create("git://diff-repo");
 
@@ -146,39 +146,38 @@ public class JGitFileSystemProviderDiffTest extends AbstractTestInfra {
 
         final File gitSource = new File(parentFolder,
                                         "repo.git");
-        final Git origin = JGitUtil.newRepository(gitSource,
-                                                  true);
+        final Git origin = new CreateRepository(gitSource).execute().get();
         final Repository gitRepo = origin.getRepository();
 
-        commit(origin,
-               "master",
-               "name",
-               "name@example.com",
-               "master-1",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("file1.txt",
-                       tempFile("temp1\ntemp1\ntemp3\nmiddle\nmoremiddle\nmoremiddle\nmoremiddle\nother\n"));
-               }});
+        new Commit(origin,
+                   "master",
+                   "name",
+                   "name@example.com",
+                   "master-1",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file1.txt",
+                           tempFile("temp1\ntemp1\ntemp3\nmiddle\nmoremiddle\nmoremiddle\nmoremiddle\nother\n"));
+                   }}).execute();
 
-        commit(origin,
-               "master",
-               "name",
-               "name@example.com",
-               "develop-1",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("file1.txt",
-                       tempFile("temp1\ntemp2\nmiddle\nmoremiddle\nmoremiddle\nmoremiddle\n"));
-               }});
+        new Commit(origin,
+                   "master",
+                   "name",
+                   "name@example.com",
+                   "develop-1",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file1.txt",
+                           tempFile("temp1\ntemp2\nmiddle\nmoremiddle\nmoremiddle\nmoremiddle\n"));
+                   }}).execute();
 
-        createBranch(origin,
-                     "master",
-                     "develop");
+        new CreateBranch((GitImpl) origin,
+                         "master",
+                         "develop").execute();
 
         final URI newRepo = URI.create("git://diff-repo");
 

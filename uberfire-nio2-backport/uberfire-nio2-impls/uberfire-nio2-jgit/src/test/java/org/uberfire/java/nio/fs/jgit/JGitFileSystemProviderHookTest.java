@@ -76,7 +76,7 @@ public class JGitFileSystemProviderHookTest extends AbstractTestInfra {
         assertThat(fs).isNotNull();
 
         if (fs instanceof JGitFileSystem) {
-            File[] hooks = new File(((JGitFileSystem) fs).gitRepo().getRepository().getDirectory(),
+            File[] hooks = new File(((JGitFileSystem) fs).getGit().getRepository().getDirectory(),
                                     "hooks").listFiles();
             assertThat(hooks).isNotEmpty().isNotNull();
             assertThat(hooks.length).isEqualTo(2);

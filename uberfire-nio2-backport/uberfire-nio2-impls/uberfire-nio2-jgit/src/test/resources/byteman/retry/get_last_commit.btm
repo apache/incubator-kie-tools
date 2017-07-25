@@ -4,8 +4,8 @@
 #
 
 RULE increment counter testRetryGetLastCommit
-CLASS org.eclipse.jgit.revwalk.RevWalk
-METHOD next
+CLASS org.eclipse.jgit.revwalk.RevCommit
+METHOD parse(byte[])
 AT ENTRY
 IF TRUE
 DO
@@ -13,10 +13,10 @@ DO
 ENDRULE
 
 RULE catch counter testRetryGetLastCommit
-CLASS org.eclipse.jgit.revwalk.RevWalk
-METHOD next
+CLASS org.eclipse.jgit.revwalk.RevCommit
+METHOD parse(byte[])
 AT EXIT
-IF readCounter("testRetryGetLastCommit") > 4
+IF readCounter("testRetryGetLastCommit") > 7 #each commit executes the RevCommit.parse too
 DO
    throw RuntimeException("almost random failure");
 ENDRULE

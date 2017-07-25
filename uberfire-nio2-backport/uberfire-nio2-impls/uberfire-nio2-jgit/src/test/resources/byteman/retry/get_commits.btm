@@ -16,7 +16,7 @@ RULE catch counter testRetryGetCommits
 CLASS org.eclipse.jgit.revwalk.RevWalk
 METHOD markStart(org.eclipse.jgit.revwalk.RevCommit)
 AT EXIT
-IF readCounter("testRetryGetCommits") > 4
+IF readCounter("testRetryGetCommits") > 7
 DO
    throw RuntimeException("almost random failure");
 ENDRULE

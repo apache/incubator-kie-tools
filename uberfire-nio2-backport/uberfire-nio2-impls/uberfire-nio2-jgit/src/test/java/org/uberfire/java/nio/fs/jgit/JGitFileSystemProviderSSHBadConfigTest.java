@@ -19,7 +19,7 @@ package org.uberfire.java.nio.fs.jgit;
 import java.io.IOException;
 import java.util.Map;
 
-import org.apache.sshd.SshServer;
+import org.apache.sshd.server.SshServer;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

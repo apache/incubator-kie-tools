@@ -39,14 +39,23 @@ public abstract class DaemonService {
     DaemonService(final String cmdName,
                   final String cfgName) {
         command = cmdName.startsWith("git-") ? cmdName : "git-" + cmdName;
-        configKey = new SectionParser<ServiceConfig>() {
-            public ServiceConfig parse(final Config cfg) {
-                return new ServiceConfig(DaemonService.this,
-                                         cfg,
-                                         cfgName);
-            }
-        };
+        configKey = cfg -> new ServiceConfig(DaemonService.this,
+                                             cfg,
+                                             cfgName);
         overridable = true;
+    }
+
+    private static class ServiceConfig {
+
+        final boolean enabled;
+
+        ServiceConfig(final DaemonService service,
+                      final Config cfg,
+                      final String name) {
+            enabled = cfg.getBoolean("daemon",
+                                     name,
+                                     service.isEnabled());
+        }
     }
 
     /**
@@ -136,17 +145,4 @@ public abstract class DaemonService {
                           Repository db)
             throws IOException, ServiceNotEnabledException,
             ServiceNotAuthorizedException;
-
-    private static class ServiceConfig {
-
-        final boolean enabled;
-
-        ServiceConfig(final DaemonService service,
-                      final Config cfg,
-                      final String name) {
-            enabled = cfg.getBoolean("daemon",
-                                     name,
-                                     service.isEnabled());
-        }
-    }
 }

@@ -19,10 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import org.apache.sshd.common.Session;
 import org.apache.sshd.common.channel.ChannelOutputStream;
+import org.apache.sshd.common.session.Session;
 import org.apache.sshd.server.Command;
 import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.ExitCallback;
@@ -34,7 +33,6 @@ import org.eclipse.jgit.transport.ServiceMayNotContinueException;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.uberfire.commons.async.DescriptiveRunnable;
-import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
@@ -106,7 +104,7 @@ public abstract class BaseGitCommand implements Command,
 
     @Override
     public void start(final Environment env) throws IOException {
-        this.executorService.execute(new DescriptiveRunnable() {
+        executorService.execute(new DescriptiveRunnable() {
             @Override
             public String getDescription() {
                 return "Git Command [" + getClass().getName() + "]";

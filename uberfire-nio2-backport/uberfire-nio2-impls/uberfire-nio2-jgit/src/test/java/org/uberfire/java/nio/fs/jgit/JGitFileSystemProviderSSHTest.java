@@ -19,20 +19,21 @@ package org.uberfire.java.nio.fs.jgit;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.sshd.SshServer;
+import org.apache.sshd.server.SshServer;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.junit.Assume;
 import org.junit.Test;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
 import org.uberfire.java.nio.security.FileSystemAuthenticator;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
 import org.uberfire.java.nio.security.FileSystemUser;
 
 import static org.junit.Assert.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.commit;
 
 public class JGitFileSystemProviderSSHTest extends AbstractTestInfra {
 
@@ -55,7 +56,8 @@ public class JGitFileSystemProviderSSHTest extends AbstractTestInfra {
 
     @Test
     public void testSSHPostReceiveHook() throws IOException {
-        Assume.assumeFalse( "UF-511", System.getProperty( "java.vendor" ).equals( "IBM Corporation" ) );
+        Assume.assumeFalse("UF-511",
+                           System.getProperty("java.vendor").equals("IBM Corporation"));
         //Setup Authorization/Authentication
         provider.setAuthenticator(new FileSystemAuthenticator() {
             @Override
@@ -85,24 +87,21 @@ public class JGitFileSystemProviderSSHTest extends AbstractTestInfra {
         //Setup origin
         final URI originRepo = URI.create("git://repo");
         final JGitFileSystem origin = (JGitFileSystem) provider.newFileSystem(originRepo,
-                                                                              new HashMap<String, Object>() {{
-                                                                                  put("listMode",
-                                                                                      "ALL");
-                                                                              }});
+                                                                              Collections.emptyMap());
 
         //Write a file to origin that we won't amend in the clone
-        commit(origin.gitRepo(),
-               "master",
-               "user1",
-               "user1@example.com",
-               "commitx",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {{
-                   put("file-name.txt",
-                       tempFile("temp1"));
-               }});
+        new Commit(origin.getGit(),
+                   "master",
+                   "user1",
+                   "user1@example.com",
+                   "commitx",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file-name.txt",
+                           tempFile("temp1"));
+                   }}).execute();
 
         //Setup clone
         JGitFileSystem clone;

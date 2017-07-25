@@ -70,33 +70,33 @@ public class JGitFSPath implements FSPath {
     }
 
     @Override
-    public Path getName(int index) throws IllegalArgumentException {
+    public Path getName(final int index) throws IllegalArgumentException {
         return null;
     }
 
     @Override
-    public Path subpath(int beginIndex,
-                        int endIndex) throws IllegalArgumentException {
+    public Path subpath(final int beginIndex,
+                        final int endIndex) throws IllegalArgumentException {
         return null;
     }
 
     @Override
-    public boolean startsWith(Path other) {
+    public boolean startsWith(final Path other) {
         return false;
     }
 
     @Override
-    public boolean startsWith(String other) throws InvalidPathException {
+    public boolean startsWith(final String other) throws InvalidPathException {
         return false;
     }
 
     @Override
-    public boolean endsWith(Path other) {
+    public boolean endsWith(final Path other) {
         return false;
     }
 
     @Override
-    public boolean endsWith(String other) throws InvalidPathException {
+    public boolean endsWith(final String other) throws InvalidPathException {
         return false;
     }
 
@@ -106,27 +106,27 @@ public class JGitFSPath implements FSPath {
     }
 
     @Override
-    public Path resolve(Path other) {
+    public Path resolve(final Path other) {
         return null;
     }
 
     @Override
-    public Path resolve(String other) throws InvalidPathException {
+    public Path resolve(final String other) throws InvalidPathException {
         return null;
     }
 
     @Override
-    public Path resolveSibling(Path other) {
+    public Path resolveSibling(final Path other) {
         return null;
     }
 
     @Override
-    public Path resolveSibling(String other) throws InvalidPathException {
+    public Path resolveSibling(final String other) throws InvalidPathException {
         return null;
     }
 
     @Override
-    public Path relativize(Path other) throws IllegalArgumentException {
+    public Path relativize(final Path other) throws IllegalArgumentException {
         return null;
     }
 
@@ -141,7 +141,7 @@ public class JGitFSPath implements FSPath {
     }
 
     @Override
-    public Path toRealPath(LinkOption... options) throws IOException, SecurityException {
+    public Path toRealPath(final LinkOption... options) throws IOException, SecurityException {
         return this;
     }
 
@@ -151,7 +151,7 @@ public class JGitFSPath implements FSPath {
     }
 
     @Override
-    public int compareTo(Path path) {
+    public int compareTo(final Path path) {
         return 0;
     }
 
@@ -161,15 +161,15 @@ public class JGitFSPath implements FSPath {
     }
 
     @Override
-    public WatchKey register(WatchService watcher,
-                             WatchEvent.Kind<?>[] events,
-                             WatchEvent.Modifier... modifiers) throws UnsupportedOperationException, IllegalArgumentException, ClosedWatchServiceException, IOException, SecurityException {
+    public WatchKey register(final WatchService watcher,
+                             final WatchEvent.Kind<?>[] events,
+                             final WatchEvent.Modifier... modifiers) throws UnsupportedOperationException, IllegalArgumentException, ClosedWatchServiceException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public WatchKey register(WatchService watcher,
-                             WatchEvent.Kind<?>... events) throws UnsupportedOperationException, IllegalArgumentException, ClosedWatchServiceException, IOException, SecurityException {
+    public WatchKey register(final WatchService watcher,
+                             final WatchEvent.Kind<?>... events) throws UnsupportedOperationException, IllegalArgumentException, ClosedWatchServiceException, IOException, SecurityException {
         return null;
     }
 }

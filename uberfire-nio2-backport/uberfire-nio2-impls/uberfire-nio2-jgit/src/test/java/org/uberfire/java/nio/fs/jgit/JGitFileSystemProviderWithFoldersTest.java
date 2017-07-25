@@ -30,6 +30,7 @@ import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.fs.jgit.util.GitImpl;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -74,7 +75,7 @@ public class JGitFileSystemProviderWithFoldersTest extends AbstractTestInfra {
                             "test/old" + ".git").exists()).isTrue();
 
         int commitsCount = 0;
-        for (RevCommit com : fs.gitRepo().log().all().call()) {
+        for (RevCommit com : ((GitImpl) fs.getGit())._log().all().call()) {
             commitsCount++;
         }
     }

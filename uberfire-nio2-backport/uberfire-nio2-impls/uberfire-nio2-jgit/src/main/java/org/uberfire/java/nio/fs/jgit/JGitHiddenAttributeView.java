@@ -19,8 +19,9 @@ package org.uberfire.java.nio.fs.jgit;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.attributes.HiddenAttributeView;
 import org.uberfire.java.nio.base.attributes.HiddenAttributes;
+import org.uberfire.java.nio.base.attributes.HiddenAttributesImpl;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
-import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
+import org.uberfire.java.nio.fs.jgit.daemon.filters.HiddenBranchRefFilter;
 
 /**
  * This is the JGit implementation of the {@link HiddenAttributeView}.
@@ -39,9 +40,9 @@ public class JGitHiddenAttributeView extends HiddenAttributeView<JGitPathImpl> {
     @Override
     public HiddenAttributes readAttributes() throws IOException {
         if (attrs == null) {
-            attrs = JGitUtil.buildHiddenAttributes(path.getFileSystem(),
-                                                   path.getRefTree(),
-                                                   path.getPath());
+            attrs = buildAttrs(path.getFileSystem(),
+                               path.getRefTree(),
+                               path.getPath());
         }
         return attrs;
     }
@@ -49,5 +50,12 @@ public class JGitHiddenAttributeView extends HiddenAttributeView<JGitPathImpl> {
     @Override
     public Class<? extends BasicFileAttributeView>[] viewTypes() {
         return new Class[]{HiddenAttributeView.class, JGitVersionAttributeView.class};
+    }
+
+    private HiddenAttributes buildAttrs(final JGitFileSystem fileSystem,
+                                        final String refTree,
+                                        final String path) {
+        return new HiddenAttributesImpl(new JGitBasicAttributeView(this.path).readAttributes(),
+                                        HiddenBranchRefFilter.isHidden(refTree));
     }
 }

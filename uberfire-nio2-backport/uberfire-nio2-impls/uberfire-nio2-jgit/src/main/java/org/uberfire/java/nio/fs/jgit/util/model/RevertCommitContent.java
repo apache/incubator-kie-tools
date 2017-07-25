@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package org.uberfire.java.nio.fs.jgit.util;
+package org.uberfire.java.nio.fs.jgit.util.model;
 
-import java.util.Map;
+public class RevertCommitContent implements CommitContent {
 
-public class MoveCommitContent implements CommitContent {
+    private final String refTree;
 
-    private final Map<String, String> content;
-
-    public MoveCommitContent(Map<String, String> content) {
-        this.content = content;
+    public RevertCommitContent(final String refTree) {
+        this.refTree = refTree;
     }
 
-    public Map<String, String> getContent() {
-        return content;
+    public String getRefTree() {
+        return refTree;
     }
 }

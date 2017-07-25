@@ -21,13 +21,14 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.util.List;
 
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.junit.Test;
 import org.uberfire.java.nio.base.options.MergeCopyOption;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
+import org.uberfire.java.nio.fs.jgit.util.Git;
+import org.uberfire.java.nio.fs.jgit.util.commands.GetTreeFromRef;
+import org.uberfire.java.nio.fs.jgit.util.commands.ListDiffs;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -73,12 +74,13 @@ public class JGitFileSystemProviderMergeTest extends AbstractTestInfra {
                       master,
                       new MergeCopyOption());
 
-        final Git gitRepo = ((JGitFileSystem) master.getFileSystem()).gitRepo();
-        final List<DiffEntry> result = JGitUtil.getDiff(gitRepo.getRepository(),
-                                                        JGitUtil.getTreeRefObjectId(gitRepo.getRepository(),
-                                                                                    "master").toObjectId(),
-                                                        JGitUtil.getTreeRefObjectId(gitRepo.getRepository(),
-                                                                                    "user_branch").toObjectId());
+        final Git gitRepo = ((JGitFileSystem) master.getFileSystem()).getGit();
+
+        final List<DiffEntry> result = new ListDiffs(gitRepo,
+                                                     new GetTreeFromRef(gitRepo,
+                                                                        "master").execute(),
+                                                     new GetTreeFromRef(gitRepo,
+                                                                        "user_branch").execute()).execute();
 
         assertThat(result.size()).isEqualTo(0);
     }
@@ -176,12 +178,12 @@ public class JGitFileSystemProviderMergeTest extends AbstractTestInfra {
                       master,
                       new MergeCopyOption());
 
-        final Git gitRepo = ((JGitFileSystem) master.getFileSystem()).gitRepo();
-        final List<DiffEntry> result = JGitUtil.getDiff(gitRepo.getRepository(),
-                                                        JGitUtil.getTreeRefObjectId(gitRepo.getRepository(),
-                                                                                    "master").toObjectId(),
-                                                        JGitUtil.getTreeRefObjectId(gitRepo.getRepository(),
-                                                                                    "user_branch").toObjectId());
+        final Git gitRepo = ((JGitFileSystem) master.getFileSystem()).getGit();
+        final List<DiffEntry> result = new ListDiffs(gitRepo,
+                                                     new GetTreeFromRef(gitRepo,
+                                                                        "master").execute(),
+                                                     new GetTreeFromRef(gitRepo,
+                                                                        "user_branch").execute()).execute();
 
         assertThat(result.size()).isEqualTo(0);
     }

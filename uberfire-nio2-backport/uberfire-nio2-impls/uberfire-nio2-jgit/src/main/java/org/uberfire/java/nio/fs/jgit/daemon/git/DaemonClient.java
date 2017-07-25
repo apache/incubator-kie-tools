@@ -42,6 +42,10 @@ public class DaemonClient {
         daemon = d;
     }
 
+    void setRemoteAddress(final InetAddress ia) {
+        peer = ia;
+    }
+
     /**
      * @return the daemon which spawned this client.
      */
@@ -54,10 +58,6 @@ public class DaemonClient {
      */
     public InetAddress getRemoteAddress() {
         return peer;
-    }
-
-    void setRemoteAddress(final InetAddress ia) {
-        peer = ia;
     }
 
     /**

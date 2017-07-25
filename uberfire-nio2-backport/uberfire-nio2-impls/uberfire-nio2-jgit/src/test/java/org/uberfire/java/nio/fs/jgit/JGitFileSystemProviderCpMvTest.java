@@ -35,11 +35,6 @@ import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrow
 
 public class JGitFileSystemProviderCpMvTest extends AbstractTestInfra {
 
-    static String convertStreamToString(java.io.InputStream is) {
-        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
-    }
-
     @Test
     public void testCopyBranches() throws IOException {
         final URI newRepo = URI.create("git://copybranch-test-repo");
@@ -581,5 +576,10 @@ public class JGitFileSystemProviderCpMvTest extends AbstractTestInfra {
             final String result = convertStreamToString(provider.newInputStream(provider.getPath(URI.create("git://other_branch2@cherrypick-test-repo/myfile1.txt"))));
             assertThat(result).isEqualTo(cherryPickContent2);
         }
+    }
+
+    static String convertStreamToString(java.io.InputStream is) {
+        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
     }
 }

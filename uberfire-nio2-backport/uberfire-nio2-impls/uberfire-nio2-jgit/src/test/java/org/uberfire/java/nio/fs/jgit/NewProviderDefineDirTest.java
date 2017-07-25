@@ -57,7 +57,7 @@ public class NewProviderDefineDirTest extends AbstractTestInfra {
         Map<String, String> gitPrefs = super.getGitPreferences();
         gitPrefs.put(GIT_NIO_DIR,
                      tempDir.toString());
-        if (REPOSITORIES_CONTAINER_DIR.equals(dirPathName) == false) {
+        if (!REPOSITORIES_CONTAINER_DIR.equals(dirPathName)) {
             gitPrefs.put(GIT_NIO_DIR_NAME,
                          dirPathName);
         }
