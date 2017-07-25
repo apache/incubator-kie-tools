@@ -110,5 +110,11 @@ public class AttributeColumnPage extends BaseDecisionTableColumnPage<AttributeCo
     public interface View extends UberElement<AttributeColumnPage> {
 
         void setupAttributeList(final List<String> attributes);
+
+        boolean isAttributeDescriptionHidden();
+
+        void hideAttributeDescription();
+
+        void showAttributeDescription();
     }
 }

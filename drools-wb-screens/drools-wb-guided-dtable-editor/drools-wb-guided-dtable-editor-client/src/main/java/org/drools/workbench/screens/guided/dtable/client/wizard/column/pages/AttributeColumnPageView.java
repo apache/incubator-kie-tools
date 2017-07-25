@@ -53,6 +53,7 @@ public class AttributeColumnPageView implements IsElement,
     @Override
     public void init(final AttributeColumnPage page) {
         this.page = page;
+        hideAttributeDescription();
     }
 
     @EventHandler("attributeList")
@@ -61,6 +62,9 @@ public class AttributeColumnPageView implements IsElement,
 
         attributeDescription.setAttribute("data-enabled",
                                           attributeList.getSelectedValue());
+        if (isAttributeDescriptionHidden()) {
+            showAttributeDescription();
+        }
     }
 
     @Override
@@ -71,6 +75,21 @@ public class AttributeColumnPageView implements IsElement,
 
         attributeList.setVisibleItemCount(attributeList.getItemCount());
         attributeList.setSelectedIndex(attributeIndex());
+    }
+
+    @Override
+    public boolean isAttributeDescriptionHidden() {
+        return attributeDescription.getHidden();
+    }
+
+    @Override
+    public void hideAttributeDescription() {
+        this.attributeDescription.setHidden(true);
+    }
+
+    @Override
+    public void showAttributeDescription() {
+        this.attributeDescription.setHidden(false);
     }
 
     private int attributeIndex() {
