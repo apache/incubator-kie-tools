@@ -37,7 +37,7 @@
             <plugin>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-takari-plugin</artifactId>
-                <version>7.2.0-SNAPSHOT</version>
+                <version>8.0.0-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <configuration>
                     <properties>

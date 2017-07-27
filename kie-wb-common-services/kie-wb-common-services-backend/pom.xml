@@ -24,6 +24,19 @@
         <filtering>true</filtering>
       </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <apple.awt.UIElement>true</apple.awt.UIElement>
+            <org.uberfire.nio.git.daemon.enabled>true</org.uberfire.nio.git.daemon.enabled>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+
+    </plugins>
   </build>
 
   <dependencies>
@@ -367,12 +380,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-jgit</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-test-utils</artifactId>
       <scope>test</scope>
@@ -393,6 +400,11 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-structure-client</artifactId>
       <scope>test</scope>
     </dependency>
 

@@ -13,21 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.services.backend.compiler.nio.impl;
 
-import org.uberfire.java.nio.file.DirectoryStream;
+package org.kie.workbench.common.services.backend.compiler.nio;
+
+import java.util.Map;
+import java.util.Optional;
+
+import org.kie.workbench.common.services.backend.compiler.external339.AFCliRequest;
 import org.uberfire.java.nio.file.Path;
 
-/***
- * Filter used with DirectoryStreams to avoid the load of hidden files
+/**
+ * Wrap a compilation request
  */
-public class DotFileFilter implements DirectoryStream.Filter<Path> {
+public interface CompilationRequest {
 
-    public DotFileFilter() {
-    }
+    Optional<Path> getPomFile();
 
-    public boolean accept(Path path) {
-        String fileName = path.getFileName().toString();
-        return fileName.startsWith(".");
-    }
+    AFCliRequest getKieCliRequest();
+
+    WorkspaceCompilationInfo getInfo();
+
+    String getMavenRepo();
+
+    String[] getOriginalArgs();
+
+    Boolean getLogRequested();
+
+    Map<String, Object> getMap();
+
+    String getRequestUUID();
 }

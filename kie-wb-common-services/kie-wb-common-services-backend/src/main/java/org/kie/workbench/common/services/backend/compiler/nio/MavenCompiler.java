@@ -13,21 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.services.backend.compiler.nio.impl;
+package org.kie.workbench.common.services.backend.compiler.nio;
 
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.Path;
+import org.kie.workbench.common.services.backend.compiler.CompilationResponse;
 
 /***
- * Filter used with DirectoryStreams to avoid the load of hidden files
+ * Define the behaviour of a NIO compiler
  */
-public class DotFileFilter implements DirectoryStream.Filter<Path> {
+public interface MavenCompiler extends AFCompiler<CompilationResponse> {
 
-    public DotFileFilter() {
-    }
-
-    public boolean accept(Path path) {
-        String fileName = path.getFileName().toString();
-        return fileName.startsWith(".");
-    }
 }

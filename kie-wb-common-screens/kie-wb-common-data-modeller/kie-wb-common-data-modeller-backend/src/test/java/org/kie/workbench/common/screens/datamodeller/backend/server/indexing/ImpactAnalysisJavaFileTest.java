@@ -47,8 +47,7 @@ import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.kie.workbench.common.services.refactoring.service.impact.QueryOperationRequest;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
-import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
 import static org.junit.Assert.*;
 
@@ -95,7 +94,6 @@ public class ImpactAnalysisJavaFileTest extends BaseIndexingTest<JavaResourceTyp
     public void setupForThisTest() throws Exception {
         // setup
         IOService ioService = ioService();
-        JGitFileSystem gitFs = (JGitFileSystem) basePath.getFileSystem();
 
         // Get this class location
         String fileName = this.getClass().getSimpleName() + ".java";
@@ -113,10 +111,15 @@ public class ImpactAnalysisJavaFileTest extends BaseIndexingTest<JavaResourceTyp
         // create new branch
         String randomBranchName = UUID.randomUUID().toString();
         randomBranchName = randomBranchName.substring(0, randomBranchName.indexOf("-"));
-        JGitUtil.createBranch(gitFs.gitRepo(), "master", randomBranchName);
+
+        final Path source = ioService.get(URI.create("git://master@" + getRepositoryName()));
+        final Path target = ioService.get(URI.create("git://" + randomBranchName + "@" + getRepositoryName()));
+
+        ioService.copy(source,
+                       target);
 
         // Add this class to the repository/index
-        final Path branchedBasePath = gitFs.provider().getPath( URI.create( "git://" + randomBranchName + "@" + getRepositoryName() +  "/_someDir" + seed  ) );
+        final Path branchedBasePath = ioService.get( URI.create( "git://" + randomBranchName + "@" + getRepositoryName() +  "/_someDir" + seed  ) );
         path = branchedBasePath.resolve(fileName);
         javaSourceText = loadText(fileLoc);
         ioService.write(path, javaSourceText);

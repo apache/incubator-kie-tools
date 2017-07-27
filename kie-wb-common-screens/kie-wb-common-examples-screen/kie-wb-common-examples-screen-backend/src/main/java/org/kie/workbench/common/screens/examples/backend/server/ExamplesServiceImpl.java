@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -76,7 +77,7 @@ import org.uberfire.java.nio.file.FileVisitor;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.StandardCopyOption;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
-import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
+import org.uberfire.java.nio.fs.jgit.util.commands.CreateRepository;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.guvnor.structure.repositories.EnvironmentParameters.SCHEME;
@@ -166,8 +167,7 @@ public class ExamplesServiceImpl implements ExamplesService {
                     }
                 }
 
-                Git git = JGitUtil.newRepository(playgroundDirectory,
-                                                 false);
+                final Git git = Git.init().setBare(false).setDirectory(playgroundDirectory).call();
                 git.add().addFilepattern(".").call();
                 git.commit().setMessage("Initial commit").call();
 

@@ -15,51 +15,63 @@
  */
 package org.kie.workbench.common.services.backend.compiler.impl;
 
-import java.util.Optional;
+import java.io.File;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.RebaseResult;
-import org.kie.workbench.common.services.backend.compiler.internalNIO.decorators.InternalNIOJGITCompilerBeforeDecorator;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.kie.workbench.common.services.backend.compiler.nio.decorators.JGITCompilerBeforeDecorator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 
 /***
  * Class used to provides JGit functionalities to the JGIT compiler decorators
  */
 public class JGitUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(InternalNIOJGITCompilerBeforeDecorator.class);
+    private static final Logger logger = LoggerFactory.getLogger(JGITCompilerBeforeDecorator.class);
     private static String REMOTE = "origin";
-    private final String COMPILED_EXTENSION = ".class";
-    private final String REMOTE_BRANCH = "master";
+    private static String TEMP = System.getProperty("java.io.tmpdir") + File.separatorChar + "maven/";
 
-    public static Boolean applyBefore(Optional<Git> repo) {
+    public static Boolean applyBefore(final Git git) {
         Boolean result = Boolean.FALSE;
-        if (repo.isPresent()) {
-            try {
-                Git git = repo.get();
-                PullCommand pc = git.pull().setRemote(REMOTE).setRebase(Boolean.TRUE);
-                PullResult pullRes = pc.call();
-                RebaseResult rr = pullRes.getRebaseResult();
+        try {
+            PullCommand pc = git.pull().setRemote(REMOTE).setRebase(Boolean.TRUE);
+            PullResult pullRes = pc.call();
+            RebaseResult rr = pullRes.getRebaseResult();
 
-                if (rr.getStatus().equals(RebaseResult.Status.UP_TO_DATE) || rr.getStatus().equals(RebaseResult.Status.FAST_FORWARD)) {
-                    result = Boolean.TRUE;
-                }
-                if (rr.getStatus().equals(RebaseResult.Status.UNCOMMITTED_CHANGES)) {
-                    PullResult pr = git.pull().call();
-                    if (pr.isSuccessful()) {
-                        result = Boolean.TRUE;
-                    } else {
-                        result = Boolean.FALSE;
-                    }
-                }
-            } catch (Exception e) {
-                logger.error(e.getMessage());
+            if (rr.getStatus().equals(RebaseResult.Status.UP_TO_DATE) || rr.getStatus().equals(RebaseResult.Status.FAST_FORWARD)) {
+                result = Boolean.TRUE;
             }
-            return result;
+            if (rr.getStatus().equals(RebaseResult.Status.UNCOMMITTED_CHANGES)) {
+                PullResult pr = git.pull().call();
+                if (pr.isSuccessful()) {
+                    result = Boolean.TRUE;
+                } else {
+                    result = Boolean.FALSE;
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
         }
         return result;
+    }
+
+    public static Git tempClone(final JGitFileSystem fs,
+                                final String uuid) {
+        try {
+            return Git.cloneRepository()
+                    .setURI(fs.getGit().getRepository().getDirectory().toURI().toString())
+                    .setDirectory(new File(TEMP + uuid,
+                                           fs.getGit().getRepository().getDirectory().getName().replaceFirst("\\.git", "")))
+                    .setBare(false)
+                    .setCloneAllBranches(true)
+                    .call();
+        } catch (GitAPIException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

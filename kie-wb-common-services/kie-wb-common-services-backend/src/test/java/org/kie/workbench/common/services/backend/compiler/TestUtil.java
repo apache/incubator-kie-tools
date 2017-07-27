@@ -21,19 +21,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
-import org.kie.workbench.common.services.backend.compiler.nio.CopyFileVisitor;
+import org.apache.commons.io.FileUtils;
+import org.uberfire.java.nio.file.Path;
 
 public class TestUtil {
 
     public static void copyTree(Path source,
                                 Path target) throws IOException {
-        Files.walkFileTree(source,
-                           new CopyFileVisitor(source,
-                                               target));
+        FileUtils.copyDirectory(source.toFile(), target.toFile());
     }
 
     public static void rm(File f) {

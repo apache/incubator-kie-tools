@@ -99,7 +99,6 @@ import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.aether.transfer.TransferListener;
-import org.kie.workbench.common.services.backend.compiler.configuration.FileSystemImpl;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,11 +143,8 @@ public class AFMavenCli {
 
     private PrintStream output;
 
-    private FileSystemImpl fs;
-
-    public AFMavenCli(FileSystemImpl fs) {
+    public AFMavenCli() {
         this.output = System.out;
-        this.fs = fs;
     }
 
     public AFMavenCli(PrintStream output) {

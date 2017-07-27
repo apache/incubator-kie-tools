@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.services.backend.compiler.nio.impl;
 
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.Path;
+package org.kie.workbench.common.services.backend.compiler.nio;
 
-/***
- * Filter used with DirectoryStreams to avoid the load of hidden files
+import org.kie.workbench.common.services.backend.compiler.impl.ProcessedPoms;
+
+/**
+ * Process the pom files before the compilation
  */
-public class DotFileFilter implements DirectoryStream.Filter<Path> {
+public interface IncrementalCompilerEnabler {
 
-    public DotFileFilter() {
-    }
-
-    public boolean accept(Path path) {
-        String fileName = path.getFileName().toString();
-        return fileName.startsWith(".");
-    }
+    ProcessedPoms process(CompilationRequest req);
 }

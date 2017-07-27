@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.services.backend.compiler.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,11 +40,16 @@ import org.kie.workbench.common.services.backend.compiler.configuration.Configur
 import org.kie.workbench.common.services.backend.compiler.configuration.ConfigurationProvider;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenConfig;
+import org.kie.workbench.common.services.backend.compiler.nio.CompilationRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.Paths;
+import org.uberfire.java.nio.file.StandardOpenOption;
 
 /***
- * IS the main actor in the changes to the build tag in the poms , it contains the methods common to the NIO2 and NIO2Internal impl
+ * IS the main actor in the changes to the build tag in the poms
  */
 public class DefaultPomEditor implements PomEditor {
 
@@ -226,5 +234,70 @@ public class DefaultPomEditor implements PomEditor {
         newArgs[args.length] = MavenConfig.DEPS_BUILD_CLASSPATH;
         newArgs[args.length + 1] = sb.toString();
         return newArgs;
+    }
+
+    public PomPlaceHolder readSingle(Path pom) {
+        PomPlaceHolder holder = new PomPlaceHolder();
+        try {
+            Model model = reader.read(new ByteArrayInputStream(Files.readAllBytes(pom)));
+            holder = new PomPlaceHolder(pom.toAbsolutePath().toString(),
+                                        model.getArtifactId(),
+                                        model.getGroupId(),
+                                        model.getVersion(),
+                                        model.getPackaging());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+        return holder;
+    }
+
+    public void write(Path pom,
+                      CompilationRequest request) {
+
+        try {
+            Model model = reader.read(new ByteArrayInputStream(Files.readAllBytes(pom)));
+            if (model == null) {
+                logger.error("Model null from pom file:",
+                             pom.toString());
+                return;
+            }
+
+            PomPlaceHolder pomPH = new PomPlaceHolder(pom.toAbsolutePath().toString(),
+                                                      model.getArtifactId(),
+                                                      model.getGroupId(),
+                                                      model.getVersion(),
+                                                      model.getPackaging(),
+                                                      Files.readAllBytes(Paths.get(pom.toAbsolutePath().toString())));
+
+            if (!history.contains(pomPH)) {
+
+                PluginPresents plugs = updatePom(model);
+                request.getInfo().lateAdditionKiePluginPresent(plugs.isKiePluginPresent());
+
+                if (plugs.isKiePluginPresent()) {
+                    String args[] = addCreateClasspathMavenArgs(request.getKieCliRequest().getArgs());
+                    request.getKieCliRequest().setArgs(args);
+                }
+                if (plugs.pomOverwriteRequired()) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    writer.write(baos,
+                                 model);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Pom changed:{}",
+                                     new String(baos.toByteArray(),
+                                                StandardCharsets.UTF_8));
+                    }
+                    Path pomParent = Paths.get(pom.getParent().toAbsolutePath().toString(),
+                                               POM_NAME);
+                    Files.delete(pomParent);
+                    Files.write(pomParent,
+                                baos.toByteArray(),
+                                StandardOpenOption.CREATE_NEW);//enhanced pom
+                }
+                history.add(pomPH);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
     }
 }
