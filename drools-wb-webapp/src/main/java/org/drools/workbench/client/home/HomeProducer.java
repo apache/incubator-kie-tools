@@ -16,63 +16,41 @@
 package org.drools.workbench.client.home;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import org.kie.workbench.common.screens.home.model.HomeModel;
+import org.kie.workbench.common.screens.home.model.HomeModelProvider;
 import org.kie.workbench.common.screens.home.model.ModelUtils;
-import org.kie.workbench.common.screens.home.model.SectionEntry;
-import org.kie.workbench.common.workbench.client.library.LibraryMonitor;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.ConditionalPlaceRequest;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-import static org.uberfire.workbench.model.ActivityResourceType.*;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.*;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.DROOLS_ADMIN;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.LIBRARY;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.SERVER_MANAGEMENT;
+import static org.uberfire.workbench.model.ActivityResourceType.PERSPECTIVE;
 
-/**
- * Producer method for the Home Page content
- */
-@Dependent
-public class HomeProducer {
+@ApplicationScoped
+public class HomeProducer implements HomeModelProvider {
 
-    @Produces
-    @ApplicationScoped
-    public HomeModel getModel( PlaceManager placeManager, LibraryMonitor libraryMonitor ) {
-        final String url = GWT.getModuleBaseURL();
-        final HomeModel model = new HomeModel( "The KIE Knowledge Development Cycle" );
-        model.addCarouselEntry( ModelUtils.makeCarouselEntry( "Author",
-                                                              "Formalize your Business Knowledge",
-                                                              url + "/images/HandHome.jpg" ) );
-        model.addCarouselEntry( ModelUtils.makeCarouselEntry( "Deploy",
-                                                              "Learn how to configure your environment",
-                                                              url + "/images/HandHome.jpg" ) );
+    @Inject
+    private PlaceManager placeManager;
 
-        final SectionEntry s1 = ModelUtils.makeSectionEntry( "Discover and Author:" );
-
-        final DefaultPlaceRequest libraryPlaceRequest = new DefaultPlaceRequest( LIBRARY );
-        s1.addChild( ModelUtils.makeSectionEntry( "Author",
-                () -> placeManager.goTo( libraryPlaceRequest ),
-                LIBRARY, PERSPECTIVE ) );
-
-        model.addSection( s1 );
-
-        final SectionEntry s2 = ModelUtils.makeSectionEntry( "Deploy:" );
-
-        s2.addChild( ModelUtils.makeSectionEntry( "Manage and Deploy Your Assets",
-                () -> placeManager.goTo( DROOLS_ADMIN ),
-                DROOLS_ADMIN, PERSPECTIVE ) );
-
-        s2.addChild( ModelUtils.makeSectionEntry( "Assets Repository",
-                () -> placeManager.goTo( GUVNOR_M2REPO ),
-                GUVNOR_M2REPO, PERSPECTIVE ) );
-
-        model.addSection( s2 );
+    public HomeModel get() {
+        final HomeModel model = new HomeModel("Welcome to KIE Workbench",
+                                              "KIE Workbench offers a set of flexible tools, that support the way you need to work. Select a tool below to get started.",
+                                              "images/home_bg.jpg");
+        model.addShortcut(ModelUtils.makeShortcut("pficon-blueprint",
+                                                  "Design",
+                                                  "Model, build, and publish your artifacts.",
+                                                  () -> placeManager.goTo(LIBRARY),
+                                                  LIBRARY,
+                                                  PERSPECTIVE));
+        model.addShortcut(ModelUtils.makeShortcut("pficon-build",
+                                                  "DevOps",
+                                                  "Run and manage servers and active instances.",
+                                                  () -> placeManager.goTo(SERVER_MANAGEMENT),
+                                                  SERVER_MANAGEMENT,
+                                                  PERSPECTIVE));
 
         return model;
     }
-
 }
