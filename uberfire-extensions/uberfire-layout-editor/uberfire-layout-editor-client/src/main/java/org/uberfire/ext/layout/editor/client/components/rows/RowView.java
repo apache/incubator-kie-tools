@@ -26,10 +26,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.client.components.columns.ComponentColumn;
 
-import static org.jboss.errai.common.client.dom.DOMUtil.addCSSClass;
-import static org.jboss.errai.common.client.dom.DOMUtil.hasCSSClass;
-import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
-import static org.jboss.errai.common.client.dom.DOMUtil.removeCSSClass;
+import static org.jboss.errai.common.client.dom.DOMUtil.*;
 import static org.uberfire.ext.layout.editor.client.infra.HTML5DnDHelper.extractDndData;
 
 @Dependent
@@ -256,7 +253,7 @@ public class RowView
         row.getStyle().setProperty("height",
                                    "calc(100% - 20px)");
         addCSSClass(row,
-                    "page-row");
+                    "uf-page-row");
     }
 
     @Override
