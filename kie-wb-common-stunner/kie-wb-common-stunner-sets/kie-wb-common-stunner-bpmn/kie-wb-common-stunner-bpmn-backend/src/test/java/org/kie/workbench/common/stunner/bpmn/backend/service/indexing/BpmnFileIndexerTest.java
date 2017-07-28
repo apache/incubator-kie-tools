@@ -92,13 +92,13 @@ public class BpmnFileIndexerTest extends BaseIndexingTest<BPMNDefinitionSetResou
     }
 
     private static final long WAIT_TIME_MILLIS = 2000;
-
     private static final int MAX_WAIT_TIMES = 8;
 
     @Test
     public void testBpmnIndexing() throws Exception {
 
         List<Path> pathList = new ArrayList<>();
+        ioService().startBatch(ioService().getFileSystem(basePath.toUri()));
         for (int i = 0; i < BPMN_FILES.length; ++i) {
             String bpmnFile = BPMN_FILES[i];
             if (bpmnFile.endsWith("bpmn")) {
@@ -109,6 +109,7 @@ public class BpmnFileIndexerTest extends BaseIndexingTest<BPMNDefinitionSetResou
                                   bpmnStr);
             }
         }
+        ioService().endBatch();
         Path[] paths = pathList.toArray(new Path[pathList.size()]);
 
         {

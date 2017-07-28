@@ -97,6 +97,7 @@ public class FormDefinitionIndexerTest extends BaseIndexingTest<FormResourceType
     public void testFormsIndexing() throws Exception {
         List<Path> pathList = new ArrayList<>();
 
+        ioService().startBatch(ioService().getFileSystem(basePath.toUri()));
         for (String formFile : FORMS) {
             Path path = basePath.resolve(formFile);
             pathList.add(path);
@@ -104,6 +105,7 @@ public class FormDefinitionIndexerTest extends BaseIndexingTest<FormResourceType
             ioService().write(path,
                               formContent);
         }
+        ioService().endBatch();
 
         Path[] paths = pathList.toArray(new Path[pathList.size()]);
 
