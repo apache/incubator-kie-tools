@@ -19,10 +19,13 @@ package org.uberfire.java.nio.fs.jgit.daemon.ssh;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+import org.apache.sshd.common.cipher.BuiltinCiphers;
 import org.apache.sshd.common.util.security.SecurityUtils;
 import org.apache.sshd.server.SshServer;
 import org.apache.sshd.server.auth.pubkey.CachingPublicKeyAuthenticator;
@@ -35,14 +38,33 @@ import org.uberfire.java.nio.security.FileSystemAuthenticator;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
 import org.uberfire.java.nio.security.FileSystemUser;
 
+import static org.apache.sshd.common.NamedFactory.setUpBuiltinFactories;
+import static org.apache.sshd.server.ServerBuilder.builder;
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class GitSSHService {
 
-    private final SshServer sshd = SshServer.setUpDefaultServer();
+    private final SshServer sshd = buildSshServer();
+
     private FileSystemAuthenticator fileSystemAuthenticator;
     private FileSystemAuthorizer fileSystemAuthorizer;
+
+    private static SshServer buildSshServer() {
+        final List<BuiltinCiphers> ciphers =
+                Collections.unmodifiableList(Arrays.asList(
+                        BuiltinCiphers.aes128ctr,
+                        BuiltinCiphers.aes192ctr,
+                        BuiltinCiphers.aes256ctr,
+                        BuiltinCiphers.arcfour256,
+                        BuiltinCiphers.arcfour128,
+                        BuiltinCiphers.aes192cbc,
+                        BuiltinCiphers.aes256cbc
+                ));
+
+        return builder().cipherFactories(setUpBuiltinFactories(false,
+                                                               ciphers)).build();
+    }
 
     public void setup(final File certDir,
                       final InetSocketAddress inetSocketAddress,
