@@ -137,8 +137,8 @@ public class AsyncKieServerInstanceManager extends KieServerInstanceManager {
     }
 
     @Override
-    public List<Container> startContainer(final ServerTemplate serverTemplate,
-                                          final ContainerSpec containerSpec) {
+    public synchronized List<Container> startContainer(final ServerTemplate serverTemplate,
+                                                       final ContainerSpec containerSpec) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -158,8 +158,8 @@ public class AsyncKieServerInstanceManager extends KieServerInstanceManager {
     }
 
     @Override
-    public List<Container> stopContainer(final ServerTemplate serverTemplate,
-                                         final ContainerSpec containerSpec) {
+    public synchronized List<Container> stopContainer(final ServerTemplate serverTemplate,
+                                                      final ContainerSpec containerSpec) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
