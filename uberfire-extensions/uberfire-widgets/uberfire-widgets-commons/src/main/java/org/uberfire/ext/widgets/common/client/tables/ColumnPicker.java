@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
@@ -36,6 +37,7 @@ import org.uberfire.ext.widgets.table.client.UberfireColumnPicker;
 public class ColumnPicker<T> extends UberfireColumnPicker<T> {
 
     private GridPreferencesStore gridPreferences;
+    private Optional<String> columnZeroWidth = Optional.empty();
 
     public ColumnPicker(DataGrid<T> dataGrid,
                         GridPreferencesStore gridPreferences) {
@@ -149,12 +151,22 @@ public class ColumnPicker<T> extends UberfireColumnPicker<T> {
         if (preferences.isEmpty()) {
             return;
         }
+
+        // If there's only 1 column then set it's width to 100%. However store the original 'requested' preferences
+        // in case a 2nd or 3rd etc column is added and we then need to revert to the 'requested' width
         if (preferences.size() == 1) {
+            columnZeroWidth = Optional.of(preferences.get(0).getWidth());
             dataGrid.setColumnWidth(dataGrid.getColumn(0),
                                     100,
                                     Style.Unit.PCT);
             return;
         }
+
+        //So.. more than one column; we best restore column zero's original 'requested' width
+        columnZeroWidth.ifPresent(w -> {
+            preferences.get(0).setWidth(w);
+            columnZeroWidth = Optional.empty();
+        });
 
         int fixedColumnsWidth = 0;
         Map<String, String> fixedWidths = new HashMap<String, String>();
@@ -180,7 +192,7 @@ public class ColumnPicker<T> extends UberfireColumnPicker<T> {
 
         if (columnsToCalculate.size() > 0) {
 
-            double columnPCT = (100 / columnsToCalculate.size()) + 1;
+            double columnPCT = (100 / columnsToCalculate.size());
 
             if (dataGrid.getOffsetWidth() != 0) {
                 int availableColumnSpace = dataGrid.getOffsetWidth() - fixedColumnsWidth;
