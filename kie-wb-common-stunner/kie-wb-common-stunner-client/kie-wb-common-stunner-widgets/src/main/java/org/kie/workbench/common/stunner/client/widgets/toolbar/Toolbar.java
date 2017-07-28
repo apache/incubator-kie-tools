@@ -24,6 +24,8 @@ public interface Toolbar<S extends ClientSession> {
 
     void enable(final ToolbarCommand<S> command);
 
+    boolean isEnabled(final ToolbarCommand<S> command);
+
     void clear();
 
     void destroy();

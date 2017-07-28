@@ -77,7 +77,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         return new SafeHtmlBuilder().appendEscapedLines(message).toSafeHtml().asString();
     }
 
-    protected abstract E getDisplayer();
+    public abstract E getDisplayer();
 
     @Override
     public void open(final D diagram,

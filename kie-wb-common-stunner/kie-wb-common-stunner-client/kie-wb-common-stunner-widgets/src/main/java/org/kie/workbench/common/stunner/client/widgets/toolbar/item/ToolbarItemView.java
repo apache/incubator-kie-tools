@@ -92,6 +92,11 @@ public class ToolbarItemView extends Composite implements ToolbarItem.View {
     }
 
     @Override
+    public boolean isEnabled() {
+        return button.isEnabled();
+    }
+
+    @Override
     public void destroy() {
         this.removeFromParent();
     }

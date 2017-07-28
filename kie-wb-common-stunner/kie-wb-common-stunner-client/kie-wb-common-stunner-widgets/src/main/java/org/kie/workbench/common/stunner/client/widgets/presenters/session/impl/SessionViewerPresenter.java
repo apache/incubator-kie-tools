@@ -93,7 +93,7 @@ public class SessionViewerPresenter<S extends AbstractClientReadOnlySession, H e
     }
 
     @Override
-    protected SessionViewer<S, H, Diagram> getDisplayer() {
+    public SessionViewer<S, H, Diagram> getDisplayer() {
         return viewer;
     }
 

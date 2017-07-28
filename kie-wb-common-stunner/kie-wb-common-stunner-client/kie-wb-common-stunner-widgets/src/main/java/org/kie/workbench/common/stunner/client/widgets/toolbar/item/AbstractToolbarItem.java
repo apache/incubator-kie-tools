@@ -52,6 +52,8 @@ public abstract class AbstractToolbarItem<S extends ClientSession> implements Is
 
         View setEnabled(final boolean enabled);
 
+        boolean isEnabled();
+
         void destroy();
     }
 
@@ -110,6 +112,10 @@ public abstract class AbstractToolbarItem<S extends ClientSession> implements Is
 
     public void disable() {
         view.setEnabled(false);
+    }
+
+    public boolean isEnabled() {
+        return view.isEnabled();
     }
 
     public void destroy() {
