@@ -46,6 +46,7 @@ import org.kie.workbench.common.screens.server.management.client.events.RefreshR
 import org.kie.workbench.common.screens.server.management.client.events.ServerTemplateSelected;
 import org.kie.workbench.common.screens.server.management.client.util.State;
 import org.kie.workbench.common.screens.server.management.model.ContainerSpecData;
+import org.kie.workbench.common.screens.server.management.model.ContainerUpdateEvent;
 import org.kie.workbench.common.screens.server.management.service.RuntimeManagementService;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.mockito.ArgumentCaptor;
@@ -121,14 +122,15 @@ public class ContainerPresenterTest {
 
     @Before
     public void init() {
-        runtimeManagementServiceCaller = new CallerMock<RuntimeManagementService>( runtimeManagementService );
-        specManagementServiceCaller = new CallerMock<SpecManagementService>( specManagementService );
-        doNothing().when( serverTemplateSelectedEvent ).fire( any( ServerTemplateSelected.class ) );
-        doNothing().when( notification ).fire( any( NotificationEvent.class ) );
-        when( containerStatusEmptyPresenter.getView() ).thenReturn( containerStatusEmptyPresenterView );
-        when( containerRemoteStatusPresenter.getView() ).thenReturn( containerRemoteStatusPresenterView );
-        presenter = spy( new ContainerPresenter(
-                logger, view,
+        runtimeManagementServiceCaller = new CallerMock<RuntimeManagementService>(runtimeManagementService);
+        specManagementServiceCaller = new CallerMock<SpecManagementService>(specManagementService);
+        doNothing().when(serverTemplateSelectedEvent).fire(any(ServerTemplateSelected.class));
+        doNothing().when(notification).fire(any(NotificationEvent.class));
+        when(containerStatusEmptyPresenter.getView()).thenReturn(containerStatusEmptyPresenterView);
+        when(containerRemoteStatusPresenter.getView()).thenReturn(containerRemoteStatusPresenterView);
+        presenter = spy(new ContainerPresenter(
+                logger,
+                view,
                 containerRemoteStatusPresenter,
                 containerStatusEmptyPresenter,
                 containerProcessConfigPresenter,
@@ -136,193 +138,265 @@ public class ContainerPresenterTest {
                 runtimeManagementServiceCaller,
                 specManagementServiceCaller,
                 serverTemplateSelectedEvent,
-                notification ) );
+                notification));
 
-        releaseId = new ReleaseId( "org.kie", "container", "1.0.0" );
-        serverTemplateKey = new ServerTemplateKey( "serverTemplateKeyId", "serverTemplateKeyName" );
-        containerSpec = new ContainerSpec( "containerId", "containerName", serverTemplateKey, releaseId, KieContainerStatus.STOPPED, new HashMap<Capability, ContainerConfig>() );
-        containerSpec.addConfig( Capability.PROCESS, new ProcessConfig() );
-        containerSpec.addConfig( Capability.RULE, new RuleConfig() );
+        releaseId = new ReleaseId("org.kie",
+                                  "container",
+                                  "1.0.0");
+        serverTemplateKey = new ServerTemplateKey("serverTemplateKeyId",
+                                                  "serverTemplateKeyName");
+        containerSpec = new ContainerSpec("containerId",
+                                          "containerName",
+                                          serverTemplateKey,
+                                          releaseId,
+                                          KieContainerStatus.STOPPED,
+                                          new HashMap<Capability, ContainerConfig>());
+        containerSpec.addConfig(Capability.PROCESS,
+                                new ProcessConfig());
+        containerSpec.addConfig(Capability.RULE,
+                                new RuleConfig());
         containers = new ArrayList<Container>();
-        containerSpecData = new ContainerSpecData( containerSpec, containers );
+        containerSpecData = new ContainerSpecData(containerSpec,
+                                                  containers);
     }
 
     @Test
     public void testInit() {
         presenter.init();
 
-        verify( view ).init( presenter );
-        assertEquals( view, presenter.getView() );
-        verify( view ).setStatus( containerRemoteStatusPresenter.getView() );
-        verify( view ).setRulesConfig( containerRulesConfigPresenter.getView() );
-        verify( view ).setProcessConfig( containerProcessConfigPresenter.getView() );
+        verify(view).init(presenter);
+        assertEquals(view,
+                     presenter.getView());
+        verify(view).setStatus(containerRemoteStatusPresenter.getView());
+        verify(view).setRulesConfig(containerRulesConfigPresenter.getView());
+        verify(view).setProcessConfig(containerProcessConfigPresenter.getView());
     }
 
     @Test
     public void testStartContainer() {
-        presenter.loadContainers( containerSpecData );
+        presenter.loadContainers(containerSpecData);
 
         presenter.startContainer();
 
-        verify( view ).setContainerStartState( State.ENABLED );
-        verify( view ).setContainerStopState( State.DISABLED );
-        verify( view ).disableRemoveButton();
+        verify(view).setContainerStartState(State.ENABLED);
+        verify(view).setContainerStopState(State.DISABLED);
+        verify(view).disableRemoveButton();
 
         final String errorMessage = "ERROR";
-        when( view.getStartContainerErrorMessage() ).thenReturn( errorMessage );
-        doThrow( new RuntimeException() ).when( specManagementService ).startContainer( containerSpecData.getContainerSpec() );
+        when(view.getStartContainerErrorMessage()).thenReturn(errorMessage);
+        doThrow(new RuntimeException()).when(specManagementService).startContainer(containerSpecData.getContainerSpec());
         presenter.startContainer();
-        verify( notification ).fire( new NotificationEvent( errorMessage, NotificationEvent.NotificationType.ERROR ) );
+        verify(notification).fire(new NotificationEvent(errorMessage,
+                                                        NotificationEvent.NotificationType.ERROR));
 
-        verify( view, times( 2 ) ).setContainerStartState( State.DISABLED );
-        verify( view, times( 2 ) ).setContainerStopState( State.ENABLED );
-        verify( view, times( 2 ) ).enableRemoveButton();
+        verify(view,
+               times(2)).setContainerStartState(State.DISABLED);
+        verify(view,
+               times(2)).setContainerStopState(State.ENABLED);
+        verify(view,
+               times(2)).enableRemoveButton();
     }
 
     @Test
     public void testStopContainer() {
-        presenter.loadContainers( containerSpecData );
+        presenter.loadContainers(containerSpecData);
 
         presenter.stopContainer();
 
-        verify( view, times( 2 ) ).setContainerStartState( State.DISABLED );
-        verify( view, times( 2 ) ).setContainerStopState( State.ENABLED );
-        verify( view, times( 2 ) ).enableRemoveButton();
+        verify(view,
+               times(2)).setContainerStartState(State.DISABLED);
+        verify(view,
+               times(2)).setContainerStopState(State.ENABLED);
+        verify(view,
+               times(2)).enableRemoveButton();
 
         final String errorMessage = "ERROR";
-        when( view.getStopContainerErrorMessage() ).thenReturn( errorMessage );
-        doThrow( new RuntimeException() ).when( specManagementService ).stopContainer( containerSpecData.getContainerSpec() );
+        when(view.getStopContainerErrorMessage()).thenReturn(errorMessage);
+        doThrow(new RuntimeException()).when(specManagementService).stopContainer(containerSpecData.getContainerSpec());
         presenter.stopContainer();
-        verify( notification ).fire( new NotificationEvent( errorMessage, NotificationEvent.NotificationType.ERROR ) );
+        verify(notification).fire(new NotificationEvent(errorMessage,
+                                                        NotificationEvent.NotificationType.ERROR));
 
-        verify( view ).setContainerStartState( State.ENABLED );
-        verify( view ).setContainerStopState( State.DISABLED );
-        verify( view ).disableRemoveButton();
+        verify(view).setContainerStartState(State.ENABLED);
+        verify(view).setContainerStopState(State.DISABLED);
+        verify(view).disableRemoveButton();
     }
 
     @Test
     public void testLoadContainersEmpty() {
-        presenter.loadContainers( containerSpecData );
+        presenter.loadContainers(containerSpecData);
 
-        verifyLoad( true, 1 );
+        verifyLoad(true,
+                   1);
     }
 
     @Test
     public void testRefresh() {
-        when( runtimeManagementService.getContainersByContainerSpec(
+        when(runtimeManagementService.getContainersByContainerSpec(
                 serverTemplateKey.getId(),
-                containerSpec.getId() ) ).thenReturn( containerSpecData );
+                containerSpec.getId())).thenReturn(containerSpecData);
 
-        presenter.loadContainers( containerSpecData );
+        presenter.loadContainers(containerSpecData);
         presenter.refresh();
 
-        verifyLoad( true, 2 );
+        verifyLoad(true,
+                   2);
     }
 
     @Test
     public void testLoadContainers() {
-        final Container container = new Container( "containerSpecId", "containerName", new ServerInstanceKey(), Collections.<Message>emptyList(), null, null );
-        containerSpecData.getContainers().add( container );
-        presenter.loadContainers( containerSpecData );
+        final Container container = new Container("containerSpecId",
+                                                  "containerName",
+                                                  new ServerInstanceKey(),
+                                                  Collections.<Message>emptyList(),
+                                                  null,
+                                                  null);
+        containerSpecData.getContainers().add(container);
+        presenter.loadContainers(containerSpecData);
 
-        verifyLoad( true, 1 );
+        verifyLoad(true,
+                   1);
     }
 
     @Test
     public void testLoadContainersNonStoped() {
-        final Container container = new Container( "containerSpecId", "containerName", new ServerInstanceKey(), Collections.<Message>emptyList(), null, null );
-        container.setStatus( KieContainerStatus.STARTED );
-        containerSpecData.getContainers().add( container );
-        presenter.loadContainers( containerSpecData );
+        final Container container = new Container("containerSpecId",
+                                                  "containerName",
+                                                  new ServerInstanceKey(),
+                                                  Collections.<Message>emptyList(),
+                                                  null,
+                                                  null);
+        container.setStatus(KieContainerStatus.STARTED);
+        containerSpecData.getContainers().add(container);
+        presenter.loadContainers(containerSpecData);
 
-        verifyLoad( false, 1 );
+        verifyLoad(false,
+                   1);
     }
 
-    private void verifyLoad( boolean empty,
-                             int times ) {
-        verify( containerStatusEmptyPresenter, times( times ) ).setup( containerSpec );
-        verify( containerRemoteStatusPresenter, times( times ) ).setup( containerSpec, containers );
-        verify( view, times( times ) ).clear();
+    private void verifyLoad(boolean empty,
+                            int times) {
+        verify(containerStatusEmptyPresenter,
+               times(times)).setup(containerSpec);
+        verify(containerRemoteStatusPresenter,
+               times(times)).setup(containerSpec,
+                                   containers);
+        verify(view,
+               times(times)).clear();
 
-        if ( empty ) {
-            verify( view, times( times ) ).setStatus( containerStatusEmptyPresenterView );
-            verify( view, never() ).setStatus( containerRemoteStatusPresenterView );
+        if (empty) {
+            verify(view,
+                   times(times)).setStatus(containerStatusEmptyPresenterView);
+            verify(view,
+                   never()).setStatus(containerRemoteStatusPresenterView);
         } else {
-            verify( view, times( times ) ).setStatus( containerRemoteStatusPresenterView );
-            verify( view, never() ).setStatus( containerStatusEmptyPresenterView );
+            verify(view,
+                   times(times)).setStatus(containerRemoteStatusPresenterView);
+            verify(view,
+                   never()).setStatus(containerStatusEmptyPresenterView);
         }
 
-        verify( view, times( times ) ).setContainerName( containerSpec.getContainerName() );
-        verify( view, times( times ) ).setGroupIp( containerSpec.getReleasedId().getGroupId() );
-        verify( view, times( times ) ).setArtifactId( containerSpec.getReleasedId().getArtifactId() );
-        verify( containerRulesConfigPresenter, times( times ) ).setVersion( releaseId.getVersion() );
-        verify( containerProcessConfigPresenter, times( times ) ).disable();
+        verify(view,
+               times(times)).setContainerName(containerSpec.getContainerName());
+        verify(view,
+               times(times)).setGroupIp(containerSpec.getReleasedId().getGroupId());
+        verify(view,
+               times(times)).setArtifactId(containerSpec.getReleasedId().getArtifactId());
+        verify(containerRulesConfigPresenter,
+               times(times)).setVersion(releaseId.getVersion());
+        verify(containerProcessConfigPresenter,
+               times(times)).disable();
 
-        verify( view, times( times ) ).setContainerStartState( State.DISABLED );
-        verify( view, times( times ) ).setContainerStopState( State.ENABLED );
+        verify(view,
+               times(times)).setContainerStartState(State.DISABLED);
+        verify(view,
+               times(times)).setContainerStopState(State.ENABLED);
 
-        verify( containerProcessConfigPresenter, times( times ) ).setup( containerSpec, (ProcessConfig) containerSpec.getConfigs().get( Capability.PROCESS ) );
-        verify( containerRulesConfigPresenter, times( times ) ).setup( containerSpec, (RuleConfig) containerSpec.getConfigs().get( Capability.RULE ) );
+        verify(containerProcessConfigPresenter,
+               times(times)).setup(containerSpec,
+                                   (ProcessConfig) containerSpec.getConfigs().get(Capability.PROCESS));
+        verify(containerRulesConfigPresenter,
+               times(times)).setup(containerSpec,
+                                   (RuleConfig) containerSpec.getConfigs().get(Capability.RULE));
     }
 
     @Test
     public void testLoad() {
-        when( runtimeManagementService.getContainersByContainerSpec(
+        when(runtimeManagementService.getContainersByContainerSpec(
                 serverTemplateKey.getId(),
-                containerSpec.getId() ) ).thenReturn( containerSpecData );
+                containerSpec.getId())).thenReturn(containerSpecData);
 
-        presenter.load( new ContainerSpecSelected( containerSpec ) );
+        presenter.load(new ContainerSpecSelected(containerSpec));
 
-        verifyLoad( true, 1 );
+        verifyLoad(true,
+                   1);
+    }
+
+    @Test
+    public void testRefreshOnContainerUpdateEvent() {
+        final ContainerUpdateEvent updateEvent = mock(ContainerUpdateEvent.class);
+
+        doNothing().when(presenter).refresh();
+
+        presenter.refreshOnContainerUpdateEvent(updateEvent);
+
+        verify(presenter).refresh();
     }
 
     @Test
     public void testOnRefresh() {
-        when( runtimeManagementService.getContainersByContainerSpec(
+        when(runtimeManagementService.getContainersByContainerSpec(
                 serverTemplateKey.getId(),
-                containerSpec.getId() ) ).thenReturn( containerSpecData );
+                containerSpec.getId())).thenReturn(containerSpecData);
 
-        presenter.onRefresh( new RefreshRemoteServers( containerSpec ) );
+        presenter.onRefresh(new RefreshRemoteServers(containerSpec));
 
-        verifyLoad( true, 1 );
+        verifyLoad(true,
+                   1);
     }
 
     @Test
     public void testRemoveContainer() {
-        doAnswer( new Answer() {
+        doAnswer(new Answer() {
             @Override
-            public Object answer( InvocationOnMock invocation ) throws Throwable {
-                final Command command = (Command) invocation.getArguments()[ 0 ];
-                if ( command != null ) {
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                final Command command = (Command) invocation.getArguments()[0];
+                if (command != null) {
                     command.execute();
                 }
                 return null;
             }
-        } ).when( view ).confirmRemove( any( Command.class ) );
+        }).when(view).confirmRemove(any(Command.class));
         final String successMessage = "SUCCESS";
-        when( view.getRemoveContainerSuccessMessage() ).thenReturn( successMessage );
+        when(view.getRemoveContainerSuccessMessage()).thenReturn(successMessage);
 
-        presenter.loadContainers( containerSpecData );
+        presenter.loadContainers(containerSpecData);
         presenter.removeContainer();
 
-        verify( specManagementService ).deleteContainerSpec( serverTemplateKey.getId(), containerSpec.getId() );
+        verify(specManagementService).deleteContainerSpec(serverTemplateKey.getId(),
+                                                          containerSpec.getId());
 
-        final ArgumentCaptor<NotificationEvent> notificationCaptor = ArgumentCaptor.forClass( NotificationEvent.class );
-        verify( notification ).fire( notificationCaptor.capture() );
+        final ArgumentCaptor<NotificationEvent> notificationCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
+        verify(notification).fire(notificationCaptor.capture());
         final NotificationEvent event = notificationCaptor.getValue();
-        assertEquals( NotificationEvent.NotificationType.SUCCESS, event.getType() );
-        assertEquals( successMessage, event.getNotification() );
+        assertEquals(NotificationEvent.NotificationType.SUCCESS,
+                     event.getType());
+        assertEquals(successMessage,
+                     event.getNotification());
 
-        final ArgumentCaptor<ServerTemplateSelected> serverTemplateSelectedCaptor = ArgumentCaptor.forClass( ServerTemplateSelected.class );
-        verify( serverTemplateSelectedEvent ).fire( serverTemplateSelectedCaptor.capture() );
-        assertEquals( serverTemplateKey.getId(), serverTemplateSelectedCaptor.getValue().getServerTemplateKey().getId() );
+        final ArgumentCaptor<ServerTemplateSelected> serverTemplateSelectedCaptor = ArgumentCaptor.forClass(ServerTemplateSelected.class);
+        verify(serverTemplateSelectedEvent).fire(serverTemplateSelectedCaptor.capture());
+        assertEquals(serverTemplateKey.getId(),
+                     serverTemplateSelectedCaptor.getValue().getServerTemplateKey().getId());
 
         final String errorMessage = "ERROR";
-        when( view.getRemoveContainerErrorMessage() ).thenReturn( errorMessage );
-        doThrow( new RuntimeException() ).when( specManagementService ).deleteContainerSpec( serverTemplateKey.getId(), containerSpec.getId() );
+        when(view.getRemoveContainerErrorMessage()).thenReturn(errorMessage);
+        doThrow(new RuntimeException()).when(specManagementService).deleteContainerSpec(serverTemplateKey.getId(),
+                                                                                        containerSpec.getId());
         presenter.removeContainer();
-        verify( notification ).fire( new NotificationEvent( errorMessage, NotificationEvent.NotificationType.ERROR ) );
-        verify( serverTemplateSelectedEvent, times( 2 ) ).fire( new ServerTemplateSelected( containerSpec.getServerTemplateKey() ) );
+        verify(notification).fire(new NotificationEvent(errorMessage,
+                                                        NotificationEvent.NotificationType.ERROR));
+        verify(serverTemplateSelectedEvent,
+               times(2)).fire(new ServerTemplateSelected(containerSpec.getServerTemplateKey()));
     }
-
 }

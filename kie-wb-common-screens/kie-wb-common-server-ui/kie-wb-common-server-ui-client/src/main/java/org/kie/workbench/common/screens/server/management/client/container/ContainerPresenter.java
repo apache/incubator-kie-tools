@@ -45,6 +45,7 @@ import org.kie.workbench.common.screens.server.management.client.events.RefreshR
 import org.kie.workbench.common.screens.server.management.client.events.ServerTemplateSelected;
 import org.kie.workbench.common.screens.server.management.client.util.State;
 import org.kie.workbench.common.screens.server.management.model.ContainerSpecData;
+import org.kie.workbench.common.screens.server.management.model.ContainerUpdateEvent;
 import org.kie.workbench.common.screens.server.management.service.RuntimeManagementService;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.slf4j.Logger;
@@ -52,79 +53,34 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class ContainerPresenter {
 
-    public interface View extends UberView<ContainerPresenter> {
-
-        void clear();
-
-        void disableRemoveButton();
-
-        void enableRemoveButton();
-
-        void setContainerName( final String containerName );
-
-        void setGroupIp( final String groupIp );
-
-        void setArtifactId( final String artifactId );
-
-        void setStatus( final IsWidget view );
-
-        void setProcessConfig( final ContainerProcessConfigPresenter.View view );
-
-        void setRulesConfig( final ContainerRulesConfigPresenter.View view );
-
-        void setContainerStopState( final State state );
-
-        void setContainerStartState( final State state );
-
-        void confirmRemove( final Command command );
-
-        String getRemoveContainerSuccessMessage();
-
-        String getRemoveContainerErrorMessage();
-
-        String getStopContainerErrorMessage();
-
-        String getStartContainerErrorMessage();
-    }
-
     private final Logger logger;
-
     private final View view;
-
     private final ContainerRemoteStatusPresenter containerRemoteStatusPresenter;
-
     private final ContainerStatusEmptyPresenter containerStatusEmptyPresenter;
-
     private final ContainerProcessConfigPresenter containerProcessConfigPresenter;
-
     private final ContainerRulesConfigPresenter containerRulesConfigPresenter;
-
     private final Caller<RuntimeManagementService> runtimeManagementService;
-
     private final Caller<SpecManagementService> specManagementService;
-
     private final Event<ServerTemplateSelected> serverTemplateSelectedEvent;
-
     private final Event<NotificationEvent> notification;
-
     private ContainerSpec containerSpec;
 
     @Inject
-    public ContainerPresenter( final Logger logger,
-                               final View view,
-                               final ContainerRemoteStatusPresenter containerRemoteStatusPresenter,
-                               final ContainerStatusEmptyPresenter containerStatusEmptyPresenter,
-                               final ContainerProcessConfigPresenter containerProcessConfigPresenter,
-                               final ContainerRulesConfigPresenter containerRulesConfigPresenter,
-                               final Caller<RuntimeManagementService> runtimeManagementService,
-                               final Caller<SpecManagementService> specManagementService,
-                               final Event<ServerTemplateSelected> serverTemplateSelectedEvent,
-                               final Event<NotificationEvent> notification ) {
+    public ContainerPresenter(final Logger logger,
+                              final View view,
+                              final ContainerRemoteStatusPresenter containerRemoteStatusPresenter,
+                              final ContainerStatusEmptyPresenter containerStatusEmptyPresenter,
+                              final ContainerProcessConfigPresenter containerProcessConfigPresenter,
+                              final ContainerRulesConfigPresenter containerRulesConfigPresenter,
+                              final Caller<RuntimeManagementService> runtimeManagementService,
+                              final Caller<SpecManagementService> specManagementService,
+                              final Event<ServerTemplateSelected> serverTemplateSelectedEvent,
+                              final Event<NotificationEvent> notification) {
         this.logger = logger;
         this.view = view;
         this.containerRemoteStatusPresenter = containerRemoteStatusPresenter;
@@ -139,184 +95,239 @@ public class ContainerPresenter {
 
     @PostConstruct
     public void init() {
-        view.init( this );
-        view.setStatus( containerRemoteStatusPresenter.getView() );
-        view.setRulesConfig( containerRulesConfigPresenter.getView() );
-        view.setProcessConfig( containerProcessConfigPresenter.getView() );
+        view.init(this);
+        view.setStatus(containerRemoteStatusPresenter.getView());
+        view.setRulesConfig(containerRulesConfigPresenter.getView());
+        view.setProcessConfig(containerProcessConfigPresenter.getView());
     }
 
     public View getView() {
         return view;
     }
 
-    public void onRefresh( @Observes final RefreshRemoteServers refresh ) {
-        if ( refresh != null && refresh.getContainerSpecKey() != null ) {
-            load( refresh.getContainerSpecKey() );
+    public void onRefresh(@Observes final RefreshRemoteServers refresh) {
+        if (refresh != null && refresh.getContainerSpecKey() != null) {
+            load(refresh.getContainerSpecKey());
         } else {
-            logger.warn( "Illegal event argument." );
+            logger.warn("Illegal event argument.");
         }
     }
 
-    public void load( @Observes final ContainerSpecSelected containerSpecSelected ) {
-        if ( containerSpecSelected != null &&
-                containerSpecSelected.getContainerSpecKey() != null ) {
-            load( containerSpecSelected.getContainerSpecKey() );
+    public void load(@Observes final ContainerSpecSelected containerSpecSelected) {
+        if (containerSpecSelected != null &&
+                containerSpecSelected.getContainerSpecKey() != null) {
+            load(containerSpecSelected.getContainerSpecKey());
         } else {
-            logger.warn( "Illegal event argument." );
+            logger.warn("Illegal event argument.");
         }
     }
 
-    public void loadContainers( @Observes final ContainerSpecData content ) {
-        if ( content != null &&
+    public void loadContainers(@Observes final ContainerSpecData content) {
+        if (content != null &&
                 content.getContainerSpec() != null &&
-                content.getContainers() != null ) {
-            setup( content.getContainerSpec(), content.getContainers() );
+                content.getContainers() != null) {
+            setup(content.getContainerSpec(),
+                  content.getContainers());
         } else {
-            logger.warn( "Illegal event argument." );
+            logger.warn("Illegal event argument.");
         }
+    }
+
+    public void refreshOnContainerUpdateEvent(@Observes final ContainerUpdateEvent updateEvent) {
+        refresh();
     }
 
     public void refresh() {
-        load( containerSpec );
+        load(containerSpec);
     }
 
-    public void load( final ContainerSpecKey containerSpecKey ) {
-        checkNotNull( "containerSpecKey", containerSpecKey );
-        runtimeManagementService.call( new RemoteCallback<ContainerSpecData>() {
+    public void load(final ContainerSpecKey containerSpecKey) {
+        checkNotNull("containerSpecKey",
+                     containerSpecKey);
+        runtimeManagementService.call(new RemoteCallback<ContainerSpecData>() {
             @Override
-            public void callback( final ContainerSpecData content ) {
-                checkNotNull( "content", content );
-                setup( content.getContainerSpec(), content.getContainers() );
+            public void callback(final ContainerSpecData content) {
+                checkNotNull("content",
+                             content);
+                setup(content.getContainerSpec(),
+                      content.getContainers());
             }
-        } ).getContainersByContainerSpec( containerSpecKey.getServerTemplateKey().getId(),
-                                          containerSpecKey.getId() );
+        }).getContainersByContainerSpec(containerSpecKey.getServerTemplateKey().getId(),
+                                        containerSpecKey.getId());
     }
 
-    private void setup( final ContainerSpec containerSpec,
-                        final Collection<Container> containers ) {
-        this.containerSpec = checkNotNull( "containerSpec", containerSpec );
-        updateView( containers );
+    private void setup(final ContainerSpec containerSpec,
+                       final Collection<Container> containers) {
+        this.containerSpec = checkNotNull("containerSpec",
+                                          containerSpec);
+        updateView(containers);
     }
 
-    private void updateView( final Collection<Container> containers ) {
-        containerStatusEmptyPresenter.setup( containerSpec );
-        containerRemoteStatusPresenter.setup( containerSpec, containers );
+    private void updateView(final Collection<Container> containers) {
+        containerStatusEmptyPresenter.setup(containerSpec);
+        containerRemoteStatusPresenter.setup(containerSpec,
+                                             containers);
         view.clear();
-        if ( isEmpty( containers ) ) {
-            view.setStatus( containerStatusEmptyPresenter.getView() );
+        if (isEmpty(containers)) {
+            view.setStatus(containerStatusEmptyPresenter.getView());
         } else {
-            view.setStatus( containerRemoteStatusPresenter.getView() );
+            view.setStatus(containerRemoteStatusPresenter.getView());
         }
 
-        view.setContainerName( containerSpec.getContainerName() );
-        view.setGroupIp( containerSpec.getReleasedId().getGroupId() );
-        view.setArtifactId( containerSpec.getReleasedId().getArtifactId() );
-        containerRulesConfigPresenter.setVersion( containerSpec.getReleasedId().getVersion() );
+        view.setContainerName(containerSpec.getContainerName());
+        view.setGroupIp(containerSpec.getReleasedId().getGroupId());
+        view.setArtifactId(containerSpec.getReleasedId().getArtifactId());
+        containerRulesConfigPresenter.setVersion(containerSpec.getReleasedId().getVersion());
         containerProcessConfigPresenter.disable();
 
-        updateStatus( containerSpec.getStatus() != null ? containerSpec.getStatus() : KieContainerStatus.STOPPED );
+        updateStatus(containerSpec.getStatus() != null ? containerSpec.getStatus() : KieContainerStatus.STOPPED);
 
-        for ( Map.Entry<Capability, ContainerConfig> entry : containerSpec.getConfigs().entrySet() ) {
-            switch ( entry.getKey() ) {
+        for (Map.Entry<Capability, ContainerConfig> entry : containerSpec.getConfigs().entrySet()) {
+            switch (entry.getKey()) {
                 case RULE:
-                    setupRuleConfig( (RuleConfig) entry.getValue() );
+                    setupRuleConfig((RuleConfig) entry.getValue());
                     break;
                 case PROCESS:
-                    setupProcessConfig( (ProcessConfig) entry.getValue() );
+                    setupProcessConfig((ProcessConfig) entry.getValue());
                     break;
             }
         }
     }
 
-    private boolean isEmpty( final Collection<Container> containers ) {
-        for ( final Container container : containers ) {
-            if ( !container.getStatus().equals( KieContainerStatus.STOPPED ) ) {
+    private boolean isEmpty(final Collection<Container> containers) {
+        for (final Container container : containers) {
+            if (!container.getStatus().equals(KieContainerStatus.STOPPED)) {
                 return false;
             }
         }
         return true;
     }
 
-    private void updateStatus( final KieContainerStatus status ) {
-        switch ( status ) {
+    private void updateStatus(final KieContainerStatus status) {
+        switch (status) {
             case CREATING:
             case STARTED:
                 view.disableRemoveButton();
-                view.setContainerStartState( State.ENABLED );
-                view.setContainerStopState( State.DISABLED );
+                view.setContainerStartState(State.ENABLED);
+                view.setContainerStopState(State.DISABLED);
                 break;
             case STOPPED:
             case DISPOSING:
             case FAILED:
                 view.enableRemoveButton();
-                view.setContainerStartState( State.DISABLED );
-                view.setContainerStopState( State.ENABLED );
+                view.setContainerStartState(State.DISABLED);
+                view.setContainerStopState(State.ENABLED);
                 break;
         }
     }
 
-    private void setupProcessConfig( final ProcessConfig value ) {
-        containerProcessConfigPresenter.setup( containerSpec, value );
+    private void setupProcessConfig(final ProcessConfig value) {
+        containerProcessConfigPresenter.setup(containerSpec,
+                                              value);
     }
 
-    private void setupRuleConfig( final RuleConfig value ) {
-        containerRulesConfigPresenter.setup( containerSpec, value );
+    private void setupRuleConfig(final RuleConfig value) {
+        containerRulesConfigPresenter.setup(containerSpec,
+                                            value);
     }
 
     public void removeContainer() {
-        view.confirmRemove( new Command() {
+        view.confirmRemove(new Command() {
             @Override
             public void execute() {
-                specManagementService.call( new RemoteCallback<Void>() {
-                    @Override
-                    public void callback( final Void response ) {
-                        notification.fire( new NotificationEvent( view.getRemoveContainerSuccessMessage(), NotificationEvent.NotificationType.SUCCESS ) );
-                        serverTemplateSelectedEvent.fire( new ServerTemplateSelected( containerSpec.getServerTemplateKey() ) );
-                    }
-                }, new ErrorCallback<Object>() {
-                    @Override
-                    public boolean error( final Object o,
-                                          final Throwable throwable ) {
-                        notification.fire( new NotificationEvent( view.getRemoveContainerErrorMessage(), NotificationEvent.NotificationType.ERROR ) );
-                        serverTemplateSelectedEvent.fire( new ServerTemplateSelected( containerSpec.getServerTemplateKey() ) );
-                        return false;
-                    }
-                } ).deleteContainerSpec( containerSpec.getServerTemplateKey().getId(), containerSpec.getId() );
+                specManagementService.call(new RemoteCallback<Void>() {
+                                               @Override
+                                               public void callback(final Void response) {
+                                                   notification.fire(new NotificationEvent(view.getRemoveContainerSuccessMessage(),
+                                                                                           NotificationEvent.NotificationType.SUCCESS));
+                                                   serverTemplateSelectedEvent.fire(new ServerTemplateSelected(containerSpec.getServerTemplateKey()));
+                                               }
+                                           },
+                                           new ErrorCallback<Object>() {
+                                               @Override
+                                               public boolean error(final Object o,
+                                                                    final Throwable throwable) {
+                                                   notification.fire(new NotificationEvent(view.getRemoveContainerErrorMessage(),
+                                                                                           NotificationEvent.NotificationType.ERROR));
+                                                   serverTemplateSelectedEvent.fire(new ServerTemplateSelected(containerSpec.getServerTemplateKey()));
+                                                   return false;
+                                               }
+                                           }).deleteContainerSpec(containerSpec.getServerTemplateKey().getId(),
+                                                                  containerSpec.getId());
             }
-        } );
+        });
     }
 
     public void stopContainer() {
-        specManagementService.call( new RemoteCallback<Void>() {
-            @Override
-            public void callback( final Void response ) {
-                updateStatus( KieContainerStatus.STOPPED );
-            }
-        }, new ErrorCallback<Object>() {
-            @Override
-            public boolean error( final Object o,
-                                  final Throwable throwable ) {
-                notification.fire( new NotificationEvent( view.getStopContainerErrorMessage(), NotificationEvent.NotificationType.ERROR ) );
-                updateStatus( KieContainerStatus.STARTED );
-                return false;
-            }
-        } ).stopContainer( containerSpec );
+        specManagementService.call(new RemoteCallback<Void>() {
+                                       @Override
+                                       public void callback(final Void response) {
+                                           updateStatus(KieContainerStatus.STOPPED);
+                                       }
+                                   },
+                                   new ErrorCallback<Object>() {
+                                       @Override
+                                       public boolean error(final Object o,
+                                                            final Throwable throwable) {
+                                           notification.fire(new NotificationEvent(view.getStopContainerErrorMessage(),
+                                                                                   NotificationEvent.NotificationType.ERROR));
+                                           updateStatus(KieContainerStatus.STARTED);
+                                           return false;
+                                       }
+                                   }).stopContainer(containerSpec);
     }
 
     public void startContainer() {
-        specManagementService.call( new RemoteCallback<Void>() {
-            @Override
-            public void callback( final Void response ) {
-                updateStatus( KieContainerStatus.STARTED );
-            }
-        }, new ErrorCallback<Object>() {
-            @Override
-            public boolean error( final Object o,
-                                  final Throwable throwable ) {
-                notification.fire( new NotificationEvent( view.getStartContainerErrorMessage(), NotificationEvent.NotificationType.ERROR ) );
-                updateStatus( KieContainerStatus.STOPPED );
-                return false;
-            }
-        } ).startContainer( containerSpec );
+        specManagementService.call(new RemoteCallback<Void>() {
+                                       @Override
+                                       public void callback(final Void response) {
+                                           updateStatus(KieContainerStatus.STARTED);
+                                       }
+                                   },
+                                   new ErrorCallback<Object>() {
+                                       @Override
+                                       public boolean error(final Object o,
+                                                            final Throwable throwable) {
+                                           notification.fire(new NotificationEvent(view.getStartContainerErrorMessage(),
+                                                                                   NotificationEvent.NotificationType.ERROR));
+                                           updateStatus(KieContainerStatus.STOPPED);
+                                           return false;
+                                       }
+                                   }).startContainer(containerSpec);
+    }
+
+    public interface View extends UberView<ContainerPresenter> {
+
+        void clear();
+
+        void disableRemoveButton();
+
+        void enableRemoveButton();
+
+        void setContainerName(final String containerName);
+
+        void setGroupIp(final String groupIp);
+
+        void setArtifactId(final String artifactId);
+
+        void setStatus(final IsWidget view);
+
+        void setProcessConfig(final ContainerProcessConfigPresenter.View view);
+
+        void setRulesConfig(final ContainerRulesConfigPresenter.View view);
+
+        void setContainerStopState(final State state);
+
+        void setContainerStartState(final State state);
+
+        void confirmRemove(final Command command);
+
+        String getRemoveContainerSuccessMessage();
+
+        String getRemoveContainerErrorMessage();
+
+        String getStopContainerErrorMessage();
+
+        String getStartContainerErrorMessage();
     }
 }
