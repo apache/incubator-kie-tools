@@ -16,50 +16,53 @@
 package org.kie.workbench.common.screens.home.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.uberfire.commons.validation.PortablePreconditions;
 
-/**
- * Model defining the Home Screen content
- */
 public class HomeModel {
 
-    private final String title;
-    private final List<CarouselEntry> carouselEntries = new ArrayList<>();
-    private final List<SectionEntry> sections = new ArrayList<>();
+    private String welcome;
+
+    private String description;
+
+    private String backgroundImageUrl;
+
+    private List<HomeShortcut> shortcuts = new ArrayList<>();
 
     // For proxying
     protected HomeModel() {
-        this.title = null;
     }
 
-    public HomeModel( final String title ) {
-        this.title = PortablePreconditions.checkNotNull( "title",
-                                                         title );
+    public HomeModel(final String welcome,
+                     final String description,
+                     final String backgroundImageUrl) {
+        this.welcome = PortablePreconditions.checkNotNull("welcome",
+                                                          welcome);
+        this.description = PortablePreconditions.checkNotNull("description",
+                                                              description);
+        this.backgroundImageUrl = PortablePreconditions.checkNotNull("backgroundImageUrl",
+                                                                     backgroundImageUrl);
     }
 
-    public String getTitle() {
-        return title;
+    public String getWelcome() {
+        return welcome;
     }
 
-    public void addCarouselEntry( final CarouselEntry entry ) {
-        carouselEntries.add( PortablePreconditions.checkNotNull( "entry",
-                                                                 entry ) );
+    public String getDescription() {
+        return description;
     }
 
-    public void addSection( final SectionEntry section ) {
-        sections.add( PortablePreconditions.checkNotNull( "section",
-                                                          section ) );
+    public String getBackgroundImageUrl() {
+        return backgroundImageUrl;
     }
 
-    public List<CarouselEntry> getCarouselEntries() {
-        return Collections.unmodifiableList( carouselEntries );
+    public void addShortcut(final HomeShortcut shortcut) {
+        shortcuts.add(PortablePreconditions.checkNotNull("shortcut",
+                                                         shortcut));
     }
 
-    public List<SectionEntry> getSections() {
-        return Collections.unmodifiableList( sections );
+    public List<HomeShortcut> getShortcuts() {
+        return shortcuts;
     }
-
 }

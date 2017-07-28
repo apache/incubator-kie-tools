@@ -15,53 +15,71 @@
 
 package org.kie.workbench.common.screens.home.model;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.uberfire.mvp.Command;
-import org.uberfire.security.ResourceRef;
+import org.uberfire.security.ResourceAction;
 import org.uberfire.security.ResourceType;
 
-/**
- * Utility methods for creating the HomeModel.
- */
-@ApplicationScoped
 public class ModelUtils {
 
-    public static CarouselEntry makeCarouselEntry( final String heading,
-                                                   final String subHeading,
-                                                   final String imageUri ) {
-        final CarouselEntry item = new CarouselEntry( heading,
-                                                      subHeading,
-                                                      imageUri );
-        return item;
+    public static HomeShortcut makeShortcut(final String iconCss,
+                                            final String heading,
+                                            final String subHeading,
+                                            final Command onClickCommand) {
+        return new HomeShortcut(iconCss,
+                                heading,
+                                subHeading,
+                                onClickCommand,
+                                null,
+                                null,
+                                null,
+                                null);
     }
 
-    public static SectionEntry makeSectionEntry( final String caption ) {
-        return new SectionEntry( caption );
+    public static HomeShortcut makeShortcut(final String iconCss,
+                                            final String heading,
+                                            final String subHeading,
+                                            final Command onClickCommand,
+                                            final String resourceId,
+                                            final ResourceType resourceType) {
+        return new HomeShortcut(iconCss,
+                                heading,
+                                subHeading,
+                                onClickCommand,
+                                null,
+                                resourceId,
+                                resourceType,
+                                null);
     }
 
-    public static SectionEntry makeSectionEntry( final String caption,
-                                                 final Command command ) {
-        return new SectionEntry( caption, command );
+    public static HomeShortcut makeShortcut(final String iconCss,
+                                            final String heading,
+                                            final String subHeading,
+                                            final Command onClickCommand,
+                                            final String resourceId,
+                                            final ResourceType resourceType,
+                                            final ResourceAction resourceAction) {
+        return new HomeShortcut(iconCss,
+                                heading,
+                                subHeading,
+                                onClickCommand,
+                                null,
+                                resourceId,
+                                resourceType,
+                                resourceAction);
     }
 
-    public static SectionEntry makeSectionEntry(final String caption,
-                                                final Command command,
-                                                final String resourceId,
-                                                final ResourceType resourceType ) {
-        final SectionEntry entry = new SectionEntry( caption, command );
-        ResourceRef resource = new ResourceRef( resourceId, resourceType );
-        entry.setResource( resource );
-        return entry;
+    public static HomeShortcut makeShortcut(final String iconCss,
+                                            final String heading,
+                                            final String subHeading,
+                                            final Command onClickCommand,
+                                            final String permission) {
+        return new HomeShortcut(iconCss,
+                                heading,
+                                subHeading,
+                                onClickCommand,
+                                permission,
+                                null,
+                                null,
+                                null);
     }
-
-
-    public static SectionEntry makeSectionEntry(final String caption,
-                                                final Command command,
-                                                final String permission ) {
-        final SectionEntry entry = new SectionEntry( caption, command );
-        entry.setPermission( permission );
-        return entry;
-    }
-
 }
