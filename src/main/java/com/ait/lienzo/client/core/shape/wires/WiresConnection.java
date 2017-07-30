@@ -23,6 +23,7 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
 import com.ait.lienzo.shared.core.types.Direction;
+import com.ait.tooling.nativetools.client.util.Console;
 
 public class WiresConnection extends AbstractControlHandle
 {
@@ -207,6 +208,11 @@ public class WiresConnection extends AbstractControlHandle
     public WiresMagnet getMagnet()
     {
         return m_magnet;
+    }
+
+    public WiresConnection getOppositeConnection()
+    {
+        return this == m_connector.getHeadConnection() ? m_connector.getTailConnection() : m_connector.getHeadConnection();
     }
 
     public boolean isSpecialConnection()

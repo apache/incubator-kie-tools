@@ -36,6 +36,7 @@ import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
 import com.ait.lienzo.shared.core.types.Direction;
@@ -46,6 +47,41 @@ import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandl
 
 public class WiresConnector
 {
+    public static boolean updateHeadTailForRefreshedConnector(WiresConnector c)
+    {
+        // Iterate each refreshed line and get the new points for the decorators
+        if (c.getLine().getPathPartList().size() < 1)
+        {
+            // only do this for lines that have had refresh called
+            AbstractDirectionalMultiPointShape<?> line = c.getLine();
+
+            if ( c.isSpecialConnection() && line.getPathPartList().size() == 0)
+            {
+                // if getPathPartList is empty, it was refreshed due to a point change
+                c.updateForSpecialConnections(false);
+            }
+
+            final boolean prepared = line.isPathPartListPrepared(c.getLine().getAttributes());
+
+            if (!prepared)
+            {
+                return true;
+            }
+
+            Point2DArray points     = line.getPoint2DArray();
+            Point2D      p0         = points.get(0);
+            Point2D      p1         = line.getHeadOffsetPoint();
+            Point2DArray headPoints = new Point2DArray(p1, p0);
+            c.getHeadDecorator().draw(headPoints);
+
+            p0 = points.get(points.size() - 1);
+            p1 = line.getTailOffsetPoint();
+            Point2DArray tailPoints = new Point2DArray(p1, p0);
+            c.getTailDecorator().draw(tailPoints);
+        }
+        return false;
+    }
+
     public interface WiresConnectorHandler extends NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler, NodeMouseClickHandler, NodeMouseDoubleClickHandler
     {
 

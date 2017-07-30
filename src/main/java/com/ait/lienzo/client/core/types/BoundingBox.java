@@ -307,6 +307,11 @@ public final class BoundingBox
         return toJSONString().hashCode();
     }
 
+    public void offset(int dx, int dy)
+    {
+        m_jso.offset(dx, dy);
+    }
+
     public final static class BoundingBoxJSO extends JavaScriptObject
     {
         protected BoundingBoxJSO()
@@ -361,6 +366,13 @@ public final class BoundingBox
 			if (y > this.maxy) {
 				this.maxy = y;
 			}
+        }-*/;
+        final native void offset(double dx, double dy)
+        /*-{
+            this.minx = this.minx + dx;
+            this.maxx = this.maxx + dx;
+            this.miny = this.miny + dy;
+            this.maxy = this.maxy + dy;
         }-*/;
     }
 }

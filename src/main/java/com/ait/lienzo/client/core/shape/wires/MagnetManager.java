@@ -43,7 +43,6 @@ import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.ait.tooling.nativetools.client.util.Console;
 
 public class MagnetManager
 {
