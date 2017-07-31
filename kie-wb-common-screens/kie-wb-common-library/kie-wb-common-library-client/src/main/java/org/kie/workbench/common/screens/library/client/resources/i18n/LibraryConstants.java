@@ -192,19 +192,16 @@ public class LibraryConstants {
     public static final String NumberOfCommits = "NumberOfCommits";
 
     @TranslationKey(defaultValue = "")
-    public static final String Assets = "Assets";
+    public static final String Projects = "Projects";
 
     @TranslationKey(defaultValue = "")
-    public static final String NumberOfAssets = "NumberOfAssets";
+    public static final String NumberOfProjects = "NumberOfProjects";
 
     @TranslationKey(defaultValue = "")
     public static final String Project = "Project";
 
     @TranslationKey(defaultValue = "")
     public static final String Author = "Author";
-
-    @TranslationKey(defaultValue = "")
-    public static final String URI = "URI";
 
     @TranslationKey(defaultValue = "")
     public static final String Message = "Message";

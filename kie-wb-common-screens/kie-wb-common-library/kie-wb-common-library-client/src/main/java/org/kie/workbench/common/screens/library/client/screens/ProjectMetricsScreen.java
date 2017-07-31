@@ -132,6 +132,7 @@ public class ProjectMetricsScreen {
 
     @OnClose
     public void onClose() {
+        displayerCoordinator.closeAll();
         view.clear();
     }
 

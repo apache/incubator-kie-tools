@@ -101,7 +101,6 @@ public class ContributorsManager implements DataSetGenerator {
             .label(COLUMN_ORG)
             .label(COLUMN_REPO)
             .label(COLUMN_PROJECT)
-            .label(COLUMN_URI)
             .label(COLUMN_AUTHOR)
             .text(COLUMN_MSG)
             .date(COLUMN_DATE)
@@ -148,12 +147,11 @@ public class ContributorsManager implements DataSetGenerator {
                     } else {
                         for (VersionRecord record : recordList) {
                             String alias = record.author();
-                            String uri = record.uri();
                             String author = authorMappings.getProperty(alias);
                             author = author == null ? alias : author;
                             String msg = record.comment();
                             Date date = record.date();
-                            dsBuilder.row(org, repoAlias, projectName, uri, author, msg, date);
+                            dsBuilder.row(org, repoAlias, projectName, author, msg, date);
                         }
                     }
                 }

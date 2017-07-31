@@ -24,16 +24,18 @@ import org.dashbuilder.displayer.client.Displayer;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Element;
+import org.jboss.errai.common.client.dom.Label;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.util.TranslationUtils;
 
 @Templated
 public class OrgUnitsMetricsView implements OrgUnitsMetricsScreen.View, IsElement {
+
+    @Inject
+    @DataField
+    Label headerTitle;
 
     @Inject
     @DataField
@@ -90,15 +92,14 @@ public class OrgUnitsMetricsView implements OrgUnitsMetricsScreen.View, IsElemen
     private Map<Element,IsWidget> widgetMap = new HashMap<>();
     private OrgUnitsMetricsScreen presenter;
 
-    @Inject
-    public OrgUnitsMetricsView(TranslationUtils translationUtils, TranslationService translationService) {
-        String perOrgUnitTitle = translationService.format(LibraryConstants.PerOrgUnit, translationUtils.getOrganizationalUnitAliasInSingular());
-        this.perOrgUnitTitleSpan.setTextContent(perOrgUnitTitle);
-    }
-
     @Override
     public void init(OrgUnitsMetricsScreen presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void setHeaderTitle(String title) {
+        headerTitle.setTextContent(title);
     }
 
     @Override
@@ -107,7 +108,8 @@ public class OrgUnitsMetricsView implements OrgUnitsMetricsScreen.View, IsElemen
     }
 
     @Override
-    public void setCommitsPerOrgUnitDisplayer(Displayer displayer) {
+    public void setCommitsPerOrgUnitDisplayer(Displayer displayer, String title) {
+        this.perOrgUnitTitleSpan.setTextContent(title);
         updateDisplayer(commitsPerOrgUnitDiv, displayer);
     }
 

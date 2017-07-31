@@ -34,6 +34,12 @@
     margin-right: 70px;
 }
 
+.pm-selector-div {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
 .pm-container .label-title {
     font-size: large;
     font-weight: 500;

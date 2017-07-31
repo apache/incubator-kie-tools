@@ -19,8 +19,10 @@ package org.kie.workbench.common.screens.library.client.screens;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.dashbuilder.dataset.events.DataSetModifiedEvent;
 import org.dashbuilder.displayer.client.Displayer;
 import org.guvnor.common.services.project.model.POM;
+import org.kie.workbench.common.screens.contributors.model.ContributorsDataSets;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
@@ -89,6 +91,13 @@ public class ProjectsDetailScreen {
     public void dispose() {
         if (commitsDisplayer != null) {
             commitsDisplayer.close();
+        }
+    }
+
+    public void onContributionsUpdated(@Observes DataSetModifiedEvent event) {
+        String dsetId = event.getDataSetDef().getUUID();
+        if (ContributorsDataSets.GIT_CONTRIB.equals(dsetId) && commitsDisplayer != null) {
+            commitsDisplayer.redraw();
         }
     }
 

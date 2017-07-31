@@ -48,16 +48,16 @@ public class ProjectMetricsScreenTest extends AbstractDisplayerTest {
     public static class ContributorsData extends RawDataSet {
 
         public static final ContributorsData INSTANCE = new ContributorsData(
-                new String[] {COLUMN_ORG, COLUMN_REPO, COLUMN_PROJECT, COLUMN_URI, COLUMN_AUTHOR, COLUMN_DATE, COLUMN_MSG},
-                new Class[] {String.class, String.class, String.class, String.class, String.class, Date.class, String.class}, new String[][] {
-                {"org1", "repo", "project1", "default:/1234@repo1/project1/file1", "user1", "01/01/19 12:00", "Commit 1"},
-                {"org1", "repo", "project1", "default:/1234@repo1/project1/file2", "user1", "03/02/19 12:00", "Commit 2"},
-                {"org1", "repo", "project1", "default:/1234@repo1/project1/file3", "user2", "04/03/19 12:00", "Commit 3"},
-                {"org1", "repo", "project1", "default:/1234@repo1/project1/file4", "user2", "06/04/19 12:00", "Commit 4"},
-                {"org2", "repo", "project2", "default:/1234@repo2/project1/file5", "user3", "07/05/19 12:00", "Commit 5"},
-                {"org2", "repo", "project2", "default:/1234@repo2/project1/file6", "user3", "09/06/19 12:00", "Commit 6"},
-                {"org2", "repo", "project2", "default:/1234@repo2/project1/file7", "user4", "11/07/19 12:00", "Commit 7"},
-                {"org2", "repo", "project2", "default:/1234@repo2/project1/file8", "user4", "02/08/20 12:00", "Commit 8"},
+                new String[] {COLUMN_ORG, COLUMN_REPO, COLUMN_PROJECT, COLUMN_AUTHOR, COLUMN_DATE, COLUMN_MSG},
+                new Class[] {String.class, String.class, String.class, String.class, Date.class, String.class}, new String[][] {
+                {"org1", "repo", "project1", "user1", "01/01/19 12:00", "Commit 1"},
+                {"org1", "repo", "project1", "user1", "03/02/19 12:00", "Commit 2"},
+                {"org1", "repo", "project1", "user2", "04/03/19 12:00", "Commit 3"},
+                {"org1", "repo", "project1", "user2", "06/04/19 12:00", "Commit 4"},
+                {"org2", "repo", "project2", "user3", "07/05/19 12:00", "Commit 5"},
+                {"org2", "repo", "project2", "user3", "09/06/19 12:00", "Commit 6"},
+                {"org2", "repo", "project2", "user4", "11/07/19 12:00", "Commit 7"},
+                {"org2", "repo", "project2", "user4", "02/08/20 12:00", "Commit 8"},
                 {"emptyOrg", null, null, null, null, null, null}});
 
         public ContributorsData(String[] columnIds, Class[] types, String[][] data) {
@@ -138,9 +138,10 @@ public class ProjectMetricsScreenTest extends AbstractDisplayerTest {
         Displayer displayer = presenter.getCommitsPerAuthorDisplayer();
         DataSet dataSet = displayer.getDataSetHandler().getLastDataSet();
 
+        printDataSet(dataSet);
         assertDataSetValues(dataSet, new String[][]{
-                {"user1", "2.00", "2.00", "user1", "2.00"},
-                {"user2", "2.00", "2.00", "user2", "2.00"}
+                {"user1", "2.00", "2.00", "user1", "1.00"},
+                {"user2", "2.00", "2.00", "user2", "1.00"}
         }, 0);
     }
 

@@ -23,6 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.dashbuilder.dataset.events.DataSetModifiedEvent;
 import org.dashbuilder.displayer.client.Displayer;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
@@ -31,6 +32,7 @@ import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.screens.contributors.model.ContributorsDataSets;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
@@ -42,6 +44,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElement;
+import org.uberfire.lifecycle.OnClose;
 
 @WorkbenchScreen(identifier = LibraryPlaces.ORGANIZATIONAL_UNITS_SCREEN,
         owningPerspective = LibraryPerspective.class)
@@ -154,6 +157,13 @@ public class OrganizationalUnitsScreen {
         refresh();
     }
 
+    public void onContributionsUpdated(@Observes DataSetModifiedEvent event) {
+        String dsetId = event.getDataSetDef().getUUID();
+        if (ContributorsDataSets.GIT_CONTRIB.equals(dsetId) && commitsDisplayer != null) {
+            commitsDisplayer.redraw();
+        }
+    }
+
     public void refresh() {
         final String filterName = view.getFilterName().toUpperCase();
         final List<OrganizationalUnit> filteredOrganizationalUnits = organizationalUnits.stream()
@@ -184,5 +194,12 @@ public class OrganizationalUnitsScreen {
     @WorkbenchPartView
     public UberElement<OrganizationalUnitsScreen> getView() {
         return view;
+    }
+
+    @OnClose
+    public void dispose() {
+        if (commitsDisplayer != null) {
+            commitsDisplayer.close();
+        }
     }
 }

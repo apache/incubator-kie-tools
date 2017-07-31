@@ -63,7 +63,6 @@ public class ProjectMetricsFactory {
         settings.setChartMarginBottom(5);
         settings.setTitleVisible(false);
         settings.setYAxisTitle(null);
-        settings.setRefreshInterval(5);
         return displayerLocator.lookupDisplayer(settings);
     }
 
@@ -114,14 +113,14 @@ public class ProjectMetricsFactory {
                 .filter(createProjectFilter(projectInfo))
                 .group(COLUMN_AUTHOR)
                 .column(COLUMN_AUTHOR, translationService.getTranslation(LibraryConstants.Author))
-                .column(COLUMN_URI, DISTINCT).format(translationService.getTranslation(LibraryConstants.Assets), "#,##0")
+                .column(COUNT, "#commits").format(translationService.getTranslation(LibraryConstants.NumberOfCommits), "#,##0")
                 .column(COUNT, "#commits").format(translationService.getTranslation(LibraryConstants.NumberOfCommits), "#,##0")
                 .column(COLUMN_AUTHOR, translationService.getTranslation(LibraryConstants.Author))
-                .column(COLUMN_URI, DISTINCT).format(translationService.getTranslation(LibraryConstants.NumberOfAssets), "#,##0")
+                .column(COLUMN_AUTHOR, DISTINCT).format(translationService.getTranslation(LibraryConstants.Author), "#,##0")
                 .titleVisible(false)
                 .width(450).height(200)
                 .margins(10, 40, 40, 0)
-                .xAxisTitle(translationService.getTranslation(LibraryConstants.NumberOfAssets))
+                .xAxisTitle(translationService.getTranslation(LibraryConstants.NumberOfCommits))
                 .yAxisTitle(translationService.getTranslation(LibraryConstants.NumberOfCommits))
                 .filterOff(true)
                 .buildSettings();

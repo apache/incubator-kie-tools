@@ -177,7 +177,7 @@ public class ContributorsManagerTest {
     public void testBuildDataSet() throws Exception {
         DataSet dataSet = contributorsManager.buildDataSet(null);
         assertEquals(dataSet.getRowCount(), 68);
-        assertEquals(dataSet.getColumns().size(), 7);
+        assertEquals(dataSet.getColumns().size(), 6);
 
         DataColumn column = dataSet.getColumns().get(0);
         assertEquals(column.getColumnType(), ColumnType.LABEL);
@@ -193,17 +193,13 @@ public class ContributorsManagerTest {
 
         column = dataSet.getColumns().get(3);
         assertEquals(column.getColumnType(), ColumnType.LABEL);
-        assertEquals(column.getId(), COLUMN_URI);
-
-        column = dataSet.getColumns().get(4);
-        assertEquals(column.getColumnType(), ColumnType.LABEL);
         assertEquals(column.getId(), COLUMN_AUTHOR);
 
-        column = dataSet.getColumns().get(5);
+        column = dataSet.getColumns().get(4);
         assertEquals(column.getColumnType(), ColumnType.TEXT);
         assertEquals(column.getId(), COLUMN_MSG);
 
-        column = dataSet.getColumns().get(6);
+        column = dataSet.getColumns().get(5);
         assertEquals(column.getColumnType(), ColumnType.DATE);
         assertEquals(column.getId(), COLUMN_DATE);
 

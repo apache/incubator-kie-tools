@@ -38,11 +38,13 @@ public class OrgUnitsMetricsScreen {
 
     public interface View extends UberElement<OrgUnitsMetricsScreen> {
 
+        void setHeaderTitle(String title);
+
         void setCommitsOverTimeDisplayer(Displayer displayer);
 
         void setCommitsPerAuthorDisplayer(Displayer displayer);
 
-        void setCommitsPerOrgUnitDisplayer(Displayer displayer);
+        void setCommitsPerOrgUnitDisplayer(Displayer displayer, String title);
 
         void setCommitsPerProjectDisplayer(Displayer displayer);
 
@@ -110,6 +112,9 @@ public class OrgUnitsMetricsScreen {
 
     @PostConstruct
     public void init() {
+        String orgUnitsAlias = translationUtils.getOrganizationalUnitAliasInPlural();
+        String orgUnitAlias = translationUtils.getOrganizationalUnitAliasInSingular();
+
         this.commitsOverTimeDisplayer = metricsFactory.lookupCommitsOverTimeDisplayer();
         this.commitsPerOrgUnitDisplayer = metricsFactory.lookupCommitsPerOrgUnitDisplayer();
         this.commitsPerAuthorDisplayer = metricsFactory.lookupCommitsPerAuthorDisplayer();
@@ -124,8 +129,9 @@ public class OrgUnitsMetricsScreen {
         this.dateSelectorDisplayer = metricsFactory.lookupDateSelectorDisplayer();
 
         view.clear();
+        view.setHeaderTitle(translationService.format(LibraryConstants.MetricsTitle, orgUnitsAlias));
         view.setCommitsPerAuthorDisplayer(commitsPerAuthorDisplayer);
-        view.setCommitsPerOrgUnitDisplayer(commitsPerOrgUnitDisplayer);
+        view.setCommitsPerOrgUnitDisplayer(commitsPerOrgUnitDisplayer, translationService.format(LibraryConstants.PerOrgUnit, orgUnitAlias));
         view.setCommitsPerProjectDisplayer(commitsPerProjectDisplayer);
         view.setCommitsOverTimeDisplayer(commitsOverTimeDisplayer);
         view.setCommitsByYearDisplayer(commitsByYearDisplayer);
@@ -154,6 +160,7 @@ public class OrgUnitsMetricsScreen {
 
     @OnClose
     public void onClose() {
+        displayerCoordinator.closeAll();
         view.clear();
     }
 

@@ -25,9 +25,11 @@
 .pm-time-div {
     float: left;
 }
+
 .pm-selector-div {
-    float: right;
-    margin-top: -10px;
+    position: absolute;
+    top: 10px;
+    right: 20px;
 }
 
 .pm-container .label-title {
