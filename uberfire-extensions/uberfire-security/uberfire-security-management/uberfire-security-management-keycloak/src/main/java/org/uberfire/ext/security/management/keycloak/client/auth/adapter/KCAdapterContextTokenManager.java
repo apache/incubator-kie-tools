@@ -49,6 +49,12 @@ public class KCAdapterContextTokenManager implements TokenManager {
     }
 
     protected KeycloakSecurityContext getKCSessionContext() {
-        return (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
+        KeycloakSecurityContext context = null;
+    	
+    	context = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
+    	if (context == null) {
+    		context = (KeycloakSecurityContext) request.getSession().getAttribute(KeycloakSecurityContext.class.getName());
+    	}
+    	return context;
     }
 }
