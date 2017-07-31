@@ -481,7 +481,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                 {
                     remove(shape);
                 }
-                else  if (hasSameParentsAsSelection(shape))
+                else  if (hasSameParentsAsSelection(shape) && shape.getDockedTo() == null) // cannot docked shapes
                 {
                     removeChildShape(shape.getChildShapes());
                     add(shape);
@@ -823,6 +823,11 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         // first build a map of all shapes that intersect with teh selection rectangle. Nested shapes will be used later.
         for (WiresShape shape : m_wiresManager.getShapesMap().values())
         {
+            if ( shape.getDockedTo() != null)
+            {
+                // docked items cannot be added to a selection, only their parent they are docked to
+                continue;
+            }
             nodeBox = shape.getContainer().getComputedBoundingPoints().getBoundingBox();
             if (selectionBox.intersects(nodeBox))
             {
