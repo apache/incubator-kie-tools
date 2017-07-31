@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
@@ -190,6 +191,15 @@ public class GuidedRuleEditorServiceImpl
 
         //Get FQCN's used by Globals
         consumedFQCNs.addAll(oracle.getPackageGlobals().values());
+
+        //Get FQCN's of collections defined in project settings
+        //they can be used in From Collect expressions
+        consumedFQCNs.addAll(oracle.getProjectCollectionTypes()
+                                     .entrySet()
+                                     .stream()
+                                     .filter(entry -> entry.getValue())
+                                     .map(entry -> entry.getKey())
+                                     .collect(Collectors.toSet()));
 
         DataModelOracleUtilities.populateDataModel(oracle,
                                                    dataModel,

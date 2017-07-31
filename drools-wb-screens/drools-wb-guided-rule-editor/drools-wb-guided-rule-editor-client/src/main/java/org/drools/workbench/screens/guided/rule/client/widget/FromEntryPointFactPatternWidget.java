@@ -35,22 +35,22 @@ public class FromEntryPointFactPatternWidget extends FromCompositeFactPatternWid
 
     private TextBox txtEntryPoint;
 
-    public FromEntryPointFactPatternWidget( RuleModeller modeller,
-                                            EventBus eventBus,
-                                            FromEntryPointFactPattern pattern ) {
-        super( modeller,
-               eventBus,
-               pattern );
+    public FromEntryPointFactPatternWidget(RuleModeller modeller,
+                                           EventBus eventBus,
+                                           FromEntryPointFactPattern pattern) {
+        super(modeller,
+              eventBus,
+              pattern);
     }
 
-    public FromEntryPointFactPatternWidget( RuleModeller modeller,
-                                            EventBus eventBus,
-                                            FromEntryPointFactPattern pattern,
-                                            Boolean readOnly ) {
-        super( modeller,
-               eventBus,
-               pattern,
-               readOnly );
+    public FromEntryPointFactPatternWidget(RuleModeller modeller,
+                                           EventBus eventBus,
+                                           FromEntryPointFactPattern pattern,
+                                           Boolean readOnly) {
+        super(modeller,
+              eventBus,
+              pattern,
+              readOnly);
     }
 
     @Override
@@ -58,44 +58,41 @@ public class FromEntryPointFactPatternWidget extends FromCompositeFactPatternWid
 
         ClickHandler click = new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
-                Widget w = (Widget) event.getSource();
-                showFactTypeSelector( w );
-
+            public void onClick(ClickEvent event) {
+                showFactTypeSelector();
             }
         };
-        String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName( "from entry-point" ) + "</div>";
+        String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName("from entry-point") + "</div>";
 
         FlexTable panel = new FlexTable();
 
         int r = 0;
 
-        if ( pattern.getFactPattern() == null ) {
-            panel.setWidget( r,
-                             0,
-                             new ClickableLabel( "<br> <font color='red'>" + GuidedRuleEditorResources.CONSTANTS.clickToAddPatterns() + "</font>",
-                                                 click,
-                                                 !this.readOnly ) );
+        if (pattern.getFactPattern() == null) {
+            panel.setWidget(r,
+                            0,
+                            new ClickableLabel("<br> <font color='red'>" + GuidedRuleEditorResources.CONSTANTS.clickToAddPatterns() + "</font>",
+                                               click,
+                                               !this.readOnly));
             r++;
         }
 
-        panel.setWidget( r,
-                         0,
-                         new HTML( lbl ) );
+        panel.setWidget(r,
+                        0,
+                        new HTML(lbl));
 
         this.txtEntryPoint = new TextBox();
-        this.txtEntryPoint.setText( getFromEntryPointPattern().getEntryPointName() );
-        this.txtEntryPoint.addChangeHandler( new ChangeHandler() {
+        this.txtEntryPoint.setText(getFromEntryPointPattern().getEntryPointName());
+        this.txtEntryPoint.addChangeHandler(new ChangeHandler() {
 
-            public void onChange( ChangeEvent event ) {
-                getFromEntryPointPattern().setEntryPointName( txtEntryPoint.getText() );
-                setModified( true );
+            public void onChange(ChangeEvent event) {
+                getFromEntryPointPattern().setEntryPointName(txtEntryPoint.getText());
+                setModified(true);
             }
-
-        } );
-        panel.setWidget( r,
-                         1,
-                         this.txtEntryPoint );
+        });
+        panel.setWidget(r,
+                        1,
+                        this.txtEntryPoint);
 
         return panel;
     }
@@ -103,5 +100,4 @@ public class FromEntryPointFactPatternWidget extends FromCompositeFactPatternWid
     private FromEntryPointFactPattern getFromEntryPointPattern() {
         return (FromEntryPointFactPattern) this.pattern;
     }
-
 }

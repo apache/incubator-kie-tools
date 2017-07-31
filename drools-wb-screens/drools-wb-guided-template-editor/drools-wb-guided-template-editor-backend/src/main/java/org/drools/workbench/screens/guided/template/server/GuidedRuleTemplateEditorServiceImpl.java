@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.template.server;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -94,217 +95,220 @@ public class GuidedRuleTemplateEditorServiceImpl
     }
 
     @Inject
-    public GuidedRuleTemplateEditorServiceImpl( final SessionInfo sessionInfo ) {
-        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+    public GuidedRuleTemplateEditorServiceImpl(final SessionInfo sessionInfo) {
+        this.safeSessionInfo = new SafeSessionInfo(sessionInfo);
     }
 
-    public Path create( final Path context,
-                        final String fileName,
-                        final TemplateModel content,
-                        final String comment ) {
+    public Path create(final Path context,
+                       final String fileName,
+                       final TemplateModel content,
+                       final String comment) {
         try {
-            final Package pkg = projectService.resolvePackage( context );
-            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
-            content.setPackageName( packageName );
+            final Package pkg = projectService.resolvePackage(context);
+            final String packageName = (pkg == null ? null : pkg.getPackageName());
+            content.setPackageName(packageName);
 
-            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
-            final Path newPath = Paths.convert( nioPath );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert(context).resolve(fileName);
+            final Path newPath = Paths.convert(nioPath);
 
-            if ( ioService.exists( nioPath ) ) {
-                throw new FileAlreadyExistsException( nioPath.toString() );
+            if (ioService.exists(nioPath)) {
+                throw new FileAlreadyExistsException(nioPath.toString());
             }
 
-            ioService.write( nioPath,
-                             RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( content ),
-                             commentedOptionFactory.makeCommentedOption( comment ) );
+            ioService.write(nioPath,
+                            RuleTemplateModelXMLPersistenceImpl.getInstance().marshal(content),
+                            commentedOptionFactory.makeCommentedOption(comment));
 
             return newPath;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public TemplateModel load( final Path path ) {
+    public TemplateModel load(final Path path) {
         try {
-            final String content = ioService.readAllString( Paths.convert( path ) );
+            final String content = ioService.readAllString(Paths.convert(path));
 
-            return (TemplateModel) RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( content );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return (TemplateModel) RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal(content);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public GuidedTemplateEditorContent loadContent( final Path path ) {
-        return super.loadContent( path );
+    public GuidedTemplateEditorContent loadContent(final Path path) {
+        return super.loadContent(path);
     }
 
     @Override
-    protected GuidedTemplateEditorContent constructContent( Path path,
-                                                            Overview overview ) {
-        final TemplateModel model = load( path );
-        final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
+    protected GuidedTemplateEditorContent constructContent(Path path,
+                                                           Overview overview) {
+        final TemplateModel model = load(path);
+        final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
 
         //Get FQCN's used by model
-        final GuidedRuleModelVisitor visitor = new GuidedRuleModelVisitor( model );
+        final GuidedRuleModelVisitor visitor = new GuidedRuleModelVisitor(model);
         final Set<String> consumedFQCNs = visitor.getConsumedModelClasses();
 
         //Get FQCN's used by Globals
-        consumedFQCNs.addAll( oracle.getPackageGlobals().values() );
+        consumedFQCNs.addAll(oracle.getPackageGlobals().values());
 
-        DataModelOracleUtilities.populateDataModel( oracle,
-                                                    dataModel,
-                                                    consumedFQCNs );
+        //Get FQCN's of collections defined in project settings
+        //they can be used in From Collect expressions
+        consumedFQCNs.addAll(oracle.getProjectCollectionTypes()
+                                     .entrySet()
+                                     .stream()
+                                     .filter(entry -> entry.getValue())
+                                     .map(entry -> entry.getKey())
+                                     .collect(Collectors.toSet()));
+
+        DataModelOracleUtilities.populateDataModel(oracle,
+                                                   dataModel,
+                                                   consumedFQCNs);
 
         //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                           safeSessionInfo ) );
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                         safeSessionInfo));
 
-        return new GuidedTemplateEditorContent( model,
-                                                overview,
-                                                dataModel );
+        return new GuidedTemplateEditorContent(model,
+                                               overview,
+                                               dataModel);
     }
 
     @Override
-    public Path save( final Path resource,
-                      final TemplateModel model,
-                      final Metadata metadata,
-                      final String comment ) {
+    public Path save(final Path resource,
+                     final TemplateModel model,
+                     final Metadata metadata,
+                     final String comment) {
         try {
-            final Package pkg = projectService.resolvePackage( resource );
-            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
-            model.setPackageName( packageName );
+            final Package pkg = projectService.resolvePackage(resource);
+            final String packageName = (pkg == null ? null : pkg.getPackageName());
+            model.setPackageName(packageName);
 
-            Metadata currentMetadata = metadataService.getMetadata( resource );
-            ioService.write( Paths.convert( resource ),
-                             RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( model ),
-                             metadataService.setUpAttributes( resource, metadata ),
-                             commentedOptionFactory.makeCommentedOption( comment ) );
+            Metadata currentMetadata = metadataService.getMetadata(resource);
+            ioService.write(Paths.convert(resource),
+                            RuleTemplateModelXMLPersistenceImpl.getInstance().marshal(model),
+                            metadataService.setUpAttributes(resource,
+                                                            metadata),
+                            commentedOptionFactory.makeCommentedOption(comment));
 
-            fireMetadataSocialEvents( resource, currentMetadata, metadata );
+            fireMetadataSocialEvents(resource,
+                                     currentMetadata,
+                                     metadata);
             return resource;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public void delete( final Path path,
-                        final String comment ) {
+    public void delete(final Path path,
+                       final String comment) {
         try {
-            deleteService.delete( path,
-                                  comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            deleteService.delete(path,
+                                 comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path rename( final Path path,
-                        final String newName,
-                        final String comment ) {
+    public Path rename(final Path path,
+                       final String newName,
+                       final String comment) {
         try {
-            return renameService.rename( path,
-                                         newName,
-                                         comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return renameService.rename(path,
+                                        newName,
+                                        comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final String comment ) {
+    public Path copy(final Path path,
+                     final String newName,
+                     final String comment) {
         try {
-            return copyService.copy( path,
-                                     newName,
-                                     comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return copyService.copy(path,
+                                    newName,
+                                    comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final Path targetDirectory,
-                      final String comment ) {
+    public Path copy(final Path path,
+                     final String newName,
+                     final Path targetDirectory,
+                     final String comment) {
         try {
-            return copyService.copy( path,
-                                     newName,
-                                     targetDirectory,
-                                     comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return copyService.copy(path,
+                                    newName,
+                                    targetDirectory,
+                                    comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public String toSource( final Path path,
-                            final TemplateModel model ) {
-        return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ), model );
+    public String toSource(final Path path,
+                           final TemplateModel model) {
+        return sourceServices.getServiceFor(Paths.convert(path)).getSource(Paths.convert(path),
+                                                                           model);
     }
 
     @Override
-    public boolean accepts( final Path path ) {
-        return resourceTypeDefinition.accept( path );
+    public boolean accepts(final Path path) {
+        return resourceTypeDefinition.accept(path);
     }
 
     @Override
-    public List<ValidationMessage> validate( final Path path ) {
+    public List<ValidationMessage> validate(final Path path) {
         try {
-            final String content = ioService.readAllString( Paths.convert( path ) );
-            final TemplateModel model = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( content );
-            return validateTemplateVariables( path,
-                                              model );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            final String content = ioService.readAllString(Paths.convert(path));
+            final TemplateModel model = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal(content);
+            return validateTemplateVariables(path,
+                                             model);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public List<ValidationMessage> validate( final Path path,
-                                             final TemplateModel model ) {
+    public List<ValidationMessage> validate(final Path path,
+                                            final TemplateModel model) {
         try {
-            final List<ValidationMessage> messages = validateTemplateVariables( path,
-                                                                                model );
-            messages.addAll( genericValidator.validate( path,
-                                                        RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( model ) ) );
+            final List<ValidationMessage> messages = validateTemplateVariables(path,
+                                                                               model);
+            messages.addAll(genericValidator.validate(path,
+                                                      RuleTemplateModelXMLPersistenceImpl.getInstance().marshal(model)));
             return messages;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    private List<ValidationMessage> validateTemplateVariables( final Path path,
-                                                               final TemplateModel model ) {
+    private List<ValidationMessage> validateTemplateVariables(final Path path,
+                                                              final TemplateModel model) {
         final List<ValidationMessage> messages = new ArrayList<ValidationMessage>();
-        if ( model.getInterpolationVariablesList().length > 0 && model.getRowsCount() == 0 ) {
-            messages.add( makeValidationMessages( path,
-                                                  "One or more Template Variables defined but no data has been entered." ) );
+        if (model.getInterpolationVariablesList().length > 0 && model.getRowsCount() == 0) {
+            messages.add(makeValidationMessages(path,
+                                                "One or more Template Variables defined but no data has been entered."));
         }
         return messages;
     }
 
-    private ValidationMessage makeValidationMessages( final Path path,
-                                                      final String message ) {
+    private ValidationMessage makeValidationMessages(final Path path,
+                                                     final String message) {
         final ValidationMessage msg = new ValidationMessage();
-        msg.setPath( path );
-        msg.setLevel( Level.WARNING );
-        msg.setText( message );
+        msg.setPath(path);
+        msg.setLevel(Level.WARNING);
+        msg.setText(message);
         return msg;
     }
-
 }
