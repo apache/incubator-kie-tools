@@ -481,13 +481,25 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                 {
                     remove(shape);
                 }
-                else  if (findParentIfInSelection(shape)==null)
+                else  if (hasSameParentsAsSelection(shape))
                 {
                     removeChildShape(shape.getChildShapes());
                     add(shape);
                 }
             }
             notifyListener(event);
+        }
+
+        private boolean hasSameParentsAsSelection(WiresShape subjectShape)
+        {
+            for (WiresShape existingShape : m_shapes)
+            {
+                if (existingShape.getParent() != subjectShape.getParent())
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private WiresShape findParentIfInSelection(WiresShape subjectShape)
