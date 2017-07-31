@@ -52,284 +52,288 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
 public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactPatternWidget {
 
-    public FromAccumulateCompositeFactPatternWidget(RuleModeller modeller,
-                                                    EventBus eventBus,
-                                                    FromAccumulateCompositeFactPattern pattern,
-                                                    Boolean readOnly) {
-        super(modeller,
-              eventBus,
-              pattern,
-              readOnly);
+    public FromAccumulateCompositeFactPatternWidget( RuleModeller modeller,
+                                                     EventBus eventBus,
+                                                     FromAccumulateCompositeFactPattern pattern,
+                                                     Boolean readOnly ) {
+        super( modeller,
+               eventBus,
+               pattern,
+               readOnly );
     }
 
-    public FromAccumulateCompositeFactPatternWidget(RuleModeller modeller,
-                                                    EventBus eventBus,
-                                                    FromAccumulateCompositeFactPattern pattern) {
-        super(modeller,
-              eventBus,
-              pattern);
+    public FromAccumulateCompositeFactPatternWidget( RuleModeller modeller,
+                                                     EventBus eventBus,
+                                                     FromAccumulateCompositeFactPattern pattern ) {
+        super( modeller,
+               eventBus,
+               pattern );
     }
 
     @Override
     protected Widget getCompositeLabel() {
         ClickHandler leftPatternclick = new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
-                showFactTypeSelector();
+            public void onClick( ClickEvent event ) {
+                Widget w = (Widget) event.getSource();
+                showFactTypeSelector( w );
             }
         };
         ClickHandler sourcePatternClick = new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 Widget w = (Widget) event.getSource();
-                showSourcePatternSelector(w);
+                showSourcePatternSelector( w );
             }
         };
 
-        String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName("from accumulate") + "</div>";
+        String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName( "from accumulate" ) + "</div>";
 
         FlexTable panel = new FlexTable();
 
         int r = 0;
 
-        if (pattern.getFactPattern() == null) {
-            panel.setWidget(r++,
-                            0,
-                            new ClickableLabel("<br> <font color='red'>" + GuidedRuleEditorResources.CONSTANTS.clickToAddPattern() + "</font>",
-                                               leftPatternclick,
-                                               !this.readOnly));
+        if ( pattern.getFactPattern() == null ) {
+            panel.setWidget( r++,
+                             0,
+                             new ClickableLabel( "<br> <font color='red'>" + GuidedRuleEditorResources.CONSTANTS.clickToAddPattern() + "</font>",
+                                                 leftPatternclick,
+                                                 !this.readOnly ) );
         }
 
-        panel.setWidget(r++,
-                        0,
-                        new HTML(lbl));
+        panel.setWidget( r++,
+                         0,
+                         new HTML( lbl ) );
 
-        if (this.getFromAccumulatePattern().getSourcePattern() == null) {
-            panel.setWidget(r++,
-                            0,
-                            new ClickableLabel("<br> <font color='red'>" + GuidedRuleEditorResources.CONSTANTS.clickToAddPattern() + "</font>",
-                                               sourcePatternClick,
-                                               !this.readOnly));
+        if ( this.getFromAccumulatePattern().getSourcePattern() == null ) {
+            panel.setWidget( r++,
+                             0,
+                             new ClickableLabel( "<br> <font color='red'>" + GuidedRuleEditorResources.CONSTANTS.clickToAddPattern() + "</font>",
+                                                 sourcePatternClick,
+                                                 !this.readOnly ) );
         } else {
             IPattern rPattern = this.getFromAccumulatePattern().getSourcePattern();
 
             RuleModellerWidget sourcePatternWidget;
-            if (rPattern instanceof FactPattern) {
-                sourcePatternWidget = new FactPatternWidget(this.getModeller(),
-                                                            getEventBus(),
-                                                            rPattern,
-                                                            true,
-                                                            true,
-                                                            this.readOnly);
-            } else if (rPattern instanceof FromAccumulateCompositeFactPattern) {
-                sourcePatternWidget = new FromAccumulateCompositeFactPatternWidget(this.getModeller(),
-                                                                                   this.getEventBus(),
-                                                                                   (FromAccumulateCompositeFactPattern) rPattern,
-                                                                                   this.readOnly);
-            } else if (rPattern instanceof FromCollectCompositeFactPattern) {
-                sourcePatternWidget = new FromCollectCompositeFactPatternWidget(this.getModeller(),
-                                                                                this.getEventBus(),
-                                                                                (FromCollectCompositeFactPattern) rPattern,
-                                                                                this.readOnly);
-            } else if (rPattern instanceof FromEntryPointFactPattern) {
-                sourcePatternWidget = new FromEntryPointFactPatternWidget(this.getModeller(),
+            if ( rPattern instanceof FactPattern ) {
+                sourcePatternWidget = new FactPatternWidget( this.getModeller(),
+                                                             getEventBus(),
+                                                             rPattern,
+                                                             true,
+                                                             true,
+                                                             this.readOnly );
+
+            } else if ( rPattern instanceof FromAccumulateCompositeFactPattern ) {
+                sourcePatternWidget = new FromAccumulateCompositeFactPatternWidget( this.getModeller(),
+                                                                                    this.getEventBus(),
+                                                                                    (FromAccumulateCompositeFactPattern) rPattern,
+                                                                                    this.readOnly );
+
+            } else if ( rPattern instanceof FromCollectCompositeFactPattern ) {
+                sourcePatternWidget = new FromCollectCompositeFactPatternWidget( this.getModeller(),
+                                                                                 this.getEventBus(),
+                                                                                 (FromCollectCompositeFactPattern) rPattern,
+                                                                                 this.readOnly );
+
+            } else if ( rPattern instanceof FromEntryPointFactPattern ) {
+                sourcePatternWidget = new FromEntryPointFactPatternWidget( this.getModeller(),
+                                                                           this.getEventBus(),
+                                                                           (FromEntryPointFactPattern) rPattern,
+                                                                           this.readOnly );
+
+            } else if ( rPattern instanceof FromCompositeFactPattern ) {
+                sourcePatternWidget = new FromCompositeFactPatternWidget( this.getModeller(),
                                                                           this.getEventBus(),
-                                                                          (FromEntryPointFactPattern) rPattern,
-                                                                          this.readOnly);
-            } else if (rPattern instanceof FromCompositeFactPattern) {
-                sourcePatternWidget = new FromCompositeFactPatternWidget(this.getModeller(),
-                                                                         this.getEventBus(),
-                                                                         (FromCompositeFactPattern) rPattern,
-                                                                         this.readOnly);
+                                                                          (FromCompositeFactPattern) rPattern,
+                                                                          this.readOnly );
             } else {
-                throw new IllegalArgumentException("Unsupported pattern "
-                                                           + rPattern + " for right side of FROM ACCUMULATE");
+                throw new IllegalArgumentException( "Unsupported pattern "
+                                                            + rPattern + " for right side of FROM ACCUMULATE" );
             }
 
-            sourcePatternWidget.addOnModifiedCommand(new Command() {
+            sourcePatternWidget.addOnModifiedCommand( new Command() {
                 public void execute() {
-                    setModified(true);
+                    setModified( true );
                 }
-            });
+            } );
 
-            panel.setWidget(r++,
-                            0,
-                            addRemoveButton(sourcePatternWidget,
-                                            new ClickHandler() {
+            panel.setWidget( r++,
+                             0,
+                             addRemoveButton( sourcePatternWidget,
+                                              new ClickHandler() {
 
-                                                public void onClick(ClickEvent event) {
-                                                    if (Window.confirm(GuidedRuleEditorResources.CONSTANTS.RemoveThisBlockOfData())) {
-                                                        setModified(true);
-                                                        getFromAccumulatePattern().setSourcePattern(null);
-                                                        getModeller().refreshWidget();
-                                                    }
-                                                }
-                                            }));
+                                                  public void onClick( ClickEvent event ) {
+                                                      if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisBlockOfData() ) ) {
+                                                          setModified( true );
+                                                          getFromAccumulatePattern().setSourcePattern( null );
+                                                          getModeller().refreshWidget();
+                                                      }
+
+                                                  }
+                                              } ) );
         }
 
         final TabPanel tPanel = new TabPanel() {{
-            addStyleName("uf-tabbar-panel");
+            addStyleName( "uf-tabbar-panel" );
         }};
         final NavTabs navTabs = new NavTabs() {{
-            addStyleName("uf-tabbar-panel-nav-tabs");
-            addStyleName("nav-tabs-pf");
+            addStyleName( "uf-tabbar-panel-nav-tabs" );
+            addStyleName( "nav-tabs-pf" );
         }};
         final TabContent content = new TabContent();
-        tPanel.add(navTabs);
-        tPanel.add(content);
+        tPanel.add( navTabs );
+        tPanel.add( content );
 
         FlexTable codeTable = new FlexTable();
         int codeTableRow = 0;
         int codeTableCol = 0;
 
-        codeTable.setWidget(codeTableRow,
-                            codeTableCol++,
-                            new HTML("<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Init() + ":</div>"));
+        codeTable.setWidget( codeTableRow,
+                             codeTableCol++,
+                             new HTML( "<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Init() + ":</div>" ) );
 
         final TextBox initField = new TextBox();
-        initField.setTitle(GuidedRuleEditorResources.CONSTANTS.InitCode());
-        initField.setText(getFromAccumulatePattern().getInitCode());
-        initField.setEnabled(!this.readOnly);
-        codeTable.setWidget(codeTableRow++,
-                            codeTableCol--,
-                            initField);
+        initField.setTitle( GuidedRuleEditorResources.CONSTANTS.InitCode() );
+        initField.setText( getFromAccumulatePattern().getInitCode() );
+        initField.setEnabled( !this.readOnly );
+        codeTable.setWidget( codeTableRow++,
+                             codeTableCol--,
+                             initField );
 
-        codeTable.setWidget(codeTableRow,
-                            codeTableCol++,
-                            new HTML("<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Action() + ":</div>"));
+        codeTable.setWidget( codeTableRow,
+                             codeTableCol++,
+                             new HTML( "<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Action() + ":</div>" ) );
         final TextBox actionField = new TextBox();
-        actionField.setTitle(GuidedRuleEditorResources.CONSTANTS.ActionCode());
-        actionField.setText(getFromAccumulatePattern().getActionCode());
-        actionField.setEnabled(!this.readOnly);
-        codeTable.setWidget(codeTableRow++,
-                            codeTableCol--,
-                            actionField);
+        actionField.setTitle( GuidedRuleEditorResources.CONSTANTS.ActionCode() );
+        actionField.setText( getFromAccumulatePattern().getActionCode() );
+        actionField.setEnabled( !this.readOnly );
+        codeTable.setWidget( codeTableRow++,
+                             codeTableCol--,
+                             actionField );
 
-        codeTable.setWidget(codeTableRow,
-                            codeTableCol++,
-                            new HTML("<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Reverse() + ":</div>"));
+        codeTable.setWidget( codeTableRow,
+                             codeTableCol++,
+                             new HTML( "<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Reverse() + ":</div>" ) );
         final TextBox reverseField = new TextBox();
-        reverseField.setTitle(GuidedRuleEditorResources.CONSTANTS.ReverseCode());
-        reverseField.setText(getFromAccumulatePattern().getReverseCode());
-        reverseField.setEnabled(!this.readOnly);
-        codeTable.setWidget(codeTableRow++,
-                            codeTableCol--,
-                            reverseField);
+        reverseField.setTitle( GuidedRuleEditorResources.CONSTANTS.ReverseCode() );
+        reverseField.setText( getFromAccumulatePattern().getReverseCode() );
+        reverseField.setEnabled( !this.readOnly );
+        codeTable.setWidget( codeTableRow++,
+                             codeTableCol--,
+                             reverseField );
 
-        codeTable.setWidget(codeTableRow,
-                            codeTableCol++,
-                            new HTML("<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Result() + ":</div>"));
+        codeTable.setWidget( codeTableRow,
+                             codeTableCol++,
+                             new HTML( "<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Result() + ":</div>" ) );
         final TextBox resultField = new TextBox();
-        resultField.setTitle(GuidedRuleEditorResources.CONSTANTS.ResultCode());
-        resultField.setText(getFromAccumulatePattern().getResultCode());
-        resultField.setEnabled(!this.readOnly);
-        codeTable.setWidget(codeTableRow++,
-                            codeTableCol--,
-                            resultField);
+        resultField.setTitle( GuidedRuleEditorResources.CONSTANTS.ResultCode() );
+        resultField.setText( getFromAccumulatePattern().getResultCode() );
+        resultField.setEnabled( !this.readOnly );
+        codeTable.setWidget( codeTableRow++,
+                             codeTableCol--,
+                             resultField );
 
         //panel.setWidget(r++, 0, codeTable);
         final ScrollPanel codePanel = new ScrollPanel();
-        codePanel.add(codeTable);
+        codePanel.add( codeTable );
 
         final TabPane codeTabPane = new TabPane() {{
-            add(codePanel);
+            add( codePanel );
         }};
 
-        final TabListItem codeTabListItem = new TabListItem(GuidedRuleEditorResources.CONSTANTS.CustomCode()) {{
-            addStyleName("uf-dropdown-tab-list-item");
-            setDataTargetWidget(codeTabPane);
-            getElement().getStyle().setFontSize(12,
-                                                Style.Unit.PX);
+        final TabListItem codeTabListItem = new TabListItem( GuidedRuleEditorResources.CONSTANTS.CustomCode() ) {{
+            addStyleName( "uf-dropdown-tab-list-item" );
+            setDataTargetWidget( codeTabPane );
+            getElement().getStyle().setFontSize( 12, Style.Unit.PX );
         }};
 
-        navTabs.add(codeTabListItem);
-        content.add(codeTabPane);
+        navTabs.add( codeTabListItem );
+        content.add( codeTabPane );
 
         FlexTable functionTable = new FlexTable();
 
-        functionTable.setWidget(0,
-                                0,
-                                new HTML("<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Function() + ":</div>"));
+        functionTable.setWidget( 0,
+                                 0,
+                                 new HTML( "<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Function() + ":</div>" ) );
         final TextBox functionField = new TextBox();
-        functionField.setTitle(GuidedRuleEditorResources.CONSTANTS.FunctionCode());
-        functionField.setText(getFromAccumulatePattern().getFunction());
-        functionField.setEnabled(!this.readOnly);
-        functionTable.setWidget(0,
-                                1,
-                                functionField);
+        functionField.setTitle( GuidedRuleEditorResources.CONSTANTS.FunctionCode() );
+        functionField.setText( getFromAccumulatePattern().getFunction() );
+        functionField.setEnabled( !this.readOnly );
+        functionTable.setWidget( 0,
+                                 1,
+                                 functionField );
 
         //        panel.setWidget(r++, 0, functionTable);
 
         final ScrollPanel functionPanel = new ScrollPanel();
-        functionPanel.add(functionTable);
+        functionPanel.add( functionTable );
 
         final TabPane functionTabPane = new TabPane() {{
-            add(functionPanel);
+            add( functionPanel );
         }};
 
-        final TabListItem functionTabListItem = new TabListItem(GuidedRuleEditorResources.CONSTANTS.Function()) {{
-            addStyleName("uf-dropdown-tab-list-item");
-            setDataTargetWidget(functionTabPane);
-            getElement().getStyle().setFontSize(12,
-                                                Style.Unit.PX);
+        final TabListItem functionTabListItem = new TabListItem( GuidedRuleEditorResources.CONSTANTS.Function() ) {{
+            addStyleName( "uf-dropdown-tab-list-item" );
+            setDataTargetWidget( functionTabPane );
+            getElement().getStyle().setFontSize( 12, Style.Unit.PX );
         }};
 
-        navTabs.add(functionTabListItem);
-        content.add(functionTabPane);
+        navTabs.add( functionTabListItem );
+        content.add( functionTabPane );
 
         ChangeHandler changehandler = new ChangeHandler() {
 
-            public void onChange(ChangeEvent event) {
+            public void onChange( ChangeEvent event ) {
                 Widget sender = (Widget) event.getSource();
                 TextBox senderTB = (TextBox) event.getSource();
                 String code = senderTB.getText();
-                setModified(true);
-                if (sender == initField) {
-                    getFromAccumulatePattern().setFunction(null);
-                    functionField.setText("");
-                    getFromAccumulatePattern().setInitCode(code);
-                } else if (sender == actionField) {
-                    getFromAccumulatePattern().setFunction(null);
-                    functionField.setText("");
-                    getFromAccumulatePattern().setActionCode(code);
-                } else if (sender == reverseField) {
-                    getFromAccumulatePattern().setFunction(null);
-                    functionField.setText("");
-                    getFromAccumulatePattern().setReverseCode(code);
-                } else if (sender == resultField) {
-                    getFromAccumulatePattern().setFunction(null);
-                    functionField.setText("");
-                    getFromAccumulatePattern().setResultCode(code);
-                } else if (sender == functionField) {
+                setModified( true );
+                if ( sender == initField ) {
+                    getFromAccumulatePattern().setFunction( null );
+                    functionField.setText( "" );
+                    getFromAccumulatePattern().setInitCode( code );
+                } else if ( sender == actionField ) {
+                    getFromAccumulatePattern().setFunction( null );
+                    functionField.setText( "" );
+                    getFromAccumulatePattern().setActionCode( code );
+                } else if ( sender == reverseField ) {
+                    getFromAccumulatePattern().setFunction( null );
+                    functionField.setText( "" );
+                    getFromAccumulatePattern().setReverseCode( code );
+                } else if ( sender == resultField ) {
+                    getFromAccumulatePattern().setFunction( null );
+                    functionField.setText( "" );
+                    getFromAccumulatePattern().setResultCode( code );
+                } else if ( sender == functionField ) {
                     getFromAccumulatePattern().clearCodeFields();
-                    initField.setText("");
-                    actionField.setText("");
-                    reverseField.setText("");
-                    resultField.setText("");
-                    getFromAccumulatePattern().setFunction(code);
+                    initField.setText( "" );
+                    actionField.setText( "" );
+                    reverseField.setText( "" );
+                    resultField.setText( "" );
+                    getFromAccumulatePattern().setFunction( code );
                 }
             }
         };
 
-        initField.addChangeHandler(changehandler);
-        actionField.addChangeHandler(changehandler);
-        reverseField.addChangeHandler(changehandler);
-        resultField.addChangeHandler(changehandler);
-        functionField.addChangeHandler(changehandler);
+        initField.addChangeHandler( changehandler );
+        actionField.addChangeHandler( changehandler );
+        reverseField.addChangeHandler( changehandler );
+        resultField.addChangeHandler( changehandler );
+        functionField.addChangeHandler( changehandler );
 
-        boolean useFunction = getFromAccumulatePattern().useFunctionOrCode().equals(FromAccumulateCompositeFactPattern.USE_FUNCTION);
+        boolean useFunction = getFromAccumulatePattern().useFunctionOrCode().equals( FromAccumulateCompositeFactPattern.USE_FUNCTION );
 
-        if (useFunction) {
-            functionTabListItem.setActive(true);
-            functionTabPane.setActive(true);
+        if ( useFunction ) {
+            functionTabListItem.setActive( true );
+            functionTabPane.setActive( true );
         } else {
-            codeTabListItem.setActive(true);
-            codeTabPane.setActive(true);
+            codeTabListItem.setActive( true );
+            codeTabPane.setActive( true );
         }
 
-        panel.setWidget(r++,
-                        0,
-                        tPanel);
+        panel.setWidget( r++,
+                         0,
+                         tPanel );
 
         return panel;
     }
@@ -338,99 +342,100 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
      * Pops up the fact selector.
      */
     @Override
-    protected void showFactTypeSelector() {
+    protected void showFactTypeSelector( final Widget w ) {
         final ListBox box = new ListBox();
         AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         String[] facts = oracle.getFactTypes();
 
-        box.addItem(GuidedRuleEditorResources.CONSTANTS.Choose());
+        box.addItem( GuidedRuleEditorResources.CONSTANTS.Choose() );
 
-        for (int i = 0; i < facts.length; i++) {
-            box.addItem(facts[i]);
+        for ( int i = 0; i < facts.length; i++ ) {
+            box.addItem( facts[ i ] );
         }
-        box.setSelectedIndex(0);
+        box.setSelectedIndex( 0 );
 
-        final FormStylePopup popup = new FormStylePopup(GuidedRuleEditorResources.CONSTANTS.NewFactPattern());
-        popup.addAttribute(GuidedRuleEditorResources.CONSTANTS.chooseFactType(),
-                           box);
-        box.addChangeHandler(new ChangeHandler() {
+        final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.chooseFactType(),
+                            box );
+        box.addChangeHandler( new ChangeHandler() {
 
-            public void onChange(ChangeEvent event) {
-                pattern.setFactPattern(new FactPattern(box.getItemText(box.getSelectedIndex())));
-                setModified(true);
+            public void onChange( ChangeEvent event ) {
+                pattern.setFactPattern( new FactPattern( box.getItemText( box.getSelectedIndex() ) ) );
+                setModified( true );
                 getModeller().refreshWidget();
                 popup.hide();
             }
-        });
+        } );
         popup.show();
     }
 
     /**
      * Pops up the fact selector.
      */
-    protected void showSourcePatternSelector(final Widget w) {
+    protected void showSourcePatternSelector( final Widget w ) {
         final ListBox box = new ListBox();
         AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         String[] facts = oracle.getFactTypes();
 
-        box.addItem(GuidedRuleEditorResources.CONSTANTS.Choose());
-        for (int i = 0; i < facts.length; i++) {
-            box.addItem(facts[i]);
+        box.addItem( GuidedRuleEditorResources.CONSTANTS.Choose() );
+        for ( int i = 0; i < facts.length; i++ ) {
+            box.addItem( facts[ i ] );
         }
-        box.setSelectedIndex(0);
+        box.setSelectedIndex( 0 );
 
-        final FormStylePopup popup = new FormStylePopup(GuidedRuleEditorResources.CONSTANTS.NewFactPattern());
-        popup.addAttribute(GuidedRuleEditorResources.CONSTANTS.chooseFactType(),
-                           box);
-        box.addChangeHandler(new ChangeHandler() {
+        final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.chooseFactType(),
+                            box );
+        box.addChangeHandler( new ChangeHandler() {
 
-            public void onChange(ChangeEvent event) {
-                getFromAccumulatePattern().setSourcePattern(new FactPattern(box.getItemText(box.getSelectedIndex())));
-                setModified(true);
+            public void onChange( ChangeEvent event ) {
+                getFromAccumulatePattern().setSourcePattern( new FactPattern( box.getItemText( box.getSelectedIndex() ) ) );
+                setModified( true );
                 getModeller().refreshWidget();
                 popup.hide();
             }
-        });
+        } );
 
-        final Button fromBtn = new Button(HumanReadableConstants.INSTANCE.From());
-        final Button fromAccumulateBtn = new Button(HumanReadableConstants.INSTANCE.FromAccumulate());
-        final Button fromCollectBtn = new Button(HumanReadableConstants.INSTANCE.FromCollect());
-        final Button fromEntryPointBtn = new Button(HumanReadableConstants.INSTANCE.FromEntryPoint());
+        final Button fromBtn = new Button( HumanReadableConstants.INSTANCE.From() );
+        final Button fromAccumulateBtn = new Button( HumanReadableConstants.INSTANCE.FromAccumulate() );
+        final Button fromCollectBtn = new Button( HumanReadableConstants.INSTANCE.FromCollect() );
+        final Button fromEntryPointBtn = new Button( HumanReadableConstants.INSTANCE.FromEntryPoint() );
         ClickHandler btnsClickHandler = new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 Widget sender = (Widget) event.getSource();
-                if (sender == fromBtn) {
-                    getFromAccumulatePattern().setSourcePattern(new FromCompositeFactPattern());
-                } else if (sender == fromAccumulateBtn) {
-                    getFromAccumulatePattern().setSourcePattern(new FromAccumulateCompositeFactPattern());
-                } else if (sender == fromCollectBtn) {
-                    getFromAccumulatePattern().setSourcePattern(new FromCollectCompositeFactPattern());
-                } else if (sender == fromEntryPointBtn) {
-                    getFromAccumulatePattern().setSourcePattern(new FromEntryPointFactPattern());
+                if ( sender == fromBtn ) {
+                    getFromAccumulatePattern().setSourcePattern( new FromCompositeFactPattern() );
+                } else if ( sender == fromAccumulateBtn ) {
+                    getFromAccumulatePattern().setSourcePattern( new FromAccumulateCompositeFactPattern() );
+                } else if ( sender == fromCollectBtn ) {
+                    getFromAccumulatePattern().setSourcePattern( new FromCollectCompositeFactPattern() );
+                } else if ( sender == fromEntryPointBtn ) {
+                    getFromAccumulatePattern().setSourcePattern( new FromEntryPointFactPattern() );
                 } else {
-                    throw new IllegalArgumentException("Unknown sender: "
-                                                               + sender);
+                    throw new IllegalArgumentException( "Unknown sender: "
+                                                                + sender );
                 }
 
-                setModified(true);
+                setModified( true );
                 getModeller().refreshWidget();
                 popup.hide();
+
             }
         };
 
-        fromBtn.addClickHandler(btnsClickHandler);
-        fromAccumulateBtn.addClickHandler(btnsClickHandler);
-        fromCollectBtn.addClickHandler(btnsClickHandler);
-        fromEntryPointBtn.addClickHandler(btnsClickHandler);
-        popup.addAttribute("",
-                           fromBtn);
-        popup.addAttribute("",
-                           fromAccumulateBtn);
-        popup.addAttribute("",
-                           fromCollectBtn);
-        popup.addAttribute("",
-                           fromEntryPointBtn);
+        fromBtn.addClickHandler( btnsClickHandler );
+        fromAccumulateBtn.addClickHandler( btnsClickHandler );
+        fromCollectBtn.addClickHandler( btnsClickHandler );
+        fromEntryPointBtn.addClickHandler( btnsClickHandler );
+        popup.addAttribute( "",
+                            fromBtn );
+        popup.addAttribute( "",
+                            fromAccumulateBtn );
+        popup.addAttribute( "",
+                            fromCollectBtn );
+        popup.addAttribute( "",
+                            fromEntryPointBtn );
 
         popup.show();
     }
@@ -438,4 +443,5 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
     private FromAccumulateCompositeFactPattern getFromAccumulatePattern() {
         return (FromAccumulateCompositeFactPattern) this.pattern;
     }
+
 }

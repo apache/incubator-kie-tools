@@ -19,7 +19,6 @@ package org.drools.workbench.screens.guided.dtable.backend.server;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -137,290 +136,276 @@ public class GuidedDecisionTableEditorServiceImplTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        service = new GuidedDecisionTableEditorServiceImpl(ioService,
-                                                           copyService,
-                                                           deleteService,
-                                                           renameService,
-                                                           dataModelService,
-                                                           workItemsService,
-                                                           projectService,
-                                                           versionRecordService,
-                                                           dtableGraphService,
-                                                           dtGraphType,
-                                                           resourceOpenedEvent,
-                                                           genericValidator,
-                                                           commentedOptionFactory,
-                                                           sessionInfo) {
+        service = new GuidedDecisionTableEditorServiceImpl( ioService,
+                                                            copyService,
+                                                            deleteService,
+                                                            renameService,
+                                                            dataModelService,
+                                                            workItemsService,
+                                                            projectService,
+                                                            versionRecordService,
+                                                            dtableGraphService,
+                                                            dtGraphType,
+                                                            resourceOpenedEvent,
+                                                            genericValidator,
+                                                            commentedOptionFactory,
+                                                            sessionInfo ) {
             {
                 this.sourceServices = mockSourceServices;
                 this.metadataService = mockMetaDataService;
             }
         };
 
-        when(projectService.resolvePackage(any(Path.class))).thenReturn(pkg);
-        when(pkg.getPackageName()).thenReturn("mypackage");
-        when(pkg.getPackageMainResourcesPath()).thenReturn(PathFactory.newPath("mypackage",
-                                                                               "default://project/src/main/resources"));
+        when( projectService.resolvePackage( any( Path.class ) ) ).thenReturn( pkg );
+        when( pkg.getPackageName() ).thenReturn( "mypackage" );
+        when( pkg.getPackageMainResourcesPath() ).thenReturn( PathFactory.newPath( "mypackage",
+                                                                                   "default://project/src/main/resources" ) );
 
-        when(fileSystem.provider()).thenReturn(fileSystemProvider);
-        when(fileSystemProvider.readAttributes(any(org.uberfire.java.nio.file.Path.class),
-                                               any(Class.class))).thenReturn(basicFileAttributes);
-        when(basicFileAttributes.isRegularFile()).thenReturn(true);
+        when( fileSystem.provider() ).thenReturn( fileSystemProvider );
+        when( fileSystemProvider.readAttributes( any( org.uberfire.java.nio.file.Path.class ),
+                                                 any( Class.class ) ) ).thenReturn( basicFileAttributes );
+        when( basicFileAttributes.isRegularFile() ).thenReturn( true );
     }
 
     @Test
     public void checkCreate() {
-        final Path context = mock(Path.class);
+        final Path context = mock( Path.class );
         final String fileName = "filename." + dtType.getSuffix();
         final GuidedDecisionTable52 content = new GuidedDecisionTable52();
         final String comment = "comment";
 
-        when(context.toURI()).thenReturn("default://project/src/main/resources/mypackage");
+        when( context.toURI() ).thenReturn( "default://project/src/main/resources/mypackage" );
 
-        final Path p = service.create(context,
-                                      fileName,
-                                      content,
-                                      comment);
+        final Path p = service.create( context,
+                                       fileName,
+                                       content,
+                                       comment );
 
-        verify(ioService,
-               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
-                               any(String.class),
-                               any(CommentedOption.class));
+        verify( ioService,
+                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
+                                    any( String.class ),
+                                    any( CommentedOption.class ) );
 
-        assertTrue(p.toURI().contains("src/main/resources/mypackage/filename." + dtType.getSuffix()));
-        assertEquals("mypackage",
-                     content.getPackageName());
+        assertTrue( p.toURI().contains( "src/main/resources/mypackage/filename." + dtType.getSuffix() ) );
+        assertEquals( "mypackage",
+                      content.getPackageName() );
     }
 
     @Test
     public void checkLoad() {
-        final Path path = mock(Path.class);
-        when(path.toURI()).thenReturn("default://project/src/main/resources/mypackage/dtable.gdst");
+        final Path path = mock( Path.class );
+        when( path.toURI() ).thenReturn( "default://project/src/main/resources/mypackage/dtable.gdst" );
 
-        when(ioService.readAllString(any(org.uberfire.java.nio.file.Path.class))).thenReturn("");
+        when( ioService.readAllString( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( "" );
 
-        final GuidedDecisionTable52 model = service.load(path);
+        final GuidedDecisionTable52 model = service.load( path );
 
-        verify(ioService,
-               times(1)).readAllString(any(org.uberfire.java.nio.file.Path.class));
-        assertNotNull(model);
+        verify( ioService,
+                times( 1 ) ).readAllString( any( org.uberfire.java.nio.file.Path.class ) );
+        assertNotNull( model );
     }
 
     @Test
     public void checkConstructContent() {
-        final Path path = mock(Path.class);
-        final Overview overview = mock(Overview.class);
-        final PackageDataModelOracle oracle = mock(PackageDataModelOracle.class);
-        when(oracle.getProjectCollectionTypes()).thenReturn(new HashMap<String, Boolean>() {{
-            put("java.util.List",
-                true);
-            put("java.util.Set",
-                true);
-            put("java.util.Collection",
-                true);
-            put("java.util.UnknownCollection",
-                false);
-        }});
+        final Path path = mock( Path.class );
+        final Overview overview = mock( Overview.class );
+        final PackageDataModelOracle oracle = mock( PackageDataModelOracle.class );
         final Set<PortableWorkDefinition> workItemDefinitions = new HashSet<>();
-        when(path.toURI()).thenReturn("default://project/src/main/resources/mypackage/dtable.gdst");
-        when(dataModelService.getDataModel(eq(path))).thenReturn(oracle);
-        when(workItemsService.loadWorkItemDefinitions(eq(path))).thenReturn(workItemDefinitions);
+        when( path.toURI() ).thenReturn( "default://project/src/main/resources/mypackage/dtable.gdst" );
+        when( dataModelService.getDataModel( eq( path ) ) ).thenReturn( oracle );
+        when( workItemsService.loadWorkItemDefinitions( eq( path ) ) ).thenReturn( workItemDefinitions );
 
-        final GuidedDecisionTableEditorContent content = service.constructContent(path,
-                                                                                  overview);
+        final GuidedDecisionTableEditorContent content = service.constructContent( path,
+                                                                                   overview );
 
-        verify(resourceOpenedEvent,
-               times(1)).fire(any(ResourceOpenedEvent.class));
+        verify( resourceOpenedEvent,
+                times( 1 ) ).fire( any( ResourceOpenedEvent.class ) );
 
-        assertNotNull(content.getModel());
-        assertNotNull(content.getDataModel());
-        assertNotNull(content.getWorkItemDefinitions());
-        assertEquals(overview,
-                     content.getOverview());
-        assertEquals(3,
-                     content.getDataModel().getCollectionTypes().size());
-        assertTrue(content.getDataModel().getCollectionTypes().containsKey("java.util.Collection"));
-        assertTrue(content.getDataModel().getCollectionTypes().containsKey("java.util.List"));
-        assertTrue(content.getDataModel().getCollectionTypes().containsKey("java.util.Set"));
+        assertNotNull( content.getModel() );
+        assertNotNull( content.getDataModel() );
+        assertNotNull( content.getWorkItemDefinitions() );
+        assertEquals( overview,
+                      content.getOverview() );
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void checkSave() {
-        final Path path = mock(Path.class);
+        final Path path = mock( Path.class );
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final Metadata metadata = mock(Metadata.class);
+        final Metadata metadata = mock( Metadata.class );
         final String comment = "comment";
-        when(path.toURI()).thenReturn("default://project/src/main/resources/mypackage/dtable.gdst");
+        when( path.toURI() ).thenReturn( "default://project/src/main/resources/mypackage/dtable.gdst" );
 
-        service.save(path,
-                     model,
-                     metadata,
-                     comment);
+        service.save( path,
+                      model,
+                      metadata,
+                      comment );
 
-        verify(ioService,
-               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
-                               any(String.class),
-                               any(Map.class),
-                               any(CommentedOption.class));
+        verify( ioService,
+                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
+                                    any( String.class ),
+                                    any( Map.class ),
+                                    any( CommentedOption.class ) );
 
-        assertEquals("mypackage",
-                     model.getPackageName());
+        assertEquals( "mypackage",
+                      model.getPackageName() );
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void checkSaveAndUpdateGraphEntries() {
         //Setup Decision Table
-        final Path path = mock(Path.class);
+        final Path path = mock( Path.class );
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final Metadata metadata = mock(Metadata.class);
+        final Metadata metadata = mock( Metadata.class );
         final String comment = "comment";
         final String headPathUri = "default://project/src/main/resources/mypackage/dtable.gdst";
         final String versionPathUri = "default://0123456789@project/src/main/resources/mypackage/dtable.gdst";
-        when(path.toURI()).thenReturn(headPathUri);
-        when(path.getFileName()).thenReturn("dtable.gdst");
+        when( path.toURI() ).thenReturn( headPathUri );
+        when( path.getFileName() ).thenReturn( "dtable.gdst" );
 
         //Setup Decision Table versions
         final List<VersionRecord> versions = new ArrayList<>();
-        versions.add(new PortableVersionRecord("0123456789",
-                                               "manstis",
-                                               "manstis@email.com",
-                                               "comment",
-                                               Calendar.getInstance().getTime(),
-                                               versionPathUri));
-        when(versionRecordService.load(any(org.uberfire.java.nio.file.Path.class))).thenReturn(versions);
+        versions.add( new PortableVersionRecord( "0123456789",
+                                                 "manstis",
+                                                 "manstis@email.com",
+                                                 "comment",
+                                                 Calendar.getInstance().getTime(),
+                                                 versionPathUri ) );
+        when( versionRecordService.load( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( versions );
 
         //Setup Decision Table Graph
-        final URI dtGraphPathUri = URI.create("default://project/src/main/resources/mypackage/graph1.gdst-set");
-        final org.uberfire.java.nio.file.Path dtGraphPath = mock(org.uberfire.java.nio.file.Path.class);
-        when(dtGraphPath.toUri()).thenReturn(dtGraphPathUri);
-        when(dtGraphPath.getFileName()).thenReturn(dtGraphPath);
-        when(dtGraphPath.getFileSystem()).thenReturn(fileSystem);
+        final URI dtGraphPathUri = URI.create( "default://project/src/main/resources/mypackage/graph1.gdst-set" );
+        final org.uberfire.java.nio.file.Path dtGraphPath = mock( org.uberfire.java.nio.file.Path.class );
+        when( dtGraphPath.toUri() ).thenReturn( dtGraphPathUri );
+        when( dtGraphPath.getFileName() ).thenReturn( dtGraphPath );
+        when( dtGraphPath.getFileSystem() ).thenReturn( fileSystem );
 
         final List<org.uberfire.java.nio.file.Path> dtGraphPaths = new ArrayList<>();
-        dtGraphPaths.add(dtGraphPath);
+        dtGraphPaths.add( dtGraphPath );
 
-        when(ioService.newDirectoryStream(any(org.uberfire.java.nio.file.Path.class),
-                                          any(FileExtensionFilter.class))).thenReturn(new MockDirectoryStream(dtGraphPaths));
+        when( ioService.newDirectoryStream( any( org.uberfire.java.nio.file.Path.class ),
+                                            any( FileExtensionFilter.class ) ) ).thenReturn( new MockDirectoryStream( dtGraphPaths ) );
 
         final GuidedDecisionTableEditorGraphModel dtGraphModel = new GuidedDecisionTableEditorGraphModel();
-        dtGraphModel.getEntries().add(new GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry(path,
-                                                                                                            path));
-        when(dtableGraphService.load(any(Path.class))).thenReturn(dtGraphModel);
+        dtGraphModel.getEntries().add( new GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry( path,
+                                                                                                              path ) );
+        when( dtableGraphService.load( any( Path.class ) ) ).thenReturn( dtGraphModel );
 
         //Test save
-        service.saveAndUpdateGraphEntries(path,
-                                          model,
-                                          metadata,
-                                          comment);
+        service.saveAndUpdateGraphEntries( path,
+                                           model,
+                                           metadata,
+                                           comment );
 
-        verify(ioService,
-               times(1)).startBatch(any(FileSystem.class));
+        verify( ioService,
+                times( 1 ) ).startBatch( any( FileSystem.class ) );
 
-        verify(ioService,
-               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
-                               any(String.class),
-                               any(Map.class),
-                               any(CommentedOption.class));
+        verify( ioService,
+                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
+                                    any( String.class ),
+                                    any( Map.class ),
+                                    any( CommentedOption.class ) );
 
-        verify(ioService,
-               times(1)).endBatch();
+        verify( ioService,
+                times( 1 ) ).endBatch();
 
-        assertEquals("mypackage",
-                     model.getPackageName());
-        assertEquals(1,
-                     dtGraphModel.getEntries().size());
-        assertEquals(versions.get(0).uri(),
-                     dtGraphModel.getEntries().iterator().next().getPathVersion().toURI());
+        assertEquals( "mypackage",
+                      model.getPackageName() );
+        assertEquals( 1,
+                      dtGraphModel.getEntries().size() );
+        assertEquals( versions.get( 0 ).uri(),
+                      dtGraphModel.getEntries().iterator().next().getPathVersion().toURI() );
     }
 
     @Test
     public void checkDelete() {
-        final Path path = mock(Path.class);
+        final Path path = mock( Path.class );
         final String comment = "comment";
 
-        service.delete(path,
-                       comment);
+        service.delete( path,
+                        comment );
 
-        verify(deleteService,
-               times(1)).delete(eq(path),
-                                eq(comment));
+        verify( deleteService,
+                times( 1 ) ).delete( eq( path ),
+                                     eq( comment ) );
     }
 
     @Test
     public void checkRename() {
-        final Path path = mock(Path.class);
+        final Path path = mock( Path.class );
         final String newFileName = "newFileName";
         final String comment = "comment";
 
-        service.rename(path,
-                       newFileName,
-                       comment);
+        service.rename( path,
+                        newFileName,
+                        comment );
 
-        verify(renameService,
-               times(1)).rename(eq(path),
-                                eq(newFileName),
-                                eq(comment));
+        verify( renameService,
+                times( 1 ) ).rename( eq( path ),
+                                     eq( newFileName ),
+                                     eq( comment ) );
     }
 
     @Test
     public void checkCopy() {
-        final Path path = mock(Path.class);
+        final Path path = mock( Path.class );
         final String newFileName = "newFileName";
         final String comment = "comment";
 
-        service.copy(path,
-                     newFileName,
-                     comment);
+        service.copy( path,
+                      newFileName,
+                      comment );
 
-        verify(copyService,
-               times(1)).copy(eq(path),
-                              eq(newFileName),
-                              eq(comment));
+        verify( copyService,
+                times( 1 ) ).copy( eq( path ),
+                                   eq( newFileName ),
+                                   eq( comment ) );
     }
 
     @Test
     public void copyCopyToPackage() {
-        final Path path = mock(Path.class);
+        final Path path = mock( Path.class );
         final String newFileName = "newFileName";
-        final Path newPackagePath = mock(Path.class);
+        final Path newPackagePath = mock( Path.class );
         final String comment = "comment";
 
-        service.copy(path,
-                     newFileName,
-                     newPackagePath,
-                     comment);
+        service.copy( path,
+                      newFileName,
+                      newPackagePath,
+                      comment );
 
-        verify(copyService,
-               times(1)).copy(eq(path),
-                              eq(newFileName),
-                              eq(newPackagePath),
-                              eq(comment));
+        verify( copyService,
+                times( 1 ) ).copy( eq( path ),
+                                   eq( newFileName ),
+                                   eq( newPackagePath ),
+                                   eq( comment ) );
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void checkToSource() {
-        final Path path = mock(Path.class);
+        final Path path = mock( Path.class );
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final SourceService mockSourceService = mock(SourceService.class);
+        final SourceService mockSourceService = mock( SourceService.class );
 
-        when(path.toURI()).thenReturn("default://project/src/main/resources/mypackage");
-        when(mockSourceServices.getServiceFor(any(org.uberfire.java.nio.file.Path.class))).thenReturn(mockSourceService);
+        when( path.toURI() ).thenReturn( "default://project/src/main/resources/mypackage" );
+        when( mockSourceServices.getServiceFor( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( mockSourceService );
 
-        service.toSource(path,
-                         model);
+        service.toSource( path,
+                          model );
 
-        verify(mockSourceServices,
-               times(1)).getServiceFor(any(org.uberfire.java.nio.file.Path.class));
-        verify(mockSourceService,
-               times(1)).getSource(any(org.uberfire.java.nio.file.Path.class),
-                                   eq(model));
+        verify( mockSourceServices,
+                times( 1 ) ).getServiceFor( any( org.uberfire.java.nio.file.Path.class ) );
+        verify( mockSourceService,
+                times( 1 ) ).getSource( any( org.uberfire.java.nio.file.Path.class ),
+                                        eq( model ) );
     }
 
     @Test
     public void checkValidate() {
 //        service.validate(  )
     }
+
 }
