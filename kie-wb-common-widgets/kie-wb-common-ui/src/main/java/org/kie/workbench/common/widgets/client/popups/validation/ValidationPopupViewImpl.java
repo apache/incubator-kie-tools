@@ -74,7 +74,7 @@ public class ValidationPopupViewImpl implements ValidationPopupView {
         this.validationTable = new MessageTableWidget<>( MessageTableWidget.Mode.PAGED );
         validationTable.setDataProvider( new ListDataProvider<>() );
 
-        validationTable.addLevelColumn( 10,
+        validationTable.addLevelColumn( 75,
                                         row -> {
                                             final Level level = ( (ValidationMessage) row ).getLevel();
                                             return level != null ? level : Level.ERROR;
