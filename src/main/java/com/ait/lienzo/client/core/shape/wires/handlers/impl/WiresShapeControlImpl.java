@@ -163,8 +163,8 @@ public class WiresShapeControlImpl implements WiresShapeControl
         }
         else
         {
-            updateSpecialConnections(m_connectorsWithSpecialConnections,
-                                     false);
+            updateSpecialConnections(m_connectorsWithSpecialConnections, true);
+            updateNestedShapes(m_shape);
         }
 
         if (m_alignAndDistributeControl != null)
@@ -429,22 +429,27 @@ public class WiresShapeControlImpl implements WiresShapeControl
             }
         }
 
-        updateSpecialConnections(m_connectorsWithSpecialConnections,
-                                 false);
+        updateSpecialConnections(m_connectorsWithSpecialConnections, false);
+        updateNestedShapes(m_shape);
 
-        if (m_shape.getChildShapes() != null && !m_shape.getChildShapes().isEmpty())
+        return adjusted1 && adjusted2;
+
+    }
+
+    public static void updateNestedShapes(WiresShape shape)
+    {
+        // While the nested shapes don't have attribute changes, when the parent moves, the connectors are on the root layer and thus must still be updated
+        if (shape.getChildShapes() != null && !shape.getChildShapes().isEmpty())
         {
-            for (WiresShape child : m_shape.getChildShapes())
+            for (WiresShape child : shape.getChildShapes())
             {
+                updateNestedShapes(child); // recurse to leafs
                 if (child.getMagnets() != null)
                 {
                     child.getMagnets().shapeMoved();
                 }
             }
         }
-
-        return adjusted1 && adjusted2;
-
     }
 
     public static void updateSpecialConnections(WiresConnector[] connectors,

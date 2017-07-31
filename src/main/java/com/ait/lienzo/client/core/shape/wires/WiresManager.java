@@ -17,7 +17,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
@@ -28,8 +27,6 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingAndContainmen
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresControlFactoryImpl;
 import com.ait.lienzo.client.core.types.OnLayerBeforeDraw;
-import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
@@ -124,42 +121,14 @@ public final class WiresManager
             // changed and thus will be reparsed.
             for (WiresConnector c : m_wiresManager.getConnectorList())
             {
-                // Iterate each refreshed line and get the new points for the decorators
-                if (c.getLine().getPathPartList().size() < 1)
+                if (WiresConnector.updateHeadTailForRefreshedConnector(c))
                 {
-                    // only do this for lines that have had refresh called
-                    AbstractDirectionalMultiPointShape<?> line = c.getLine();
-
-                    if ( c.isSpecialConnection() && line.getPathPartList().size() == 0)
-                    {
-                        // if getPathPartList is empty, it was refreshed due to a point change
-                        c.updateForSpecialConnections(false);
-                    }
-
-                    final boolean prepared = line.isPathPartListPrepared(c.getLine().getAttributes());
-
-                    if (!prepared)
-                    {
-                        return false;
-                    }
-
-                    Point2DArray points = line.getPoint2DArray();
-                    Point2D p0 = points.get(0);
-                    Point2D p1 = line.getHeadOffsetPoint();
-                    Point2DArray headPoints = new Point2DArray(p1, p0);
-                    c.getHeadDecorator().draw(headPoints);
-
-                    p0 = points.get(points.size() - 1);
-                    p1 = line.getTailOffsetPoint();
-                    Point2DArray tailPoints = new Point2DArray(p1, p0);
-                    c.getTailDecorator().draw(tailPoints);
-
+                    return false;
                 }
             }
 
             return true;
         }
-
     }
 
     public MagnetManager getMagnetManager()

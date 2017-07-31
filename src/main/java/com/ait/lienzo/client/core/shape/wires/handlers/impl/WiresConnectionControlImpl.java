@@ -234,6 +234,9 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
     @Override
     public boolean dragAdjust(final Point2D dxy)
     {
+        // this is redetermined on each drag adjust
+        m_current_magnet = null;
+
         int x = (int) (m_startX + dxy.getX());
         int y = (int) (m_startY + dxy.getY());
 
@@ -273,7 +276,6 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
                     }
                     m_magnets = null;
                     m_colorKey = null;
-                    m_current_magnet = null;
                 }
                 else
                 {

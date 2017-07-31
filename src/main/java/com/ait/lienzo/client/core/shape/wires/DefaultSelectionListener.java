@@ -2,6 +2,7 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorControlImpl;
+import com.ait.tooling.nativetools.client.util.Console;
 
 public class DefaultSelectionListener implements SelectionListener
 {
@@ -20,20 +21,21 @@ public class DefaultSelectionListener implements SelectionListener
     {
         SelectionManager.ChangedItems changed = selectedItems.getChanged();
 
-//
+
+// leaving in comments for now, as I re-enable those during debug, if there are problems.
 //            for (WiresShape shape : selectedItems.getShapes())
 //            {
-//                Console.get().info(shape.getContainer().getUserData().toString());
+//                Console.get().info(shape.getContainer().getUserData().toString() + " : " + shape.getGroup().getLocation());
 //            }
 //
 //            for (WiresConnector connector : selectedItems.getConnectors())
 //            {
-//                Console.get().info("connector + "  + connector.getGroup().uuid() );
+//                Console.get().info("connector + " + connector.getGroup().uuid());
 //            }
 //
 //            for (WiresShape shape : changed.getRemovedShapes())
 //            {
-//                Console.get().info("removed" + shape.getContainer().getUserData().toString());
+//                Console.get().info("removed" + shape.getContainer().getUserData().toString() + " : " + shape.getGroup().getLocation());
 //            }
 //
 //            for (WiresConnector connector : changed.getRemovedConnectors())
@@ -43,16 +45,17 @@ public class DefaultSelectionListener implements SelectionListener
 //
 //            for (WiresShape shape : changed.getAddedShapes())
 //            {
-//                Console.get().info("added" + shape.getContainer().getUserData().toString());
+//                Console.get().info("added" + shape.getContainer().getUserData().toString() + " : " + shape.getGroup().getLocation());
 //            }
 //
 //            for (WiresConnector connector : changed.getAddedConnectors())
 //            {
 //                Console.get().info("added connector + "  + connector.getGroup().uuid() );
 //            }
-
+//
         for (WiresShape shape : changed.getRemovedShapes())
         {
+            //Console.get().info("unselected" + shape.getContainer().getUserData().toString() + " : " + shape.getGroup().getLocation());
             unselect(shape);
         }
 
@@ -63,10 +66,12 @@ public class DefaultSelectionListener implements SelectionListener
 
         if (!selectedItems.isSelectionGroup() && selectedItems.size() == 1)
         {
+            // it's one or the other, so attempt both, it'll short circuit if the first selects.
             if (selectedItems.getShapes().size() == 1)
             {
                 for (WiresShape shape : selectedItems.getShapes())
                 {
+//                    Console.get().info("select" + shape.getContainer().getUserData().toString() + " : " + shape.getGroup().getLocation());
                     select(shape);
                     break;
                 }
@@ -78,6 +83,22 @@ public class DefaultSelectionListener implements SelectionListener
                     select(connector);
                     break;
                 }
+            }
+        }
+        else if (selectedItems.isSelectionGroup())
+        {
+            // we don't which have selectors shown, if any. Just iterate and unselect all
+            // null check will do nothing, if it's already unselected.
+            for (WiresShape shape : selectedItems.getShapes())
+            {
+//                Console.get().info("unselected" + shape.getContainer().getUserData().toString() + " : " + shape.getGroup().getLocation());
+                unselect(shape);
+            }
+
+
+            for (WiresConnector connector : selectedItems.getConnectors())
+            {
+                unselect(connector);
             }
         }
     }
