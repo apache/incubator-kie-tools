@@ -17,6 +17,7 @@
 package org.uberfire.ext.security.management.keycloak.client.auth.adapter;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,6 +34,10 @@ public class KCAdapterContextTokenManagerTest {
 
     @Mock
     HttpServletRequest request;
+    
+    @Mock
+    HttpSession session;
+    
     @Mock
     KeycloakSecurityContext context;
 
@@ -41,6 +46,8 @@ public class KCAdapterContextTokenManagerTest {
     @Before
     public void setup() throws Exception {
         when(request.getAttribute(KeycloakSecurityContext.class.getName())).thenReturn(context);
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute(KeycloakSecurityContext.class.getName())).thenReturn(context);
         when(context.getTokenString()).thenReturn("token1");
         when(context.getRealm()).thenReturn("realm1");
         this.tested = new KCAdapterContextTokenManager(request);
