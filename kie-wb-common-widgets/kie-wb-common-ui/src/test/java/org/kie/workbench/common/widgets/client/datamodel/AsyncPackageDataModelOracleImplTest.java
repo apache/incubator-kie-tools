@@ -60,23 +60,24 @@ public class AsyncPackageDataModelOracleImplTest {
 
     @Before
     public void setUp() throws Exception {
-        AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( new Service(),
-                                                                                  validatorInstance );
+        AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl(new Service(),
+                                                                                 validatorInstance);
         personPayload = createPersonPayload();
         addressPayload = createAddressPayload();
         giantPayload = createGiantPayload();
         stringPayload = createStringPayload();
         defaultPayload = createDefaultPayload();
 
-        oracle.addGlobals( createGlobals() );
+        oracle.addGlobals(createGlobals());
 
-        oracle.setPackageName( "org" );
-        oracle.addModelFields( createProjectModelFields() );
-        oracle.addMethodInformation( createProjectMethodInformation() );
-        oracle.addSuperTypes( createSuperTypes() );
-        oracle.addPackageNames( createPackageNames() );
+        oracle.setPackageName("org");
+        oracle.addModelFields(createProjectModelFields());
+        oracle.addMethodInformation(createProjectMethodInformation());
+        oracle.addSuperTypes(createSuperTypes());
+        oracle.addPackageNames(createPackageNames());
+        oracle.addCollectionTypes(createCollectionTypes());
 
-        oracle.filter( createImports() );
+        oracle.filter(createImports());
 
         this.oracle = oracle;
     }
@@ -84,74 +85,78 @@ public class AsyncPackageDataModelOracleImplTest {
     private Map<String, List<MethodInfo>> createProjectMethodInformation() {
         HashMap<String, List<MethodInfo>> map = new HashMap<String, List<MethodInfo>>();
 
-        map.put( "org.globals.GiantContainerOfInformation", Collections.EMPTY_LIST );
+        map.put("org.globals.GiantContainerOfInformation",
+                Collections.EMPTY_LIST);
 
         ArrayList<MethodInfo> stringMethodInfos = new ArrayList<MethodInfo>();
         ArrayList<String> valueOfParams = new ArrayList<String>();
-        valueOfParams.add( "Integer" );
-        stringMethodInfos.add( new MethodInfo( "valueOf",
-                                               valueOfParams,
-                                               "java.lang.String",
-                                               null,
-                                               "String" ) );
-        map.put( "java.lang.String",
-                 stringMethodInfos );
+        valueOfParams.add("Integer");
+        stringMethodInfos.add(new MethodInfo("valueOf",
+                                             valueOfParams,
+                                             "java.lang.String",
+                                             null,
+                                             "String"));
+        map.put("java.lang.String",
+                stringMethodInfos);
 
         ArrayList<MethodInfo> personMethodInfos = new ArrayList<MethodInfo>();
         ArrayList<String> build1Params = new ArrayList<String>();
-        build1Params.add( "String" );
-        build1Params.add( "Integer" );
-        personMethodInfos.add( new MethodInfo( "build",
-                                               build1Params,
-                                               "org.test.Person",
-                                               null,
-                                               null ) );
+        build1Params.add("String");
+        build1Params.add("Integer");
+        personMethodInfos.add(new MethodInfo("build",
+                                             build1Params,
+                                             "org.test.Person",
+                                             null,
+                                             null));
         ArrayList<String> getNameParams = new ArrayList<String>();
-        personMethodInfos.add( new MethodInfo( "getName",
-                                               getNameParams,
-                                               "java.lang.String",
-                                               null,
-                                               null ) );
+        personMethodInfos.add(new MethodInfo("getName",
+                                             getNameParams,
+                                             "java.lang.String",
+                                             null,
+                                             null));
         ArrayList<String> build2Params = new ArrayList<String>();
-        build2Params.add( "String" );
-        personMethodInfos.add( new MethodInfo( "build",
-                                               build2Params,
-                                               "org.test.Person",
-                                               null,
-                                               null ) );
+        build2Params.add("String");
+        personMethodInfos.add(new MethodInfo("build",
+                                             build2Params,
+                                             "org.test.Person",
+                                             null,
+                                             null));
         ArrayList<String> build3Params = new ArrayList<String>();
-        build3Params.add( "Integer" );
-        personMethodInfos.add( new MethodInfo( "build",
-                                               build3Params,
-                                               "org.test.Person",
-                                               null,
-                                               null ) );
-        map.put( "org.test.Person",
-                 personMethodInfos );
+        build3Params.add("Integer");
+        personMethodInfos.add(new MethodInfo("build",
+                                             build3Params,
+                                             "org.test.Person",
+                                             null,
+                                             null));
+        map.put("org.test.Person",
+                personMethodInfos);
 
         return map;
     }
 
     private HashMap<String, ModelField[]> createProjectModelFields() {
         HashMap<String, ModelField[]> map = new HashMap<String, ModelField[]>();
-        map.put( "org.test.Person",
-                 new ModelField[]{ getLazyThisField( "org.test.Person" ) } );
-        map.put( "java.lang.String",
-                 new ModelField[]{ getLazyThisField( "java.lang.String" ) } );
-        map.put( "org.Address",
-                 new ModelField[]{ getLazyThisField( "org.Address" ) } );
-        map.put( "org.Document",
-                 new ModelField[]{ getLazyThisField( "org.Document" ) } );
-        map.put( "org.globals.GiantContainerOfInformation",
-                 new ModelField[]{ getLazyThisField( "org.globals.GiantContainerOfInformation" ) } );
+        map.put("org.test.Person",
+                new ModelField[]{getLazyThisField("org.test.Person")});
+        map.put("java.lang.String",
+                new ModelField[]{getLazyThisField("java.lang.String")});
+        map.put("org.Address",
+                new ModelField[]{getLazyThisField("org.Address")});
+        map.put("org.Document",
+                new ModelField[]{getLazyThisField("org.Document")});
+        map.put("org.globals.GiantContainerOfInformation",
+                new ModelField[]{getLazyThisField("org.globals.GiantContainerOfInformation")});
         return map;
     }
 
     private Imports createImports() {
         Imports imports = new Imports();
-        imports.addImport( new Import( "org.test.Person" ) );
-        imports.addImport( new Import( "java.lang.String" ) );
-        imports.addImport( new Import( "org.globals.GiantContainerOfInformation" ) );
+        imports.addImport(new Import("org.test.Person"));
+        imports.addImport(new Import("java.lang.String"));
+        imports.addImport(new Import("org.globals.GiantContainerOfInformation"));
+        imports.addImport(new Import("java.util.List"));
+        imports.addImport(new Import("java.util.HashSet"));
+        imports.addImport(new Import("org.SeemsAsCollection"));
         return imports;
     }
 
@@ -162,15 +167,15 @@ public class AsyncPackageDataModelOracleImplTest {
     private PackageDataModelOracleIncrementalPayload createGiantPayload() {
         PackageDataModelOracleIncrementalPayload payload = new PackageDataModelOracleIncrementalPayload();
         HashMap<String, ModelField[]> addressModelFields = new HashMap<String, ModelField[]>();
-        addressModelFields.put( "org.globals.GiantContainerOfInformation",
-                                new ModelField[]{
-                                        new ModelField( "this",
-                                                        "org.globals.GiantContainerOfInformation",
-                                                        ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                        ModelField.FIELD_ORIGIN.SELF,
-                                                        FieldAccessorsAndMutators.ACCESSOR,
-                                                        "this" ) } );
-        payload.setModelFields( addressModelFields );
+        addressModelFields.put("org.globals.GiantContainerOfInformation",
+                               new ModelField[]{
+                                       new ModelField("this",
+                                                      "org.globals.GiantContainerOfInformation",
+                                                      ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                      ModelField.FIELD_ORIGIN.SELF,
+                                                      FieldAccessorsAndMutators.ACCESSOR,
+                                                      "this")});
+        payload.setModelFields(addressModelFields);
 
         return payload;
     }
@@ -178,15 +183,15 @@ public class AsyncPackageDataModelOracleImplTest {
     private PackageDataModelOracleIncrementalPayload createStringPayload() {
         PackageDataModelOracleIncrementalPayload payload = new PackageDataModelOracleIncrementalPayload();
         HashMap<String, ModelField[]> addressModelFields = new HashMap<String, ModelField[]>();
-        addressModelFields.put( "java.lang.String",
-                                new ModelField[]{
-                                        new ModelField( "this",
-                                                        "java.lang.String",
-                                                        ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                        ModelField.FIELD_ORIGIN.SELF,
-                                                        FieldAccessorsAndMutators.ACCESSOR,
-                                                        "this" ) } );
-        payload.setModelFields( addressModelFields );
+        addressModelFields.put("java.lang.String",
+                               new ModelField[]{
+                                       new ModelField("this",
+                                                      "java.lang.String",
+                                                      ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                      ModelField.FIELD_ORIGIN.SELF,
+                                                      FieldAccessorsAndMutators.ACCESSOR,
+                                                      "this")});
+        payload.setModelFields(addressModelFields);
 
         return payload;
     }
@@ -194,32 +199,33 @@ public class AsyncPackageDataModelOracleImplTest {
     private PackageDataModelOracleIncrementalPayload createAddressPayload() {
         PackageDataModelOracleIncrementalPayload payload = new PackageDataModelOracleIncrementalPayload();
         HashMap<String, ModelField[]> addressModelFields = new HashMap<String, ModelField[]>();
-        addressModelFields.put( "org.Address",
-                                new ModelField[]{
-                                        new ModelField( "this", "org.Address",
-                                                        ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                        ModelField.FIELD_ORIGIN.SELF,
-                                                        FieldAccessorsAndMutators.ACCESSOR,
-                                                        "this" ),
-                                        new ModelField( "street",
-                                                        "String",
-                                                        ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                        ModelField.FIELD_ORIGIN.DECLARED,
-                                                        FieldAccessorsAndMutators.BOTH,
-                                                        DataType.TYPE_STRING ),
-                                        new ModelField( "homeAddress",
-                                                        "Boolean",
-                                                        ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                        ModelField.FIELD_ORIGIN.DECLARED,
-                                                        FieldAccessorsAndMutators.BOTH,
-                                                        DataType.TYPE_BOOLEAN ),
-                                        new ModelField( "number",
-                                                        Integer.class.getName(),
-                                                        ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                        ModelField.FIELD_ORIGIN.DECLARED,
-                                                        FieldAccessorsAndMutators.BOTH,
-                                                        DataType.TYPE_NUMERIC_INTEGER )} );
-        payload.setModelFields( addressModelFields );
+        addressModelFields.put("org.Address",
+                               new ModelField[]{
+                                       new ModelField("this",
+                                                      "org.Address",
+                                                      ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                      ModelField.FIELD_ORIGIN.SELF,
+                                                      FieldAccessorsAndMutators.ACCESSOR,
+                                                      "this"),
+                                       new ModelField("street",
+                                                      "String",
+                                                      ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                      ModelField.FIELD_ORIGIN.DECLARED,
+                                                      FieldAccessorsAndMutators.BOTH,
+                                                      DataType.TYPE_STRING),
+                                       new ModelField("homeAddress",
+                                                      "Boolean",
+                                                      ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                      ModelField.FIELD_ORIGIN.DECLARED,
+                                                      FieldAccessorsAndMutators.BOTH,
+                                                      DataType.TYPE_BOOLEAN),
+                                       new ModelField("number",
+                                                      Integer.class.getName(),
+                                                      ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                      ModelField.FIELD_ORIGIN.DECLARED,
+                                                      FieldAccessorsAndMutators.BOTH,
+                                                      DataType.TYPE_NUMERIC_INTEGER)});
+        payload.setModelFields(addressModelFields);
 
         return payload;
     }
@@ -227,117 +233,173 @@ public class AsyncPackageDataModelOracleImplTest {
     private PackageDataModelOracleIncrementalPayload createPersonPayload() {
         PackageDataModelOracleIncrementalPayload payload = new PackageDataModelOracleIncrementalPayload();
         HashMap<String, ModelField[]> personModelFields = new HashMap<String, ModelField[]>();
-        personModelFields.put( "org.test.Person",
-                               new ModelField[]{
-                                       new ModelField( "this",
-                                                       "org.test.Person",
-                                                       ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                       ModelField.FIELD_ORIGIN.SELF,
-                                                       FieldAccessorsAndMutators.ACCESSOR,
-                                                       "this" ),
-                                       new ModelField( "address",
-                                                       "org.Address",
-                                                       ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                       ModelField.FIELD_ORIGIN.DECLARED,
-                                                       FieldAccessorsAndMutators.BOTH,
-                                                       "Address" ) } );
+        personModelFields.put("org.test.Person",
+                              new ModelField[]{
+                                      new ModelField("this",
+                                                     "org.test.Person",
+                                                     ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                     ModelField.FIELD_ORIGIN.SELF,
+                                                     FieldAccessorsAndMutators.ACCESSOR,
+                                                     "this"),
+                                      new ModelField("address",
+                                                     "org.Address",
+                                                     ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                     ModelField.FIELD_ORIGIN.DECLARED,
+                                                     FieldAccessorsAndMutators.BOTH,
+                                                     "Address")});
 
-        payload.setModelFields( personModelFields );
+        payload.setModelFields(personModelFields);
 
         return payload;
     }
 
     private HashMap<String, String> createGlobals() {
         HashMap<String, String> globals = new HashMap<String, String>();
-        globals.put( "giant",
-                     "org.globals.GiantContainerOfInformation" );
-        globals.put( "person",
-                     "org.test.Person" );
+        globals.put("giant",
+                    "org.globals.GiantContainerOfInformation");
+        globals.put("person",
+                    "org.test.Person");
 
         return globals;
     }
 
     private Map<String, List<String>> createSuperTypes() {
         Map<String, List<String>> superTypes = new HashMap<String, List<String>>();
-        superTypes.put( "org.test.Person", Arrays.asList( new String[]{ "org.test.Parent", "org.test.GrandParent" } ) );
-        superTypes.put( "org.Address", Arrays.asList( new String[]{ "org.Location" } ) );
+        superTypes.put("org.test.Person",
+                       Arrays.asList(new String[]{"org.test.Parent", "org.test.GrandParent"}));
+        superTypes.put("org.Address",
+                       Arrays.asList(new String[]{"org.Location"}));
 
         return superTypes;
     }
 
     private List<String> createPackageNames() {
         List<String> packageNames = new ArrayList<String>();
-        packageNames.add( "io.test" );
-        packageNames.add( "org.test" );
-        packageNames.add( "com.test" );
+        packageNames.add("io.test");
+        packageNames.add("org.test");
+        packageNames.add("com.test");
 
         return packageNames;
     }
 
+    private Map<String, Boolean> createCollectionTypes() {
+        Map<String, Boolean> collectionTypes = new HashMap<>();
+        collectionTypes.put("java.util.List",
+                            true);
+        collectionTypes.put("java.util.ArrayList",
+                            true);
+        collectionTypes.put("java.util.Set",
+                            true);
+        collectionTypes.put("java.util.HashSet",
+                            true);
+        collectionTypes.put("org.CustomCollectionOne",
+                            true);
+        collectionTypes.put("com.CustomCollectionTwo",
+                            true);
+        collectionTypes.put("org.SeemsAsCollection",
+                            false);
+
+        return collectionTypes;
+    }
+
+    @Test
+    public void testGetAvailableCollectionTypes() throws Exception {
+        assertEquals(3,
+                     oracle.getAvailableCollectionTypes().size());
+
+        // List is imported and it is between project Collection types
+        assertTrue(oracle.getAvailableCollectionTypes().contains("List"));
+        // HashSet is imported and it is between project Collection types
+        assertTrue(oracle.getAvailableCollectionTypes().contains("HashSet"));
+        // CustomCollection is not imported but it is between project Collection types and it is in the current package
+        assertTrue(oracle.getAvailableCollectionTypes().contains("CustomCollectionOne"));
+        // SeemsAsCollection is imported but it is not Collection type
+        assertFalse(oracle.getAvailableCollectionTypes().contains("SeemsAsCollection"));
+    }
+
     @Test
     public void testIsFactTypeRecognized() {
-        assertTrue( oracle.isFactTypeRecognized( "org.Address" ) );
+        assertTrue(oracle.isFactTypeRecognized("org.Address"));
     }
 
     @Test
     public void testFactTypes() {
         final String[] types = oracle.getFactTypes();
 
-        assertEquals( 5, types.length );
-        assertEquals( "Address", types[ 0 ] );
-        assertEquals( "Document", types[ 1 ] );
-        assertEquals( "GiantContainerOfInformation", types[ 2 ] );
-        assertEquals( "Person", types[ 3 ] );
-        assertEquals( "String", types[ 4 ] );
+        assertEquals(5,
+                     types.length);
+        assertEquals("Address",
+                     types[0]);
+        assertEquals("Document",
+                     types[1]);
+        assertEquals("GiantContainerOfInformation",
+                     types[2]);
+        assertEquals("Person",
+                     types[3]);
+        assertEquals("String",
+                     types[4]);
     }
 
     @Test
     public void testAllFactTypes() {
         final String[] types = oracle.getAllFactTypes();
 
-        assertEquals( 5, types.length );
-        assertEquals( "java.lang.String", types[ 0 ] );
-        assertEquals( "org.Address", types[ 1 ] );
-        assertEquals( "org.Document", types[ 2 ] );
-        assertEquals( "org.globals.GiantContainerOfInformation", types[ 3 ] );
-        assertEquals( "org.test.Person", types[ 4 ] );
+        assertEquals(5,
+                     types.length);
+        assertEquals("java.lang.String",
+                     types[0]);
+        assertEquals("org.Address",
+                     types[1]);
+        assertEquals("org.Document",
+                     types[2]);
+        assertEquals("org.globals.GiantContainerOfInformation",
+                     types[3]);
+        assertEquals("org.test.Person",
+                     types[4]);
     }
 
     @Test
     public void testInternalFactTypes() {
         final String[] types = oracle.getInternalFactTypes();
 
-        assertEquals( 2, types.length );
-        assertEquals( "org.Address", types[ 0 ] );
-        assertEquals( "org.Document", types[ 1 ] );
+        assertEquals(2,
+                     types.length);
+        assertEquals("org.Address",
+                     types[0]);
+        assertEquals("org.Document",
+                     types[1]);
     }
 
     @Test
     public void testExternalFactTypes() {
         final String[] types = oracle.getExternalFactTypes();
 
-        assertEquals( 3, types.length );
-        assertEquals( "java.lang.String", types[ 0 ] );
-        assertEquals( "org.globals.GiantContainerOfInformation", types[ 1 ] );
-        assertEquals( "org.test.Person", types[ 2 ] );
+        assertEquals(3,
+                     types.length);
+        assertEquals("java.lang.String",
+                     types[0]);
+        assertEquals("org.globals.GiantContainerOfInformation",
+                     types[1]);
+        assertEquals("org.test.Person",
+                     types[2]);
     }
 
     @Test
     public void testName() throws Exception {
-        assertEquals( "org.test.Person",
-                      oracle.getFQCNByFactName( "Person" ) );
-        assertEquals( "Person",
-                      oracle.getFieldClassName( "Person",
-                                                "this" ) );
+        assertEquals("org.test.Person",
+                     oracle.getFQCNByFactName("Person"));
+        assertEquals("Person",
+                     oracle.getFieldClassName("Person",
+                                              "this"));
     }
 
     @Test
     public void testGetFieldCompletions() throws Exception {
-        Callback<ModelField[]> callback = spy( new Callback<ModelField[]>() {
+        Callback<ModelField[]> callback = spy(new Callback<ModelField[]>() {
             @Override
-            public void callback( ModelField[] result ) {
-                assertEquals( 2,
-                              result.length );
+            public void callback(ModelField[] result) {
+                assertEquals(2,
+                             result.length);
 
                 assertEquals("address",
                              result[0].getName());
@@ -345,29 +407,28 @@ public class AsyncPackageDataModelOracleImplTest {
                 assertEquals("this",
                              result[1].getName());
 
-                assertEquals( "Address",
-                              oracle.getFieldType( "Person",
-                                                   "address" ) );
-                assertEquals( "Address",
-                              oracle.getFieldClassName( "Person",
-                                                        "address" ) );
-
+                assertEquals("Address",
+                             oracle.getFieldType("Person",
+                                                 "address"));
+                assertEquals("Address",
+                             oracle.getFieldClassName("Person",
+                                                      "address"));
             }
-        } );
+        });
 
-        oracle.getFieldCompletions( "Person",
-                                    callback );
+        oracle.getFieldCompletions("Person",
+                                   callback);
 
-        verify( callback ).callback( any( ModelField[].class ) );
+        verify(callback).callback(any(ModelField[].class));
     }
 
     @Test
     public void testGetFieldCompletionsForField() throws Exception {
-        Callback<ModelField[]> callback = spy( new Callback<ModelField[]>() {
+        Callback<ModelField[]> callback = spy(new Callback<ModelField[]>() {
             @Override
-            public void callback( ModelField[] result ) {
-                assertEquals( 4,
-                              result.length );
+            public void callback(ModelField[] result) {
+                assertEquals(4,
+                             result.length);
 
                 assertEquals("homeAddress",
                              result[0].getName());
@@ -381,38 +442,37 @@ public class AsyncPackageDataModelOracleImplTest {
                 assertEquals("this",
                              result[3].getName());
 
-                assertEquals( "Address",
-                              oracle.getFieldClassName( "Address",
-                                                        "this" ) );
-                assertEquals( "this",
-                              oracle.getFieldType( "Address",
-                                                   "this" ) );
-                assertEquals( "String",
-                              oracle.getFieldClassName( "Address",
-                                                        "street" ) );
-                assertEquals( "String",
-                              oracle.getFieldType( "Address",
-                                                   "street" ) );
-                assertEquals( "Boolean",
-                              oracle.getFieldClassName( "Address",
-                                                        "homeAddress" ) );
-                assertEquals( "Boolean",
-                              oracle.getFieldType( "Address",
-                                                   "homeAddress" ) );
-                assertEquals( Integer.class.getName(),
-                              oracle.getFieldClassName( "Address",
-                                                        "number" ) );
-                assertEquals( DataType.TYPE_NUMERIC_INTEGER,
-                              oracle.getFieldType( "Address",
-                                                    "number" ) );
+                assertEquals("Address",
+                             oracle.getFieldClassName("Address",
+                                                      "this"));
+                assertEquals("this",
+                             oracle.getFieldType("Address",
+                                                 "this"));
+                assertEquals("String",
+                             oracle.getFieldClassName("Address",
+                                                      "street"));
+                assertEquals("String",
+                             oracle.getFieldType("Address",
+                                                 "street"));
+                assertEquals("Boolean",
+                             oracle.getFieldClassName("Address",
+                                                      "homeAddress"));
+                assertEquals("Boolean",
+                             oracle.getFieldType("Address",
+                                                 "homeAddress"));
+                assertEquals(Integer.class.getName(),
+                             oracle.getFieldClassName("Address",
+                                                      "number"));
+                assertEquals(DataType.TYPE_NUMERIC_INTEGER,
+                             oracle.getFieldType("Address",
+                                                 "number"));
             }
-        } );
+        });
 
-        oracle.getFieldCompletions( "Address",
-                                    callback );
+        oracle.getFieldCompletions("Address",
+                                   callback);
 
-        verify( callback ).callback( any( ModelField[].class ) );
-
+        verify(callback).callback(any(ModelField[].class));
     }
 
     @Test
@@ -420,15 +480,18 @@ public class AsyncPackageDataModelOracleImplTest {
         Callback<String[]> callback = spy(new Callback<String[]>() {
             @Override
             public void callback(String[] result) {
-                assertArrayEquals( new String[] { "==", "!=", "<", ">", "<=", ">=", "matches", "soundslike", "== null", "!= null",  "in", "not in" },
-                                   result );
+                assertArrayEquals(new String[]{"==", "!=", "<", ">", "<=", ">=", "matches", "soundslike", "== null", "!= null", "in", "not in"},
+                                  result);
             }
         });
 
-        oracle.getFieldCompletions( "Address", mock( Callback.class ) );
-        oracle.getOperatorCompletions( "Address", "street", callback );
+        oracle.getFieldCompletions("Address",
+                                   mock(Callback.class));
+        oracle.getOperatorCompletions("Address",
+                                      "street",
+                                      callback);
 
-        verify( callback ).callback( any( String[].class ) );
+        verify(callback).callback(any(String[].class));
     }
 
     @Test
@@ -436,15 +499,18 @@ public class AsyncPackageDataModelOracleImplTest {
         Callback<String[]> callback = spy(new Callback<String[]>() {
             @Override
             public void callback(String[] result) {
-                assertArrayEquals( new String[] { "==", "!=", "<", ">", "<=", ">=", "== null", "!= null",  "in", "not in" },
-                                   result );
+                assertArrayEquals(new String[]{"==", "!=", "<", ">", "<=", ">=", "== null", "!= null", "in", "not in"},
+                                  result);
             }
         });
 
-        oracle.getFieldCompletions( "Address", mock( Callback.class ) );
-        oracle.getOperatorCompletions( "Address", "number", callback );
+        oracle.getFieldCompletions("Address",
+                                   mock(Callback.class));
+        oracle.getOperatorCompletions("Address",
+                                      "number",
+                                      callback);
 
-        verify( callback ).callback( any( String[].class ) );
+        verify(callback).callback(any(String[].class));
     }
 
     @Test
@@ -452,14 +518,18 @@ public class AsyncPackageDataModelOracleImplTest {
         Callback<String[]> callback = spy(new Callback<String[]>() {
             @Override
             public void callback(String[] result) {
-                assertArrayEquals( new String[] { "==", "!=", "== null", "!= null" }, result );
+                assertArrayEquals(new String[]{"==", "!=", "== null", "!= null"},
+                                  result);
             }
         });
 
-        oracle.getFieldCompletions( "Address", mock( Callback.class ) );
-        oracle.getOperatorCompletions( "Address", "homeAddress", callback );
+        oracle.getFieldCompletions("Address",
+                                   mock(Callback.class));
+        oracle.getOperatorCompletions("Address",
+                                      "homeAddress",
+                                      callback);
 
-        verify( callback ).callback( any( String[].class ) );
+        verify(callback).callback(any(String[].class));
     }
 
     @Test
@@ -467,125 +537,143 @@ public class AsyncPackageDataModelOracleImplTest {
         Callback<String[]> callback = spy(new Callback<String[]>() {
             @Override
             public void callback(String[] result) {
-                assertArrayEquals( new String[] { "==", "!=", "== null", "!= null" }, result );
+                assertArrayEquals(new String[]{"==", "!=", "== null", "!= null"},
+                                  result);
             }
         });
 
-        oracle.getFieldCompletions( "Address", mock( Callback.class ) );
-        oracle.getOperatorCompletions( "Address", "this", callback );
+        oracle.getFieldCompletions("Address",
+                                   mock(Callback.class));
+        oracle.getOperatorCompletions("Address",
+                                      "this",
+                                      callback);
 
-        verify( callback ).callback( any( String[].class ) );
+        verify(callback).callback(any(String[].class));
     }
 
     @Test
     public void testGetFieldCompletionsForSomethingThatDoesNotReturnFields() throws Exception {
-        Callback<ModelField[]> callback = spy( new Callback<ModelField[]>() {
+        Callback<ModelField[]> callback = spy(new Callback<ModelField[]>() {
             @Override
-            public void callback( ModelField[] result ) {
-                assertEquals( 0,
-                              result.length );
+            public void callback(ModelField[] result) {
+                assertEquals(0,
+                             result.length);
             }
-        } );
+        });
 
-        oracle.getFieldCompletions( "I.do.not.Exist",
-                                    callback );
+        oracle.getFieldCompletions("I.do.not.Exist",
+                                   callback);
 
-        verify( callback ).callback( any( ModelField[].class ) );
+        verify(callback).callback(any(ModelField[].class));
     }
 
     @Test
     public void testGetFieldCompletionsMutators() throws Exception {
-        Callback<ModelField[]> callback = spy( new Callback<ModelField[]>() {
+        Callback<ModelField[]> callback = spy(new Callback<ModelField[]>() {
             @Override
-            public void callback( ModelField[] result ) {
-                assertEquals( 3,
-                              result.length );
+            public void callback(ModelField[] result) {
+                assertEquals(3,
+                             result.length);
             }
-        } );
+        });
 
-        oracle.getFieldCompletions( "Address",
-                                    FieldAccessorsAndMutators.MUTATOR, callback );
+        oracle.getFieldCompletions("Address",
+                                   FieldAccessorsAndMutators.MUTATOR,
+                                   callback);
 
-        verify( callback ).callback( any( ModelField[].class ) );
+        verify(callback).callback(any(ModelField[].class));
     }
 
     @Test
     public void testGetMethodInfosForGlobalVariable() throws Exception {
-        Callback<List<MethodInfo>> callback = spy( new Callback<List<MethodInfo>>() {
+        Callback<List<MethodInfo>> callback = spy(new Callback<List<MethodInfo>>() {
             @Override
-            public void callback( List<MethodInfo> result ) {
-                assertEquals( 0,
-                              result.size() );
+            public void callback(List<MethodInfo> result) {
+                assertEquals(0,
+                             result.size());
             }
-        } );
+        });
 
-        oracle.getMethodInfosForGlobalVariable( "giant",
-                                                callback );
+        oracle.getMethodInfosForGlobalVariable("giant",
+                                               callback);
 
-        verify( callback ).callback( anyList() );
+        verify(callback).callback(anyList());
     }
 
     @Test
     public void testGetMethodInfosSortedForGlobalVariable() {
-        Callback<List<MethodInfo>> callback = spy( new Callback<List<MethodInfo>>() {
+        Callback<List<MethodInfo>> callback = spy(new Callback<List<MethodInfo>>() {
             @Override
-            public void callback( List<MethodInfo> result ) {
-                assertEquals( 4, result.size() );
+            public void callback(List<MethodInfo> result) {
+                assertEquals(4,
+                             result.size());
 
-                assertEquals( "build", result.get( 0 ).getName() );
-                assertEquals( 1, result.get( 0 ).getParams().size() );
-                assertEquals( "Integer", result.get( 0 ).getParams().get( 0 ) );
+                assertEquals("build",
+                             result.get(0).getName());
+                assertEquals(1,
+                             result.get(0).getParams().size());
+                assertEquals("Integer",
+                             result.get(0).getParams().get(0));
 
-                assertEquals( "build", result.get( 1 ).getName() );
-                assertEquals( 1, result.get( 1 ).getParams().size() );
-                assertEquals( "String", result.get( 1 ).getParams().get( 0 ) );
+                assertEquals("build",
+                             result.get(1).getName());
+                assertEquals(1,
+                             result.get(1).getParams().size());
+                assertEquals("String",
+                             result.get(1).getParams().get(0));
 
-                assertEquals( "build", result.get( 2 ).getName() );
-                assertEquals( 2, result.get( 2 ).getParams().size() );
-                assertEquals( "String", result.get( 2 ).getParams().get( 0 ) );
-                assertEquals( "Integer", result.get( 2 ).getParams().get( 1 ) );
+                assertEquals("build",
+                             result.get(2).getName());
+                assertEquals(2,
+                             result.get(2).getParams().size());
+                assertEquals("String",
+                             result.get(2).getParams().get(0));
+                assertEquals("Integer",
+                             result.get(2).getParams().get(1));
 
-                assertEquals( "getName", result.get( 3 ).getName() );
-                assertEquals( 0, result.get( 3 ).getParams().size() );
+                assertEquals("getName",
+                             result.get(3).getName());
+                assertEquals(0,
+                             result.get(3).getParams().size());
             }
-        } );
+        });
 
-        oracle.getMethodInfosForGlobalVariable( "person",
-                                                callback );
+        oracle.getMethodInfosForGlobalVariable("person",
+                                               callback);
 
-        verify( callback ).callback( anyList() );
+        verify(callback).callback(anyList());
     }
 
     @Test
     public void testGetFieldCompletionsForGlobalVariable() throws Exception {
-        Callback<ModelField[]> callback = spy( new Callback<ModelField[]>() {
+        Callback<ModelField[]> callback = spy(new Callback<ModelField[]>() {
             @Override
-            public void callback( ModelField[] result ) {
-                assertEquals( 1,
-                              result.length );
+            public void callback(ModelField[] result) {
+                assertEquals(1,
+                             result.length);
             }
-        } );
+        });
 
-        oracle.getFieldCompletionsForGlobalVariable( "giant",
-                                                     callback );
+        oracle.getFieldCompletionsForGlobalVariable("giant",
+                                                    callback);
 
-        verify( callback ).callback( any( ModelField[].class ) );
+        verify(callback).callback(any(ModelField[].class));
     }
 
     @Test
     public void testGetMethodParamsString() throws Exception {
-        Callback<List<String>> callback = spy( new Callback<List<String>>() {
+        Callback<List<String>> callback = spy(new Callback<List<String>>() {
             @Override
-            public void callback( List<String> result ) {
+            public void callback(List<String> result) {
                 // In real life this returns 58 values. Using a mock here
-                assertEquals( 1,
-                              result.size() );
+                assertEquals(1,
+                             result.size());
             }
-        } );
-        oracle.getMethodParams( "String",
-                                "valueOf(Integer)",
-                                callback );
-        verify( callback ).callback( anyList() );
+        });
+        oracle.getMethodParams("String",
+                               "valueOf(Integer)",
+                               callback);
+        verify(callback).callback(anyList());
     }
 
     @Test
@@ -593,76 +681,85 @@ public class AsyncPackageDataModelOracleImplTest {
      * Person is imported, but Person has an address that is not. Asking connective operator completions for Address.street should still work.
      */
     public void testGetConnectiveOperatorCompletions() throws Exception {
-        final Callback<String[]> connectiveOperatorsCallback = spy( new Callback<String[]>() {
+        final Callback<String[]> connectiveOperatorsCallback = spy(new Callback<String[]>() {
             @Override
-            public void callback( String[] result ) {
-                assertEquals( OperatorsOracle.STRING_CONNECTIVES.length, result.length );
-                for ( String connective : OperatorsOracle.STRING_CONNECTIVES ) {
+            public void callback(String[] result) {
+                assertEquals(OperatorsOracle.STRING_CONNECTIVES.length,
+                             result.length);
+                for (String connective : OperatorsOracle.STRING_CONNECTIVES) {
                     boolean foundIt = false;
-                    for ( String resultConnective : result ) {
-                        if ( connective.equals( resultConnective ) ) {
+                    for (String resultConnective : result) {
+                        if (connective.equals(resultConnective)) {
                             foundIt = true;
                             break;
                         }
                     }
-                    assertTrue( foundIt );
+                    assertTrue(foundIt);
                 }
             }
-        } );
+        });
 
-        Callback<ModelField[]> fieldCompletionsCallback = spy( new Callback<ModelField[]>() {
+        Callback<ModelField[]> fieldCompletionsCallback = spy(new Callback<ModelField[]>() {
             @Override
-            public void callback( ModelField[] result ) {
+            public void callback(ModelField[] result) {
 
                 // We can't really know about the fields of Address before we query them.
                 // This is why we call getFieldCompletions() before getConnectiveOperatorCompletions()
-                oracle.getConnectiveOperatorCompletions( "Address",
-                                                         "street",
-                                                         connectiveOperatorsCallback );
-
+                oracle.getConnectiveOperatorCompletions("Address",
+                                                        "street",
+                                                        connectiveOperatorsCallback);
             }
-        } );
+        });
 
-        oracle.getFieldCompletions( "Address", fieldCompletionsCallback );
+        oracle.getFieldCompletions("Address",
+                                   fieldCompletionsCallback);
 
-        verify( fieldCompletionsCallback ).callback( any( ModelField[].class ) );
-        verify( connectiveOperatorsCallback ).callback( any( String[].class ) );
+        verify(fieldCompletionsCallback).callback(any(ModelField[].class));
+        verify(connectiveOperatorsCallback).callback(any(String[].class));
     }
 
     @Test
     public void testGetSuperTypes() {
 
-        Callback<List<String>> getSuperTypesCallback = spy( new Callback<List<String>>() {
+        Callback<List<String>> getSuperTypesCallback = spy(new Callback<List<String>>() {
             @Override
-            public void callback( List<String> result ) {
+            public void callback(List<String> result) {
 
-                assertEquals( 2, result.size() );
-                assertEquals( "org.test.GrandParent", result.get( 0 ) );
-                assertEquals( "org.test.Parent", result.get( 1 ) );
+                assertEquals(2,
+                             result.size());
+                assertEquals("org.test.GrandParent",
+                             result.get(0));
+                assertEquals("org.test.Parent",
+                             result.get(1));
             }
-        } );
+        });
 
-        oracle.getSuperTypes( "Person", getSuperTypesCallback );
-        verify( getSuperTypesCallback ).callback( anyList() );
+        oracle.getSuperTypes("Person",
+                             getSuperTypesCallback);
+        verify(getSuperTypesCallback).callback(anyList());
     }
 
     @Test
     public void testGetPackageNames() {
         List<String> packageNames = oracle.getPackageNames();
 
-        assertEquals( 3, packageNames.size() );
-        assertEquals( "com.test", packageNames.get( 0 ) );
-        assertEquals( "io.test", packageNames.get( 1 ) );
-        assertEquals( "org.test", packageNames.get( 2 ) );
+        assertEquals(3,
+                     packageNames.size());
+        assertEquals("com.test",
+                     packageNames.get(0));
+        assertEquals("io.test",
+                     packageNames.get(1));
+        assertEquals("org.test",
+                     packageNames.get(2));
     }
 
-    private LazyModelField getLazyThisField( String clazz ) {
-        return new LazyModelField( "this",
-                                   clazz,
-                                   ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                   ModelField.FIELD_ORIGIN.SELF,
-                                   FieldAccessorsAndMutators.ACCESSOR,
-                                   "this" );
+    private LazyModelField getLazyThisField(String clazz) {
+        return new LazyModelField("this",
+                                  clazz,
+                                  ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                  ModelField.FIELD_ORIGIN.SELF,
+                                  FieldAccessorsAndMutators.ACCESSOR,
+                                  "this");
     }
 
     private class Service
@@ -671,19 +768,19 @@ public class AsyncPackageDataModelOracleImplTest {
         private RemoteCallback<PackageDataModelOracleIncrementalPayload> callback;
         private IncrementalDataModelService service = new IncrementalDataModelService() {
             @Override
-            public PackageDataModelOracleIncrementalPayload getUpdates( Path resourcePath,
-                                                                        Imports imports,
-                                                                        String factType ) {
-                if ( factType.equals( "org.test.Person" ) ) {
-                    callback.callback( personPayload );
-                } else if ( factType.equals( "java.lang.String" ) ) {
-                    callback.callback( stringPayload );
-                } else if ( factType.equals( "org.Address" ) ) {
-                    callback.callback( addressPayload );
-                } else if ( factType.equals( "org.globals.GiantContainerOfInformation" ) ) {
-                    callback.callback( giantPayload );
+            public PackageDataModelOracleIncrementalPayload getUpdates(Path resourcePath,
+                                                                       Imports imports,
+                                                                       String factType) {
+                if (factType.equals("org.test.Person")) {
+                    callback.callback(personPayload);
+                } else if (factType.equals("java.lang.String")) {
+                    callback.callback(stringPayload);
+                } else if (factType.equals("org.Address")) {
+                    callback.callback(addressPayload);
+                } else if (factType.equals("org.globals.GiantContainerOfInformation")) {
+                    callback.callback(giantPayload);
                 } else {
-                    callback.callback( defaultPayload );
+                    callback.callback(defaultPayload);
                 }
 
                 return null;
@@ -696,14 +793,14 @@ public class AsyncPackageDataModelOracleImplTest {
         }
 
         @Override
-        public IncrementalDataModelService call( RemoteCallback<?> remoteCallback ) {
+        public IncrementalDataModelService call(RemoteCallback<?> remoteCallback) {
             callback = (RemoteCallback<PackageDataModelOracleIncrementalPayload>) remoteCallback;
             return service;
         }
 
         @Override
-        public IncrementalDataModelService call( RemoteCallback<?> remoteCallback,
-                                                 ErrorCallback<?> errorCallback ) {
+        public IncrementalDataModelService call(RemoteCallback<?> remoteCallback,
+                                                ErrorCallback<?> errorCallback) {
             callback = (RemoteCallback<PackageDataModelOracleIncrementalPayload>) remoteCallback;
             return service;
         }
