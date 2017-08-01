@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 
+import java.util.Collection;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -30,6 +31,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.c
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerWidgetFactory;
+import org.drools.workbench.screens.guided.rule.client.editor.plugin.RuleModellerActionPlugin;
 import org.drools.workbench.screens.guided.template.client.editor.TemplateModellerWidgetFactory;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -88,6 +90,7 @@ public class RuleModellerPage<T extends HasRuleModellerPage & DecisionTableColum
 
     private RuleModeller newRuleModeller() {
         final RuleModeller ruleModeller = new RuleModeller(ruleModel(),
+                                                           actionPlugins(),
                                                            oracle(),
                                                            widgetFactory(),
                                                            configuration(),
@@ -115,6 +118,10 @@ public class RuleModellerPage<T extends HasRuleModellerPage & DecisionTableColum
         return plugin().getRuleModel();
     }
 
+    private Collection<RuleModellerActionPlugin> actionPlugins() {
+        return plugin().getRuleModellerActionPlugins();
+    }
+
     RuleModellerConfiguration configuration() {
         return plugin().getRuleModellerConfiguration();
     }
@@ -124,7 +131,7 @@ public class RuleModellerPage<T extends HasRuleModellerPage & DecisionTableColum
 
         switch (tableFormat) {
             case EXTENDED_ENTRY:
-                return new TemplateModellerWidgetFactory();
+                return new TemplateModellerWidgetFactory(actionPlugins());
             case LIMITED_ENTRY:
                 return new RuleModellerWidgetFactory();
             default:

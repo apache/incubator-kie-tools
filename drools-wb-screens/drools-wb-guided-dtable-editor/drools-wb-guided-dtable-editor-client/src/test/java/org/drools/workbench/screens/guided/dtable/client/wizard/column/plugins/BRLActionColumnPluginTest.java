@@ -31,6 +31,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.MockInstanceImpl;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.AdditionalInfoPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.RuleModellerPage;
@@ -79,6 +80,7 @@ public class BRLActionColumnPluginTest {
 
     @InjectMocks
     private BRLActionColumnPlugin plugin = spy(new BRLActionColumnPlugin(ruleModellerPage,
+                                                                         new MockInstanceImpl<>(new ArrayList<>()),
                                                                          additionalInfoPage,
                                                                          changeEvent,
                                                                          translationService));

@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -50,6 +52,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.c
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.BaseDecisionTableColumnPlugin;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
+import org.drools.workbench.screens.guided.rule.client.editor.plugin.RuleModellerActionPlugin;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
@@ -60,6 +63,8 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
                                                                                     TemplateVariablesChangedEvent.Handler {
 
     private RuleModellerPage ruleModellerPage;
+
+    private Collection<RuleModellerActionPlugin> actionPlugins = new ArrayList<>();
 
     private AdditionalInfoPage<BRLActionColumnPlugin> additionalInfoPage;
 
@@ -73,6 +78,7 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
 
     @Inject
     public BRLActionColumnPlugin(final RuleModellerPage ruleModellerPage,
+                                 final Instance<RuleModellerActionPlugin> actionPluginInstance,
                                  final AdditionalInfoPage<BRLActionColumnPlugin> additionalInfoPage,
                                  final Event<WizardPageStatusChangeEvent> changeEvent,
                                  final TranslationService translationService) {
@@ -80,6 +86,7 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
               translationService);
 
         this.ruleModellerPage = ruleModellerPage;
+        actionPluginInstance.iterator().forEachRemaining(actionPlugins::add);
         this.additionalInfoPage = additionalInfoPage;
     }
 
@@ -260,6 +267,11 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
         ruleModel = Optional.ofNullable(ruleModel).orElse(newRuleModel());
 
         return ruleModel;
+    }
+
+    @Override
+    public Collection<RuleModellerActionPlugin> getRuleModellerActionPlugins() {
+        return actionPlugins;
     }
 
     private RuleModel newRuleModel() {

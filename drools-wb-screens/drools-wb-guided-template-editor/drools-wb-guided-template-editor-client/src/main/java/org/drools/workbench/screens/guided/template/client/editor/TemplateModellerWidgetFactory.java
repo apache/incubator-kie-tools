@@ -16,10 +16,20 @@
 
 package org.drools.workbench.screens.guided.template.client.editor;
 
+import java.util.Collection;
+
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerWidgetFactory;
+import org.drools.workbench.screens.guided.rule.client.editor.plugin.RuleModellerActionPlugin;
 
 public class TemplateModellerWidgetFactory
         extends RuleModellerWidgetFactory {
+
+    public TemplateModellerWidgetFactory() {
+    }
+
+    public TemplateModellerWidgetFactory(Collection<RuleModellerActionPlugin> actionPlugins) {
+        super(actionPlugins);
+    }
 
     @Override
     public boolean isTemplate() {

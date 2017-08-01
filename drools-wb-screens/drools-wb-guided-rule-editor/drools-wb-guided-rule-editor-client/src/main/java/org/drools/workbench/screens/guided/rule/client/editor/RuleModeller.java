@@ -101,12 +101,12 @@ public class RuleModeller extends Composite
                         final boolean isReadOnly,
                         final boolean isDSLEnabled) {
         this(model,
+             actionPlugins,
              oracle,
              widgetFactory,
              RuleModellerConfiguration.getDefault(),
              eventBus,
              isReadOnly);
-        this.actionPlugins = actionPlugins;
         this.isDSLEnabled = isDSLEnabled;
     }
 
@@ -127,12 +127,14 @@ public class RuleModeller extends Composite
 
     //used by Guided Decision BRL Fragments
     public RuleModeller(final RuleModel model,
+                        final Collection<RuleModellerActionPlugin> actionPlugins,
                         final AsyncPackageDataModelOracle oracle,
                         final ModellerWidgetFactory widgetFactory,
                         final RuleModellerConfiguration configuration,
                         final EventBus eventBus,
                         final boolean isReadOnly) {
         this.model = model;
+        this.actionPlugins = actionPlugins;
         this.oracle = oracle;
         this.widgetFactory = widgetFactory;
         this.configuration = configuration;
@@ -785,6 +787,10 @@ public class RuleModeller extends Composite
 
     public RuleModel getModel() {
         return model;
+    }
+
+    public Collection<RuleModellerActionPlugin> getActionPlugins() {
+        return actionPlugins;
     }
 
     /**

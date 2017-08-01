@@ -15,9 +15,14 @@
  */
 package org.drools.workbench.screens.guided.dtable.backend.server.indexing;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.drools.workbench.models.commons.backend.rule.RuleModelIActionPersistenceExtension;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTDRLPersistence;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
@@ -38,6 +43,16 @@ public class GuidedDecisionTableFileIndexer extends AbstractDrlFileIndexer {
     @Inject
     protected DataModelService dataModelService;
 
+    @Inject
+    protected Instance<RuleModelIActionPersistenceExtension> persistenceExtensionInstance;
+
+    private List<RuleModelIActionPersistenceExtension> persistenceExtensions = new ArrayList<>();
+
+    @PostConstruct
+    private void init() {
+        persistenceExtensionInstance.forEach(persistenceExtensions::add);
+    }
+
     @Override
     public boolean supportsPath(final Path path) {
         return type.accept(Paths.convert(path));
@@ -47,7 +62,8 @@ public class GuidedDecisionTableFileIndexer extends AbstractDrlFileIndexer {
     public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
         final String content = ioService.readAllString(path);
         final GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal(content);
-        final String drl = GuidedDTDRLPersistence.getInstance().marshal(model);
+        final String drl = GuidedDTDRLPersistence.getInstance().marshal(model,
+                                                                        persistenceExtensions);
 
         return fillDrlIndexBuilder(path,
                                    drl);

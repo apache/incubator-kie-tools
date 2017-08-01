@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,6 +58,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.c
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.BaseDecisionTableColumnPlugin;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
+import org.drools.workbench.screens.guided.rule.client.editor.plugin.RuleModellerActionPlugin;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
@@ -265,6 +267,11 @@ public class BRLConditionColumnPlugin extends BaseDecisionTableColumnPlugin impl
         ruleModel = Optional.ofNullable(ruleModel).orElse(newRuleModel());
 
         return ruleModel;
+    }
+
+    @Override
+    public Collection<RuleModellerActionPlugin> getRuleModellerActionPlugins() {
+        return Collections.emptyList();
     }
 
     private RuleModel newRuleModel() {

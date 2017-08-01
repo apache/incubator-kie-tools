@@ -22,6 +22,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.enterprise.inject.Instance;
+
+import org.drools.workbench.models.commons.backend.rule.RuleModelIActionPersistenceExtension;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
@@ -31,6 +34,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.DescriptionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.project.model.Package;
 import org.junit.Before;
@@ -40,11 +45,13 @@ import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -65,9 +72,23 @@ public class GuidedDecisionTableSourceServiceTest {
     @Mock
     FileDiscoveryService discoveryService;
 
+    @Mock
+    GuidedDTableResourceTypeDefinition resourceTypeDefinition;
+
+    @Mock
+    GuidedDecisionTableEditorService guidedDecisionTableEditorService;
+
+    @Mock
+    IOService ioService;
+
+    @Mock
+    FileDiscoveryService fileDiscoveryService;
+
+    @Mock
+    Instance<RuleModelIActionPersistenceExtension> persistenceExtensionInstance;
+
     GuidedDecisionTable52 model;
 
-    @InjectMocks
     GuidedDecisionTableSourceService service;
 
     Pattern52 pattern;
@@ -78,6 +99,17 @@ public class GuidedDecisionTableSourceServiceTest {
 
     @Before
     public void setUp() throws Exception {
+        Instance<RuleModelIActionPersistenceExtension> persistenceExtensionInstance = mock(Instance.class);
+        when(persistenceExtensionInstance.iterator()).thenReturn(new ArrayList<RuleModelIActionPersistenceExtension>().iterator());
+
+        service = new GuidedDecisionTableSourceService(resourceTypeDefinition,
+                                                       guidedDecisionTableEditorService,
+                                                       ioService,
+                                                       fileDiscoveryService,
+                                                       projectService,
+                                                       persistenceExtensionInstance);
+
+
         // Simulates that no DSL files are present
         when(projectService.resolvePackage(any())).thenReturn(packageMock);
         when(discoveryService.discoverFiles(any(),
