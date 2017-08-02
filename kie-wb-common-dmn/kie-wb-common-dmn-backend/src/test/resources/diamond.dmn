@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+					  xmlns="http://www.trisotech.com/definitions/_8afa6c24-55c8-43cf-8a02-fdde7fc5d1f2"
+					  xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+					  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+					  xmlns:trisofeed="http://trisotech.com/feed"
+					  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					  exporter="DMN Modeler" exporterVersion="5.2.1"
+					  id="_8afa6c24-55c8-43cf-8a02-fdde7fc5d1f2" name="three decisions in a diamond shape"
+					  namespace="http://www.trisotech.com/definitions/_8afa6c24-55c8-43cf-8a02-fdde7fc5d1f2"
+					  triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:inputData id="_4cd17e52-6253-41d6-820d-5824bf5197f3" name="My Name" triso:displayName="My Name">
+    <semantic:variable id="_4843aaec-2707-4b24-92a4-17a522b27bec" name="My Name" typeRef="feel:string"/>
+  </semantic:inputData>
+  <semantic:decision id="_e920f38a-293c-41b8-adb3-69d0dc184fab" name="Prefix" triso:displayName="Prefix">
+    <semantic:variable id="_27aaeb15-9411-494a-828e-5110b51c06cb" name="Prefix" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_4cd17e52-6253-41d6-820d-5824bf5197f3"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_aac46780-c449-4b96-9c7e-90a8e543cee4">
+      <semantic:text>"Hello, "</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_f49f9c34-29d5-4e72-91d2-f4f92117c8da" name="Postfix" triso:displayName="Postfix">
+    <semantic:variable id="_48df1ee2-c6de-446f-ae98-647eb70f6413" name="Postfix" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_4cd17e52-6253-41d6-820d-5824bf5197f3"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_fd7024d1-f4e2-41ee-a173-edc198d5da06">
+      <semantic:text>"."</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_9b061fc3-8109-42e2-9fe4-fc39c90b654e" name="My Decision" triso:displayName="My Decision">
+    <semantic:variable id="_d4760731-61f5-44e5-9343-afc5e074df39" name="My Decision" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_4cd17e52-6253-41d6-820d-5824bf5197f3"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_e920f38a-293c-41b8-adb3-69d0dc184fab"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_f49f9c34-29d5-4e72-91d2-f4f92117c8da"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_0dede519-c70d-4d29-9c19-e0abf91df0c9">
+      <semantic:text>Prefix + My Name + Postfix</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

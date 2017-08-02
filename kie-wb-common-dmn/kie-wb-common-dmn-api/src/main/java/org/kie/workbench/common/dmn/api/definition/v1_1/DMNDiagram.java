@@ -68,6 +68,8 @@ public class DMNDiagram extends DMNModelInstrumentedBase {
     public static final Set<String> stunnerLabels = new HashSet<String>() {{
         add("dmn_diagram");
     }};
+    
+    protected Definitions definitions;
 
     @PropertySet
     @FormField
@@ -87,7 +89,8 @@ public class DMNDiagram extends DMNModelInstrumentedBase {
 
         @Override
         public DMNDiagram build() {
-            return new DMNDiagram(new BackgroundSet(),
+            return new DMNDiagram(new Definitions(),
+                                  new BackgroundSet(),
                                   new FontSet(),
                                   new RectangleDimensionsSet());
         }
@@ -96,12 +99,22 @@ public class DMNDiagram extends DMNModelInstrumentedBase {
     public DMNDiagram() {
     }
 
-    public DMNDiagram(final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+    public DMNDiagram(final @MapsTo("definitions") Definitions definitions,
+                      final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                       final @MapsTo("fontSet") FontSet fontSet,
                       final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
+        this.definitions = definitions;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
+    }
+    
+    public Definitions getDefinitions() {
+        return definitions;
+    }
+    
+    public void setDefinitions(Definitions definitions) {
+        this.definitions = definitions;
     }
 
     public String getStunnerCategory() {
