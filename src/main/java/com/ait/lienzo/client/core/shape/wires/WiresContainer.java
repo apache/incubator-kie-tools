@@ -166,16 +166,26 @@ public class WiresContainer
 
         shape.setParent(this);
 
-        if (shape.getMagnets() != null)
-        {
-            shape.getMagnets().shapeMoved();
-        }
+       shape.shapeMoved();
 
         if (null != m_wiresManager && m_wiresManager.getAlignAndDistribute().isShapeIndexed(shape.uuid())) {
             m_wiresManager.getAlignAndDistribute().getControlForShape(shape.uuid()).refresh();
         }
 
         getLayoutHandler().requestLayout( this );
+    }
+
+    public void shapeMoved() {
+        // Delegate to children.
+        if (getChildShapes() != null && !getChildShapes().isEmpty())
+        {
+            for (WiresShape child : getChildShapes())
+            {
+                child.shapeMoved();
+            }
+        }
+        // Notify the update..
+        fireMove();
     }
 
     public void remove(WiresShape shape)
@@ -256,7 +266,7 @@ public class WiresContainer
                 {
                     if (!WiresContainer.this.m_dragging && event.evaluate(XYWH_OP))
                     {
-                        m_events.fireEvent(new WiresMoveEvent(WiresContainer.this, (int) getGroup().getX(), (int) getGroup().getY()));
+                        fireMove();
                     }
 
                 }
@@ -271,6 +281,12 @@ public class WiresContainer
 
         }
 
+    }
+
+    private void fireMove() {
+        m_events.fireEvent(new WiresMoveEvent(WiresContainer.this,
+                                              (int) getGroup().getX(),
+                                              (int) getGroup().getY()));
     }
 
     public final HandlerRegistration addWiresMoveHandler(final WiresMoveHandler handler)

@@ -438,18 +438,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
 
     public static void updateNestedShapes(WiresShape shape)
     {
-        // While the nested shapes don't have attribute changes, when the parent moves, the connectors are on the root layer and thus must still be updated
-        if (shape.getChildShapes() != null && !shape.getChildShapes().isEmpty())
-        {
-            for (WiresShape child : shape.getChildShapes())
-            {
-                updateNestedShapes(child); // recurse to leafs
-                if (child.getMagnets() != null)
-                {
-                    child.getMagnets().shapeMoved();
-                }
-            }
-        }
+	shape.shapeMoved();
     }
 
     public static void updateSpecialConnections(WiresConnector[] connectors,

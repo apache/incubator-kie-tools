@@ -284,6 +284,16 @@ public class WiresShape extends WiresContainer
         return new WiresShapeControlHandleList(this, type, controls);
     }
 
+    @Override
+    public void shapeMoved() {
+        super.shapeMoved();
+        if (getMagnets() != null)
+        {
+            getMagnets().shapeMoved();
+        }
+
+    }
+
     protected void preDestroy()
     {
         super.preDestroy();
