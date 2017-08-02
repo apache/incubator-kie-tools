@@ -22,6 +22,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresContainerTest;
 import com.ait.lienzo.client.core.shape.wires.WiresManagerTest;
 import com.ait.lienzo.client.core.shape.wires.WiresShapeControlHandleListTest;
 import com.ait.lienzo.client.core.shape.wires.WiresShapeTest;
+import com.ait.lienzo.client.core.shape.wires.WiresTextTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -35,7 +36,7 @@ import org.junit.runners.Suite;
  * 
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ WiresContainerTest.class, WiresShapeTest.class, WiresShapeControlHandleListTest.class, WiresManagerTest.class })
+@Suite.SuiteClasses({ WiresContainerTest.class, WiresShapeTest.class, WiresShapeControlHandleListTest.class, WiresManagerTest.class, WiresTextTest.class })
 public class WiresTestSuite
 {
     @BeforeClass
