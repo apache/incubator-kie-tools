@@ -25,7 +25,15 @@ import com.ait.lienzo.client.core.event.NodeDragStartHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.wires.event.*;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragEndEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragEndHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragMoveEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragMoveHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragStartEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragStartHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresMoveEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresMoveHandler;
+import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
@@ -44,6 +52,7 @@ import static org.mockito.Mockito.*;
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresContainerTest
 {
+
     private WiresShape         shape;
 
     private Group              parentContainer;
@@ -59,12 +68,24 @@ public class WiresContainerTest
     @Mock
     HandlerManager             handlerManager;
 
+    @Mock
+    WiresManager               wiresManager;
+
+    @Mock
+    AlignAndDistribute         alignAndDistribute;
+
+    @Mock
+    AlignAndDistributeControl alignAndDistributeControl;
+
     @Before
     public void setup()
     {
+        when(wiresManager.getAlignAndDistribute()).thenReturn(alignAndDistribute);
+        when(alignAndDistribute.getControlForShape(anyString())).thenReturn(alignAndDistributeControl);
         parentContainer = spy(new Group());
         shape = createShape();
         tested = new WiresContainer(parentContainer, handlerManager, handlerRegistrationManager, attributesChangedBatcher);
+        tested.setWiresManager(wiresManager);
     }
 
     @Test

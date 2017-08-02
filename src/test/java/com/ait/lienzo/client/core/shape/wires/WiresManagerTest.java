@@ -18,20 +18,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
@@ -50,6 +36,11 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresManagerTest
@@ -110,7 +101,7 @@ public class WiresManagerTest
         verify(shape, times(1)).setDockingAcceptor(eq(dockingAcceptor));
         verify(shape, times(1)).addWiresShapeHandler(eq( handlerRegistrationManager ), any(WiresShape.WiresShapeHandler.class));
         verify(layer, times(1)).add(eq(shape.getGroup()));
-        verify(handlerRegistrationManager, times(3)).register(any(HandlerRegistration.class));
+        verify(handlerRegistrationManager, times(4)).register(any(HandlerRegistration.class));
     }
 
     @Test

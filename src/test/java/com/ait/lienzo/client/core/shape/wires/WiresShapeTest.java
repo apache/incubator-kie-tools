@@ -26,19 +26,31 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
-import com.ait.lienzo.client.core.shape.wires.event.*;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
-import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.*;
+import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.CONNECTOR;
+import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
+import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.RESIZE;
 import static com.ait.lienzo.shared.core.types.EventPropagationMode.FIRST_ANCESTOR;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -123,7 +135,7 @@ public class WiresShapeTest
         verify(group, times(1)).addNodeMouseUpHandler(any(NodeMouseUpHandler.class));
         verify(group, times(1)).setDragConstraints(any(DragConstraintEnforcer.class));
         verify(group, times(1)).addNodeDragEndHandler(any(NodeDragEndHandler.class));
-        verify(handlerRegistrationManager, times(3)).register(any(HandlerRegistration.class));
+        verify(handlerRegistrationManager, times(4)).register(any(HandlerRegistration.class));
     }
 
     @Test
@@ -193,14 +205,29 @@ public class WiresShapeTest
     {
         WiresResizeStartHandler startHandler = mock(WiresResizeStartHandler.class);
         WiresResizeStepHandler stepHandler = mock(WiresResizeStepHandler.class);
-        WiresResizeEndHandler endHandler = mock(WiresResizeEndHandler.class);
+        final WiresResizeEndHandler endHandler = mock(WiresResizeEndHandler.class);
         tested.addWiresResizeStartHandler(startHandler);
         tested.addWiresResizeStepHandler(stepHandler);
         tested.addWiresResizeEndHandler(endHandler);
 
         verify(handlerManager).addHandler(WiresResizeStartEvent.TYPE, startHandler);
         verify(handlerManager).addHandler(WiresResizeStepEvent.TYPE, stepHandler);
-        verify(handlerManager).addHandler(WiresResizeEndEvent.TYPE, endHandler);
+
+        final HandlerRegistration registration = mock(HandlerRegistration.class);
+        doAnswer(new Answer<HandlerRegistration>() {
+            @Override
+            public HandlerRegistration answer(InvocationOnMock invocationOnMock) throws Throwable {
+                DomEvent.Type type = (DomEvent.Type) invocationOnMock.getArguments()[0];
+                if (WiresResizeEndEvent.TYPE.equals(type)) {
+                    WiresResizeEndHandler handler = (WiresResizeEndHandler) invocationOnMock.getArguments()[1];
+                    WiresResizeEndEvent endEvent = mock(WiresResizeEndEvent.class);
+                    handler.onShapeResizeEnd(endEvent);
+                    verify(endHandler, times(1)).onShapeResizeEnd(eq(endEvent));
+                }
+                return registration;
+            }
+        }).when(handlerManager).addHandler(any(GwtEvent.Type.class), any(EventHandler.class));
+
     }
 
     @Test
