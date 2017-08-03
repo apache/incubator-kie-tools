@@ -43,7 +43,6 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportT
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPdfSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.RefreshSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
@@ -114,7 +113,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private UndoSessionCommand sessionUndoCommand;
     private RedoSessionCommand sessionRedoCommand;
     private ValidateSessionCommand sessionValidateCommand;
-    private RefreshSessionCommand sessionRefreshCommand;
     private ExportToPngSessionCommand sessionExportImagePNGCommand;
     private ExportToJpgSessionCommand sessionExportImageJPGCommand;
     private ExportToPdfSessionCommand sessionExportPDFCommand;
@@ -163,7 +161,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.sessionUndoCommand = sessionCommandFactory.newUndoCommand();
         this.sessionRedoCommand = sessionCommandFactory.newRedoCommand();
         this.sessionValidateCommand = sessionCommandFactory.newValidateCommand();
-        this.sessionRefreshCommand = sessionCommandFactory.newRefreshSessionCommand();
         this.sessionExportImagePNGCommand = sessionCommandFactory.newExportToPngSessionCommand();
         this.sessionExportImageJPGCommand = sessionCommandFactory.newExportToJpgSessionCommand();
         this.sessionExportPDFCommand = sessionCommandFactory.newExportToPdfSessionCommand();
@@ -339,8 +336,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         sessionRedoCommand.listen(() -> redoItem.setEnabled(sessionRedoCommand.isEnabled()));
         final MenuItem validateItem = menuItemsBuilder.newValidateItem(AbstractProjectDiagramEditor.this::menu_validate);
         sessionValidateCommand.listen(() -> validateItem.setEnabled(sessionValidateCommand.isEnabled()));
-        final MenuItem refreshItem = menuItemsBuilder.newRefreshItem(AbstractProjectDiagramEditor.this::menu_refresh);
-        sessionRefreshCommand.listen(() -> refreshItem.setEnabled(sessionRefreshCommand.isEnabled()));
         final MenuItem exportsItem = menuItemsBuilder.newExportsItem(AbstractProjectDiagramEditor.this::export_imagePNG,
                                                                      AbstractProjectDiagramEditor.this::export_imageJPG,
                                                                      AbstractProjectDiagramEditor.this::export_imagePDF);
@@ -359,7 +354,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 .addNewTopLevelMenu(undoItem)
                 .addNewTopLevelMenu(redoItem)
                 .addNewTopLevelMenu(validateItem)
-                .addNewTopLevelMenu(refreshItem)
                 .addNewTopLevelMenu(exportsItem);
         if (menuItemsBuilder.isDevItemsEnabled()) {
             fileMenuBuilder.addNewTopLevelMenu(menuItemsBuilder.newDevItems());
@@ -422,23 +416,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         sessionRedoCommand.execute();
     }
 
-    private void menu_refresh() {
-        showLoadingViews();
-        sessionRefreshCommand.execute(new ClientSessionCommand.Callback<ClientRuntimeError>() {
-            @Override
-            public void onSuccess() {
-                log(FINE,
-                    "Diagram refresh successful.");
-                hideLoadingViews();
-            }
-
-            @Override
-            public void onError(final ClientRuntimeError error) {
-                showError(error);
-            }
-        });
-    }
-
     private void export_imagePNG() {
         sessionExportImagePNGCommand.execute();
     }
@@ -490,8 +467,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     void onSessionErrorEvent(final @Observes OnSessionErrorEvent errorEvent) {
         if (isSameSession(errorEvent.getSession())) {
             executeWithConfirm("An error happened [" + errorEvent.getError() + "]. Do you want" +
-                                       "to refresh the diagram (Last changes can be lost)? ",
-                               this::menu_refresh);
+                                       "to undo the last action?",
+                               this::menu_undo);
         }
     }
 
@@ -537,7 +514,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.sessionUndoCommand.bind(getSession());
         this.sessionRedoCommand.bind(getSession());
         this.sessionValidateCommand.bind(getSession());
-        this.sessionRefreshCommand.bind(getSession());
         this.sessionExportImagePNGCommand.bind(getSession());
         this.sessionExportImageJPGCommand.bind(getSession());
         this.sessionExportPDFCommand.bind(getSession());
@@ -552,7 +528,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.sessionUndoCommand.unbind();
         this.sessionRedoCommand.unbind();
         this.sessionValidateCommand.unbind();
-        this.sessionRefreshCommand.unbind();
         this.sessionExportImagePNGCommand.unbind();
         this.sessionExportImageJPGCommand.unbind();
         this.sessionExportPDFCommand.unbind();

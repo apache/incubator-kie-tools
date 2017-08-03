@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSe
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.RefreshSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
@@ -126,8 +125,6 @@ public class ProjectDiagramEditorTest {
     @Mock
     ValidateSessionCommand sessionValidateCommand;
     @Mock
-    RefreshSessionCommand sessionRefreshCommand;
-    @Mock
     ClientFullSessionImpl fullSession;
     @Mock
     ObservablePath path;
@@ -162,7 +159,6 @@ public class ProjectDiagramEditorTest {
         when(sessionCommandFactory.newUndoCommand()).thenReturn(sessionUndoCommand);
         when(sessionCommandFactory.newRedoCommand()).thenReturn(sessionRedoCommand);
         when(sessionCommandFactory.newValidateCommand()).thenReturn(sessionValidateCommand);
-        when(sessionCommandFactory.newRefreshSessionCommand()).thenReturn(sessionRefreshCommand);
         when(presenterFactory.newPresenterEditor()).thenReturn(presenter);
         when(clientSessionManager.getCurrentSession()).thenReturn(fullSession);
         when(clientSessionManager.getSessionFactory(diagram,
@@ -225,8 +221,6 @@ public class ProjectDiagramEditorTest {
         verify(sessionRedoCommand,
                times(0)).bind(eq(fullSession));
         verify(sessionValidateCommand,
-               times(0)).bind(eq(fullSession));
-        verify(sessionRefreshCommand,
                times(0)).bind(eq(fullSession));
     }
 

@@ -32,14 +32,12 @@ public class ToolbarCommandFactory {
     private final ManagedInstance<UndoToolbarCommand> undoCommand;
     private final ManagedInstance<RedoToolbarCommand> redoCommand;
     private final ManagedInstance<ValidateToolbarCommand> validateCommand;
-    private final ManagedInstance<RefreshToolbarCommand> refreshCommand;
     private final ManagedInstance<ExportToPngToolbarCommand> exportToPngToolbarCommand;
     private final ManagedInstance<ExportToJpgToolbarCommand> exportToJpgToolbarCommand;
     private final ManagedInstance<ExportToPdfToolbarCommand> exportToPdfToolbarCommand;
 
     protected ToolbarCommandFactory() {
         this(null,
-             null,
              null,
              null,
              null,
@@ -61,7 +59,6 @@ public class ToolbarCommandFactory {
                                  final ManagedInstance<UndoToolbarCommand> undoCommand,
                                  final ManagedInstance<RedoToolbarCommand> redoCommand,
                                  final ManagedInstance<ValidateToolbarCommand> validateCommand,
-                                 final ManagedInstance<RefreshToolbarCommand> refreshCommand,
                                  final ManagedInstance<ExportToPngToolbarCommand> exportToPngToolbarCommand,
                                  final ManagedInstance<ExportToJpgToolbarCommand> exportToJpgToolbarCommand,
                                  final ManagedInstance<ExportToPdfToolbarCommand> exportToPdfToolbarCommand) {
@@ -73,7 +70,6 @@ public class ToolbarCommandFactory {
         this.undoCommand = undoCommand;
         this.redoCommand = redoCommand;
         this.validateCommand = validateCommand;
-        this.refreshCommand = refreshCommand;
         this.exportToPngToolbarCommand = exportToPngToolbarCommand;
         this.exportToJpgToolbarCommand = exportToJpgToolbarCommand;
         this.exportToPdfToolbarCommand = exportToPdfToolbarCommand;
@@ -109,10 +105,6 @@ public class ToolbarCommandFactory {
 
     public ValidateToolbarCommand newValidateCommand() {
         return validateCommand.get();
-    }
-
-    public RefreshToolbarCommand newRefreshCommand() {
-        return refreshCommand.get();
     }
 
     public ExportToPngToolbarCommand newExportToPngToolbarCommand() {

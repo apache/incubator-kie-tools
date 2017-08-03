@@ -25,7 +25,6 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToJ
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToPdfToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToPngToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.RedoToolbarCommand;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.command.RefreshToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.SwitchGridToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ToolbarCommandFactory;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.UndoToolbarCommand;
@@ -58,7 +57,6 @@ public class EditorToolbar extends AbstractToolbar<AbstractClientFullSession> {
         addCommand(commandFactory.newUndoCommand());
         addCommand(commandFactory.newRedoCommand());
         addCommand(commandFactory.newValidateCommand());
-        addCommand(commandFactory.newRefreshCommand());
         addCommand(commandFactory.newExportToPngToolbarCommand());
         addCommand(commandFactory.newExportToJpgToolbarCommand());
         addCommand(commandFactory.newExportToPdfToolbarCommand());
@@ -101,19 +99,16 @@ public class EditorToolbar extends AbstractToolbar<AbstractClientFullSession> {
         return (ValidateToolbarCommand) getCommand(7);
     }
 
-    public RefreshToolbarCommand getRefreshToolbarCommand() {
-        return (RefreshToolbarCommand) getCommand(8);
-    }
 
     public ExportToPngToolbarCommand getExportToPngToolbarCommand() {
-        return (ExportToPngToolbarCommand) getCommand(9);
+        return (ExportToPngToolbarCommand) getCommand(8);
     }
 
     public ExportToJpgToolbarCommand getExportToJpgToolbarCommand() {
-        return (ExportToJpgToolbarCommand) getCommand(10);
+        return (ExportToJpgToolbarCommand) getCommand(9);
     }
 
     public ExportToPdfToolbarCommand getExportToPdfToolbarCommand() {
-        return (ExportToPdfToolbarCommand) getCommand(11);
+        return (ExportToPdfToolbarCommand) getCommand(10);
     }
 }

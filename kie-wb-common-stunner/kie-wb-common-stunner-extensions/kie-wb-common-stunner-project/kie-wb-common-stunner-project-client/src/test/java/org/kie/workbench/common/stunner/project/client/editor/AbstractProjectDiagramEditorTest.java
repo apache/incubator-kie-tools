@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportT
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPdfSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.RefreshSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
@@ -98,7 +97,6 @@ public class AbstractProjectDiagramEditorTest {
         doReturn(mock(UndoSessionCommand.class)).when(sessionCommandFactory).newUndoCommand();
         doReturn(mock(RedoSessionCommand.class)).when(sessionCommandFactory).newRedoCommand();
         doReturn(mock(ValidateSessionCommand.class)).when(sessionCommandFactory).newValidateCommand();
-        doReturn(mock(RefreshSessionCommand.class)).when(sessionCommandFactory).newRefreshSessionCommand();
         doReturn(mock(ExportToPngSessionCommand.class)).when(sessionCommandFactory).newExportToPngSessionCommand();
         doReturn(mock(ExportToJpgSessionCommand.class)).when(sessionCommandFactory).newExportToJpgSessionCommand();
         doReturn(mock(ExportToPdfSessionCommand.class)).when(sessionCommandFactory).newExportToPdfSessionCommand();

@@ -32,14 +32,12 @@ public class SessionCommandFactory {
     private final ManagedInstance<UndoSessionCommand> undoCommand;
     private final ManagedInstance<RedoSessionCommand> redoCommand;
     private final ManagedInstance<ValidateSessionCommand> validateCommand;
-    private final ManagedInstance<RefreshSessionCommand> refreshSessionCommand;
     private final ManagedInstance<ExportToPngSessionCommand> exportImagePNGSessionCommand;
     private final ManagedInstance<ExportToJpgSessionCommand> exportImageJPGSessionCommand;
     private final ManagedInstance<ExportToPdfSessionCommand> exportPDFSessionCommand;
 
     protected SessionCommandFactory() {
         this(null,
-             null,
              null,
              null,
              null,
@@ -61,7 +59,6 @@ public class SessionCommandFactory {
                                  final ManagedInstance<UndoSessionCommand> undoCommand,
                                  final ManagedInstance<RedoSessionCommand> redoCommand,
                                  final ManagedInstance<ValidateSessionCommand> validateCommand,
-                                 final ManagedInstance<RefreshSessionCommand> refreshSessionCommand,
                                  final ManagedInstance<ExportToPngSessionCommand> exportImageSessionCommand,
                                  final ManagedInstance<ExportToJpgSessionCommand> exportImageJPGSessionCommand,
                                  final ManagedInstance<ExportToPdfSessionCommand> exportPDFSessionCommand) {
@@ -73,7 +70,6 @@ public class SessionCommandFactory {
         this.undoCommand = undoCommand;
         this.redoCommand = redoCommand;
         this.validateCommand = validateCommand;
-        this.refreshSessionCommand = refreshSessionCommand;
         this.exportImagePNGSessionCommand = exportImageSessionCommand;
         this.exportImageJPGSessionCommand = exportImageJPGSessionCommand;
         this.exportPDFSessionCommand = exportPDFSessionCommand;
@@ -109,10 +105,6 @@ public class SessionCommandFactory {
 
     public ValidateSessionCommand newValidateCommand() {
         return validateCommand.get();
-    }
-
-    public RefreshSessionCommand newRefreshSessionCommand() {
-        return refreshSessionCommand.get();
     }
 
     public ExportToPngSessionCommand newExportToPngSessionCommand() {

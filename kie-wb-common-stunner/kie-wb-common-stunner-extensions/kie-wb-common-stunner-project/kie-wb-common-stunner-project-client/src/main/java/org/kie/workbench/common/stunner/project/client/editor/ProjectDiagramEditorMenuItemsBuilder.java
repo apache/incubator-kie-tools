@@ -149,19 +149,6 @@ public class ProjectDiagramEditorMenuItemsBuilder {
         }};
     }
 
-    public MenuItem newRefreshItem(final Command command) {
-        return buildItem(buildRefreshItem(command));
-    }
-
-    private IsWidget buildRefreshItem(final Command command) {
-        return new Button() {{
-            setSize(ButtonSize.SMALL);
-            setIcon(IconType.REFRESH);
-            setTitle("Refresh");
-            addClickHandler(clickEvent -> ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm(command));
-        }};
-    }
-
     public MenuItem newExportsItem(final Command exportPNGCommand,
                                    final Command exportJPGCommand,
                                    final Command exportPDFCommand) {
