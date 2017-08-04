@@ -27,7 +27,7 @@ import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.guvnor.ala.pipeline.ConfigExecutor;
 import org.guvnor.ala.registry.PipelineRegistry;
-import org.guvnor.ala.registry.local.InMemoryPipelineRegistry;
+import org.guvnor.ala.registry.inmemory.InMemoryPipelineRegistry;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.backend.file.FileDiscoveryServiceImpl;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;

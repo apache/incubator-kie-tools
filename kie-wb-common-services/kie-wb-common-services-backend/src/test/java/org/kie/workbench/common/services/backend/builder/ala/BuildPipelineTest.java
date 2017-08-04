@@ -32,7 +32,7 @@ import org.guvnor.ala.pipeline.events.BeforePipelineExecutionEvent;
 import org.guvnor.ala.pipeline.events.BeforeStageExecutionEvent;
 import org.guvnor.ala.pipeline.events.PipelineEventListener;
 import org.guvnor.ala.registry.PipelineRegistry;
-import org.guvnor.ala.registry.local.InMemoryPipelineRegistry;
+import org.guvnor.ala.registry.inmemory.InMemoryPipelineRegistry;
 import org.guvnor.ala.source.Source;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
