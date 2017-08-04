@@ -20,7 +20,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.S
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 
-public abstract class ListBoxBaseDefinition<OPTIONS extends SelectorOption<TYPE>,TYPE> extends SelectorFieldBaseDefinition<OPTIONS, TYPE> {
+public abstract class ListBoxBaseDefinition<OPTIONS extends SelectorOption<TYPE>, TYPE> extends SelectorFieldBaseDefinition<OPTIONS, TYPE> {
 
     public static final ListBoxFieldType FIELD_TYPE = new ListBoxFieldType();
 

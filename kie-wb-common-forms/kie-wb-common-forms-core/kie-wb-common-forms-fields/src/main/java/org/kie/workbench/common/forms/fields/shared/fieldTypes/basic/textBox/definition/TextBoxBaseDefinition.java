@@ -62,4 +62,29 @@ public abstract class TextBoxBaseDefinition extends AbstractFieldDefinition impl
             setPlaceHolder(((HasPlaceHolder) other).getPlaceHolder());
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        TextBoxBaseDefinition that = (TextBoxBaseDefinition) o;
+
+        return placeHolder != null ? placeHolder.equals(that.placeHolder) : that.placeHolder == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (placeHolder != null ? placeHolder.hashCode() : 0);
+        result = ~~result;
+        return result;
+    }
 }

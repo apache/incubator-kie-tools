@@ -60,6 +60,34 @@ public class PictureFieldDefinition extends AbstractFieldDefinition {
 
     @Override
     protected void doCopyFrom(FieldDefinition other) {
+        if (other instanceof PictureFieldDefinition) {
+            PictureFieldDefinition otherPicture = (PictureFieldDefinition) other;
+            setSize(otherPicture.getSize());
+        }
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        PictureFieldDefinition that = (PictureFieldDefinition) o;
+
+        return size == that.size;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (size != null ? size.hashCode() : 0);
+        result = ~~result;
+        return result;
     }
 }

@@ -49,6 +49,30 @@ public class CharacterBoxFieldDefinition extends TextBoxBaseDefinition {
 
     @Override
     public void setMaxLength(Integer maxLength) {
-        this.maxLength = maxLength;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        CharacterBoxFieldDefinition that = (CharacterBoxFieldDefinition) o;
+
+        return maxLength != null ? maxLength.equals(that.maxLength) : that.maxLength == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (maxLength != null ? maxLength.hashCode() : 0);
+        result = ~~result;
+        return result;
     }
 }

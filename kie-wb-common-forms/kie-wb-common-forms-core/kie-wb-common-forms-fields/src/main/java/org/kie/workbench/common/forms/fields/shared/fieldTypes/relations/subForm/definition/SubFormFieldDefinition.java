@@ -85,6 +85,33 @@ public class SubFormFieldDefinition extends AbstractFieldDefinition implements H
 
     @Override
     public TypeInfo getFieldTypeInfo() {
-        return new TypeInfoImpl(TypeKind.OBJECT, standaloneClassName, false);
+        return new TypeInfoImpl(TypeKind.OBJECT,
+                                standaloneClassName,
+                                false);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        SubFormFieldDefinition that = (SubFormFieldDefinition) o;
+
+        return nestedForm != null ? nestedForm.equals(that.nestedForm) : that.nestedForm == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (nestedForm != null ? nestedForm.hashCode() : 0);
+        result = ~~result;
+        return result;
     }
 }

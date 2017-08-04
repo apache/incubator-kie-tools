@@ -20,6 +20,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorFieldBaseDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.type.RadioGroupFieldType;
+import org.kie.workbench.common.forms.model.FieldDefinition;
 
 public abstract class RadioGroupBaseDefinition<OPTIONS extends SelectorOption<TYPE>, TYPE> extends SelectorFieldBaseDefinition<OPTIONS, TYPE> {
 
@@ -46,5 +47,14 @@ public abstract class RadioGroupBaseDefinition<OPTIONS extends SelectorOption<TY
 
     public void setInline(Boolean inline) {
         this.inline = inline;
+    }
+
+    @Override
+    protected void doCopyFrom(FieldDefinition other) {
+        super.doCopyFrom(other);
+        if (other instanceof RadioGroupBaseDefinition) {
+            RadioGroupBaseDefinition otherRadio = (RadioGroupBaseDefinition) other;
+            setInline(otherRadio.getInline());
+        }
     }
 }

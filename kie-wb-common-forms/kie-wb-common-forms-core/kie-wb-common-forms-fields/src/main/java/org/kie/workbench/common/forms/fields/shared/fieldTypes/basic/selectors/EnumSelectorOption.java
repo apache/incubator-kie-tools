@@ -46,6 +46,11 @@ public class EnumSelectorOption implements SelectorOption<Enum> {
     public EnumSelectorOption() {
     }
 
+    public EnumSelectorOption(Enum value) {
+        this(value,
+             value.toString());
+    }
+
     public EnumSelectorOption(@MapsTo("value") Enum value,
                               @MapsTo("text") String text) {
         this.value = value;
@@ -68,5 +73,31 @@ public class EnumSelectorOption implements SelectorOption<Enum> {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        EnumSelectorOption that = (EnumSelectorOption) o;
+
+        if (value != null ? !value.equals(that.value) : that.value != null) {
+            return false;
+        }
+        return text != null ? text.equals(that.text) : that.text == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = value != null ? value.hashCode() : 0;
+        result = ~~result;
+        result = 31 * result + (text != null ? text.hashCode() : 0);
+        result = ~~result;
+        return result;
     }
 }

@@ -26,7 +26,6 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.StringSelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 
@@ -76,5 +75,35 @@ public class StringRadioGroupFieldDefinition extends RadioGroupBaseDefinition<St
     @Override
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        StringRadioGroupFieldDefinition that = (StringRadioGroupFieldDefinition) o;
+
+        if (options != null ? !options.equals(that.options) : that.options != null) {
+            return false;
+        }
+        return defaultValue != null ? defaultValue.equals(that.defaultValue) : that.defaultValue == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (options != null ? options.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (defaultValue != null ? defaultValue.hashCode() : 0);
+        result = ~~result;
+        return result;
     }
 }

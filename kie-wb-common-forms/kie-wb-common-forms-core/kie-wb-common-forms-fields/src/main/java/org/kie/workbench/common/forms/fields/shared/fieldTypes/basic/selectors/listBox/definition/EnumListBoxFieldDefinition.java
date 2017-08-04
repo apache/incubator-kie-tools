@@ -79,4 +79,34 @@ public class EnumListBoxFieldDefinition extends ListBoxBaseDefinition<EnumSelect
     public void setDefaultValue(Enum defaultValue) {
         this.defaultValue = defaultValue;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        EnumListBoxFieldDefinition that = (EnumListBoxFieldDefinition) o;
+
+        if (options != null ? !options.equals(that.options) : that.options != null) {
+            return false;
+        }
+        return defaultValue != null ? defaultValue.equals(that.defaultValue) : that.defaultValue == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (options != null ? options.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (defaultValue != null ? defaultValue.hashCode() : 0);
+        result = ~~result;
+        return result;
+    }
 }

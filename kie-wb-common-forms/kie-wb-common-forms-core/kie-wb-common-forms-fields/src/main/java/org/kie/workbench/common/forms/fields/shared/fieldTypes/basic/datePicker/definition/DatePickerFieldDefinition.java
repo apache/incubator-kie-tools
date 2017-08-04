@@ -87,4 +87,34 @@ public class DatePickerFieldDefinition extends AbstractFieldDefinition implement
             setPlaceHolder(((HasPlaceHolder) other).getPlaceHolder());
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        DatePickerFieldDefinition that = (DatePickerFieldDefinition) o;
+
+        if (placeHolder != null ? !placeHolder.equals(that.placeHolder) : that.placeHolder != null) {
+            return false;
+        }
+        return showTime != null ? showTime.equals(that.showTime) : that.showTime == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (placeHolder != null ? placeHolder.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (showTime != null ? showTime.hashCode() : 0);
+        result = ~~result;
+        return result;
+    }
 }

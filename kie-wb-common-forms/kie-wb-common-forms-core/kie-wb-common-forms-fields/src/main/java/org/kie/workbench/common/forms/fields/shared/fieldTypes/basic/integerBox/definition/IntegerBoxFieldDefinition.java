@@ -91,4 +91,34 @@ public class IntegerBoxFieldDefinition extends AbstractFieldDefinition implement
             setPlaceHolder(((HasPlaceHolder) other).getPlaceHolder());
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        IntegerBoxFieldDefinition that = (IntegerBoxFieldDefinition) o;
+
+        if (placeHolder != null ? !placeHolder.equals(that.placeHolder) : that.placeHolder != null) {
+            return false;
+        }
+        return maxLength != null ? maxLength.equals(that.maxLength) : that.maxLength == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (placeHolder != null ? placeHolder.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (maxLength != null ? maxLength.hashCode() : 0);
+        result = ~~result;
+        return result;
+    }
 }

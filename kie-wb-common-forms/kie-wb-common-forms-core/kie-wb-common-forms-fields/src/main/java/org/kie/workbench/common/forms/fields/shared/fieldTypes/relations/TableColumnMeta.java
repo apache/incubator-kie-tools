@@ -80,4 +80,30 @@ public class TableColumnMeta {
     public void setProperty(String property) {
         this.property = property;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        TableColumnMeta that = (TableColumnMeta) o;
+
+        if (label != null ? !label.equals(that.label) : that.label != null) {
+            return false;
+        }
+        return property != null ? property.equals(that.property) : that.property == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = label != null ? label.hashCode() : 0;
+        result = ~~result;
+        result = 31 * result + (property != null ? property.hashCode() : 0);
+        result = ~~result;
+        return result;
+    }
 }

@@ -208,7 +208,7 @@ public abstract class AbstractFieldDefinition implements FieldDefinition {
     public int hashCode() {
         int result = id.hashCode();
         result = ~~result;
-        result = 31 * result + name.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (label != null ? label.hashCode() : 0);
         result = ~~result;
