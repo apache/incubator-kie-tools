@@ -43,7 +43,7 @@ import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 @Dependent
 public class CreateAnnotationWizard extends AbstractWizard {
 
-    private List<WizardPage> pages = new ArrayList<WizardPage>();
+    private List<WizardPage> pages = new ArrayList<>();
 
     private SearchAnnotationPage searchAnnotationPage;
 
@@ -55,35 +55,37 @@ public class CreateAnnotationWizard extends AbstractWizard {
 
     private AnnotationDefinition annotationDefinition = null;
 
-    private  ElementType target = ElementType.FIELD;
+    private ElementType target = ElementType.FIELD;
 
     @Inject
-    public CreateAnnotationWizard( SearchAnnotationPage searchAnnotationPage,
-            SyncBeanManager iocManager ) {
+    public CreateAnnotationWizard(SearchAnnotationPage searchAnnotationPage,
+                                  SyncBeanManager iocManager) {
         this.searchAnnotationPage = searchAnnotationPage;
         this.iocManager = iocManager;
     }
 
     @PostConstruct
     protected void init() {
-        pages.add( searchAnnotationPage );
-        searchAnnotationPage.addSearchAnnotationHandler( new SearchAnnotationPageView.SearchAnnotationHandler() {
+        pages.add(searchAnnotationPage);
+        searchAnnotationPage.addSearchAnnotationHandler(new SearchAnnotationPageView.SearchAnnotationHandler() {
             @Override
             public void onSearchClassChanged() {
                 doOnSearchClassChanged();
             }
 
             @Override
-            public void onAnnotationDefinitionChange( AnnotationDefinition annotationDefinition ) {
-                updateValuePairPages( annotationDefinition );
+            public void onAnnotationDefinitionChange(AnnotationDefinition annotationDefinition) {
+                updateValuePairPages(annotationDefinition);
             }
-        } );
+        });
     }
 
-    public void init( KieProject project, ElementType target ) {
+    public void init(KieProject project,
+                     ElementType target) {
         this.project = project;
         this.target = target;
-        searchAnnotationPage.init( project, target );
+        searchAnnotationPage.init(project,
+                                  target);
         clearCurrentValuePairEditorPages();
     }
 
@@ -93,8 +95,8 @@ public class CreateAnnotationWizard extends AbstractWizard {
     }
 
     @Override
-    public Widget getPageWidget( int pageNumber ) {
-        return pages.get( pageNumber ).asWidget();
+    public Widget getPageWidget(int pageNumber) {
+        return pages.get(pageNumber).asWidget();
     }
 
     @Override
@@ -113,86 +115,86 @@ public class CreateAnnotationWizard extends AbstractWizard {
     }
 
     @Override
-    public void isComplete( final Callback<Boolean> callback ) {
-        callback.callback( true );
+    public void isComplete(final Callback<Boolean> callback) {
+        final int[] unCompletedPages = {this.pages.size()};
 
-        //only when all pages are complete we can say the wizard is complete.
-        for ( WizardPage page : this.pages ) {
-            page.isComplete( new Callback<Boolean>() {
-                @Override
-                public void callback( final Boolean result ) {
-                    if ( Boolean.FALSE.equals( result ) ) {
-                        callback.callback( false );
+        for (WizardPage page : this.pages) {
+            page.isComplete(result -> {
+                if (Boolean.TRUE.equals(result)) {
+                    unCompletedPages[0]--;
+                    if (unCompletedPages[0] == 0) {
+                        callback.callback(true);
                     }
+                } else {
+                    callback.callback(false);
                 }
-            } );
+            });
         }
     }
 
-    public void onCloseCallback( final Callback<Annotation> callback ) {
+    public void onCloseCallback(final Callback<Annotation> callback) {
         this.onCloseCallback = callback;
     }
 
     @Override
     public void complete() {
-        super.complete();
         doComplete();
+        super.complete();
     }
 
     @Override
     public void close() {
-        super.close();
         clearCurrentValuePairEditorPages();
-        invokeOnCloseCallback( null );
+        invokeOnCloseCallback(null);
+        super.close();
     }
 
     private void doComplete() {
         Annotation annotation = null;
-        if ( annotationDefinition != null ) {
-            annotation = new AnnotationImpl( annotationDefinition );
-            if ( !annotationDefinition.isMarker() ) {
-                for ( ValuePairEditorPage valuePairEditor : filterValuePairEditorPages() ) {
-                    if ( valuePairEditor.getCurrentValue() != null ) {
-                        annotation.setValue( valuePairEditor.getValuePairDefinition().getName(), valuePairEditor.getCurrentValue() );
+        if (annotationDefinition != null) {
+            annotation = new AnnotationImpl(annotationDefinition);
+            if (!annotationDefinition.isMarker()) {
+                for (ValuePairEditorPage valuePairEditor : filterValuePairEditorPages()) {
+                    if (valuePairEditor.getCurrentValue() != null) {
+                        annotation.setValue(valuePairEditor.getValuePairDefinition().getName(),
+                                            valuePairEditor.getCurrentValue());
                     }
                 }
             }
         }
         clearCurrentValuePairEditorPages();
-        invokeOnCloseCallback( annotation );
+        invokeOnCloseCallback(annotation);
     }
 
     private void doOnSearchClassChanged() {
-        if ( annotationDefinition != null || pages.size() > 1 ) {
+        if (annotationDefinition != null || pages.size() > 1) {
             annotationDefinition = null;
             clearCurrentValuePairEditorPages();
             super.start();
-            Scheduler.get().scheduleDeferred( new Command() {
-                @Override
-                public void execute() {
-                    searchAnnotationPage.requestFocus();
-                }
-            } );
+            Scheduler.get().scheduleDeferred((Command) () -> searchAnnotationPage.requestFocus());
         }
     }
 
-    private void updateValuePairPages( AnnotationDefinition annotationDefinition ) {
+    private void updateValuePairPages(AnnotationDefinition annotationDefinition) {
         clearCurrentValuePairEditorPages();
         pages.clear();
-        pages.add( searchAnnotationPage );
+        pages.add(searchAnnotationPage);
         this.annotationDefinition = annotationDefinition;
 
-        if ( annotationDefinition != null ) {
-            for ( AnnotationValuePairDefinition valuePairDefinition : annotationDefinition.getValuePairs() ) {
-                pages.add( createValuePairEditorPage( valuePairDefinition ) );
+        if (annotationDefinition != null) {
+            for (AnnotationValuePairDefinition valuePairDefinition : annotationDefinition.getValuePairs()) {
+                pages.add(createValuePairEditorPage(valuePairDefinition));
             }
         }
         super.start();
     }
 
-    private ValuePairEditorPage createValuePairEditorPage( AnnotationValuePairDefinition valuePairDefinition ) {
-        final ValuePairEditorPage valuePairEditorPage = iocManager.lookupBean( ValuePairEditorPage.class ).getInstance();
-        valuePairEditorPage.init( annotationDefinition, valuePairDefinition, target, project );
+    private ValuePairEditorPage createValuePairEditorPage(AnnotationValuePairDefinition valuePairDefinition) {
+        final ValuePairEditorPage valuePairEditorPage = iocManager.lookupBean(ValuePairEditorPage.class).getInstance();
+        valuePairEditorPage.init(annotationDefinition,
+                                 valuePairDefinition,
+                                 target,
+                                 project);
         return valuePairEditorPage;
     }
 
@@ -200,27 +202,27 @@ public class CreateAnnotationWizard extends AbstractWizard {
         List<ValuePairEditorPage> editorPages = filterValuePairEditorPages();
         int valuePairEditors = editorPages.size();
 
-        for ( WizardPage page : editorPages ) {
-            pages.remove( page );
+        for (WizardPage page : editorPages) {
+            pages.remove(page);
         }
 
-        for ( int i = 0; i < valuePairEditors; i++ ) {
-            ValuePairEditorPage valuePairEditorPage = editorPages.remove( 0 );
-            iocManager.destroyBean( valuePairEditorPage );
+        for (int i = 0; i < valuePairEditors; i++) {
+            ValuePairEditorPage valuePairEditorPage = editorPages.remove(0);
+            iocManager.destroyBean(valuePairEditorPage);
         }
     }
 
-    private void invokeOnCloseCallback( Annotation annotation ) {
-        if ( onCloseCallback != null ) {
-            onCloseCallback.callback( annotation );
+    private void invokeOnCloseCallback(Annotation annotation) {
+        if (onCloseCallback != null) {
+            onCloseCallback.callback(annotation);
         }
     }
 
     private List<ValuePairEditorPage> filterValuePairEditorPages() {
-        List<ValuePairEditorPage> result = new ArrayList<ValuePairEditorPage>( pages.size() );
-        for ( WizardPage page : pages ) {
-            if ( page instanceof ValuePairEditorPage ) {
-                result.add( ( ValuePairEditorPage ) page );
+        List<ValuePairEditorPage> result = new ArrayList<>(pages.size());
+        for (WizardPage page : pages) {
+            if (page instanceof ValuePairEditorPage) {
+                result.add((ValuePairEditorPage) page);
             }
         }
         return result;
@@ -228,12 +230,13 @@ public class CreateAnnotationWizard extends AbstractWizard {
 
     public static class CreateAnnotationWizardErrorCallback implements ErrorCallback<Message> {
 
-        public CreateAnnotationWizardErrorCallback( ) {
+        public CreateAnnotationWizardErrorCallback() {
         }
 
         @Override
-        public boolean error( Message message, Throwable throwable ) {
-            Window.alert( "Unexpected error encountered : " + throwable.getMessage() );
+        public boolean error(Message message,
+                             Throwable throwable) {
+            Window.alert("Unexpected error encountered : " + throwable.getMessage());
             return false;
         }
     }

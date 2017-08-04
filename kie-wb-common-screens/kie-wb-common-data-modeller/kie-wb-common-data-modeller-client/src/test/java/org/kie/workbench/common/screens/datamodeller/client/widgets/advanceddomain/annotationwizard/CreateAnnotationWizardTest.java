@@ -16,13 +16,11 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import javax.enterprise.event.Event;
 import javax.persistence.Entity;
 
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
@@ -40,16 +38,15 @@ import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDef
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.mockito.Mock;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.ext.widgets.core.client.wizards.WizardView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 
-import com.google.gwtmockito.GwtMock;
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class CreateAnnotationWizardTest {
 
     protected SearchAnnotationPage searchPage;
@@ -70,7 +67,7 @@ public class CreateAnnotationWizardTest {
 
     protected CallerMock<DataModelerService> modelerServiceCaller;
 
-    protected Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent = mock( EventSourceMock.class );
+    protected Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent = mock(EventSourceMock.class);
 
     @Mock
     protected KieProject kieProject;
@@ -84,7 +81,7 @@ public class CreateAnnotationWizardTest {
     protected ValuePairEditorPage editorPage;
 
     @Mock
-    ValuePairEditor valuePairEditor;
+    protected ValuePairEditor valuePairEditor;
 
     @Mock
     protected SyncBeanManager iocManager;
@@ -97,28 +94,26 @@ public class CreateAnnotationWizardTest {
     @Before
     public void init() {
 
-        modelerServiceCaller = new CallerMock<DataModelerService>( modelerService );
-        searchPage = new SearchAnnotationPage( searchView,
-                modelerServiceCaller,
-                wizardPageStatusChangeEvent );
+        modelerServiceCaller = new CallerMock<>(modelerService);
+        searchPage = new SearchAnnotationPage(searchView,
+                                              modelerServiceCaller,
+                                              wizardPageStatusChangeEvent);
 
-        editorPage = new ValuePairEditorPage( editorView,
-                valuePairEditorProvider,
-                modelerServiceCaller,
-                wizardPageStatusChangeEvent );
+        editorPage = new ValuePairEditorPage(editorView,
+                                             valuePairEditorProvider,
+                                             modelerServiceCaller,
+                                             wizardPageStatusChangeEvent);
 
-        createAnnotationWizard = new CreateAnnotationWizardExtended( searchPage,
-                iocManager,
-                view );
+        createAnnotationWizard = new CreateAnnotationWizardExtended(searchPage,
+                                                                    iocManager,
+                                                                    view);
 
-        createAnnotationWizard.init( kieProject, ElementType.TYPE );
-        createAnnotationWizard.onCloseCallback( new Callback<Annotation>() {
-            @Override
-            public void callback( Annotation result ) {
-                //collect the created annotation when the wizard is finished
-                createdAnnotation = result;
-            }
-        } );
+        createAnnotationWizard.init(kieProject,
+                                    ElementType.TYPE);
+        createAnnotationWizard.onCloseCallback(result -> {
+            //collect the created annotation when the wizard is finished
+            createdAnnotation = result;
+        });
         createAnnotationWizard.start();
     }
 
@@ -126,59 +121,64 @@ public class CreateAnnotationWizardTest {
     public void testAnnotationCreated() {
 
         //emulate the user is searching the javax.persistence.Entity annotation.
-        AnnotationDefinitionRequest request = new AnnotationDefinitionRequest( Entity.class.getName() );
+        AnnotationDefinitionRequest request = new AnnotationDefinitionRequest(Entity.class.getName());
         //the response has a definition
         AnnotationDefinitionResponse response = new AnnotationDefinitionResponse(
-                DriverUtils.buildAnnotationDefinition( Entity.class ) );
+                DriverUtils.buildAnnotationDefinition(Entity.class));
 
-        when( searchView.getClassName() ).thenReturn( Entity.class.getName() );
-        when( modelerService.resolveDefinitionRequest( request, kieProject ) ).thenReturn( response );
+        when(searchView.getClassName()).thenReturn(Entity.class.getName());
+        when(modelerService.resolveDefinitionRequest(request,
+                                                     kieProject)).thenReturn(response);
 
         //when the search is performed the ValuePairEditor pages will be automatically created
         //so we also emulate the corresponding ValuePairEditors for the given value pairs.
-        AnnotationValuePairDefinition valuePairDefinition = response.getAnnotationDefinition().getValuePair( "name" );
-        when( valuePairEditorProvider.getValuePairEditor( valuePairDefinition ) ).thenReturn( valuePairEditor );
+        AnnotationValuePairDefinition valuePairDefinition = response.getAnnotationDefinition().getValuePair("name");
+        when(valuePairEditorProvider.getValuePairEditor(valuePairDefinition)).thenReturn(valuePairEditor);
 
         //the wizard pages corresponding to the value pairs are also created dynamically, se we need also emulate
         //the ValuePairEditorPage instantiation
-        when( iocManager.lookupBean( ValuePairEditorPage.class ) ).thenReturn( beanDef );
-        when( beanDef.getInstance() ).thenReturn( editorPage );
+        when(iocManager.lookupBean(ValuePairEditorPage.class)).thenReturn(beanDef);
+        when(beanDef.getInstance()).thenReturn(editorPage);
 
         //emulate the user click on the search button
         searchPage.onSearchClass();
 
         //the page should have been completed, since the modelerService returned the annotation definition as expected
-        WizardTestUtil.assertPageComplete( true, searchPage );
+        WizardTestUtil.assertPageComplete(true,
+                                          searchPage);
 
         //now emulate the parameter completion in the value pair page.
         //emulate a change in the internal ValuePairEditor with a valid value.
-        when( editorView.getValuePairEditor() ).thenReturn( valuePairEditor );
-        when( valuePairEditor.getValue() ).thenReturn( "TheEntityName" );
-        when( valuePairEditor.isValid() ).thenReturn( true );
+        when(editorView.getValuePairEditor()).thenReturn(valuePairEditor);
+        when(valuePairEditor.getValue()).thenReturn("TheEntityName");
+        when(valuePairEditor.isValid()).thenReturn(true);
 
         editorPage.onValueChange();
 
         //the value pair editor page shoud have been completed.
-        WizardTestUtil.assertPageComplete( true, searchPage );
+        WizardTestUtil.assertPageComplete(true,
+                                          searchPage);
 
         //emulates the user clicking on the finish button.
         createAnnotationWizard.complete();
 
         //finally if the Wizard has been completed successfuly an annotation should be created.
-        Annotation expectedAnnotation = new AnnotationImpl( DriverUtils.buildAnnotationDefinition( Entity.class ) );
-        expectedAnnotation.setValue( "name", "TheEntityName" );
+        Annotation expectedAnnotation = new AnnotationImpl(DriverUtils.buildAnnotationDefinition(Entity.class));
+        expectedAnnotation.setValue("name",
+                                    "TheEntityName");
 
-        assertEquals( expectedAnnotation, createdAnnotation );
-
+        assertEquals(expectedAnnotation,
+                     createdAnnotation);
     }
 
     public static class CreateAnnotationWizardExtended extends CreateAnnotationWizard {
 
-        public CreateAnnotationWizardExtended( SearchAnnotationPage searchAnnotationPage,
-                SyncBeanManager iocManager,
-                WizardView view
-                ) {
-            super( searchAnnotationPage, iocManager );
+        public CreateAnnotationWizardExtended(SearchAnnotationPage searchAnnotationPage,
+                                              SyncBeanManager iocManager,
+                                              WizardView view
+        ) {
+            super(searchAnnotationPage,
+                  iocManager);
             super.view = view;
             //emulates the execution for the @PostConstruct annotated method
             init();

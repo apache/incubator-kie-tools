@@ -49,8 +49,8 @@ import org.uberfire.mvp.Command;
 
 @Dependent
 public class AdvancedAnnotationListEditor
-    implements IsWidget,
-                AdvancedAnnotationListEditorView.Presenter {
+        implements IsWidget,
+                   AdvancedAnnotationListEditorView.Presenter {
 
     private AdvancedAnnotationListEditorView view;
 
@@ -72,9 +72,9 @@ public class AdvancedAnnotationListEditor
 
     private List<Annotation> annotations;
 
-    private Map< Annotation, AnnotationListItem > annotationItems = new HashMap< Annotation, AnnotationListItem >( );
+    private Map<Annotation, AnnotationListItem> annotationItems = new HashMap<>();
 
-    private Map< String, Boolean > annotationStatus = new HashMap< String, Boolean >( );
+    private Map<String, Boolean> annotationStatus = new HashMap<>();
 
     private KieProject project;
 
@@ -82,19 +82,15 @@ public class AdvancedAnnotationListEditor
 
     private boolean readonly = false;
 
-    private Command deleteAnnotationCommand;
-
-    private Command noActionCommand;
-
     private Callback<Annotation> addAnnotationCallback;
 
     @Inject
-    public AdvancedAnnotationListEditor( AdvancedAnnotationListEditorView view,
-                                         Caller<DataModelerService> modelerService,
-                                         Instance<ValuePairEditorPopup> valuePairEditorInstance,
-                                         Instance<AnnotationListItem> itemInstance ) {
+    public AdvancedAnnotationListEditor(AdvancedAnnotationListEditorView view,
+                                        Caller<DataModelerService> modelerService,
+                                        Instance<ValuePairEditorPopup> valuePairEditorInstance,
+                                        Instance<AnnotationListItem> itemInstance) {
         this.view = view;
-        view.init( this );
+        view.init(this);
         this.modelerService = modelerService;
         this.valuePairEditorInstance = valuePairEditorInstance;
         this.itemInstance = itemInstance;
@@ -105,59 +101,44 @@ public class AdvancedAnnotationListEditor
         return view.asWidget();
     }
 
-    public void init( final KieProject project, final ElementType elementType ) {
+    public void init(final KieProject project,
+                     final ElementType elementType) {
         this.project = project;
         this.elementType = elementType;
     }
 
-    public void loadAnnotations( List<Annotation> annotations ) {
+    public void loadAnnotations(List<Annotation> annotations) {
         this.annotations = annotations;
-        if ( annotations != null && annotations.size() > 0 ) {
+        if (annotations != null && annotations.size() > 0) {
             AnnotationSourceRequest sourceRequest = new AnnotationSourceRequest();
-            sourceRequest.withAnnotations( annotations );
-            modelerService.call( getLoadAnnotationSourcesSuccessCallback() )
-                    .resolveSourceRequest( sourceRequest );
+            sourceRequest.withAnnotations(annotations);
+            modelerService.call(getLoadAnnotationSourcesSuccessCallback())
+                    .resolveSourceRequest(sourceRequest);
         }
     }
 
-    public void loadAnnotations( List< Annotation > annotations, Map< String, AnnotationSource > annotationSources ) {
-        view.clear( );
+    public void loadAnnotations(List<Annotation> annotations,
+                                Map<String, AnnotationSource> annotationSources) {
+        view.clear();
         clearListItems();
         this.annotationSources = annotationSources;
-        if ( annotations != null ) {
-            for ( Annotation annotation : annotations ) {
+        if (annotations != null) {
+            for (Annotation annotation : annotations) {
                 final Annotation currentAnnotation = annotation;
                 final AnnotationListItem annotationListItem = createListItem();
-                annotationListItem.loadAnnotation( annotation, annotationSources != null ?
-                        annotationSources.get( annotation.getClassName( ) ) : null );
-                annotationListItem.setCollapsed( !isExpanded( annotation.getClassName( ) ) );
-                annotationListItem.setDeleteAnnotationHandler( new AdvancedAnnotationListEditorView.DeleteAnnotationHandler( ) {
-                    @Override
-                    public void onDeleteAnnotation( Annotation annotation ) {
-                        AdvancedAnnotationListEditor.this.onDeleteAnnotation( annotation );
-                    }
-                } );
-                annotationListItem.setClearValuePairHandler( new AdvancedAnnotationListEditorView.ClearValuePairHandler( ) {
-                    @Override
-                    public void onClearValuePair( Annotation annotation, String valuePair ) {
-                        AdvancedAnnotationListEditor.this.onClearValuePair( annotation, valuePair );
-                    }
-                } );
-                annotationListItem.setEditValuePairHandler( new AdvancedAnnotationListEditorView.EditValuePairHandler( ) {
-                    @Override
-                    public void onEditValuePair( Annotation annotation, String valuePair ) {
-                        AdvancedAnnotationListEditor.this.onEditValuePair( annotation, valuePair );
-                    }
-                } );
-                annotationListItem.setCollapseChangeHandler( new AdvancedAnnotationListEditorView.CollapseChangeHandler( ) {
-                    @Override
-                    public void onCollapseChange( ) {
-                        AdvancedAnnotationListEditor.this.onCollapseChange( currentAnnotation, annotationListItem.isCollapsed() );
-                    }
-                } );
-                annotationListItem.setReadonly( readonly );
-                annotationItems.put( annotation, annotationListItem );
-                view.addItem( annotationListItem );
+                annotationListItem.loadAnnotation(annotation,
+                                                  annotationSources != null ?
+                                                          annotationSources.get(annotation.getClassName()) : null);
+                annotationListItem.setCollapsed(!isExpanded(annotation.getClassName()));
+                annotationListItem.setDeleteAnnotationHandler(AdvancedAnnotationListEditor.this::onDeleteAnnotation);
+                annotationListItem.setClearValuePairHandler(AdvancedAnnotationListEditor.this::onClearValuePair);
+                annotationListItem.setEditValuePairHandler(AdvancedAnnotationListEditor.this::onEditValuePair);
+                annotationListItem.setCollapseChangeHandler(() -> AdvancedAnnotationListEditor.this.onCollapseChange(currentAnnotation,
+                                                                                                                     annotationListItem.isCollapsed()));
+                annotationListItem.setReadonly(readonly);
+                annotationItems.put(annotation,
+                                    annotationListItem);
+                view.addItem(annotationListItem);
             }
         }
     }
@@ -166,112 +147,104 @@ public class AdvancedAnnotationListEditor
         return readonly;
     }
 
-    public void setReadonly( boolean readonly ) {
+    public void setReadonly(boolean readonly) {
         this.readonly = readonly;
-        view.setReadonly( readonly );
-        for ( AnnotationListItem annotationListItem : annotationItems.values() ) {
-            annotationListItem.setReadonly( readonly );
+        view.setReadonly(readonly);
+        for (AnnotationListItem annotationListItem : annotationItems.values()) {
+            annotationListItem.setReadonly(readonly);
         }
     }
 
     @Override
     public void onAddAnnotation() {
-        view.invokeCreateAnnotationWizard( getAddAnnotationCallback(), project, elementType );
+        view.invokeCreateAnnotationWizard(getAddAnnotationCallback(),
+                                          project,
+                                          elementType);
     }
 
     protected Callback<Annotation> getAddAnnotationCallback() {
-        if ( addAnnotationCallback == null ) {
-            addAnnotationCallback = new Callback< Annotation >( ) {
-                @Override
-                public void callback( Annotation annotation ) {
-                    if ( annotation != null && addAnnotationHandler != null ) {
-                        addAnnotationHandler.onAddAnnotation( annotation );
-                    }
-                }
-            };
-        }
-        return addAnnotationCallback;
+        return annotation -> {
+            if (annotation != null && addAnnotationHandler != null) {
+                addAnnotationHandler.onAddAnnotation(annotation);
+            }
+        };
     }
 
-    protected void onDeleteAnnotation( final Annotation annotation ) {
+    protected void onDeleteAnnotation(final Annotation annotation) {
         String message = Constants.INSTANCE.advanced_domain_annotation_list_editor_message_confirm_annotation_deletion(
                 annotation.getClassName(),
-                ( elementType != null ? elementType.name() : " object/field" ) );
-        view.showYesNoDialog( message,
-                getDeleteAnnotationCommand( annotation ),
-                getNoActionCommand(),
-                getNoActionCommand() );
+                (elementType != null ? elementType.name() : " object/field"));
+        view.showYesNoDialog(message,
+                             getDeleteAnnotationCommand(annotation),
+                             getNoActionCommand(),
+                             getNoActionCommand());
     }
 
-    protected Command getDeleteAnnotationCommand( final Annotation annotation ) {
-        if ( deleteAnnotationCommand == null ) {
-            deleteAnnotationCommand = new Command( ) {
-                @Override
-                public void execute( ) {
-                    if ( deleteAnnotationHandler != null ) {
-                        deleteAnnotationHandler.onDeleteAnnotation( annotation );
-                    }
-                }
-            };
-        }
-        return deleteAnnotationCommand;
+    protected Command getDeleteAnnotationCommand(final Annotation annotation) {
+        return () -> {
+            if (deleteAnnotationHandler != null) {
+                deleteAnnotationHandler.onDeleteAnnotation(annotation);
+            }
+        };
     }
 
     protected Command getNoActionCommand() {
-        if ( noActionCommand == null ) {
-            noActionCommand = new Command() {
-                @Override
-                public void execute() {
-                    //do nothing
-                }
-            };
-        }
-        return noActionCommand;
+        return () -> {
+            //do nothing
+        };
     }
 
-    protected void onEditValuePair( Annotation annotation, String valuePair ) {
-        ValuePairEditorPopup valuePairEditor = createValuePairEditor( annotation, valuePair );
-        if ( valuePairEditor.isGenericEditor() ) {
-            AnnotationSource annotationSource = annotationSources.get( annotation.getClassName() );
-            String valuePairSource = annotationSource != null ? annotationSource.getValuePairSource( valuePair ) : null;
-            valuePairEditor.setValue( valuePairSource );
+    protected void onEditValuePair(Annotation annotation,
+                                   String valuePair) {
+        ValuePairEditorPopup valuePairEditor = createValuePairEditor(annotation,
+                                                                     valuePair);
+        if (valuePairEditor.isGenericEditor()) {
+            AnnotationSource annotationSource = annotationSources.get(annotation.getClassName());
+            String valuePairSource = annotationSource != null ? annotationSource.getValuePairSource(valuePair) : null;
+            valuePairEditor.setValue(valuePairSource);
         } else {
-            valuePairEditor.setValue( annotation.getValue( valuePair ) );
+            valuePairEditor.setValue(annotation.getValue(valuePair));
         }
         valuePairEditor.show();
     }
 
-    protected void onClearValuePair( Annotation annotation, String valuePair ) {
+    protected void onClearValuePair(Annotation annotation,
+                                    String valuePair) {
 
         AnnotationDefinition annotationDefinition = annotation.getAnnotationDefinition();
-        AnnotationValuePairDefinition valuePairDefinition = annotationDefinition.getValuePair( valuePair );
-        if ( valuePairDefinition.getDefaultValue() == null ) {
+        AnnotationValuePairDefinition valuePairDefinition = annotationDefinition.getValuePair(valuePair);
+        if (valuePairDefinition.getDefaultValue() == null) {
             //if the value pair has no default value, it should be applied wherever the annotation is applied, if not
             //the resulting code won't compile.
-            String message = Constants.INSTANCE.advanced_domain_annotation_list_editor_message_value_pair_has_no_default_value( valuePair,  annotation.getClassName() );
-            view.showYesNoDialog( message, getNoActionCommand() );
-        } else if ( clearValuePairHandler != null ) {
-            clearValuePairHandler.onClearValuePair( annotation, valuePair );
+            String message = Constants.INSTANCE.advanced_domain_annotation_list_editor_message_value_pair_has_no_default_value(valuePair,
+                                                                                                                               annotation.getClassName());
+            view.showYesNoDialog(message,
+                                 getNoActionCommand());
+        } else if (clearValuePairHandler != null) {
+            clearValuePairHandler.onClearValuePair(annotation,
+                                                   valuePair);
         }
     }
 
-    protected void onCollapseChange( Annotation currentAnnotation, boolean collapsed ) {
-        setExpanded( currentAnnotation.getClassName( ), !collapsed );
+    protected void onCollapseChange(Annotation currentAnnotation,
+                                    boolean collapsed) {
+        setExpanded(currentAnnotation.getClassName(),
+                    !collapsed);
     }
 
-    public void addDeleteAnnotationHandler( AdvancedAnnotationListEditorView.DeleteAnnotationHandler deleteAnnotationHandler ) {
+    public void addDeleteAnnotationHandler(AdvancedAnnotationListEditorView.DeleteAnnotationHandler deleteAnnotationHandler) {
         this.deleteAnnotationHandler = deleteAnnotationHandler;
     }
 
-    public void addClearValuePairHandler( AdvancedAnnotationListEditorView.ClearValuePairHandler clearValuePairHandler ) {
+    public void addClearValuePairHandler(AdvancedAnnotationListEditorView.ClearValuePairHandler clearValuePairHandler) {
         this.clearValuePairHandler = clearValuePairHandler;
     }
 
-    public void addValuePairChangeHandler( AdvancedAnnotationListEditorView.ValuePairChangeHandler valuePairChangeHandler ) {
+    public void addValuePairChangeHandler(AdvancedAnnotationListEditorView.ValuePairChangeHandler valuePairChangeHandler) {
         this.valuePairChangeHandler = valuePairChangeHandler;
     }
 
-    public void addAddAnnotationHandler( AdvancedAnnotationListEditorView.AddAnnotationHandler addAnnotationHandler ) {
+    public void addAddAnnotationHandler(AdvancedAnnotationListEditorView.AddAnnotationHandler addAnnotationHandler) {
         this.addAnnotationHandler = addAnnotationHandler;
     }
 
@@ -280,108 +253,106 @@ public class AdvancedAnnotationListEditor
         clearListItems();
     }
 
-    public void removeAnnotation( Annotation annotation ) {
-        AnnotationListItem listItem = annotationItems.get( annotation );
-        if ( listItem != null ) {
-            view.removeItem( listItem );
-            annotationItems.remove( annotation );
-            dispose( listItem );
+    public void removeAnnotation(Annotation annotation) {
+        AnnotationListItem listItem = annotationItems.get(annotation);
+        if (listItem != null) {
+            view.removeItem(listItem);
+            annotationItems.remove(annotation);
+            dispose(listItem);
         }
     }
 
     private RemoteCallback<AnnotationSourceResponse> getLoadAnnotationSourcesSuccessCallback() {
-
-        return new RemoteCallback<AnnotationSourceResponse>() {
-            @Override
-            public void callback( AnnotationSourceResponse annotationSourceResponse ) {
-                loadAnnotations( annotations, annotationSourceResponse.getAnnotationSources() );
-            }
-        };
+        return annotationSourceResponse -> loadAnnotations(annotations,
+                                                           annotationSourceResponse.getAnnotationSources());
     }
 
-    protected void doValuePairChange( final ValuePairEditorPopup valuePairEditor, final Object value ) {
+    protected void doValuePairChange(final ValuePairEditorPopup valuePairEditor,
+                                     final Object value) {
 
-        if ( valuePairEditor.isGenericEditor() ) {
+        if (valuePairEditor.isGenericEditor()) {
             String strValue = value != null ? value.toString() : null;
-            modelerService.call( getValuePairChangeSuccessCallback( valuePairEditor ) )
-                    .resolveParseRequest( new AnnotationParseRequest( valuePairEditor.getAnnotationClassName(),
-                                                elementType,
-                                                valuePairEditor.getValuePairDefinition().getName(),
-                                                strValue ), project );
+            modelerService.call(getValuePairChangeSuccessCallback(valuePairEditor))
+                    .resolveParseRequest(new AnnotationParseRequest(valuePairEditor.getAnnotationClassName(),
+                                                                    elementType,
+                                                                    valuePairEditor.getValuePairDefinition().getName(),
+                                                                    strValue),
+                                         project);
         } else {
-            applyValuePairChange( valuePairEditor, value );
+            applyValuePairChange(valuePairEditor,
+                                 value);
         }
     }
 
-    protected void doValuePairNoAction( final ValuePairEditorPopup valuePairEditor ) {
+    protected void doValuePairNoAction(final ValuePairEditorPopup valuePairEditor) {
         valuePairEditor.hide();
-        dispose( valuePairEditor );
+        dispose(valuePairEditor);
     }
 
     private RemoteCallback<AnnotationParseResponse> getValuePairChangeSuccessCallback(
-            final ValuePairEditorPopup valuePairEditor ) {
-        return new RemoteCallback<AnnotationParseResponse>() {
+            final ValuePairEditorPopup valuePairEditor) {
+        return annotationParseResponse -> {
+            if (!annotationParseResponse.hasErrors() && annotationParseResponse.getAnnotation() != null) {
+                Object newValue = annotationParseResponse.getAnnotation().getValue(valuePairEditor.getValuePairDefinition().getName());
+                applyValuePairChange(valuePairEditor,
+                                     newValue);
+            } else {
 
-            @Override public void callback( AnnotationParseResponse annotationParseResponse ) {
-                if ( !annotationParseResponse.hasErrors() && annotationParseResponse.getAnnotation() != null ) {
-                    Object newValue = annotationParseResponse.getAnnotation().getValue( valuePairEditor.getValuePairDefinition().getName() );
-                    applyValuePairChange( valuePairEditor, newValue );
-                } else {
-
-                    //TODO improve this error handling
-                    String errorMessage = "";
-                    for ( DriverError error : annotationParseResponse.getErrors() ) {
-                        errorMessage = errorMessage + "\n" + error.getMessage();
-                    }
-                    valuePairEditor.setErrorMessage( errorMessage );
+                //TODO improve this error handling
+                String errorMessage = "";
+                for (DriverError error : annotationParseResponse.getErrors()) {
+                    errorMessage = errorMessage + "\n" + error.getMessage();
                 }
+                valuePairEditor.setErrorMessage(errorMessage);
             }
         };
     }
 
-    private void applyValuePairChange( ValuePairEditorPopup valuePairEditor, Object newValue ) {
+    private void applyValuePairChange(ValuePairEditorPopup valuePairEditor,
+                                      Object newValue) {
 
-        if ( !valuePairEditor.isValid() ) {
+        if (!valuePairEditor.isValid()) {
             valuePairEditor.setErrorMessage(
-                    Constants.INSTANCE.advanced_domain_annotation_list_editor_message_invalid_value_for_value_pair( valuePairEditor.getValuePairDefinition().getName() )
+                    Constants.INSTANCE.advanced_domain_annotation_list_editor_message_invalid_value_for_value_pair(valuePairEditor.getValuePairDefinition().getName())
             );
         } else {
-            if ( !valuePairEditor.getValuePairDefinition().hasDefaultValue() && newValue == null ) {
+            if (!valuePairEditor.getValuePairDefinition().hasDefaultValue() && newValue == null) {
                 valuePairEditor.setErrorMessage(
-                        Constants.INSTANCE.advanced_domain_annotation_list_editor_message_value_pair_cant_be_null( valuePairEditor.getValuePairDefinition().getName() )
+                        Constants.INSTANCE.advanced_domain_annotation_list_editor_message_value_pair_cant_be_null(valuePairEditor.getValuePairDefinition().getName())
                 );
             } else {
-                valuePairChangeHandler.onValuePairChange( valuePairEditor.getAnnotationClassName(),
-                        valuePairEditor.getValuePairDefinition().getName(),
-                        newValue );
+                valuePairChangeHandler.onValuePairChange(valuePairEditor.getAnnotationClassName(),
+                                                         valuePairEditor.getValuePairDefinition().getName(),
+                                                         newValue);
                 valuePairEditor.hide();
-                dispose( valuePairEditor );
+                dispose(valuePairEditor);
             }
         }
-
     }
 
-    private ValuePairEditorPopup createValuePairEditor( Annotation annotation, String valuePair ) {
+    private ValuePairEditorPopup createValuePairEditor(Annotation annotation,
+                                                       String valuePair) {
         final ValuePairEditorPopup valuePairEditor = createValuePairEditor();
-        valuePairEditor.init( annotation.getClassName(), annotation.getAnnotationDefinition().getValuePair( valuePair ) );
-        valuePairEditor.addPopupHandler( new ValuePairEditorPopupView.ValuePairEditorPopupHandler() {
+        valuePairEditor.init(annotation.getClassName(),
+                             annotation.getAnnotationDefinition().getValuePair(valuePair));
+        valuePairEditor.addPopupHandler(new ValuePairEditorPopupView.ValuePairEditorPopupHandler() {
 
             @Override
             public void onOk() {
-                doValuePairChange( valuePairEditor, valuePairEditor.getValue() );
+                doValuePairChange(valuePairEditor,
+                                  valuePairEditor.getValue());
             }
 
             @Override
             public void onCancel() {
-                doValuePairNoAction( valuePairEditor );
+                doValuePairNoAction(valuePairEditor);
             }
 
             @Override
             public void onClose() {
-                doValuePairNoAction( valuePairEditor );
+                doValuePairNoAction(valuePairEditor);
             }
-
-        } );
+        });
 
         return valuePairEditor;
     }
@@ -396,29 +367,31 @@ public class AdvancedAnnotationListEditor
     }
 
     private void clearListItems() {
-        for ( AnnotationListItem item : annotationItems.values() ) {
-            dispose( item );
+        for (AnnotationListItem item : annotationItems.values()) {
+            dispose(item);
         }
         annotationItems.clear();
     }
 
-    private void dispose( AnnotationListItem listItem ) {
-        itemInstance.destroy( listItem );
+    private void dispose(AnnotationListItem listItem) {
+        itemInstance.destroy(listItem);
     }
 
     protected ValuePairEditorPopup createValuePairEditor() {
         return valuePairEditorInstance.get();
     }
 
-    private void dispose( ValuePairEditorPopup valuePairEditor ) {
-        valuePairEditorInstance.destroy( valuePairEditor );
+    private void dispose(ValuePairEditorPopup valuePairEditor) {
+        valuePairEditorInstance.destroy(valuePairEditor);
     }
 
-    private boolean isExpanded( String annotation ) {
-        return annotationStatus.get( annotation ) != null ? annotationStatus.get( annotation ) : false;
+    private boolean isExpanded(String annotation) {
+        return annotationStatus.get(annotation) != null ? annotationStatus.get(annotation) : false;
     }
 
-    private void setExpanded( String annotation, boolean expanded ) {
-        annotationStatus.put( annotation, expanded );
+    private void setExpanded(String annotation,
+                             boolean expanded) {
+        annotationStatus.put(annotation,
+                             expanded);
     }
 }
