@@ -165,7 +165,7 @@ public class KieDefaultMavenIncrementalCompilerTest {
         //NIO creation and copy content
         Path temp = Files.createDirectories(Paths.get(tmpRoot.toString(),
                                                       "dummy"));
-        TestUtil.copyTree(Paths.get("src/test/projects/dummy_kie_incremental"),
+        TestUtil.copyTree(Paths.get("target/test-classes/dummy_kie_incremental"),
                           temp);
         //end NIO
 

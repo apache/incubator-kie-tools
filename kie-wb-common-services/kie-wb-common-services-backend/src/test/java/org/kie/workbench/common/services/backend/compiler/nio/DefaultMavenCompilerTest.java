@@ -324,13 +324,13 @@ public class DefaultMavenCompilerTest {
         ioService.startBatch(origin);
 
         ioService.write(origin.getPath("/dummy/pom.xml"),
-                        new String(java.nio.file.Files.readAllBytes(new File("src/test/projects/kjar-2-single-resources/pom.xml").toPath())));
+                        new String(java.nio.file.Files.readAllBytes(new File("target/test-classes/kjar-2-single-resources/pom.xml").toPath())));
         ioService.write(origin.getPath("/dummy/src/main/java/org/kie/maven/plugin/test/Person.java"),
-                        new String(java.nio.file.Files.readAllBytes(new File("src/test/projects/kjar-2-single-resources/src/main/java/org/kie/maven/plugin/test/Person.java").toPath())));
+                        new String(java.nio.file.Files.readAllBytes(new File("target/test-classes/kjar-2-single-resources/src/main/java/org/kie/maven/plugin/test/Person.java").toPath())));
         ioService.write(origin.getPath("/dummy/src/main/resources/AllResourceTypes/simple-rules.drl"),
-                        new String(java.nio.file.Files.readAllBytes(new File("src/test/projects/kjar-2-single-resources/src/main/resources/AllResourceTypes/simple-rules.drl").toPath())));
+                        new String(java.nio.file.Files.readAllBytes(new File("target/test-classes/kjar-2-single-resources/src/main/resources/AllResourceTypes/simple-rules.drl").toPath())));
         ioService.write(origin.getPath("/dummy/src/main/resources/META-INF/kmodule.xml"),
-                        new String(java.nio.file.Files.readAllBytes(new File("src/test/projects/kjar-2-single-resources/src/main/resources/META-INF/kmodule.xml").toPath())));
+                        new String(java.nio.file.Files.readAllBytes(new File("target/test-classes/kjar-2-single-resources/src/main/resources/META-INF/kmodule.xml").toPath())));
         ioService.endBatch();
 
         RevCommit lastCommit = origin.getGit().resolveRevCommit(origin.getGit().getRef(MASTER_BRANCH).getObjectId());

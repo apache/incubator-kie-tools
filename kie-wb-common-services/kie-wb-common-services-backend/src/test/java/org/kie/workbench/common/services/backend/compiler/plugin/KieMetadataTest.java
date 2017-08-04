@@ -80,19 +80,19 @@ public class KieMetadataTest {
         //NIO creation and copy content
         Path temp = Files.createDirectories(Paths.get(tmpRoot.toString(),
                                                       "dummy"));
-        TestUtil.copyTree(Paths.get("src/test/projects/kjar-2-all-resources"),
+        TestUtil.copyTree(Paths.get("target/test-classes/kjar-2-all-resources"),
                           temp);
         //end NIO
 
         AFCompiler compiler = KieMavenCompilerFactory.getCompiler(
-                KieDecorator.KIE_AFTER);
+                KieDecorator.KIE_AND_LOG_AFTER);
 
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(temp);
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
                                                                info,
                                                                new String[]{MavenCLIArgs.INSTALL},
                                                                new HashMap<>(),
-                                                               Boolean.FALSE);
+                                                               Boolean.TRUE);
         KieCompilationResponse res = (KieCompilationResponse) compiler.compileSync(req);
 
         if (res.getMavenOutput().isPresent() && !res.isSuccessful()) {
@@ -142,7 +142,7 @@ public class KieMetadataTest {
             Path tmpRoot = Files.createTempDirectory("repo");
             Path tmp = Files.createDirectories(Paths.get(tmpRoot.toString(),
                                                          "dummy"));
-            TestUtil.copyTree(Paths.get("src/test/projects/kjar-2-single-resources"),
+            TestUtil.copyTree(Paths.get("target/test-classes/kjar-2-single-resources"),
                               tmp);
 
             AFCompiler compiler = KieMavenCompilerFactory.getCompiler(
@@ -199,7 +199,7 @@ public class KieMetadataTest {
         Path tmpRoot = Files.createTempDirectory("repo");
         Path tmp = Files.createDirectories(Paths.get(tmpRoot.toString(),
                                                      "dummy"));
-        TestUtil.copyTree(Paths.get("src/test/projects/kjar-2-single-resources"),
+        TestUtil.copyTree(Paths.get("target/test-classes/kjar-2-single-resources"),
                           tmp);
 
         AFCompiler compiler = KieMavenCompilerFactory.getCompiler(KieDecorator.KIE_AFTER);
