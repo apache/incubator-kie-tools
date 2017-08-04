@@ -38,7 +38,7 @@ import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 @Portable
 @Bindable
 @FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "FieldProperties.multipleSubform"),
+        i18n = @I18nSettings(keyPreffix = "FieldProperties"),
         startElement = "label"
 )
 public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition implements IsCRUDDefinition {
@@ -46,7 +46,7 @@ public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition impl
     public static final MultipleSubFormFieldType FIELD_TYPE = new MultipleSubFormFieldType();
 
     @FormField(
-            labelKey = "creationForm",
+            labelKey = "multipleSubform.creationForm",
             type = ListBoxFieldType.class,
             afterElement = "label"
     )
@@ -57,7 +57,7 @@ public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition impl
     protected String creationForm = "";
 
     @FormField(
-            labelKey = "editionForm",
+            labelKey = "multipleSubform.editionForm",
             type = ListBoxFieldType.class,
             afterElement = "creationForm"
     )
@@ -68,7 +68,7 @@ public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition impl
     protected String editionForm = "";
 
     @FormField(
-            labelKey = "columns",
+            labelKey = "multipleSubform.columns",
             afterElement = "editionForm"
     )
     private List<TableColumnMeta> columnMetas = new ArrayList<TableColumnMeta>();

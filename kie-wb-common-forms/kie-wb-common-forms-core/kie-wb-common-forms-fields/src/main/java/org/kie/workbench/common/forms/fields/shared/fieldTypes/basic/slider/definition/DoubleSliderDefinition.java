@@ -26,31 +26,31 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 @Portable
 @Bindable
 @FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "FieldProperties.slider"),
+        i18n = @I18nSettings(keyPreffix = "FieldProperties"),
         startElement = "label"
 )
 public class DoubleSliderDefinition extends SliderBaseDefinition<Double> {
 
     @FormField(
-            labelKey = "min",
+            labelKey = "slider.min",
             afterElement = "label"
     )
     protected Double min;
 
     @FormField(
-            labelKey = "max",
+            labelKey = "slider.max",
             afterElement = "min"
     )
     protected Double max;
 
     @FormField(
-            labelKey = "precision",
+            labelKey = "slider.precision",
             afterElement = "max"
     )
     protected Double precision;
 
     @FormField(
-            labelKey = "step",
+            labelKey = "slider.step",
             afterElement = "precision"
     )
     protected Double step;
