@@ -122,6 +122,10 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
 
         List<String> types = presenter.getCompatibleFieldTypes();
 
+        if (types.size() == 1) {
+            fieldType.setEnabled(false);
+        }
+
         types.forEach(fieldType::addItem);
 
         String currentType = presenter.getCurrentField().getFieldType().getTypeName();
