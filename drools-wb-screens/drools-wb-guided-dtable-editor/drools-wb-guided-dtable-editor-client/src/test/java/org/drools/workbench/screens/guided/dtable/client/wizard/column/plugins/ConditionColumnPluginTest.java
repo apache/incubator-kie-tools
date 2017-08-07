@@ -41,6 +41,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
@@ -223,8 +224,12 @@ public class ConditionColumnPluginTest {
     @Test
     public void testGetEditingPattern() throws Exception {
         final PatternWrapper patternWrapper = mock(PatternWrapper.class);
+        final InOrder inOrder = inOrder(plugin);
 
         plugin.setEditingPattern(patternWrapper);
+
+        inOrder.verify(plugin).setupDefaultValues();
+        inOrder.verify(plugin).setPatternWrapper(patternWrapper);
 
         verify(plugin).setupDefaultValues();
         verify(plugin).fireChangeEvent(patternPage);
@@ -555,7 +560,7 @@ public class ConditionColumnPluginTest {
         final ConditionCol52 originalConditionCol52 = mock(ConditionCol52.class);
         final ConditionCol52 clonedConditionCol52 = mock(ConditionCol52.class);
 
-        doReturn(BaseSingleFieldConstraint.TYPE_LITERAL).when(clonedConditionCol52).getConstraintValueType();
+        doReturn(BaseSingleFieldConstraint.TYPE_LITERAL).when(originalConditionCol52).getConstraintValueType();
         doReturn(originalConditionCol52).when(plugin).getOriginalColumnConfig52();
         doReturn(clonedConditionCol52).when(plugin).clone(originalConditionCol52);
         doReturn(originalPattern52).when(plugin).getOriginalPattern52();
@@ -651,6 +656,31 @@ public class ConditionColumnPluginTest {
                      clone.getBinding());
         assertNotSame(column,
                       clone);
+    }
+
+    @Test
+    public void testSetupPatternWrapper() throws Exception {
+        final Pattern52 pattern52 = new Pattern52() {{
+            setFactType("FactType");
+            setBoundName("BoundName");
+            setEntryPointName("EntryPointName");
+            setNegated(true);
+        }};
+
+        when(plugin.getEditingPattern()).thenReturn(pattern52);
+
+        plugin.setupPatternWrapper();
+
+        final PatternWrapper patternWrapper = plugin.patternWrapper();
+
+        assertEquals(patternWrapper.getFactType(),
+                     "FactType");
+        assertEquals(patternWrapper.getBoundName(),
+                     "BoundName");
+        assertEquals(patternWrapper.getEntryPointName(),
+                     "EntryPointName");
+        assertEquals(patternWrapper.isNegated(),
+                     true);
     }
 
     private ConditionCol52 makeConditionCol52(final int constraintValueType,

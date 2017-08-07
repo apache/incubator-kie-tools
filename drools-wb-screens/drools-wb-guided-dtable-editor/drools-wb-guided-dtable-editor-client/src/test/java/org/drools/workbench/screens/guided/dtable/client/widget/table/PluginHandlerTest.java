@@ -55,7 +55,6 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.B
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ConditionColumnPlugin;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.BaseDecisionTableColumnPlugin;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.DecisionTableColumnPlugin;
-import org.drools.workbench.screens.guided.rule.client.editor.plugin.RuleModellerActionPlugin;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -374,7 +373,7 @@ public class PluginHandlerTest {
         doReturn(wizard).when(wizardManagedInstance).get();
         doReturn(plugin).when(conditionColumnPlugin).get();
 
-        doReturn(new Pattern52()).when(plugin).editingPattern();
+        doReturn(new Pattern52()).when(plugin).getEditingPattern();
 
         pluginHandler.edit(originalPattern,
                            originalColumn);

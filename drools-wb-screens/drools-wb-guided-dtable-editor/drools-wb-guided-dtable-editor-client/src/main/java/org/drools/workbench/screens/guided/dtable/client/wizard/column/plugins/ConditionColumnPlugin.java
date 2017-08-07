@@ -67,7 +67,8 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
-import static org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.TableFormat.*;
+import static org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY;
+import static org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.TableFormat.LIMITED_ENTRY;
 import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils.nil;
 
 @Dependent
@@ -128,15 +129,14 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
         super.init(wizard);
 
         setupDefaultValues();
-
-        loadPattern();
+        setupPatternWrapper();
     }
 
-    private void loadPattern() {
-        patternWrapper = new PatternWrapper(editingPattern().getFactType(),
-                                            editingPattern().getBoundName(),
-                                            editingPattern().getEntryPointName(),
-                                            editingPattern().isNegated());
+    void setupPatternWrapper() {
+        patternWrapper = new PatternWrapper(getEditingPattern().getFactType(),
+                                            getEditingPattern().getBoundName(),
+                                            getEditingPattern().getEntryPointName(),
+                                            getEditingPattern().isNegated());
     }
 
     @Override
@@ -181,12 +181,38 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
     }
 
     public Pattern52 editingPattern() {
+        return wrappedPattern();
+    }
+
+    private Pattern52 wrappedPattern() {
         editingPattern.setFactType(patternWrapper().getFactType());
         editingPattern.setBoundName(patternWrapper().getBoundName());
         editingPattern.setNegated(patternWrapper().isNegated());
         editingPattern.setEntryPointName(patternWrapper().getEntryPointName());
 
         return editingPattern;
+    }
+
+    public Pattern52 getEditingPattern() {
+        return editingPattern;
+    }
+
+    @Override
+    public void setEditingPattern(final PatternWrapper patternWrapper) {
+        setupDefaultValues();
+        setPatternWrapper(patternWrapper);
+
+        fireChangeEvent(patternPage);
+        fireChangeEvent(calculationTypePage);
+        fireChangeEvent(fieldPage);
+        fireChangeEvent(operatorPage);
+        fireChangeEvent(valueOptionsPage);
+        fireChangeEvent(additionalInfoPage);
+    }
+
+    void setPatternWrapper(final PatternWrapper patternWrapper) {
+        this.patternWrapper = patternWrapper;
+        this.editingPattern = extractEditingPattern();
     }
 
     private Pattern52 extractEditingPattern() {
@@ -221,21 +247,6 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
     @Override
     public PatternWrapper patternWrapper() {
         return Optional.ofNullable(patternWrapper).orElse(new PatternWrapper());
-    }
-
-    @Override
-    public void setEditingPattern(final PatternWrapper patternWrapper) {
-        this.patternWrapper = patternWrapper;
-        this.editingPattern = extractEditingPattern();
-
-        setupDefaultValues();
-
-        fireChangeEvent(patternPage);
-        fireChangeEvent(calculationTypePage);
-        fireChangeEvent(fieldPage);
-        fireChangeEvent(operatorPage);
-        fireChangeEvent(valueOptionsPage);
-        fireChangeEvent(additionalInfoPage);
     }
 
     @Override
@@ -460,25 +471,41 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
     }
 
     void setValueOptionsPageCompleted() {
-        this.valueOptionsPageCompleted = Boolean.TRUE;
+        valueOptionsPageCompleted = Boolean.TRUE;
     }
 
     void setupDefaultValues() {
         if (isNewColumn()) {
-            editingPattern = emptyPattern();
-            editingCol = newConditionColumn();
-
-            constraintValue = BaseSingleFieldConstraint.TYPE_UNDEFINED;
-            valueOptionsPageCompleted = Boolean.FALSE;
-
+            setupDefaultValuesForANewColumn();
+            resetConstraintValueAndValueOptionsPageStatus();
             resetFieldAndOperator();
         } else {
-            editingPattern = getOriginalPattern52().clonePattern();
-            editingCol = clone(originalCondition());
-
-            constraintValue = editingCol.getConstraintValueType();
-            valueOptionsPageCompleted = Boolean.TRUE;
+            setupDefaultValuesForAnExistingColumn();
+            setValueOptionsPageCompleted();
         }
+    }
+
+    private void setupDefaultValuesForAnExistingColumn() {
+        final Pattern52 clonedPattern52 = getOriginalPattern52().clonePattern();
+        final ConditionCol52 clonedConditionCol52 = clone(originalCondition());
+        final int constraintValueType = originalCondition().getConstraintValueType();
+
+        editingPattern = clonedPattern52;
+        editingCol = clonedConditionCol52;
+        constraintValue = constraintValueType;
+    }
+
+    private void setupDefaultValuesForANewColumn() {
+        final Pattern52 newPattern52 = emptyPattern();
+        final ConditionCol52 newConditionCol52 = newConditionColumn();
+
+        editingPattern = newPattern52;
+        editingCol = newConditionCol52;
+    }
+
+    private void resetConstraintValueAndValueOptionsPageStatus() {
+        constraintValue = BaseSingleFieldConstraint.TYPE_UNDEFINED;
+        valueOptionsPageCompleted = Boolean.FALSE;
     }
 
     ConditionCol52 clone(final ConditionCol52 column) {
