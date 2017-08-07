@@ -73,7 +73,7 @@ public class WorkspaceBuilderServiceTest {
                 .addClass(JGitFileSystemProvider.class)
                 .addAsManifestResource(EmptyAsset.INSTANCE,
                                        "beans.xml")
-                .addAsResource("ErraiApp.properties",
+                .addAsResource("META-INF/ErraiApp.properties",
                                "ErraiApp.properties")
                 .addAsManifestResource("META-INF/services/org.uberfire.java.nio.file.spi.FileSystemProvider",
                                        "services/org.uberfire.java.nio.file.spi.FileSystemProvider")
