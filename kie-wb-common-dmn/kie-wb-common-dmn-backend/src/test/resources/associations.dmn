@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" id="BFBDF33C-B568-4550-ACF2-450743F9F90B" name="79ktneei" expressionLanguage="http://www.omg.org/spec/FEEL/20140401" typeLanguage="http://www.omg.org/spec/FEEL/20140401" namespace="https://github.com/kiegroup/drools/kie-dmn">
+  <description>My description</description>
+  <inputData id="BD168F8B-4398-4478-8BEA-E67AA5F90FAF" name="My name">
+    <description>My description</description>
+    <variable id="10720810-9E79-46ED-81AB-2663F8ABE84D" name="Input Data" typeRef="My QName">
+      <description>My description</description>
+    </variable>
+  </inputData>
+  <decision id="A960E2D2-FBC1-4D11-AA33-064F6A0B5CB9" name="My name">
+    <description>My description</description>
+    <variable id="437DFF80-28AE-492B-876D-0EA08FA413E6" name="Decision" typeRef="My QName">
+      <description>My description</description>
+    </variable>
+    <literalExpression id="B8509305-8C94-478F-BA4C-D0F12AA0E7BA" typeRef="My QName" expressionLanguage="My expression language">
+      <description>My description</description>
+      <text>My text</text>
+      <importedValues namespace="My namespace" locationURI="My LocationURI" importType="My import type" expressionLanguage="My expression language">
+        <importedElement>My imported element</importedElement>
+      </importedValues>
+    </literalExpression>
+  </decision>
+  <knowledgeSource id="FB99ED65-BC43-4750-999F-7FE24690845B" name="KnowledgeSource" locationURI="My LocationURI">
+    <description>My description</description>
+    <type>My KnowledgeSourceType</type>
+  </knowledgeSource>
+  <businessKnowledgeModel id="2F07453C-854F-436F-8378-4CFCE63BB124" name="My name">
+    <description>My description</description>
+    <encapsulatedLogic id="F1B17568-3237-4894-BF08-4A26F0EFA384" typeRef="My QName">
+      <description>My description</description>
+      <literalExpression id="F07A3AFF-7ED0-4442-9AF2-A3476EE7A5D6" typeRef="My QName" expressionLanguage="My expression language">
+        <description>My description</description>
+        <text>My text</text>
+        <importedValues namespace="My namespace" locationURI="My LocationURI" importType="My import type" expressionLanguage="My expression language">
+          <importedElement>My imported element</importedElement>
+        </importedValues>
+      </literalExpression>
+    </encapsulatedLogic>
+    <variable id="1C7DEA88-A875-4847-82AA-27829455F364" name="BKM" typeRef="My QName">
+      <description>My description</description>
+    </variable>
+  </businessKnowledgeModel>
+  <association id="890A7C64-84B5-421E-81A4-2F575BC64E39" associationDirection="None">
+    <description>From Decision</description>
+    <sourceRef href="#A960E2D2-FBC1-4D11-AA33-064F6A0B5CB9"/>
+    <targetRef href="#7F4B8130-6F3D-4A16-9F6C-01D01DA481D2"/>
+  </association>
+  <association id="CBDF1841-89CE-426A-BA5E-63550F709DE9" associationDirection="None">
+    <description>From Knowledge Source</description>
+    <sourceRef href="#FB99ED65-BC43-4750-999F-7FE24690845B"/>
+    <targetRef reference="../../association/targetRef"/>
+  </association>
+  <association id="FC717D92-64DA-4246-80BB-17E854144810" associationDirection="None">
+    <description>From Input</description>
+    <sourceRef href="#BD168F8B-4398-4478-8BEA-E67AA5F90FAF"/>
+    <targetRef reference="../../association/targetRef"/>
+  </association>
+  <association id="ACF4F45F-C591-4D15-81DA-656DA933695B" associationDirection="None">
+    <description>From BKM</description>
+    <sourceRef href="#2F07453C-854F-436F-8378-4CFCE63BB124"/>
+    <targetRef reference="../../association/targetRef"/>
+  </association>
+  <textAnnotation id="7F4B8130-6F3D-4A16-9F6C-01D01DA481D2" textFormat="text/plain">
+    <description>My description</description>
+    <text>My text</text>
+  </textAnnotation>
+</definitions>

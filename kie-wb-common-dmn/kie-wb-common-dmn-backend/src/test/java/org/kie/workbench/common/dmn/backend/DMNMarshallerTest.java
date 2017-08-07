@@ -267,6 +267,12 @@ public class DMNMarshallerTest {
                                                this::checkPotpourryGraph);
     }
 
+    @Test
+    public void testAssociations() throws IOException {
+        roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/associations.dmn"),
+                                               this::checkAssociationsGraph);
+    }
+
     public void roundTripUnmarshalThenMarshalUnmarshal(InputStream dmnXmlInputStream,
                                                        Consumer<Graph<?, Node<?, ?>>> checkGraphConsumer) throws IOException {
         DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
@@ -335,6 +341,52 @@ public class DMNMarshallerTest {
                                   postfixDecisionNode);
         assertRootNodeConnectedTo(rootNode,
                                   myDecisionNode);
+    }
+
+    private void checkAssociationsGraph(Graph<?, Node<?, ?>> g) {
+        Node<?, ?> inputData = g.getNode("BD168F8B-4398-4478-8BEA-E67AA5F90FAF");
+        assertNodeContentDefinitionIs(inputData,
+                                      InputData.class);
+
+        Node<?, ?> decision = g.getNode("A960E2D2-FBC1-4D11-AA33-064F6A0B5CB9");
+        assertNodeContentDefinitionIs(decision,
+                                      Decision.class);
+
+        Node<?, ?> knowledgeSource = g.getNode("FB99ED65-BC43-4750-999F-7FE24690845B");
+        assertNodeContentDefinitionIs(knowledgeSource,
+                                      KnowledgeSource.class);
+
+        Node<?, ?> bkm = g.getNode("2F07453C-854F-436F-8378-4CFCE63BB124");
+        assertNodeContentDefinitionIs(bkm,
+                                      BusinessKnowledgeModel.class);
+
+        Node<?, ?> textAnnotation = g.getNode("7F4B8130-6F3D-4A16-9F6C-01D01DA481D2");
+        assertNodeContentDefinitionIs(textAnnotation,
+                                      TextAnnotation.class);
+
+        Edge fromInput = assertNodeEdgesTo(inputData,
+                                           textAnnotation,
+                                           Association.class);
+        assertEquals("From Input",
+                     ((View<Association>) fromInput.getContent()).getDefinition().getDescription().getValue());
+
+        Edge fromDecision = assertNodeEdgesTo(decision,
+                                              textAnnotation,
+                                              Association.class);
+        assertEquals("From Decision",
+                     ((View<Association>) fromDecision.getContent()).getDefinition().getDescription().getValue());
+
+        Edge fromBkm = assertNodeEdgesTo(bkm,
+                                         textAnnotation,
+                                         Association.class);
+        assertEquals("From BKM",
+                     ((View<Association>) fromBkm.getContent()).getDefinition().getDescription().getValue());
+
+        Edge fromKnowledgeSource = assertNodeEdgesTo(knowledgeSource,
+                                                     textAnnotation,
+                                                     Association.class);
+        assertEquals("From Knowledge Source",
+                     ((View<Association>) fromKnowledgeSource.getContent()).getDefinition().getDescription().getValue());
     }
 
     private void checkPotpourryGraph(Graph<?, Node<?, ?>> g) {
@@ -502,9 +554,9 @@ public class DMNMarshallerTest {
         assertTrue(to.getInEdges().contains(edge));
     }
 
-    private static void assertNodeEdgesTo(Node<?, ?> from,
-                                          Node<?, ?> to,
-                                          Class<?> clazz) {
+    private static Edge<?, ?> assertNodeEdgesTo(Node<?, ?> from,
+                                                Node<?, ?> to,
+                                                Class<?> clazz) {
         @SuppressWarnings("unchecked")
         List<Edge<?, ?>> outEdges = (List<Edge<?, ?>>) from.getOutEdges();
         Optional<Edge<?, ?>> optEdge = outEdges.stream().filter(e -> e.getTargetNode().equals(to)).findFirst();
@@ -523,6 +575,7 @@ public class DMNMarshallerTest {
         assertTrue(connectionContent.getTargetMagnet().isPresent());
         assertEquals(MagnetType.INCOMING,
                      connectionContent.getTargetMagnet().get().getMagnetType());
+        return edge;
     }
 
     private static void assertNodeContentDefinitionIs(Node<?, ?> node,
