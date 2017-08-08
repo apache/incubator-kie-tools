@@ -18,9 +18,16 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multip
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
+import org.junit.Test;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.AbstractFieldDefinitionTest;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableColumnMeta;
+
+import static org.junit.Assert.*;
 
 public class MultipleSubFormFieldDefinitionTest extends AbstractFieldDefinitionTest<MultipleSubFormFieldDefinition> {
 
@@ -45,5 +52,26 @@ public class MultipleSubFormFieldDefinitionTest extends AbstractFieldDefinitionT
         multipleSubFormFieldDefinition.setColumnMetas(columns);
 
         return multipleSubFormFieldDefinition;
+    }
+
+    @Test
+    public void testValidation() {
+        MultipleSubFormFieldDefinition fieldDefinition = getNewFieldDefinition();
+
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        Set<ConstraintViolation<MultipleSubFormFieldDefinition>> violations = validator.validate(fieldDefinition);
+
+        assertEquals(0,
+                     violations.size());
+
+        fieldDefinition.setCreationForm(null);
+        fieldDefinition.setEditionForm(null);
+        assertEquals(0,
+                     violations.size());
+
+        fieldDefinition.setCreationForm("");
+        fieldDefinition.setEditionForm("");
+        assertEquals(0,
+                     violations.size());
     }
 }

@@ -15,9 +15,6 @@
  */
 package org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition;
 
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
@@ -51,8 +48,6 @@ public class SubFormFieldDefinition extends AbstractFieldDefinition implements H
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
             className = "org.kie.workbench.common.forms.editor.backend.dataProviders.VFSSelectorFormProvider")
-    @NotNull
-    @NotEmpty
     protected String nestedForm = "";
 
     public SubFormFieldDefinition() {

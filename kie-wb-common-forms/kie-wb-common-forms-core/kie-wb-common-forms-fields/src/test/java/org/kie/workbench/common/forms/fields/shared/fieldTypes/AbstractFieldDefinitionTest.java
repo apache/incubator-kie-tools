@@ -57,7 +57,7 @@ public abstract class AbstractFieldDefinitionTest<FIELD extends FieldDefinition>
         assertTrue(originalFieldDefinition.equals(newFieldDefinition));
     }
 
-    private FIELD getNewFieldDefinition() {
+    protected FIELD getNewFieldDefinition() {
         FIELD field = getFullFieldDefinition();
 
         field.setId(ID);

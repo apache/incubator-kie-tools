@@ -16,7 +16,15 @@
 
 package org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition;
 
+import java.util.Set;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+
+import org.junit.Test;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.AbstractFieldDefinitionTest;
+
+import static org.junit.Assert.*;
 
 public class SubFormFieldDefinitionTest extends AbstractFieldDefinitionTest<SubFormFieldDefinition> {
 
@@ -32,5 +40,24 @@ public class SubFormFieldDefinitionTest extends AbstractFieldDefinitionTest<SubF
         subFormFieldDefinition.setNestedForm("nestedForm");
 
         return subFormFieldDefinition;
+    }
+
+    @Test
+    public void testValidation() {
+        SubFormFieldDefinition fieldDefinition = getNewFieldDefinition();
+
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        Set<ConstraintViolation<SubFormFieldDefinition>> violations = validator.validate(fieldDefinition);
+
+        assertEquals(0,
+                     violations.size());
+
+        fieldDefinition.setNestedForm(null);
+        assertEquals(0,
+                     violations.size());
+
+        fieldDefinition.setNestedForm("");
+        assertEquals(0,
+                     violations.size());
     }
 }

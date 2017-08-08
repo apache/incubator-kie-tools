@@ -18,7 +18,6 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multip
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
@@ -53,7 +52,6 @@ public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition impl
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
             className = "org.kie.workbench.common.forms.editor.backend.dataProviders.VFSSelectorFormProvider")
-    @NotEmpty
     protected String creationForm = "";
 
     @FormField(
@@ -64,7 +62,6 @@ public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition impl
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
             className = "org.kie.workbench.common.forms.editor.backend.dataProviders.VFSSelectorFormProvider")
-    @NotEmpty
     protected String editionForm = "";
 
     @FormField(
