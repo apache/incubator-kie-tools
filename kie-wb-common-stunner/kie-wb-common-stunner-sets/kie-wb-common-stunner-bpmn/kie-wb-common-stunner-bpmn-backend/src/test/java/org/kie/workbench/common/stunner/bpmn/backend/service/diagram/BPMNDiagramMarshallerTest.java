@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.eclipse.bpmn2.Activity;
@@ -65,6 +66,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.IntegerTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.StringTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.VariablesTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
@@ -139,11 +141,15 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BPMNDiagramMarshallerTest {
@@ -1679,6 +1685,8 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EMBEDDED_SUBPROCESS);
         assertDiagram(diagram,
                       10);
+        assertDocumentation(diagram,"_C3EBE7F1-8E57-4BB1-B380-40BB02E9464E", "Subprocess  Documentation Value");
+
         String result = tested.marshall(diagram);
         assertDiagram(result,
                       1,
@@ -1924,13 +1932,28 @@ public class BPMNDiagramMarshallerTest {
 
     private void assertDiagram(Diagram<Graph, Metadata> diagram,
                                int nodesSize) {
+        assertEquals(nodesSize,
+                getNodes(diagram).size());
+    }
+
+    private List<Node> getNodes(Diagram<Graph, Metadata> diagram) {
         Graph graph = diagram.getGraph();
         assertNotNull(graph);
         Iterator<Node> nodesIterable = graph.nodes().iterator();
         List<Node> nodes = new ArrayList<>();
         nodesIterable.forEachRemaining(nodes::add);
-        assertEquals(nodesSize,
-                     nodes.size());
+        return nodes;
+    }
+
+    private void assertDocumentation(Diagram<Graph, Metadata> diagram, String id, String value) {
+        Optional<BPMNDefinition> documentation = getNodes(diagram).stream()
+                .filter(node -> node.getContent() instanceof View && node.getUUID().equals(id))
+                .map(node -> (View) node.getContent())
+                .filter(view -> view.getDefinition() instanceof BPMNDefinition)
+                .map(view -> (BPMNDefinition) view.getDefinition())
+                .findFirst();
+        String documentationValue = (documentation.isPresent() ? documentation.get().getGeneral().getDocumentation().getValue() : null);
+        assertEquals(value, documentationValue);
     }
 
     private Diagram<Graph, Metadata> unmarshall(String fileName) throws Exception {

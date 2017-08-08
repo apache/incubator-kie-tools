@@ -291,6 +291,11 @@
       <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+    </dependency>
+
     <!-- Testing scope. -->
 
     <!-- TODO: Remove. Used for now as tests needs some existing morph adapter, which is on client side.-->

@@ -341,6 +341,12 @@
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-shared</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
       <artifactId>errai-jaxrs-client</artifactId>
       <scope>provided</scope>
     </dependency>

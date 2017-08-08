@@ -184,6 +184,11 @@ public class BPMNDiagramImpl implements BPMNDiagram {
     }
 
     @Override
+    public BPMNBaseInfo getGeneral() {
+        return null;
+    }
+
+    @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(diagramSet.hashCode(),
                                          processData.hashCode(),

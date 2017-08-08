@@ -26,6 +26,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNBaseInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.Categories;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
@@ -186,6 +187,11 @@ public class CaseManagementDiagram implements BPMNDiagram {
 
     public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
+    }
+
+    @Override
+    public BPMNBaseInfo getGeneral() {
+        return getDiagramSet();
     }
 
     @Override

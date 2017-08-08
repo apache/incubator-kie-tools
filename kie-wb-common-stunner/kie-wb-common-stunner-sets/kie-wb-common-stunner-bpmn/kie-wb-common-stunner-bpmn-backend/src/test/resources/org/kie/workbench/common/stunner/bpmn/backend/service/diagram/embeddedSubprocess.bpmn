@@ -18,6 +18,7 @@
       <bpmn2:incoming>_0A8AB905-E2B7-43E8-B569-62DD77CE3A0C</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:subProcess id="_C3EBE7F1-8E57-4BB1-B380-40BB02E9464E" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="subp1">
+      <bpmn2:documentation><![CDATA[Subprocess  Documentation Value]]></bpmn2:documentation>
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[subp1]]></drools:metaValue>

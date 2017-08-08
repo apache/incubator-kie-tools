@@ -27,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import bpsim.BPSimDataType;
 import bpsim.BpsimPackage;
@@ -43,6 +44,7 @@ import bpsim.Scenario;
 import bpsim.TimeParameters;
 import bpsim.UniformDistributionType;
 import bpsim.impl.BpsimPackageImpl;
+import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerationException;
@@ -154,6 +156,78 @@ import org.kie.workbench.common.stunner.bpmn.backend.legacy.profile.IDiagramProf
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.ACTIVITYREF;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.ADHOCCOMPLETIONCONDITION;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.ADHOCORDERING;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.ADHOCPROCESS;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.ASSIGNMENTS;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.BGCOLOR;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.BORDERCOLOR;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.BOUNDARYCANCELACTIVITY;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.CALLEDELEMENT;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.CONDITIONEXPRESSION;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.CONDITIONEXPRESSIONLANGUAGE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.CONDITIONLANGUAGE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.CURRENCY;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.CUSTOMTYPE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.DATAINPUT;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.DATAINPUTASSOCIATIONS;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.DATAINPUTSET;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.DATAOUTPUT;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.DATAOUTPUTASSOCIATIONS;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.DATAOUTPUTSET;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.DISTRIBUTIONTYPE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.DOCUMENTATION;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.ERRORREF;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.ESCALATIONCODE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.EXECUTABLE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.EXPRESSIONLANGUAGE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.FONTCOLOR;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.FONTSIZE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.GLOBALS;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.ID;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.IMPORTS;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.INDEPENDENT;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.INPUT_OUTPUT;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.ISASYNC;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.ISIMMEDIATE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.ISINTERRUPTING;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.ISSELECTABLE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.MAX;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.MEAN;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.MESSAGEREF;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.MIN;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.MITRIGGER;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.MULTIPLEINSTANCECOLLECTIONINPUT;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.MULTIPLEINSTANCECOLLECTIONOUTPUT;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.MULTIPLEINSTANCECOMPLETIONCONDITION;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.MULTIPLEINSTANCEDATAINPUT;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.MULTIPLEINSTANCEDATAOUTPUT;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.NAME;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.NAMESPACES;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.ONENTRYACTIONS;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.ONEXITACTIONS;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.PACKAGE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.PRIORITY;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.PROCESSN;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.SCRIPT_LANGUAGE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.SIGNALREF;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.SIGNALSCOPE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.STANDARDDEVIATION;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.STANDARDTYPE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TARGETNAMESPACE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TIMECYCLE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TIMECYCLELANGUAGE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TIMEDATE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TIMEDURATION;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TIMEUNIT;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TYPE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TYPELANGUAGE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.VARDEFS;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.VERSION;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.WAITFORCOMPLETION;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.WAITTIME;
 
 /**
  * @author Antoine Toulme
@@ -319,38 +393,36 @@ public class Bpmn2JsonMarshaller {
              * }
              */
             Map<String, Object> props = new LinkedHashMap<String, Object>();
-            props.put("namespaces",
+            props.put(NAMESPACES,
                       "");
             //props.put("targetnamespace", def.getTargetNamespace());
-            props.put("targetnamespace",
+            props.put(TARGETNAMESPACE,
                       "http://www.omg.org/bpmn20");
-            props.put("typelanguage",
+            props.put(TYPELANGUAGE,
                       def.getTypeLanguage());
-            props.put("name",
+            props.put(NAME,
                       unescapeXML(def.getName()));
-            props.put("id",
+            props.put(ID,
                       def.getId());
-            props.put("expressionlanguage",
+            props.put(EXPRESSIONLANGUAGE,
                       def.getExpressionLanguage());
             // backwards compat for BZ 1048191
-            if (def.getDocumentation() != null && def.getDocumentation().size() > 0) {
-                props.put("documentation",
-                          def.getDocumentation().get(0).getText());
-            }
+            putDocumentationProperty(def, props);
+
             for (RootElement rootElement : def.getRootElements()) {
                 if (rootElement instanceof Process) {
                     // have to wait for process node to finish properties and stencil marshalling
-                    props.put("executable",
+                    props.put(EXECUTABLE,
                               ((Process) rootElement).isIsExecutable() + "");
-                    props.put("id",
+                    props.put(ID,
                               rootElement.getId());
                     if (rootElement.getDocumentation() != null && rootElement.getDocumentation().size() > 0) {
-                        props.put("documentation",
+                        props.put(DOCUMENTATION,
                                   rootElement.getDocumentation().get(0).getText());
                     }
                     Process pr = (Process) rootElement;
                     if (pr.getName() != null && pr.getName().length() > 0) {
-                        props.put("processn",
+                        props.put(PROCESSN,
                                   unescapeXML(((Process) rootElement).getName()));
                     }
                     List<Property> processProperties = ((Process) rootElement).getProperties();
@@ -380,15 +452,15 @@ public class Bpmn2JsonMarshaller {
                     while (iter.hasNext()) {
                         FeatureMap.Entry entry = iter.next();
                         if (entry.getEStructuralFeature().getName().equals("packageName")) {
-                            props.put("package",
+                            props.put(PACKAGE,
                                       entry.getValue());
                         }
                         if (entry.getEStructuralFeature().getName().equals("version")) {
-                            props.put("version",
+                            props.put(VERSION,
                                       entry.getValue());
                         }
                         if (entry.getEStructuralFeature().getName().equals("adHoc")) {
-                            props.put("adhocprocess",
+                            props.put(ADHOCPROCESS,
                                       entry.getValue());
                         }
                     }
@@ -429,7 +501,7 @@ public class Bpmn2JsonMarshaller {
                                 globalsStr = globalsStr.substring(0,
                                                                   globalsStr.length() - 1);
                             }
-                            props.put("globals",
+                            props.put(GLOBALS,
                                       globalsStr);
                         }
                     }
@@ -444,13 +516,13 @@ public class Bpmn2JsonMarshaller {
                         allImports = allImports.substring(0,
                                                           allImports.length() - 1);
                     }
-                    props.put("imports",
+                    props.put(IMPORTS,
                               allImports);
                     // simulation
                     if (_simulationScenario != null && _simulationScenario.getScenarioParameters() != null) {
-                        props.put("currency",
+                        props.put(CURRENCY,
                                   _simulationScenario.getScenarioParameters().getBaseCurrencyUnit() == null ? "" : _simulationScenario.getScenarioParameters().getBaseCurrencyUnit());
-                        props.put("timeunit",
+                        props.put(TIMEUNIT,
                                   _simulationScenario.getScenarioParameters().getBaseTimeUnit().getName());
                     }
                     marshallProperties(props,
@@ -628,7 +700,7 @@ public class Bpmn2JsonMarshaller {
                 doutbuff.setLength(doutbuff.length() - 1);
             }
             String dataoutput = doutbuff.toString();
-            properties.put("dataoutput",
+            properties.put(DATAOUTPUT,
                            dataoutput);
             List<DataOutputAssociation> outputAssociations = event.getDataOutputAssociation();
             StringBuffer doutassociationbuff = new StringBuffer();
@@ -645,7 +717,7 @@ public class Bpmn2JsonMarshaller {
                 doutassociationbuff.setLength(doutassociationbuff.length() - 1);
             }
             String assignments = doutassociationbuff.toString();
-            properties.put("dataoutputassociations",
+            properties.put(DATAOUTPUTASSOCIATIONS,
                            assignments);
             setAssignmentsInfoProperty(null,
                                        null,
@@ -660,18 +732,18 @@ public class Bpmn2JsonMarshaller {
             if (ed instanceof TimerEventDefinition) {
                 TimerEventDefinition ted = (TimerEventDefinition) ed;
                 if (ted.getTimeDate() != null) {
-                    properties.put("timedate",
+                    properties.put(TIMEDATE,
                                    ((FormalExpression) ted.getTimeDate()).getBody());
                 }
                 if (ted.getTimeDuration() != null) {
-                    properties.put("timeduration",
+                    properties.put(TIMEDURATION,
                                    ((FormalExpression) ted.getTimeDuration()).getBody());
                 }
                 if (ted.getTimeCycle() != null) {
-                    properties.put("timecycle",
+                    properties.put(TIMECYCLE,
                                    ((FormalExpression) ted.getTimeCycle()).getBody());
                     if (((FormalExpression) ted.getTimeCycle()).getLanguage() != null) {
-                        properties.put("timecyclelanguage",
+                        properties.put(TIMECYCLELANGUAGE,
                                        ((FormalExpression) ted.getTimeCycle()).getLanguage());
                     }
                 }
@@ -690,39 +762,39 @@ public class Bpmn2JsonMarshaller {
                         }
                     }
                     if (!foundSignalRef) {
-                        properties.put("signalref",
+                        properties.put(SIGNALREF,
                                        "");
                     }
                 } else {
-                    properties.put("signalref",
+                    properties.put(SIGNALREF,
                                    "");
                 }
             } else if (ed instanceof ErrorEventDefinition) {
                 if (((ErrorEventDefinition) ed).getErrorRef() != null && ((ErrorEventDefinition) ed).getErrorRef().getErrorCode() != null) {
-                    properties.put("errorref",
+                    properties.put(ERRORREF,
                                    ((ErrorEventDefinition) ed).getErrorRef().getErrorCode());
                 } else {
-                    properties.put("errorref",
+                    properties.put(ERRORREF,
                                    "");
                 }
             } else if (ed instanceof ConditionalEventDefinition) {
                 FormalExpression conditionalExp = (FormalExpression) ((ConditionalEventDefinition) ed).getCondition();
                 if (conditionalExp.getBody() != null) {
-                    properties.put("conditionexpression",
+                    properties.put(CONDITIONEXPRESSION,
                                    conditionalExp.getBody().replaceAll("\n",
                                                                        "\\\\n"));
                 }
                 if (conditionalExp.getLanguage() != null) {
                     String languageVal = conditionalExp.getLanguage();
                     if (languageVal.equals("http://www.jboss.org/drools/rule")) {
-                        properties.put("conditionlanguage",
+                        properties.put(CONDITIONLANGUAGE,
                                        "drools");
                     } else if (languageVal.equals("http://www.mvel.org/2.0")) {
-                        properties.put("conditionlanguage",
+                        properties.put(CONDITIONLANGUAGE,
                                        "mvel");
                     } else {
                         // default to drools
-                        properties.put("conditionlanguage",
+                        properties.put(CONDITIONLANGUAGE,
                                        "drools");
                     }
                 }
@@ -730,23 +802,23 @@ public class Bpmn2JsonMarshaller {
                 if (((EscalationEventDefinition) ed).getEscalationRef() != null) {
                     Escalation esc = ((EscalationEventDefinition) ed).getEscalationRef();
                     if (esc.getEscalationCode() != null && esc.getEscalationCode().length() > 0) {
-                        properties.put("escalationcode",
+                        properties.put(ESCALATIONCODE,
                                        esc.getEscalationCode());
                     } else {
-                        properties.put("escalationcode",
+                        properties.put(ESCALATIONCODE,
                                        "");
                     }
                 }
             } else if (ed instanceof MessageEventDefinition) {
                 if (((MessageEventDefinition) ed).getMessageRef() != null) {
                     Message msg = ((MessageEventDefinition) ed).getMessageRef();
-                    properties.put("messageref",
+                    properties.put(MESSAGEREF,
                                    msg.getId());
                 }
             } else if (ed instanceof CompensateEventDefinition) {
                 if (((CompensateEventDefinition) ed).getActivityRef() != null) {
                     Activity act = ((CompensateEventDefinition) ed).getActivityRef();
-                    properties.put("activityref",
+                    properties.put(ACTIVITYREF,
                                    act.getName());
                 }
             }
@@ -772,7 +844,7 @@ public class Bpmn2JsonMarshaller {
                 dinbuff.setLength(dinbuff.length() - 1);
             }
             String datainput = dinbuff.toString();
-            properties.put("datainput",
+            properties.put(DATAINPUT,
                            datainput);
             StringBuilder associationBuff = new StringBuilder();
             marshallDataInputAssociations(associationBuff,
@@ -782,7 +854,7 @@ public class Bpmn2JsonMarshaller {
                 assignmentString = assignmentString.substring(0,
                                                               assignmentString.length() - 1);
             }
-            properties.put("datainputassociations",
+            properties.put(DATAINPUTASSOCIATIONS,
                            assignmentString);
             setAssignmentsInfoProperty(datainput,
                                        null,
@@ -795,7 +867,7 @@ public class Bpmn2JsonMarshaller {
         String signalScope = Utils.getMetaDataValue(event.getExtensionValues(),
                                                     "customScope");
         if (signalScope != null) {
-            properties.put("signalscope",
+            properties.put(SIGNALSCOPE,
                            signalScope);
         }
         // event definitions
@@ -804,18 +876,18 @@ public class Bpmn2JsonMarshaller {
             if (ed instanceof TimerEventDefinition) {
                 TimerEventDefinition ted = (TimerEventDefinition) ed;
                 if (ted.getTimeDate() != null) {
-                    properties.put("timedate",
+                    properties.put(TIMEDATE,
                                    ((FormalExpression) ted.getTimeDate()).getBody());
                 }
                 if (ted.getTimeDuration() != null) {
-                    properties.put("timeduration",
+                    properties.put(TIMEDURATION,
                                    ((FormalExpression) ted.getTimeDuration()).getBody());
                 }
                 if (ted.getTimeCycle() != null) {
-                    properties.put("timecycle",
+                    properties.put(TIMECYCLE,
                                    ((FormalExpression) ted.getTimeCycle()).getBody());
                     if (((FormalExpression) ted.getTimeCycle()).getLanguage() != null) {
-                        properties.put("timecyclelanguage",
+                        properties.put(TIMECYCLELANGUAGE,
                                        ((FormalExpression) ted.getTimeCycle()).getLanguage());
                     }
                 }
@@ -827,45 +899,45 @@ public class Bpmn2JsonMarshaller {
                     for (RootElement re : rootElements) {
                         if (re instanceof Signal) {
                             if (re.getId().equals(((SignalEventDefinition) ed).getSignalRef())) {
-                                properties.put("signalref",
+                                properties.put(SIGNALREF,
                                                ((Signal) re).getName());
                                 foundSignalRef = true;
                             }
                         }
                     }
                     if (!foundSignalRef) {
-                        properties.put("signalref",
+                        properties.put(SIGNALREF,
                                        "");
                     }
                 } else {
-                    properties.put("signalref",
+                    properties.put(SIGNALREF,
                                    "");
                 }
             } else if (ed instanceof ErrorEventDefinition) {
                 if (((ErrorEventDefinition) ed).getErrorRef() != null && ((ErrorEventDefinition) ed).getErrorRef().getErrorCode() != null) {
-                    properties.put("errorref",
+                    properties.put(ERRORREF,
                                    ((ErrorEventDefinition) ed).getErrorRef().getErrorCode());
                 } else {
-                    properties.put("errorref",
+                    properties.put(ERRORREF,
                                    "");
                 }
             } else if (ed instanceof ConditionalEventDefinition) {
                 FormalExpression conditionalExp = (FormalExpression) ((ConditionalEventDefinition) ed).getCondition();
                 if (conditionalExp.getBody() != null) {
-                    properties.put("conditionexpression",
+                    properties.put(CONDITIONEXPRESSION,
                                    conditionalExp.getBody());
                 }
                 if (conditionalExp.getLanguage() != null) {
                     String languageVal = conditionalExp.getLanguage();
                     if (languageVal.equals("http://www.jboss.org/drools/rule")) {
-                        properties.put("conditionlanguage",
+                        properties.put(CONDITIONLANGUAGE,
                                        "drools");
                     } else if (languageVal.equals("http://www.mvel.org/2.0")) {
-                        properties.put("conditionlanguage",
+                        properties.put(CONDITIONLANGUAGE,
                                        "mvel");
                     } else {
                         // default to drools
-                        properties.put("conditionlanguage",
+                        properties.put(CONDITIONLANGUAGE,
                                        "drools");
                     }
                 }
@@ -873,23 +945,23 @@ public class Bpmn2JsonMarshaller {
                 if (((EscalationEventDefinition) ed).getEscalationRef() != null) {
                     Escalation esc = ((EscalationEventDefinition) ed).getEscalationRef();
                     if (esc.getEscalationCode() != null && esc.getEscalationCode().length() > 0) {
-                        properties.put("escalationcode",
+                        properties.put(ESCALATIONCODE,
                                        esc.getEscalationCode());
                     } else {
-                        properties.put("escalationcode",
+                        properties.put(ESCALATIONCODE,
                                        "");
                     }
                 }
             } else if (ed instanceof MessageEventDefinition) {
                 if (((MessageEventDefinition) ed).getMessageRef() != null) {
                     Message msg = ((MessageEventDefinition) ed).getMessageRef();
-                    properties.put("messageref",
+                    properties.put(MESSAGEREF,
                                    msg.getId());
                 }
             } else if (ed instanceof CompensateEventDefinition) {
                 if (((CompensateEventDefinition) ed).getActivityRef() != null) {
                     Activity act = ((CompensateEventDefinition) ed).getActivityRef();
-                    properties.put("activityref",
+                    properties.put(ACTIVITYREF,
                                    act.getName());
                 }
             }
@@ -912,24 +984,22 @@ public class Bpmn2JsonMarshaller {
                                        lane.getId());
             Map<String, Object> laneProperties = new LinkedHashMap<String, Object>();
             if (lane.getName() != null) {
-                laneProperties.put("name",
+                laneProperties.put(NAME,
                                    unescapeXML(lane.getName()));
             } else {
-                laneProperties.put("name",
+                laneProperties.put(NAME,
                                    "");
             }
             // overwrite name if elementname extension element is present
             String elementName = Utils.getMetaDataValue(lane.getExtensionValues(),
                                                         "elementname");
             if (elementName != null) {
-                laneProperties.put("name",
+                laneProperties.put(NAME,
                                    elementName);
             }
-            Documentation doc = getDocumentation(lane);
-            if (doc != null) {
-                laneProperties.put("documentation",
-                                   doc.getText());
-            }
+
+            putDocumentationProperty(lane, laneProperties);
+
             Iterator<FeatureMap.Entry> iter = lane.getAnyAttribute().iterator();
             boolean foundBgColor = false;
             boolean foundBrColor = false;
@@ -938,45 +1008,45 @@ public class Bpmn2JsonMarshaller {
             while (iter.hasNext()) {
                 FeatureMap.Entry entry = iter.next();
                 if (entry.getEStructuralFeature().getName().equals("background-color") || entry.getEStructuralFeature().getName().equals("bgcolor")) {
-                    laneProperties.put("bgcolor",
+                    laneProperties.put(BGCOLOR,
                                        entry.getValue());
                     foundBgColor = true;
                 }
                 if (entry.getEStructuralFeature().getName().equals("border-color") || entry.getEStructuralFeature().getName().equals("bordercolor")) {
-                    laneProperties.put("bordercolor",
+                    laneProperties.put(BORDERCOLOR,
                                        entry.getValue());
                     foundBrColor = true;
                 }
                 if (entry.getEStructuralFeature().getName().equals("fontsize")) {
-                    laneProperties.put("fontsize",
+                    laneProperties.put(FONTSIZE,
                                        entry.getValue());
                     foundBrColor = true;
                 }
                 if (entry.getEStructuralFeature().getName().equals("color") || entry.getEStructuralFeature().getName().equals("fontcolor")) {
-                    laneProperties.put("fontcolor",
+                    laneProperties.put(FONTCOLOR,
                                        entry.getValue());
                     foundFontColor = true;
                 }
                 if (entry.getEStructuralFeature().getName().equals("selectable")) {
-                    laneProperties.put("isselectable",
+                    laneProperties.put(ISSELECTABLE,
                                        entry.getValue());
                     foundSelectable = true;
                 }
             }
             if (!foundBgColor) {
-                laneProperties.put("bgcolor",
+                laneProperties.put(BGCOLOR,
                                    defaultBgColor_Swimlanes);
             }
             if (!foundBrColor) {
-                laneProperties.put("bordercolor",
+                laneProperties.put(BORDERCOLOR,
                                    defaultBrColor);
             }
             if (!foundFontColor) {
-                laneProperties.put("fontcolor",
+                laneProperties.put(FONTCOLOR,
                                    defaultFontColor);
             }
             if (!foundSelectable) {
-                laneProperties.put("isselectable",
+                laneProperties.put(ISSELECTABLE,
                                    "true");
             }
             marshallProperties(laneProperties,
@@ -1064,82 +1134,82 @@ public class Bpmn2JsonMarshaller {
         while (iter.hasNext()) {
             FeatureMap.Entry entry = iter.next();
             if (entry.getEStructuralFeature().getName().equals("background-color") || entry.getEStructuralFeature().getName().equals("bgcolor")) {
-                flowElementProperties.put("bgcolor",
+                flowElementProperties.put(BGCOLOR,
                                           entry.getValue());
                 foundBgColor = true;
             }
             if (entry.getEStructuralFeature().getName().equals("border-color") || entry.getEStructuralFeature().getName().equals("bordercolor")) {
-                flowElementProperties.put("bordercolor",
+                flowElementProperties.put(BORDERCOLOR,
                                           entry.getValue());
                 foundBrColor = true;
             }
             if (entry.getEStructuralFeature().getName().equals("fontsize")) {
-                flowElementProperties.put("fontsize",
+                flowElementProperties.put(FONTSIZE,
                                           entry.getValue());
                 foundBrColor = true;
             }
             if (entry.getEStructuralFeature().getName().equals("color") || entry.getEStructuralFeature().getName().equals("fontcolor")) {
-                flowElementProperties.put("fontcolor",
+                flowElementProperties.put(FONTCOLOR,
                                           entry.getValue());
                 foundFontColor = true;
             }
             if (entry.getEStructuralFeature().getName().equals("selectable")) {
-                flowElementProperties.put("isselectable",
+                flowElementProperties.put(ISSELECTABLE,
                                           entry.getValue());
                 foundSelectable = true;
             }
         }
         if (!foundBgColor) {
             if (flowElement instanceof Activity || flowElement instanceof SubProcess) {
-                flowElementProperties.put("bgcolor",
+                flowElementProperties.put(BGCOLOR,
                                           defaultBgColor_Activities);
             } else if (flowElement instanceof StartEvent) {
-                flowElementProperties.put("bgcolor",
+                flowElementProperties.put(BGCOLOR,
                                           defaultBgColor_StartEvents);
             } else if (flowElement instanceof EndEvent) {
-                flowElementProperties.put("bgcolor",
+                flowElementProperties.put(BGCOLOR,
                                           defaultBgColor_EndEvents);
             } else if (flowElement instanceof DataObject) {
-                flowElementProperties.put("bgcolor",
+                flowElementProperties.put(BGCOLOR,
                                           defaultBgColor_DataObjects);
             } else if (flowElement instanceof CatchEvent) {
-                flowElementProperties.put("bgcolor",
+                flowElementProperties.put(BGCOLOR,
                                           defaultBgColor_CatchingEvents);
             } else if (flowElement instanceof ThrowEvent) {
-                flowElementProperties.put("bgcolor",
+                flowElementProperties.put(BGCOLOR,
                                           defaultBgColor_ThrowingEvents);
             } else if (flowElement instanceof Gateway) {
-                flowElementProperties.put("bgcolor",
+                flowElementProperties.put(BGCOLOR,
                                           defaultBgColor_Gateways);
             } else if (flowElement instanceof Lane) {
-                flowElementProperties.put("bgcolor",
+                flowElementProperties.put(BGCOLOR,
                                           defaultBgColor_Swimlanes);
             } else {
-                flowElementProperties.put("bgcolor",
+                flowElementProperties.put(BGCOLOR,
                                           defaultBgColor_Events);
             }
         }
         if (!foundBrColor) {
             if (flowElement instanceof CatchEvent && !(flowElement instanceof StartEvent)) {
-                flowElementProperties.put("bordercolor",
+                flowElementProperties.put(BORDERCOLOR,
                                           defaultBrColor_CatchingEvents);
             } else if (flowElement instanceof ThrowEvent && !(flowElement instanceof EndEvent)) {
-                flowElementProperties.put("bordercolor",
+                flowElementProperties.put(BORDERCOLOR,
                                           defaultBrColor_ThrowingEvents);
             } else if (flowElement instanceof Gateway) {
-                flowElementProperties.put("bordercolor",
+                flowElementProperties.put(BORDERCOLOR,
                                           defaultBrColor_Gateways);
             } else {
-                flowElementProperties.put("bordercolor",
+                flowElementProperties.put(BORDERCOLOR,
                                           defaultBrColor);
             }
         }
         if (!foundFontColor) {
-            flowElementProperties.put("fontcolor",
+            flowElementProperties.put(FONTCOLOR,
                                       defaultFontColor);
         }
         if (!foundSelectable) {
-            flowElementProperties.put("isselectable",
+            flowElementProperties.put(ISSELECTABLE,
                                       "true");
         }
         Map<String, Object> catchEventProperties = new LinkedHashMap<String, Object>(flowElementProperties);
@@ -1303,7 +1373,7 @@ public class Bpmn2JsonMarshaller {
         setSimulationProperties(startEvent.getId(),
                                 properties);
         List<EventDefinition> eventDefinitions = startEvent.getEventDefinitions();
-        properties.put("isinterrupting",
+        properties.put(ISINTERRUPTING,
                        startEvent.isIsInterrupting());
         if (eventDefinitions == null || eventDefinitions.size() == 0) {
             marshallNode(startEvent,
@@ -1554,10 +1624,10 @@ public class Bpmn2JsonMarshaller {
                                          Map<String, Object> catchEventProperties) throws JsonGenerationException, IOException {
         List<EventDefinition> eventDefinitions = boundaryEvent.getEventDefinitions();
         if (boundaryEvent.isCancelActivity()) {
-            catchEventProperties.put("boundarycancelactivity",
+            catchEventProperties.put(BOUNDARYCANCELACTIVITY,
                                      "true");
         } else {
-            catchEventProperties.put("boundarycancelactivity",
+            catchEventProperties.put(BOUNDARYCANCELACTIVITY,
                                      "false");
         }
         // simulation properties
@@ -1700,23 +1770,23 @@ public class Bpmn2JsonMarshaller {
         while (iter.hasNext()) {
             FeatureMap.Entry entry = iter.next();
             if (entry.getEStructuralFeature().getName().equals("independent")) {
-                properties.put("independent",
+                properties.put(INDEPENDENT,
                                entry.getValue());
             }
             if (entry.getEStructuralFeature().getName().equals("waitForCompletion")) {
-                properties.put("waitforcompletion",
+                properties.put(WAITFORCOMPLETION,
                                entry.getValue());
             }
         }
         if (callActivity.getCalledElement() != null && callActivity.getCalledElement().length() > 0) {
-            properties.put("calledelement",
+            properties.put(CALLEDELEMENT,
                            callActivity.getCalledElement());
         }
         // custom async
         String customAsyncMetaData = Utils.getMetaDataValue(callActivity.getExtensionValues(),
                                                             "customAsync");
         String customAsync = (customAsyncMetaData != null && customAsyncMetaData.length() > 0) ? customAsyncMetaData : "false";
-        properties.put("isasync",
+        properties.put(ISASYNC,
                        customAsync);
         // data inputs
         String datainputset = marshallDataInputSet(callActivity,
@@ -1774,7 +1844,7 @@ public class Bpmn2JsonMarshaller {
                         } else {
                             formatToWrite = "java";
                         }
-                        properties.put("script_language",
+                        properties.put(SCRIPT_LANGUAGE,
                                        formatToWrite);
                     }
                 }
@@ -1794,7 +1864,7 @@ public class Bpmn2JsonMarshaller {
                             formatToWrite = "java";
                         }
                         if (properties.get("script_language") == null) {
-                            properties.put("script_language",
+                            properties.put(SCRIPT_LANGUAGE,
                                            formatToWrite);
                         }
                     }
@@ -1805,7 +1875,7 @@ public class Bpmn2JsonMarshaller {
                     onEntryStr = onEntryStr.substring(0,
                                                       onEntryStr.length() - 1);
                 }
-                properties.put("onentryactions",
+                properties.put(ONENTRYACTIONS,
                                onEntryStr);
             }
             if (onExitStr.length() > 0) {
@@ -1813,7 +1883,7 @@ public class Bpmn2JsonMarshaller {
                     onExitStr = onExitStr.substring(0,
                                                     onExitStr.length() - 1);
                 }
-                properties.put("onexitactions",
+                properties.put(ONEXITACTIONS,
                                onExitStr);
             }
         }
@@ -2471,7 +2541,7 @@ public class Bpmn2JsonMarshaller {
                 dataInBuffer.setLength(dataInBuffer.length() - 1);
             }
             String datainputset = dataInBuffer.toString();
-            properties.put("datainputset",
+            properties.put(DATAINPUTSET,
                            datainputset);
             return datainputset;
         } else {
@@ -2503,7 +2573,7 @@ public class Bpmn2JsonMarshaller {
                 dataOutBuffer.setLength(dataOutBuffer.length() - 1);
             }
             String dataoutputset = dataOutBuffer.toString();
-            properties.put("dataoutputset",
+            properties.put(DATAOUTPUTSET,
                            dataoutputset);
             return dataoutputset;
         } else {
@@ -2647,24 +2717,23 @@ public class Bpmn2JsonMarshaller {
         if (properties == null) {
             properties = new LinkedHashMap<String, Object>();
         }
-        if (node.getDocumentation() != null && node.getDocumentation().size() > 0) {
-            properties.put("documentation",
-                           node.getDocumentation().get(0).getText());
-        }
+
+        putDocumentationProperty(node, properties);
+
         if (node.getName() != null) {
-            properties.put("name",
+            properties.put(NAME,
                            unescapeXML(node.getName()));
         } else {
             if (node instanceof TextAnnotation) {
                 if (((TextAnnotation) node).getText() != null) {
-                    properties.put("name",
+                    properties.put(NAME,
                                    ((TextAnnotation) node).getText());
                 } else {
-                    properties.put("name",
+                    properties.put(NAME,
                                    "");
                 }
             } else {
-                properties.put("name",
+                properties.put(NAME,
                                "");
             }
         }
@@ -2823,31 +2892,30 @@ public class Bpmn2JsonMarshaller {
                                       float yOffset,
                                       Map<String, Object> flowElementProperties) throws JsonGenerationException, IOException {
         Map<String, Object> properties = new LinkedHashMap<String, Object>(flowElementProperties);
-        if (dataObject.getDocumentation() != null && dataObject.getDocumentation().size() > 0) {
-            properties.put("documentation",
-                           dataObject.getDocumentation().get(0).getText());
-        }
+
+        putDocumentationProperty(dataObject, properties);
+
         if (dataObject.getName() != null && dataObject.getName().length() > 0) {
-            properties.put("name",
+            properties.put(NAME,
                            unescapeXML(dataObject.getName()));
         } else {
             // we need a name, use id instead
-            properties.put("name",
+            properties.put(NAME,
                            dataObject.getId());
         }
         // overwrite name if elementname extension element is present
         String elementName = Utils.getMetaDataValue(dataObject.getExtensionValues(),
                                                     "elementname");
         if (elementName != null) {
-            properties.put("name",
+            properties.put(NAME,
                            elementName);
         }
         if (dataObject.getItemSubjectRef().getStructureRef() != null && dataObject.getItemSubjectRef().getStructureRef().length() > 0) {
             if (defaultTypesList.contains(dataObject.getItemSubjectRef().getStructureRef())) {
-                properties.put("standardtype",
+                properties.put(STANDARDTYPE,
                                dataObject.getItemSubjectRef().getStructureRef());
             } else {
-                properties.put("customtype",
+                properties.put(CUSTOMTYPE,
                                dataObject.getItemSubjectRef().getStructureRef());
             }
         }
@@ -2864,11 +2932,11 @@ public class Bpmn2JsonMarshaller {
             }
         }
         if (outgoingAssociaton != null && incomingAssociation == null) {
-            properties.put("input_output",
+            properties.put(INPUT_OUTPUT,
                            "Input");
         }
         if (outgoingAssociaton == null && incomingAssociation != null) {
-            properties.put("input_output",
+            properties.put(INPUT_OUTPUT,
                            "Output");
         }
         marshallProperties(properties,
@@ -2919,34 +2987,37 @@ public class Bpmn2JsonMarshaller {
                                       Map<String, Object> flowElementProperties) throws JsonGenerationException, IOException {
         Map<String, Object> properties = new LinkedHashMap<String, Object>(flowElementProperties);
         if (subProcess.getName() != null) {
-            properties.put("name",
+            properties.put(NAME,
                            unescapeXML(subProcess.getName()));
         } else {
-            properties.put("name",
+            properties.put(NAME,
                            "");
         }
+
+        putDocumentationProperty(subProcess, properties);
+
         // overwrite name if elementname extension element is present
         String elementName = Utils.getMetaDataValue(subProcess.getExtensionValues(),
                                                     "elementname");
         if (elementName != null) {
-            properties.put("name",
+            properties.put(NAME,
                            elementName);
         }
         if (subProcess instanceof AdHocSubProcess) {
             AdHocSubProcess ahsp = (AdHocSubProcess) subProcess;
             if (ahsp.getOrdering().equals(AdHocOrdering.PARALLEL)) {
-                properties.put("adhocordering",
+                properties.put(ADHOCORDERING,
                                "Parallel");
             } else if (ahsp.getOrdering().equals(AdHocOrdering.SEQUENTIAL)) {
-                properties.put("adhocordering",
+                properties.put(ADHOCORDERING,
                                "Sequential");
             } else {
                 // default to parallel
-                properties.put("adhocordering",
+                properties.put(ADHOCORDERING,
                                "Parallel");
             }
             if (ahsp.getCompletionCondition() != null) {
-                properties.put("adhoccompletioncondition",
+                properties.put(ADHOCCOMPLETIONCONDITION,
                                ((FormalExpression) ahsp.getCompletionCondition()).getBody().replaceAll("\n",
                                                                                                        "\\\\n"));
             }
@@ -2955,7 +3026,7 @@ public class Bpmn2JsonMarshaller {
         String customAsyncMetaData = Utils.getMetaDataValue(subProcess.getExtensionValues(),
                                                             "customAsync");
         String customAsync = (customAsyncMetaData != null && customAsyncMetaData.length() > 0) ? customAsyncMetaData : "false";
-        properties.put("isasync",
+        properties.put(ISASYNC,
                        customAsync);
         // data inputs
         String datainputset = marshallDataInputSet(subProcess,
@@ -2976,7 +3047,7 @@ public class Bpmn2JsonMarshaller {
             assignmentString = assignmentString.substring(0,
                                                           assignmentString.length() - 1);
         }
-        properties.put("assignments",
+        properties.put(ASSIGNMENTS,
                        assignmentString);
         setAssignmentsInfoProperty(null,
                                    datainputset,
@@ -3013,7 +3084,7 @@ public class Bpmn2JsonMarshaller {
                         } else {
                             formatToWrite = "java";
                         }
-                        properties.put("script_language",
+                        properties.put(SCRIPT_LANGUAGE,
                                        formatToWrite);
                     }
                 }
@@ -3033,7 +3104,7 @@ public class Bpmn2JsonMarshaller {
                             formatToWrite = "java";
                         }
                         if (properties.get("script_language") == null) {
-                            properties.put("script_language",
+                            properties.put(SCRIPT_LANGUAGE,
                                            formatToWrite);
                         }
                     }
@@ -3044,7 +3115,7 @@ public class Bpmn2JsonMarshaller {
                     onEntryStr = onEntryStr.substring(0,
                                                       onEntryStr.length() - 1);
                 }
-                properties.put("onentryactions",
+                properties.put(ONENTRYACTIONS,
                                onEntryStr);
             }
             if (onExitStr.length() > 0) {
@@ -3052,7 +3123,7 @@ public class Bpmn2JsonMarshaller {
                     onExitStr = onExitStr.substring(0,
                                                     onExitStr.length() - 1);
                 }
-                properties.put("onexitactions",
+                properties.put(ONEXITACTIONS,
                                onExitStr);
             }
         }
@@ -3060,7 +3131,7 @@ public class Bpmn2JsonMarshaller {
         boolean haveValidLoopCharacteristics = false;
         if (subProcess.getLoopCharacteristics() != null && subProcess.getLoopCharacteristics() instanceof MultiInstanceLoopCharacteristics) {
             haveValidLoopCharacteristics = true;
-            properties.put("mitrigger",
+            properties.put(MITRIGGER,
                            "true");
             MultiInstanceLoopCharacteristics taskmi = (MultiInstanceLoopCharacteristics) subProcess.getLoopCharacteristics();
             if (taskmi.getLoopDataInputRef() != null) {
@@ -3068,7 +3139,7 @@ public class Bpmn2JsonMarshaller {
                 List<DataInputAssociation> taskInputAssociations = subProcess.getDataInputAssociations();
                 for (DataInputAssociation dia : taskInputAssociations) {
                     if (dia.getTargetRef().equals(iedatainput)) {
-                        properties.put("multipleinstancecollectioninput",
+                        properties.put(MULTIPLEINSTANCECOLLECTIONINPUT,
                                        dia.getSourceRef().get(0).getId());
                         break;
                     }
@@ -3079,7 +3150,7 @@ public class Bpmn2JsonMarshaller {
                 List<DataOutputAssociation> taskOutputAssociations = subProcess.getDataOutputAssociations();
                 for (DataOutputAssociation dout : taskOutputAssociations) {
                     if (dout.getSourceRef().get(0).equals(iedataoutput)) {
-                        properties.put("multipleinstancecollectionoutput",
+                        properties.put(MULTIPLEINSTANCECOLLECTIONOUTPUT,
                                        dout.getTargetRef().getId());
                         break;
                     }
@@ -3090,11 +3161,11 @@ public class Bpmn2JsonMarshaller {
                 for (DataInput din : taskDataInputs) {
                     if (din.getItemSubjectRef() == null) {
                         // for backward compatibility as the where only input supported
-                        properties.put("multipleinstancedatainput",
+                        properties.put(MULTIPLEINSTANCEDATAINPUT,
                                        taskmi.getInputDataItem().getId());
                     }
                     if (din.getItemSubjectRef() != null && din.getItemSubjectRef().getId().equals(taskmi.getInputDataItem().getItemSubjectRef().getId())) {
-                        properties.put("multipleinstancedatainput",
+                        properties.put(MULTIPLEINSTANCEDATAINPUT,
                                        din.getName());
                         break;
                     }
@@ -3104,12 +3175,12 @@ public class Bpmn2JsonMarshaller {
                 List<DataOutput> taskDataOutputs = subProcess.getIoSpecification().getDataOutputs();
                 for (DataOutput dout : taskDataOutputs) {
                     if (dout.getItemSubjectRef() == null) {
-                        properties.put("multipleinstancedataoutput",
+                        properties.put(MULTIPLEINSTANCEDATAOUTPUT,
                                        taskmi.getOutputDataItem().getId());
                         break;
                     }
                     if (dout.getItemSubjectRef() != null && dout.getItemSubjectRef().getId().equals(taskmi.getOutputDataItem().getItemSubjectRef().getId())) {
-                        properties.put("multipleinstancedataoutput",
+                        properties.put(MULTIPLEINSTANCEDATAOUTPUT,
                                        dout.getName());
                         break;
                     }
@@ -3117,7 +3188,7 @@ public class Bpmn2JsonMarshaller {
             }
             if (taskmi.getCompletionCondition() != null) {
                 if (taskmi.getCompletionCondition() instanceof FormalExpression) {
-                    properties.put("multipleinstancecompletioncondition",
+                    properties.put(MULTIPLEINSTANCECOMPLETIONCONDITION,
                                    ((FormalExpression) taskmi.getCompletionCondition()).getBody());
                 }
             }
@@ -3142,7 +3213,7 @@ public class Bpmn2JsonMarshaller {
                     propVal += ",";
                 }
             }
-            properties.put("vardefs",
+            properties.put(VARDEFS,
                            propVal);
         }
         // simulation properties
@@ -3346,34 +3417,33 @@ public class Bpmn2JsonMarshaller {
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
         // check null for sequence flow name
         if (sequenceFlow.getName() != null && !"".equals(sequenceFlow.getName())) {
-            properties.put("name",
+            properties.put(NAME,
                            unescapeXML(sequenceFlow.getName()));
         } else {
-            properties.put("name",
+            properties.put(NAME,
                            "");
         }
         // overwrite name if elementname extension element is present
         String elementName = Utils.getMetaDataValue(sequenceFlow.getExtensionValues(),
                                                     "elementname");
         if (elementName != null) {
-            properties.put("name",
+            properties.put(NAME,
                            elementName);
         }
-        if (sequenceFlow.getDocumentation() != null && sequenceFlow.getDocumentation().size() > 0) {
-            properties.put("documentation",
-                           sequenceFlow.getDocumentation().get(0).getText());
-        }
+
+        putDocumentationProperty(sequenceFlow, properties);
+
         if (sequenceFlow.isIsImmediate()) {
-            properties.put("isimmediate",
+            properties.put(ISIMMEDIATE,
                            "true");
         } else {
-            properties.put("isimmediate",
+            properties.put(ISIMMEDIATE,
                            "false");
         }
         Expression conditionExpression = sequenceFlow.getConditionExpression();
         if (conditionExpression instanceof FormalExpression) {
             if (((FormalExpression) conditionExpression).getBody() != null) {
-                properties.put("conditionexpression",
+                properties.put(CONDITIONEXPRESSION,
                                ((FormalExpression) conditionExpression).getBody());
             }
             if (((FormalExpression) conditionExpression).getLanguage() != null) {
@@ -3391,7 +3461,7 @@ public class Bpmn2JsonMarshaller {
                     // default to mvel
                     cdStr = "mvel";
                 }
-                properties.put("conditionexpressionlanguage",
+                properties.put(CONDITIONEXPRESSIONLANGUAGE,
                                cdStr);
             }
         }
@@ -3408,7 +3478,7 @@ public class Bpmn2JsonMarshaller {
                     try {
                         Integer priorityInt = Integer.parseInt(priorityStr);
                         if (priorityInt >= 1) {
-                            properties.put("priority",
+                            properties.put(PRIORITY,
                                            entry.getValue());
                         } else {
                             _logger.error("Priority must be equal or greater than 1.");
@@ -3419,45 +3489,45 @@ public class Bpmn2JsonMarshaller {
                 }
             }
             if (entry.getEStructuralFeature().getName().equals("background-color") || entry.getEStructuralFeature().getName().equals("bgcolor")) {
-                properties.put("bgcolor",
+                properties.put(BGCOLOR,
                                entry.getValue());
                 foundBgColor = true;
             }
             if (entry.getEStructuralFeature().getName().equals("border-color") || entry.getEStructuralFeature().getName().equals("bordercolor")) {
-                properties.put("bordercolor",
+                properties.put(BORDERCOLOR,
                                entry.getValue());
                 foundBrColor = true;
             }
             if (entry.getEStructuralFeature().getName().equals("fontsize")) {
-                properties.put("fontsize",
+                properties.put(FONTSIZE,
                                entry.getValue());
                 foundBrColor = true;
             }
             if (entry.getEStructuralFeature().getName().equals("color") || entry.getEStructuralFeature().getName().equals("fontcolor")) {
-                properties.put("fontcolor",
+                properties.put(FONTCOLOR,
                                entry.getValue());
                 foundFontColor = true;
             }
             if (entry.getEStructuralFeature().getName().equals("selectable")) {
-                properties.put("isselectable",
+                properties.put(ISSELECTABLE,
                                entry.getValue());
                 foundSelectable = true;
             }
         }
         if (!foundBgColor) {
-            properties.put("bgcolor",
+            properties.put(BGCOLOR,
                            defaultSequenceflowColor);
         }
         if (!foundBrColor) {
-            properties.put("bordercolor",
+            properties.put(BORDERCOLOR,
                            defaultSequenceflowColor);
         }
         if (!foundFontColor) {
-            properties.put("fontcolor",
+            properties.put(FONTCOLOR,
                            defaultSequenceflowColor);
         }
         if (!foundSelectable) {
-            properties.put("isselectable",
+            properties.put(ISSELECTABLE,
                            "true");
         }
         // simulation properties
@@ -3611,11 +3681,11 @@ public class Bpmn2JsonMarshaller {
         while (iter.hasNext()) {
             FeatureMap.Entry entry = iter.next();
             if (entry.getEStructuralFeature().getName().equals("type")) {
-                properties.put("type",
+                properties.put(TYPE,
                                entry.getValue());
             }
             if (entry.getEStructuralFeature().getName().equals("bordercolor")) {
-                properties.put("bordercolor",
+                properties.put(BORDERCOLOR,
                                entry.getValue());
                 foundBrColor = true;
             }
@@ -3624,10 +3694,9 @@ public class Bpmn2JsonMarshaller {
             properties.put("bordercolor",
                            defaultSequenceflowColor);
         }
-        if (association.getDocumentation() != null && association.getDocumentation().size() > 0) {
-            properties.put("documentation",
-                           association.getDocumentation().get(0).getText());
-        }
+
+        putDocumentationProperty(association, properties);
+
         marshallProperties(properties,
                            generator);
         generator.writeObjectFieldStart("stencil");
@@ -3758,11 +3827,9 @@ public class Bpmn2JsonMarshaller {
             properties.put("name",
                            unescapeXML(group.getCategoryValueRef().getValue()));
         }
-        Documentation doc = getDocumentation(group);
-        if (doc != null) {
-            properties.put("documentation",
-                           doc.getText());
-        }
+
+        putDocumentationProperty(group, properties);
+
         marshallProperties(properties,
                            generator);
         generator.writeObjectFieldStart("stencil");
@@ -3797,14 +3864,6 @@ public class Bpmn2JsonMarshaller {
                                    bounds.getY() - yOffset);
         generator.writeEndObject();
         generator.writeEndObject();
-    }
-
-    private Documentation getDocumentation(BaseElement element) {
-        if (element.getDocumentation() != null && element.getDocumentation().size() > 0) {
-            return element.getDocumentation().get(0);
-        } else {
-            return null;
-        }
     }
 
     protected Association findOutgoingAssociation(BPMNPlane plane,
@@ -3996,29 +4055,29 @@ public class Bpmn2JsonMarshaller {
                 ParameterValue paramValue = processingTime.getParameterValue().get(0);
                 if (paramValue instanceof NormalDistributionType) {
                     NormalDistributionType ndt = (NormalDistributionType) paramValue;
-                    properties.put("mean",
+                    properties.put(MEAN,
                                    ndt.getMean());
-                    properties.put("standarddeviation",
+                    properties.put(STANDARDDEVIATION,
                                    ndt.getStandardDeviation());
-                    properties.put("distributiontype",
+                    properties.put(DISTRIBUTIONTYPE,
                                    "normal");
                 } else if (paramValue instanceof UniformDistributionType) {
                     UniformDistributionType udt = (UniformDistributionType) paramValue;
-                    properties.put("min",
+                    properties.put(MIN,
                                    udt.getMin());
-                    properties.put("max",
+                    properties.put(MAX,
                                    udt.getMax());
-                    properties.put("distributiontype",
+                    properties.put(DISTRIBUTIONTYPE,
                                    "uniform");
                 } else if (paramValue instanceof PoissonDistributionType) {
                     PoissonDistributionType pdt = (PoissonDistributionType) paramValue;
-                    properties.put("mean",
+                    properties.put(MEAN,
                                    pdt.getMean());
-                    properties.put("distributiontype",
+                    properties.put(DISTRIBUTIONTYPE,
                                    "poisson");
                 }
                 if (timeParams.getWaitTime() != null) {
-                    extractParamTypeToProperties("waittime",
+                    extractParamTypeToProperties(WAITTIME,
                                                  timeParams.getWaitTime().getParameterValue(),
                                                  properties);
                 }
@@ -4113,5 +4172,13 @@ public class Bpmn2JsonMarshaller {
         }
         properties.put("assignmentsinfo",
                        sb.toString());
+    }
+
+    private void putDocumentationProperty(BaseElement baseElement,
+                                          Map<String, Object> properties) {
+        if (CollectionUtils.isNotEmpty(baseElement.getDocumentation())) {
+            properties.put(DOCUMENTATION,
+                           baseElement.getDocumentation().stream().filter(Objects::nonNull).map(Documentation::getText).findFirst().orElse(null));
+        }
     }
 }
