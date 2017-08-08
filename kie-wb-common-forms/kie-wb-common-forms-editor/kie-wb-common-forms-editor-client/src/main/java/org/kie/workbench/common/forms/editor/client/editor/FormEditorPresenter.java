@@ -183,13 +183,16 @@ public class FormEditorPresenter extends KieEditor {
 
     protected void loadLayoutEditor() {
         layoutEditor.clear();
+
+        loadAvailableFields();
+
         layoutEditor.init(editorHelper.getContent().getDefinition().getName(),
                           getLayoutComponent(),
                           translationService
                                   .getTranslation(FormEditorConstants.FormEditorPresenterLayoutTitle),
                           translationService
                                   .getTranslation(FormEditorConstants.FormEditorPresenterLayoutSubTitle));
-        loadAvailableFields();
+
         layoutEditor.loadLayout(editorHelper.getContent().getDefinition().getLayoutTemplate());
     }
 
@@ -267,7 +270,7 @@ public class FormEditorPresenter extends KieEditor {
         return editorHelper.getFormDefinition();
     }
 
-    private void loadAvailableFields() {
+    protected void loadAvailableFields() {
         FormModel model = editorHelper.getFormDefinition().getModel();
         if (!(model instanceof HasFormModelProperties)) {
             return;

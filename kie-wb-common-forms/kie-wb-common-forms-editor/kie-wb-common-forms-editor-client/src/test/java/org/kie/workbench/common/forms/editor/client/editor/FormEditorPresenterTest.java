@@ -56,14 +56,19 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
     public void testLoadWithContent() {
         testLoad();
 
-        presenter.loadContent();
+        FormEditorPresenter presenterSpy = spy(presenter);
+        presenterSpy.loadContent();
+
+        verify(presenterSpy).loadAvailableFields();
+        verify(layoutEditorMock,
+               times(2)).addDraggableComponentGroup(any());
 
         verify(layoutEditorMock,
                times(3)).clear();
         verify(layoutEditorMock,
                times(2)).loadLayout(content.getDefinition().getLayoutTemplate());
         verify(view,
-               times(2)).init(presenter);
+               times(2)).init(any());
         verify(view,
                times(2)).setupLayoutEditor(layoutEditorMock);
     }
