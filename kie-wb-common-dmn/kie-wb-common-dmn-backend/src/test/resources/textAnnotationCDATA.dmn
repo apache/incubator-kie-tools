@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" id="8619D1D4-D28F-42D9-B29F-8822B952B59E" name="rz0JbhKA" expressionLanguage="http://www.omg.org/spec/FEEL/20140401" typeLanguage="http://www.omg.org/spec/FEEL/20140401" namespace="https://github.com/kiegroup/drools/kie-dmn">
+  <description>My description</description>
+  <textAnnotation id="60915990-9E1D-42DF-B7F6-0D28383BE9D1" textFormat="text/html">
+    <description><![CDATA[描述]]></description>
+    <text><![CDATA[<b>This Annotation holds some Long text and also UTF-8 characters</b>]]></text>
+  </textAnnotation>
+</definitions>

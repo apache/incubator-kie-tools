@@ -27,6 +27,7 @@ import org.apache.tools.ant.filters.StringInputStream;
 import org.jboss.errai.marshalling.server.MappingContextSingleton;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
@@ -271,6 +272,31 @@ public class DMNMarshallerTest {
     public void testAssociations() throws IOException {
         roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/associations.dmn"),
                                                this::checkAssociationsGraph);
+    }
+
+    @Test
+    public void testTextAnnotation() throws Exception {
+        roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/textAnnotation.dmn"),
+                                               this::checkTextAnnotationGraph);
+    }
+
+    @Test
+    public void testTextAnnotationWithCDATA() throws Exception {
+        roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/textAnnotationCDATA.dmn"),
+                                               this::checkTextAnnotationGraph);
+    }
+
+    private void checkTextAnnotationGraph(Graph<?, Node<?, ?>> graph) {
+        Node<?, ?> textAnnotation = graph.getNode("60915990-9E1D-42DF-B7F6-0D28383BE9D1");
+        assertNodeContentDefinitionIs(textAnnotation,
+                                      TextAnnotation.class);
+        TextAnnotation textAnnotationDefinition = ((View<TextAnnotation>) textAnnotation.getContent()).getDefinition();
+        assertEquals("描述",
+                     textAnnotationDefinition.getDescription().getValue());
+        assertEquals("<b>This Annotation holds some Long text and also UTF-8 characters</b>",
+                     textAnnotationDefinition.getText().getValue());
+        assertEquals("text/html",
+                     textAnnotationDefinition.getTextFormat().getValue());
     }
 
     public void roundTripUnmarshalThenMarshalUnmarshal(InputStream dmnXmlInputStream,
