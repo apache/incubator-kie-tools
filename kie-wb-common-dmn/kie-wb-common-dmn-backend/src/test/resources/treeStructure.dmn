@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" id="5053F669-9452-43B6-8217-CF851CFB39F8" name="hlXFy72I" expressionLanguage="http://www.omg.org/spec/FEEL/20140401" typeLanguage="http://www.omg.org/spec/FEEL/20140401" namespace="https://github.com/kiegroup/drools/kie-dmn">
+  <description>My description</description>
+  <knowledgeSource id="CFE44FA9-7309-4F28-81E9-5C1EF455B4C2" name="KnowledgeSource" locationURI="My LocationURI">
+    <description>My description</description>
+    <authorityRequirement>
+      <requiredInput href="#BC0D715A-ADD4-4136-AB3D-226EABC840A2"/>
+    </authorityRequirement>
+    <type>My KnowledgeSourceType</type>
+  </knowledgeSource>
+  <inputData id="BC0D715A-ADD4-4136-AB3D-226EABC840A2" name="My name">
+    <description>My description</description>
+    <variable id="F4875498-CD71-41EF-B889-0121968E377D" name="KnowledgeSourceInput" typeRef="My QName">
+      <description>My description</description>
+    </variable>
+  </inputData>
+  <inputData id="CF65CEB9-433F-402F-A485-90AC34E2FE39" name="My name">
+    <description>My description</description>
+    <variable id="5377B27B-A1CD-4D30-AC8C-C7E7F32750B0" name="DecisionOneInput" typeRef="My QName">
+      <description>My description</description>
+    </variable>
+  </inputData>
+  <decision id="1B6EF5EB-CA09-45A5-AB03-21CD70F941AD" name="My name">
+    <description>My description</description>
+    <variable id="FA6F2FC3-AEE3-4E10-948D-0DB8F5BF5CA3" name="DecisionThree" typeRef="My QName">
+      <description>My description</description>
+    </variable>
+    <literalExpression id="C14FF062-654B-4AD8-85E8-AA2E42C72139" typeRef="My QName" expressionLanguage="">
+      <description>My description</description>
+      <text></text>
+      <importedValues namespace="" locationURI="My LocationURI" importType="" expressionLanguage="">
+        <importedElement></importedElement>
+      </importedValues>
+    </literalExpression>
+  </decision>
+  <decision id="B7DD0DC9-7FAC-4510-9031-FFEE067CC2F5" name="My name">
+    <description>My description</description>
+    <variable id="72C6F1F3-9353-40A6-9F46-56FBE2D3DD51" name="DecisionOne" typeRef="My QName">
+      <description>My description</description>
+    </variable>
+    <informationRequirement>
+      <requiredDecision href="#1B6EF5EB-CA09-45A5-AB03-21CD70F941AD"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredInput href="#CF65CEB9-433F-402F-A485-90AC34E2FE39"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredDecision href="#DF84B353-A2F6-46B9-B680-EBD98F5084C8"/>
+    </informationRequirement>
+    <knowledgeRequirement>
+      <requiredKnowledge href="#AD910446-56AD-49A5-99CE-F7B9C6F74E5E"/>
+    </knowledgeRequirement>
+    <authorityRequirement>
+      <requiredAuthority href="#CFE44FA9-7309-4F28-81E9-5C1EF455B4C2"/>
+    </authorityRequirement>
+    <literalExpression id="39FE1AC0-4AD2-41D0-826D-531183DD2917" typeRef="My QName" expressionLanguage="">
+      <description>My description</description>
+      <text></text>
+      <importedValues namespace="" locationURI="My LocationURI" importType="" expressionLanguage="">
+        <importedElement></importedElement>
+      </importedValues>
+    </literalExpression>
+  </decision>
+  <businessKnowledgeModel id="C1D0937E-96F4-4EAF-8A85-45B129F38E9B" name="My name">
+    <description>My description</description>
+    <encapsulatedLogic id="E10E896C-03B9-4900-B704-DC11617E3E20" typeRef="My QName">
+      <description>My description</description>
+      <literalExpression id="92987DDE-BFC7-45C4-AA11-3F3BE916B905" typeRef="My QName" expressionLanguage="">
+        <description>My description</description>
+        <text></text>
+        <importedValues namespace="" locationURI="My LocationURI" importType="" expressionLanguage="">
+          <importedElement></importedElement>
+        </importedValues>
+      </literalExpression>
+    </encapsulatedLogic>
+    <variable id="683B291A-014E-46FA-B9FE-35225FC3AF6E" name="BkmOne" typeRef="My QName">
+      <description>My description</description>
+    </variable>
+  </businessKnowledgeModel>
+  <businessKnowledgeModel id="AD910446-56AD-49A5-99CE-F7B9C6F74E5E" name="My name">
+    <description>My description</description>
+    <encapsulatedLogic id="9A92A584-4883-4D4D-9F0D-010D0D03CEA2" typeRef="My QName">
+      <description>My description</description>
+      <literalExpression id="88BBE4C7-3904-4A53-9477-A11F60908504" typeRef="My QName" expressionLanguage="">
+        <description>My description</description>
+        <text></text>
+        <importedValues namespace="" locationURI="My LocationURI" importType="" expressionLanguage="">
+          <importedElement></importedElement>
+        </importedValues>
+      </literalExpression>
+    </encapsulatedLogic>
+    <variable id="300B7DF6-AF58-4976-890F-5E3E406697B2" name="BkmRoot" typeRef="My QName">
+      <description>My description</description>
+    </variable>
+    <knowledgeRequirement>
+      <requiredKnowledge href="#47E47E51-4509-4A3B-86E9-D690F397B69C"/>
+    </knowledgeRequirement>
+    <knowledgeRequirement>
+      <requiredKnowledge href="#C1D0937E-96F4-4EAF-8A85-45B129F38E9B"/>
+    </knowledgeRequirement>
+  </businessKnowledgeModel>
+  <businessKnowledgeModel id="47E47E51-4509-4A3B-86E9-D690F397B69C" name="My name">
+    <description>My description</description>
+    <encapsulatedLogic id="A8BAAA45-1530-40C5-A614-103151679220" typeRef="My QName">
+      <description>My description</description>
+      <literalExpression id="5C1B2242-5565-48E9-8C80-1AD3720B1083" typeRef="My QName" expressionLanguage="">
+        <description>My description</description>
+        <text></text>
+        <importedValues namespace="" locationURI="My LocationURI" importType="" expressionLanguage="">
+          <importedElement></importedElement>
+        </importedValues>
+      </literalExpression>
+    </encapsulatedLogic>
+    <variable id="BC2E0989-D5E7-4B0A-AFDC-7591CCDD03BC" name="BkmTwo" typeRef="My QName">
+      <description>My description</description>
+    </variable>
+  </businessKnowledgeModel>
+  <decision id="BBF2B56F-A0AF-4428-AA6A-61A655D72883" name="My name">
+    <description>My description</description>
+    <variable id="925A9233-9261-4510-A20F-D187F5907024" name="Root" typeRef="My QName">
+      <description>My description</description>
+    </variable>
+    <informationRequirement>
+      <requiredDecision href="#B7DD0DC9-7FAC-4510-9031-FFEE067CC2F5"/>
+    </informationRequirement>
+    <literalExpression id="106EEEA0-EC7A-4522-921F-9F422F7EC10D" typeRef="My QName" expressionLanguage="">
+      <description>My description</description>
+      <text></text>
+      <importedValues namespace="" locationURI="My LocationURI" importType="" expressionLanguage="">
+        <importedElement></importedElement>
+      </importedValues>
+    </literalExpression>
+  </decision>
+  <decision id="DF84B353-A2F6-46B9-B680-EBD98F5084C8" name="My name">
+    <description>My description</description>
+    <variable id="02ED6433-8ACA-440C-AE2D-53F4113C6996" name="DecisionTwo" typeRef="My QName">
+      <description>My description</description>
+    </variable>
+    <literalExpression id="34DD9C17-5F01-435C-8B62-C611ACA9CCBF" typeRef="My QName" expressionLanguage="">
+      <description>My description</description>
+      <text></text>
+      <importedValues namespace="" locationURI="My LocationURI" importType="" expressionLanguage="">
+        <importedElement></importedElement>
+      </importedValues>
+    </literalExpression>
+  </decision>
+  <association id="13C8D1D8-BA11-440C-BBA4-0A731F8AE99C" associationDirection="None">
+    <description>My description</description>
+    <sourceRef href="#AD910446-56AD-49A5-99CE-F7B9C6F74E5E"/>
+    <targetRef href="#47C5A244-EF6D-473D-99B6-629F70A49FCC"/>
+  </association>
+  <textAnnotation id="47C5A244-EF6D-473D-99B6-629F70A49FCC" textFormat="text/plain">
+    <description>My description</description>
+    <text>Annotation</text>
+  </textAnnotation>
+</definitions>

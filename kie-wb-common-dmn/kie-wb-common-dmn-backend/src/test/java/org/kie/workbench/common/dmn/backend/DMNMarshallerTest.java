@@ -27,7 +27,6 @@ import org.apache.tools.ant.filters.StringInputStream;
 import org.jboss.errai.marshalling.server.MappingContextSingleton;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
@@ -298,6 +297,11 @@ public class DMNMarshallerTest {
                      textAnnotationDefinition.getTextFormat().getValue());
     }
 
+    public void testTreeStructure() throws IOException {
+        roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/treeStructure.dmn"),
+                                               this::checkTreeStructureGraph);
+    }
+
     public void roundTripUnmarshalThenMarshalUnmarshal(InputStream dmnXmlInputStream,
                                                        Consumer<Graph<?, Node<?, ?>>> checkGraphConsumer) throws IOException {
         DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
@@ -322,6 +326,60 @@ public class DMNMarshallerTest {
         Graph<?, Node<?, ?>> g2 = m.unmarshall(null,
                                                new StringInputStream(mString));
         checkGraphConsumer.accept(g2);
+    }
+
+    private void checkTreeStructureGraph(Graph<?, Node<?, ?>> graph) {
+        Node<?, ?> root = graph.getNode("BBF2B56F-A0AF-4428-AA6A-61A655D72883");
+        Node<?, ?> decisionOne = graph.getNode("B7DD0DC9-7FAC-4510-9031-FFEE067CC2F5");
+        Node<?, ?> decisionTwo = graph.getNode("DF84B353-A2F6-46B9-B680-EBD98F5084C8");
+        Node<?, ?> decisionThree = graph.getNode("1B6EF5EB-CA09-45A5-AB03-21CD70F941AD");
+        Node<?, ?> bkmRoot = graph.getNode("AD910446-56AD-49A5-99CE-F7B9C6F74E5E");
+        Node<?, ?> bkmOne = graph.getNode("C1D0937E-96F4-4EAF-8A85-45B129F38E9B");
+        Node<?, ?> bkmTwo = graph.getNode("47E47E51-4509-4A3B-86E9-D690F397B69C");
+        Node<?, ?> annotation = graph.getNode("47C5A244-EF6D-473D-99B6-629F70A49FCC");
+        Node<?, ?> knowledgeSource = graph.getNode("CFE44FA9-7309-4F28-81E9-5C1EF455B4C2");
+        Node<?, ?> knowledgeSourceInput = graph.getNode("BC0D715A-ADD4-4136-AB3D-226EABC840A2");
+        Node<?, ?> decisionOneInput = graph.getNode("CF65CEB9-433F-402F-A485-90AC34E2FE39");
+
+        assertNodeEdgesTo(decisionOne,
+                          root,
+                          InformationRequirement.class);
+
+        assertNodeEdgesTo(decisionTwo,
+                          decisionOne,
+                          InformationRequirement.class);
+
+        assertNodeEdgesTo(decisionThree,
+                          decisionOne,
+                          InformationRequirement.class);
+
+        assertNodeEdgesTo(bkmRoot,
+                          annotation,
+                          Association.class);
+
+        assertNodeEdgesTo(bkmRoot,
+                          decisionOne,
+                          KnowledgeRequirement.class);
+
+        assertNodeEdgesTo(bkmOne,
+                          bkmRoot,
+                          KnowledgeRequirement.class);
+
+        assertNodeEdgesTo(bkmTwo,
+                          bkmRoot,
+                          KnowledgeRequirement.class);
+
+        assertNodeEdgesTo(decisionOneInput,
+                          decisionOne,
+                          InformationRequirement.class);
+
+        assertNodeEdgesTo(knowledgeSource,
+                          decisionOne,
+                          AuthorityRequirement.class);
+
+        assertNodeEdgesTo(knowledgeSourceInput,
+                          knowledgeSource,
+                          AuthorityRequirement.class);
     }
 
     private void checkDiamongGraph(Graph<?, Node<?, ?>> g) {
