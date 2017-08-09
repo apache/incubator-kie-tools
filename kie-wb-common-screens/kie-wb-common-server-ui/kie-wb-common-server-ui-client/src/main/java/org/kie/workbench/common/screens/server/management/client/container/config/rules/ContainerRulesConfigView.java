@@ -31,6 +31,8 @@ import com.google.gwt.user.client.ui.Composite;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.gwtbootstrap3.extras.select.client.ui.Option;
+import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -63,6 +65,10 @@ public class ContainerRulesConfigView extends Composite
     NumericTextBox interval;
 
     @Inject
+    @DataField("container-config-interval-time-unit")
+    Select intervalTimeUnit;
+
+    @Inject
     @DataField("container-config-stop-scanner")
     Button stopScanner;
 
@@ -89,7 +95,7 @@ public class ContainerRulesConfigView extends Composite
     Button upgrade;
 
     @Inject
-    public ContainerRulesConfigView( final TranslationService translationService ) {
+    public ContainerRulesConfigView(final TranslationService translationService) {
         super();
         this.translationService = translationService;
     }
@@ -97,109 +103,148 @@ public class ContainerRulesConfigView extends Composite
     private org.uberfire.mvp.Command stopScannerActive = new org.uberfire.mvp.Command() {
         @Override
         public void execute() {
-            Scheduler.get().scheduleDeferred( new Command() {
+            Scheduler.get().scheduleDeferred(new Command() {
                 @Override
                 public void execute() {
-                    stopScanner.setActive( true );
-                    startScanner.setActive( false );
+                    stopScanner.setActive(true);
+                    startScanner.setActive(false);
                 }
-            } );
+            });
         }
     };
 
     @Override
-    public void init( final ContainerRulesConfigPresenter presenter ) {
+    public void init(final ContainerRulesConfigPresenter presenter) {
         this.presenter = presenter;
     }
 
     @PostConstruct
     public void init() {
-        version.addChangeHandler( new ChangeHandler() {
+        version.addChangeHandler(new ChangeHandler() {
             @Override
-            public void onChange( ChangeEvent event ) {
-                if ( !version.getText().trim().isEmpty() ) {
-                    StyleHelper.addUniqueEnumStyleName( versionForm, ValidationState.class, ValidationState.NONE );
+            public void onChange(ChangeEvent event) {
+                if (!version.getText().trim().isEmpty()) {
+                    StyleHelper.addUniqueEnumStyleName(versionForm,
+                                                       ValidationState.class,
+                                                       ValidationState.NONE);
                 }
             }
-        } );
-        version.getElement().setAttribute( "placeholder", getVersionTextBoxPlaceholder() );
+        });
+        version.getElement().setAttribute("placeholder",
+                                          getVersionTextBoxPlaceholder());
 
-        interval.addChangeHandler( new ChangeHandler() {
+        interval.addChangeHandler(new ChangeHandler() {
             @Override
-            public void onChange( ChangeEvent event ) {
-                if ( !interval.getText().trim().isEmpty() ) {
-                    StyleHelper.addUniqueEnumStyleName( scannerForm, ValidationState.class, ValidationState.NONE );
+            public void onChange(ChangeEvent event) {
+                if (!interval.getText().trim().isEmpty()) {
+                    StyleHelper.addUniqueEnumStyleName(scannerForm,
+                                                       ValidationState.class,
+                                                       ValidationState.NONE);
                 }
             }
-        } );
-        interval.getElement().setAttribute( "placeholder", getIntervalTextBoxPlaceholder() );
-        interval.getElement().setAttribute( "data-original-title", getIntervalTextBoxDataOriginalTitle() );
+        });
+        interval.getElement().setAttribute("placeholder",
+                                           getIntervalTextBoxPlaceholder());
+        interval.getElement().setAttribute("data-original-title",
+                                           getIntervalTextBoxDataOriginalTitle());
+
+        Option ms = new Option();
+        ms.setText(translationService.format(Constants.ContainerRulesConfigView_Milliseconds));
+        ms.setValue(ContainerRulesConfigPresenter.MS);
+        ms.setSelected(true);
+        intervalTimeUnit.add(ms);
+
+        Option s = new Option();
+        s.setText(translationService.format(Constants.ContainerRulesConfigView_Seconds));
+        s.setValue(ContainerRulesConfigPresenter.S);
+        intervalTimeUnit.add(s);
+
+        Option m = new Option();
+        m.setText(translationService.format(Constants.ContainerRulesConfigView_Minutes));
+        m.setValue(ContainerRulesConfigPresenter.M);
+        intervalTimeUnit.add(m);
+
+        Option h = new Option();
+        h.setText(translationService.format(Constants.ContainerRulesConfigView_Hours));
+        h.setValue(ContainerRulesConfigPresenter.H);
+        intervalTimeUnit.add(h);
+
+        Option d = new Option();
+        d.setText(translationService.format(Constants.ContainerRulesConfigView_Days));
+        d.setValue(ContainerRulesConfigPresenter.D);
+        intervalTimeUnit.add(d);
     }
 
     @Override
-    public void setContent( final String interval,
-                            final String version,
-                            final State startScanner,
-                            final State stopScanner,
-                            final State scanNow,
-                            final State upgrade ) {
-        StyleHelper.addUniqueEnumStyleName( scannerForm, ValidationState.class, ValidationState.NONE );
-        StyleHelper.addUniqueEnumStyleName( versionForm, ValidationState.class, ValidationState.NONE );
+    public void setContent(final String interval,
+                           final String version,
+                           final State startScanner,
+                           final State stopScanner,
+                           final State scanNow,
+                           final State upgrade) {
+        StyleHelper.addUniqueEnumStyleName(scannerForm,
+                                           ValidationState.class,
+                                           ValidationState.NONE);
+        StyleHelper.addUniqueEnumStyleName(versionForm,
+                                           ValidationState.class,
+                                           ValidationState.NONE);
 
-        if ( interval == null || interval.trim().isEmpty() ) {
-            this.interval.setText( "" );
+        if (interval == null || interval.trim().isEmpty()) {
+            this.interval.setText("");
         } else {
             try {
-                this.interval.setText( Integer.valueOf( interval ).toString() );
-            } catch ( final NumberFormatException ex ) {
-                this.interval.setText( "" );
+                this.interval.setText(Integer.valueOf(interval).toString());
+            } catch (final NumberFormatException ex) {
+                this.interval.setText("");
             }
         }
-        this.version.setText( version != null ? version : "" );
-        this.interval.setText( interval );
+        this.version.setText(version != null ? version : "");
+        this.interval.setText(interval);
 
-        setStartScannerState( startScanner );
-        setStopScannerState( stopScanner );
-        setScanNowState( scanNow );
-        setUpgradeState( upgrade );
+        setStartScannerState(startScanner);
+        setStopScannerState(stopScanner);
+        setScanNowState(scanNow);
+        setUpgradeState(upgrade);
     }
 
     @Override
-    public void setStartScannerState( final State state ) {
-        this.startScanner.setEnabled( state.equals( State.ENABLED ) );
-        this.startScanner.setActive( !state.equals( State.ENABLED ) );
+    public void setStartScannerState(final State state) {
+        this.startScanner.setEnabled(state.equals(State.ENABLED));
+        this.startScanner.setActive(!state.equals(State.ENABLED));
     }
 
     @Override
-    public void setStopScannerState( final State state ) {
-        this.stopScanner.setEnabled( state.equals( State.ENABLED ) );
-        this.stopScanner.setActive( !state.equals( State.ENABLED ) );
+    public void setStopScannerState(final State state) {
+        this.stopScanner.setEnabled(state.equals(State.ENABLED));
+        this.stopScanner.setActive(!state.equals(State.ENABLED));
     }
 
     @Override
-    public void setScanNowState( final State state ) {
-        this.scanNow.setEnabled( state.equals( State.ENABLED ) );
+    public void setScanNowState(final State state) {
+        this.scanNow.setEnabled(state.equals(State.ENABLED));
     }
 
     @Override
-    public void setUpgradeState( final State state ) {
-        this.upgrade.setEnabled( state.equals( State.ENABLED ) );
+    public void setUpgradeState(final State state) {
+        this.upgrade.setEnabled(state.equals(State.ENABLED));
     }
 
     @Override
     public void disableActions() {
-        startScanner.setEnabled( false );
-        scanNow.setEnabled( false );
-        stopScanner.setEnabled( false );
-        upgrade.setEnabled( false );
+        startScanner.setEnabled(false);
+        scanNow.setEnabled(false);
+        stopScanner.setEnabled(false);
+        upgrade.setEnabled(false);
     }
 
     @Override
     public void errorOnInterval() {
-        startScanner.setEnabled( true );
-        startScanner.setActive( false );
-        StyleHelper.addUniqueEnumStyleName( scannerForm, ValidationState.class, ValidationState.ERROR );
-        interval.setFocus( true );
+        startScanner.setEnabled(true);
+        startScanner.setActive(false);
+        StyleHelper.addUniqueEnumStyleName(scannerForm,
+                                           ValidationState.class,
+                                           ValidationState.ERROR);
+        interval.setFocus(true);
     }
 
     @Override
@@ -208,32 +253,40 @@ public class ContainerRulesConfigView extends Composite
     }
 
     @Override
+    public String getIntervalTimeUnit() {
+        return intervalTimeUnit.getSelectedItem().getValue();
+    }
+
+    @Override
     public String getVersion() {
         return version.getText();
     }
 
     @Override
-    public void setVersion( final String version ) {
-        this.version.setText( version );
+    public void setVersion(final String version) {
+        this.version.setText(version);
     }
 
     @EventHandler("container-config-start-scanner")
-    public void startScanner( final ClickEvent event ) {
-        if ( startScanner.isActive() ) {
+    public void startScanner(final ClickEvent event) {
+        if (startScanner.isActive()) {
             return;
         }
 
         try {
-            presenter.startScanner( getInterval() );
-        } catch ( final IllegalArgumentException ex ) {
-            StyleHelper.addUniqueEnumStyleName( scannerForm, ValidationState.class, ValidationState.ERROR );
+            presenter.startScanner(getInterval(),
+                                   intervalTimeUnit.getSelectedItem().getValue());
+        } catch (final IllegalArgumentException ex) {
+            StyleHelper.addUniqueEnumStyleName(scannerForm,
+                                               ValidationState.class,
+                                               ValidationState.ERROR);
             stopScannerActive.execute();
         }
     }
 
     @EventHandler("container-config-stop-scanner")
-    public void stopScanner( final ClickEvent e ) {
-        if ( stopScanner.isActive() ) {
+    public void stopScanner(final ClickEvent e) {
+        if (stopScanner.isActive()) {
             return;
         }
         stopScannerActive.execute();
@@ -241,54 +294,57 @@ public class ContainerRulesConfigView extends Composite
     }
 
     @EventHandler("container-config-scan-now")
-    public void scanNow( final ClickEvent e ) {
+    public void scanNow(final ClickEvent e) {
         stopScannerActive.execute();
         presenter.scanNow();
     }
 
     @EventHandler("container-config-upgrade-button")
-    public void upgrade( final ClickEvent e ) {
+    public void upgrade(final ClickEvent e) {
         try {
-            presenter.upgrade( version.getText() );
-        } catch ( final IllegalArgumentException ex ) {
-            StyleHelper.addUniqueEnumStyleName( versionForm, ValidationState.class, ValidationState.ERROR );
+            presenter.upgrade(version.getText());
+        } catch (final IllegalArgumentException ex) {
+            StyleHelper.addUniqueEnumStyleName(versionForm,
+                                               ValidationState.class,
+                                               ValidationState.ERROR);
         }
     }
 
     @Override
     public String getStartScannerErrorMessage() {
-        return translationService.format( Constants.ContainerRulesConfigView_StartScannerErrorMessage );
+        return translationService.format(Constants.ContainerRulesConfigView_StartScannerErrorMessage);
     }
 
     @Override
     public String getStopScannerErrorMessage() {
-        return translationService.format( Constants.ContainerRulesConfigView_StopScannerErrorMessage );
+        return translationService.format(Constants.ContainerRulesConfigView_StopScannerErrorMessage);
     }
 
     @Override
     public String getScanNowErrorMessage() {
-        return translationService.format( Constants.ContainerRulesConfigView_ScanNowErrorMessage );
+        return translationService.format(Constants.ContainerRulesConfigView_ScanNowErrorMessage);
     }
 
     @Override
     public String getUpgradeErrorMessage() {
-        return translationService.format( Constants.ContainerRulesConfigView_UpgradeErrorMessage );
+        return translationService.format(Constants.ContainerRulesConfigView_UpgradeErrorMessage);
     }
 
     @Override
     public String getUpgradeSuccessMessage() {
-        return translationService.format( Constants.ContainerRulesConfigView_UpgradeSuccessMessage, version.getText() );
+        return translationService.format(Constants.ContainerRulesConfigView_UpgradeSuccessMessage,
+                                         version.getText());
     }
 
     private String getVersionTextBoxPlaceholder() {
-        return translationService.format( Constants.ContainerRulesConfigView_VersionTextBoxPlaceholder );
+        return translationService.format(Constants.ContainerRulesConfigView_VersionTextBoxPlaceholder);
     }
 
     private String getIntervalTextBoxPlaceholder() {
-        return translationService.format( Constants.ContainerRulesConfigView_IntervalTextBoxPlaceholder );
+        return translationService.format(Constants.ContainerRulesConfigView_IntervalTextBoxPlaceholder);
     }
 
     private String getIntervalTextBoxDataOriginalTitle() {
-        return translationService.format( Constants.ContainerRulesConfigView_IntervalTextBoxDataOriginalTitle );
+        return translationService.format(Constants.ContainerRulesConfigView_IntervalTextBoxDataOriginalTitle);
     }
 }

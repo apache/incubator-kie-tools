@@ -153,6 +153,21 @@ public class Constants {
     public static final String ContainerRulesConfigView_IntervalTextBoxDataOriginalTitle = "ContainerRulesConfigView.IntervalTextBoxDataOriginalTitle";
 
     @TranslationKey(defaultValue = "")
+    public static final String ContainerRulesConfigView_Milliseconds = "ContainerRulesConfigView.Milliseconds";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerRulesConfigView_Seconds = "ContainerRulesConfigView.Seconds";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerRulesConfigView_Minutes = "ContainerRulesConfigView.Minutes";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerRulesConfigView_Hours = "ContainerRulesConfigView.Hours";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerRulesConfigView_Days = "ContainerRulesConfigView.Days";
+
+    @TranslationKey(defaultValue = "")
     public static final String ClientMergeMode_KeepAll = "ClientMergeMode.KeepAll";
 
     @TranslationKey(defaultValue = "")
