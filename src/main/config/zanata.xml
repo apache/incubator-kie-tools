@@ -3,7 +3,7 @@
 <config xmlns="http://zanata.org/namespace/config/">
   <url>https://translate.jboss.org/</url>
   <project>uberfire</project>
-  <project-version>1.2.0</project-version>
+  <project-version>2.0.0</project-version>
   <project-type>utf8properties</project-type>
 
   <locales>
