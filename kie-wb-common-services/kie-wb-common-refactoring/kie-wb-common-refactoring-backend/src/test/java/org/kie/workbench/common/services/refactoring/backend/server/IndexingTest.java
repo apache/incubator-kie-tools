@@ -23,9 +23,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -216,7 +218,7 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
         return mockProject;
     }
 
-    protected void assertContains(final List<KObject> results,
+    protected void assertContains(final Iterable<KObject> results,
                                   final Path path) {
         for (KObject kObject : results) {
             final String key = kObject.getKey();
@@ -257,15 +259,14 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
                             collector);
             final ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
-            assertEquals("Number of docs fulfilling the given query criteria",
-                         expectedNumHits,
-                         hits.length);
-
             if (paths != null && paths.length > 0) {
-                final List<KObject> results = new ArrayList<KObject>();
+                final Set<KObject> results = new HashSet<>();
                 for (int i = 0; i < hits.length; i++) {
                     results.add(KObjectUtil.toKObject(searcher.doc(hits[i].doc)));
                 }
+                assertEquals("Number of docs fulfilling the given query criteria",
+                             expectedNumHits,
+                             results.size());
                 for (Path path : paths) {
                     assertContains(results,
                                    path);

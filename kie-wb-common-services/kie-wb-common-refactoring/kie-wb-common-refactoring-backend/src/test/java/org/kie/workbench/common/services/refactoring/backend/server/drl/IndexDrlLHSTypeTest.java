@@ -36,6 +36,7 @@ public class IndexDrlLHSTypeTest extends BaseIndexingTest<TestDrlFileTypeDefinit
 
     @Test
     public void testIndexDrlLHSType() throws IOException, InterruptedException {
+        ioService().startBatch(ioService().getFileSystem(basePath.toUri()));
         //Add test files
         final Path path1 = basePath.resolve( "drl1.drl" );
         final String drl1 = loadText( "drl1.drl" );
@@ -49,8 +50,9 @@ public class IndexDrlLHSTypeTest extends BaseIndexingTest<TestDrlFileTypeDefinit
         final String drl3 = loadText( "drl3.drl" );
         ioService().write( path3,
                            drl3 );
+        ioService().endBatch();
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep( 7000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 

@@ -35,6 +35,7 @@ public class IndexDrlLHSTypeExpressionFieldCombinedTest extends BaseIndexingTest
 
     @Test
     public void testIndexDrlLHSTypeExpressionField() throws IOException, InterruptedException {
+        ioService().startBatch(ioService().getFileSystem(basePath.toUri()));
         //Add test files
         final Path path1 = basePath.resolve( "drl3.drl" );
         final String drl1 = loadText( "drl3.drl" );
@@ -48,8 +49,9 @@ public class IndexDrlLHSTypeExpressionFieldCombinedTest extends BaseIndexingTest
         final String drl3 = loadText( "drl5.drl" );
         ioService().write( path3,
                            drl3 );
+        ioService().endBatch();
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep( 7000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
