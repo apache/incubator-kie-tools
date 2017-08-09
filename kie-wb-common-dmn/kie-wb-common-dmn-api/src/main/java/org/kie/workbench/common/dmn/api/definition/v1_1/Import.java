@@ -16,65 +16,37 @@
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
-import org.kie.workbench.common.dmn.api.property.dmn.ImportType;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
-import org.kie.workbench.common.dmn.api.property.dmn.Namespace;
-import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
-import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
-import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
-import org.kie.workbench.common.stunner.core.definition.annotation.Name;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 @Portable
-@Bindable
-@PropertySet
-@FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "namespace")
-public class Import extends DMNModelInstrumentedBase implements DMNPropertySet {
+public class Import extends DMNModelInstrumentedBase {
 
-    @Name
-    @FieldLabel
-    public static final transient String propertySetName = "Import";
+    protected String namespace;
 
-    @Property
-    @FormField
-    protected Namespace namespace;
-
-    @Property
-    @FormField(afterElement = "namespace")
     protected LocationURI locationURI;
 
-    @Property
-    @FormField(afterElement = "locationURI")
-    protected ImportType importType;
+    protected String importType;
 
     public Import() {
     }
 
-    public Import(final Namespace namespace,
+    public Import(final String namespace,
                   final LocationURI locationURI,
-                  final ImportType importType) {
+                  final String importType) {
         this.namespace = namespace;
         this.locationURI = locationURI;
         this.importType = importType;
-    }
-
-    public String getPropertySetName() {
-        return propertySetName;
     }
 
     // -----------------------
     // DMN properties
     // -----------------------
 
-    public Namespace getNamespace() {
+    public String getNamespace() {
         return namespace;
     }
 
-    public void setNamespace(final Namespace namespace) {
+    public void setNamespace(final String namespace) {
         this.namespace = namespace;
     }
 
@@ -86,11 +58,11 @@ public class Import extends DMNModelInstrumentedBase implements DMNPropertySet {
         this.locationURI = locationURI;
     }
 
-    public ImportType getImportType() {
+    public String getImportType() {
         return importType;
     }
 
-    public void setImportType(final ImportType importType) {
+    public void setImportType(final String importType) {
         this.importType = importType;
     }
 }

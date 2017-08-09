@@ -41,13 +41,13 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DMNFlowActionsToolboxControlProviderTest extends BaseDMNFlowActionsToolboxControlProviderTest {
+public class DMNFlowActionsToolboxControlProviderTest extends BaseDMNToolboxControlProviderTest {
 
     @Override
     protected AbstractToolboxControlProvider getProvider() {
         return new DMNFlowActionsToolboxControlProvider(toolboxFactory,
+                                                        toolboxCommandFactory,
                                                         definitionManager,
-                                                        defaultToolboxCommandFactory,
                                                         commonLookups);
     }
 
@@ -98,7 +98,7 @@ public class DMNFlowActionsToolboxControlProviderTest extends BaseDMNFlowActions
                                                 eq(node),
                                                 anyInt(),
                                                 anyInt())).thenReturn(Collections.singleton(Association.class.getName()));
-        when(defaultToolboxCommandFactory.newConnectorToolboxCommand()).thenReturn(newConnectorCommand);
+        when(toolboxCommandFactory.newConnectorToolboxCommand()).thenReturn(newConnectorCommand);
 
         final List<ToolboxCommand<AbstractCanvasHandler, ?>> commands = provider.getCommands(context,
                                                                                              node);
@@ -121,7 +121,7 @@ public class DMNFlowActionsToolboxControlProviderTest extends BaseDMNFlowActions
                                                 eq(node),
                                                 anyInt(),
                                                 anyInt())).thenReturn(Collections.singleton(Association.class.getName()));
-        when(defaultToolboxCommandFactory.newConnectorToolboxCommand()).thenReturn(newConnectorCommand);
+        when(toolboxCommandFactory.newConnectorToolboxCommand()).thenReturn(newConnectorCommand);
 
         final NewNodeCommand newNodeCommand = mock(NewNodeCommand.class);
         when(commonLookups.getAllowedTargetDefinitions(eq(DMNDefinitionSet.class.getName()),
@@ -130,7 +130,7 @@ public class DMNFlowActionsToolboxControlProviderTest extends BaseDMNFlowActions
                                                        eq(Association.class.getName()),
                                                        anyInt(),
                                                        anyInt())).thenReturn(Collections.singleton(new Decision.DecisionBuilder().build()));
-        when(defaultToolboxCommandFactory.newNodeToolboxCommand()).thenReturn(newNodeCommand);
+        when(toolboxCommandFactory.newNodeToolboxCommand()).thenReturn(newNodeCommand);
 
         final List<ToolboxCommand<AbstractCanvasHandler, ?>> commands = provider.getCommands(context,
                                                                                              node);

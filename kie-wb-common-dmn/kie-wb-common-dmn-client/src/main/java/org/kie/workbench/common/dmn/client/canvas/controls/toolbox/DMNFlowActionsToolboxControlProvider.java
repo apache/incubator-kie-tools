@@ -53,7 +53,7 @@ public class DMNFlowActionsToolboxControlProvider extends AbstractToolboxControl
     private static Logger LOGGER = Logger.getLogger(DMNFlowActionsToolboxControlProvider.class.getName());
 
     private final DefinitionManager definitionManager;
-    private final ToolboxCommandFactory defaultToolboxCommandFactory;
+    private final ToolboxCommandFactory toolboxCommandFactory;
     private final CommonLookups commonLookups;
 
     private final Set<String> dmnDefinitionIds = new HashSet<>();
@@ -67,12 +67,12 @@ public class DMNFlowActionsToolboxControlProvider extends AbstractToolboxControl
 
     @Inject
     public DMNFlowActionsToolboxControlProvider(final ToolboxFactory toolboxFactory,
+                                                final ToolboxCommandFactory toolboxCommandFactory,
                                                 final DefinitionManager definitionManager,
-                                                final ToolboxCommandFactory defaultToolboxCommandFactory,
                                                 final CommonLookups commonLookups) {
         super(toolboxFactory);
+        this.toolboxCommandFactory = toolboxCommandFactory;
         this.definitionManager = definitionManager;
-        this.defaultToolboxCommandFactory = defaultToolboxCommandFactory;
         this.commonLookups = commonLookups;
 
         final DMNDefinitionSet definitionSet = (DMNDefinitionSet) definitionManager.definitionSets().getDefinitionSetByType(DMNDefinitionSet.class);
@@ -124,7 +124,7 @@ public class DMNFlowActionsToolboxControlProvider extends AbstractToolboxControl
                                                                                        10);
             if (null != allowedConnectorIds && !allowedConnectorIds.isEmpty()) {
                 for (final String allowedConnectorId : allowedConnectorIds) {
-                    final NewConnectorCommand<?> newConnectorCommand = defaultToolboxCommandFactory.newConnectorToolboxCommand();
+                    final NewConnectorCommand<?> newConnectorCommand = toolboxCommandFactory.newConnectorToolboxCommand();
                     newConnectorCommand.setEdgeIdentifier(allowedConnectorId);
                     commands.add(newConnectorCommand);
 
@@ -137,7 +137,7 @@ public class DMNFlowActionsToolboxControlProvider extends AbstractToolboxControl
                     if (null != allowedTargetDefinitions && !allowedTargetDefinitions.isEmpty()) {
                         for (final Object allowedTargetDefinition : allowedTargetDefinitions) {
                             final String allowedTargetDefinitionId = definitionManager.adapters().forDefinition().getId(allowedTargetDefinition);
-                            final NewNodeCommand newNodeCommand = defaultToolboxCommandFactory.newNodeToolboxCommand();
+                            final NewNodeCommand newNodeCommand = toolboxCommandFactory.newNodeToolboxCommand();
                             newNodeCommand.setEdgeIdentifier(allowedConnectorId);
                             newNodeCommand.setDefinitionIdentifier(allowedTargetDefinitionId);
                             commands.add(newNodeCommand);

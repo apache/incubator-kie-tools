@@ -71,6 +71,21 @@ public class SessionPresenterView extends Composite
     }
 
     @Override
+    public IsWidget getCanvasWidget() {
+        return canvasPanel.getWidget(0);
+    }
+
+    @Override
+    public IsWidget getToolbarWidget() {
+        return toolbarPanel.getWidget(0);
+    }
+
+    @Override
+    public IsWidget getPaletteWidget() {
+        return palettePanel.getWidget(0);
+    }
+
+    @Override
     public SessionPresenterView setToolbarWidget(final IsWidget widget) {
         setWidgetForPanel(toolbarPanel,
                           widget);

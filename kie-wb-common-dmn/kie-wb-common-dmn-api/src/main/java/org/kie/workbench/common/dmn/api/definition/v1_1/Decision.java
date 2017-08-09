@@ -23,6 +23,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers;
@@ -46,7 +47,7 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = Decision.DecisionBuilder.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id")
-public class Decision extends DRGElement {
+public class Decision extends DRGElement implements HasExpression {
 
     @Category
     public static final transient String stunnerCategory = Categories.NODES;
@@ -206,10 +207,12 @@ public class Decision extends DRGElement {
         this.variable = variable;
     }
 
+    @Override
     public Expression getExpression() {
         return expression;
     }
 
+    @Override
     public void setExpression(final Expression expression) {
         this.expression = expression;
     }

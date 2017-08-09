@@ -17,11 +17,7 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.ImportedValues;
-import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
-import org.kie.workbench.common.dmn.api.property.dmn.ImportType;
-import org.kie.workbench.common.dmn.api.property.dmn.ImportedElement;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
-import org.kie.workbench.common.dmn.api.property.dmn.Namespace;
 
 public class ImportedValuesConverter {
 
@@ -29,11 +25,11 @@ public class ImportedValuesConverter {
         if (dmn == null) {
             return null;
         }
-        Namespace namespace = new Namespace(dmn.getNamespace());
+        String namespace = dmn.getNamespace();
         LocationURI locationURI = new LocationURI(dmn.getLocationURI());
-        ImportType importType = new ImportType(dmn.getImportType());
-        ImportedElement importedElement = new ImportedElement(dmn.getImportedElement());
-        ExpressionLanguage expressionLanguage = new ExpressionLanguage(dmn.getExpressionLanguage());
+        String importType = dmn.getImportType();
+        String importedElement = dmn.getImportedElement();
+        String expressionLanguage = dmn.getExpressionLanguage();
         ImportedValues wb = new ImportedValues(namespace,
                                                locationURI,
                                                importType,
@@ -47,11 +43,11 @@ public class ImportedValuesConverter {
             return null;
         }
         org.kie.dmn.model.v1_1.ImportedValues dmn = new org.kie.dmn.model.v1_1.ImportedValues();
-        dmn.setNamespace(wb.getNamespace().getValue());
+        dmn.setNamespace(wb.getNamespace());
         dmn.setLocationURI(wb.getLocationURI().getValue());
-        dmn.setImportType(wb.getImportType().getValue());
-        dmn.setImportedElement(wb.getImportedElement().getValue());
-        dmn.setExpressionLanguage(wb.getExpressionLanguage().getValue());
+        dmn.setImportType(wb.getImportType());
+        dmn.setImportedElement(wb.getImportedElement());
+        dmn.setExpressionLanguage(wb.getExpressionLanguage());
         return dmn;
     }
 }

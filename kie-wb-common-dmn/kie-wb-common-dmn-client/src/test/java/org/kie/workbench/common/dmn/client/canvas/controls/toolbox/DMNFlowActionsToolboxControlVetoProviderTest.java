@@ -22,13 +22,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DMNFlowActionsToolboxControlVetoProviderTest extends BaseDMNFlowActionsToolboxControlProviderTest {
+public class DMNFlowActionsToolboxControlVetoProviderTest extends BaseDMNToolboxControlProviderTest {
 
     @Override
     protected AbstractToolboxControlProvider getProvider() {
         return new DMNFlowActionsToolboxControlVetoProvider(toolboxFactory,
                                                             definitionUtils,
-                                                            defaultToolboxCommandFactory,
+                                                            toolboxCommandFactory,
                                                             commonLookups);
     }
 

@@ -23,8 +23,12 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.dmn.client.commands.NavigateToExpressionEditorCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
+import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.showcase.client.screens.ShowcaseDiagramService;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -34,12 +38,15 @@ import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenError
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenPanelView;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.event.OnSessionErrorEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
@@ -58,7 +65,6 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.lifecycle.OnClose;
@@ -84,8 +90,8 @@ public class SessionDiagramEditorScreen {
     private final ClientFactoryService clientFactoryServices;
     private final ShowcaseDiagramService diagramService;
     private final SessionManager sessionManager;
+    private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory;
-    private final PlaceManager placeManager;
     private final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
     private final MenuDevCommandsBuilder menuDevCommandsBuilder;
     private final ScreenPanelView screenPanelView;
@@ -96,27 +102,31 @@ public class SessionDiagramEditorScreen {
     private String title = "Authoring Screen";
     private Menus menu = null;
 
+    private ExpressionEditorView.Presenter expressionEditor;
+
     @Inject
     public SessionDiagramEditorScreen(final DefinitionManager definitionManager,
                                       final ClientFactoryService clientFactoryServices,
                                       final ShowcaseDiagramService diagramService,
                                       final SessionManager sessionManager,
+                                      final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                       final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
-                                      final PlaceManager placeManager,
                                       final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
                                       final MenuDevCommandsBuilder menuDevCommandsBuilder,
                                       final ScreenPanelView screenPanelView,
-                                      final ScreenErrorView screenErrorView) {
+                                      final ScreenErrorView screenErrorView,
+                                      final ExpressionEditorView.Presenter expressionEditor) {
         this.definitionManager = definitionManager;
         this.clientFactoryServices = clientFactoryServices;
         this.diagramService = diagramService;
         this.sessionManager = sessionManager;
+        this.sessionCommandManager = sessionCommandManager;
         this.sessionPresenterFactory = sessionPresenterFactory;
-        this.placeManager = placeManager;
         this.changeTitleNotificationEvent = changeTitleNotificationEvent;
         this.menuDevCommandsBuilder = menuDevCommandsBuilder;
         this.screenPanelView = screenPanelView;
         this.screenErrorView = screenErrorView;
+        this.expressionEditor = expressionEditor;
     }
 
     @OnStartup
@@ -229,16 +239,8 @@ public class SessionDiagramEditorScreen {
                                                  final Metadata metadata = diagram.getMetadata();
                                                  metadata.setShapeSetId(shapeSetId);
                                                  metadata.setTitle(title);
-                                                 final AbstractClientFullSession session = newSession(diagram);
-                                                 presenter = sessionPresenterFactory.newPresenterEditor();
-                                                 screenPanelView.setWidget(presenter.getView());
-                                                 presenter
-                                                         .withToolbar(true)
-                                                         .withPalette(true)
-                                                         .displayNotifications(type -> true)
-                                                         .open(diagram,
-                                                               session,
-                                                               new ScreenPresenterCallback(callback));
+                                                 openDiagram(diagram,
+                                                             callback);
                                              }
 
                                              @Override
@@ -266,16 +268,8 @@ public class SessionDiagramEditorScreen {
                                   new ServiceCallback<Diagram>() {
                                       @Override
                                       public void onSuccess(final Diagram diagram) {
-                                          final AbstractClientFullSession session = newSession(diagram);
-                                          presenter = sessionPresenterFactory.newPresenterEditor();
-                                          screenPanelView.setWidget(presenter.getView());
-                                          presenter
-                                                  .withToolbar(true)
-                                                  .withPalette(true)
-                                                  .displayNotifications(type -> true)
-                                                  .open(diagram,
-                                                        session,
-                                                        new ScreenPresenterCallback(callback));
+                                          openDiagram(diagram,
+                                                      callback);
                                       }
 
                                       @Override
@@ -284,6 +278,24 @@ public class SessionDiagramEditorScreen {
                                           callback.execute();
                                       }
                                   });
+    }
+
+    private void openDiagram(final Diagram diagram,
+                             final Command callback) {
+        final AbstractClientFullSession session = newSession(diagram);
+        presenter = sessionPresenterFactory.newPresenterEditor();
+        screenPanelView.setWidget(presenter.getView());
+        presenter
+                .withToolbar(true)
+                .withPalette(true)
+                .displayNotifications(type -> true)
+                .open(diagram,
+                      session,
+                      new ScreenPresenterCallback(callback));
+        expressionEditor.init(presenter);
+        final com.google.gwt.dom.client.Element palette = presenter.getView().getPaletteWidget().asWidget().getElement();
+        palette.getStyle().setVisibility(Style.Visibility.VISIBLE);
+        palette.getStyle().setDisplay(Style.Display.INITIAL);
     }
 
     @OnOpen
@@ -406,6 +418,18 @@ public class SessionDiagramEditorScreen {
     private void onSessionErrorEvent(@Observes OnSessionErrorEvent errorEvent) {
         if (isSameSession(errorEvent.getSession())) {
             showError(errorEvent.getError());
+        }
+    }
+
+    private void OnEditExpressionEvent(final @Observes EditExpressionEvent event) {
+        if (isSameSession(event.getSession())) {
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          new NavigateToExpressionEditorCommand(expressionEditor,
+                                                                                presenter,
+                                                                                sessionManager,
+                                                                                sessionCommandManager,
+                                                                                event.getHasName(),
+                                                                                event.getHasExpression()));
         }
     }
 

@@ -109,24 +109,6 @@
       <artifactId>kie-wb-common-dmn-api</artifactId>
     </dependency>
 
-    <!-- TODO: Really necessary? . -->
-
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.xml.bind</groupId>
-          <artifactId>jaxb-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
     <!-- GWT and GWT Extensions -->
     <dependency>
       <groupId>com.google.gwt</groupId>
@@ -211,6 +193,13 @@
       <artifactId>errai-marshalling</artifactId>
     </dependency>
 
+    <!--Wires Grids dependencies-->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-wires-core-grids</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Lienzo -->
     <dependency>
       <groupId>com.ahome-it</groupId>
@@ -246,6 +235,12 @@
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-api-mockito</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.ahome-it</groupId>
+      <artifactId>lienzo-tests</artifactId>
       <scope>test</scope>
     </dependency>
 

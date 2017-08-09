@@ -66,7 +66,7 @@ public class BusinessKnowledgeModel extends DRGElement {
     protected FunctionDefinition encapsulatedLogic;
 
     @PropertySet
-    @FormField(afterElement = "encapsulatedLogic")
+    @FormField(afterElement = "variable")
     @Valid
     protected BackgroundSet backgroundSet;
 

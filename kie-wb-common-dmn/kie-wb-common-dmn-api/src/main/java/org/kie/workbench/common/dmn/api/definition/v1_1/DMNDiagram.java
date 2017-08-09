@@ -68,7 +68,7 @@ public class DMNDiagram extends DMNModelInstrumentedBase {
     public static final Set<String> stunnerLabels = new HashSet<String>() {{
         add("dmn_diagram");
     }};
-    
+
     protected Definitions definitions;
 
     @PropertySet
@@ -108,12 +108,12 @@ public class DMNDiagram extends DMNModelInstrumentedBase {
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
     }
-    
+
     public Definitions getDefinitions() {
         return definitions;
     }
-    
-    public void setDefinitions(Definitions definitions) {
+
+    public void setDefinitions(final Definitions definitions) {
         this.definitions = definitions;
     }
 

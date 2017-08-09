@@ -20,12 +20,13 @@ import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 @Portable
-public class Invocation extends Expression {
+public class Invocation extends Expression implements HasExpression {
 
     private Expression expression;
     private List<Binding> binding;
@@ -45,10 +46,12 @@ public class Invocation extends Expression {
         this.binding = binding;
     }
 
+    @Override
     public Expression getExpression() {
         return expression;
     }
 
+    @Override
     public void setExpression(final Expression value) {
         this.expression = value;
     }

@@ -298,6 +298,13 @@
       <scope>provided</scope>
     </dependency>
 
+    <!--Wires Grids dependencies-->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-wires-core-grids</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Errai. -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -863,6 +870,9 @@
             <!-- DMN Editor -->
             <compileSourcesArtifact>org.kie.workbench:kie-wb-common-dmn-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench:kie-wb-common-dmn-client</compileSourcesArtifact>
+
+            <!-- Wires -->
+            <compileSourcesArtifact>org.uberfire:uberfire-wires-core-grids</compileSourcesArtifact>
 
           </compileSourcesArtifacts>
         </configuration>

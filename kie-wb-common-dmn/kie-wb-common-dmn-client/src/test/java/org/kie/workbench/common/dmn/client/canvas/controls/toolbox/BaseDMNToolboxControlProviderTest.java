@@ -16,6 +16,7 @@
 package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 
 import java.util.HashSet;
+import javax.enterprise.event.Event;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,9 +31,11 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
+import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.stunner.client.lienzo.components.toolbox.LienzoToolboxFactory;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.AbstractToolboxControlProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.ToolboxCommandFactory;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxFactory;
@@ -48,10 +51,16 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-public abstract class BaseDMNFlowActionsToolboxControlProviderTest {
+public abstract class BaseDMNToolboxControlProviderTest {
 
     @Mock
     protected DefinitionManager definitionManager;
+
+    @Mock
+    protected SessionManager sessionManager;
+
+    @Mock
+    protected Event<EditExpressionEvent> event;
 
     @Mock
     protected DefinitionUtils definitionUtils;
@@ -60,7 +69,7 @@ public abstract class BaseDMNFlowActionsToolboxControlProviderTest {
     protected FactoryManager factoryManager;
 
     @Mock
-    protected ToolboxCommandFactory defaultToolboxCommandFactory;
+    protected ToolboxCommandFactory toolboxCommandFactory;
 
     @Mock
     protected CommonLookups commonLookups;

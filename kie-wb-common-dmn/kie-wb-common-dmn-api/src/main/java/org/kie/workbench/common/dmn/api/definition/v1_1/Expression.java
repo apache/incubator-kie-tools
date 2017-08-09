@@ -18,13 +18,9 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 
 public abstract class Expression extends DMNElement {
 
-    @Property
-    @FormField(afterElement = "description")
     protected QName typeRef;
 
     public Expression() {

@@ -61,6 +61,12 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
 
     interface View extends IsWidget {
 
+        IsWidget getCanvasWidget();
+
+        IsWidget getToolbarWidget();
+
+        IsWidget getPaletteWidget();
+
         View setCanvasWidget(final IsWidget widget);
 
         View setToolbarWidget(final IsWidget widget);

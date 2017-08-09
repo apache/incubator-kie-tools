@@ -16,9 +16,10 @@
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 
 @Portable
-public class ContextEntry extends DMNModelInstrumentedBase {
+public class ContextEntry extends DMNModelInstrumentedBase implements HasExpression {
 
     private InformationItem variable;
     private Expression expression;
@@ -31,10 +32,12 @@ public class ContextEntry extends DMNModelInstrumentedBase {
         this.variable = value;
     }
 
+    @Override
     public Expression getExpression() {
         return expression;
     }
 
+    @Override
     public void setExpression(final Expression value) {
         this.expression = value;
     }

@@ -20,26 +20,13 @@ import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
-import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
-import org.kie.workbench.common.stunner.core.definition.annotation.Name;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 @Portable
-@Bindable
-@PropertySet
-@FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id")
-public class FunctionDefinition extends Expression implements DMNPropertySet {
-
-    @Name
-    @FieldLabel
-    public static final transient String propertySetName = "FunctionDefinition";
+public class FunctionDefinition extends Expression implements HasExpression {
 
     private Expression expression;
 
@@ -62,18 +49,16 @@ public class FunctionDefinition extends Expression implements DMNPropertySet {
         this.expression = expression;
     }
 
-    public String getPropertySetName() {
-        return propertySetName;
-    }
-
     // -----------------------
     // DMN properties
     // -----------------------
 
+    @Override
     public Expression getExpression() {
         return expression;
     }
 
+    @Override
     public void setExpression(final Expression expression) {
         this.expression = expression;
     }
