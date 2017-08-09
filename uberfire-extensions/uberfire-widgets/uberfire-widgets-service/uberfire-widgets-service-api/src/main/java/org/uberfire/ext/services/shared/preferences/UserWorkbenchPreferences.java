@@ -15,16 +15,12 @@
  */
 package org.uberfire.ext.services.shared.preferences;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class UserWorkbenchPreferences extends UserPreference {
 
     private String language;
-    private Map<String, String> perspectiveViewMode = new HashMap<String, String>();
     private boolean useWorkbenchInCompactMode;
 
     public UserWorkbenchPreferences() {
@@ -37,30 +33,12 @@ public class UserWorkbenchPreferences extends UserPreference {
         this.language = language;
     }
 
-    public Map<String, String> getPerspectiveViewMode() {
-        return perspectiveViewMode;
-    }
-
-    public void setPerspectiveViewMode(final Map<String, String> perspectiveViewMode) {
-        this.perspectiveViewMode = perspectiveViewMode;
-    }
-
     public String getLanguage() {
         return language;
     }
 
     public void setLanguage(final String language) {
         this.language = language;
-    }
-
-    public String getViewMode(final String perspective) {
-        return perspectiveViewMode.get(perspective);
-    }
-
-    public void setViewMode(final String perspective,
-                            final String viewMode) {
-        perspectiveViewMode.put(perspective,
-                                viewMode);
     }
 
     public boolean isUseWorkbenchInCompactMode() {
