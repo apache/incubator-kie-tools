@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 /**
@@ -66,15 +66,13 @@ public class ConnectorShape<W, D extends MutableShapeDef<W>, V extends ShapeView
                                  final ShapeView<?> target,
                                  final MutationContext mutationContext) {
         final ViewConnector connectionContent = (ViewConnector) element.getContent();
-        final Magnet sourceMagnet = (Magnet) connectionContent.getSourceMagnet().orElse(null);
-        final Magnet targetMagnet = (Magnet) connectionContent.getTargetMagnet().orElse(null);
+        final Connection sourceConnection = (Connection) connectionContent.getSourceConnection().orElse(null);
+        final Connection targetConnection = (Connection) connectionContent.getTargetConnection().orElse(null);
         if (null != source && null != target) {
             ((IsConnector) getShapeView()).connect(source,
-                                                   sourceMagnet,
+                                                   sourceConnection,
                                                    target,
-                                                   targetMagnet,
-                                                   true,
-                                                   false);
+                                                   targetConnection);
         }
     }
 

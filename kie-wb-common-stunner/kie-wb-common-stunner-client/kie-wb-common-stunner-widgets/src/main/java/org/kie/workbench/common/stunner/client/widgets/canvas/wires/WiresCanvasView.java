@@ -18,10 +18,12 @@ package org.kie.workbench.common.stunner.client.widgets.canvas.wires;
 import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
+import com.ait.lienzo.client.core.shape.wires.MagnetManager;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
+import com.ait.lienzo.shared.core.types.Direction;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
@@ -38,6 +40,7 @@ public class WiresCanvasView extends CanvasView implements WiresCanvas.View {
     public void init() {
         super.init();
         wiresManager = WiresManager.get(canvasLayer);
+        wiresManager.setSpliceEnabled(false);
     }
 
     @Override
@@ -45,7 +48,8 @@ public class WiresCanvasView extends CanvasView implements WiresCanvas.View {
         if (WiresUtils.isWiresShape(shapeView)) {
             WiresShape wiresShape = (WiresShape) shapeView;
             wiresManager.register(wiresShape);
-            wiresManager.getMagnetManager().createMagnets(wiresShape);
+            wiresManager.getMagnetManager().createMagnets(wiresShape,
+                                                          getMagnetCardinals());
             WiresUtils.assertShapeGroup(wiresShape.getGroup(),
                                         WiresCanvas.WIRES_CANVAS_GROUP_ID);
         } else if (WiresUtils.isWiresConnector(shapeView)) {
@@ -98,5 +102,9 @@ public class WiresCanvasView extends CanvasView implements WiresCanvas.View {
     @Override
     public WiresManager getWiresManager() {
         return wiresManager;
+    }
+
+    protected Direction[] getMagnetCardinals() {
+        return MagnetManager.FOUR_CARDINALS;
     }
 }

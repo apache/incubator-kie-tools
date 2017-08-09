@@ -24,8 +24,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
-import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
@@ -57,8 +57,8 @@ public class AddConnectorCommandTest extends AbstractGraphCommandTest {
     @Mock
     private ViewConnector connContent;
 
-    private Optional<Magnet> sourceMagnet;
-    private Optional<Magnet> targetMagnet;
+    private Optional<Connection> sourceMagnet;
+    private Optional<Connection> targetMagnet;
 
     private AddConnectorCommand tested;
 
@@ -67,19 +67,19 @@ public class AddConnectorCommandTest extends AbstractGraphCommandTest {
         super.init(500,
                    500);
         node = mockNode(NODE_UUID);
-        sourceMagnet = Optional.of(MagnetImpl.Builder.build(0d,
-                                                            0d));
-        targetMagnet = Optional.of(MagnetImpl.Builder.build(0d,
-                                                            0d));
+        sourceMagnet = Optional.of(MagnetConnection.Builder.at(0d,
+                                                               0d));
+        targetMagnet = Optional.of(MagnetConnection.Builder.at(0d,
+                                                               0d));
         when(edge.getUUID()).thenReturn(EDGE_UUID);
         when(edge.getContent()).thenReturn(connContent);
-        when(connContent.getSourceMagnet()).thenReturn(sourceMagnet);
-        when(connContent.getTargetMagnet()).thenReturn(targetMagnet);
+        when(connContent.getSourceConnection()).thenReturn(sourceMagnet);
+        when(connContent.getTargetConnection()).thenReturn(targetMagnet);
         when(graphIndex.getNode(eq(NODE_UUID))).thenReturn(node);
         this.tested = new AddConnectorCommand(NODE_UUID,
                                               edge,
-                                              MagnetImpl.Builder.build(0d,
-                                                                       0d));
+                                              MagnetConnection.Builder.at(0d,
+                                                                          0d));
     }
 
     @Test

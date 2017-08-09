@@ -18,15 +18,15 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.req
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public final class NodeBuildRequestImpl extends AbstractBuildRequest implements NodeBuildRequest {
 
     private final Node<View<?>, Edge> node;
     private Edge<View<?>, Node> inEdge;
-    private final Magnet sourceMagnet;
-    private final Magnet targetMagnet;
+    private final Connection sourceConnection;
+    private final Connection targetConnection;
 
     public NodeBuildRequestImpl(final double x,
                                 final double y,
@@ -34,8 +34,8 @@ public final class NodeBuildRequestImpl extends AbstractBuildRequest implements 
         super(x,
               y);
         this.node = node;
-        this.sourceMagnet = null;
-        this.targetMagnet = null;
+        this.sourceConnection = null;
+        this.targetConnection = null;
     }
 
     public NodeBuildRequestImpl(final double x,
@@ -46,22 +46,22 @@ public final class NodeBuildRequestImpl extends AbstractBuildRequest implements 
               y);
         this.node = node;
         this.inEdge = inEdge;
-        this.sourceMagnet = null;
-        this.targetMagnet = null;
+        this.sourceConnection = null;
+        this.targetConnection = null;
     }
 
     public NodeBuildRequestImpl(final double x,
                                 final double y,
                                 final Node<View<?>, Edge> node,
                                 final Edge<View<?>, Node> inEdge,
-                                final Magnet sourceMagnet,
-                                final Magnet targetMagnet) {
+                                final Connection sourceConnection,
+                                final Connection targetConnection) {
         super(x,
               y);
         this.node = node;
         this.inEdge = inEdge;
-        this.targetMagnet = targetMagnet;
-        this.sourceMagnet = sourceMagnet;
+        this.targetConnection = targetConnection;
+        this.sourceConnection = sourceConnection;
     }
 
     @Override
@@ -74,13 +74,11 @@ public final class NodeBuildRequestImpl extends AbstractBuildRequest implements 
         return inEdge;
     }
 
-    @Override
-    public Magnet getSourceMagnet() {
-        return sourceMagnet;
+    public Connection getSourceConnection() {
+        return sourceConnection;
     }
 
-    @Override
-    public Magnet getTargetMagnet() {
-        return targetMagnet;
+    public Connection getTargetConnection() {
+        return targetConnection;
     }
 }

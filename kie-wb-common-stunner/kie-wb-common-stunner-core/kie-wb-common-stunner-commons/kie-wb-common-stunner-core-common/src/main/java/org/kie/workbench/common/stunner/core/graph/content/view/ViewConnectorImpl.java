@@ -28,15 +28,15 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
 
     protected W definition;
     protected Bounds bounds;
-    private Magnet sourceMagnet;
-    private Magnet targetMagnet;
+    private Connection sourceConnection;
+    private Connection targetConnection;
 
     public ViewConnectorImpl(final @MapsTo("definition") W definition,
                              final @MapsTo("bounds") Bounds bounds) {
         this.definition = definition;
         this.bounds = bounds;
-        this.sourceMagnet = null;
-        this.targetMagnet = null;
+        this.sourceConnection = null;
+        this.targetConnection = null;
     }
 
     @Override
@@ -59,32 +59,28 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
         this.bounds = bounds;
     }
 
-    @Override
-    public Optional<Magnet> getSourceMagnet() {
-        return Optional.ofNullable(sourceMagnet);
+    public Optional<Connection> getSourceConnection() {
+        return Optional.ofNullable(sourceConnection);
     }
 
-    @Override
-    public Optional<Magnet> getTargetMagnet() {
-        return Optional.ofNullable(targetMagnet);
+    public Optional<Connection> getTargetConnection() {
+        return Optional.ofNullable(targetConnection);
     }
 
-    @Override
-    public void setSourceMagnet(final Magnet sourceMagnet) {
-        this.sourceMagnet = sourceMagnet;
+    public void setSourceConnection(final Connection sourceConnection) {
+        this.sourceConnection = sourceConnection;
     }
 
-    @Override
-    public void setTargetMagnet(final Magnet targetMagnet) {
-        this.targetMagnet = targetMagnet;
+    public void setTargetConnection(final Connection targetConnection) {
+        this.targetConnection = targetConnection;
     }
 
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(definition.hashCode(),
                                          bounds.hashCode(),
-                                         getSourceMagnet().hashCode(),
-                                         getTargetMagnet().hashCode());
+                                         getSourceConnection().hashCode(),
+                                         getTargetConnection().hashCode());
     }
 
     @Override
@@ -93,10 +89,9 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
             ViewConnector other = (ViewConnector) o;
             return definition.equals(other.getDefinition()) &&
                     bounds.equals(other.getBounds()) &&
-                    getSourceMagnet().equals(other.getSourceMagnet()) &&
-                    getTargetMagnet().equals(other.getTargetMagnet());
+                    getSourceConnection().equals(other.getSourceConnection()) &&
+                    getTargetConnection().equals(other.getTargetConnection());
         }
         return false;
     }
-
 }

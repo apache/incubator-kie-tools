@@ -16,8 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Optional;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -25,7 +24,6 @@ import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -36,16 +34,16 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
-import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 @Dependent
 public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
         implements ConnectionAcceptorControl<AbstractCanvasHandler> {
-
-    private static Logger LOGGER = Logger.getLogger(ConnectionAcceptorControlImpl.class.getName());
 
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private CanvasHighlight canvasHighlight;
@@ -72,15 +70,15 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
     @SuppressWarnings("unchecked")
     public boolean allowSource(final Node source,
                                final Edge<View<?>, Node> connector,
-                               final Magnet magnet) {
-        final boolean eq = eq(source,
-                              connector.getSourceNode());
-        if (!eq) {
-            final CommandResult<CanvasViolation> violations = getCommandManager().allow(getCanvasHandler(),
-                                                                                        canvasCommandFactory.setSourceNode(source,
-                                                                                                                           connector,
-                                                                                                                           magnet,
-                                                                                                                           true));
+                               final Connection connection) {
+        if (isSourceChanged(source,
+                            connector,
+                            connection)) {
+            final CommandResult<CanvasViolation> violations =
+                    getCommandManager().allow(getCanvasHandler(),
+                                              canvasCommandFactory.setSourceNode(source,
+                                                                                 connector,
+                                                                                 connection));
             final boolean accepts = isAccept(violations);
             highlight(source,
                       connector,
@@ -94,15 +92,15 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
     @SuppressWarnings("unchecked")
     public boolean allowTarget(final Node target,
                                final Edge<View<?>, Node> connector,
-                               final Magnet magnet) {
-        final boolean eq = eq(target,
-                              connector.getTargetNode());
-        if (!eq) {
-            final CommandResult<CanvasViolation> violations = getCommandManager().allow(getCanvasHandler(),
-                                                                                        canvasCommandFactory.setTargetNode(target,
-                                                                                                                           connector,
-                                                                                                                           magnet,
-                                                                                                                           true));
+                               final Connection connection) {
+        if (isTargetChanged(target,
+                            connector,
+                            connection)) {
+            final CommandResult<CanvasViolation> violations =
+                    getCommandManager().allow(getCanvasHandler(),
+                                              canvasCommandFactory.setTargetNode(target,
+                                                                                 connector,
+                                                                                 connection));
             final boolean accepts = isAccept(violations);
             highlight(target,
                       connector,
@@ -116,38 +114,78 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
     @SuppressWarnings("unchecked")
     public boolean acceptSource(final Node source,
                                 final Edge<View<?>, Node> connector,
-                                final Magnet magnet) {
-        final boolean isNewConnection = !eq(source,
-                              connector.getSourceNode());
+                                final Connection connection) {
         ensureUnHighLight();
-        final CommandResult<CanvasViolation> violations = getCommandManager().execute(getCanvasHandler(),
-                                                                                          canvasCommandFactory.setSourceNode(source,
-                                                                                                                             connector,
-                                                                                                                             magnet,
-                                                                                                                             isNewConnection));
-        return isAccept(violations);
-
+        if (isSourceChanged(source,
+                            connector,
+                            connection)) {
+            final CommandResult<CanvasViolation> violations =
+                    getCommandManager().execute(getCanvasHandler(),
+                                                canvasCommandFactory.setSourceNode(source,
+                                                                                   connector,
+                                                                                   connection));
+            return isAccept(violations);
+        }
+        return true;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public boolean acceptTarget(final Node target,
                                 final Edge<View<?>, Node> connector,
-                                final Magnet magnet) {
-        final boolean isNewConnection = !eq(target,
-                              connector.getTargetNode());
+                                final Connection connection) {
         ensureUnHighLight();
-            final CommandResult<CanvasViolation> violations = getCommandManager().execute(getCanvasHandler(),
-                                                                                          canvasCommandFactory.setTargetNode(target,
-                                                                                                                             connector,
-                                                                                                                             magnet,
-                                                                                                                             isNewConnection));
+        if (isTargetChanged(target,
+                            connector,
+                            connection)) {
+            final CommandResult<CanvasViolation> violations =
+                    getCommandManager().execute(getCanvasHandler(),
+                                                canvasCommandFactory.setTargetNode(target,
+                                                                                   connector,
+                                                                                   connection));
             return isAccept(violations);
+        }
+        return true;
     }
 
     @SuppressWarnings("unchecked")
-    private static boolean eq(final Node n1,
-                              final Node n2) {
+    private static boolean isSourceChanged(final Node node,
+                                           final Edge<View<?>, Node> connector,
+                                           final Connection connection) {
+        final ViewConnector vc = null != connector.getContent() ?
+                (ViewConnector) connector.getContent() :
+                null;
+        return (!eq(node,
+                    connector.getSourceNode(),
+                    connection,
+                    null != vc ? vc.getSourceConnection() : Optional.empty()));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static boolean isTargetChanged(final Node node,
+                                           final Edge<View<?>, Node> connector,
+                                           final Connection connection) {
+        final ViewConnector vc = null != connector.getContent() ?
+                (ViewConnector) connector.getContent() :
+                null;
+        return (!eq(node,
+                    connector.getTargetNode(),
+                    connection,
+                    null != vc ? vc.getTargetConnection() : Optional.empty()));
+    }
+
+    private static boolean eq(final Element<?> e1,
+                              final Element<?> e2,
+                              final Connection c1,
+                              final Optional<Connection> c2) {
+        return eq(e1,
+                  e2) && eq(c1,
+                            c2.orElse(null));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static boolean eq(final Object n1,
+                              final Object n2) {
         if (n1 == null && n2 == null) {
             return true;
         }
@@ -164,20 +202,15 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
             if (!isEnabled()) {
                 return false;
             }
-            log(Level.FINE,
-                    "## Accept Head ##");
-                final Edge edge = WiresUtils.getEdge(getCanvasHandler(),
-                                                     head.getConnector());
-                final Node sourceNode = WiresUtils.getNode(getCanvasHandler(),
+            final Edge edge = WiresUtils.getEdge(getCanvasHandler(),
+                                                 head.getConnector());
+            final Node sourceNode = WiresUtils.getNode(getCanvasHandler(),
+                                                       wiresMagnet);
+            final Connection connection = createConnection(head,
                                                            wiresMagnet);
-                final Magnet magnet = buildMagnet(wiresMagnet);
-                final String sourceUUID = sourceNode != null ? sourceNode.getUUID() : null;
-                final String message = "Executed SetConnectionSourceNodeCommand [source=" + sourceUUID + ", magnet=" + magnet + "]";
-                log(Level.FINE,
-                    message);
-                return acceptSource(sourceNode,
-                                    edge,
-                                    magnet);
+            return acceptSource(sourceNode,
+                                edge,
+                                connection);
         }
 
         // Set the target Node for the connector.
@@ -188,44 +221,33 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
             if (!isEnabled()) {
                 return false;
             }
-            log(Level.FINE,
-                   "## Accept tail ##");
-                final WiresConnection head = tail.getConnector().getHeadConnection();
-                final Edge edge = WiresUtils.getEdge(getCanvasHandler(),
-                                                     head.getConnector());
-                final Node targetNode = WiresUtils.getNode(getCanvasHandler(),
+            final WiresConnection head = tail.getConnector().getHeadConnection();
+            final Edge edge = WiresUtils.getEdge(getCanvasHandler(),
+                                                 head.getConnector());
+            final Node targetNode = WiresUtils.getNode(getCanvasHandler(),
+                                                       wiresMagnet);
+            final Connection connection = createConnection(tail,
                                                            wiresMagnet);
-                final Magnet magnet = buildMagnet(wiresMagnet);
-                final String targetUUID = targetNode != null ? targetNode.getUUID() : null;
-                final String message = "Executed SetConnectionTargetNodeCommand [target=" + targetUUID + ", magnet=" + magnet + "]";
-                log(Level.FINE,
-                    message);
-                return acceptTarget(targetNode,
-                                    edge,
-                                    magnet);
+            return acceptTarget(targetNode,
+                                edge,
+                                connection);
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public boolean headConnectionAllowed(final WiresConnection head,
                                              final WiresShape shape) {
+
             if (!isEnabled()) {
                 return false;
             }
-            log(Level.FINE,
-                "## Allow Head ##");
             final Edge<View<?>, Node> edge = WiresUtils.getEdge(getCanvasHandler(),
                                                                 head.getConnector());
             final Node sourceNode = WiresUtils.getNode(getCanvasHandler(),
                                                        shape);
-            final boolean b = allowSource(sourceNode,
-                                          edge,
-                                          MagnetImpl.Builder.build(0d,
-                                                                   0d));
-            final String nUUID = null != sourceNode ? sourceNode.getUUID() : "null";
-            log(Level.FINE,
-                "  Is head allowed [" + nUUID + "] = " + b);
-            return b;
+            return allowSource(sourceNode,
+                               edge,
+                               createConnection(sourceNode));
         }
 
         @Override
@@ -235,20 +257,13 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
             if (!isEnabled()) {
                 return false;
             }
-            log(Level.FINE,
-                "## Allow tail ##");
             final Edge<View<?>, Node> edge = WiresUtils.getEdge(getCanvasHandler(),
                                                                 tail.getConnector());
             final Node targetNode = WiresUtils.getNode(getCanvasHandler(),
                                                        shape);
-            final boolean b = allowTarget(targetNode,
-                                          edge,
-                                          MagnetImpl.Builder.build(0d,
-                                                                   0d));
-            final String nUUID = null != targetNode ? targetNode.getUUID() : "null";
-            log(Level.FINE,
-                "  Is tail allowed [" + nUUID + "] = " + b);
-            return b;
+            return allowTarget(targetNode,
+                               edge,
+                               createConnection(targetNode));
         }
     };
 
@@ -256,10 +271,6 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
         return !CommandUtils.isError(result);
     }
 
-    private MagnetImpl buildMagnet(final WiresMagnet wiresMagnet) {
-        return MagnetImpl.Builder.build(wiresMagnet.getX(),
-                                        wiresMagnet.getY());
-    }
     private void highlight(final Node node,
                            final Edge<View<?>, Node> connector,
                            final boolean valid) {
@@ -277,11 +288,21 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
         }
     }
 
-    private void log(final Level level,
-                     final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
-            LOGGER.log(level,
-                       message);
-        }
+    public static MagnetConnection createConnection(final WiresConnection wiresConnection,
+                                                    final WiresMagnet wiresMagnet) {
+        return null != wiresMagnet ? new MagnetConnection.Builder()
+                .atX(wiresMagnet.getX())
+                .atY(wiresMagnet.getY())
+                .auto(null != wiresConnection && wiresConnection.isAutoConnection())
+                .magnet(wiresMagnet.getIndex())
+                .build() :
+                null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static MagnetConnection createConnection(final Element element) {
+        return null != element ?
+                MagnetConnection.Builder.forElement(element) :
+                null;
     }
 }

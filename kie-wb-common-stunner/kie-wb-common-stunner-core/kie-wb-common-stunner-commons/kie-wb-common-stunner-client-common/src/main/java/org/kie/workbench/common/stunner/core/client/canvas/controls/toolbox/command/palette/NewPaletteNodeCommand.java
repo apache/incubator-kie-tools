@@ -42,7 +42,7 @@ import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
@@ -183,14 +183,14 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
                                                                                                             @Override
                                                                                                             public void onComplete(final int x,
                                                                                                                                    final int y,
-                                                                                                                                   final Magnet sourceMagnet,
-                                                                                                                                   final Magnet targetMagnet) {
+                                                                                                                                   final Connection sourceConnection,
+                                                                                                                                   final Connection targetConnection) {
                                                                                                                 final NodeBuildRequest request = new NodeBuildRequestImpl(x,
                                                                                                                                                                           y,
                                                                                                                                                                           node,
                                                                                                                                                                           edge,
-                                                                                                                                                                          sourceMagnet,
-                                                                                                                                                                          targetMagnet);
+                                                                                                                                                                          sourceConnection,
+                                                                                                                                                                          targetConnection);
                                                                                                                 nodeBuilderControl.build(request,
                                                                                                                                          new BuilderControl.BuildCallback() {
 

@@ -67,6 +67,8 @@ public abstract class ElementParser<T extends Element<View>> extends ObjectParse
                                                                  valueStr));
             }
         }
+        // Custom extended prpoerties, if any.
+        parseExtendedProperties(propertiesParser);
         // Stencil id field.
         String defId = context.getOryxManager().getMappingsManager().getOryxDefinitionId(definition.getClass());
         super.addParser(new ObjectParser("stencil").addParser(new StringFieldParser("id",
@@ -76,6 +78,10 @@ public abstract class ElementParser<T extends Element<View>> extends ObjectParse
         Bounds.Bound lr = element.getContent().getBounds().getLowerRight();
         parseBounds(ul,
                     lr);
+    }
+
+    protected void parseExtendedProperties(final ObjectParser propertiesParser) {
+
     }
 
     protected void parseBounds(final Bounds.Bound ul,

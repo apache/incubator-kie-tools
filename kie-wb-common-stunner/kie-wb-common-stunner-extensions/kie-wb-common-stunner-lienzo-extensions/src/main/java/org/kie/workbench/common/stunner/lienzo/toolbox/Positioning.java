@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.lienzo.toolbox;
 
+import com.ait.lienzo.client.core.shape.wires.MagnetManager;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
@@ -26,7 +27,8 @@ public class Positioning {
 
     static Point2D anchorFor(final BoundingBox boundingBox,
                              final Direction direction) {
-        Point2DArray cardinals = Geometry.getCardinals(boundingBox);
+        Point2DArray cardinals = Geometry.getCardinals(boundingBox,
+                                                       MagnetManager.EIGHT_CARDINALS);
         switch (direction) {
             case NORTH:
                 return cardinals.get(1);

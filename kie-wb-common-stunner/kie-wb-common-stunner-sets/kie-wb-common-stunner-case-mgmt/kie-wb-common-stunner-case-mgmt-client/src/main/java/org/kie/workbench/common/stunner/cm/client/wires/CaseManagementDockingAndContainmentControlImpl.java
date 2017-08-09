@@ -21,7 +21,6 @@ import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.WiresUtils;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresDockingAndContainmentControlImpl;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -80,7 +79,7 @@ public class CaseManagementDockingAndContainmentControlImpl extends WiresDocking
         if (state.getGhost().isPresent() && m_parent != null) {
             if (m_parent.getContainmentAcceptor().containmentAllowed(m_parent,
                                                                      m_shape)) {
-                final Point2D parentAbsLoc = WiresUtils.getLocation(m_parent.getGroup());
+                final Point2D parentAbsLoc = m_parent.getGroup().getComputedLocation();
                 final Point2D mouseRelativeLoc = new Point2D(mouseX - parentAbsLoc.getX(),
                                                              mouseY - parentAbsLoc.getY());
 

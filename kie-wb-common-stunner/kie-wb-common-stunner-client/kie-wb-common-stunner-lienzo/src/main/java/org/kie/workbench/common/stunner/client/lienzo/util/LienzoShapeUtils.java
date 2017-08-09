@@ -24,17 +24,11 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
-import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 
 public class LienzoShapeUtils {
-
-    public static final int DEFAULT_SOURCE_MAGNET = 3;
-    public static final int DEFAULT_TARGET_MAGNET = 7;
-
 
     public static void scalePicture(final Picture picture,
                                     final double width,
@@ -90,8 +84,8 @@ public class LienzoShapeUtils {
      * TODO: This is enough for the current line/arc support in stunner's shapes, but consider
      * improving this behavior on the future.
      */
-    public static Magnet[] getDefaultMagnets(final WiresShape sourceShape,
-                                             final WiresShape targetShape) {
+    public static Connection[] getDefaultConnections(final WiresShape sourceShape,
+                                                     final WiresShape targetShape) {
         final MagnetManager.Magnets sourceMagnets = sourceShape.getMagnets();
         final MagnetManager.Magnets targetMagnets = targetShape.getMagnets();
         int iSourceMagnet = 0;
@@ -120,22 +114,11 @@ public class LienzoShapeUtils {
                 }
             }
         }
-        Magnet sMagnet = MagnetImpl.Builder.build(sourceMagnets.getMagnet(iSourceMagnet).getX(),
-                                                  sourceMagnets.getMagnet(iSourceMagnet).getY());
-        Magnet tMagnet = MagnetImpl.Builder.build(targetMagnets.getMagnet(iTargetMagnet).getX(),
-                                                  targetMagnets.getMagnet(iTargetMagnet).getY());
-        return new Magnet[]{sMagnet, tMagnet};
-    }
-
-    public static Magnet[] getDefaultMagnets(final Shape sourceShape,
-                                             final Shape targetShape) {
-        final ShapeView<?> sourceView = sourceShape.getShapeView();
-        final ShapeView<?> targetView = targetShape.getShapeView();
-        if (sourceView instanceof WiresShape && targetView instanceof WiresShape) {
-            return getDefaultMagnets((WiresShape) sourceView,
-                                     (WiresShape) targetView);
-        }
-        return new Magnet[]{MagnetImpl.Builder.build(Magnet.MagnetType.OUTGOING), MagnetImpl.Builder.build(Magnet.MagnetType.INCOMING)};
+        Connection sConnection = MagnetConnection.Builder.at(sourceMagnets.getMagnet(iSourceMagnet).getX(),
+                                                             sourceMagnets.getMagnet(iSourceMagnet).getY());
+        Connection tConnection = MagnetConnection.Builder.at(targetMagnets.getMagnet(iTargetMagnet).getX(),
+                                                             targetMagnets.getMagnet(iTargetMagnet).getY());
+        return new Connection[]{sConnection, tConnection};
     }
 
     private static boolean isOddNumber(final int i) {

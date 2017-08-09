@@ -16,9 +16,13 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
+import java.util.Optional;
+
 import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
+import com.ait.lienzo.client.core.shape.wires.WiresConnection;
+import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,9 +39,14 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.mockito.Mock;
 
 import static org.junit.Assert.*;
@@ -65,7 +74,9 @@ public class ConnectionAcceptorControlImplTest {
     @Mock
     private Edge<View<?>, Node> edge;
     @Mock
-    private Magnet magnet;
+    private ViewConnector edgeContent;
+    @Mock
+    private Connection connection;
 
     private ConnectionAcceptorControlImpl tested;
     private SetConnectionSourceNodeCommand setConnectionSourceNodeCommand;
@@ -74,40 +85,37 @@ public class ConnectionAcceptorControlImplTest {
     private final CommandResult<CanvasViolation> result = CanvasCommandResultBuilder.SUCCESS;
 
     @Before
-    @SuppressWarnings("uncheecked")
+    @SuppressWarnings("unchecked")
     public void setup() {
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         when(canvas.getView()).thenReturn(canvasView);
+        when(edge.getContent()).thenReturn(edgeContent);
+        when(edgeContent.getSourceConnection()).thenReturn(Optional.empty());
+        when(edgeContent.getTargetConnection()).thenReturn(Optional.empty());
         doAnswer(invocationOnMock -> {
             final Node node = (Node) invocationOnMock.getArguments()[0];
             final Edge edge = (Edge) invocationOnMock.getArguments()[1];
-            final Magnet magnet = (Magnet) invocationOnMock.getArguments()[2];
-            final Boolean isNewConnection = (Boolean) invocationOnMock.getArguments()[3];
+            final Connection connection = (Connection) invocationOnMock.getArguments()[2];
             setConnectionSourceNodeCommand = new SetConnectionSourceNodeCommand(node,
                                                                                 edge,
-                                                                                magnet,
-                                                                                isNewConnection);
+                                                                                connection);
             return setConnectionSourceNodeCommand;
         }).when(canvasCommandFactory).setSourceNode(any(Node.class),
                                                     any(Edge.class),
-                                                    any(Magnet.class),
-                                                    anyBoolean());
+                                                    any(Connection.class));
         doAnswer(invocationOnMock -> {
             final Node node = (Node) invocationOnMock.getArguments()[0];
             final Edge edge = (Edge) invocationOnMock.getArguments()[1];
-            final Magnet magnet = (Magnet) invocationOnMock.getArguments()[2];
-            final Boolean isNewConnection = (Boolean) invocationOnMock.getArguments()[3];
+            final Connection connection = (Connection) invocationOnMock.getArguments()[2];
             setConnectionTargetNodeCommand = new SetConnectionTargetNodeCommand(node,
                                                                                 edge,
-                                                                                magnet,
-                                                                                isNewConnection);
+                                                                                connection);
             return setConnectionTargetNodeCommand;
         }).when(canvasCommandFactory).setTargetNode(any(Node.class),
                                                     any(Edge.class),
-                                                    any(Magnet.class),
-                                                    anyBoolean());
+                                                    any(Connection.class));
         when(commandManager.allow(eq(canvasHandler),
                                   eq(setConnectionSourceNodeCommand))).thenReturn(result);
         when(commandManager.execute(eq(canvasHandler),
@@ -151,7 +159,7 @@ public class ConnectionAcceptorControlImplTest {
         tested.enable(canvasHandler);
         final boolean allow = tested.allowSource(node,
                                                  edge,
-                                                 magnet);
+                                                 connection);
         assertTrue(allow);
         verify(commandManager,
                times(1)).allow(eq(canvasHandler),
@@ -163,9 +171,25 @@ public class ConnectionAcceptorControlImplTest {
                      setConnectionSourceNodeCommand.getNode());
         assertEquals(edge,
                      setConnectionSourceNodeCommand.getEdge());
-        assertEquals(magnet,
-                     setConnectionSourceNodeCommand.getMagnet());
-        assertTrue(setConnectionSourceNodeCommand.isNewConnection());
+        assertEquals(connection,
+                     setConnectionSourceNodeCommand.getConnection());
+    }
+
+    @Test
+    public void testSkipAllowSourceAsNoChanges() {
+        when(edge.getSourceNode()).thenReturn(node);
+        when(edgeContent.getSourceConnection()).thenReturn(Optional.of(connection));
+        tested.enable(canvasHandler);
+        final boolean allow = tested.allowSource(node,
+                                                 edge,
+                                                 connection);
+        assertTrue(allow);
+        verify(commandManager,
+               never()).allow(eq(canvasHandler),
+                              eq(setConnectionSourceNodeCommand));
+        verify(commandManager,
+               never()).execute(any(AbstractCanvasHandler.class),
+                                any(SetConnectionSourceNodeCommand.class));
     }
 
     @Test
@@ -173,7 +197,7 @@ public class ConnectionAcceptorControlImplTest {
         tested.enable(canvasHandler);
         final boolean allow = tested.allowTarget(node,
                                                  edge,
-                                                 magnet);
+                                                 connection);
         assertTrue(allow);
         verify(commandManager,
                times(1)).allow(eq(canvasHandler),
@@ -185,9 +209,25 @@ public class ConnectionAcceptorControlImplTest {
                      setConnectionTargetNodeCommand.getNode());
         assertEquals(edge,
                      setConnectionTargetNodeCommand.getEdge());
-        assertEquals(magnet,
-                     setConnectionTargetNodeCommand.getMagnet());
-        assertTrue(setConnectionTargetNodeCommand.isNewConnection());
+        assertEquals(connection,
+                     setConnectionTargetNodeCommand.getConnection());
+    }
+
+    @Test
+    public void testSkipAllowTargetAsNoChanges() {
+        when(edge.getTargetNode()).thenReturn(node);
+        when(edgeContent.getTargetConnection()).thenReturn(Optional.of(connection));
+        tested.enable(canvasHandler);
+        final boolean allow = tested.allowTarget(node,
+                                                 edge,
+                                                 connection);
+        assertTrue(allow);
+        verify(commandManager,
+               never()).allow(eq(canvasHandler),
+                              eq(setConnectionSourceNodeCommand));
+        verify(commandManager,
+               never()).execute(any(AbstractCanvasHandler.class),
+                                any(SetConnectionSourceNodeCommand.class));
     }
 
     @Test
@@ -195,7 +235,7 @@ public class ConnectionAcceptorControlImplTest {
         tested.enable(canvasHandler);
         final boolean allow = tested.acceptSource(node,
                                                   edge,
-                                                  magnet);
+                                                  connection);
         assertTrue(allow);
         verify(commandManager,
                times(1)).execute(eq(canvasHandler),
@@ -207,9 +247,8 @@ public class ConnectionAcceptorControlImplTest {
                      setConnectionSourceNodeCommand.getNode());
         assertEquals(edge,
                      setConnectionSourceNodeCommand.getEdge());
-        assertEquals(magnet,
-                     setConnectionSourceNodeCommand.getMagnet());
-        assertTrue(setConnectionSourceNodeCommand.isNewConnection());
+        assertEquals(connection,
+                     setConnectionSourceNodeCommand.getConnection());
     }
 
     @Test
@@ -217,7 +256,7 @@ public class ConnectionAcceptorControlImplTest {
         tested.enable(canvasHandler);
         final boolean allow = tested.acceptTarget(node,
                                                   edge,
-                                                  magnet);
+                                                  connection);
         assertTrue(allow);
         verify(commandManager,
                times(1)).execute(eq(canvasHandler),
@@ -229,18 +268,17 @@ public class ConnectionAcceptorControlImplTest {
                      setConnectionTargetNodeCommand.getNode());
         assertEquals(edge,
                      setConnectionTargetNodeCommand.getEdge());
-        assertEquals(magnet,
-                     setConnectionTargetNodeCommand.getMagnet());
-        assertTrue(setConnectionTargetNodeCommand.isNewConnection());
+        assertEquals(connection,
+                     setConnectionTargetNodeCommand.getConnection());
     }
 
     @Test
-    public void testAcceptSourceNotNewConnection() {
+    public void testAcceptSourceAsNewConnection() {
         when(edge.getSourceNode()).thenReturn(node);
         tested.enable(canvasHandler);
         final boolean allow = tested.acceptSource(node,
                                                   edge,
-                                                  magnet);
+                                                  connection);
         assertTrue(allow);
         verify(commandManager,
                times(1)).execute(eq(canvasHandler),
@@ -252,9 +290,8 @@ public class ConnectionAcceptorControlImplTest {
                      setConnectionSourceNodeCommand.getNode());
         assertEquals(edge,
                      setConnectionSourceNodeCommand.getEdge());
-        assertEquals(magnet,
-                     setConnectionSourceNodeCommand.getMagnet());
-        assertFalse(setConnectionSourceNodeCommand.isNewConnection());
+        assertEquals(connection,
+                     setConnectionSourceNodeCommand.getConnection());
     }
 
     @Test
@@ -263,7 +300,7 @@ public class ConnectionAcceptorControlImplTest {
         tested.enable(canvasHandler);
         final boolean allow = tested.acceptTarget(node,
                                                   edge,
-                                                  magnet);
+                                                  connection);
         assertTrue(allow);
         verify(commandManager,
                times(1)).execute(eq(canvasHandler),
@@ -275,8 +312,92 @@ public class ConnectionAcceptorControlImplTest {
                      setConnectionTargetNodeCommand.getNode());
         assertEquals(edge,
                      setConnectionTargetNodeCommand.getEdge());
-        assertEquals(magnet,
-                     setConnectionTargetNodeCommand.getMagnet());
-        assertFalse(setConnectionTargetNodeCommand.isNewConnection());
+        assertEquals(connection,
+                     setConnectionTargetNodeCommand.getConnection());
+    }
+
+    @Test
+    public void testSkipAcceptSourceAsNoChanges() {
+        when(edge.getSourceNode()).thenReturn(node);
+        when(edgeContent.getSourceConnection()).thenReturn(Optional.of(connection));
+        tested.enable(canvasHandler);
+        final boolean accept = tested.acceptSource(node,
+                                                   edge,
+                                                   connection);
+        assertTrue(accept);
+        verify(commandManager,
+               never()).allow(eq(canvasHandler),
+                              eq(setConnectionSourceNodeCommand));
+        verify(commandManager,
+               never()).execute(any(AbstractCanvasHandler.class),
+                                any(SetConnectionSourceNodeCommand.class));
+    }
+
+    @Test
+    public void testSkipAcceptTargetAsNoChanges() {
+        when(edge.getTargetNode()).thenReturn(node);
+        when(edgeContent.getTargetConnection()).thenReturn(Optional.of(connection));
+        tested.enable(canvasHandler);
+        final boolean accept = tested.acceptTarget(node,
+                                                   edge,
+                                                   connection);
+        assertTrue(accept);
+        verify(commandManager,
+               never()).allow(eq(canvasHandler),
+                              eq(setConnectionSourceNodeCommand));
+        verify(commandManager,
+               never()).execute(any(AbstractCanvasHandler.class),
+                                any(SetConnectionSourceNodeCommand.class));
+    }
+
+    @Test
+    public void testCreateConnections() {
+        // New default connection for a graph element.
+        Element element = mock(Element.class);
+        View<?> content = mock(View.class);
+        BoundsImpl bounds = new BoundsImpl(new BoundImpl(0d,
+                                                         0d),
+                                           new BoundImpl(10d,
+                                                         20d));
+        when(element.getContent()).thenReturn(content);
+        when(content.getBounds()).thenReturn(bounds);
+        MagnetConnection c1 =
+                ConnectionAcceptorControlImpl.createConnection(element);
+        assertEquals(5,
+                     c1.getLocation().getX(),
+                     0);
+        assertEquals(10,
+                     c1.getLocation().getY(),
+                     0);
+        assertEquals(MagnetConnection.MAGNET_CENTER,
+                     c1.getMagnetIndex().getAsInt());
+        assertFalse(c1.isAuto());
+
+        // New default connection for wires.
+        WiresConnection wiresConnection = mock(WiresConnection.class);
+        when(wiresConnection.isAutoConnection()).thenReturn(true);
+        WiresMagnet wiresMagnet = mock(WiresMagnet.class);
+        when(wiresMagnet.getX()).thenReturn(122d);
+        when(wiresMagnet.getY()).thenReturn(543d);
+        when(wiresMagnet.getIndex()).thenReturn(7);
+        MagnetConnection c2 =
+                ConnectionAcceptorControlImpl.createConnection(wiresConnection,
+                                                               wiresMagnet);
+        assertEquals(122,
+                     c2.getLocation().getX(),
+                     0);
+        assertEquals(543,
+                     c2.getLocation().getY(),
+                     0);
+        assertEquals(7,
+                     c2.getMagnetIndex().getAsInt());
+        assertTrue(c2.isAuto());
+
+        // Connections (view magnets) can be nullified.
+        assertNull(ConnectionAcceptorControlImpl.createConnection(null));
+        assertNull(ConnectionAcceptorControlImpl.createConnection(wiresConnection,
+                                                                  null));
+        assertNull(ConnectionAcceptorControlImpl.createConnection(null,
+                                                                  null));
     }
 }

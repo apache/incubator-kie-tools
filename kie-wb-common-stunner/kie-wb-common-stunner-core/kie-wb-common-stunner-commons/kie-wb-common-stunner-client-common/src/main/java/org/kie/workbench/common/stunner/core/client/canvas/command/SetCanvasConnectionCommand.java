@@ -15,14 +15,9 @@
  */
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -30,8 +25,6 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public class SetCanvasConnectionCommand extends AbstractCanvasCommand {
-
-    private static Logger LOGGER = Logger.getLogger(SetCanvasConnectionCommand.class.getName());
 
     private final Edge<? extends View<?>, Node> edge;
 
@@ -49,15 +42,9 @@ public class SetCanvasConnectionCommand extends AbstractCanvasCommand {
                                     MutationContext.STATIC);
         if (null != source) {
             context.notifyCanvasElementUpdated(source);
-            highlightInvalidConnection(context,
-                                       edge,
-                                       source);
         }
         if (null != target) {
             context.notifyCanvasElementUpdated(target);
-            highlightInvalidConnection(context,
-                                       edge,
-                                       target);
         }
         return buildResult();
     }
@@ -65,22 +52,6 @@ public class SetCanvasConnectionCommand extends AbstractCanvasCommand {
     @Override
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
         return new SetCanvasConnectionCommand(edge).execute(context);
-    }
-
-    public static void highlightInvalidConnection(final AbstractCanvasHandler context,
-                                                  final Edge<? extends View<?>, Node> edge,
-                                                  final Node<? extends View<?>, Edge> node) {
-        final String uuid = edge.getUUID();
-        final Shape<?> shape = context.getCanvas().getShape(uuid);
-        if (null != shape) {
-            final ShapeState state = null != node ? ShapeState.NONE : ShapeState.INVALID;
-            LOGGER.log(Level.FINE,
-                       "Highlight connector for UUID [" + uuid + "] with state [" + state + "]");
-            shape.applyState(state);
-        } else {
-            LOGGER.log(Level.WARNING,
-                       "Cannot highlight connector as it is not found for UUID [" + uuid + "]");
-        }
     }
 
     public Edge<? extends View<?>, Node> getEdge() {

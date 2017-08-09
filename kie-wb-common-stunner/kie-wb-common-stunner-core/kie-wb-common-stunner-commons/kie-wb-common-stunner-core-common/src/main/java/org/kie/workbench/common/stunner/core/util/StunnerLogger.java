@@ -30,7 +30,10 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.AbstractFullContentTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.FullContentTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.FullContentTraverseProcessorImpl;
@@ -89,6 +92,9 @@ public class StunnerLogger {
                     final View viewContent = (View) edge.getContent();
                     final String dId = getDefinitionId(viewContent.getDefinition());
                     log(indent + "(View) Edge Id: " + dId);
+                    if (viewContent instanceof ViewConnector) {
+                        log((ViewConnector) viewContent);
+                    }
                     final Node outNode = (Node) edge.getTargetNode();
                     if (outNode == null) {
                         log(indent + "  No outgoing node found");
@@ -234,6 +240,28 @@ public class StunnerLogger {
         final Node outNode = edge.getTargetNode();
         log("  Edge In Node: " + (null != inNode ? inNode.getUUID() : "null"));
         log("  Edge Out Node: " + (null != outNode ? outNode.getUUID() : "null"));
+        if (edge.getContent() instanceof ViewConnector) {
+            log((ViewConnector) edge.getContent());
+        }
+    }
+
+    public static void log(final ViewConnector viewConnector) {
+        viewConnector.getSourceConnection()
+                .ifPresent(connection -> log("source",
+                                             (Connection) connection));
+        viewConnector.getTargetConnection()
+                .ifPresent(connection -> log("target",
+                                             (Connection) connection));
+    }
+
+    public static void log(final String type,
+                           final Connection connection) {
+        String discrete = "";
+        if (connection instanceof DiscreteConnection) {
+            final DiscreteConnection discreteConnection = (DiscreteConnection) connection;
+            discrete += "[index=" + discreteConnection.getMagnetIndex() + ", auto=" + discreteConnection.isAuto() + "]";
+        }
+        log("  Connection [" + type + "] at [" + connection.getLocation() + "] " + discrete);
     }
 
     private static void log(final String message) {

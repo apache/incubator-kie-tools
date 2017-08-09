@@ -25,8 +25,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
-import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -59,7 +59,7 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
     private Node target;
     private Edge edge;
     private ViewConnector edgeContent;
-    private Optional<Magnet> sourceMagnet;
+    private Optional<Connection> sourceMagnet;
     private SetConnectionSourceNodeCommand tested;
 
     @Before
@@ -72,8 +72,8 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
         target = mockNode(TARGET_UUID);
         edge = mockEdge(EDGE_UUID);
         edgeContent = mock(ViewConnector.class);
-        sourceMagnet = Optional.of(MagnetImpl.Builder.build(0d,
-                                                            0d));
+        sourceMagnet = Optional.of(MagnetConnection.Builder.at(0d,
+                                                               0d));
         graphNodes.add(node);
         when(graphIndex.getNode(eq(NODE_UUID))).thenReturn(node);
         when(graphIndex.getNode(eq(LAST_SOURCE_NODE_UUID))).thenReturn(lastSourceNode);
@@ -82,12 +82,11 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
         when(edge.getContent()).thenReturn(edgeContent);
         when(edge.getSourceNode()).thenReturn(lastSourceNode);
         when(edge.getTargetNode()).thenReturn(target);
-        when(edgeContent.getSourceMagnet()).thenReturn(sourceMagnet);
+        when(edgeContent.getSourceConnection()).thenReturn(sourceMagnet);
         this.tested = new SetConnectionSourceNodeCommand(node,
                                                          edge,
-                                                         MagnetImpl.Builder.build(MAGNETX,
-                                                                                  MAGNETY),
-                                                         true);
+                                                         MagnetConnection.Builder.at(MAGNETX,
+                                                                                     MAGNETY));
     }
 
     @Test
@@ -136,12 +135,23 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
 
     @Test
     @SuppressWarnings("unchecked")
+    public void testSkipRulesForSameSourceNodeAsBefore() {
+        when(edge.getSourceNode()).thenReturn(node);
+        CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        verify(ruleManager,
+               times(0)).evaluate(eq(ruleSet),
+                                  any(RuleEvaluationContext.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testAllowNoSourceConnection() {
         this.tested = new SetConnectionSourceNodeCommand(null,
                                                          edge,
-                                                         MagnetImpl.Builder.build(MAGNETX,
-                                                                                  MAGNETY),
-                                                         true);
+                                                         MagnetConnection.Builder.at(MAGNETX,
+                                                                                     MAGNETY));
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
@@ -206,7 +216,7 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
         verify(sourceOutEdges,
                times(1)).add(eq(edge));
         verify(edgeContent,
-               times(1)).setSourceMagnet(any(Magnet.class));
+               times(1)).setSourceConnection(any(Connection.class));
         verify(edge,
                times(1)).setSourceNode(eq(node));
         verify(targetInEdges,
@@ -225,61 +235,24 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testExecuteNoMagnets() {
-        this.tested = new SetConnectionSourceNodeCommand(node,
-                                                         edge);
-        final List lastSourceOutEdges = mock(List.class);
-        final List sourceOutEdges = mock(List.class);
-        final List targetInEdges = mock(List.class);
-        when(node.getOutEdges()).thenReturn(sourceOutEdges);
-        when(lastSourceNode.getOutEdges()).thenReturn(lastSourceOutEdges);
-        when(target.getInEdges()).thenReturn(targetInEdges);
+    public void testExecuteOnlyConnectionsHasBeenChanged() {
+        when(edge.getSourceNode()).thenReturn(node);
+        MagnetConnection connection = MagnetConnection.Builder.at(MAGNETX,
+                                                                  MAGNETY);
+        tested = new SetConnectionSourceNodeCommand(node,
+                                                    edge,
+                                                    connection);
         CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
-        final ArgumentCaptor<RuleEvaluationContext> contextCaptor = ArgumentCaptor.forClass(RuleEvaluationContext.class);
-        verify(ruleManager,
-               times(3)).evaluate(eq(ruleSet),
-                                  contextCaptor.capture());
-        final List<RuleEvaluationContext> contexts = contextCaptor.getAllValues();
-        assertEquals(3,
-                     contexts.size());
-        verifyConnection((GraphConnectionContext) contexts.get(0),
-                         edge,
-                         node,
-                         target);
-
-        verifyConnectorCardinality((ConnectorCardinalityContext) contexts.get(1),
-                                   graph,
-                                   lastSourceNode,
-                                   edge,
-                                   EdgeCardinalityContext.Direction.OUTGOING,
-                                   Optional.of(CardinalityContext.Operation.DELETE));
-        verifyConnectorCardinality((ConnectorCardinalityContext) contexts.get(2),
-                                   graph,
-                                   node,
-                                   edge,
-                                   EdgeCardinalityContext.Direction.OUTGOING,
-                                   Optional.of(CardinalityContext.Operation.ADD));
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
-        verify(lastSourceOutEdges,
-               times(1)).remove(eq(edge));
-        verify(sourceOutEdges,
-               times(1)).add(eq(edge));
+        verify(ruleManager,
+               never()).evaluate(eq(ruleSet),
+                                 any(RuleEvaluationContext.class));
         verify(edgeContent,
-               times(0)).setSourceMagnet(any(Magnet.class));
-        verify(edge,
-               times(1)).setSourceNode(eq(node));
-        verify(targetInEdges,
-               times(0)).remove(any(Edge.class));
-        verify(targetInEdges,
-               times(0)).add(any(Edge.class));
-        verify(graphIndex,
-               times(0)).removeEdge(any(Edge.class));
-        verify(graphIndex,
-               times(0)).addEdge(any(Edge.class));
-        verify(graphIndex,
-               times(0)).addNode(any(Node.class));
-        verify(graphIndex,
-               times(0)).removeNode(any(Node.class));
+               times(1)).setSourceConnection(eq(connection));
+        verify(edgeContent,
+               never()).setTargetConnection(any(Connection.class));
+        assertEquals(sourceMagnet.get(),
+                     tested.lastConnection);
     }
 }

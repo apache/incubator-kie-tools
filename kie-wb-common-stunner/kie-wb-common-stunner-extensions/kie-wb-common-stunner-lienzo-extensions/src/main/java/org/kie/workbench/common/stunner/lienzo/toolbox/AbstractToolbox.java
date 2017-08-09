@@ -35,7 +35,6 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.WiresUtils;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.tooling.common.api.flow.Flows;
@@ -131,8 +130,8 @@ public abstract class AbstractToolbox implements GridToolbox {
     }
 
     private void reposition(final boolean batch) {
-        final double gx = WiresUtils.getLocation(shape.getGroup()).getX();
-        final double gy = WiresUtils.getLocation(shape.getGroup()).getY();
+        final double gx = shape.getGroup().getComputedLocation().getX();
+        final double gy = shape.getGroup().getComputedLocation().getY();
         final Point2D anchorPoint = Positioning.anchorFor(this.shape.getPath().getBoundingPoints().getBoundingBox(),
                                                           this.anchor);
         final Grid.Point toolboxPosition = this.grid.findPosition(new Grid.Point((int) anchorPoint.getX(),

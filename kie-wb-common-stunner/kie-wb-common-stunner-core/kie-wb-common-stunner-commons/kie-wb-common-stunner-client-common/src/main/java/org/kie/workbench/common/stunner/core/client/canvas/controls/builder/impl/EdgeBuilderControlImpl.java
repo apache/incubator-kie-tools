@@ -33,15 +33,12 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.util.EdgeMagnetsHelper;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
-import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 @Dependent
@@ -52,12 +49,10 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
     private final ClientDefinitionManager clientDefinitionManager;
     private final ShapeManager shapeManager;
     private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
-    private final EdgeMagnetsHelper magnetsHelper;
     private RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
     protected EdgeBuilderControlImpl() {
         this(null,
-             null,
              null,
              null);
     }
@@ -65,12 +60,10 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
     @Inject
     public EdgeBuilderControlImpl(final ClientDefinitionManager clientDefinitionManager,
                                   final ShapeManager shapeManager,
-                                  final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
-                                  final EdgeMagnetsHelper magnetsHelper) {
+                                  final CanvasCommandFactory<AbstractCanvasHandler> commandFactory) {
         this.clientDefinitionManager = clientDefinitionManager;
         this.shapeManager = shapeManager;
         this.commandFactory = commandFactory;
-        this.magnetsHelper = magnetsHelper;
     }
 
     @Override
@@ -91,9 +84,7 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
             final CommandResult<CanvasViolation> cr1 = getCommandManager().allow(wch,
                                                                                  commandFactory.setSourceNode(inNode,
                                                                                                               edge,
-                                                                                                              MagnetImpl.Builder.build(0d,
-                                                                                                                                       0d),
-                                                                                                              true));
+                                                                                                              MagnetConnection.Builder.forElement(inNode)));
             allowsSourceConn = isAllowed(cr1);
         }
         boolean allowsTargetConn = true;
@@ -101,9 +92,7 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
             final CommandResult<CanvasViolation> cr2 = getCommandManager().allow(wch,
                                                                                  commandFactory.setTargetNode(outNode,
                                                                                                               edge,
-                                                                                                              MagnetImpl.Builder.build(0d,
-                                                                                                                                       0d),
-                                                                                                              true));
+                                                                                                              MagnetConnection.Builder.forElement(outNode)));
             allowsTargetConn = isAllowed(cr2);
         }
         return allowsSourceConn & allowsTargetConn;
@@ -123,27 +112,16 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
         if (null == inNode) {
             throw new RuntimeException(" An edge must be into the outgoing edges list from a node.");
         }
-        final Shape sourceShape = canvas.getShape(inNode.getUUID());
-        final Shape targetShape = outNode != null ? canvas.getShape(outNode.getUUID()) : null;
-        Magnet[] magnets = new Magnet[]{MagnetImpl.Builder.build(0d,
-                                                                 0d), MagnetImpl.Builder.build(0d,
-                                                                                               0d)};
-        if (targetShape != null) {
-            magnets = magnetsHelper.getDefaultMagnets(sourceShape.getShapeView(),
-                                                      targetShape.getShapeView());
-        }
-        final Object edgeDef = edge.getContent().getDefinition();
         final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
         final CompositeCommandImpl.CompositeCommandBuilder commandBuilder = new CompositeCommandImpl.CompositeCommandBuilder()
                 .addCommand(commandFactory.addConnector(inNode,
                                                         edge,
-                                                        magnets[0],
+                                                        MagnetConnection.Builder.forElement(inNode),
                                                         ssid));
         if (null != outNode) {
             commandBuilder.addCommand(commandFactory.setTargetNode(outNode,
                                                                    edge,
-                                                                   magnets[1],
-                                                                   true));
+                                                                   MagnetConnection.Builder.forElement(outNode)));
         }
         final CommandResult<CanvasViolation> results = getCommandManager().execute(wch,
                                                                                    commandBuilder.build());

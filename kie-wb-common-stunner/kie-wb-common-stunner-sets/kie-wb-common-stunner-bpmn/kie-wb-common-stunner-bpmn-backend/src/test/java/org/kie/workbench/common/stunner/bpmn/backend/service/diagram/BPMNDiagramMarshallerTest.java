@@ -124,7 +124,8 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFact
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnectorImpl;
@@ -1089,122 +1090,130 @@ public class BPMNDiagramMarshallerTest {
         assertNotNull(scriptTaskOutEdgeConnector);
 
         // userTaskInEdgeConnector is from magnet top-middle to left-middle
-        assertTrue(userTaskInEdgeConnector.getSourceMagnet().isPresent());
-        assertTrue(userTaskInEdgeConnector.getTargetMagnet().isPresent());
+        assertTrue(userTaskInEdgeConnector.getSourceConnection().isPresent());
+        assertTrue(userTaskInEdgeConnector.getTargetConnection().isPresent());
 
-        Magnet sourceMagnet = (Magnet) userTaskInEdgeConnector.getSourceMagnet().get();
-        Magnet targetMagnet = (Magnet) userTaskInEdgeConnector.getTargetMagnet().get();
+        DiscreteConnection sourceConnection = (DiscreteConnection) userTaskInEdgeConnector.getSourceConnection().get();
+        DiscreteConnection targetConnection = (DiscreteConnection) userTaskInEdgeConnector.getTargetConnection().get();
         assertEquals(20d,
-                     sourceMagnet.getLocation().getX(),
+                     sourceConnection.getLocation().getX(),
                      0.1d);
         assertEquals(0d,
-                     sourceMagnet.getLocation().getY(),
+                     sourceConnection.getLocation().getY(),
                      0.1d);
         assertEquals(0d,
-                     targetMagnet.getLocation().getX(),
+                     targetConnection.getLocation().getX(),
                      0.1d);
         assertEquals(24d,
-                     targetMagnet.getLocation().getY(),
+                     targetConnection.getLocation().getY(),
                      0.1d);
+
+        // Assert both connections for userTaskInEdgeConnector are set to auto.
+        assertTrue(sourceConnection.isAuto());
+        assertTrue(targetConnection.isAuto());
 
         // businessRuleTaskInEdgeConnector is from magnet right-middle to top-left
-        assertTrue(businessRuleTaskInEdgeConnector.getSourceMagnet().isPresent());
-        assertTrue(businessRuleTaskInEdgeConnector.getTargetMagnet().isPresent());
+        assertTrue(businessRuleTaskInEdgeConnector.getSourceConnection().isPresent());
+        assertTrue(businessRuleTaskInEdgeConnector.getTargetConnection().isPresent());
 
-        sourceMagnet = (Magnet) businessRuleTaskInEdgeConnector.getSourceMagnet().get();
-        targetMagnet = (Magnet) businessRuleTaskInEdgeConnector.getTargetMagnet().get();
+        sourceConnection = (DiscreteConnection) businessRuleTaskInEdgeConnector.getSourceConnection().get();
+        targetConnection = (DiscreteConnection) businessRuleTaskInEdgeConnector.getTargetConnection().get();
         assertEquals(40d,
-                     sourceMagnet.getLocation().getX(),
+                     sourceConnection.getLocation().getX(),
                      0.1d);
         assertEquals(20d,
-                     sourceMagnet.getLocation().getY(),
+                     sourceConnection.getLocation().getY(),
                      0.1d);
 
         assertEquals(0d,
-                     targetMagnet.getLocation().getX(),
+                     targetConnection.getLocation().getX(),
                      0.1d);
         assertEquals(0d,
-                     targetMagnet.getLocation().getY(),
+                     targetConnection.getLocation().getY(),
                      0.1d);
+
+        // Assert both connections for businessRuleTaskInEdgeConnector are NOT set to auto.
+        assertFalse(sourceConnection.isAuto());
+        assertFalse(targetConnection.isAuto());
 
         // scriptTaskInEdgeConnector is from magnet left-bottom to left-bottom
-        assertTrue(scriptTaskInEdgeConnector.getSourceMagnet().isPresent());
-        assertTrue(scriptTaskInEdgeConnector.getTargetMagnet().isPresent());
+        assertTrue(scriptTaskInEdgeConnector.getSourceConnection().isPresent());
+        assertTrue(scriptTaskInEdgeConnector.getTargetConnection().isPresent());
 
-        sourceMagnet = (Magnet) scriptTaskInEdgeConnector.getSourceMagnet().get();
-        targetMagnet = (Magnet) scriptTaskInEdgeConnector.getTargetMagnet().get();
+        sourceConnection = (DiscreteConnection) scriptTaskInEdgeConnector.getSourceConnection().get();
+        targetConnection = (DiscreteConnection) scriptTaskInEdgeConnector.getTargetConnection().get();
 
         assertEquals(0d,
-                     sourceMagnet.getLocation().getX(),
+                     sourceConnection.getLocation().getX(),
                      0.1d);
         assertEquals(40d,
-                     sourceMagnet.getLocation().getY(),
+                     sourceConnection.getLocation().getY(),
                      0.1d);
         assertEquals(0d,
-                     targetMagnet.getLocation().getX(),
+                     targetConnection.getLocation().getX(),
                      0.1d);
         assertEquals(48d,
-                     targetMagnet.getLocation().getY(),
+                     targetConnection.getLocation().getY(),
                      0.1d);
 
         // userTaskOutEdgeConnector is from magnet right-middle to left-middle
-        assertTrue(userTaskOutEdgeConnector.getSourceMagnet().isPresent());
-        assertTrue(userTaskOutEdgeConnector.getTargetMagnet().isPresent());
+        assertTrue(userTaskOutEdgeConnector.getSourceConnection().isPresent());
+        assertTrue(userTaskOutEdgeConnector.getTargetConnection().isPresent());
 
-        sourceMagnet = (Magnet) userTaskOutEdgeConnector.getSourceMagnet().get();
-        targetMagnet = (Magnet) userTaskOutEdgeConnector.getTargetMagnet().get();
+        sourceConnection = (DiscreteConnection) userTaskOutEdgeConnector.getSourceConnection().get();
+        targetConnection = (DiscreteConnection) userTaskOutEdgeConnector.getTargetConnection().get();
 
         assertEquals(136d,
-                     sourceMagnet.getLocation().getX(),
+                     sourceConnection.getLocation().getX(),
                      0.1d);
         assertEquals(24d,
-                     sourceMagnet.getLocation().getY(),
+                     sourceConnection.getLocation().getY(),
                      0.1d);
         assertEquals(0d,
-                     targetMagnet.getLocation().getX(),
+                     targetConnection.getLocation().getX(),
                      0.1d);
         assertEquals(14d,
-                     targetMagnet.getLocation().getY(),
+                     targetConnection.getLocation().getY(),
                      0.1d);
 
         // businessRuleTaskOutEdgeConnector is from magnet middle-bottom to middle-bottom
-        assertTrue(businessRuleTaskOutEdgeConnector.getSourceMagnet().isPresent());
-        assertTrue(businessRuleTaskOutEdgeConnector.getTargetMagnet().isPresent());
+        assertTrue(businessRuleTaskOutEdgeConnector.getSourceConnection().isPresent());
+        assertTrue(businessRuleTaskOutEdgeConnector.getTargetConnection().isPresent());
 
-        sourceMagnet = (Magnet) businessRuleTaskOutEdgeConnector.getSourceMagnet().get();
-        targetMagnet = (Magnet) businessRuleTaskOutEdgeConnector.getTargetMagnet().get();
+        sourceConnection = (DiscreteConnection) businessRuleTaskOutEdgeConnector.getSourceConnection().get();
+        targetConnection = (DiscreteConnection) businessRuleTaskOutEdgeConnector.getTargetConnection().get();
 
         assertEquals(68d,
-                     sourceMagnet.getLocation().getX(),
+                     sourceConnection.getLocation().getX(),
                      0.1d);
         assertEquals(48d,
-                     sourceMagnet.getLocation().getY(),
+                     sourceConnection.getLocation().getY(),
                      0.1d);
         assertEquals(14d,
-                     targetMagnet.getLocation().getX(),
+                     targetConnection.getLocation().getX(),
                      0.1d);
         assertEquals(28d,
-                     targetMagnet.getLocation().getY(),
+                     targetConnection.getLocation().getY(),
                      0.1d);
 
         // scriptTaskOutEdgeConnector is from magnet left-top to left-top
-        assertTrue(scriptTaskOutEdgeConnector.getSourceMagnet().isPresent());
-        assertTrue(scriptTaskOutEdgeConnector.getTargetMagnet().isPresent());
+        assertTrue(scriptTaskOutEdgeConnector.getSourceConnection().isPresent());
+        assertTrue(scriptTaskOutEdgeConnector.getTargetConnection().isPresent());
 
-        sourceMagnet = (Magnet) scriptTaskOutEdgeConnector.getSourceMagnet().get();
-        targetMagnet = (Magnet) scriptTaskOutEdgeConnector.getTargetMagnet().get();
+        sourceConnection = (DiscreteConnection) scriptTaskOutEdgeConnector.getSourceConnection().get();
+        targetConnection = (DiscreteConnection) scriptTaskOutEdgeConnector.getTargetConnection().get();
 
         assertEquals(0d,
-                     sourceMagnet.getLocation().getX(),
+                     sourceConnection.getLocation().getX(),
                      0.1d);
         assertEquals(0d,
-                     sourceMagnet.getLocation().getY(),
+                     sourceConnection.getLocation().getY(),
                      0.1d);
         assertEquals(0d,
-                     targetMagnet.getLocation().getX(),
+                     targetConnection.getLocation().getX(),
                      0.1d);
         assertEquals(0d,
-                     targetMagnet.getLocation().getY(),
+                     targetConnection.getLocation().getY(),
                      0.1d);
     }
 
@@ -1234,82 +1243,82 @@ public class BPMNDiagramMarshallerTest {
         assertNotNull(scriptTaskOutEdgeConnector);
 
         // userTaskInEdgeConnector is from magnet right-middle to middle-top
-        assertTrue(userTaskInEdgeConnector.getSourceMagnet().isPresent());
-        assertTrue(userTaskInEdgeConnector.getTargetMagnet().isPresent());
+        assertTrue(userTaskInEdgeConnector.getSourceConnection().isPresent());
+        assertTrue(userTaskInEdgeConnector.getTargetConnection().isPresent());
 
-        Magnet sourceMagnet = (Magnet) userTaskInEdgeConnector.getSourceMagnet().get();
-        Magnet targetMagnet = (Magnet) userTaskInEdgeConnector.getTargetMagnet().get();
+        Connection sourceConnection = (Connection) userTaskInEdgeConnector.getSourceConnection().get();
+        Connection targetConnection = (Connection) userTaskInEdgeConnector.getTargetConnection().get();
         assertEquals(136d,
-                     sourceMagnet.getLocation().getX(),
+                     sourceConnection.getLocation().getX(),
                      0.1d);
         assertEquals(24d,
-                     sourceMagnet.getLocation().getY(),
+                     sourceConnection.getLocation().getY(),
                      0.1d);
         assertEquals(68d,
-                     targetMagnet.getLocation().getX(),
+                     targetConnection.getLocation().getX(),
                      0.1d);
         assertEquals(0d,
-                     targetMagnet.getLocation().getY(),
+                     targetConnection.getLocation().getY(),
                      0.1d);
 
         // scriptTaskInEdgeConnector is from magnet right-bottom to left-top
-        assertTrue(scriptTaskInEdgeConnector.getSourceMagnet().isPresent());
-        assertTrue(scriptTaskInEdgeConnector.getTargetMagnet().isPresent());
+        assertTrue(scriptTaskInEdgeConnector.getSourceConnection().isPresent());
+        assertTrue(scriptTaskInEdgeConnector.getTargetConnection().isPresent());
 
-        sourceMagnet = (Magnet) scriptTaskInEdgeConnector.getSourceMagnet().get();
-        targetMagnet = (Magnet) scriptTaskInEdgeConnector.getTargetMagnet().get();
+        sourceConnection = (Connection) scriptTaskInEdgeConnector.getSourceConnection().get();
+        targetConnection = (Connection) scriptTaskInEdgeConnector.getTargetConnection().get();
 
         assertEquals(136d,
-                     sourceMagnet.getLocation().getX(),
+                     sourceConnection.getLocation().getX(),
                      0.1d);
         assertEquals(48d,
-                     sourceMagnet.getLocation().getY(),
+                     sourceConnection.getLocation().getY(),
                      0.1d);
         assertEquals(0d,
-                     targetMagnet.getLocation().getX(),
+                     targetConnection.getLocation().getX(),
                      0.1d);
         assertEquals(0d,
-                     targetMagnet.getLocation().getY(),
+                     targetConnection.getLocation().getY(),
                      0.1d);
 
         // userTaskOutEdgeConnector is from magnet right-bottom to left-top
-        assertTrue(userTaskOutEdgeConnector.getSourceMagnet().isPresent());
-        assertTrue(userTaskOutEdgeConnector.getTargetMagnet().isPresent());
+        assertTrue(userTaskOutEdgeConnector.getSourceConnection().isPresent());
+        assertTrue(userTaskOutEdgeConnector.getTargetConnection().isPresent());
 
-        sourceMagnet = (Magnet) userTaskOutEdgeConnector.getSourceMagnet().get();
-        targetMagnet = (Magnet) userTaskOutEdgeConnector.getTargetMagnet().get();
+        sourceConnection = (Connection) userTaskOutEdgeConnector.getSourceConnection().get();
+        targetConnection = (Connection) userTaskOutEdgeConnector.getTargetConnection().get();
 
         assertEquals(136d,
-                     sourceMagnet.getLocation().getX(),
+                     sourceConnection.getLocation().getX(),
                      0.1d);
         assertEquals(48d,
-                     sourceMagnet.getLocation().getY(),
+                     sourceConnection.getLocation().getY(),
                      0.1d);
         assertEquals(0d,
-                     targetMagnet.getLocation().getX(),
+                     targetConnection.getLocation().getX(),
                      0.1d);
         assertEquals(0d,
-                     targetMagnet.getLocation().getY(),
+                     targetConnection.getLocation().getY(),
                      0.1d);
 
         // scriptTaskOutEdgeConnector is from magnet right-top to left-middle
-        assertTrue(scriptTaskOutEdgeConnector.getSourceMagnet().isPresent());
-        assertTrue(scriptTaskOutEdgeConnector.getTargetMagnet().isPresent());
+        assertTrue(scriptTaskOutEdgeConnector.getSourceConnection().isPresent());
+        assertTrue(scriptTaskOutEdgeConnector.getTargetConnection().isPresent());
 
-        sourceMagnet = (Magnet) scriptTaskOutEdgeConnector.getSourceMagnet().get();
-        targetMagnet = (Magnet) scriptTaskOutEdgeConnector.getTargetMagnet().get();
+        sourceConnection = (Connection) scriptTaskOutEdgeConnector.getSourceConnection().get();
+        targetConnection = (Connection) scriptTaskOutEdgeConnector.getTargetConnection().get();
 
         assertEquals(136d,
-                     sourceMagnet.getLocation().getX(),
+                     sourceConnection.getLocation().getX(),
                      0.1d);
         assertEquals(0d,
-                     sourceMagnet.getLocation().getY(),
+                     sourceConnection.getLocation().getY(),
                      0.1d);
         assertEquals(0d,
-                     targetMagnet.getLocation().getX(),
+                     targetConnection.getLocation().getX(),
                      0.1d);
         assertEquals(14d,
-                     targetMagnet.getLocation().getY(),
+                     targetConnection.getLocation().getY(),
                      0.1d);
     }
 
@@ -1457,8 +1466,8 @@ public class BPMNDiagramMarshallerTest {
         List<Property> properties = process.getProperties();
         assertNotNull(properties);
         assertNotNull(getProcessProperty(properties,
-                                        "employee",
-                                        "_employeeItem"));
+                                         "employee",
+                                         "_employeeItem"));
         assertNotNull(getProcessProperty(properties,
                                          "reason",
                                          "_reasonItem"));
@@ -1505,6 +1514,7 @@ public class BPMNDiagramMarshallerTest {
                      getProcessExtensionValue(process,
                                               "customDescription"));
     }
+
     @Test
     public void testMarshallUserTaskAssignments() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_USERTASKASSIGNMENTS);
@@ -1552,7 +1562,6 @@ public class BPMNDiagramMarshallerTest {
         targetRef = getDataOutputAssociationTargetRef(userTask,
                                                       "performance");
         assertNotNull(targetRef);
-
     }
 
     @Test

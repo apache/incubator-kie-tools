@@ -138,7 +138,13 @@
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[Sequence]]></drools:metaValue>
         </drools:metaData>
-      </bpmn2:extensionElements>
+      <drools:metaData name="isAutoConnection.source">
+        <drools:metaValue><![CDATA[true]]></drools:metaValue>
+      </drools:metaData>
+      <drools:metaData name="isAutoConnection.target">
+              <drools:metaValue><![CDATA[true]]></drools:metaValue>
+            </drools:metaData>
+    </bpmn2:extensionElements>
     </bpmn2:sequenceFlow>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="_fVRlazDgEeeIe_ols6k0mA">

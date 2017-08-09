@@ -18,13 +18,15 @@ package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser;
 
 import java.util.Optional;
 
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common.ArrayParser;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common.IntegerFieldParser;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common.ObjectParser;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common.StringFieldParser;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -37,6 +39,19 @@ public class EdgeParser extends ElementParser<Edge<View, Node>> {
               element);
     }
 
+    @Override
+    protected void parseExtendedProperties(final ObjectParser propertiesParser) {
+        super.parseExtendedProperties(propertiesParser);
+        ViewConnector viewConnector = (ViewConnector) element.getContent();
+        viewConnector.getTargetConnection()
+                .ifPresent(connection -> appendConnAuto((Connection) connection,
+                                                        Bpmn2OryxManager.TARGET,
+                                                        propertiesParser));
+        viewConnector.getSourceConnection()
+                .ifPresent(connection -> appendConnAuto((Connection) connection,
+                                                        Bpmn2OryxManager.SOURCE,
+                                                        propertiesParser));
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -52,29 +67,42 @@ public class EdgeParser extends ElementParser<Edge<View, Node>> {
         }
         // Use dockers
         ViewConnector viewConnector = (ViewConnector) element.getContent();
-        ObjectParser docker1ObjParser = createDockerObjectParser(viewConnector.getSourceMagnet());
-        ObjectParser docker2ObjParser = createDockerObjectParser(viewConnector.getTargetMagnet());
+        ObjectParser docker1ObjParser = createDockerObjectParser(viewConnector.getSourceConnection());
+        ObjectParser docker2ObjParser = createDockerObjectParser(viewConnector.getTargetConnection());
         ArrayParser dockersParser = new ArrayParser("dockers")
                 .addParser(docker1ObjParser)
                 .addParser(docker2ObjParser);
         super.addParser(dockersParser);
     }
 
-    private ObjectParser createDockerObjectParser(Optional<Magnet> magnet) {
-        if (magnet.isPresent() && ((Magnet) magnet.get()).getLocation() != null) {
-            Point2D location = ((Magnet) magnet.get()).getLocation();
+    private ObjectParser createDockerObjectParser(Optional<Connection> magnet) {
+        if (magnet.isPresent() && magnet.get().getLocation() != null) {
+            Point2D location = magnet.get().getLocation();
             return createDockerObjectParser(Double.valueOf(location.getX()).intValue(),
-                                                        Double.valueOf(location.getY()).intValue());
+                                            Double.valueOf(location.getY()).intValue());
         } else {
-            return createDockerObjectParser(-1, -1);
+            return createDockerObjectParser(-1,
+                                            -1);
         }
     }
 
-    private ObjectParser createDockerObjectParser(final int x, final int y) {
+    private ObjectParser createDockerObjectParser(final int x,
+                                                  final int y) {
         return new ObjectParser("")
                 .addParser(new IntegerFieldParser("x",
                                                   x))
                 .addParser(new IntegerFieldParser("y",
                                                   y));
+    }
+
+    private void appendConnAuto(final Connection connection,
+                                final String type,
+                                final ObjectParser propertiesParser) {
+        DiscreteConnection magnetConnection = (DiscreteConnection) connection;
+        if (magnetConnection.isAuto()) {
+            propertiesParser.addParser(new StringFieldParser(Bpmn2OryxManager.MAGNET_AUTO_CONNECTION +
+                                                                     type,
+                                                             Boolean.toString(true)));
+        }
     }
 }

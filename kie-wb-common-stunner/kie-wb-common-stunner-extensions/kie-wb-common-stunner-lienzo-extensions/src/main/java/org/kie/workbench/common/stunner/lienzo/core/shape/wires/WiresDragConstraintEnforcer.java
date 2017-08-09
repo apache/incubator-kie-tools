@@ -20,7 +20,6 @@ import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
-import com.ait.lienzo.client.core.shape.wires.WiresUtils;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -72,7 +71,7 @@ public class WiresDragConstraintEnforcer implements DragConstraintEnforcer {
         checkBounds();
         final Group group = container.getGroup();
         final BoundingBox bb = group.getBoundingBox();
-        final Point2D location = WiresUtils.getLocation(group);
+        final Point2D location = group.getComputedLocation();
         final double dragStartX = location.getX();
         final double dragStartY = location.getY();
         minX = dragBounds.getX1() - dragStartX;

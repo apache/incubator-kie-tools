@@ -164,6 +164,7 @@ import org.jboss.drools.OnExitScriptType;
 import org.jboss.drools.impl.DroolsPackageImpl;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceFactoryImpl;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.util.Utils;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.InvalidSyntaxException;
@@ -174,7 +175,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Antoine Toulme
  * @author Tihomir Surdilovic
- *         <p/>
+ *         <p>
  *         an unmarshaller to transform JSON into BPMN 2.0 elements.
  */
 public class Bpmn2JsonUnmarshaller {
@@ -264,7 +265,7 @@ public class Bpmn2JsonUnmarshaller {
     /**
      * NOTE: This method has been set protected for Stunner support. Stunner bpmn implementation provides a custom JsonParser that
      * is used instead of the one used in jbpm-designer-backend.
-     * <p/>
+     * <p>
      * Start unmarshalling using the parser.
      * @param parser
      * @param preProcessingData
@@ -6845,6 +6846,25 @@ public class Bpmn2JsonUnmarshaller {
                 _elementColors.get(sequenceFlow.getId()).add("fontcolor:" + properties.get("fontcolor"));
             }
         }
+
+        // Custom extended auto connection property for Stunner.
+        String sourceConnAutoPropertyName = Bpmn2OryxManager.MAGNET_AUTO_CONNECTION +
+                Bpmn2OryxManager.SOURCE;
+        String sourceConnAutoRaw = properties.get(sourceConnAutoPropertyName);
+        if (null != sourceConnAutoRaw && Boolean.TRUE.equals(Boolean.parseBoolean(sourceConnAutoRaw))) {
+            Utils.setMetaDataExtensionValue(sequenceFlow,
+                                            sourceConnAutoPropertyName,
+                                            Boolean.toString(true));
+        }
+        String targetConnAutoPropertyName = Bpmn2OryxManager.MAGNET_AUTO_CONNECTION +
+                Bpmn2OryxManager.TARGET;
+        String targetConnAutoRaw = properties.get(targetConnAutoPropertyName);
+        if (null != targetConnAutoRaw && Boolean.TRUE.equals(Boolean.parseBoolean(targetConnAutoRaw))) {
+            Utils.setMetaDataExtensionValue(sequenceFlow,
+                                            targetConnAutoPropertyName,
+                                            Boolean.toString(true));
+        }
+
         if (properties.get("isselectable") != null && properties.get("isselectable").length() > 0) {
             ExtendedMetaData metadata = ExtendedMetaData.INSTANCE;
             EAttributeImpl extensionAttribute = (EAttributeImpl) metadata.demandFeature(

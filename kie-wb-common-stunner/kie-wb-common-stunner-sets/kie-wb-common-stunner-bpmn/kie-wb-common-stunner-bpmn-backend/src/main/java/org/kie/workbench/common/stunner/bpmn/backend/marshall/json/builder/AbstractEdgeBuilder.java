@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder;
 
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -23,8 +24,8 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
-import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -79,17 +80,18 @@ public abstract class AbstractEdgeBuilder<W, T extends Edge<View<W>, Node>>
                 if (dockers != null && dockers.size() > 1) {
                     targetDocker = dockers.get(dockers.size() - 1);
                 }
-                Magnet targetMagnet;
-                if (targetDocker != null) {
-                    targetMagnet = MagnetImpl.Builder.build(targetDocker[0],
-                                                            targetDocker[1]);
-                } else {
-                    targetMagnet = MagnetImpl.Builder.build(Magnet.MagnetType.INCOMING);
+
+                Connection targetConnection = null;
+                if (null != targetDocker) {
+                    targetConnection = MagnetConnection.Builder
+                            .at(targetDocker[0],
+                                targetDocker[1])
+                            .setAuto(isTargetAutoConnection());
                 }
 
                 SetConnectionTargetNodeCommand setTargetNodeCommand = context.getCommandFactory().setTargetNode(node,
                                                                                                                 edge,
-                                                                                                                targetMagnet);
+                                                                                                                targetConnection);
                 CommandResult<RuleViolation> results1 = context.execute(addNodeCommand);
                 if (hasErrors(results1)) {
                     throw new RuntimeException("Error building BPMN graph. Command 'addNodeCommand' execution failed.");
@@ -100,6 +102,19 @@ public abstract class AbstractEdgeBuilder<W, T extends Edge<View<W>, Node>>
                 }
             }
         }
+    }
+
+    public boolean isSourceAutoConnection() {
+        return isAutoConnection(Bpmn2OryxManager.SOURCE);
+    }
+
+    public boolean isTargetAutoConnection() {
+        return isAutoConnection(Bpmn2OryxManager.TARGET);
+    }
+
+    private boolean isAutoConnection(String type) {
+        String autoRaw = properties.get(Bpmn2OryxManager.MAGNET_AUTO_CONNECTION + type);
+        return null != autoRaw && Boolean.TRUE.equals(Boolean.parseBoolean(autoRaw));
     }
 
     @SuppressWarnings("unchecked")

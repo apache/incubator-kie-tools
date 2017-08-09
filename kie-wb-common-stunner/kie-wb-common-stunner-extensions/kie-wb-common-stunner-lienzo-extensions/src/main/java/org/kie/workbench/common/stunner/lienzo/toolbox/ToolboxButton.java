@@ -25,7 +25,6 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.WiresUtils;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.user.client.Timer;
@@ -113,30 +112,29 @@ public class ToolboxButton {
         // Add the primitive shape as child.
         wiresShape.addChild(shape.setDraggable(false));
         decorator.moveToTop();
-        registerShapeHandlers(wiresShape,
-                              decorator);
+        registerShapeHandlers(wiresShape);
         return wiresShape;
     }
 
-    private void registerShapeHandlers(final WiresShape wiresShape,
-                                       final IDrawable<?> shape) {
+    private void registerShapeHandlers(final WiresShape wiresShape) {
+        final IDrawable<?> shape = wiresShape.getGroup();
         // Add mouse enter event handlers for the wiresshape's multipath.
         handlerRegistrationManager.register(
-                shape.addNodeMouseEnterHandler(event ->
-                                                       onButtonMouseEnter(shape,
-                                                                          getLocation(wiresShape),
-                                                                          wiresShape.getGroup().getAbsoluteLocation(),
-                                                                          event.getHumanInputEvent().getClientX(),
-                                                                          event.getHumanInputEvent().getClientY())
+                decorator.addNodeMouseEnterHandler(event ->
+                                                           onButtonMouseEnter(shape,
+                                                                              getLocation(wiresShape),
+                                                                              wiresShape.getGroup().getAbsoluteLocation(),
+                                                                              event.getHumanInputEvent().getClientX(),
+                                                                              event.getHumanInputEvent().getClientY())
                 ));
         // Add mouse exit event handlers for the wiresshape's multipath.
         handlerRegistrationManager.register(
-                shape.addNodeMouseExitHandler(event ->
-                                                      onButtonMouseExit(shape,
-                                                                        getLocation(wiresShape),
-                                                                        wiresShape.getGroup().getAbsoluteLocation(),
-                                                                        event.getHumanInputEvent().getClientX(),
-                                                                        event.getHumanInputEvent().getClientY())
+                decorator.addNodeMouseExitHandler(event ->
+                                                          onButtonMouseExit(shape,
+                                                                            getLocation(wiresShape),
+                                                                            wiresShape.getGroup().getAbsoluteLocation(),
+                                                                            event.getHumanInputEvent().getClientX(),
+                                                                            event.getHumanInputEvent().getClientY())
                 ));
         if (null != clickHandler) {
             // Add mouse click event handlers for the primitive shape.
@@ -163,7 +161,7 @@ public class ToolboxButton {
     }
 
     private Point2D getLocation(final WiresShape shape) {
-        return WiresUtils.getLocation(shape.getGroup());
+        return shape.getGroup().getComputedLocation();
     }
 
     private void onButtonMouseEnter(final IDrawable<?> shape,

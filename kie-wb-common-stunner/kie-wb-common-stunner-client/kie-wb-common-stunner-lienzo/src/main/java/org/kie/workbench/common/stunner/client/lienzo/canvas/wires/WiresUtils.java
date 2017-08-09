@@ -53,7 +53,7 @@ public final class WiresUtils {
     }
 
     public static Point2D getAbsolute(final IDrawable<?> shape) {
-        final com.ait.lienzo.client.core.types.Point2D p = com.ait.lienzo.client.core.shape.wires.WiresUtils.getLocation(shape);
+        final com.ait.lienzo.client.core.types.Point2D p = shape.getComputedLocation();
         return new Point2D(p.getX(),
                            p.getY());
     }

@@ -16,14 +16,34 @@
 
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
-public interface Magnet {
+import java.util.OptionalInt;
 
-    enum MagnetType {
-        OUTGOING,
-        INCOMING
+/**
+ * Connections given by discrete indexes.
+ */
+public abstract class DiscreteConnection implements Connection {
+
+    private transient OptionalInt index;
+
+    protected DiscreteConnection(final int index) {
+        this.index = OptionalInt.of(index);
     }
 
-    MagnetType getMagnetType();
+    protected DiscreteConnection() {
+        this.index = OptionalInt.empty();
+    }
 
-    Point2D getLocation();
+    public abstract boolean isAuto();
+
+    public OptionalInt getMagnetIndex() {
+        return index;
+    }
+
+    public void setIndex(final int i) {
+        setOptionalIndex(OptionalInt.of(i));
+    }
+
+    protected void setOptionalIndex(final OptionalInt i) {
+        this.index = i;
+    }
 }

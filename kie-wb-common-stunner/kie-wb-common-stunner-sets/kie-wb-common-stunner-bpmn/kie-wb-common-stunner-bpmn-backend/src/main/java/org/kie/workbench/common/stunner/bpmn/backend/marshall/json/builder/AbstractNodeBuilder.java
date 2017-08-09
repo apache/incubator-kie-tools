@@ -35,8 +35,8 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
-import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -189,23 +189,27 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
                     }
                 } else {
                     // Create the outgoing edge.
-                    Edge edge = (Edge) outgoingBuilder.build(context);
+
+                    AbstractEdgeBuilder edgeBuilder = (AbstractEdgeBuilder) outgoingBuilder;
+                    Edge edge = (Edge) edgeBuilder.build(context);
                     // Command - Execute the graph command to set the node as the edge connection's source..
                     Double sourceDocker[] = null;
                     final List<Double[]> dockers = ((AbstractEdgeBuilder) outgoingBuilder).dockers;
                     if (dockers != null && dockers.size() > 1) {
                         sourceDocker = dockers.get(0);
                     }
-                    Magnet sourceMagnet;
-                    if (sourceDocker != null) {
-                        sourceMagnet = MagnetImpl.Builder.build(sourceDocker[0],
-                                                                sourceDocker[1]);
-                    } else {
-                        sourceMagnet = MagnetImpl.Builder.build(Magnet.MagnetType.OUTGOING);
+
+                    Connection sourceConnection = null;
+                    if (null != sourceDocker) {
+                        sourceConnection = MagnetConnection.Builder
+                                .at(sourceDocker[0],
+                                    sourceDocker[1])
+                                .setAuto(edgeBuilder.isSourceAutoConnection());
                     }
+
                     commands.add(context.getCommandFactory().setSourceNode(node,
                                                                            edge,
-                                                                           sourceMagnet));
+                                                                           sourceConnection));
                     ;
                 }
                 if (!commands.isEmpty()) {

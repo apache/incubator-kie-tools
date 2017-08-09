@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.core.client.shape;
 
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 public class ConnectorViewStub implements ShapeView<Object>,
@@ -154,11 +154,9 @@ public class ConnectorViewStub implements ShapeView<Object>,
 
     @Override
     public Object connect(ShapeView headShapeView,
-                          Magnet _headMagnetsIndex,
+                          Connection _headMagnetsIndex,
                           ShapeView tailShapeView,
-                          Magnet _tailMagnetsIndex,
-                          boolean tailArrow,
-                          boolean headArrow) {
+                          Connection _tailMagnetsIndex) {
         return this;
     }
 }

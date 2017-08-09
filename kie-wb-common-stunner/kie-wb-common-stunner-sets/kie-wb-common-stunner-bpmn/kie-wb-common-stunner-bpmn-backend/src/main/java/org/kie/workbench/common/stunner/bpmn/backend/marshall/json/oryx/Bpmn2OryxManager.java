@@ -28,6 +28,10 @@ import org.kie.workbench.common.stunner.core.backend.util.BackendBindableDefinit
 @ApplicationScoped
 public class Bpmn2OryxManager extends BaseOryxManager {
 
+    public static final String SOURCE = ".source";
+    public static final String TARGET = ".target";
+    public static final String MAGNET_AUTO_CONNECTION = "isAutoConnection";
+
     protected Bpmn2OryxManager() {
     }
 

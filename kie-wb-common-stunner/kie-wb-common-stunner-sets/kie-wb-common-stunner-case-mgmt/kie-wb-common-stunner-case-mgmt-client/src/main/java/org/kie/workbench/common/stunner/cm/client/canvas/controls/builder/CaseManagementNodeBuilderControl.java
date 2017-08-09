@@ -27,7 +27,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Element;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.NodeBuilderControlImpl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.shape.util.EdgeMagnetsHelper;
 
 @Dependent
 @CaseManagementEditor
@@ -37,12 +36,10 @@ public class CaseManagementNodeBuilderControl extends NodeBuilderControlImpl {
     public CaseManagementNodeBuilderControl(final ClientDefinitionManager clientDefinitionManager,
                                             final ShapeManager shapeManager,
                                             final @CaseManagementEditor CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
-                                            final @Element @CaseManagementEditor AbstractElementBuilderControl elementBuilderControl,
-                                            final EdgeMagnetsHelper magnetsHelper) {
+                                            final @Element @CaseManagementEditor AbstractElementBuilderControl elementBuilderControl) {
         super(clientDefinitionManager,
               shapeManager,
               commandFactory,
-              elementBuilderControl,
-              magnetsHelper);
+              elementBuilderControl);
     }
 }

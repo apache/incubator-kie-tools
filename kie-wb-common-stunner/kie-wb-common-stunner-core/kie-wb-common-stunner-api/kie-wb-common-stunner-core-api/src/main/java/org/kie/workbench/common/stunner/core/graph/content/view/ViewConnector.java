@@ -24,12 +24,11 @@ import java.util.Optional;
  */
 public interface ViewConnector<W> extends View<W> {
 
-    Optional<Magnet> getSourceMagnet();
+    Optional<Connection> getSourceConnection();
 
-    Optional<Magnet> getTargetMagnet();
+    Optional<Connection> getTargetConnection();
 
-    void setSourceMagnet(final Magnet magnet);
+    void setSourceConnection(final Connection connection);
 
-    void setTargetMagnet(final Magnet magnet);
-
+    void setTargetConnection(final Connection connection);
 }

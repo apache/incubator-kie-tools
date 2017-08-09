@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.StreamSupport;
 
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
@@ -25,20 +26,20 @@ import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.MagnetManager;
+import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
-import org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDecorators;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
-import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 public class WiresConnectorView<T> extends WiresConnector
@@ -83,7 +84,7 @@ public class WiresConnectorView<T> extends WiresConnector
         this.uuid = uuid;
         WiresUtils.assertShapeUUID(this.getGroup(),
                                    uuid);
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -103,90 +104,38 @@ public class WiresConnectorView<T> extends WiresConnector
 
     @SuppressWarnings("unchecked")
     public T connect(final ShapeView headShapeView,
-                     final Magnet headMagnetDef,
+                     final Connection headConnection,
                      final ShapeView tailShapeView,
-                     final Magnet tailMagnetDef,
-                     final boolean tailArrow,
-                     final boolean headArrow) {
+                     final Connection tailConnection) {
         final WiresShape headWiresShape = (WiresShape) headShapeView;
         final WiresShape tailWiresShape = (WiresShape) tailShapeView;
-        final MagnetManager.Magnets headMagnets = headWiresShape.getMagnets();
-        final MagnetManager.Magnets tailMagnets = tailWiresShape.getMagnets();
-        // Obtain the magnet for the head shape which location is equals/closer to the headMagnetDef.
-        com.ait.lienzo.client.core.types.Point2D headCoords = com.ait.lienzo.client.core.shape.wires.WiresUtils.getLocation(headWiresShape.getGroup());
-        final WiresMagnet headMagnet = getWiresMagnet(headMagnets,
-                                                      headMagnetDef,
-                                                      headCoords.getX(),
-                                                      headCoords.getY(),
-                                                      LienzoShapeUtils.DEFAULT_SOURCE_MAGNET);
-        // Obtain the magnet for the tail shape which location is equals/closer to the tailMagnetDef.
-        com.ait.lienzo.client.core.types.Point2D tailCoords = com.ait.lienzo.client.core.shape.wires.WiresUtils.getLocation(tailWiresShape.getGroup());
-        final WiresMagnet tailMagnet = getWiresMagnet(tailMagnets,
-                                                      tailMagnetDef,
-                                                      tailCoords.getX(),
-                                                      tailCoords.getY(),
-                                                      LienzoShapeUtils.DEFAULT_TARGET_MAGNET);
-        // Update the magnets.
-        this.setHeadMagnet(headMagnet);
-        this.setTailMagnet(tailMagnet);
-        return (T) this;
+        return connect(headWiresShape.getMagnets(),
+                       headWiresShape.getGroup().getComputedLocation(),
+                       headConnection,
+                       tailWiresShape.getMagnets(),
+                       tailWiresShape.getGroup().getComputedLocation(),
+                       tailConnection);
     }
 
-    /**
-     * Returns the Lienzo's magnet instance which location is closer to the magnet definition
-     */
-    private WiresMagnet getWiresMagnet(final MagnetManager.Magnets wiresMagnets,
-                                       final Magnet magnetDef,
-                                       final double shapeX,
-                                       final double shapeY,
-                                       final int defaultMagnetIndex) {
-        if (magnetDef == null) {
-            return wiresMagnets.getMagnet(0);
-        } else if (magnetDef.getLocation() != null) {
-            Magnet absMagnetDef = MagnetImpl.Builder.build(magnetDef.getLocation().getX() + shapeX,
-                                                           magnetDef.getLocation().getY() + shapeY);
-            return (WiresMagnet) StreamSupport.stream(wiresMagnets.getMagnets().spliterator(),
-                                                      false)
-                    .sorted((m1, m2) -> compare(m1,
-                                                m2,
-                                                absMagnetDef))
-                    .findFirst()
-                    .get();
-        } else if (magnetDef.getMagnetType() != null) {
-            if (magnetDef.getMagnetType() == Magnet.MagnetType.OUTGOING) {
-                return wiresMagnets.getMagnet(LienzoShapeUtils.DEFAULT_SOURCE_MAGNET);
-            } else {
-                return wiresMagnets.getMagnet(LienzoShapeUtils.DEFAULT_TARGET_MAGNET);
-            }
-        } else {
-            return wiresMagnets.getMagnet(defaultMagnetIndex);
-        }
-    }
-
-    private int compare(final IControlHandle m1,
-                        final IControlHandle m2,
-                        final Magnet magnet) {
-        final double mx = magnet.getLocation().getX();
-        final double my = magnet.getLocation().getY();
-        final com.ait.lienzo.client.core.types.Point2D m1p = m1.getControl().getLocation();
-        final com.ait.lienzo.client.core.types.Point2D m2p = m2.getControl().getLocation();
-        final double d1 = ShapeUtils.dist(mx,
-                                          my,
-                                          m1p.getX(),
-                                          m1p.getY());
-        final double d2 = ShapeUtils.dist(mx,
-                                          my,
-                                          m2p.getX(),
-                                          m2p.getY());
-        return Double.compare(d1,
-                              d2);
-    }
-
-
-    @Override
-    public void removeFromParent() {
-        // Remove the main line.
-        super.removeFromLayer();
+    T connect(final MagnetManager.Magnets headMagnets,
+              final com.ait.lienzo.client.core.types.Point2D headAbsoluteLoc,
+              final Connection headConnection,
+              final MagnetManager.Magnets tailMagnets,
+              final com.ait.lienzo.client.core.types.Point2D tailAbsoluteLoc,
+              final Connection tailConnection) {
+        // Update head connection.
+        updateConnection(headConnection,
+                         headMagnets,
+                         headAbsoluteLoc,
+                         isAuto -> getHeadConnection().setAutoConnection(isAuto),
+                         this::applyHeadMagnet);
+        // Update tail connection.
+        updateConnection(tailConnection,
+                         tailMagnets,
+                         tailAbsoluteLoc,
+                         isAuto -> getTailConnection().setAutoConnection(isAuto),
+                         this::applyTailMagnet);
+        return cast();
     }
 
     @Override
@@ -376,13 +325,6 @@ public class WiresConnectorView<T> extends WiresConnector
     }
 
     @Override
-    public void destroy() {
-        // Remove me.
-        super.destroy();
-        this.connectorControl = null;
-    }
-
-    @Override
     public List<Shape<?>> getDecorators() {
         final List<Shape<?>> decorators = new ArrayList<>(3);
         decorators.add(getLine());
@@ -393,5 +335,127 @@ public class WiresConnectorView<T> extends WiresConnector
             decorators.add(getTail());
         }
         return decorators;
+    }
+
+    @Override
+    public void removeFromParent() {
+        // Remove the main line.
+        super.removeFromLayer();
+    }
+
+    @Override
+    public void destroy() {
+        // Remove me.
+        super.destroy();
+        this.connectorControl = null;
+    }
+
+    private WiresConnector applyHeadMagnet(final WiresMagnet headMagnet) {
+        ifNotSpecialConnection(getHeadConnection(),
+                               headMagnet,
+                               WiresConnectorView::clearConnectionOffset);
+        return super.setHeadMagnet(headMagnet);
+    }
+
+    private WiresConnector applyTailMagnet(final WiresMagnet tailMagnet) {
+        ifNotSpecialConnection(getTailConnection(),
+                               tailMagnet,
+                               WiresConnectorView::clearConnectionOffset);
+        return super.setTailMagnet(tailMagnet);
+    }
+
+    private static void updateConnection(final Connection connection,
+                                         final MagnetManager.Magnets magnets,
+                                         final com.ait.lienzo.client.core.types.Point2D abeLocation,
+                                         final Consumer<Boolean> isAutoConnectionConsumer,
+                                         final Consumer<WiresMagnet> magnetConsumer) {
+        final WiresMagnet[] magnet = new WiresMagnet[]{null};
+        final boolean[] auto = new boolean[]{false};
+        if (null != connection) {
+            final DiscreteConnection dc = connection instanceof DiscreteConnection ?
+                    (DiscreteConnection) connection : null;
+            if (null != dc) {
+                // Obtain the magnet index and auto flag, if the connection is a discrete type and it has been already set.
+                dc.getMagnetIndex().ifPresent(index -> magnet[0] = magnets.getMagnet(index));
+                auto[0] = dc.isAuto();
+            }
+            // If still no magnet found from the connection's cache, figure it out as by the connection's location.
+            if (null == magnet[0]) {
+                magnet[0] = getMagnetForConnection(connection,
+                                                   magnets,
+                                                   abeLocation);
+                // Update the discrete connection magnet cached index, if possible.
+                if (null != dc) {
+                    dc.setIndex(magnet[0].getIndex());
+                }
+            }
+        }
+        // Call the magnet and auto connection consumers to assign the new values.
+        isAutoConnectionConsumer.accept(auto[0]);
+        magnetConsumer.accept(magnet[0]);
+    }
+
+    private static WiresMagnet getMagnetForConnection(final Connection connection,
+                                                      final MagnetManager.Magnets magnets,
+                                                      final com.ait.lienzo.client.core.types.Point2D absLocation) {
+        if (null != connection) {
+            Point2D magnetAbs = new Point2D(absLocation.getX() + connection.getLocation().getX(),
+                                            absLocation.getY() + connection.getLocation().getY());
+            return getMagnetNearTo(magnets,
+                                   magnetAbs);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the Lienzo's magnet instance which location is closer to the magnet definition
+     */
+    private static WiresMagnet getMagnetNearTo(final MagnetManager.Magnets magnets,
+                                               final Point2D location) {
+        return (WiresMagnet) StreamSupport
+                .stream(magnets.getMagnets().spliterator(),
+                        false)
+                .sorted((m1, m2) -> compare(m1,
+                                            m2,
+                                            location))
+                .findFirst()
+                .get();
+    }
+
+    private static int compare(final IControlHandle m1,
+                               final IControlHandle m2,
+                               final Point2D location) {
+        final double mx = location.getX();
+        final double my = location.getY();
+        final com.ait.lienzo.client.core.types.Point2D m1p = m1.getControl().getLocation();
+        final com.ait.lienzo.client.core.types.Point2D m2p = m2.getControl().getLocation();
+        final double d1 = ShapeUtils.dist(mx,
+                                          my,
+                                          m1p.getX(),
+                                          m1p.getY());
+        final double d2 = ShapeUtils.dist(mx,
+                                          my,
+                                          m2p.getX(),
+                                          m2p.getY());
+        return Double.compare(d1,
+                              d2);
+    }
+
+    private static void ifNotSpecialConnection(final WiresConnection connection,
+                                               final WiresMagnet magnet,
+                                               final Consumer<WiresConnection> regularConnectionConsumer) {
+        if (!WiresConnection.isSpecialConnection(connection.isAutoConnection(),
+                                                 null != magnet ? magnet.getIndex() : null)) {
+            regularConnectionConsumer.accept(connection);
+        }
+    }
+
+    private static void clearConnectionOffset(final WiresConnection connection) {
+        connection.setXOffset(0d);
+        connection.setYOffset(0d);
+    }
+
+    private T cast() {
+        return (T) this;
     }
 }

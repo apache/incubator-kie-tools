@@ -45,8 +45,8 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
-import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -65,8 +65,8 @@ public abstract class NewNodeCommand<I> extends AbstractElementBuilderCommand<I>
 
     private String edgeId;
     private String definitionId;
-    private Magnet sourceMagnet;
-    private Magnet targetMagnet;
+    private Connection sourceConnection;
+    private Connection targetConnection;
     private HasEventHandlers<?, ?> layerEventHandlers;
 
     protected NewNodeCommand(final ClientFactoryService clientFactoryServices,
@@ -89,7 +89,6 @@ public abstract class NewNodeCommand<I> extends AbstractElementBuilderCommand<I>
         this.elementSelectedEvent = elementSelectedEvent;
         this.layerEventHandlers = null;
     }
-
 
     public void setEdgeIdentifier(final String edgeId) {
         this.edgeId = edgeId;
@@ -120,13 +119,10 @@ public abstract class NewNodeCommand<I> extends AbstractElementBuilderCommand<I>
                       final Element element) {
         super.click(context,
                     element);
-        log(Level.INFO,
-            "Click - Start adding a new node...");
         addOnNextLayoutPosition(context,
                                 element);
     }
 
-    // TODO: Move all these stuff to canvas builder controls?
     @SuppressWarnings("unchecked")
     private void addOnNextLayoutPosition(final Context<AbstractCanvasHandler> context,
                                          final Element element) {
@@ -147,16 +143,16 @@ public abstract class NewNodeCommand<I> extends AbstractElementBuilderCommand<I>
 
                                                                                     @Override
                                                                                     public void execute() {
+                                                                                        final Node<View<?>, Edge> targetNode = newEdgeElement.asEdge().getTargetNode();
                                                                                         getBuilderControl().enable(canvasHandler);
                                                                                         getBuilderControl().setCommandManagerProvider(context::getCommandManager);
                                                                                         getGraphBoundsIndexer().build(canvasHandler.getDiagram().getGraph());
-                                                                                        // TODO: Use right magnets.
-                                                                                        NewNodeCommand.this.sourceMagnet = MagnetImpl.Builder.build(Magnet.MagnetType.OUTGOING);
-                                                                                        NewNodeCommand.this.targetMagnet = MagnetImpl.Builder.build(Magnet.MagnetType.INCOMING);
+                                                                                        NewNodeCommand.this.sourceConnection = MagnetConnection.Builder.forElement(element);
+                                                                                        NewNodeCommand.this.targetConnection = MagnetConnection.Builder.forElement(targetNode);
                                                                                         final double[] next = canvasLayoutUtils.getNext(canvasHandler,
                                                                                                                                         (Node<View<?>, Edge>) element,
-                                                                                                                                        (Node<View<?>, Edge>) newEdgeElement.asEdge().getTargetNode());
-                                                                                        log(Level.INFO,
+                                                                                                                                        targetNode);
+                                                                                        log(Level.FINE,
                                                                                             "New edge request complete - [UUID=" + newEdgeElement.getUUID()
                                                                                                     + ", x=" + next[0] + ", y=" + next[1] + "]");
                                                                                         NewNodeCommand.this.onComplete(context,
@@ -220,10 +216,10 @@ public abstract class NewNodeCommand<I> extends AbstractElementBuilderCommand<I>
             @Override
             public void onComplete(final int x,
                                    final int y,
-                                   final Magnet sourceMagnet,
-                                   final Magnet targetMagnet) {
-                NewNodeCommand.this.sourceMagnet = sourceMagnet;
-                NewNodeCommand.this.targetMagnet = targetMagnet;
+                                   final Connection sourceConnection,
+                                   final Connection targetConnection) {
+                NewNodeCommand.this.sourceConnection = sourceConnection;
+                NewNodeCommand.this.targetConnection = targetConnection;
                 NewNodeCommand.this.onComplete(context,
                                                element,
                                                item,
@@ -376,8 +372,8 @@ public abstract class NewNodeCommand<I> extends AbstractElementBuilderCommand<I>
                                         y,
                                         node,
                                         edge,
-                                        this.sourceMagnet,
-                                        this.targetMagnet);
+                                        this.sourceConnection,
+                                        this.targetConnection);
     }
 
     @Override

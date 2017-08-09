@@ -42,8 +42,7 @@ import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
-import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
@@ -252,7 +251,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         } else if (element instanceof Edge && null != parent) {
             command = canvasCommandFactory.addConnector(parent,
                                                         (Edge) element,
-                                                        MagnetImpl.Builder.build(Magnet.MagnetType.OUTGOING),
+                                                        MagnetConnection.Builder.forElement(parent),
                                                         getShapeSetId());
         } else {
             throw new RuntimeException("Unrecognized element type for " + element);

@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -45,13 +45,10 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
 
     private final String sourceNodeUUID;
     private final String edgeUUID;
-    private final Magnet magnet;
-    // true if a new connection is being made; false if a different magnet is being selected
-    // on an existing connection
-    private final boolean isNewConnection;
+    private final Connection connection;
 
+    Connection lastConnection;
     private String lastSourceNodeUUID;
-    private Magnet lastMagnet;
     private transient Edge<? extends View, Node> edge;
     private transient Node<? extends View<?>, Edge> targetNode;
     private transient Node<? extends View<?>, Edge> sourceNode;
@@ -59,26 +56,22 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings("unchecked")
     public SetConnectionSourceNodeCommand(final @MapsTo("sourceNodeUUID") String sourceNodeUUID,
                                           final @MapsTo("edgeUUID") String edgeUUID,
-                                          final @MapsTo("magnet") Magnet magnet,
-                                          final @MapsTo("isNewConnection") boolean isNewConnection) {
+                                          final @MapsTo("magnet") Connection connection) {
         this.edgeUUID = PortablePreconditions.checkNotNull("edgeUUID",
                                                            edgeUUID);
         this.sourceNodeUUID = sourceNodeUUID;
-        this.magnet = magnet;
-        this.isNewConnection = isNewConnection;
+        this.connection = connection;
         this.lastSourceNodeUUID = null;
-        this.lastMagnet = null;
+        this.lastConnection = null;
     }
 
     @SuppressWarnings("unchecked")
     public SetConnectionSourceNodeCommand(final Node<? extends View<?>, Edge> sourceNode,
                                           final Edge<? extends View, Node> edge,
-                                          final Magnet magnet,
-                                          final boolean isNewConnection) {
+                                          final Connection connection) {
         this(null != sourceNode ? sourceNode.getUUID() : null,
              edge.getUUID(),
-             magnet,
-             isNewConnection);
+             connection);
         this.sourceNode = sourceNode;
         this.edge = edge;
         this.targetNode = edge.getTargetNode();
@@ -89,8 +82,7 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
                                           final Edge<? extends View, Node> edge) {
         this(sourceNode,
              edge,
-             null,
-             true);
+             null);
     }
 
     @Override
@@ -98,41 +90,35 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
         final CommandResult<RuleViolation> results = allow(context);
         if (!results.getType().equals(CommandResult.Type.ERROR)) {
-            final Node<?, Edge> sourceNode = getSourceNode(context);
             final Edge<? extends View, Node> edge = getEdge(context);
+            final Node<?, Edge> sourceNode = getSourceNode(context);
             final Node<? extends View<?>, Edge> lastSourceNode = edge.getSourceNode();
-            if (isNewConnection) {
-                // New connection being made
-                if (null != lastSourceNode) {
-                    this.lastSourceNodeUUID = lastSourceNode.getUUID();
-                    lastSourceNode.getOutEdges().remove(edge);
-                }
-                if (null != sourceNode) {
-                    sourceNode.getOutEdges().add(edge);
-                }
-                edge.setSourceNode(sourceNode);
-                if (null != magnet) {
-                    ViewConnector connectionContent = (ViewConnector) edge.getContent();
-                    lastMagnet = (Magnet) connectionContent.getSourceMagnet().orElse(null);
-                    connectionContent.setSourceMagnet(magnet);
-                }
+            // New connection being made
+            if (null != lastSourceNode) {
+                this.lastSourceNodeUUID = lastSourceNode.getUUID();
+                lastSourceNode.getOutEdges().remove(edge);
             }
-            else {
-                // Magnet being moved on node
-                ViewConnector connectionContent = (ViewConnector) edge.getContent();
-                lastMagnet = (Magnet) connectionContent.getSourceMagnet().orElse(null);
-                connectionContent.setSourceMagnet(magnet);
+            if (null != sourceNode) {
+                sourceNode.getOutEdges().add(edge);
             }
+            edge.setSourceNode(sourceNode);
+            // Magnet being moved on node
+            ViewConnector connectionContent = (ViewConnector) edge.getContent();
+            lastConnection = (Connection) connectionContent.getSourceConnection().orElse(null);
+            connectionContent.setSourceConnection(connection);
         }
         return results;
     }
 
     @SuppressWarnings("unchecked")
     protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
+        final GraphCommandResultBuilder resultBuilder = new GraphCommandResultBuilder();
         final Node<View<?>, Edge> sourceNode = (Node<View<?>, Edge>) getSourceNode(context);
         final Edge<View<?>, Node> edge = (Edge<View<?>, Node>) getEdge(context);
-        final GraphCommandResultBuilder resultBuilder = new GraphCommandResultBuilder();
-        if (isNewConnection) {
+        final Node<? extends View<?>, Edge> lastSourceNode = edge.getSourceNode();
+        // Only check for rules in case the connector's source node is a different one.
+        if ((null == lastSourceNode && null != sourceNode) ||
+                (null != lastSourceNode && (!lastSourceNode.equals(sourceNode)))) {
             // New connection being made
             final Collection<RuleViolation> connectionRuleViolations =
                     doEvaluate(context,
@@ -174,8 +160,7 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
         final SetConnectionSourceNodeCommand undoCommand = new SetConnectionSourceNodeCommand((Node<? extends View<?>, Edge>) getNode(context,
                                                                                                                                       lastSourceNodeUUID),
                                                                                               getEdge(context),
-                                                                                              lastMagnet,
-                                                                                              isNewConnection);
+                                                                                              lastConnection);
         return undoCommand.execute(context);
     }
 
@@ -216,18 +201,14 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
         return targetNode;
     }
 
-    public Magnet getMagnet() {
-        return magnet;
-    }
-
-    public Magnet getLastSourceMagnet() {
-        return lastMagnet;
+    public Connection getConnection() {
+        return connection;
     }
 
     @Override
     public String toString() {
         return "SetConnectionSourceNodeCommand [edge=" + edgeUUID
                 + ", candidate=" + (null != sourceNodeUUID ? sourceNodeUUID : "null")
-                + ", magnet=" + magnet + "]";
+                + ", magnet=" + connection + "]";
     }
 }

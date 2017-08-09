@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -35,26 +35,26 @@ public final class AddConnectorCommand extends AbstractGraphCompositeCommand {
 
     private final String nodeUUID;
     private final Edge edge;
-    private final Magnet magnet;
+    private final Connection connection;
     private transient Node<?, Edge> node;
 
     public AddConnectorCommand(final @MapsTo("nodeUUID") String nodeUUID,
                                final @MapsTo("edge") Edge edge,
-                               final @MapsTo("magnet") Magnet magnet) {
+                               final @MapsTo("magnet") Connection connection) {
         this.nodeUUID = PortablePreconditions.checkNotNull("nodeUUID",
                                                            nodeUUID);
         this.edge = PortablePreconditions.checkNotNull("edge",
                                                        edge);
-        this.magnet = PortablePreconditions.checkNotNull("magnet",
-                                                         magnet);
+        this.connection = PortablePreconditions.checkNotNull("magnet",
+                                                             connection);
     }
 
     public AddConnectorCommand(final Node<?, Edge> sourceNode,
                                final Edge edge,
-                               final Magnet magnet) {
+                               final Connection connection) {
         this(sourceNode.getUUID(),
              edge,
-             magnet);
+             connection);
         this.node = sourceNode;
     }
 
@@ -65,8 +65,7 @@ public final class AddConnectorCommand extends AbstractGraphCompositeCommand {
         final Node<? extends View<?>, Edge> source = (Node<? extends View<?>, Edge>) getNode(context);
         commands.add(new SetConnectionSourceNodeCommand(source,
                                                         edge,
-                                                        magnet,
-                                                        true));
+                                                        connection));
         return this;
     }
 
@@ -115,8 +114,8 @@ public final class AddConnectorCommand extends AbstractGraphCompositeCommand {
         return edge;
     }
 
-    public Magnet getMagnet() {
-        return magnet;
+    public Connection getConnection() {
+        return connection;
     }
 
     public Node<?, Edge> getSourceNode() {
@@ -125,7 +124,7 @@ public final class AddConnectorCommand extends AbstractGraphCompositeCommand {
 
     @Override
     public String toString() {
-        return "AddEdgeCommand [target=" + nodeUUID + ", edge=" + edge.getUUID() + ", magnet=" + magnet + "]";
+        return "AddEdgeCommand [target=" + nodeUUID + ", edge=" + edge.getUUID() + ", magnet=" + connection + "]";
     }
 
     @Override

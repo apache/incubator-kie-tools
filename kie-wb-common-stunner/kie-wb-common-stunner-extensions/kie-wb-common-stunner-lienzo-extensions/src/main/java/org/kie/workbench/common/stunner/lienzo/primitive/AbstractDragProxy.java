@@ -18,11 +18,8 @@ package org.kie.workbench.common.stunner.lienzo.primitive;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -103,58 +100,56 @@ public abstract class AbstractDragProxy<T> {
             callback.onStart(initialX,
                              initialY);
         }
-        handlerRegs[0] = RootPanel.get().addDomHandler(new MouseMoveHandler() {
 
-                                                           @Override
-                                                           public void onMouseMove(final MouseMoveEvent mouseMoveEvent) {
-                                                               if (attached) {
-                                                                   if (xDiff == null) {
-                                                                       xDiff = initialX - mouseMoveEvent.getX();
-                                                                   }
-                                                                   if (yDiff == null) {
-                                                                       yDiff = initialY - mouseMoveEvent.getY();
-                                                                   }
-                                                                   final int x = getXDiff() + mouseMoveEvent.getX();
-                                                                   final int y = getYDiff() + mouseMoveEvent.getY();
-                                                                   setX(shapeProxy,
-                                                                        x);
-                                                                   setY(shapeProxy,
-                                                                        y);
-                                                                   layer.batch();
-                                                                   if (!timer.isRunning()) {
-                                                                       timer.schedule(timeout);
-                                                                   }
-                                                                   timeoutRunnable = () -> callback.onMove(x,
-                                                                                                           y);
-                                                                   timer.schedule(timeout);
+        handlerRegs[0] = RootPanel.get().addDomHandler(mouseMoveEvent -> {
+                                                           if (attached) {
+                                                               if (xDiff == null) {
+                                                                   xDiff = initialX - mouseMoveEvent.getX();
                                                                }
+                                                               if (yDiff == null) {
+                                                                   yDiff = initialY - mouseMoveEvent.getY();
+                                                               }
+                                                               final int x = getXDiff() + mouseMoveEvent.getX();
+                                                               final int y = getYDiff() + mouseMoveEvent.getY();
+                                                               setX(shapeProxy,
+                                                                    x);
+                                                               setY(shapeProxy,
+                                                                    y);
+                                                               scheduleMove(callback,
+                                                                            x,
+                                                                            y,
+                                                                            timeout);
+                                                               layer.batch();
                                                            }
                                                        },
                                                        MouseMoveEvent.getType());
-        handlerRegs[1] = RootPanel.get().addDomHandler(new MouseDownHandler() {
-
-                                                           @Override
-                                                           public void onMouseDown(final MouseDownEvent mouseDownEvent) {
-                                                               mouseDownEvent.stopPropagation();
-                                                               mouseDownEvent.preventDefault();
-                                                           }
+        handlerRegs[1] = RootPanel.get().addDomHandler(mouseDownEvent -> {
+                                                           mouseDownEvent.stopPropagation();
+                                                           mouseDownEvent.preventDefault();
                                                        },
                                                        MouseDownEvent.getType());
-        handlerRegs[2] = RootPanel.get().addDomHandler(new MouseUpHandler() {
-
-                                                           @Override
-                                                           public void onMouseUp(final MouseUpEvent mouseUpEvent) {
-                                                               if (attached) {
-                                                                   timer.cancel();
-                                                                   final int x = getXDiff() + mouseUpEvent.getX();
-                                                                   final int y = getYDiff() + mouseUpEvent.getY();
-                                                                   AbstractDragProxy.this.clear();
-                                                                   callback.onComplete(x,
-                                                                                       y);
-                                                               }
+        handlerRegs[2] = RootPanel.get().addDomHandler(mouseUpEvent -> {
+                                                           if (attached) {
+                                                               timer.cancel();
+                                                               final int x = getXDiff() + mouseUpEvent.getX();
+                                                               final int y = getYDiff() + mouseUpEvent.getY();
+                                                               AbstractDragProxy.this.clear();
+                                                               callback.onComplete(x,
+                                                                                   y);
                                                            }
                                                        },
                                                        MouseUpEvent.getType());
+    }
+
+    private void scheduleMove(final Callback callback,
+                              final int x,
+                              final int y,
+                              final int millis) {
+        timeoutRunnable = () -> callback.onMove(x,
+                                                y);
+        if (!timer.isRunning()) {
+            timer.schedule(millis);
+        }
     }
 
     private void removeHandlers() {

@@ -169,8 +169,7 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                         safeDeleteCallback.ifPresent(c -> c.deleteCandidateConnector(out));
                         addCommand(new SetConnectionTargetNodeCommand(targetNode,
                                                                       in,
-                                                                      outContent.getTargetMagnet().orElse(null),
-                                                                      true));
+                                                                      outContent.getTargetConnection().orElse(null)));
                         safeDeleteCallback.ifPresent(c -> c.setEdgeTargetNode(targetNode,
                                                                               in));
                     }

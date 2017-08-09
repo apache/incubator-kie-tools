@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 @ApplicationScoped
@@ -62,10 +62,10 @@ public class GraphCommandFactory {
     @SuppressWarnings("unchecked")
     public AddConnectorCommand addConnector(final Node target,
                                             final Edge edge,
-                                            final Magnet magnet) {
+                                            final Connection connection) {
         return new AddConnectorCommand(target,
                                        edge,
-                                       magnet);
+                                       connection);
     }
 
     @SuppressWarnings("unchecked")
@@ -99,20 +99,18 @@ public class GraphCommandFactory {
 
     public SetConnectionSourceNodeCommand setSourceNode(final Node<? extends View<?>, Edge> sourceNode,
                                                         final Edge<? extends View<?>, Node> edge,
-                                                        final Magnet magnet) {
+                                                        final Connection connection) {
         return new SetConnectionSourceNodeCommand(sourceNode,
                                                   edge,
-                                                  magnet,
-                                                  true);
+                                                  connection);
     }
 
     public SetConnectionTargetNodeCommand setTargetNode(final Node<? extends View<?>, Edge> targetNode,
                                                         final Edge<? extends View<?>, Node> edge,
-                                                        final Magnet magnet) {
+                                                        final Connection connection) {
         return new SetConnectionTargetNodeCommand(targetNode,
                                                   edge,
-                                                  magnet,
-                                                  true);
+                                                  connection);
     }
 
     public UpdateElementPositionCommand updatePosition(final Node<? extends View<?>, Edge> element,

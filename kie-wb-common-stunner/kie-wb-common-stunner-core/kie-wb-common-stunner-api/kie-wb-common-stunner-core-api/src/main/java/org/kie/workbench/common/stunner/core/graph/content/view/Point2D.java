@@ -28,6 +28,12 @@ public final class Point2D {
     private double x;
     private double y;
 
+    public static Point2D create(final double x,
+                                 final double y) {
+        return new Point2D(x,
+                           y);
+    }
+
     public Point2D(final @MapsTo("x") double x,
                    final @MapsTo("y") double y) {
         this.x = x;

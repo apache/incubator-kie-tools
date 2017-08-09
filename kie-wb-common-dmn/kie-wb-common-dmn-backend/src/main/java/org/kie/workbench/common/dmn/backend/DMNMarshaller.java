@@ -61,8 +61,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
-import org.kie.workbench.common.stunner.core.graph.content.view.MagnetImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
@@ -317,12 +316,19 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         target.getInEdges().add(edge);
     }
 
+    @SuppressWarnings("unchecked")
     private void setConnectionMagnets(final Edge edge) {
-        Magnet sourceMagnet = MagnetImpl.Builder.build(Magnet.MagnetType.OUTGOING);
-        Magnet targetMagnet = MagnetImpl.Builder.build(Magnet.MagnetType.INCOMING);
-        ViewConnector connectionContent = (ViewConnector) edge.getContent();
-        connectionContent.setSourceMagnet(sourceMagnet);
-        connectionContent.setTargetMagnet(targetMagnet);
+        final ViewConnector connectionContent = (ViewConnector) edge.getContent();
+        // Set the source connection, if any.
+        final Node sourceNode = edge.getSourceNode();
+        if (null != sourceNode) {
+            connectionContent.setSourceConnection(MagnetConnection.Builder.forElement(sourceNode));
+        }
+        // Set the target connection, if any.
+        final Node targetNode = edge.getTargetNode();
+        if (null != targetNode) {
+            connectionContent.setTargetConnection(MagnetConnection.Builder.forElement(targetNode));
+        }
     }
 
     @Override

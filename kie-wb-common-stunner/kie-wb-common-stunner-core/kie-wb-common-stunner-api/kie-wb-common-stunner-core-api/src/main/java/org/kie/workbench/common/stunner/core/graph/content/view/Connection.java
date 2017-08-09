@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.shape.util;
+package org.kie.workbench.common.stunner.core.graph.content.view;
 
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+public interface Connection {
 
-public interface EdgeMagnetsHelper {
-
-    Magnet[] getDefaultMagnets(final ShapeView<?> sourceView,
-                               final ShapeView<?> targetView);
+    Point2D getLocation();
 }

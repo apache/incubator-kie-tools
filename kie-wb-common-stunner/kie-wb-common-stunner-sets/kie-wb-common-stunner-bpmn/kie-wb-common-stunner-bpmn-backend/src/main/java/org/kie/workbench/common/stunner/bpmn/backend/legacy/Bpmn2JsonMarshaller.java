@@ -154,6 +154,7 @@ import org.jboss.drools.OnExitScriptType;
 import org.jboss.drools.impl.DroolsPackageImpl;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.profile.IDiagramProfile;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.util.Utils;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -232,7 +233,7 @@ import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonProp
 /**
  * @author Antoine Toulme
  * @author Surdilovic
- *         <p/>
+ *         <p>
  *         a classLoader to transform BPMN 2.0 elements into JSON format.
  */
 public class Bpmn2JsonMarshaller {
@@ -571,15 +572,15 @@ public class Bpmn2JsonMarshaller {
     /**
      * protected void marshallMessage(Message message, Definitions def, JsonGenerator generator) throws JsonGenerationException, IOException {
      * Map<String, Object> properties = new LinkedHashMap<String, Object>();
-     * <p/>
+     * <p>
      * generator.writeStartObject();
      * generator.writeObjectField("resourceId", message.getId());
-     * <p/>
+     * <p>
      * properties.put("name", message.getName());
      * if(message.getDocumentation() != null && message.getDocumentation().size() > 0) {
      * properties.put("documentation", message.getDocumentation().get(0).getText());
      * }
-     * <p/>
+     * <p>
      * marshallProperties(properties, generator);
      * generator.writeObjectFieldStart("stencil");
      * generator.writeObjectField("id", "Message");
@@ -588,7 +589,7 @@ public class Bpmn2JsonMarshaller {
      * generator.writeEndArray();
      * generator.writeArrayFieldStart("outgoing");
      * generator.writeEndArray();
-     * <p/>
+     * <p>
      * generator.writeEndObject();
      * }
      **/
@@ -3533,6 +3534,25 @@ public class Bpmn2JsonMarshaller {
         // simulation properties
         setSimulationProperties(sequenceFlow.getId(),
                                 properties);
+
+        // Custom attributes for Stunner's connectors - source/target auto connection flag.
+        String sourcePropertyName = Bpmn2OryxManager.MAGNET_AUTO_CONNECTION +
+                Bpmn2OryxManager.SOURCE;
+        String sourceConnectorAuto = Utils.getMetaDataValue(sequenceFlow.getExtensionValues(),
+                                                            sourcePropertyName);
+        if (sourceConnectorAuto != null && sourceConnectorAuto.trim().length() > 0) {
+            properties.put(sourcePropertyName,
+                           sourceConnectorAuto);
+        }
+        String targetPropertyName = Bpmn2OryxManager.MAGNET_AUTO_CONNECTION +
+                Bpmn2OryxManager.TARGET;
+        String targetConnectorAuto = Utils.getMetaDataValue(sequenceFlow.getExtensionValues(),
+                                                            targetPropertyName);
+        if (targetConnectorAuto != null && targetConnectorAuto.trim().length() > 0) {
+            properties.put(targetPropertyName,
+                           targetConnectorAuto);
+        }
+
         marshallProperties(properties,
                            generator);
         generator.writeObjectFieldStart("stencil");
@@ -3557,26 +3577,38 @@ public class Bpmn2JsonMarshaller {
 
         if (waypoints.size() > 1) {
             Point waypoint = waypoints.get(0);
-            writeWaypointObject(generator, waypoint.getX() - sourceBounds.getX(), waypoint.getY() - sourceBounds.getY());
+            writeWaypointObject(generator,
+                                waypoint.getX() - sourceBounds.getX(),
+                                waypoint.getY() - sourceBounds.getY());
         } else {
-            writeWaypointObject(generator, sourceBounds.getWidth() / 2, sourceBounds.getHeight() / 2);
+            writeWaypointObject(generator,
+                                sourceBounds.getWidth() / 2,
+                                sourceBounds.getHeight() / 2);
         }
 
         for (int i = 1; i < waypoints.size() - 1; i++) {
             Point waypoint = waypoints.get(i);
-            writeWaypointObject(generator, waypoint.getX(), waypoint.getY());
+            writeWaypointObject(generator,
+                                waypoint.getX(),
+                                waypoint.getY());
         }
 
         if (waypoints.size() > 1) {
             Point waypoint = waypoints.get(waypoints.size() - 1);
-            writeWaypointObject(generator, waypoint.getX() - targetBounds.getX(), waypoint.getY() - targetBounds.getY());
+            writeWaypointObject(generator,
+                                waypoint.getX() - targetBounds.getX(),
+                                waypoint.getY() - targetBounds.getY());
         } else {
-            writeWaypointObject(generator, targetBounds.getWidth() / 2, targetBounds.getHeight() / 2);
+            writeWaypointObject(generator,
+                                targetBounds.getWidth() / 2,
+                                targetBounds.getHeight() / 2);
         }
         generator.writeEndArray();
     }
 
-    private void writeWaypointObject(final JsonGenerator generator, final float x, final float y) throws IOException {
+    private void writeWaypointObject(final JsonGenerator generator,
+                                     final float x,
+                                     final float y) throws IOException {
         generator.writeStartObject();
         generator.writeObjectField("x",
                                    x);

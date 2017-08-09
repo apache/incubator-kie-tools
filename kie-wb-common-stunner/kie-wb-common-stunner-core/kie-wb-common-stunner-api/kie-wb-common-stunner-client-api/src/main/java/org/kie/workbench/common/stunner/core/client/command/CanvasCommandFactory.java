@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.content.view.Magnet;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public interface CanvasCommandFactory<H extends CanvasHandler> {
@@ -42,7 +42,7 @@ public interface CanvasCommandFactory<H extends CanvasHandler> {
 
     CanvasCommand<H> addConnector(final Node sourceNode,
                                   final Edge candidate,
-                                  final Magnet magnet,
+                                  final Connection connection,
                                   final String shapeSetId);
 
     CanvasCommand<H> deleteConnector(final Edge candidate);
@@ -74,13 +74,11 @@ public interface CanvasCommandFactory<H extends CanvasHandler> {
 
     CanvasCommand<H> setSourceNode(final Node<? extends View<?>, Edge> node,
                                    final Edge<? extends View<?>, Node> edge,
-                                   final Magnet magnet,
-                                   boolean isNewConnection);
+                                   final Connection connection);
 
     CanvasCommand<H> setTargetNode(final Node<? extends View<?>, Edge> node,
                                    final Edge<? extends View<?>, Node> edge,
-                                   final Magnet magnet,
-                                   boolean isNewConnection);
+                                   final Connection connection);
 
     CanvasCommand<H> updatePosition(final Node<View<?>, Edge> element,
                                     final Double x,
