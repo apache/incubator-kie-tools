@@ -33,7 +33,8 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-public class SetExpressionTypeCommand extends AbstractCanvasGraphCommand {
+public class SetExpressionTypeCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
+                                                                                    VetoUndoCommand {
 
     private HasExpression hasExpression;
     private Optional<Expression> expression;

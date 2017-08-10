@@ -178,4 +178,10 @@ public class DeleteCellValueCommandTest {
 
         verify(gridLayer).batch();
     }
+
+    @Test
+    public void checkCommandDefinition() {
+        assertTrue(command instanceof VetoExecutionCommand);
+        assertTrue(command instanceof VetoUndoCommand);
+    }
 }

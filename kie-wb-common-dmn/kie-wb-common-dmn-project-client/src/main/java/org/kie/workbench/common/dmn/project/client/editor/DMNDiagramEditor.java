@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.dmn.api.factory.DMNGraphFactory;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -69,7 +70,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                             final DMNDiagramResourceType resourceType,
                             final ClientProjectDiagramService projectDiagramServices,
                             final SessionManager sessionManager,
-                            final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
+                            final @DMNEditor SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
                             final SessionCommandFactory sessionCommandFactory,
                             final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder,
                             final Event<OnDiagramFocusEvent> onDiagramFocusEvent,

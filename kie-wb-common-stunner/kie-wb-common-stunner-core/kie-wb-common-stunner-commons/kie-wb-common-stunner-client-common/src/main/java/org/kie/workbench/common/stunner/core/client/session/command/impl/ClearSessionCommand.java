@@ -96,13 +96,13 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<ClientFull
         sessionCommandManager.getRegistry().clear();
     }
 
-    void onCommandExecuted(final @Observes CanvasCommandExecutedEvent commandExecutedEvent) {
+    protected void onCommandExecuted(final @Observes CanvasCommandExecutedEvent commandExecutedEvent) {
         checkNotNull("commandExecutedEvent",
                      commandExecutedEvent);
         checkState();
     }
 
-    void onCommandUndoExecuted(final @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent) {
+    protected void onCommandUndoExecuted(final @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent) {
         checkNotNull("commandUndoExecutedEvent",
                      commandUndoExecutedEvent);
         checkState();

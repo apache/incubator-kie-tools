@@ -63,4 +63,9 @@ public class NavigateToExpressionEditorCommandTest extends BaseNavigationCommand
         verify(command).hidePaletteWidget(eq(false));
         verify(command).addDRGEditorToCanvasWidget();
     }
+
+    @Test
+    public void checkCommandDefinition() {
+        assertTrue(command instanceof VetoExecutionCommand);
+    }
 }

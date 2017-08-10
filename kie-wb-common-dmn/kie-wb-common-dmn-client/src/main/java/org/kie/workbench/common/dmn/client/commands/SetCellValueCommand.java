@@ -34,7 +34,8 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
-public class SetCellValueCommand<T> extends AbstractCanvasGraphCommand {
+public class SetCellValueCommand<T> extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
+                                                                                  VetoUndoCommand {
 
     private int rowIndex;
     private int columnIndex;

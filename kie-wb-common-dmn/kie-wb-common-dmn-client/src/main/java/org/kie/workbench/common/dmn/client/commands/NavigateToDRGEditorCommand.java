@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-public class NavigateToDRGEditorCommand extends BaseNavigateCommand {
+public class NavigateToDRGEditorCommand extends BaseNavigateCommand implements VetoUndoCommand {
 
     public NavigateToDRGEditorCommand(final ExpressionEditorView.Presenter editor,
                                       final SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter,

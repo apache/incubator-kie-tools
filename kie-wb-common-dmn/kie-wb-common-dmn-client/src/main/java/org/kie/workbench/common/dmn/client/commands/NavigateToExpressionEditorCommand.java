@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-public class NavigateToExpressionEditorCommand extends BaseNavigateCommand {
+public class NavigateToExpressionEditorCommand extends BaseNavigateCommand implements VetoExecutionCommand {
 
     public NavigateToExpressionEditorCommand(final ExpressionEditorView.Presenter editor,
                                              final SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter,

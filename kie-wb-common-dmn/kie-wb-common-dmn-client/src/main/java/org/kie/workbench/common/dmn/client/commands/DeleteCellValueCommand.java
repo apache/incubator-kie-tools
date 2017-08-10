@@ -34,7 +34,8 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
-public class DeleteCellValueCommand extends AbstractCanvasGraphCommand {
+public class DeleteCellValueCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
+                                                                                  VetoUndoCommand {
 
     private int rowIndex;
     private int columnIndex;
