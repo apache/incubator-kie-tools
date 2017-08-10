@@ -29,12 +29,6 @@
                             <PropertiesEditor:PropertyEditorComboBox ui:field="languageListItems"/>
                         </b:Column>
                     </b:FormGroup>
-                    <b:FormGroup>
-                        <PropertiesEditor:PropertyEditorItemLabel ui:field="multipleModeItemsLabel" addStyleNames="col-md-3" />
-                        <b:Column size="MD_9">
-                            <PropertiesEditor:PropertyEditorComboBox ui:field="multipleModeItems" />
-                        </b:Column>
-                    </b:FormGroup>
                 </b:Form>
             </b:Column>
         </b:Row>

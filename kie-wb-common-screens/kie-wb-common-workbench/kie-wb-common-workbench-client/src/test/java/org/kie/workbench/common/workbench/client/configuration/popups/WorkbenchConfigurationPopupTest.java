@@ -24,7 +24,6 @@ import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.workbench.client.configuration.ContextualView;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.PerspectiveManager;
@@ -52,9 +51,6 @@ public class WorkbenchConfigurationPopupTest {
     private PerspectiveManager perspectiveManager;
 
     @Mock
-    private ContextualView contextualView;
-
-    @Mock
     private UserPreferencesService preferencesService;
     private Caller<UserPreferencesService> preferencesServiceCaller;
 
@@ -63,7 +59,6 @@ public class WorkbenchConfigurationPopupTest {
         this.preferencesServiceCaller = new CallerMock<UserPreferencesService>( preferencesService );
         popup = new WorkbenchConfigurationPopup( placeManager,
                                                  perspectiveManager,
-                                                 contextualView,
                                                  preferencesServiceCaller ) {
             @Override
             protected String[] getAvailableLocaleNames() {

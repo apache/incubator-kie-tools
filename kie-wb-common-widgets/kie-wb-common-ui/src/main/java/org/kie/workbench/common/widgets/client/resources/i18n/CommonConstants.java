@@ -276,8 +276,6 @@ public interface CommonConstants
 
     String Basic();
 
-    String View_Mode();
-
     String Language_Selector();
 
     String All_Perspectives_View_Mode();
