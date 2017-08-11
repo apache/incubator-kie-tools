@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.showcase.client.screens.BaseSessionScreen;
 import org.kie.workbench.common.dmn.showcase.client.screens.SessionScreenView;
 import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
@@ -76,7 +77,7 @@ public class SessionDiagramPreviewScreen extends BaseSessionScreen {
 
     @Inject
     public SessionDiagramPreviewScreen(final SessionScreenView view,
-                                       final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory) {
+                                       final @DMNEditor SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory) {
         this.view = view;
         this.sessionPresenterFactory = sessionPresenterFactory;
     }

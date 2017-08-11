@@ -19,35 +19,23 @@ package org.kie.workbench.common.dmn.client.session.command.impl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
-import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
+import org.kie.workbench.common.dmn.client.session.BaseCommandsTest;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
-import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
-import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ClearSessionCommandTest {
+public class ClearSessionCommandTest extends BaseCommandsTest {
 
     @Mock
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-
-    @Mock
-    private AbstractCanvasHandler canvasHandler;
 
     @Mock
     private org.uberfire.mvp.Command callback;
@@ -89,40 +77,5 @@ public class ClearSessionCommandTest {
 
         verify(callback,
                never()).execute();
-    }
-
-    @SuppressWarnings("unchecked")
-    private CanvasCommandExecutedEvent makeCommandExecutionContext(final Command command) {
-        return new CanvasCommandExecutedEvent(canvasHandler,
-                                              command,
-                                              CanvasCommandResultBuilder.SUCCESS);
-    }
-
-    @SuppressWarnings("unchecked")
-    private CanvasUndoCommandExecutedEvent makeCommandUndoContext(final Command command) {
-        return new CanvasUndoCommandExecutedEvent(canvasHandler,
-                                                  command,
-                                                  CanvasCommandResultBuilder.SUCCESS);
-    }
-
-    private static class MockCommand extends AbstractCanvasGraphCommand {
-
-        @Override
-        protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
-            return null;
-        }
-
-        @Override
-        protected Command<AbstractCanvasHandler, CanvasViolation> newCanvasCommand(final AbstractCanvasHandler context) {
-            return null;
-        }
-    }
-
-    private static class MockVetoExecutionCommand extends MockCommand implements VetoExecutionCommand {
-
-    }
-
-    private static class MockVetoUndoCommand extends MockCommand implements VetoUndoCommand {
-
     }
 }

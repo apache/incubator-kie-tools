@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.widgets.presenters.session.impl;
+package org.kie.workbench.common.dmn.client.session.presenters.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -44,7 +44,7 @@ public class SessionPresenterFactoryImpl extends org.kie.workbench.common.stunne
                                        final ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> commandManagerInstances,
                                        final ManagedInstance<ViewerToolbarFactory> viewerToolbarFactoryInstances,
                                        final @DMNEditor ManagedInstance<EditorToolbarFactory> editorToolbarFactoryInstances,
-                                       final ManagedInstance<SessionDiagramPreview<AbstractClientSession>> sessionPreviewInstances,
+                                       final @DMNEditor ManagedInstance<SessionDiagramPreview<AbstractClientSession>> sessionPreviewInstances,
                                        final ManagedInstance<WidgetWrapperView> diagramViewerViewInstances,
                                        final ManagedInstance<SessionPresenter.View> viewInstances,
                                        final ManagedInstance<NotificationsObserver> notificationsObserverInstances,

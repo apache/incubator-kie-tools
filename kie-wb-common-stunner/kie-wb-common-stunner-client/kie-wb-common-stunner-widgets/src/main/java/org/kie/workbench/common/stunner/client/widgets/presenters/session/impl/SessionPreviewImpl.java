@@ -93,7 +93,7 @@ public class SessionPreviewImpl
                               final WidgetWrapperView view) {
         this.definitionManager = definitionManager;
         this.shapeManager = shapeManager;
-        this.textPropertyProviderFactory=textPropertyProviderFactory;
+        this.textPropertyProviderFactory = textPropertyProviderFactory;
         this.canvasCommandManager = canvasCommandManager;
 
         this.definitionUtils = definitionUtils;
@@ -215,11 +215,19 @@ public class SessionPreviewImpl
     }
 
     void commandExecutedFired(@Observes CanvasCommandExecutedEvent commandExecutedEvent) {
-        super.onCommandExecuted(commandExecutedEvent);
+        handleCanvasCommandExecutedEvent(commandExecutedEvent);
     }
 
     void commandUndoExecutedFired(@Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent) {
-        super.onCommandUndoExecuted(commandUndoExecutedEvent);
+        handleCanvasUndoCommandExecutedEvent(commandUndoExecutedEvent);
+    }
+
+    protected void handleCanvasCommandExecutedEvent(final CanvasCommandExecutedEvent event) {
+        super.onCommandExecuted(event);
+    }
+
+    protected void handleCanvasUndoCommandExecutedEvent(final CanvasUndoCommandExecutedEvent event) {
+        super.onCommandUndoExecuted(event);
     }
 
     @Override
