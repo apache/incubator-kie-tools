@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.user.client.Timer;
 
+// TODO: Refactor/replace by the new tooltip implementation (org.kie.workbench.common.stunner.lienzo.toolbox.items.tooltip.Tooltip).
 public class PrimitiveTooltip extends PrimitivePopup {
 
     private static final double PADDING = 10d;

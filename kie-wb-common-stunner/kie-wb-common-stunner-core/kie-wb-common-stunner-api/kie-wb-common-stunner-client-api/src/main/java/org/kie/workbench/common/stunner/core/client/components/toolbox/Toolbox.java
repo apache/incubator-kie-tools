@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,25 @@
 
 package org.kie.workbench.common.stunner.core.client.components.toolbox;
 
-public interface Toolbox {
+/**
+ * A toolbox is just a client side component that groups a set of shapes
+ * or buttons which provide some information or actions to perform
+ * for a certain element.
+ */
+public interface Toolbox<T extends Toolbox> {
 
-    void show();
+    /**
+     * Shows the toolbox.
+     */
+    T show();
 
-    void hide();
+    /**
+     * Hides the toolbox.
+     */
+    T hide();
 
-    void remove();
+    /**
+     * Destroys the toolbox.
+     */
+    void destroy();
 }

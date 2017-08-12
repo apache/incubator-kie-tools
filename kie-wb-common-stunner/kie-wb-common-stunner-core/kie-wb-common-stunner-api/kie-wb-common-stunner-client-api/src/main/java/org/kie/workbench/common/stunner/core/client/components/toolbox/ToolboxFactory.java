@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,27 @@
 
 package org.kie.workbench.common.stunner.core.client.components.toolbox;
 
-import org.kie.workbench.common.stunner.core.client.components.toolbox.builder.ToolboxBuilder;
-import org.kie.workbench.common.stunner.core.client.components.toolbox.builder.ToolboxButtonBuilder;
-import org.kie.workbench.common.stunner.core.client.components.toolbox.builder.ToolboxButtonGridBuilder;
+import java.util.Optional;
 
-public interface ToolboxFactory {
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.graph.Element;
 
-    ToolboxBuilder<?, ?, ?> toolboxBuilder();
+/**
+ * It builds toolbox instances for a given element of type <code>E</code>, in the specified
+ * canvas handler of type <code>H</code>.
+ * @param <H> The canvas handler type.
+ * @param <E> The element type.
+ */
+public interface ToolboxFactory<H extends CanvasHandler, E extends Element> {
 
-    ToolboxButtonGridBuilder toolboxGridBuilder();
-
-    ToolboxButtonBuilder<?> toolboxButtonBuilder();
+    /**
+     * Builds a toolbox instance for the specified <code>element</code> and
+     * <code>canvasHandler</code>.
+     * @param canvasHandler The canvas handler.
+     * @param element The element.
+     * @return As toolbox items could depend on the current context (states, rules, etc),
+     * the result can be either a toolbox instance or empty.
+     */
+    public Optional<Toolbox<?>> build(H canvasHandler,
+                                      E element);
 }

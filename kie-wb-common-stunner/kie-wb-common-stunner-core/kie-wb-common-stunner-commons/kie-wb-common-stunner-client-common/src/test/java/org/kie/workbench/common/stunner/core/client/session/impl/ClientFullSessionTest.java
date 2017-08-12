@@ -179,12 +179,6 @@ public class ClientFullSessionTest {
                times(1)).setCommandManagerProvider(resize.capture());
         assertEquals(sessionCommandManager,
                      resize.getValue().getCommandManager());
-        final ArgumentCaptor<RequiresCommandManager.CommandManagerProvider> toolbox =
-                ArgumentCaptor.forClass(RequiresCommandManager.CommandManagerProvider.class);
-        verify(toolboxControl,
-               times(1)).setCommandManagerProvider(toolbox.capture());
-        assertEquals(sessionCommandManager,
-                     toolbox.getValue().getCommandManager());
         final ArgumentCaptor<RequiresCommandManager.CommandManagerProvider> name =
                 ArgumentCaptor.forClass(RequiresCommandManager.CommandManagerProvider.class);
         verify(canvasInPlaceTextEditorControl,

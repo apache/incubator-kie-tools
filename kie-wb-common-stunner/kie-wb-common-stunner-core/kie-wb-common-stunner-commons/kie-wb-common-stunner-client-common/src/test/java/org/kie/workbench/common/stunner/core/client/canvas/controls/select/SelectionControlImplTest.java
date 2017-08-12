@@ -163,7 +163,7 @@ public class SelectionControlImplTest {
         event.setShiftKeyDown(false);
         clickHandler.handle(event);
         verify(clearSelectionEvent,
-               times(2)).fire(any(CanvasClearSelectionEvent.class));
+               times(1)).fire(any(CanvasClearSelectionEvent.class));
         verify(elementSelectedEvent,
                never()).fire(any(CanvasElementSelectedEvent.class));
     }

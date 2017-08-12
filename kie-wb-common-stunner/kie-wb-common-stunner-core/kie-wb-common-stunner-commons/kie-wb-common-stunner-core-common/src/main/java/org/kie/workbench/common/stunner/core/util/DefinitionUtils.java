@@ -88,6 +88,13 @@ public class DefinitionUtils {
         return null;
     }
 
+    public <T> String getTitle(final String definitionId) {
+        return definitionManager
+                .adapters()
+                .forDefinition()
+                .getTitle(factoryManager.newDefinition(definitionId));
+    }
+
     @SuppressWarnings("unchecked")
     public Bounds buildBounds(final Object definition,
                               final double x,

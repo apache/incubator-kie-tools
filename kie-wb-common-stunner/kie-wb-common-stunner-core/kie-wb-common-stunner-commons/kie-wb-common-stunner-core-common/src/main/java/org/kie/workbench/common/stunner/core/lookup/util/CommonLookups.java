@@ -60,7 +60,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 /**
  * An utils class that provides common used look-ups and other logic for querying the domain model and the rules model,
  * that is used along the application.
- * <p/>
+ * <p>
  * // TODO: Some kind of cache to avoid frequently used lookups? Consider performance and memory, this class
  * is shared on both server and client sides.
  */
@@ -100,7 +100,7 @@ public class CommonLookups {
      * Returns the allowed edge definition identifiers that can be added as outgoing edges for the given source node.
      */
     public <T> Set<String> getAllowedConnectors(final String defSetId,
-                                                final Node<Definition<T>, Edge> sourceNode,
+                                                final Node<? extends Definition<T>, Edge> sourceNode,
                                                 final int page,
                                                 final int pageSize) {
         final Set<String> result = new LinkedHashSet<>();
@@ -151,7 +151,7 @@ public class CommonLookups {
      * the given edge (connector) identifier.
      * This method only returns the definition identifiers that are considered the default types for its morph type,
      * it does NOT return all the identifiers for all the allowed target definitions.
-     * <p/>
+     * <p>
      * TODO: Handle several result pages.
      */
     public <T> Set<String> getAllowedMorphDefaultDefinitions(final String defSetId,
@@ -171,29 +171,26 @@ public class CommonLookups {
                     "for [" + sourceNode + "] and using the " +
                     "connector [" + edgeId + "] " +
                     "ARE [" + allowedDefinitions + "]");
-        if (null != allowedDefinitions) {
-            final Set<String> result = new LinkedHashSet<>();
-            allowedDefinitions.stream().forEach(definition -> {
-                final String defId = getDefinitionManager().adapters().forDefinition().getId(definition);
-                final MorphDefinition morphDefinition = definitionUtils.getMorphDefinition(definition);
-                final boolean hasMorphBase = null != morphDefinition;
-                final String id = hasMorphBase ? morphDefinition.getDefault() : defId;
-                result.add(id);
-            });
-            log(Level.FINEST,
-                "Target definitions group by morph base type allowed " +
-                        "for [" + sourceNode + "] and using the " +
-                        "connector [" + edgeId + "] " +
-                        "ARE [" + result + "]");
-            return result;
-        }
-        return null;
+        final Set<String> result = new LinkedHashSet<>();
+        allowedDefinitions.stream().forEach(definition -> {
+            final String defId = getDefinitionManager().adapters().forDefinition().getId(definition);
+            final MorphDefinition morphDefinition = definitionUtils.getMorphDefinition(definition);
+            final boolean hasMorphBase = null != morphDefinition;
+            final String id = hasMorphBase ? morphDefinition.getDefault() : defId;
+            result.add(id);
+        });
+        log(Level.FINEST,
+            "Target definitions group by morph base type allowed " +
+                    "for [" + sourceNode + "] and using the " +
+                    "connector [" + edgeId + "] " +
+                    "ARE [" + result + "]");
+        return result;
     }
 
     /**
      * Returns the allowed definition identifiers that can be used as target node for the given source node and
      * the given edge (connector) identifier.
-     * <p/>
+     * <p>
      * TODO: Handle several result pages.
      */
     @SuppressWarnings("unchecked")
@@ -307,7 +304,7 @@ public class CommonLookups {
 
     /**
      * Returns all the Definition Set's definition identifiers that contains the given labels.
-     * <p/>
+     * <p>
      * TODO: Handle several result pages.
      */
     private Set<String> getDefinitions(final String defSetId,
@@ -363,7 +360,7 @@ public class CommonLookups {
     /**
      * Returns the allowed ROLES that satisfy connection rules for a given source
      * definition ( domain model object, not a node ).and the given edge (connector) identifier.
-     * <p/>
+     * <p>
      * TODO: Handle several result pages.
      */
     private <T> Set<String> getConnectionRulesAllowedTargets(final String defSetId,

@@ -58,6 +58,8 @@ public abstract class WiresCanvas extends AbstractCanvas<WiresCanvas.View> {
         View setDockingAcceptor(final IDockingAcceptor dockingAcceptor);
 
         WiresManager getWiresManager();
+
+        com.ait.lienzo.client.core.shape.Layer getTopLayer();
     }
 
     protected WiresCanvas(final Event<CanvasClearEvent> canvasClearEvent,

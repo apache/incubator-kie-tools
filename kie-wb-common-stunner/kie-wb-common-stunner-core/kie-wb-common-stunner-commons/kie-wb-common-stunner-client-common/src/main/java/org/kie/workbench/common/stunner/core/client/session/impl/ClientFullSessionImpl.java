@@ -77,7 +77,6 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
         getRegistrationHandler().registerCanvasHandlerControl(resizeControl);
         resizeControl.setCommandManagerProvider(() -> sessionCommandManager);
         getRegistrationHandler().registerCanvasHandlerControl(toolboxControl);
-        toolboxControl.setCommandManagerProvider(() -> sessionCommandManager);
         getRegistrationHandler().registerCanvasHandlerControl(canvasInPlaceTextEditorControl);
         canvasInPlaceTextEditorControl.setCommandManagerProvider(() -> sessionCommandManager);
     }

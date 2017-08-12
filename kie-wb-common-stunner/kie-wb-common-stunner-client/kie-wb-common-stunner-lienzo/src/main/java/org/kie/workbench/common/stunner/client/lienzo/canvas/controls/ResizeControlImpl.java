@@ -154,8 +154,6 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
             final HasControlPoints<?> hasControlPoints = getControlPointsInstance(uuid);
             if (!hasControlPoints.areControlsVisible()) {
                 showCPs(hasControlPoints);
-            } else {
-                hideCPs(hasControlPoints);
             }
         }
     }

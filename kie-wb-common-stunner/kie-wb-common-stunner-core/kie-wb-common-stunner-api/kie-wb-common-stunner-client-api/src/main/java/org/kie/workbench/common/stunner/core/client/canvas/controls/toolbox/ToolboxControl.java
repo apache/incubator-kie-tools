@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox;
 
+import java.util.Iterator;
+
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistationControl;
-import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
+import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
 
-// // TODO: Missing support for HasCommandManagerProvider.
-public interface ToolboxControl<C extends CanvasHandler, E> extends CanvasRegistationControl<C, E>,
-                                                                    RequiresCommandManager<C> {
+public interface ToolboxControl<C extends CanvasHandler, E>
+        extends CanvasRegistationControl<C, E> {
 
+    Iterator<Toolbox<?>> getToolboxes(E element);
 }

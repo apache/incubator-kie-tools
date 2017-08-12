@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.stunner.client.widgets.canvas.wires;
 
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
@@ -102,6 +103,11 @@ public class WiresCanvasView extends CanvasView implements WiresCanvas.View {
     @Override
     public WiresManager getWiresManager() {
         return wiresManager;
+    }
+
+    @Override
+    public Layer getTopLayer() {
+        return canvasLayer.getScene().getTopLayer();
     }
 
     protected Direction[] getMagnetCardinals() {

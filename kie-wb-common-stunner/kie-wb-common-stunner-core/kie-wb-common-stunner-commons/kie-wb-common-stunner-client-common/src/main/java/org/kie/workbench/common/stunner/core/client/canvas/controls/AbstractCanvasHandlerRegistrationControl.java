@@ -31,7 +31,8 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
-public abstract class AbstractCanvasHandlerRegistrationControl<H extends AbstractCanvasHandler> extends AbstractCanvasHandlerControl<H>
+public abstract class AbstractCanvasHandlerRegistrationControl<H extends AbstractCanvasHandler>
+        extends AbstractCanvasHandlerControl<H>
         implements CanvasRegistationControl<H, Element> {
 
     private static Logger LOGGER = Logger.getLogger(AbstractCanvasHandlerRegistrationControl.class.getName());

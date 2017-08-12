@@ -329,7 +329,6 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
         return IControlHandle.ControlHandleStandardType.MAGNET;
     }
 
-    // TODO: listen for WiresMoveEvent's as well?
     private HandlerRegistration[] registerDragHandler(final ViewHandler<DragEvent> eventHandler) {
         if (!getAttachableShape().isDraggable()) {
             final DragHandler dragHandler = (DragHandler) eventHandler;

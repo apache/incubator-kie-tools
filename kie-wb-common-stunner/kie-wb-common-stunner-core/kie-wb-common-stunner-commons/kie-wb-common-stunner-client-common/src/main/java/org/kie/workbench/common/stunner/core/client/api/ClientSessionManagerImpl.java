@@ -82,7 +82,6 @@ public class ClientSessionManagerImpl extends AbstractClientSessionManager {
         checkNotNull("diagram",
                      diagram);
         final String defSetId = diagram.getMetadata().getDefinitionSetId();
-        final String ssId = diagram.getMetadata().getShapeSetId();
         final Annotation qualifier = definitionUtils.getQualifier(defSetId);
         final List<ClientSessionFactory<?>> result = new LinkedList<>();
         sessionFactoriesInstances.select(qualifier).forEach(result::add);

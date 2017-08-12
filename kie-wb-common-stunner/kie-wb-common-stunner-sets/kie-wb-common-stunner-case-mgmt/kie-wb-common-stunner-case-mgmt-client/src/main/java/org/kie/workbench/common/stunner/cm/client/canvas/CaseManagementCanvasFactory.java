@@ -16,10 +16,6 @@
 
 package org.kie.workbench.common.stunner.cm.client.canvas;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -29,9 +25,8 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
@@ -49,9 +44,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomCon
  */
 @CaseManagementEditor
 @ApplicationScoped
-public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas, AbstractCanvasHandler> {
-
-    private static Logger LOGGER = Logger.getLogger(CaseManagementCanvasFactory.class.getName());
+public class CaseManagementCanvasFactory
+        extends AbstractCanvasFactory<CaseManagementCanvasFactory> {
 
     private final ManagedInstance<ConnectionAcceptorControl> connectionAcceptorControls;
     private final ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls;
@@ -66,8 +60,6 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
     private final ManagedInstance<AbstractCanvas> canvasInstances;
     private final ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
     private final WiresControlFactory caseManagementControlFactory;
-
-    private final Map<Class<? extends CanvasControl>, ManagedInstance> controls = new HashMap<>(15);
 
     protected CaseManagementCanvasFactory() {
         this(null,
@@ -116,26 +108,27 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
 
     @PostConstruct
     public void init() {
-        controls.put(ConnectionAcceptorControl.class,
-                     connectionAcceptorControls);
-        controls.put(ContainmentAcceptorControl.class,
-                     containmentAcceptorControls);
-        controls.put(DockingAcceptorControl.class,
-                     dockingAcceptorControls);
-        controls.put(CanvasInPlaceTextEditorControl.class,
-                     nameEditionControls);
-        controls.put(SelectionControl.class,
-                     selectionControls);
-        controls.put(ElementBuilderControl.class,
-                     elementBuilderControls);
-        controls.put(NodeBuilderControl.class,
-                     nodeBuilderControls);
-        controls.put(EdgeBuilderControl.class,
-                     edgeBuilderControls);
-        controls.put(ZoomControl.class,
-                     zoomControls);
-        controls.put(PanControl.class,
-                     panControls);
+        this
+                .register(ConnectionAcceptorControl.class,
+                          connectionAcceptorControls)
+                .register(ContainmentAcceptorControl.class,
+                          containmentAcceptorControls)
+                .register(DockingAcceptorControl.class,
+                          dockingAcceptorControls)
+                .register(CanvasInPlaceTextEditorControl.class,
+                          nameEditionControls)
+                .register(SelectionControl.class,
+                          selectionControls)
+                .register(ElementBuilderControl.class,
+                          elementBuilderControls)
+                .register(NodeBuilderControl.class,
+                          nodeBuilderControls)
+                .register(EdgeBuilderControl.class,
+                          edgeBuilderControls)
+                .register(ZoomControl.class,
+                          zoomControls)
+                .register(PanControl.class,
+                          panControls);
     }
 
     @Override
@@ -148,19 +141,5 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
     @Override
     public AbstractCanvasHandler newCanvasHandler() {
         return canvasHandlerInstances.get();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <A extends CanvasControl> A newControl(final Class<A> type) {
-        if (controls.containsKey(type)) {
-            final ManagedInstance<A> mi = controls.get(type);
-            return mi.get();
-        } else {
-            LOGGER.log(Level.WARNING,
-                       "Canvas Control for type [" + type.getName() + "] is not supported by " +
-                               "this canvas factory [" + this.getClass().getName() + "]");
-        }
-        return null;
     }
 }
