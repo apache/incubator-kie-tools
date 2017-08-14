@@ -210,8 +210,7 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
                          final Object value) {
         if (null != property) {
             if (isReadOnly(property)) {
-                // throw new RuntimeException( "Cannot set new value for property [" + getId( property ) + "] as it is read only! " );
-                return;
+                throw new RuntimeException( "Cannot set new value for property [" + getId( property ) + "] as it is read only! " );
             }
             Class<?> c = property.getClass();
             boolean done = false;

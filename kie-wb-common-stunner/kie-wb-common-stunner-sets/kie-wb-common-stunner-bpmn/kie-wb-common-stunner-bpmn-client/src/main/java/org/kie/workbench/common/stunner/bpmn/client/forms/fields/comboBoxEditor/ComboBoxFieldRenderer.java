@@ -16,81 +16,34 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.comboBoxEditor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.SelectorFieldRenderer;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.StringSelectorOption;
-import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldDefinition;
 
 @Dependent
 public class ComboBoxFieldRenderer
-        extends SelectorFieldRenderer<ComboBoxFieldDefinition, StringSelectorOption, String> {
+    extends AbstractComboBoxFieldRenderer<ComboBoxFieldDefinition> {
 
-    private ComboBoxWidgetView view;
+  public static final String TYPE_NAME = ComboBoxFieldDefinition.FIELD_TYPE.getTypeName();
 
-    private ListBoxValues valueListBoxValues;
+  @Inject
+  public ComboBoxFieldRenderer(final ComboBoxWidgetView comboBoxEditor) {
+    super(comboBoxEditor);
+  }
 
-    @Inject
-    public ComboBoxFieldRenderer(final ComboBoxWidgetView comboBoxEditor) {
-        this.view = comboBoxEditor;
-    }
+  @Override
+  public String getName() {
+    return TYPE_NAME;
+  }
 
-    @Override
-    protected void refreshInput(Map<String, String> optionsValues,
-                                String defaultValue) {
-        List<String> values = new ArrayList<String>(optionsValues.keySet());
-        java.util.Collections.sort(values);
-        setComboBoxValues(values);
-    }
+  @Override
+  public String getSupportedCode() {
+    return TYPE_NAME;
+  }
 
-    protected void setComboBoxValues(final List<String> values) {
-        valueListBoxValues = new ListBoxValues(ComboBoxWidgetView.CUSTOM_PROMPT,
-                                               "Edit" + " ",
-                                               null);
-        valueListBoxValues.addValues(values);
-        view.setComboBoxValues(valueListBoxValues);
-    }
-
-    @Override
-    public String getName() {
-        return ComboBoxFieldDefinition.FIELD_TYPE.getTypeName();
-    }
-
-    @Override
-    public void initInputWidget() {
-        view.setReadOnly(field.getReadOnly());
-        refreshSelectorOptions();
-    }
-
-    @Override
-    public IsWidget getInputWidget() {
-        return (ComboBoxWidgetViewImpl) view;
-    }
-
-    @Override
-    public String getSupportedCode() {
-        return ComboBoxFieldDefinition.FIELD_TYPE.getTypeName();
-    }
-
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        initInputWidget();
-        return getInputWidget();
-    }
-
-    @Override
-    protected void setReadOnly(boolean readOnly) {
-        view.setReadOnly(readOnly);
-    }
-
-    @Override
-    public Class<ComboBoxFieldDefinition> getSupportedFieldDefinition() {
-        return ComboBoxFieldDefinition.class;
-    }
+  @Override
+  public Class<ComboBoxFieldDefinition> getSupportedFieldDefinition() {
+    return ComboBoxFieldDefinition.class;
+  }
 }

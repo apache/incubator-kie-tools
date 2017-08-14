@@ -16,63 +16,44 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.comboBoxEditor;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldType;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-
 @RunWith(MockitoJUnitRunner.class)
 public class ComboBoxFieldRendererTest {
 
-    @Mock
-    private ComboBoxWidgetView comboBoxWidgetView;
+  @Mock
+  private ComboBoxWidgetView comboBoxWidgetView;
 
-    @Mock
-    ComboBoxFieldDefinition comboBoxFieldDefinition;
+  @Mock
+  private ComboBoxFieldDefinition comboBoxFieldDefinition;
 
-    @Spy
-    @InjectMocks
-    ComboBoxFieldRenderer comboBoxFieldRenderer = new ComboBoxFieldRenderer(comboBoxWidgetView);
+  @Spy
+  @InjectMocks
+  private ComboBoxFieldRenderer comboBoxFieldRenderer = new ComboBoxFieldRenderer(comboBoxWidgetView);
 
-    @Before
-    public void setUp() {
-    }
+  @Test
+  public void getName() throws Exception {
+    Assert.assertEquals(comboBoxFieldRenderer.getName(),
+                        ComboBoxFieldType.NAME);
+  }
 
-    @Test
-    public void testRefreshInput() {
-        Map<String, String> options = new HashMap<String, String>();
-        options.put("age",
-                    "age");
-        options.put("height",
-                    "height");
-        options.put("sex",
-                    "sex");
-        comboBoxFieldRenderer.refreshInput(options,
-                                           null);
+  @Test
+  public void getSupportedCode() throws Exception {
+    Assert.assertEquals(comboBoxFieldRenderer.getSupportedCode(),
+                        ComboBoxFieldType.NAME);
+  }
 
-        verify(comboBoxWidgetView,
-               times(1)).setComboBoxValues(any(ListBoxValues.class));
-    }
-
-    @Test
-    public void testSetComboBoxValues() {
-        List<String> values = Arrays.asList(new String[]{"age", "height", "sex"});
-        comboBoxFieldRenderer.setComboBoxValues(values);
-
-        verify(comboBoxWidgetView,
-               times(1)).setComboBoxValues(any(ListBoxValues.class));
-    }
+  @Test
+  public void getSupportedFieldDefinition() throws Exception {
+    Assert.assertEquals(comboBoxFieldRenderer.getSupportedFieldDefinition(),
+                        ComboBoxFieldDefinition.class);
+  }
 }

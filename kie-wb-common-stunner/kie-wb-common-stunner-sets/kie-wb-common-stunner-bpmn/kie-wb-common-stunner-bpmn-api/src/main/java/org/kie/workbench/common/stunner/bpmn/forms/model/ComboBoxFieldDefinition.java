@@ -21,9 +21,11 @@ import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorFieldBaseDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.StringSelectorOption;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.FieldType;
 
 @Portable
 @Bindable
@@ -31,16 +33,19 @@ public class ComboBoxFieldDefinition extends SelectorFieldBaseDefinition<StringS
 
     public static final ComboBoxFieldType FIELD_TYPE = new ComboBoxFieldType();
 
-    private String defaultValue;
+    protected String defaultValue;
 
     protected List<StringSelectorOption> options = new ArrayList<>();
+
+    @SkipFormField
+    protected Boolean allowCustomValue = Boolean.TRUE;
 
     public ComboBoxFieldDefinition() {
         super(String.class.getName());
     }
 
     @Override
-    public ComboBoxFieldType getFieldType() {
+    public FieldType getFieldType() {
         return FIELD_TYPE;
     }
 
@@ -69,5 +74,13 @@ public class ComboBoxFieldDefinition extends SelectorFieldBaseDefinition<StringS
         if (other instanceof ComboBoxFieldDefinition) {
             this.setDefaultValue(((ComboBoxFieldDefinition) other).getDefaultValue());
         }
+    }
+
+    public Boolean isAllowCustomValue() {
+        return allowCustomValue;
+    }
+
+    public void setAllowCustomValue(Boolean allowCustomValue) {
+        this.allowCustomValue = allowCustomValue;
     }
 }

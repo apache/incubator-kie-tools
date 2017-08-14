@@ -27,7 +27,6 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
@@ -40,6 +39,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAct
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptLanguage;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
+import org.kie.workbench.common.stunner.bpmn.forms.model.ConditionalComboBoxFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -100,17 +100,21 @@ public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel {
 
     @Property
     @FormField(
-            type = TextAreaFieldType.class,
-            afterElement = "onEntryAction",
-            settings = {@FieldParam(name = "rows", value = "5")}
+        type = TextAreaFieldType.class,
+        afterElement = "onEntryAction",
+        settings = {@FieldParam(name = "rows", value = "5")}
     )
     @Valid
     private OnExitAction onExitAction;
 
     @Property
     @FormField(
-            type = ListBoxFieldType.class,
-            afterElement = "onExitAction"
+        type = ConditionalComboBoxFieldType.class,
+        afterElement = "onExitAction",
+        settings = {
+            @FieldParam(name = "relatedField", value = "onEntryAction;onExitAction"),
+            @FieldParam(name = "allowCustomValue", value = "false")
+        }
     )
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
@@ -154,8 +158,7 @@ public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel {
         this.onEntryAction = onEntryAction;
         this.onExitAction = onExitAction;
         this.scriptLanguage = scriptLanguage;
-        this.isAsync = isAsync;
-        this.processData = processData;
+        this.isAsync = isAsync;this.processData = processData;
     }
 
     @Override
