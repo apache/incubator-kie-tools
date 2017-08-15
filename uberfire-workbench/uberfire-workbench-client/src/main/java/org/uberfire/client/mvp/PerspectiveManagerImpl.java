@@ -16,11 +16,15 @@
 
 package org.uberfire.client.mvp;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.events.PerspectiveChange;
@@ -48,6 +52,9 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
 
     @Inject
     private ActivityBeansCache activityBeansCache;
+
+    @Inject
+    private SyncBeanManager iocManager;
 
     private PerspectiveActivity currentPerspective;
 
@@ -109,6 +116,34 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
     @Override
     public void removePerspectiveStates(final Command doWhenFinished) {
         wbServices.removePerspectiveStates(doWhenFinished);
+    }
+
+    @Override
+    public String getDefaultPerspectiveIdentifier() {
+        AbstractWorkbenchPerspectiveActivity defaultPerspective = null;
+        final Iterator<SyncBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectivesIterator = getPerspectivesIterator();
+
+        while (perspectivesIterator.hasNext()) {
+            final SyncBeanDef<AbstractWorkbenchPerspectiveActivity> perspective = perspectivesIterator.next();
+            final AbstractWorkbenchPerspectiveActivity instance = perspective.getInstance();
+            if (instance.isDefault()) {
+                defaultPerspective = instance;
+                break;
+            } else {
+                iocManager.destroyBean(instance);
+            }
+        }
+
+        if (defaultPerspective != null) {
+            return defaultPerspective.getIdentifier();
+        }
+
+        return null;
+    }
+
+    Iterator<SyncBeanDef<AbstractWorkbenchPerspectiveActivity>> getPerspectivesIterator() {
+        final Collection<SyncBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectives = iocManager.lookupBeans(AbstractWorkbenchPerspectiveActivity.class);
+        return perspectives.iterator();
     }
 
     /**

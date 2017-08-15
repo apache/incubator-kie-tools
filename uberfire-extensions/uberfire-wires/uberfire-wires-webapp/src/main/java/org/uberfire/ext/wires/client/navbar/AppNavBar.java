@@ -16,18 +16,17 @@
 
 package org.uberfire.ext.wires.client.navbar;
 
-import static java.lang.Integer.MAX_VALUE;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.workbench.Header;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
+import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
+
+import static java.lang.Integer.MAX_VALUE;
 
 @ApplicationScoped
 @Templated
@@ -38,12 +37,11 @@ public class AppNavBar implements Header {
     Div header;
 
     @Inject
-    private WorkbenchMenuBarPresenter menuBarPresenter;
+    private WorkbenchMegaMenuPresenter menuBarPresenter;
 
     @PostConstruct
     public void setup() {
-        DOMUtil.appendWidgetToElement(header,
-                                      menuBarPresenter.getView().asWidget());
+        header.appendChild(menuBarPresenter.getView().getElement());
     }
 
     @Override

@@ -30,6 +30,7 @@ import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.uberfire.client.menu.SplashScreenMenuPresenter;
 import org.uberfire.client.menu.SplashScreenMenuPresenter.SplashScreenListEntry;
 import org.uberfire.client.resources.i18n.WorkbenchConstants;
+import org.uberfire.client.views.pfly.style.PatternFlyStyles;
 
 @Dependent
 public class SplashScreenMenuView extends AnchorListItem implements SplashScreenMenuPresenter.View {
@@ -41,6 +42,7 @@ public class SplashScreenMenuView extends AnchorListItem implements SplashScreen
         ensureDebugId("MenuSplashList-dropdown");
 
         anchor.addStyleName(Styles.DROPDOWN_TOGGLE);
+        anchor.addStyleName(PatternFlyStyles.NAV_ITEM_ICONIC);
         anchor.setDataToggle(Toggle.DROPDOWN);
         anchor.setIcon(IconType.QUESTION);
 

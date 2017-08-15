@@ -97,4 +97,10 @@ public interface Constants {
 
     @TranslationKey(defaultValue = "")
     String December = "December";
+
+    @TranslationKey(defaultValue = "")
+    String Menu = "Menu";
+
+    @TranslationKey(defaultValue = "")
+    String Home = "Home";
 }

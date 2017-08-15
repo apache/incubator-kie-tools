@@ -15,14 +15,8 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.menu.AuthFilterMenuVisitor;
 import org.uberfire.client.mvp.Activity;
@@ -33,6 +27,8 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
+import org.uberfire.client.workbench.widgets.menu.base.WorkbenchBaseMenuPresenter;
+import org.uberfire.client.workbench.widgets.menu.base.WorkbenchBaseMenuView;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -48,8 +44,6 @@ import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuVisitor;
 
-import static org.uberfire.plugin.PluginUtil.ensureIterable;
-
 /**
  * Presenter for WorkbenchMenuBar that mediates changes to the Workbench MenuBar
  * in response to changes to the selected WorkbenchPart. The menu structure is
@@ -57,24 +51,26 @@ import static org.uberfire.plugin.PluginUtil.ensureIterable;
  * specific to GWT. An alternative implementation should be considered for use
  * within Eclipse.
  */
-public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
+public class WorkbenchMenuBarPresenter extends WorkbenchBaseMenuPresenter implements WorkbenchMenuBar {
 
     protected AuthorizationManager authzManager;
     protected User identity;
     private boolean useExpandedMode = true;
     private boolean expanded = true;
-    private List<Menus> addedMenus;
     private PerspectiveManager perspectiveManager;
+    private PlaceManager placeManager;
     private ActivityManager activityManager;
     private View view;
 
     WorkbenchMenuBarPresenter(final AuthorizationManager authzManager,
                               final PerspectiveManager perspectiveManager,
+                              final PlaceManager placeManager,
                               final ActivityManager activityManager,
                               final User identity,
                               final View view) {
         this.authzManager = authzManager;
         this.perspectiveManager = perspectiveManager;
+        this.placeManager = placeManager;
         this.activityManager = activityManager;
         this.identity = identity;
         this.view = view;
@@ -102,49 +98,12 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
     }
 
     @Override
-    public void addMenus(final Menus menus) {
-        if (menus != null && !menus.getItems().isEmpty()) {
-
-            if (addedMenus == null) {
-                addedMenus = new ArrayList<Menus>();
-            }
-
-            addedMenus.add(menus);
-
-            if (menusMustBeReordered(menus)) {
-                reorderMenus();
-                view.clear();
-
-                for (Menus currentMenus : addedMenus) {
-                    visitMenus(currentMenus);
-                }
-            } else {
-                visitMenus(menus);
-            }
-        }
+    protected WorkbenchBaseMenuView getBaseView() {
+        return view;
     }
 
-    private boolean menusMustBeReordered(final Menus menus) {
-        if (addedMenus.size() < 2) {
-            return false;
-        }
-
-        final Menus previousMenus = addedMenus.get(addedMenus.size() - 2);
-        return previousMenus.getOrder() > menus.getOrder();
-    }
-
-    private void reorderMenus() {
-        Collections.sort(addedMenus,
-                         new Comparator<Menus>() {
-                             @Override
-                             public int compare(final Menus o1,
-                                                final Menus o2) {
-                                 return o1.getOrder() - o2.getOrder();
-                             }
-                         });
-    }
-
-    private void visitMenus(final Menus addedMenu) {
+    @Override
+    protected void visitMenus(final Menus addedMenu) {
         addedMenu.accept(new AuthFilterMenuVisitor(authzManager,
                                                    identity,
                                                    new BaseMenuVisitor() {
@@ -210,7 +169,7 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
                                                                             new Command() {
                                                                                 @Override
                                                                                 public void execute() {
-                                                                                    IOC.getBeanManager().lookupBean(PlaceManager.class).getInstance().goTo(menuItemPerspective.getPlaceRequest());
+                                                                                    placeManager.goTo(menuItemPerspective.getPlaceRequest());
                                                                                 }
                                                                             },
                                                                             menuItemPerspective.getPosition());
@@ -307,7 +266,7 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
                                                                                    new Command() {
                                                                                        @Override
                                                                                        public void execute() {
-                                                                                           IOC.getBeanManager().lookupBean(PlaceManager.class).getInstance().goTo(menuItemPerspective.getPlaceRequest());
+                                                                                           placeManager.goTo(menuItemPerspective.getPlaceRequest());
                                                                                        }
                                                                                    },
                                                                                    menuItemPerspective.getPosition());
@@ -384,22 +343,8 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
         view.addExpandHandler(command);
     }
 
-    List<Menus> getAddedMenus() {
-        return this.addedMenus;
-    }
-
-    //Force UI to update to state of MenuItems. Should be called after MenuItems are configured with EnabledStateChangeListener's.
-    void synchronizeUIWithMenus(final List<MenuItem> menuItems) {
-        for (MenuItem menuItem : ensureIterable(menuItems)) {
-            if (menuItem instanceof MenuGroup) {
-                synchronizeUIWithMenus(((MenuGroup) menuItem).getItems());
-            } else {
-                menuItem.setEnabled(menuItem.isEnabled());
-            }
-        }
-    }
-
-    public interface View extends IsWidget {
+    public interface View extends WorkbenchBaseMenuView,
+                                  IsWidget {
 
         void clear();
 

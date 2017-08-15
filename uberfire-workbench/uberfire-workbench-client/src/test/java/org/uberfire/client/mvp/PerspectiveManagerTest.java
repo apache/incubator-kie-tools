@@ -16,15 +16,19 @@
 
 package org.uberfire.client.mvp;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.enterprise.event.Event;
 
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
@@ -69,6 +73,10 @@ public class PerspectiveManagerTest {
     @Mock
     ActivityBeansCache activityBeansCache;
 
+    @Mock
+    SyncBeanManager iocManager;
+
+    @Spy
     @InjectMocks
     PerspectiveManagerImpl perspectiveManager;
 
@@ -370,6 +378,38 @@ public class PerspectiveManagerTest {
         when(activityBeansCache.hasActivity("part3-rootChild2")).thenReturn(false);
 
         assertFalse(fetchCommand.isAValidDefinition(createPerspectiveDefinition()));
+    }
+
+    @Test
+    public void getDefaultPerspectiveIdentifierTest() {
+        List<SyncBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectives = new ArrayList<>();
+        final SyncBeanDef<AbstractWorkbenchPerspectiveActivity> otherPerspectiveBeanDef = getPerspectiveBeanDef("otherPerspectiveBeanDef",
+                                                                          false);
+        final SyncBeanDef<AbstractWorkbenchPerspectiveActivity> homePerspectiveBeanDef = getPerspectiveBeanDef("homePerspectiveBeanDef",
+                                                                         true);
+        perspectives.add(otherPerspectiveBeanDef);
+        perspectives.add(homePerspectiveBeanDef);
+        doReturn(perspectives.iterator()).when(perspectiveManager).getPerspectivesIterator();
+
+        final String defaultPerspectiveIdentifier = perspectiveManager.getDefaultPerspectiveIdentifier();
+
+        assertEquals(homePerspectiveBeanDef.getInstance().getIdentifier(),
+                     defaultPerspectiveIdentifier);
+        verify(iocManager).destroyBean(otherPerspectiveBeanDef.getInstance());
+        verify(iocManager,
+               never()).destroyBean(homePerspectiveBeanDef.getInstance());
+    }
+
+    private SyncBeanDef<AbstractWorkbenchPerspectiveActivity> getPerspectiveBeanDef(final String identifier,
+                                                                                    final boolean isDefault) {
+        final AbstractWorkbenchPerspectiveActivity perspectiveActivity = mock(AbstractWorkbenchPerspectiveActivity.class);
+        doReturn(identifier).when(perspectiveActivity).getIdentifier();
+        doReturn(isDefault).when(perspectiveActivity).isDefault();
+
+        final SyncBeanDef<AbstractWorkbenchPerspectiveActivity> perspectiveBeanDef = mock(SyncBeanDef.class);
+        doReturn(perspectiveActivity).when(perspectiveBeanDef).getInstance();
+
+        return perspectiveBeanDef;
     }
 
     private PerspectiveDefinition createPerspectiveDefinition() {

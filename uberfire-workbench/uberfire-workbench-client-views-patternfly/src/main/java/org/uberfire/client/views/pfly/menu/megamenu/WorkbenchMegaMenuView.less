@@ -1,0 +1,158 @@
+@import "/org/uberfire/client/views/static/uberfire-variables.less";
+
+#mega-menu {
+  a {
+    cursor: pointer;
+  }
+
+  // Masthead overrides
+  @media (min-width: @grid-float-breakpoint) {
+    .navbar-pf {
+      display: flex;
+      align-items: center;
+      flex: 1 0 100%;
+    }
+  }
+  // remove the line under the logo
+  .navbar-pf .navbar-header {
+    border-bottom: none;
+    flex-grow: 1;
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    @media (min-width: @grid-float-breakpoint) {
+      flex-grow: 0;
+    }
+  }
+  .navbar-pf .navbar-brand {
+    padding: 0 @pf-spacer-md 0 0;
+  }
+
+  .navbar-pf .navbar-collapse {
+    flex: 0 1 100%;
+  }
+  .navbar-right > li > a,
+  .nav-item-iconic {
+    @media (min-width: @grid-float-breakpoint) {
+      min-height: 58px;
+    }
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    border-left: none;
+    padding-left: 12px;
+  }
+  .nav li a.nav-item-iconic {
+    display: flex;
+  }
+  .navbar-pf .navbar-nav > li > a {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .uf-brand-icon {
+    height: 58px;
+    width: auto;
+    max-width: 200px;
+  }
+  .navbar-context-menu {
+    line-height: 0;
+  }
+  .navbar-context-menu > ul {
+    margin: 0;
+  }
+  .navbar-context-menu .navbar-primary.persistent-secondary {
+    padding: 0;
+  }
+  .navbar-context-menu .navbar-primary.persistent-secondary li.right {
+    float: right;
+  }
+
+  .uf-yamm {
+    // reset positions
+    .nav, .collapse, .dropup, .dropdown {
+      position: static;
+    }
+
+    // Fullwidth menu
+    .dropdown.uf-yamm--fw .dropdown-menu {
+      left: 0;
+      right: 0;
+    }
+  }
+
+  .uf-yamm__dropdown-menu {
+    left: auto;
+    border: none;
+    padding-top: 0;
+    @media (min-width: @grid-float-breakpoint) {
+      background-color: @navbar-pf-navbar-nav-active-active-bg-color;
+      color: @color-pf-black-300;
+    }
+  }
+  .uf-yamm__section {
+    background-color: @navbar-pf-navbar-nav-active-active-bg-color;
+    color: @navbar-pf-active-color;
+    border-top: 1px solid @navbar-pf-navbar-utility-hover-border-color;
+    @media (min-width: @grid-float-breakpoint) {
+      color: @color-pf-black-300;
+      border-top: none;
+
+    }
+  }
+  //styles the section to connect visually to the dropdown toggle
+  .uf-yamm__section--top {
+    @media (min-width: @grid-float-breakpoint) {
+      background-color: @navbar-pf-navbar-nav-active-bg-color;
+      padding-bottom: @pf-spacer-xs;
+      padding-top: @pf-spacer-xs;
+    }
+  }
+  .uf-yamm__section--top.empty {
+    padding: 0;
+  }
+  .uf-yamm__title {
+    @media (min-width: @grid-float-breakpoint) {
+      border-bottom: 1px solid @navbar-pf-navbar-utility-hover-border-color;
+      padding-bottom: @pf-spacer-sm;
+    }
+
+  }
+  .uf-yamm__subsection {
+    list-style: none;
+    padding-left: 0;
+    a {
+      color: @navbar-pf-color;
+    }
+    li {
+      padding-top: @pf-spacer-xs;
+      padding-bottom: @pf-spacer-xs;
+    }
+    li + li {
+      padding-top: 0;
+    }
+    li:last-child {
+      padding-bottom: @pf-spacer-sm;
+    }
+    a:hover, a:focus, a:active, a.active {
+      color: @navbar-pf-active-color;
+      text-decoration: none;
+    }
+  }
+
+  // ridiculously specific fix to override an assumption about the dropdown menu
+  .navbar-pf .navbar-iconic li.dropdown > .dropdown-toggle .pficon-user {
+    padding-right: @pf-spacer-xxs;
+  }
+  .navbar-pf .navbar-utility li.dropdown > .dropdown-toggle {
+    padding-left: 20px;
+  }
+  @media (min-width: @grid-float-breakpoint) {
+    .navbar-pf .navbar-utility li.dropdown > .dropdown-toggle {
+      padding-left: 10px;
+    }
+  }
+
+  .navbar-pf {
+    border-top: 0;
+  }
+}

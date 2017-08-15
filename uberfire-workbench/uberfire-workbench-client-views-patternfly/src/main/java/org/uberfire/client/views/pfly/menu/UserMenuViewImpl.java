@@ -26,6 +26,7 @@ import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.html.Span;
 import org.gwtbootstrap3.client.ui.html.Text;
+import org.uberfire.client.views.pfly.style.PatternFlyStyles;
 import org.uberfire.workbench.model.menu.MenuPosition;
 
 @Dependent
@@ -37,6 +38,7 @@ public class UserMenuViewImpl extends AnchorListItem implements UserMenu.UserMen
     @PostConstruct
     public void setup() {
         anchor.addStyleName(Styles.DROPDOWN_TOGGLE);
+        anchor.addStyleName(PatternFlyStyles.NAV_ITEM_ICONIC);
         anchor.setDataToggle(Toggle.DROPDOWN);
 
         final Span userIcon = new Span();

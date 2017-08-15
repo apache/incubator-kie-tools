@@ -32,7 +32,7 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
  * perspective, and switching between perspectives. This includes a sequence of asynchronous operations such as fetching
  * any stored definition the current user has for the new perspective, and saving the definition when the user has
  * modified it (for example, by dragging and dropping components, launching new activities, and so on).
- * <p>
+ * <p/>
  * Structurally, the PerspectiveManager performs actions at the request of the {@link PlaceManager}, and it accomplishes
  * these actions by delegating to the {@link PanelManager} and {@link WorkbenchServicesProxy}.
  */
@@ -63,7 +63,7 @@ public interface PerspectiveManager {
     /**
      * This method should only be invoked by PlaceManager. To launch a perspective within an UberFire app, pass a
      * PlaceRequest for that perspective to {@link PlaceManager#goTo(org.uberfire.mvp.PlaceRequest)}.
-     * <p>
+     * <p/>
      * Closes all current panels in the PanelManager (they must have already had their parts removed), then builds up
      * the new panel arrangement based on the {@link PerspectiveDefinition} associated with the given perspective
      * activity. If the given perspective is transient, its default perspective definition will always be used.
@@ -72,7 +72,7 @@ public interface PerspectiveManager {
      * @param placeRequest the placeRequest that originated the perspective to switch to. Must not be null.
      * @param perspective the perspective to switch to. Must not be null.
      * @param doWhenFinished The command to execute once the new perspective's panels have been created. Must not be null.
-     * <p>
+     * <p/>
      * When the callback is invoked, the panels will be set up in their correct positions, but no parts will
      * have been added.
      */
@@ -100,4 +100,10 @@ public interface PerspectiveManager {
      * @param doWhenFinished The command to execute once the perspective states have been removed. Must not be null.
      */
     void removePerspectiveStates(final Command doWhenFinished);
+
+    /**
+     * Fetches the current default perspective identifier.
+     * @return The default perspective identifier of the workbench, if one exists.
+     */
+    String getDefaultPerspectiveIdentifier();
 }
