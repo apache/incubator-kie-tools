@@ -342,6 +342,10 @@ public class WiresConnector
             BoundingBox box               = path.getBoundingBox();
             Point2D c = Geometry.findCenter(box);
             Point2D     intersectPoint    = Geometry.getPathIntersect(connection, path, c, pointIndex);
+            if (null == intersectPoint) {
+                intersectPoint = new Point2D();
+            }
+
             Direction   d                 = MagnetManager.getDirection(intersectPoint, box);
 
             Point2D loc = path.getComputedLocation().copy();
