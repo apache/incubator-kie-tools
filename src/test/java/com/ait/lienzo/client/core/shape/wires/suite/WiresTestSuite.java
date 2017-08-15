@@ -16,35 +16,36 @@
 
 package com.ait.lienzo.client.core.shape.wires.suite;
 
+import com.ait.lienzo.client.core.shape.TextBoundsWrapTest;
+import com.ait.lienzo.client.core.shape.TextLineBreakWrapTest;
+import com.ait.lienzo.client.core.shape.wires.WiresContainerTest;
+import com.ait.lienzo.client.core.shape.wires.WiresManagerTest;
+import com.ait.lienzo.client.core.shape.wires.WiresShapeControlHandleListTest;
+import com.ait.lienzo.client.core.shape.wires.WiresShapeTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import com.ait.lienzo.client.core.shape.wires.WiresContainerTest;
-import com.ait.lienzo.client.core.shape.wires.WiresManagerTest;
-import com.ait.lienzo.client.core.shape.wires.WiresShapeControlHandleListTest;
-import com.ait.lienzo.client.core.shape.wires.WiresShapeTest;
-import com.ait.lienzo.client.core.shape.wires.WiresTextTest;
-
 /**
  * Wires testing suite.
- *
  * @author Roger Martinez
  * @since 1.0.0-RC2
- *
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ WiresContainerTest.class, WiresShapeTest.class, WiresShapeControlHandleListTest.class, WiresManagerTest.class, WiresTextTest.class })
-public class WiresTestSuite
-{
+@Suite.SuiteClasses({WiresContainerTest.class,
+        WiresShapeTest.class,
+        WiresShapeControlHandleListTest.class,
+        WiresManagerTest.class,
+        TextBoundsWrapTest.class,
+        TextLineBreakWrapTest.class})
+public class WiresTestSuite {
+
     @BeforeClass
-    public static void setUpClass()
-    {
+    public static void setUpClass() {
     }
 
     @AfterClass
-    public static void tearDownClass()
-    {
+    public static void tearDownClass() {
     }
 }
