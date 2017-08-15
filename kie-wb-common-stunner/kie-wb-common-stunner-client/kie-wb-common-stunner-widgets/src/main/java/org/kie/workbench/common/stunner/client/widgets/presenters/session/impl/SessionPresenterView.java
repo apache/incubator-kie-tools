@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
@@ -67,6 +68,11 @@ public class SessionPresenterView extends Composite
         settings.setAllowDismiss(true);
         settings.setDelay(DELAY);
         settings.setTimer(TIMER);
+        addDomHandler((e) -> {
+                          e.preventDefault();
+                          e.stopPropagation();
+                      },
+                      ContextMenuEvent.getType());
         showLoading(false);
     }
 

@@ -58,7 +58,7 @@ public class ToolboxControlImpl<F extends ToolboxFactory<AbstractCanvasHandler, 
                 final MouseClickHandler clickHandler = new MouseClickHandler() {
                     @Override
                     public void handle(final MouseClickEvent event) {
-                        if (event.isButtonLeft()) {
+                        if (event.isButtonLeft() || event.isButtonRight()) {
                             show(element);
                         }
                     }

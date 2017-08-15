@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
@@ -50,7 +49,7 @@ public final class SelectionControlImpl<H extends AbstractCanvasHandler>
 
     private final Event<CanvasElementSelectedEvent> elementSelectedEvent;
     private final Event<CanvasClearSelectionEvent> clearSelectionEvent;
-    private ViewHandler<?> layerClickHandler;
+    private MouseClickHandler layerClickHandler;
     private String selectedElementUUID;
 
     @Inject
@@ -68,7 +67,7 @@ public final class SelectionControlImpl<H extends AbstractCanvasHandler>
         final MouseClickHandler clickHandler = new MouseClickHandler() {
             @Override
             public void handle(final MouseClickEvent event) {
-                if (event.isButtonLeft()) {
+                if (event.isButtonLeft() || event.isButtonRight()) {
                     clearSelection(false);
                     final String canvasRootUUID = getRootUUID();
                     fireCanvasClear();
@@ -97,7 +96,7 @@ public final class SelectionControlImpl<H extends AbstractCanvasHandler>
                         final MouseClickHandler clickHandler = new MouseClickHandler() {
                             @Override
                             public void handle(final MouseClickEvent event) {
-                                if (event.isButtonLeft()) {
+                                if (event.isButtonLeft() || event.isButtonRight()) {
                                     select(element);
                                 }
                             }
@@ -108,6 +107,8 @@ public final class SelectionControlImpl<H extends AbstractCanvasHandler>
                                         clickHandler);
                     }
                 }
+                registerHandler(shape.getUUID(),
+                                layerClickHandler);
             }
         }
     }
