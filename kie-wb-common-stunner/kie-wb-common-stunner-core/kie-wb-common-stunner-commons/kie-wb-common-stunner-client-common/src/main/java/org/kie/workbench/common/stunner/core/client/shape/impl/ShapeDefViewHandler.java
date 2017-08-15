@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
 
 /**
  * An util class that handles the shape's view properties that are coming from a MutableShapeDef type.
- * <p>
+ * <p/>
  * It adds some checks and constraints that can be used  across different implementation
  * for updating the views using the shape definition instance as input.
  * @param <W> The bean type.

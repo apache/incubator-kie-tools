@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 /**
  * The default Shape implementation for nodes. It acts as the bridge between a node and the shape view.
- * <p>
+ * <p/>
  * This implementation relies on ShapeDefinitions. This way provides the bridge between the node and it's
  * bean definition instance, and delegates the interaction logic between the definition instance and the shape's
  * view to a ShapeDefViewHandler type.

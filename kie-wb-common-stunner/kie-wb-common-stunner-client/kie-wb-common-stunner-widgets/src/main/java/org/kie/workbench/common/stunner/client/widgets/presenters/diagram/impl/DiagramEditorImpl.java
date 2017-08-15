@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.select.Selec
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 /**
@@ -38,7 +39,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
  * @param <D> The diagram type.
  * @param <H> The canvas handler type.
  */
-public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandler>
+public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandler, S extends ClientSession>
         implements DiagramEditor<D, H> {
 
     private final DiagramViewer<D, H> viewer;
@@ -47,7 +48,7 @@ public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandle
     private final ContainmentAcceptorControl<H> containmentAcceptorControl;
     private final DockingAcceptorControl<H> dockingAcceptorControl;
 
-    private CanvasControlRegistrationHandler<AbstractCanvas, H> registrationHandler;
+    private CanvasControlRegistrationHandler<AbstractCanvas, H, S> registrationHandler;
 
     DiagramEditorImpl(final DiagramViewer<D, H> viewer,
                       final CanvasCommandManager<H> commandManager,
@@ -180,8 +181,8 @@ public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandle
 
     private void prepareEdit() {
         registrationHandler =
-                new CanvasControlRegistrationHandler<AbstractCanvas, H>((AbstractCanvas) getHandler().getCanvas(),
-                                                                        getHandler());
+                new CanvasControlRegistrationHandler<AbstractCanvas, H, S>((AbstractCanvas) getHandler().getCanvas(),
+                                                                           getHandler());
         registrationHandler.setCommandManagerProvider(this::getCommandManager);
         // Register the canvas controls that the aggregated diagram viewer instance does not provide.
         registrationHandler.registerCanvasHandlerControl(connectionAcceptorControl);

@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Elem
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
@@ -37,6 +38,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElemen
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.mockito.Mock;
@@ -92,13 +94,16 @@ public class CaseManagementClientFullSessionTest {
     private DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
 
     @Mock
-    private CanvasInPlaceTextEditorControl<AbstractCanvasHandler, Element> canvasInPlaceTextEditorControl;
+    private CanvasInPlaceTextEditorControl<AbstractCanvasHandler, ClientSession, Element> canvasInPlaceTextEditorControl;
 
     @Mock
     private ToolboxControl<AbstractCanvasHandler, Element> toolboxControl;
 
     @Mock
     private ElementBuilderControl<AbstractCanvasHandler> builderControl;
+
+    @Mock
+    private KeyboardControl keyboardControl;
 
     private CaseManagementClientFullSession session;
 
@@ -116,6 +121,7 @@ public class CaseManagementClientFullSessionTest {
         when(factory.newControl(eq(CanvasInPlaceTextEditorControl.class))).thenReturn(canvasInPlaceTextEditorControl);
         when(factory.newControl(eq(ToolboxControl.class))).thenReturn(toolboxControl);
         when(factory.newControl(eq(ElementBuilderControl.class))).thenReturn(builderControl);
+        when(factory.newControl(eq(KeyboardControl.class))).thenReturn(keyboardControl);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         this.session = new CaseManagementClientFullSession(factory,
                                                            canvasCommandManager,

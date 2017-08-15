@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.C
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
@@ -45,7 +46,7 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
 
     private DragControl<AbstractCanvasHandler, Element> dragControl;
     private ResizeControl<AbstractCanvasHandler, Element> resizeControl;
-    private CanvasInPlaceTextEditorControl<AbstractCanvasHandler, Element> canvasInPlaceTextEditorControl;
+    private CanvasInPlaceTextEditorControl<AbstractCanvasHandler, AbstractClientFullSession, Element> canvasInPlaceTextEditorControl;
     private ToolboxControl<AbstractCanvasHandler, Element> toolboxControl;
 
     @Inject
@@ -67,7 +68,8 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
               factory.newControl(ConnectionAcceptorControl.class),
               factory.newControl(ContainmentAcceptorControl.class),
               factory.newControl(DockingAcceptorControl.class),
-              factory.newControl(ElementBuilderControl.class));
+              factory.newControl(ElementBuilderControl.class),
+              factory.newControl(KeyboardControl.class));
         this.dragControl = factory.newControl(DragControl.class);
         this.resizeControl = factory.newControl(ResizeControl.class);
         this.canvasInPlaceTextEditorControl = factory.newControl(CanvasInPlaceTextEditorControl.class);
@@ -93,7 +95,7 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
         return toolboxControl;
     }
 
-    public CanvasInPlaceTextEditorControl<AbstractCanvasHandler, Element> getCanvasInPlaceTextEditorControl() {
+    public CanvasInPlaceTextEditorControl<AbstractCanvasHandler, AbstractClientFullSession, Element> getCanvasInPlaceTextEditorControl() {
         return canvasInPlaceTextEditorControl;
     }
 }

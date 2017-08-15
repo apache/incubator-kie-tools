@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.event.keyboard;
+package org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 
 import com.google.gwt.user.client.Timer;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyDownEvent;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyUpEvent;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -31,45 +36,34 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
  * multiple key events.
  */
 @Dependent
-public class ClientKeyShortcutsHandler {
+public class KeyEventHandler {
 
     private final static int KEYS_TIMER_DELAY = 250;
 
-    public interface KeyShortcutCallback {
+    private final Set<KeyboardEvent.Key> keys = new HashSet<>();
+    private final List<KeyboardControl.KeyShortcutCallback> shortcutCallbacks = new ArrayList<>();
 
-        void onKeyShortcut(final KeyboardEvent.Key... keys);
-    }
-
-    private final List<KeyboardEvent.Key> keys = new ArrayList<>();
-    private KeyShortcutCallback shortcutCallback;
+    private boolean enabled = true;
     private KeyboardEvent.Key[] _keys;
     private Timer timer;
 
-    public void setKeyShortcutCallback(final KeyShortcutCallback shortcutCallback) {
-        this.shortcutCallback = shortcutCallback;
-    }
-
-    public static boolean isSameShortcut(final KeyboardEvent.Key[] keys1,
-                                         final KeyboardEvent.Key... keys2) {
-        for (int i = 0; i < keys1.length; i++) {
-            if (!keys2[i].equals(keys1[i])) {
-                return false;
-            }
-        }
-        return true;
+    public void addKeyShortcutCallback(final KeyboardControl.KeyShortcutCallback shortcutCallback) {
+        this.shortcutCallbacks.add(shortcutCallback);
     }
 
     public void clear() {
         if (null != timer && timer.isRunning()) {
             timer.cancel();
-            timer = null;
         }
-        shortcutCallback = null;
-        keys.clear();
-        _keys = null;
+        shortcutCallbacks.clear();
+        reset();
     }
 
-    void onKeyUpEvent(final @Observes KeyUpEvent event) {
+    public void setEnabled(final boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void onKeyUpEvent(final @Observes KeyUpEvent event) {
         checkNotNull("event",
                      event);
         onKeyUp(event.getKey());
@@ -82,12 +76,18 @@ public class ClientKeyShortcutsHandler {
     }
 
     private void onKeyDown(final KeyboardEvent.Key key) {
-        if (null != shortcutCallback) {
+        if (!enabled) {
+            return;
+        }
+        if (!shortcutCallbacks.isEmpty()) {
             startKeysTimer(key);
         }
     }
 
     private void onKeyUp(final KeyboardEvent.Key key) {
+        if (!enabled) {
+            return;
+        }
         keys.remove(key);
     }
 
@@ -98,7 +98,7 @@ public class ClientKeyShortcutsHandler {
             timer = new Timer() {
                 @Override
                 public void run() {
-                    ClientKeyShortcutsHandler.this.keysTimerTimeIsUp();
+                    KeyEventHandler.this.keysTimerTimeIsUp();
                 }
             };
         }
@@ -106,11 +106,15 @@ public class ClientKeyShortcutsHandler {
     }
 
     void keysTimerTimeIsUp() {
-        if (null != shortcutCallback && null != _keys) {
-            shortcutCallback.onKeyShortcut(_keys);
+        if (!shortcutCallbacks.isEmpty() && null != _keys) {
+            shortcutCallbacks.stream().forEach(s -> s.onKeyShortcut(_keys));
         }
+        reset();
+    }
+
+    void reset() {
         _keys = null;
-        timer.cancel();
+        keys.clear();
         timer = null;
     }
 }

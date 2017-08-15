@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.stunner.core.client.session.command;
 
+package org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard;
+
+import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.uberfire.mvp.Command;
 
-public interface ClientSessionCommand<S extends ClientSession> extends CanvasControl.SessionAware<S> {
+public interface KeyboardControl<C extends Canvas, S extends ClientSession> extends CanvasControl<C>,
+                                                                                    CanvasControl.SessionAware<S> {
 
-    interface Callback<V> {
+    KeyboardControl<C, S> addKeyShortcutCallback(final KeyShortcutCallback shortcutCallback);
 
-        void onSuccess();
+    interface KeyShortcutCallback {
 
-        void onError(final V error);
+        void onKeyShortcut(final KeyboardEvent.Key... keys);
     }
-
-    ClientSessionCommand<S> listen(final Command statusCallback);
-
-    <V> void execute(final Callback<V> callback);
-
-    boolean isEnabled();
 }

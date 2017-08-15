@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.event.keyboard;
+package org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasControl;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 
 /**
@@ -28,39 +31,51 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
  * session bind to this component.
  */
 @Dependent
-public class SessionKeyShortcutsHandler {
+public class KeyboardControlImpl extends AbstractCanvasControl<AbstractCanvas> implements KeyboardControl<AbstractCanvas, ClientSession> {
 
     private final SessionManager clientSessionManager;
-    private final ClientKeyShortcutsHandler keyShortcutsHandler;
+    private final KeyEventHandler keyEventHandler;
     private ClientSession session;
 
     @Inject
-    public SessionKeyShortcutsHandler(final SessionManager clientSessionManager,
-                                      final ClientKeyShortcutsHandler keyShortcutsHandler) {
+    public KeyboardControlImpl(final SessionManager clientSessionManager,
+                               final KeyEventHandler keyEventHandler) {
         this.clientSessionManager = clientSessionManager;
-        this.keyShortcutsHandler = keyShortcutsHandler;
+        this.keyEventHandler = keyEventHandler;
     }
 
-    public SessionKeyShortcutsHandler setKeyShortcutCallback(final ClientKeyShortcutsHandler.KeyShortcutCallback shortcutCallback) {
-        this.keyShortcutsHandler.setKeyShortcutCallback(new SessionKeyShortcutCallback(shortcutCallback));
+    @Override
+    public KeyboardControl<AbstractCanvas, ClientSession> addKeyShortcutCallback(final KeyShortcutCallback shortcutCallback) {
+        this.keyEventHandler.addKeyShortcutCallback(new SessionKeyShortcutCallback(shortcutCallback));
         return this;
     }
 
-    public SessionKeyShortcutsHandler bind(final ClientSession session) {
+    @Override
+    public void enable(final AbstractCanvas canvas) {
+        super.enable(canvas);
+        this.keyEventHandler.setEnabled(true);
+    }
+
+    @Override
+    protected void doDisable() {
+        this.keyEventHandler.setEnabled(false);
+    }
+
+    @Override
+    public void bind(final ClientSession session) {
         this.session = session;
-        return this;
     }
 
-    public SessionKeyShortcutsHandler unbind() {
+    @Override
+    public void unbind() {
         this.session = null;
-        return this;
     }
 
-    class SessionKeyShortcutCallback implements ClientKeyShortcutsHandler.KeyShortcutCallback {
+    class SessionKeyShortcutCallback implements KeyShortcutCallback {
 
-        private final ClientKeyShortcutsHandler.KeyShortcutCallback delegate;
+        private final KeyShortcutCallback delegate;
 
-        private SessionKeyShortcutCallback(final ClientKeyShortcutsHandler.KeyShortcutCallback delegate) {
+        private SessionKeyShortcutCallback(final KeyShortcutCallback delegate) {
             this.delegate = delegate;
         }
 
@@ -71,7 +86,7 @@ public class SessionKeyShortcutsHandler {
             }
         }
 
-        public ClientKeyShortcutsHandler.KeyShortcutCallback getDelegate() {
+        public KeyShortcutCallback getDelegate() {
             return delegate;
         }
     }

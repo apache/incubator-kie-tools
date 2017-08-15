@@ -20,16 +20,14 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
-import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyDownEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
@@ -50,24 +48,26 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
 
     private static Logger LOGGER = Logger.getLogger(DeleteSelectionSessionCommand.class.getName());
 
-    private final SessionManager clientSessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     protected DeleteSelectionSessionCommand() {
         this(null,
-             null,
              null);
     }
 
     @Inject
-    public DeleteSelectionSessionCommand(final SessionManager clientSessionManager,
-                                         final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+    public DeleteSelectionSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                          final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
         super(false);
-        this.clientSessionManager = clientSessionManager;
         this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandFactory = canvasCommandFactory;
+    }
+
+    @Override
+    public void bind(final ClientFullSession session) {
+        super.bind(session);
+        session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
     }
 
     @Override
@@ -105,14 +105,9 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
         }
     }
 
-    void onKeyDownEvent(final @Observes KeyDownEvent keyDownEvent) {
-        checkNotNull("keyDownEvent",
-                     keyDownEvent);
-        final KeyboardEvent.Key key = keyDownEvent.getKey();
-        final boolean isDeleteKey = null != key && KeyboardEvent.Key.DELETE.equals(key);
-        final boolean isSameSession = null != getSession()
-                && getSession().equals(clientSessionManager.getCurrentSession());
-        if (isDeleteKey && isSameSession) {
+    void onKeyDownEvent(final KeyboardEvent.Key... keys) {
+        if (KeysMatcher.doKeysMatch(keys,
+                                    KeyboardEvent.Key.DELETE)) {
             DeleteSelectionSessionCommand.this.execute(new Callback<ClientRuntimeError>() {
                 @Override
                 public void onSuccess() {

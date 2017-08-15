@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 /**
  * It describes and performs an action/operation that can be done
  * from a Toolbox.
- * <p>
+ * <p/>
  * It's displayed as a button for the ActionsToolbox.
  * @param <H> The canvas handler type.
  */

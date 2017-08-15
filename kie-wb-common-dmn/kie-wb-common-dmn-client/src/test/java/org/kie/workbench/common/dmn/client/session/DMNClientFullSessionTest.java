@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
@@ -29,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.C
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
@@ -38,6 +40,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElemen
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.mockito.Mock;
@@ -102,7 +105,10 @@ public class DMNClientFullSessionTest {
     private ElementBuilderControl<AbstractCanvasHandler> builderControl;
 
     @Mock
-    private CanvasInPlaceTextEditorControl<AbstractCanvasHandler, Element> canvasInPlaceTextEditorControl;
+    private KeyboardControl<Canvas, ClientSession> keyboardControl;
+
+    @Mock
+    private CanvasInPlaceTextEditorControl<AbstractCanvasHandler, ClientSession, Element> canvasInPlaceTextEditorControl;
 
     private DMNClientFullSession session;
 
@@ -121,6 +127,7 @@ public class DMNClientFullSessionTest {
         when(factory.newControl(eq(DockingAcceptorControl.class))).thenReturn(dockingAcceptorControl);
         when(factory.newControl(eq(ToolboxControl.class))).thenReturn(toolboxControl);
         when(factory.newControl(eq(ElementBuilderControl.class))).thenReturn(builderControl);
+        when(factory.newControl(eq(KeyboardControl.class))).thenReturn(keyboardControl);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         this.session = new DMNClientFullSession(factory,
                                                 canvasCommandManager,
@@ -143,6 +150,10 @@ public class DMNClientFullSessionTest {
                      session.getCanvasInPlaceTextEditorControl());
         assertEquals(dragControl,
                      session.getDragControl());
+        assertEquals(resizeControl,
+                     session.getResizeControl());
+        assertEquals(toolboxControl,
+                     session.getToolboxControl());
         assertEquals(panControl,
                      session.getPanControl());
         assertEquals(canvasCommandManager,
@@ -155,6 +166,8 @@ public class DMNClientFullSessionTest {
                      session.getDockingAcceptorControl());
         assertEquals(builderControl,
                      session.getBuilderControl());
+        assertEquals(keyboardControl,
+                     session.getKeyboardControl());
     }
 
     @Test
@@ -183,6 +196,8 @@ public class DMNClientFullSessionTest {
                times(1)).enable(eq(canvasHandler));
         verify(builderControl,
                times(1)).enable(eq(canvasHandler));
+        verify(keyboardControl,
+               times(1)).bind(eq(session));
     }
 
     @Test
@@ -216,5 +231,30 @@ public class DMNClientFullSessionTest {
                times(1)).disable();
         verify(builderControl,
                times(1)).disable();
+        verify(keyboardControl,
+               times(1)).unbind();
+    }
+
+    @Test
+    public void testPauseSession() {
+        session.open();
+
+        session.pause();
+
+        verify(keyboardControl,
+               times(1)).disable();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testResumeSession() {
+        session.open();
+
+        reset(keyboardControl);
+
+        session.resume();
+
+        verify(keyboardControl,
+               times(1)).enable(eq(canvas));
     }
 }

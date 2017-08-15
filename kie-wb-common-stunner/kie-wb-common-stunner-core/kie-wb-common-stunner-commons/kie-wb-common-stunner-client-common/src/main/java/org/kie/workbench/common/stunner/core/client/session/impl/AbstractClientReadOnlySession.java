@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanContr
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 public abstract class AbstractClientReadOnlySession extends AbstractClientSession
@@ -32,7 +33,7 @@ public abstract class AbstractClientReadOnlySession extends AbstractClientSessio
     protected ZoomControl<AbstractCanvas> zoomControl;
     protected PanControl<AbstractCanvas> panControl;
 
-    private final CanvasControlRegistrationHandler<AbstractCanvas, AbstractCanvasHandler> registrationHandler;
+    private final CanvasControlRegistrationHandler<AbstractCanvas, AbstractCanvasHandler, ClientSession> registrationHandler;
 
     public AbstractClientReadOnlySession(final AbstractCanvas canvas,
                                          final AbstractCanvasHandler canvasHandler,
@@ -44,8 +45,8 @@ public abstract class AbstractClientReadOnlySession extends AbstractClientSessio
         this.selectionControl = selectionControl;
         this.zoomControl = zoomControl;
         this.panControl = panControl;
-        this.registrationHandler = new CanvasControlRegistrationHandler<AbstractCanvas, AbstractCanvasHandler>(canvas,
-                                                                                                               canvasHandler);
+        this.registrationHandler = new CanvasControlRegistrationHandler<AbstractCanvas, AbstractCanvasHandler, ClientSession>(canvas,
+                                                                                                                              canvasHandler);
         this.registrationHandler.registerCanvasHandlerControl(selectionControl);
         this.registrationHandler.registerCanvasControl(zoomControl);
         this.registrationHandler.registerCanvasControl(panControl);
@@ -71,7 +72,7 @@ public abstract class AbstractClientReadOnlySession extends AbstractClientSessio
         // TODO: Performance improvements: Re-enable controls here.
     }
 
-    protected CanvasControlRegistrationHandler<AbstractCanvas, AbstractCanvasHandler> getRegistrationHandler() {
+    protected CanvasControlRegistrationHandler<AbstractCanvas, AbstractCanvasHandler, ClientSession> getRegistrationHandler() {
         return registrationHandler;
     }
 }

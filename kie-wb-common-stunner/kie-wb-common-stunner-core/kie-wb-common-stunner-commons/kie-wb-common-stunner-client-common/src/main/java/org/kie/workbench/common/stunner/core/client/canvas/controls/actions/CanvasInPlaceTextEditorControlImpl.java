@@ -27,12 +27,13 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
 import org.kie.workbench.common.stunner.core.client.components.actions.TextEditorBox;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyDownEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -54,7 +55,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 @Dependent
 public class CanvasInPlaceTextEditorControlImpl
         extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler>
-        implements CanvasInPlaceTextEditorControl<AbstractCanvasHandler, Element> {
+        implements CanvasInPlaceTextEditorControl<AbstractCanvasHandler, AbstractClientFullSession, Element> {
 
     private static final int FLOATING_VIEW_TIMEOUT = 3000;
     private static final double SHAPE_EDIT_ALPHA = 0.2d;
@@ -74,6 +75,16 @@ public class CanvasInPlaceTextEditorControlImpl
         this.textEditorBox = textEditorBox;
         this.elementSelectedEvent = elementSelectedEvent;
         this.uuid = null;
+    }
+
+    @Override
+    public void bind(final AbstractClientFullSession session) {
+        session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
+    }
+
+    @Override
+    public void unbind() {
+        //Nothing to do
     }
 
     @Override
@@ -147,9 +158,9 @@ public class CanvasInPlaceTextEditorControlImpl
     }
 
     @Override
-    public CanvasInPlaceTextEditorControl<AbstractCanvasHandler, Element> show(final Element item,
-                                                                               final double x,
-                                                                               final double y) {
+    public CanvasInPlaceTextEditorControl<AbstractCanvasHandler, AbstractClientFullSession, Element> show(final Element item,
+                                                                                                          final double x,
+                                                                                                          final double y) {
         this.uuid = item.getUUID();
         enableShapeEdit();
         textEditorBox.show(item);
@@ -168,7 +179,7 @@ public class CanvasInPlaceTextEditorControlImpl
     }
 
     @Override
-    public CanvasInPlaceTextEditorControl<AbstractCanvasHandler, Element> hide() {
+    public CanvasInPlaceTextEditorControl<AbstractCanvasHandler, AbstractClientFullSession, Element> hide() {
         if (isVisible()) {
             disableShapeEdit();
             this.uuid = null;
@@ -225,11 +236,9 @@ public class CanvasInPlaceTextEditorControlImpl
         return canvasHandler.getCanvas();
     }
 
-    void onKeyDownEvent(final @Observes KeyDownEvent keyDownEvent) {
-        checkNotNull("keyDownEvent",
-                     keyDownEvent);
-        final KeyboardEvent.Key key = keyDownEvent.getKey();
-        if (null != key && KeyboardEvent.Key.ESC.equals(key)) {
+    void onKeyDownEvent(final KeyboardEvent.Key... keys) {
+        if (KeysMatcher.doKeysMatch(keys,
+                                    KeyboardEvent.Key.ESC)) {
             hide();
         }
     }

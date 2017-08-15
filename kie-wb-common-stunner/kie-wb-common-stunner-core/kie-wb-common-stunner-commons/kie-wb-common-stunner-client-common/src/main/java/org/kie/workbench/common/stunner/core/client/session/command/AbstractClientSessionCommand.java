@@ -34,9 +34,13 @@ public abstract class AbstractClientSessionCommand<S extends ClientSession> impl
     }
 
     @Override
-    public AbstractClientSessionCommand<S> bind(final S session) {
+    public void bind(final S session) {
         this.session = session;
-        return this;
+    }
+
+    @Override
+    public void unbind() {
+        this.session = null;
     }
 
     @Override
@@ -57,11 +61,6 @@ public abstract class AbstractClientSessionCommand<S extends ClientSession> impl
                            error.toString());
             }
         });
-    }
-
-    @Override
-    public void unbind() {
-        this.session = null;
     }
 
     @Override

@@ -16,12 +16,21 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls;
 
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+
 /**
  * A canvas control.
  * It can implement <code>IsWidget</code> if the control have to include views outside the canvas itself,
  * such as floating widgets.
  */
 public interface CanvasControl<C> {
+
+    interface SessionAware<S extends ClientSession> {
+
+        void bind(final S session);
+
+        void unbind();
+    }
 
     /**
      * This method is called when the control is enabled for a canvas.

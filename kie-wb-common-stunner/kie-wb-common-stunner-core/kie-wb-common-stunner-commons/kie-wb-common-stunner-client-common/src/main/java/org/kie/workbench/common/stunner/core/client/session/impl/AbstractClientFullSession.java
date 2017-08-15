@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Elem
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -29,12 +30,13 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 public abstract class AbstractClientFullSession extends AbstractClientReadOnlySession
-        implements ClientFullSession<AbstractCanvas, AbstractCanvasHandler> {
+        implements ClientFullSession<AbstractCanvas, AbstractCanvasHandler, ClientSession> {
 
     private CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
     private CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
@@ -42,6 +44,7 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
     private ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl;
     private DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
     private ElementBuilderControl<AbstractCanvasHandler> builderControl;
+    private KeyboardControl<AbstractCanvas, ClientSession> keyboardControl;
 
     public AbstractClientFullSession(final AbstractCanvas canvas,
                                      final AbstractCanvasHandler canvasHandler,
@@ -55,7 +58,8 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
                                      final ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl,
                                      final ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl,
                                      final DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl,
-                                     final ElementBuilderControl<AbstractCanvasHandler> builderControl) {
+                                     final ElementBuilderControl<AbstractCanvasHandler> builderControl,
+                                     final KeyboardControl<AbstractCanvas, ClientSession> keyboardControl) {
         super(canvas,
               canvasHandler,
               selectionControl,
@@ -67,6 +71,7 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
         this.containmentAcceptorControl = containmentAcceptorControl;
         this.dockingAcceptorControl = dockingAcceptorControl;
         this.builderControl = builderControl;
+        this.keyboardControl = keyboardControl;
         getRegistrationHandler().registerCanvasHandlerControl(connectionAcceptorControl);
         connectionAcceptorControl.setCommandManagerProvider(requestCommandManagerProvider);
         getRegistrationHandler().registerCanvasHandlerControl(containmentAcceptorControl);
@@ -75,6 +80,22 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
         dockingAcceptorControl.setCommandManagerProvider(requestCommandManagerProvider);
         getRegistrationHandler().registerCanvasHandlerControl(builderControl);
         builderControl.setCommandManagerProvider(sessionCommandManagerProvider);
+        getRegistrationHandler().registerCanvasControl(keyboardControl);
+    }
+
+    @Override
+    protected void doOpen() {
+        super.doOpen();
+        getRegistrationHandler().bind(this);
+    }
+
+    @Override
+    public void doDestroy() {
+        super.doDestroy();
+        getRegistrationHandler().unbind();
+        if (null != commandRegistry) {
+            commandRegistry.clear();
+        }
     }
 
     @Override
@@ -123,10 +144,7 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
     }
 
     @Override
-    public void doDestroy() {
-        super.doDestroy();
-        if (null != commandRegistry) {
-            commandRegistry.clear();
-        }
+    public KeyboardControl<AbstractCanvas, ClientSession> getKeyboardControl() {
+        return keyboardControl;
     }
 }

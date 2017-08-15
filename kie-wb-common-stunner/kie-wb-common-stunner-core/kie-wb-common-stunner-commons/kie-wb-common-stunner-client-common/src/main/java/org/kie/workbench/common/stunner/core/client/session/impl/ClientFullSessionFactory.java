@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.stunner.core.client.session.impl;
 
-import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;

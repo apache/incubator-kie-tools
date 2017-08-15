@@ -95,8 +95,8 @@ public class CanvasFileExport {
                                               Layer.URLDataType.JPG);
         final String title = canvasHandler.getDiagram().getMetadata().getTitle();
         final PdfDocument content = PdfDocument.create(PdfExportPreferences.create(PdfExportPreferences.Orientation.LANDSCAPE,
-                                                                             pdfPreferences.getUnit(),
-                                                                             pdfPreferences.getFormat()));
+                                                                                   pdfPreferences.getUnit(),
+                                                                                   pdfPreferences.getFormat()));
         content.addText(title,
                         5,
                         15);

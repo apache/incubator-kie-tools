@@ -27,10 +27,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.C
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.mockito.Mock;
 
 import static org.junit.Assert.*;
@@ -41,25 +39,25 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
 
-    private final static Bounds GRAPH_BOUNDS = new BoundsImpl(new BoundImpl(0d,
-                                                                            0d),
-                                                              new BoundImpl(100d,
-                                                                            100d));
-
     @Mock
     DiagramViewer viewer;
+
     @Mock
     CanvasCommandManager<AbstractCanvasHandler> commandManager;
+
     @Mock
     ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl;
+
     @Mock
     ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl;
+
     @Mock
     DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
+
     @Mock
     DiagramViewer.DiagramViewerCallback<Diagram> callback;
 
-    private DiagramEditorImpl<Diagram, AbstractCanvasHandler> tested;
+    private DiagramEditorImpl<Diagram, AbstractCanvasHandler, ClientSession> tested;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -83,11 +81,11 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
             return null;
         }).when(viewer).destroy();
         this.tested =
-                new DiagramEditorImpl<Diagram, AbstractCanvasHandler>(viewer,
-                                                                      commandManager,
-                                                                      connectionAcceptorControl,
-                                                                      containmentAcceptorControl,
-                                                                      dockingAcceptorControl);
+                new DiagramEditorImpl<>(viewer,
+                                        commandManager,
+                                        connectionAcceptorControl,
+                                        containmentAcceptorControl,
+                                        dockingAcceptorControl);
     }
 
     @Test

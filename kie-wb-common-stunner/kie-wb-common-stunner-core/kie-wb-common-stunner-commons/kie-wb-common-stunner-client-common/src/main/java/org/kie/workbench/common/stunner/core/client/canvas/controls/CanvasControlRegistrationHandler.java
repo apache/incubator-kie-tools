@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,6 +25,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
@@ -32,8 +34,9 @@ import org.kie.workbench.common.stunner.core.graph.Element;
  * @param <C> The canvas type.
  * @param <H> The canvas handler type.
  */
-public class CanvasControlRegistrationHandler<C extends AbstractCanvas, H extends AbstractCanvasHandler>
-        implements RequiresCommandManager<H> {
+public class CanvasControlRegistrationHandler<C extends AbstractCanvas, H extends AbstractCanvasHandler, S extends ClientSession>
+        implements RequiresCommandManager<H>,
+                   CanvasControl.SessionAware<S> {
 
     private final List<CanvasControl<C>> canvasControls = new LinkedList<>();
     private final List<CanvasControl<H>> canvasHandlerControls = new LinkedList<>();
@@ -64,6 +67,27 @@ public class CanvasControlRegistrationHandler<C extends AbstractCanvas, H extend
      */
     public void registerCanvasHandlerControl(final CanvasControl<H> control) {
         this.canvasHandlerControls.add(control);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void bind(final ClientSession session) {
+        final List<CanvasControl> allControls = new ArrayList<>();
+        allControls.addAll(canvasControls);
+        allControls.addAll(canvasHandlerControls);
+        allControls.stream()
+                .filter(c -> c instanceof CanvasControl.SessionAware)
+                .forEach(c -> ((CanvasControl.SessionAware) c).bind(session));
+    }
+
+    @Override
+    public void unbind() {
+        final List<CanvasControl> allControls = new ArrayList<>();
+        allControls.addAll(canvasControls);
+        allControls.addAll(canvasHandlerControls);
+        allControls.stream()
+                .filter(c -> c instanceof CanvasControl.SessionAware)
+                .forEach(c -> ((CanvasControl.SessionAware) c).unbind());
     }
 
     /**

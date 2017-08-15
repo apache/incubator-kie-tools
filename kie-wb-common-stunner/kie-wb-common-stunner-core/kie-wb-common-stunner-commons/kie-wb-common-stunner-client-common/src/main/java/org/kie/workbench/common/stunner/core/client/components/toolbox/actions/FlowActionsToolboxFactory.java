@@ -37,12 +37,12 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 /**
  * This factory builds a toolbox with a button for each candidate connector and target node that
  * can be attached as from the toolbox' related node.
- * <p>
+ * <p/>
  * This toolbox factory creates actions for:
  * - Each connector that is allowed be created as from the source toolbox' node.
  * - Each target node that is allowed be created as from the source toolbox' node, and by only using
  * the "default" connector for the specified definition set.
- * <p>
+ * <p/>
  * It also groups the resulting nodes to be created by their morph base type, this way
  * provides an action for creating nodes but only for each common morph base, not for each
  * target node that can be created.

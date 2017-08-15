@@ -27,12 +27,14 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Elem
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.Request;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -42,7 +44,7 @@ import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 @CaseManagementEditor
 public class CaseManagementClientFullSession extends AbstractClientFullSession {
 
-    private CanvasInPlaceTextEditorControl<AbstractCanvasHandler, Element> canvasInPlaceTextEditorControl;
+    private CanvasInPlaceTextEditorControl<AbstractCanvasHandler, ClientSession, Element> canvasInPlaceTextEditorControl;
 
     @Inject
     @SuppressWarnings("unchecked")
@@ -63,14 +65,15 @@ public class CaseManagementClientFullSession extends AbstractClientFullSession {
               factory.newControl(ConnectionAcceptorControl.class),
               factory.newControl(ContainmentAcceptorControl.class),
               factory.newControl(DockingAcceptorControl.class),
-              factory.newControl(ElementBuilderControl.class));
+              factory.newControl(ElementBuilderControl.class),
+              factory.newControl(KeyboardControl.class));
 
         this.canvasInPlaceTextEditorControl = factory.newControl(CanvasInPlaceTextEditorControl.class);
         getRegistrationHandler().registerCanvasHandlerControl(canvasInPlaceTextEditorControl);
         canvasInPlaceTextEditorControl.setCommandManagerProvider(() -> sessionCommandManager);
     }
 
-    CanvasInPlaceTextEditorControl<AbstractCanvasHandler, Element> getCanvasInPlaceTextEditorControl() {
+    CanvasInPlaceTextEditorControl<AbstractCanvasHandler, ClientSession, Element> getCanvasInPlaceTextEditorControl() {
         return canvasInPlaceTextEditorControl;
     }
 }

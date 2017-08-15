@@ -67,10 +67,9 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<ClientFull
     }
 
     @Override
-    public AbstractClientSessionCommand<ClientFullSession> bind(final ClientFullSession session) {
+    public void bind(final ClientFullSession session) {
         super.bind(session);
         checkState();
-        return this;
     }
 
     @Override

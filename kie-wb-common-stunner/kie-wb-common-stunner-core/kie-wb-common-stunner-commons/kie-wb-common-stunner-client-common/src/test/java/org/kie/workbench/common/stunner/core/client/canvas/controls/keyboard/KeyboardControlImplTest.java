@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.event.keyboard;
+package org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -28,10 +29,10 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SessionKeyShortcutsHandlerTest {
+public class KeyboardControlImplTest {
 
     @Mock
-    private ClientKeyShortcutsHandler clientKeyShortcutsHandler;
+    private KeyEventHandler keyEventHandler;
 
     @Mock
     private SessionManager clientSessionManager;
@@ -39,24 +40,24 @@ public class SessionKeyShortcutsHandlerTest {
     @Mock
     private ClientSession session;
 
-    private SessionKeyShortcutsHandler tested;
+    private KeyboardControlImpl tested;
 
     @Before
     public void setup() throws Exception {
         when(clientSessionManager.getCurrentSession()).thenReturn(session);
-        this.tested = new SessionKeyShortcutsHandler(clientSessionManager,
-                                                     clientKeyShortcutsHandler);
+        this.tested = new KeyboardControlImpl(clientSessionManager,
+                                              keyEventHandler);
     }
 
     @Test
     public void testCallbacksWithBindUnbindSession() {
-        final SessionKeyShortcutsHandler.SessionKeyShortcutCallback[] sessionCallback = new SessionKeyShortcutsHandler.SessionKeyShortcutCallback[1];
+        final KeyboardControlImpl.SessionKeyShortcutCallback[] sessionCallback = new KeyboardControlImpl.SessionKeyShortcutCallback[1];
         doAnswer(invocationOnMock -> {
-            sessionCallback[0] = (SessionKeyShortcutsHandler.SessionKeyShortcutCallback) invocationOnMock.getArguments()[0];
+            sessionCallback[0] = (KeyboardControlImpl.SessionKeyShortcutCallback) invocationOnMock.getArguments()[0];
             return null;
-        }).when(clientKeyShortcutsHandler).setKeyShortcutCallback(any(ClientKeyShortcutsHandler.KeyShortcutCallback.class));
-        final ClientKeyShortcutsHandler.KeyShortcutCallback callback = mock(ClientKeyShortcutsHandler.KeyShortcutCallback.class);
-        tested.setKeyShortcutCallback(callback);
+        }).when(keyEventHandler).addKeyShortcutCallback(any(KeyboardControl.KeyShortcutCallback.class));
+        final KeyboardControl.KeyShortcutCallback callback = mock(KeyboardControl.KeyShortcutCallback.class);
+        tested.addKeyShortcutCallback(callback);
         assertEquals(callback,
                      sessionCallback[0].getDelegate());
         verify(callback,

@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
  * A glyph that represents an SVG image.
  * Additional SVG declarations can be added for inserting
  * into the <code>SVG def</code> generated.
- * <p>
+ * <p/>
  * Default renderers display this image by parsing or attaching the svg declarations
  * into the client response, this way it provides full DOM support for the SVG, as it's not
  * just being rendered as an image (as when using an ImageDataUriGlyph).

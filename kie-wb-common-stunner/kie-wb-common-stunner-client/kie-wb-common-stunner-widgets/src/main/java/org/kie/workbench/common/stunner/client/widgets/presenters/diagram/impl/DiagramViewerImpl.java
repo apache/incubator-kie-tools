@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControlRegistrationHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
@@ -32,7 +33,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
  * It provides a zoom and selection control that third parties can interacti with, but it does not provide
  * any controls that allow the diagram's authoring.
  */
-public class DiagramViewerImpl<D extends Diagram, H extends AbstractCanvasHandler>
+public class DiagramViewerImpl<D extends Diagram, H extends AbstractCanvasHandler, S extends ClientSession>
         extends AbstractDiagramViewer<D, H> {
 
     private final AbstractCanvas canvas;
@@ -40,7 +41,7 @@ public class DiagramViewerImpl<D extends Diagram, H extends AbstractCanvasHandle
     private final ZoomControl<AbstractCanvas> zoomControl;
     private final SelectionControl<H, Element> selectionControl;
 
-    private CanvasControlRegistrationHandler<AbstractCanvas, H> registrationHandler;
+    private CanvasControlRegistrationHandler<AbstractCanvas, H, S> registrationHandler;
 
     DiagramViewerImpl(final AbstractCanvas canvas,
                       final H canvasHandler,
@@ -70,13 +71,13 @@ public class DiagramViewerImpl<D extends Diagram, H extends AbstractCanvasHandle
     @Override
     protected void enableControls() {
         registrationHandler =
-                new CanvasControlRegistrationHandler<AbstractCanvas, H>(getHandler().getAbstractCanvas(),
-                                                                        getHandler());
+                new CanvasControlRegistrationHandler<AbstractCanvas, H, S>(getHandler().getAbstractCanvas(),
+                                                                           getHandler());
         registerControls(registrationHandler);
         registrationHandler.enable();
     }
 
-    protected void registerControls(final CanvasControlRegistrationHandler<AbstractCanvas, H> registrationHandler) {
+    protected void registerControls(final CanvasControlRegistrationHandler<AbstractCanvas, H, S> registrationHandler) {
         registrationHandler.registerCanvasControl(getZoomControl());
         registrationHandler.registerCanvasHandlerControl(getSelectionControl());
     }

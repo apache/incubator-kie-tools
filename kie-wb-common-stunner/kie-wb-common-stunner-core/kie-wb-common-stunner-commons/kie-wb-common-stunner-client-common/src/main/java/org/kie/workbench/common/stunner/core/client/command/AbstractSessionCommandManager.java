@@ -89,7 +89,7 @@ public abstract class AbstractSessionCommandManager
     @Override
     @SuppressWarnings("unchecked")
     protected CommandManager<AbstractCanvasHandler, CanvasViolation> getDelegate() {
-        final ClientFullSession<AbstractCanvas, AbstractCanvasHandler> session = getFullSession();
+        final ClientFullSession<AbstractCanvas, AbstractCanvasHandler, ClientSession> session = getFullSession();
         if (null != session) {
             final CanvasCommandManager<AbstractCanvasHandler> commandManager = session.getCommandManager();
             try {
@@ -108,17 +108,17 @@ public abstract class AbstractSessionCommandManager
 
     @Override
     public CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> getRegistry() {
-        final ClientFullSession<AbstractCanvas, AbstractCanvasHandler> session = getFullSession();
+        final ClientFullSession<AbstractCanvas, AbstractCanvasHandler, ClientSession> session = getFullSession();
         if (null != session) {
             return session.getCommandRegistry();
         }
         return null;
     }
 
-    private ClientFullSession<AbstractCanvas, AbstractCanvasHandler> getFullSession() {
+    private ClientFullSession<AbstractCanvas, AbstractCanvasHandler, ClientSession> getFullSession() {
         final ClientSession<AbstractCanvas, AbstractCanvasHandler> session = getCurrentSession();
         try {
-            return (ClientFullSession<AbstractCanvas, AbstractCanvasHandler>) session;
+            return (ClientFullSession<AbstractCanvas, AbstractCanvasHandler, ClientSession>) session;
         } catch (final ClassCastException e) {
             LOGGER.log(Level.WARNING,
                        "Session is not type of client full session.");

@@ -68,7 +68,7 @@ public class SvgDataUriGenerator {
 
     /**
      * Generates an SVG data-uri with no external resource references, if any.
-     * <p>
+     * <p/>
      * GWT DataResource does not support external references, used for example
      * by the <code>use</code> element.
      */
@@ -81,18 +81,18 @@ public class SvgDataUriGenerator {
 
     /**
      * Generates a single SVG data-uri from different input SVG declarations.
-     * <p>
+     * <p/>
      * As GWT DataResource does not like SVG external references, this is an alternative
      * solution that creates a composite SVG declaration by joining each SVG declaration
      * given from the arguments.
-     * <p>
+     * <p/>
      * Given a parent SVG declaration, which contain external resource references to other
      * SVG declarations, and its given SVG referenced declarations, it aggregates the
      * referenced elements in a SVG <code>Def</code> element, and generates a composite
      * SVG which encapsulates the parent and referenced ones in a single declaration. It also
      * handles the external resource references, within the parent SVG, in order to match the actual
      * content, and removes the invalid references.
-     * <p>
+     * <p/>
      * It generates a valid SVG declaration as:
      * <svg id="composite">
      * <svg id="parent">

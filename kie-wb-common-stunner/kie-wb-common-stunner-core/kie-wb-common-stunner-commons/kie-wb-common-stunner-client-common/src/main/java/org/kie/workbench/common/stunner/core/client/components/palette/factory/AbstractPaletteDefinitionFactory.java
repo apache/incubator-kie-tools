@@ -33,7 +33,7 @@ public abstract class AbstractPaletteDefinitionFactory<B extends PaletteDefiniti
                                             final P palette) {
         this.shapeManager = shapeManager;
         this.paletteBuilder = paletteBuilder;
-        this.palette=palette;
+        this.palette = palette;
     }
 
     @Override
@@ -45,5 +45,4 @@ public abstract class AbstractPaletteDefinitionFactory<B extends PaletteDefiniti
     public P newPalette() {
         return palette;
     }
-
 }

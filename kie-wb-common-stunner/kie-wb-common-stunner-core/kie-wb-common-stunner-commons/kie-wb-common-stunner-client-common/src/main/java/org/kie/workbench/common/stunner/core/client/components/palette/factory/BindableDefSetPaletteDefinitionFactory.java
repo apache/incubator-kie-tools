@@ -26,7 +26,6 @@ public abstract class BindableDefSetPaletteDefinitionFactory<I extends HasPalett
         extends BindablePaletteDefinitionFactory<DefinitionSetPaletteBuilder, I, P>
         implements DefSetPaletteDefinitionFactory<I, P> {
 
-
     public BindableDefSetPaletteDefinitionFactory(final ShapeManager shapeManager,
                                                   final DefinitionSetPaletteBuilder paletteBuilder,
                                                   final P palette) {

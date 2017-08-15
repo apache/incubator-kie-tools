@@ -17,20 +17,23 @@
 package org.kie.workbench.common.stunner.core.client.canvas.controls.actions;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistationControl;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 /**
  * Provides element's name edition via some widget.
  */
-public interface CanvasInPlaceTextEditorControl<C extends CanvasHandler, E extends Element>
+public interface CanvasInPlaceTextEditorControl<C extends CanvasHandler, S extends ClientSession, E extends Element>
         extends CanvasRegistationControl<C, E>,
-                RequiresCommandManager<C> {
+                RequiresCommandManager<C>,
+                CanvasControl.SessionAware<S> {
 
-    CanvasInPlaceTextEditorControl<C, E> show(final E item,
-                                              final double x,
-                                              final double y);
+    CanvasInPlaceTextEditorControl<C, S, E> show(final E item,
+                                                 final double x,
+                                                 final double y);
 
-    CanvasInPlaceTextEditorControl<C, E> hide();
+    CanvasInPlaceTextEditorControl<C, S, E> hide();
 }

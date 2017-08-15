@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -36,27 +37,34 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class CanvasControlRegistrationHandlerTest {
 
-    private static final int CTROLS_SIZE = 5;
+    private static final int CONTROLS_SIZE = 5;
 
     @Mock
-    AbstractCanvas canvas;
+    private AbstractCanvas canvas;
 
     @Mock
-    AbstractCanvasHandler canvasHandler;
+    private AbstractCanvasHandler canvasHandler;
+
+    @Mock
+    private ClientSession session;
+
+    @Mock
+    private MockAbstractCanvasSessionAwareControl sessionAwareControl;
 
     private CanvasControlRegistrationHandler tested;
-    private final List<CanvasControl<AbstractCanvas>> canvasControls = new ArrayList<>(CTROLS_SIZE);
-    private final List<CanvasControl<AbstractCanvasHandler>> canvasHandlerControls = new ArrayList<>(CTROLS_SIZE);
+    private final List<CanvasControl<AbstractCanvas>> canvasControls = new ArrayList<>(CONTROLS_SIZE);
+    private final List<CanvasControl<AbstractCanvasHandler>> canvasHandlerControls = new ArrayList<>(CONTROLS_SIZE);
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        this.tested = new CanvasControlRegistrationHandler<AbstractCanvas, AbstractCanvasHandler>(canvas,
-                                                                                                  canvasHandler);
-        for (int x = 0; x < CTROLS_SIZE; x++) {
+        this.tested = new CanvasControlRegistrationHandler<>(canvas,
+                                                             canvasHandler);
+        for (int x = 0; x < CONTROLS_SIZE; x++) {
             canvasControls.add(mock(CanvasControl.class));
             canvasHandlerControls.add(mock(CanvasControl.class));
         }
+        canvasControls.add(sessionAwareControl);
         canvasControls.forEach(tested::registerCanvasControl);
         canvasHandlerControls.forEach(tested::registerCanvasHandlerControl);
     }
@@ -72,10 +80,8 @@ public class CanvasControlRegistrationHandlerTest {
             verify(c,
                    times(1)).enable(eq(canvas));
         });
-        canvasHandlerControls.forEach(c -> {
-            verify(c,
-                   times(1)).enable(eq(canvasHandler));
-        });
+        canvasHandlerControls.forEach(c -> verify(c,
+                                                  times(1)).enable(eq(canvasHandler)));
     }
 
     @Test
@@ -156,5 +162,26 @@ public class CanvasControlRegistrationHandlerTest {
             verify(c,
                    times(1)).disable();
         });
+    }
+
+    @Test
+    public void checkBindSessionOnSessionAwareControls() {
+        tested.bind(session);
+
+        verify(sessionAwareControl,
+               times(1)).bind(eq(session));
+    }
+
+    @Test
+    public void checkUnbindSessionOnSessionAwareControls() {
+        tested.unbind();
+
+        verify(sessionAwareControl,
+               times(1)).unbind();
+    }
+
+    private interface MockAbstractCanvasSessionAwareControl extends CanvasControl<AbstractCanvas>,
+                                                                    CanvasControl.SessionAware<ClientSession> {
+
     }
 }

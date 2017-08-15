@@ -16,19 +16,17 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.ClientKeyShortcutsHandler;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.SessionKeyShortcutsHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
@@ -43,31 +41,41 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<ClientFullS
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler;
-    private final SessionKeyShortcutsHandler keyboardListener;
 
     protected RedoSessionCommand() {
         this(null,
-             null,
              null);
     }
 
     @Inject
     public RedoSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                              final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler,
-                              final SessionKeyShortcutsHandler keyboardListener) {
+                              final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler) {
         super(false);
         this.redoCommandHandler = redoCommandHandler;
         this.sessionCommandManager = sessionCommandManager;
-        this.keyboardListener = keyboardListener;
     }
 
-    @PostConstruct
-    public void init() {
-        this.keyboardListener.setKeyShortcutCallback(keys -> {
+    @Override
+    public void bind(final ClientFullSession session) {
+        super.bind(session);
+        session.getKeyboardControl().addKeyShortcutCallback(keys -> {
             if (isRedoShortcut(keys)) {
                 RedoSessionCommand.this.execute();
             }
         });
+    }
+
+    private boolean isRedoShortcut(final KeyboardEvent.Key... keys) {
+        return KeysMatcher.doKeysMatch(keys,
+                                       KeyboardEvent.Key.CONTROL,
+                                       KeyboardEvent.Key.SHIFT,
+                                       KeyboardEvent.Key.Z);
+    }
+
+    @Override
+    public void unbind() {
+        super.unbind();
+        redoCommandHandler.clear();
     }
 
     @Override
@@ -82,20 +90,6 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<ClientFullS
             checkState();
         }
         callback.onSuccess();
-    }
-
-    @Override
-    public AbstractClientSessionCommand<ClientFullSession> bind(final ClientFullSession session) {
-        super.bind(session);
-        keyboardListener.bind(session);
-        return this;
-    }
-
-    @Override
-    public void unbind() {
-        super.unbind();
-        redoCommandHandler.clear();
-        keyboardListener.unbind();
     }
 
     @SuppressWarnings("unchecked")
@@ -121,12 +115,5 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<ClientFullS
     private void checkState() {
         setEnabled(null != getSession() && redoCommandHandler.isEnabled());
         fire();
-    }
-
-    private boolean isRedoShortcut(final KeyboardEvent.Key... keys) {
-        return ClientKeyShortcutsHandler.isSameShortcut(keys,
-                                                        KeyboardEvent.Key.CONTROL,
-                                                        KeyboardEvent.Key.SHIFT,
-                                                        KeyboardEvent.Key.Z);
     }
 }

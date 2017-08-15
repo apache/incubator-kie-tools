@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
@@ -29,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.C
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
@@ -39,6 +41,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeL
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.mockito.ArgumentCaptor;
@@ -53,41 +56,61 @@ import static org.mockito.Mockito.*;
 public class ClientFullSessionTest {
 
     @Mock
-    CanvasFactory<AbstractCanvas, AbstractCanvasHandler> factory;
+    private CanvasFactory<AbstractCanvas, AbstractCanvasHandler> factory;
+
     @Mock
-    AbstractCanvas canvas;
+    private AbstractCanvas canvas;
+
     @Mock
-    AbstractCanvasHandler canvasHandler;
+    private AbstractCanvasHandler canvasHandler;
+
     @Mock
-    SelectionControl<AbstractCanvasHandler, Element> selectionControl;
+    private SelectionControl<AbstractCanvasHandler, Element> selectionControl;
+
     @Mock
-    ZoomControl<AbstractCanvas> zoomControl;
+    private ZoomControl<AbstractCanvas> zoomControl;
+
     @Mock
-    PanControl<AbstractCanvas> panControl;
+    private PanControl<AbstractCanvas> panControl;
+
     @Mock
-    ResizeControl<AbstractCanvasHandler, Element> resizeControl;
+    private ResizeControl<AbstractCanvasHandler, Element> resizeControl;
+
     @Mock
-    CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+    private CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+
     @Mock
-    SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+
     @Mock
-    SessionCommandManager<AbstractCanvasHandler> requestCommandManager;
+    private SessionCommandManager<AbstractCanvasHandler> requestCommandManager;
+
     @Mock
-    RegistryFactory registryFactory;
+    private RegistryFactory registryFactory;
+
     @Mock
-    ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl;
+    private ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl;
+
     @Mock
-    ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl;
+    private ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl;
+
     @Mock
-    DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
+    private DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
+
     @Mock
-    CanvasInPlaceTextEditorControl<AbstractCanvasHandler, Element> canvasInPlaceTextEditorControl;
+    private CanvasInPlaceTextEditorControl<AbstractCanvasHandler, ClientSession, Element> canvasInPlaceTextEditorControl;
+
     @Mock
-    DragControl<AbstractCanvasHandler, Element> dragControl;
+    private DragControl<AbstractCanvasHandler, Element> dragControl;
+
     @Mock
-    ToolboxControl<AbstractCanvasHandler, Element> toolboxControl;
+    private ToolboxControl<AbstractCanvasHandler, Element> toolboxControl;
+
     @Mock
-    ElementBuilderControl<AbstractCanvasHandler> builderControl;
+    private ElementBuilderControl<AbstractCanvasHandler> builderControl;
+
+    @Mock
+    private KeyboardControl<Canvas, ClientSession> keyboardControl;
 
     private ClientFullSessionImpl tested;
 
@@ -106,6 +129,7 @@ public class ClientFullSessionTest {
         when(factory.newControl(eq(CanvasInPlaceTextEditorControl.class))).thenReturn(canvasInPlaceTextEditorControl);
         when(factory.newControl(eq(ToolboxControl.class))).thenReturn(toolboxControl);
         when(factory.newControl(eq(ElementBuilderControl.class))).thenReturn(builderControl);
+        when(factory.newControl(eq(KeyboardControl.class))).thenReturn(keyboardControl);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
     }
 
@@ -142,6 +166,9 @@ public class ClientFullSessionTest {
                      tested.getToolboxControl());
         assertEquals(builderControl,
                      tested.getBuilderControl());
+        assertEquals(keyboardControl,
+                     tested.getKeyboardControl());
+
         // Assert setting the right command manager for each control.
         final ArgumentCaptor<RequiresCommandManager.CommandManagerProvider> conn =
                 ArgumentCaptor.forClass(RequiresCommandManager.CommandManagerProvider.class);
@@ -217,6 +244,8 @@ public class ClientFullSessionTest {
                times(1)).enable(eq(canvasHandler));
         verify(builderControl,
                times(1)).enable(eq(canvasHandler));
+        verify(keyboardControl,
+               times(1)).bind(eq(tested));
     }
 
     @Test
@@ -254,6 +283,8 @@ public class ClientFullSessionTest {
                times(1)).disable();
         verify(builderControl,
                times(1)).disable();
+        verify(keyboardControl,
+               times(1)).unbind();
     }
 
     private void buildTestedInstance() {

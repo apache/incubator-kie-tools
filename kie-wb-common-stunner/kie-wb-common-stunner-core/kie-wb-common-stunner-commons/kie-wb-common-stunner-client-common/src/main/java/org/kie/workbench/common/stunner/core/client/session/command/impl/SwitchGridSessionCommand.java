@@ -30,6 +30,7 @@ public class SwitchGridSessionCommand extends AbstractClientSessionCommand<Abstr
             CanvasGrid.SMALL_POINT_GRID, CanvasGrid.DEFAULT_GRID,
             CanvasGrid.DRAG_GRID, null
     };
+
     private static final byte DEFAULT_GRID_INDEX = 0;
     private byte gridIndex;
 
@@ -38,10 +39,9 @@ public class SwitchGridSessionCommand extends AbstractClientSessionCommand<Abstr
     }
 
     @Override
-    public SwitchGridSessionCommand bind(final AbstractClientSession session) {
+    public void bind(final AbstractClientSession session) {
         super.bind(session);
         resetGrid();
-        return this;
     }
 
     @Override

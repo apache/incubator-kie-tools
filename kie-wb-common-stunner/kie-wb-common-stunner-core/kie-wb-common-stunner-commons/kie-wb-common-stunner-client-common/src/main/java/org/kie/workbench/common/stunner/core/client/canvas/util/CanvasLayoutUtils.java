@@ -47,7 +47,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
  * In both cases the resulting coordinates are given from the coordinates of the visible element in the graph, which
  * is position is on bottom right rather than the others, plus a given <code>PADDING</code> anb some
  * error margin given by the <code>MARGIN</code> floating point.
- * <p>
+ * <p/>
  * TODO: This has to be refactored by the use of a good impl that achieve good dynamic layouts. Probably each
  * Definition Set / Diagram will require a different layout manager as well.
  */

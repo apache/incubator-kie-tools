@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -43,32 +44,30 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
 
-    private final static Bounds GRAPH_BOUNDS = new BoundsImpl(new BoundImpl(0d,
-                                                                            0d),
-                                                              new BoundImpl(100d,
-                                                                            100d));
-
     @Mock
     ZoomControl<AbstractCanvas> zoomControl;
+
     @Mock
     SelectionControl<AbstractCanvasHandler, Element> selectionControl;
+
     @Mock
     WidgetWrapperView view;
+
     @Mock
     DiagramViewer.DiagramViewerCallback<Diagram> callback;
 
-    private DiagramViewerImpl<Diagram, AbstractCanvasHandler> tested;
+    private DiagramViewerImpl<Diagram, AbstractCanvasHandler, ClientSession> tested;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.init();
         this.tested =
-                new DiagramViewerImpl<Diagram, AbstractCanvasHandler>(canvas,
-                                                                      canvasHandler,
-                                                                      view,
-                                                                      zoomControl,
-                                                                      selectionControl);
+                new DiagramViewerImpl<>(canvas,
+                                        canvasHandler,
+                                        view,
+                                        zoomControl,
+                                        selectionControl);
     }
 
     @Test

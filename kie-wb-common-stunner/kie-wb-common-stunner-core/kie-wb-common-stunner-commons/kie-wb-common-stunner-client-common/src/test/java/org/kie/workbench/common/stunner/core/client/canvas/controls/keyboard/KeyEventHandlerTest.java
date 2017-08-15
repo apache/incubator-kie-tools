@@ -14,35 +14,45 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.event.keyboard;
+package org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard;
+
+import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyDownEvent;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyUpEvent;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 
-import static org.mockito.Matchers.eq;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class ClientKeyShortcutsHandlerTest {
+public class KeyEventHandlerTest {
 
     @Mock
-    ClientKeyShortcutsHandler.KeyShortcutCallback shortcutCallback;
+    private KeyboardControl.KeyShortcutCallback shortcutCallback;
 
     @Mock
-    KeyUpEvent keyUpEvent;
+    private KeyUpEvent keyUpEvent;
 
     @Mock
-    KeyDownEvent keyDownEvent;
+    private KeyDownEvent keyDownEvent;
 
-    private ClientKeyShortcutsHandler tested;
+    @Captor
+    private ArgumentCaptor<KeyboardEvent.Key> keysArgumentCaptor;
+
+    private KeyEventHandler tested;
 
     @Before
     public void setup() throws Exception {
-        this.tested = new ClientKeyShortcutsHandler();
-        this.tested.setKeyShortcutCallback(shortcutCallback);
+        this.tested = spy(new KeyEventHandler());
+        this.tested.addKeyShortcutCallback(shortcutCallback);
     }
 
     @Test
@@ -54,8 +64,14 @@ public class ClientKeyShortcutsHandlerTest {
         when(keyDownEvent.getKey()).thenReturn(key2);
         tested.onKeyDownEvent(keyDownEvent);
         tested.keysTimerTimeIsUp();
+
         verify(shortcutCallback,
-               times(1)).onKeyShortcut(eq(key1),
-                                       eq(key2));
+               times(1)).onKeyShortcut(keysArgumentCaptor.capture());
+        verify(tested,
+               times(1)).reset();
+
+        final List<KeyboardEvent.Key> keys = keysArgumentCaptor.getAllValues();
+        assertTrue(keys.contains(key1));
+        assertTrue(keys.contains(key2));
     }
 }
