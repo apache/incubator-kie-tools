@@ -518,7 +518,7 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                                 Collection<FieldInfo> labelInfos = extractFieldInfos((TypeElement) finalTypeElement,
                                                                                      fieldElement -> fieldElement.getAnnotation(FieldLabel.class) != null);
 
-                                if (labelInfos != null & labelInfos.size() == 1) {
+                                if (labelInfos != null && labelInfos.size() == 1) {
                                     FieldInfo labelInfo = labelInfos.iterator().next();
                                     fieldLabel = finalType.toString() + i18nSettings.separator() + labelInfo.fieldElement.getSimpleName();
                                     overrideI18nLabel = true;
