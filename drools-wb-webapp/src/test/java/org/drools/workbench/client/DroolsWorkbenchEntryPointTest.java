@@ -25,13 +25,15 @@ import org.guvnor.common.services.shared.config.AppConfigService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.LanguageConfigurationHandler;
+import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.WorkbenchConfigurationPresenter;
 import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
 import org.kie.workbench.common.workbench.client.menu.DefaultWorkbenchFeaturesMenusHelper;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
+import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.ConstantsAnswerMock;
@@ -58,7 +60,7 @@ public class DroolsWorkbenchEntryPointTest {
     private DefaultWorkbenchFeaturesMenusHelper menusHelper;
 
     @Mock
-    private WorkbenchMenuBarPresenter menuBar;
+    private WorkbenchMegaMenuPresenter menuBar;
 
     @Mock
     private AdminPage adminPage;
@@ -68,6 +70,12 @@ public class DroolsWorkbenchEntryPointTest {
 
     @Mock
     protected GlobalPreferenceScope globalPreferenceScope;
+
+    @Mock
+    protected WorkbenchConfigurationPresenter workbenchConfigurationPresenter;
+
+    @Mock
+    protected LanguageConfigurationHandler languageConfigurationHandler;
 
     private DroolsWorkbenchEntryPoint droolsWorkbenchEntryPoint;
 
@@ -82,7 +90,9 @@ public class DroolsWorkbenchEntryPointTest {
                                                                       menuBar,
                                                                       adminPage,
                                                                       adminPageHelper,
-                                                                      globalPreferenceScope));
+                                                                      globalPreferenceScope,
+                                                                      workbenchConfigurationPresenter,
+                                                                      languageConfigurationHandler));
         mockMenuHelper();
         mockConstants();
     }
@@ -104,7 +114,6 @@ public class DroolsWorkbenchEntryPointTest {
         assertEquals(droolsWorkbenchEntryPoint.constants.Perspectives(),
                      menus.getItems().get(1).getCaption());
 
-        verify(menusHelper).addRolesMenuItems();
         verify(menusHelper).addUtilitiesMenuItems();
     }
 

@@ -17,21 +17,20 @@ package org.drools.workbench.client;
 
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import org.drools.workbench.client.resources.i18n.AppConstants;
+import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
+import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.LanguageConfigurationHandler;
+import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.WorkbenchConfigurationPresenter;
 import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
 import org.kie.workbench.common.workbench.client.entrypoint.DefaultWorkbenchEntryPoint;
 import org.kie.workbench.common.workbench.client.menu.DefaultWorkbenchFeaturesMenusHelper;
-import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
+import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -44,7 +43,7 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
 
     protected DefaultWorkbenchFeaturesMenusHelper menusHelper;
 
-    protected WorkbenchMenuBarPresenter menuBar;
+    protected WorkbenchMegaMenuPresenter menuBar;
 
     protected AdminPage adminPage;
 
@@ -52,15 +51,21 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
 
     protected GlobalPreferenceScope globalPreferenceScope;
 
+    protected WorkbenchConfigurationPresenter workbenchConfigurationPresenter;
+
+    protected LanguageConfigurationHandler languageConfigurationHandler;
+
     @Inject
     public DroolsWorkbenchEntryPoint(final Caller<AppConfigService> appConfigService,
                                      final ActivityBeansCache activityBeansCache,
                                      final PlaceManager placeManager,
                                      final DefaultWorkbenchFeaturesMenusHelper menusHelper,
-                                     final WorkbenchMenuBarPresenter menuBar,
+                                     final WorkbenchMegaMenuPresenter menuBar,
                                      final AdminPage adminPage,
                                      final DefaultAdminPageHelper adminPageHelper,
-                                     final GlobalPreferenceScope globalPreferenceScope) {
+                                     final GlobalPreferenceScope globalPreferenceScope,
+                                     final WorkbenchConfigurationPresenter workbenchConfigurationPresenter,
+                                     final LanguageConfigurationHandler languageConfigurationHandler) {
         super(appConfigService,
               activityBeansCache);
         this.placeManager = placeManager;
@@ -69,10 +74,26 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
         this.adminPage = adminPage;
         this.adminPageHelper = adminPageHelper;
         this.globalPreferenceScope = globalPreferenceScope;
+        this.workbenchConfigurationPresenter = workbenchConfigurationPresenter;
+        this.languageConfigurationHandler = languageConfigurationHandler;
     }
 
     @Override
     public void setupMenu() {
+        setupAdminPage();
+
+        menusHelper.addUtilitiesMenuItems();
+
+        final Menus menus = MenuFactory
+                .newTopLevelMenu(constants.Perspectives())
+                .withItems(menusHelper.getPerspectivesMenuItems())
+                .endMenu()
+                .build();
+
+        menuBar.addMenus(menus);
+    }
+
+    public void setupAdminPage() {
         adminPage.addScreen("root",
                             AppConstants.INSTANCE.Settings());
         adminPage.setDefaultScreen("root");
@@ -91,26 +112,12 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
                                 "preferences",
                                 globalPreferenceScope.resolve());
 
-        final AbstractWorkbenchPerspectiveActivity defaultPerspective = menusHelper.getDefaultPerspectiveActivity();
-
-        menusHelper.addRolesMenuItems();
-        menusHelper.addUtilitiesMenuItems();
-
-        final Menus menus = MenuFactory
-                .newTopLevelMenu(constants.Home())
-                .respondsWith(() -> {
-                    if (defaultPerspective != null) {
-                        placeManager.goTo(new DefaultPlaceRequest(defaultPerspective.getIdentifier()));
-                    } else {
-                        Window.alert("Default perspective not found.");
-                    }
-                })
-                .endMenu()
-                .newTopLevelMenu(constants.Perspectives())
-                .withItems(menusHelper.getPerspectivesMenuItems())
-                .endMenu()
-                .build();
-
-        menuBar.addMenus(menus);
+        adminPage.addTool("root",
+                          "Languages",
+                          "fa-cog",
+                          "general",
+                          () -> {
+                              workbenchConfigurationPresenter.show(languageConfigurationHandler);
+                          });
     }
 }

@@ -32,7 +32,7 @@ public interface AppConstants
         extends
         Messages {
 
-    AppConstants INSTANCE = GWT.create( AppConstants.class );
+    AppConstants INSTANCE = GWT.create(AppConstants.class);
 
     String SignOut();
 
@@ -101,4 +101,8 @@ public interface AppConstants
     String ArtifactRepository();
 
     String AdminPreferences();
+
+    String LogoTitle();
+
+    String License();
 }
