@@ -33,6 +33,7 @@ import org.uberfire.security.client.authz.tree.impl.PermissionGroupNode;
 import org.uberfire.security.client.authz.tree.impl.PermissionLeafNode;
 
 import static org.guvnor.m2repo.security.MavenRepositoryPagedJarTableFeatures.JAR_DOWNLOAD;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_SOURCES;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.PLANNER_AVAILABLE;
 
@@ -97,11 +98,15 @@ public class WorkbenchTreeProvider implements PermissionTreeProvider {
             PermissionLeafNode node4 = createPermissionLeafNode(JAR_DOWNLOAD,
                                                                 i18n.MavenRepositoryPagedJarTableDownloadJar(),
                                                                 i18n.MavenRepositoryPagedJarTableDownloadJarHelp());
+            PermissionLeafNode node5 = createPermissionLeafNode(EDIT_GLOBAL_PREFERENCES,
+                                                                i18n.EditGlobalPreferences(),
+                                                                i18n.EditGlobalPreferencesHelp());
 
             result.add(node1);
             result.add(node2);
             result.add(node3);
             result.add(node4);
+            result.add(node5);
 
             callback.afterLoad(result);
         }

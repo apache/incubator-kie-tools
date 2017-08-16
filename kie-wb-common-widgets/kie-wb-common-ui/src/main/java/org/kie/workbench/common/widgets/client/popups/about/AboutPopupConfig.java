@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.workbench.client.authz;
+package org.kie.workbench.common.widgets.client.popups.about;
 
-import org.kie.workbench.common.screens.datamodeller.security.DataModelerFeatures;
+public interface AboutPopupConfig {
 
-/**
- * Interface which defines general workbench permissions non tied to any specific resource.
- */
-public interface WorkbenchFeatures extends DataModelerFeatures {
+    String productName();
 
-    String PLANNER_AVAILABLE = "planner.available";
+    String productVersion();
 
-    String EDIT_GLOBAL_PREFERENCES = "globalpreferences.edit";
+    String productLicense();
+
+    String productImageUrl();
+
+    String backgroundImageUrl();
 }

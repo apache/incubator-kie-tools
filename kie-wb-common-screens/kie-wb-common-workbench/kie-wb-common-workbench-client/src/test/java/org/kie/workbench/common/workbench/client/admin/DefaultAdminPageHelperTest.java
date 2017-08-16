@@ -17,12 +17,13 @@
 package org.kie.workbench.common.workbench.client.admin;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
+import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -63,6 +64,18 @@ public class DefaultAdminPageHelperTest {
     }
 
     @Test
+    public void generalToolsAreAdded() {
+        defaultAdminPageHelper.setup();
+
+        final String languages = defaultAdminPageHelper.constants.Languages();
+        verify(adminPage).addTool(eq("root"),
+                                  eq(languages),
+                                  any(),
+                                  eq("general"),
+                                  any());
+    }
+
+    @Test
     public void securityShortcutsAreAddedWhenUserHasPermission() {
         doReturn(true).when(authorizationManager).authorize(any(ResourceRef.class),
                                                             any(User.class));
@@ -73,7 +86,7 @@ public class DefaultAdminPageHelperTest {
         verify(adminPage).addTool(eq("root"),
                                   eq(roles),
                                   any(),
-                                  any(),
+                                  eq("security"),
                                   any(),
                                   any());
 
@@ -81,7 +94,7 @@ public class DefaultAdminPageHelperTest {
         verify(adminPage).addTool(eq("root"),
                                   eq(groups),
                                   any(),
-                                  any(),
+                                  eq("security"),
                                   any(),
                                   any());
 
@@ -89,7 +102,7 @@ public class DefaultAdminPageHelperTest {
         verify(adminPage).addTool(eq("root"),
                                   eq(users),
                                   any(),
-                                  any(),
+                                  eq("security"),
                                   any(),
                                   any());
     }
@@ -130,9 +143,73 @@ public class DefaultAdminPageHelperTest {
     }
 
     @Test
-    public void preferencesShouldBeSavedOnGlobalScopeTest() {
+    public void perspectivesAreAddedWhenUserHasPermission() {
+        doReturn(true).when(authorizationManager).authorize(any(ResourceRef.class),
+                                                            any(User.class));
+
+        defaultAdminPageHelper.setup();
+
+        final String artifacts = defaultAdminPageHelper.constants.Artifacts();
+        verify(adminPage).addTool(eq("root"),
+                                  eq(artifacts),
+                                  any(),
+                                  eq("perspectives"),
+                                  any());
+
+        final String dataSources = defaultAdminPageHelper.constants.DataSources();
+        verify(adminPage).addTool(eq("root"),
+                                  eq(dataSources),
+                                  any(),
+                                  eq("perspectives"),
+                                  any());
+
+        final String dataSets = defaultAdminPageHelper.constants.DataSets();
+        verify(adminPage).addTool(eq("root"),
+                                  eq(dataSets),
+                                  any(),
+                                  eq("perspectives"),
+                                  any());
+    }
+
+    @Test
+    public void perspectivesAreNotAddedWhenUserHasNoPermission() {
+        doReturn(false).when(authorizationManager).authorize(any(ResourceRef.class),
+                                                             any(User.class));
+
+        defaultAdminPageHelper.setup();
+
+        final String artifacts = defaultAdminPageHelper.constants.Artifacts();
+        verify(adminPage,
+               never()).addTool(eq("root"),
+                                eq(artifacts),
+                                any(),
+                                eq("perspectives"),
+                                any());
+
+        final String dataSources = defaultAdminPageHelper.constants.DataSources();
+        verify(adminPage,
+               never()).addTool(eq("root"),
+                                eq(dataSources),
+                                any(),
+                                eq("perspectives"),
+                                any());
+
+        final String dataSets = defaultAdminPageHelper.constants.DataSets();
+        verify(adminPage,
+               never()).addTool(eq("root"),
+                                eq(dataSets),
+                                any(),
+                                eq("perspectives"),
+                                any());
+    }
+
+    @Test
+    public void preferencesShouldBeSavedOnGlobalScopeWhenUserHasPermissionTest() {
         final PreferenceScope globalScope = mock(PreferenceScope.class);
         doReturn(globalScope).when(globalPreferenceScope).resolve();
+
+        doReturn(true).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES),
+                                                            any());
 
         defaultAdminPageHelper.setup();
 
@@ -153,6 +230,23 @@ public class DefaultAdminPageHelperTest {
                                        anyString(),
                                        eq(globalScope),
                                        eq(AdminPageOptions.WITH_BREADCRUMBS));
+    }
+
+    @Test
+    public void preferencesShouldNotBeAddedWhenUserHasNoPermissionTest() {
+        doReturn(false).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES),
+                                                             any());
+
+        defaultAdminPageHelper.setup();
+
+        verify(adminPage,
+               never()).addPreference(anyString(),
+                                      anyString(),
+                                      anyString(),
+                                      anyString(),
+                                      anyString(),
+                                      any(PreferenceScope.class),
+                                      any());
     }
 
     private void mockConstants() {

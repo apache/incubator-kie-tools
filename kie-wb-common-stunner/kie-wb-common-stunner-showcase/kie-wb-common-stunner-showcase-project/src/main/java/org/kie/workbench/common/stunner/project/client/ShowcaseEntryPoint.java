@@ -50,7 +50,7 @@ public class ShowcaseEntryPoint extends DefaultWorkbenchEntryPoint {
 
     @Override
     protected void setupMenu() {
-        menusHelper.addLogoutMenuItem();
+        menusHelper.addUserMenuItems();
     }
 }
 

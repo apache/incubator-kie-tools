@@ -15,36 +15,65 @@
  */
 package org.kie.workbench.common.widgets.client.popups.about;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
-import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
-/**
- * A popup that shows Workbench information
- */
-public class AboutPopup extends BaseModal {
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.uberfire.client.mvp.UberElement;
 
-    interface AboutPopupWidgetBinder
-            extends
-            UiBinder<Widget, AboutPopup> {
+public class AboutPopup {
 
+    public interface View extends UberElement<AboutPopup> {
+
+        void show();
+
+        void setProductName(String productName);
+
+        void setProductVersion(String productVersion);
+
+        void setProductLicense(String productLicense);
+
+        void setProductImageUrl(String productImageUrl);
+
+        void setBackgroundImageUrl(String backgroundImageUrl);
     }
 
-    private static AboutPopupWidgetBinder uiBinder = GWT.create( AboutPopupWidgetBinder.class );
+    private View view;
 
-    public AboutPopup() {
-        setTitle( CommonConstants.INSTANCE.About() );
+    private ManagedInstance<AboutPopupConfig> aboutPopupConfigs;
 
-        setBody( uiBinder.createAndBindUi( AboutPopup.this ) );
-        add( new ModalFooterOKButton( new Command() {
-            @Override
-            public void execute() {
-                hide();
-            }
-        } ) );
+    @Inject
+    public AboutPopup(final View view,
+                      final ManagedInstance<AboutPopupConfig> aboutPopupConfigs) {
+        this.view = view;
+        this.aboutPopupConfigs = aboutPopupConfigs;
+    }
+
+    @PostConstruct
+    public void setup() {
+        view.init(this);
+
+        if (aboutPopupConfigs.isUnsatisfied()) {
+            throw new RuntimeException("One AboutPopupConfig implementation must be provided");
+        }
+
+        if (aboutPopupConfigs.isAmbiguous()) {
+            throw new RuntimeException("Only one AboutPopupConfig implementation must be provided");
+        }
+
+        final AboutPopupConfig aboutPopupConfig = aboutPopupConfigs.get();
+        view.setProductName(aboutPopupConfig.productName());
+        view.setProductVersion(aboutPopupConfig.productVersion());
+        view.setProductLicense(aboutPopupConfig.productLicense());
+        view.setProductImageUrl(aboutPopupConfig.productImageUrl());
+
+        final String backgroundImageUrl = aboutPopupConfig.backgroundImageUrl();
+        if (backgroundImageUrl != null && !backgroundImageUrl.isEmpty()) {
+            view.setBackgroundImageUrl(backgroundImageUrl);
+        }
+    }
+
+    public void show() {
+        view.show();
     }
 }

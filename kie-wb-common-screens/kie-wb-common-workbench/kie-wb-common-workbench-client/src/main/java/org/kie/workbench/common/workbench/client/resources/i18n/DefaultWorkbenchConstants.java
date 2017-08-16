@@ -23,7 +23,7 @@ public interface DefaultWorkbenchConstants
         extends
         Messages {
 
-    DefaultWorkbenchConstants INSTANCE = GWT.create( DefaultWorkbenchConstants.class );
+    DefaultWorkbenchConstants INSTANCE = GWT.create(DefaultWorkbenchConstants.class);
 
     String Role();
 
@@ -136,4 +136,14 @@ public interface DefaultWorkbenchConstants
     String KieServerError403();
 
     String KieServerError401();
+
+    String Help();
+
+    String Artifacts();
+
+    String EditGlobalPreferences();
+
+    String EditGlobalPreferencesHelp();
+
+    String Languages();
 }

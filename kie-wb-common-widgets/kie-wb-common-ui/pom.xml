@@ -282,14 +282,6 @@
       <resource>
         <directory>src/main/resources</directory>
       </resource>
-      <!-- About popup -->
-      <resource>
-        <directory>src/main/java/</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>org/kie/workbench/common/widgets/client/popups/about/AboutPopup.ui.xml</include>
-        </includes>
-      </resource>
     </resources>
 
     <plugins>

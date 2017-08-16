@@ -34,6 +34,7 @@ import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.widgets.client.menu.AboutCommand;
 import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.mockito.ArgumentCaptor;
@@ -42,11 +43,11 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.views.pfly.menu.UserMenu;
 import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
+import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -85,6 +86,12 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     @Mock
     protected DefaultAdminPageHelper adminPageHelper;
 
+    @Mock
+    protected WorkbenchMegaMenuPresenter menuBar;
+
+    @Mock
+    protected AboutCommand aboutCommand;
+
     @Spy
     @InjectMocks
     private DefaultWorkbenchFeaturesMenusHelper menusHelper;
@@ -102,175 +109,219 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     public void getHomeViewsWithoutSocial() {
         final boolean socialEnabled = false;
 
-        List<? extends MenuItem> homeMenuItems = menusHelper.getHomeViews( socialEnabled );
+        List<? extends MenuItem> homeMenuItems = menusHelper.getHomeViews(socialEnabled);
 
-        assertEquals( 2, homeMenuItems.size() );
-        assertEquals( menusHelper.constants.HomePage(), homeMenuItems.get( 0 ).getCaption() );
-        assertEquals( menusHelper.constants.Admin(), homeMenuItems.get( 1 ).getCaption() );
+        assertEquals(2,
+                     homeMenuItems.size());
+        assertEquals(menusHelper.constants.HomePage(),
+                     homeMenuItems.get(0).getCaption());
+        assertEquals(menusHelper.constants.Admin(),
+                     homeMenuItems.get(1).getCaption());
     }
 
     @Test
     public void getHomeViewsWithSocial() {
         final boolean socialEnabled = true;
 
-        List<? extends MenuItem> homeMenuItems = menusHelper.getHomeViews( socialEnabled );
+        List<? extends MenuItem> homeMenuItems = menusHelper.getHomeViews(socialEnabled);
 
-        assertEquals( 4, homeMenuItems.size() );
-        assertEquals( menusHelper.constants.HomePage(), homeMenuItems.get( 0 ).getCaption() );
-        assertEquals( menusHelper.constants.Admin(), homeMenuItems.get( 1 ).getCaption() );
-        assertEquals( menusHelper.constants.Timeline(), homeMenuItems.get( 2 ).getCaption() );
-        assertEquals( menusHelper.constants.People(), homeMenuItems.get( 3 ).getCaption() );
+        assertEquals(4,
+                     homeMenuItems.size());
+        assertEquals(menusHelper.constants.HomePage(),
+                     homeMenuItems.get(0).getCaption());
+        assertEquals(menusHelper.constants.Admin(),
+                     homeMenuItems.get(1).getCaption());
+        assertEquals(menusHelper.constants.Timeline(),
+                     homeMenuItems.get(2).getCaption());
+        assertEquals(menusHelper.constants.People(),
+                     homeMenuItems.get(3).getCaption());
     }
 
     @Test
     public void getAuthoringViewsTest() {
         List<? extends MenuItem> authoringMenuItems = menusHelper.getAuthoringViews();
 
-        assertEquals( 3, authoringMenuItems.size() );
-        assertEquals( menusHelper.constants.ProjectAuthoring(), authoringMenuItems.get( 0 ).getCaption() );
-        assertEquals( menusHelper.constants.ArtifactRepository(), authoringMenuItems.get( 1 ).getCaption() );
-        assertEquals( menusHelper.constants.Administration(), authoringMenuItems.get( 2 ).getCaption() );
+        assertEquals(3,
+                     authoringMenuItems.size());
+        assertEquals(menusHelper.constants.ProjectAuthoring(),
+                     authoringMenuItems.get(0).getCaption());
+        assertEquals(menusHelper.constants.ArtifactRepository(),
+                     authoringMenuItems.get(1).getCaption());
+        assertEquals(menusHelper.constants.Administration(),
+                     authoringMenuItems.get(2).getCaption());
     }
 
     @Test
     public void getProcessManagementViewsTest() {
         List<? extends MenuItem> processManagementMenuItems = menusHelper.getProcessManagementViews();
 
-        assertEquals( 2, processManagementMenuItems.size() );
-        assertEquals( menusHelper.constants.ProcessDefinitions(), processManagementMenuItems.get( 0 ).getCaption() );
-        assertEquals( menusHelper.constants.ProcessInstances(), processManagementMenuItems.get( 1 ).getCaption() );
+        assertEquals(2,
+                     processManagementMenuItems.size());
+        assertEquals(menusHelper.constants.ProcessDefinitions(),
+                     processManagementMenuItems.get(0).getCaption());
+        assertEquals(menusHelper.constants.ProcessInstances(),
+                     processManagementMenuItems.get(1).getCaption());
     }
 
     @Test
     public void getExtensionsViewsTest() {
         List<? extends MenuItem> extensionsMenuItems = menusHelper.getExtensionsViews();
 
-        assertEquals( 4, extensionsMenuItems.size() );
-        assertEquals( menusHelper.constants.Plugins(), extensionsMenuItems.get( 0 ).getCaption() );
-        assertEquals( menusHelper.constants.Apps(), extensionsMenuItems.get( 1 ).getCaption() );
-        assertEquals( menusHelper.constants.DataSets(), extensionsMenuItems.get( 2 ).getCaption() );
-        assertEquals( menusHelper.constants.DataSources(), extensionsMenuItems.get( 3 ).getCaption() );
+        assertEquals(4,
+                     extensionsMenuItems.size());
+        assertEquals(menusHelper.constants.Plugins(),
+                     extensionsMenuItems.get(0).getCaption());
+        assertEquals(menusHelper.constants.Apps(),
+                     extensionsMenuItems.get(1).getCaption());
+        assertEquals(menusHelper.constants.DataSets(),
+                     extensionsMenuItems.get(2).getCaption());
+        assertEquals(menusHelper.constants.DataSources(),
+                     extensionsMenuItems.get(3).getCaption());
     }
 
     @Test
     public void addRolesMenuItemsTest() {
         menusHelper.addRolesMenuItems();
 
-        ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass( Menus.class );
-        verify( userMenu, times( 3 ) ).addMenus( menusCaptor.capture() );
+        ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass(Menus.class);
+        verify(userMenu,
+               times(3)).addMenus(menusCaptor.capture());
 
         List<Menus> menusList = menusCaptor.getAllValues();
 
-        assertEquals( 3, menusList.size() );
+        assertEquals(3,
+                     menusList.size());
 
-        assertEquals( 1, menusList.get( 0 ).getItems().size() );
-        assertEquals( 1, menusList.get( 1 ).getItems().size() );
-        assertEquals( 1, menusList.get( 2 ).getItems().size() );
+        assertEquals(1,
+                     menusList.get(0).getItems().size());
+        assertEquals(1,
+                     menusList.get(1).getItems().size());
+        assertEquals(1,
+                     menusList.get(2).getItems().size());
 
-        checkIfMenuContainsRole( menusList, menusHelper.constants.LogOut() );
-        checkIfMenuContainsRole( menusList, "Role: role1" );
-        checkIfMenuContainsRole( menusList, "Role: role2" );
+        checkIfMenuContainsRole(menusList,
+                                menusHelper.constants.LogOut());
+        checkIfMenuContainsRole(menusList,
+                                "Role: role1");
+        checkIfMenuContainsRole(menusList,
+                                "Role: role2");
     }
 
     @Test
     public void addGroupsMenuItemsTest() {
         menusHelper.addGroupsMenuItems();
 
-        ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass( Menus.class );
-        verify( userMenu, times( 2 ) ).addMenus( menusCaptor.capture() );
+        ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass(Menus.class);
+        verify(userMenu,
+               times(2)).addMenus(menusCaptor.capture());
 
         List<Menus> menusList = menusCaptor.getAllValues();
 
-        assertEquals( 2, menusList.size() );
+        assertEquals(2,
+                     menusList.size());
 
-        assertEquals( 1, menusList.get( 0 ).getItems().size() );
-        assertEquals( 1, menusList.get( 1 ).getItems().size() );
+        assertEquals(1,
+                     menusList.get(0).getItems().size());
+        assertEquals(1,
+                     menusList.get(1).getItems().size());
 
-        checkIfMenuContainsRole( menusList, "Group: group1" );
-        checkIfMenuContainsRole( menusList, "Group: group2" );
+        checkIfMenuContainsRole(menusList,
+                                "Group: group1");
+        checkIfMenuContainsRole(menusList,
+                                "Group: group2");
     }
 
-    private void checkIfMenuContainsRole( final List<Menus> menusList,
-                                          String role ) {
-        assertContains( menusList,
-                        ( menus ) -> contains( ( (Menus) menus ).getItems(),
-                                               ( menuItem ) -> ( (MenuItem) menuItem )
-                                                       .getCaption().equals( role )
-                                             )
-                      );
+    private void checkIfMenuContainsRole(final List<Menus> menusList,
+                                         String role) {
+        assertContains(menusList,
+                       (menus) -> contains(((Menus) menus).getItems(),
+                                           (menuItem) -> ((MenuItem) menuItem)
+                                                   .getCaption().equals(role)
+                       )
+        );
     }
 
     @Test
     public void addWorkbenchViewModeSwitcherMenuItemTest() {
         menusHelper.addWorkbenchViewModeSwitcherMenuItem();
 
-        ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass( Menus.class );
-        verify( userMenu, times( 1 ) ).addMenus( menusCaptor.capture() );
+        ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass(Menus.class);
+        verify(userMenu,
+               times(1)).addMenus(menusCaptor.capture());
 
         List<Menus> menusList = menusCaptor.getAllValues();
 
-        assertEquals( 1, menusList.size() );
-        assertEquals( 1, menusList.get( 0 ).getItems().size() );
+        assertEquals(1,
+                     menusList.size());
+        assertEquals(1,
+                     menusList.get(0).getItems().size());
     }
 
     @Test
     public void addWorkbenchConfigurationMenuItemTest() {
         menusHelper.addWorkbenchConfigurationMenuItem();
 
-        ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass( Menus.class );
-        verify( utilityMenuBar, times( 1 ) ).addMenus( menusCaptor.capture() );
+        ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass(Menus.class);
+        verify(utilityMenuBar,
+               times(1)).addMenus(menusCaptor.capture());
 
         List<Menus> menusList = menusCaptor.getAllValues();
 
-        assertEquals( 1, menusList.size() );
-        assertEquals( 1, menusList.get( 0 ).getItems().size() );
+        assertEquals(1,
+                     menusList.size());
+        assertEquals(1,
+                     menusList.get(0).getItems().size());
     }
 
     @Test
     public void addUtilitiesMenuItemsTest() {
         menusHelper.addUtilitiesMenuItems();
 
-        ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass( Menus.class );
-        verify( utilityMenuBar, times( 1 ) ).addMenus( menusCaptor.capture() );
+        ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass(Menus.class);
+        verify(menuBar,
+               times(1)).addMenus(menusCaptor.capture());
 
         List<Menus> menusList = menusCaptor.getAllValues();
 
-        assertEquals( 1, menusList.size() );
-        assertEquals( 5, menusList.get( 0 ).getItems().size() );
+        assertEquals(1,
+                     menusList.size());
+        assertEquals(5,
+                     menusList.get(0).getItems().size());
     }
 
     @Test
-    public void addLogoutMenuItemTest() {
-        menusHelper.addLogoutMenuItem();
+    public void addUserMenuItemTest() {
+        menusHelper.addUserMenuItems();
 
-        ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass( Menus.class );
-        verify( userMenu, times( 1 ) ).addMenus( menusCaptor.capture() );
+        ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass(Menus.class);
+        verify(userMenu,
+               times(1)).addMenus(menusCaptor.capture());
 
         List<Menus> menusList = menusCaptor.getAllValues();
 
-        assertEquals( 1, menusList.size() );
+        assertEquals(1,
+                     menusList.size());
 
-        assertEquals( 1, menusList.get( 0 ).getItems().size() );
-
-        checkIfMenuContainsRole( menusList, menusHelper.constants.LogOut() );
+        assertEquals(2,
+                     menusList.get(0).getItems().size());
     }
 
     @Test
     public void logoutCommandTest() {
-        final DefaultWorkbenchFeaturesMenusHelper.LogoutCommand logoutCommand = spy( menusHelper.new LogoutCommand() );
+        final DefaultWorkbenchFeaturesMenusHelper.LogoutCommand logoutCommand = spy(menusHelper.new LogoutCommand());
 
         logoutCommand.execute();
 
-        verify( perspectiveManager ).savePerspectiveState( any( Command.class ) );
+        verify(perspectiveManager).savePerspectiveState(any(Command.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void logoutCommandRedirectIncludesLocaleTest() throws Throwable {
-        final DefaultWorkbenchFeaturesMenusHelper.LogoutCommand logoutCommand = spy( menusHelper.new LogoutCommand() {
+        final DefaultWorkbenchFeaturesMenusHelper.LogoutCommand logoutCommand = spy(menusHelper.new LogoutCommand() {
 
             @Override
-            void doRedirect( final String url ) {
+            void doRedirect(final String url) {
                 //Do nothing
             }
 
@@ -288,131 +339,155 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
             String getLocale() {
                 return "en_GB";
             }
-        } );
+        });
 
         logoutCommand.execute();
 
-        final ArgumentCaptor<Command> postSaveStateCommandCaptor = ArgumentCaptor.forClass( Command.class );
-        final ArgumentCaptor<String> redirectURLCaptor = ArgumentCaptor.forClass( String.class );
+        final ArgumentCaptor<Command> postSaveStateCommandCaptor = ArgumentCaptor.forClass(Command.class);
+        final ArgumentCaptor<String> redirectURLCaptor = ArgumentCaptor.forClass(String.class);
 
-        when( authService.call( any( RemoteCallback.class ) ) ).thenAnswer( ( final InvocationOnMock invocation ) -> {
-            ( (RemoteCallback) invocation.getArguments()[ 0 ] ).callback( null );
+        when(authService.call(any(RemoteCallback.class))).thenAnswer((final InvocationOnMock invocation) -> {
+            ((RemoteCallback) invocation.getArguments()[0]).callback(null);
             return authServiceImpl;
-        } );
-        verify( perspectiveManager ).savePerspectiveState( postSaveStateCommandCaptor.capture() );
+        });
+        verify(perspectiveManager).savePerspectiveState(postSaveStateCommandCaptor.capture());
 
         final Command postSaveStateCommand = postSaveStateCommandCaptor.getValue();
         postSaveStateCommand.execute();
 
-        verify( logoutCommand ).getRedirectURL();
-        verify( logoutCommand ).doRedirect( redirectURLCaptor.capture() );
-        verify( authServiceImpl ).logout();
+        verify(logoutCommand).getRedirectURL();
+        verify(logoutCommand).doRedirect(redirectURLCaptor.capture());
+        verify(authServiceImpl).logout();
 
         final String redirectURL = redirectURLCaptor.getValue();
-        assertTrue( redirectURL.contains( "/logout.jsp?locale=en_GB" ) );
+        assertTrue(redirectURL.contains("/logout.jsp?locale=en_GB"));
     }
 
     @Test
     public void buildMenusFromNavTreeTest() {
         NavTree navTree = new NavTreeBuilder()
-                .group("g1", "g1", "g1", true)
-                    .item("i1", "i1", "i1", true)
-                    .endGroup()
-                .group("g2", "g2", "g2", true)
-                    .item("i2", "i2", "i2", true)
-                    .endGroup()
+                .group("g1",
+                       "g1",
+                       "g1",
+                       true)
+                .item("i1",
+                      "i1",
+                      "i1",
+                      true)
+                .endGroup()
+                .group("g2",
+                       "g2",
+                       "g2",
+                       true)
+                .item("i2",
+                      "i2",
+                      "i2",
+                      true)
+                .endGroup()
                 .build();
 
         Menus menus = menusHelper.buildMenusFromNavTree(navTree).build();
         List<MenuItem> menuItems = menus.getItems();
-        assertEquals(menuItems.size(), 2);
+        assertEquals(menuItems.size(),
+                     2);
 
         MenuGroup group1 = (MenuGroup) menuItems.get(0);
-        assertEquals(group1.getCaption(), "g1");
-        assertEquals(group1.getItems().size(), 1);
+        assertEquals(group1.getCaption(),
+                     "g1");
+        assertEquals(group1.getItems().size(),
+                     1);
         MenuItem item1 = group1.getItems().get(0);
-        assertEquals(item1.getCaption(), "i1");
+        assertEquals(item1.getCaption(),
+                     "i1");
 
         MenuGroup group2 = (MenuGroup) menuItems.get(1);
-        assertEquals(group2.getCaption(), "g2");
-        assertEquals(group2.getItems().size(), 1);
+        assertEquals(group2.getCaption(),
+                     "g2");
+        assertEquals(group2.getItems().size(),
+                     1);
         MenuItem item2 = group2.getItems().get(0);
-        assertEquals(item2.getCaption(), "i2");
+        assertEquals(item2.getCaption(),
+                     "i2");
     }
 
     private void mockGroups() {
-        Set<Group> groups = new HashSet<>( 2 );
-        groups.add( () -> "group1" );
-        groups.add( () -> "group2" );
+        Set<Group> groups = new HashSet<>(2);
+        groups.add(() -> "group1");
+        groups.add(() -> "group2");
 
-        doReturn( groups ).when( identity ).getGroups();
+        doReturn(groups).when(identity).getGroups();
     }
 
     private void mockRoles() {
-        Set<Role> roles = new HashSet<>( 2 );
-        roles.add( () -> "role1" );
-        roles.add( () -> "role2" );
+        Set<Role> roles = new HashSet<>(2);
+        roles.add(() -> "role1");
+        roles.add(() -> "role2");
 
-        doReturn( roles ).when( identity ).getRoles();
+        doReturn(roles).when(identity).getRoles();
     }
 
     private void mockDefaultPerspective() {
-        AbstractWorkbenchPerspectiveActivity defaultPerspective = mock( AbstractWorkbenchPerspectiveActivity.class );
-        when( defaultPerspective.getIdentifier() ).thenReturn( "defaultPerspective" );
-        doReturn( defaultPerspective ).when( menusHelper ).getDefaultPerspectiveActivity();
+        doReturn("defaultPerspective").when(menusHelper).getDefaultPerspectiveIdentifier();
     }
 
     private void mockConstants() {
-        menusHelper.constants = mock( DefaultWorkbenchConstants.class, (Answer) invocation -> {
-            if ( String.class.equals( invocation.getMethod().getReturnType() ) ) {
-                return invocation.getMethod().getName();
-            } else {
-                return RETURNS_DEFAULTS.answer( invocation );
-            }
-        } );
+        menusHelper.constants = mock(DefaultWorkbenchConstants.class,
+                                     (Answer) invocation -> {
+                                         if (String.class.equals(invocation.getMethod().getReturnType())) {
+                                             return invocation.getMethod().getName();
+                                         } else {
+                                             return RETURNS_DEFAULTS.answer(invocation);
+                                         }
+                                     });
     }
 
     private void mockIocManager() {
-        doAnswer( invocationOnMock -> createSyncBeanDef( (Class<?>) invocationOnMock.getArguments()[ 0 ] ) )
-                .when( iocManager ).lookupBean( any( Class.class ) );
+        doAnswer(invocationOnMock -> createSyncBeanDef((Class<?>) invocationOnMock.getArguments()[0]))
+                .when(iocManager).lookupBean(any(Class.class));
     }
 
-    private <T> SyncBeanDef<T> createSyncBeanDef( Class<T> clazz ) {
-        final SyncBeanDef syncBeanDef = mock( SyncBeanDef.class );
-        doReturn( mock( clazz ) ).when( syncBeanDef ).getInstance();
-        doReturn( mock( clazz ) ).when( syncBeanDef ).newInstance();
+    private <T> SyncBeanDef<T> createSyncBeanDef(Class<T> clazz) {
+        final SyncBeanDef syncBeanDef = mock(SyncBeanDef.class);
+        doReturn(mock(clazz)).when(syncBeanDef).getInstance();
+        doReturn(mock(clazz)).when(syncBeanDef).newInstance();
 
         return syncBeanDef;
     }
 
-    private <T> boolean assertContains( final List<T> objects,
-                                        final Checker checker ) {
-        return assertContains( objects, checker, 1 );
+    private <T> boolean assertContains(final List<T> objects,
+                                       final Checker checker) {
+        return assertContains(objects,
+                              checker,
+                              1);
     }
 
-    private <T> boolean assertContains( final List<T> objects,
-                                        final Checker<T> checker,
-                                        int count ) {
-        boolean result = contains( objects, checker, count );
+    private <T> boolean assertContains(final List<T> objects,
+                                       final Checker<T> checker,
+                                       int count) {
+        boolean result = contains(objects,
+                                  checker,
+                                  count);
 
-        if ( !result ) {
-            fail( "The passed list does not contain " + count + " element(s) that matches the passed condition." );
+        if (!result) {
+            fail("The passed list does not contain " + count + " element(s) that matches the passed condition.");
         }
 
         return result;
     }
 
-    private <T> boolean contains( final List<T> objects,
-                                  final Checker checker ) {
-        return contains( objects, checker, 1 );
+    private <T> boolean contains(final List<T> objects,
+                                 final Checker checker) {
+        return contains(objects,
+                        checker,
+                        1);
     }
 
-    private <T> boolean contains( final List<T> objects,
-                                  final Checker<T> checker,
-                                  int count ) {
-        for ( T object : objects ) {
-            if ( checker.check( object ) ) {
-                if ( --count == 0 ) {
+    private <T> boolean contains(final List<T> objects,
+                                 final Checker<T> checker,
+                                 int count) {
+        for (T object : objects) {
+            if (checker.check(object)) {
+                if (--count == 0) {
                     return true;
                 }
             }
@@ -423,6 +498,6 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
 
     private interface Checker<T> {
 
-        boolean check( T object );
+        boolean check(T object);
     }
 }

@@ -34,26 +34,26 @@ public class LanguageConfigurationHandler extends WorkbenchConfigurationHandler 
 
     private Map<String, String> languageMap = new HashMap<String, String>();
 
-    private CommonConstants constants = GWT.create( CommonConstants.class );
+    private CommonConstants constants = GWT.create(CommonConstants.class);
 
     @Inject
     ConfigurationComboBoxItemWidget languageItem;
 
     public LanguageConfigurationHandler() {
-        languageMap.put( "default",
-                         constants.English() );
-        languageMap.put( "zh_CN",
-                         constants.ChineseSimplified() );
-        languageMap.put( "de",
-                         constants.German() );
-        languageMap.put( "es",
-                         constants.Spanish() );
-        languageMap.put( "fr",
-                         constants.French() );
-        languageMap.put( "ja",
-                         constants.Japanese() );
-        languageMap.put( "pt_BR",
-                         constants.Portuguese() );
+        languageMap.put("default",
+                        constants.English());
+        languageMap.put("zh_CN",
+                        constants.ChineseSimplified());
+        languageMap.put("de",
+                        constants.German());
+        languageMap.put("es",
+                        constants.Spanish());
+        languageMap.put("fr",
+                        constants.French());
+        languageMap.put("ja",
+                        constants.Japanese());
+        languageMap.put("pt_BR",
+                        constants.Portuguese());
     }
 
     @Override
@@ -62,53 +62,53 @@ public class LanguageConfigurationHandler extends WorkbenchConfigurationHandler 
     }
 
     @Override
-    public void configurationSetting( final boolean isInit ) {
-        String languageName = languageItem.getSelectedItem().getK1();
-        String isRefresh = Window.Location.getParameter( "isRefresh" );
-        if ( ( isRefresh == null || isRefresh.equals( "" ) ) && isInit ) {
-            Window.Location.assign( Window.Location.createUrlBuilder()
-                                            .removeParameter( LocaleInfo.getLocaleQueryParam() )
-                                            .setParameter( LocaleInfo.getCurrentLocale().getLocaleQueryParam(),
-                                                           languageName )
-                                            .setParameter( "isRefresh",
-                                                           "false" )
-                                            .buildString() );
-        } else if ( !isInit ) {
-            Window.Location.assign( Window.Location.createUrlBuilder()
-                                            .removeParameter( LocaleInfo.getLocaleQueryParam() )
-                                            .setParameter( LocaleInfo.getCurrentLocale().getLocaleQueryParam(),
-                                                           languageName )
-                                            .buildString() );
+    public void configurationSetting(final boolean isInit) {
+        String languageName = languageItem.getSelectedItem().getK2();
+        String isRefresh = Window.Location.getParameter("isRefresh");
+        if ((isRefresh == null || isRefresh.equals("")) && isInit) {
+            Window.Location.assign(Window.Location.createUrlBuilder()
+                                           .removeParameter(LocaleInfo.getLocaleQueryParam())
+                                           .setParameter(LocaleInfo.getCurrentLocale().getLocaleQueryParam(),
+                                                         languageName)
+                                           .setParameter("isRefresh",
+                                                         "false")
+                                           .buildString());
+        } else if (!isInit) {
+            Window.Location.assign(Window.Location.createUrlBuilder()
+                                           .removeParameter(LocaleInfo.getLocaleQueryParam())
+                                           .setParameter(LocaleInfo.getCurrentLocale().getLocaleQueryParam(),
+                                                         languageName)
+                                           .buildString());
         }
     }
 
     @Override
-    protected void setDefaultConfigurationValues( final UserWorkbenchPreferences response ) {
-        languageItem.setSelectedItem( response.getLanguage() );
+    protected void setDefaultConfigurationValues(final UserWorkbenchPreferences response) {
+        languageItem.setSelectedItem(response.getLanguage());
     }
 
     @Override
     protected void initHandler() {
-        languageItem.extensionItemLabel.setText( constants.Language() );
+        languageItem.extensionItemLabel.setText(constants.Language());
         languageItem.getExtensionItem().clear();
         String[] languages = LocaleInfo.getAvailableLocaleNames();
-        for ( String language : languages ) {
-            languageItem.getExtensionItem().addItem( Pair.newPair( languageMap.get( language ),
-                                                                   language ) );
+        for (String language : languages) {
+            languageItem.getExtensionItem().addItem(Pair.newPair(languageMap.get(language),
+                                                                 language));
         }
-        super.getExtensions().add( Pair.newPair( LANGUAGE_SECLECTOR_HADNLER_ID,
-                                                 languageItem ) );
+        super.getExtensions().add(Pair.newPair(LANGUAGE_SECLECTOR_HADNLER_ID,
+                                               languageItem));
     }
 
     @Override
     protected UserWorkbenchPreferences getSelectedUserWorkbenchPreferences() {
         UserWorkbenchPreferences preference = super.getPreference();
-        if ( preference != null ) {
+        if (preference != null) {
             String selectedlanguage = languageItem.getSelectedItem().getK1();
-            preference.setLanguage( selectedlanguage );
+            preference.setLanguage(selectedlanguage);
             return preference;
         }
-        preference = new UserWorkbenchPreferences( languageItem.getSelectedItem().getK1() );
+        preference = new UserWorkbenchPreferences(languageItem.getSelectedItem().getK1());
         return preference;
     }
 }

@@ -20,39 +20,48 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
 public interface KieWorkbenchWidgetsConstants {
 
-    @TranslationKey( defaultValue = "Create new")
+    @TranslationKey(defaultValue = "Create new")
     String NewResourceViewPopupTitle = "NewResourceViewImpl.popupTitle";
 
-    @TranslationKey( defaultValue = "Name:")
+    @TranslationKey(defaultValue = "Name:")
     String NewResourceViewItemNameSubheading = "NewResourceViewImpl.itemNameSubheading";
 
-    @TranslationKey( defaultValue = "Missing name for new resource. Please enter.")
+    @TranslationKey(defaultValue = "Missing name for new resource. Please enter.")
     String NewResourceViewFileNameIsMandatory = "NewResourceViewImpl.fileNameIsMandatory";
 
-    @TranslationKey( defaultValue = "Resource Name" )
+    @TranslationKey(defaultValue = "Resource Name")
     String NewResourceViewResourceName = "NewResourceViewImpl.resourceName";
 
-    @TranslationKey( defaultValue = "Package" )
+    @TranslationKey(defaultValue = "Package")
     String NewResourceViewPackageName = "NewResourceViewImpl.packageName";
 
-    @TranslationKey( defaultValue = "Name..." )
+    @TranslationKey(defaultValue = "Name...")
     String NewResourceViewResourceNamePlaceholder = "NewResourceViewImpl.resourceNamePlaceholder";
 
-    @TranslationKey( defaultValue = "Path in which to create new resource is missing. Please enter.")
+    @TranslationKey(defaultValue = "Path in which to create new resource is missing. Please enter.")
     String NewResourceViewMissingPath = "NewResourceViewImpl.MissingPath";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String ValidationPopup_YesSaveAnyway = "ValidationPopup.YesSaveAnyway";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String ValidationPopup_YesCopyAnyway = "ValidationPopup.YesCopyAnyway";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String ValidationPopup_YesDeleteAnyway = "ValidationPopup.YesDeleteAnyway";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String ValidationPopup_Cancel = "ValidationPopup.Cancel";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String ValidationPopupViewImpl_ValidationErrors = "ValidationPopupViewImpl.ValidationErrors";
+
+    @TranslationKey(defaultValue = "")
+    String AboutPopupView_Version = "AboutPopupView.Version";
+
+    @TranslationKey(defaultValue = "")
+    String AboutPopupView_LicenseDescription = "AboutPopupView.LicenseDescription";
+
+    @TranslationKey(defaultValue = "")
+    String AboutPopupView_License = "AboutPopupView.License";
 }

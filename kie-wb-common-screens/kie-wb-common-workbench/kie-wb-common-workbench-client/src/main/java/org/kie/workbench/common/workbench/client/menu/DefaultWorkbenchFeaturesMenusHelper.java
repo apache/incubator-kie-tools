@@ -17,9 +17,7 @@
 package org.kie.workbench.common.workbench.client.menu;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
@@ -33,36 +31,48 @@ import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.NavTree;
 import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
-import org.kie.workbench.common.widgets.client.menu.AboutMenuBuilder;
-import org.kie.workbench.common.widgets.client.menu.AppLauncherMenuBuilder;
+import org.kie.workbench.common.widgets.client.menu.AboutCommand;
 import org.kie.workbench.common.widgets.client.menu.ResetPerspectivesMenuBuilder;
-import org.kie.workbench.common.workbench.client.library.LibraryMonitor;
+import org.kie.workbench.common.workbench.client.menu.custom.AdminCustomMenuBuilder;
+import org.kie.workbench.common.workbench.client.menu.custom.AppsCustomMenuBuilder;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.menu.CustomSplashHelp;
 import org.uberfire.client.menu.WorkbenchViewModeSwitcherMenuBuilder;
-import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.views.pfly.menu.UserMenu;
 import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
+import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.*;
-import static org.uberfire.workbench.model.menu.MenuFactory.*;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMIN;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMINISTRATION;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.APPS;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.DATASET_AUTHORING;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.DATASOURCE_MANAGEMENT;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.GUVNOR_M2REPO;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.LIBRARY;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.PLUGIN_AUTHORING;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_DEFINITIONS;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_INSTANCES;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.SOCIAL_HOME;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.SOCIAL_USER_HOME;
+import static org.uberfire.workbench.model.menu.MenuFactory.Builder;
+import static org.uberfire.workbench.model.menu.MenuFactory.MenuBuilder;
+import static org.uberfire.workbench.model.menu.MenuFactory.TopLevelMenusBuilder;
+import static org.uberfire.workbench.model.menu.MenuFactory.newSimpleItem;
 
 @ApplicationScoped
 public class DefaultWorkbenchFeaturesMenusHelper {
@@ -76,7 +86,8 @@ public class DefaultWorkbenchFeaturesMenusHelper {
     protected User identity;
     protected UserMenu userMenu;
     protected UtilityMenuBar utilityMenuBar;
-    protected LibraryMonitor libraryMonitor;
+    protected WorkbenchMegaMenuPresenter menuBar;
+    protected AboutCommand aboutCommand;
 
     public DefaultWorkbenchFeaturesMenusHelper() {
     }
@@ -89,7 +100,8 @@ public class DefaultWorkbenchFeaturesMenusHelper {
                                                User identity,
                                                UserMenu userMenu,
                                                UtilityMenuBar utilityMenuBar,
-                                               LibraryMonitor libraryMonitor) {
+                                               WorkbenchMegaMenuPresenter menuBar,
+                                               AboutCommand aboutCommand) {
         this.iocManager = iocManager;
         this.activityManager = activityManager;
         this.perspectiveManager = perspectiveManager;
@@ -97,153 +109,144 @@ public class DefaultWorkbenchFeaturesMenusHelper {
         this.identity = identity;
         this.userMenu = userMenu;
         this.utilityMenuBar = utilityMenuBar;
-        this.libraryMonitor = libraryMonitor;
+        this.menuBar = menuBar;
+        this.aboutCommand = aboutCommand;
     }
 
-    public List<? extends MenuItem> getHomeViews(final boolean socialEnabled ) {
-        final AbstractWorkbenchPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
-        final List<MenuItem> result = new ArrayList<>( 1 );
+    public List<? extends MenuItem> getHomeViews(final boolean socialEnabled) {
+        final List<MenuItem> result = new ArrayList<>(1);
 
-        result.add( MenuFactory.newSimpleItem( constants.HomePage() )
-                            .perspective( defaultPerspective.getIdentifier() )
-                            .endMenu()
-                            .build().getItems().get( 0 ) );
+        result.add(MenuFactory.newSimpleItem(constants.HomePage())
+                           .perspective(getDefaultPerspectiveIdentifier())
+                           .endMenu()
+                           .build().getItems().get(0));
 
-        result.add( MenuFactory.newSimpleItem( constants.Admin() )
-                            .perspective( ADMIN )
-                            .endMenu()
-                            .build().getItems().get( 0 ) );
+        result.add(MenuFactory.newSimpleItem(constants.Admin())
+                           .perspective(ADMIN)
+                           .endMenu()
+                           .build().getItems().get(0));
 
-        result.addAll( getSocialViews( socialEnabled ) );
+        result.addAll(getSocialViews(socialEnabled));
 
         return result;
     }
 
-    protected List<MenuItem> getSocialViews( final boolean socialEnabled ) {
-        if ( !socialEnabled ) {
+    protected List<MenuItem> getSocialViews(final boolean socialEnabled) {
+        if (!socialEnabled) {
             return Collections.emptyList();
         }
 
-        final List<MenuItem> result = new ArrayList<>( 2 );
+        final List<MenuItem> result = new ArrayList<>(2);
 
-        result.add( MenuFactory.newSimpleItem( constants.Timeline() ).perspective( SOCIAL_HOME ).endMenu().build().getItems().get( 0 ) );
-        result.add( MenuFactory.newSimpleItem( constants.People() ).perspective( SOCIAL_USER_HOME ).endMenu().build().getItems().get( 0 ) );
+        result.add(MenuFactory.newSimpleItem(constants.Timeline()).perspective(SOCIAL_HOME).endMenu().build().getItems().get(0));
+        result.add(MenuFactory.newSimpleItem(constants.People()).perspective(SOCIAL_USER_HOME).endMenu().build().getItems().get(0));
 
         return result;
     }
 
     public List<MenuItem> getAuthoringViews() {
-        final List<MenuItem> result = new ArrayList<>( 4 );
+        final List<MenuItem> result = new ArrayList<>(4);
 
-        result.add( MenuFactory.newSimpleItem( constants.ProjectAuthoring() ).perspective( LIBRARY ).endMenu().build().getItems().get( 0 ) );
-        result.add( MenuFactory.newSimpleItem( constants.ArtifactRepository() ).perspective( GUVNOR_M2REPO ).endMenu().build().getItems().get( 0 ) );
-        result.add( MenuFactory.newSimpleItem( constants.Administration() ).perspective( ADMINISTRATION ).endMenu().build().getItems().get( 0 ) );
+        result.add(MenuFactory.newSimpleItem(constants.ProjectAuthoring()).perspective(LIBRARY).endMenu().build().getItems().get(0));
+        result.add(MenuFactory.newSimpleItem(constants.ArtifactRepository()).perspective(GUVNOR_M2REPO).endMenu().build().getItems().get(0));
+        result.add(MenuFactory.newSimpleItem(constants.Administration()).perspective(ADMINISTRATION).endMenu().build().getItems().get(0));
 
         return result;
     }
 
     public List<? extends MenuItem> getProcessManagementViews() {
-        final List<MenuItem> result = new ArrayList<>( 2 );
+        final List<MenuItem> result = new ArrayList<>(2);
 
-        result.add( MenuFactory.newSimpleItem( constants.ProcessDefinitions() ).perspective( PROCESS_DEFINITIONS ).endMenu().build().getItems().get( 0 ) );
-        result.add( MenuFactory.newSimpleItem( constants.ProcessInstances() ).perspective(PROCESS_INSTANCES).endMenu().build().getItems().get( 0 ) );
+        result.add(MenuFactory.newSimpleItem(constants.ProcessDefinitions()).perspective(PROCESS_DEFINITIONS).endMenu().build().getItems().get(0));
+        result.add(MenuFactory.newSimpleItem(constants.ProcessInstances()).perspective(PROCESS_INSTANCES).endMenu().build().getItems().get(0));
 
         return result;
     }
 
     public List<? extends MenuItem> getExtensionsViews() {
-        final List<MenuItem> result = new ArrayList<>( 3 );
+        final List<MenuItem> result = new ArrayList<>(3);
 
-        result.add( MenuFactory.newSimpleItem( constants.Plugins() ).perspective( PLUGIN_AUTHORING ).endMenu().build().getItems().get( 0 ) );
-        result.add( MenuFactory.newSimpleItem( constants.Apps() ).perspective( APPS ).endMenu().build().getItems().get( 0 ) );
-        result.add( MenuFactory.newSimpleItem( constants.DataSets() ).perspective( DATASET_AUTHORING ).endMenu().build().getItems().get( 0 ) );
-        result.add( MenuFactory.newSimpleItem( constants.DataSources() ).perspective( DATASOURCE_MANAGEMENT ).endMenu().build().getItems().get( 0 ) );
+        result.add(MenuFactory.newSimpleItem(constants.Plugins()).perspective(PLUGIN_AUTHORING).endMenu().build().getItems().get(0));
+        result.add(MenuFactory.newSimpleItem(constants.Apps()).perspective(APPS).endMenu().build().getItems().get(0));
+        result.add(MenuFactory.newSimpleItem(constants.DataSets()).perspective(DATASET_AUTHORING).endMenu().build().getItems().get(0));
+        result.add(MenuFactory.newSimpleItem(constants.DataSources()).perspective(DATASOURCE_MANAGEMENT).endMenu().build().getItems().get(0));
 
         return result;
     }
 
     public void addRolesMenuItems() {
-        for ( Menus roleMenus : getRoles() ) {
-            userMenu.addMenus( roleMenus );
+        for (Menus roleMenus : getRoles()) {
+            userMenu.addMenus(roleMenus);
         }
     }
 
     public void addGroupsMenuItems() {
-        for ( Menus groups : getGroups() ) {
-            userMenu.addMenus( groups );
+        for (Menus groups : getGroups()) {
+            userMenu.addMenus(groups);
         }
     }
 
     public void addWorkbenchViewModeSwitcherMenuItem() {
-        userMenu.addMenus( MenuFactory.newTopLevelCustomMenu( iocManager.lookupBean( WorkbenchViewModeSwitcherMenuBuilder.class ).getInstance() ).endMenu().build() );
+        userMenu.addMenus(MenuFactory.newTopLevelCustomMenu(iocManager.lookupBean(WorkbenchViewModeSwitcherMenuBuilder.class).getInstance()).endMenu().build());
     }
 
     public void addWorkbenchConfigurationMenuItem() {
-        utilityMenuBar.addMenus( MenuFactory.newTopLevelCustomMenu( iocManager.lookupBean( WorkbenchConfigurationMenuBuilder.class ).getInstance() ).endMenu().build() );
+        utilityMenuBar.addMenus(MenuFactory.newTopLevelCustomMenu(iocManager.lookupBean(WorkbenchConfigurationMenuBuilder.class).getInstance()).endMenu().build());
     }
 
     public void addUtilitiesMenuItems() {
+        addUserMenuItems();
+
         final Menus utilityMenus =
                 MenuFactory
-                        .newTopLevelCustomMenu( iocManager.lookupBean( AppLauncherMenuBuilder.class ).getInstance() )
+                        .newTopLevelCustomMenu(iocManager.lookupBean(AppsCustomMenuBuilder.class).getInstance())
                         .endMenu()
-                        .newTopLevelCustomMenu( iocManager.lookupBean( CustomSplashHelp.class ).getInstance() )
+                        .newTopLevelCustomMenu(iocManager.lookupBean(CustomSplashHelp.class).getInstance())
                         .endMenu()
-                        .newTopLevelCustomMenu( iocManager.lookupBean( AboutMenuBuilder.class ).getInstance() )
+                        .newTopLevelCustomMenu(iocManager.lookupBean(AdminCustomMenuBuilder.class).getInstance())
                         .endMenu()
-                        .newTopLevelCustomMenu( iocManager.lookupBean( ResetPerspectivesMenuBuilder.class ).getInstance() )
+                        .newTopLevelCustomMenu(iocManager.lookupBean(ResetPerspectivesMenuBuilder.class).getInstance())
                         .endMenu()
-                        .newTopLevelCustomMenu( userMenu )
+                        .newTopLevelCustomMenu(userMenu)
                         .endMenu()
                         .build();
 
-        utilityMenuBar.addMenus( utilityMenus );
+        menuBar.addMenus(utilityMenus);
     }
 
-    public void addLogoutMenuItem() {
-        final Menus userMenus = MenuFactory.newTopLevelMenu( constants.LogOut() )
-                .respondsWith( new LogoutCommand() )
+    public void addUserMenuItems() {
+        final Menus userMenus = MenuFactory
+                .newTopLevelMenu(constants.LogOut())
+                .respondsWith(new LogoutCommand())
+                .endMenu()
+                .newTopLevelMenu("About")
+                .respondsWith(aboutCommand)
                 .endMenu()
                 .build();
 
-        userMenu.addMenus( userMenus );
+        userMenu.addMenus(userMenus);
     }
 
-    public AbstractWorkbenchPerspectiveActivity getDefaultPerspectiveActivity() {
-        AbstractWorkbenchPerspectiveActivity defaultPerspective = null;
-        final Collection<SyncBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectives = iocManager.lookupBeans( AbstractWorkbenchPerspectiveActivity.class );
-        final Iterator<SyncBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectivesIterator = perspectives.iterator();
-
-        while ( perspectivesIterator.hasNext() ) {
-            final SyncBeanDef<AbstractWorkbenchPerspectiveActivity> perspective = perspectivesIterator.next();
-            final AbstractWorkbenchPerspectiveActivity instance = perspective.getInstance();
-            if ( instance.isDefault() ) {
-                defaultPerspective = instance;
-                break;
-            } else {
-                iocManager.destroyBean( instance );
-            }
-        }
-
-        return defaultPerspective;
+    public String getDefaultPerspectiveIdentifier() {
+        return perspectiveManager.getDefaultPerspectiveIdentifier();
     }
 
     public List<PerspectiveActivity> getPerspectiveActivities() {
-        final Set<PerspectiveActivity> activities = activityManager.getActivities( PerspectiveActivity.class );
+        final Set<PerspectiveActivity> activities = activityManager.getActivities(PerspectiveActivity.class);
 
-        List<PerspectiveActivity> sortedActivitiesForDisplay = new ArrayList<>( activities );
-        Collections.sort( sortedActivitiesForDisplay,
-                          ( o1, o2 ) -> o1.getDefaultPerspectiveLayout().getName().compareTo( o2.getDefaultPerspectiveLayout().getName() ) );
+        List<PerspectiveActivity> sortedActivitiesForDisplay = new ArrayList<>(activities);
+        Collections.sort(sortedActivitiesForDisplay,
+                         (o1, o2) -> o1.getDefaultPerspectiveLayout().getName().compareTo(o2.getDefaultPerspectiveLayout().getName()));
 
         return sortedActivitiesForDisplay;
     }
 
     public List<MenuItem> getPerspectivesMenuItems() {
         final List<MenuItem> perspectives = new ArrayList<>();
-        for ( final PerspectiveActivity perspective : getPerspectiveActivities() ) {
+        for (final PerspectiveActivity perspective : getPerspectiveActivities()) {
             final String name = perspective.getDefaultPerspectiveLayout().getName();
-            final MenuItem item = newSimpleItem( name ).perspective( perspective.getIdentifier() ).endMenu().build().getItems().get( 0 );
-            perspectives.add( item );
+            final MenuItem item = newSimpleItem(name).perspective(perspective.getIdentifier()).endMenu().build().getItems().get(0);
+            perspectives.add(item);
         }
 
         return perspectives;
@@ -251,12 +254,12 @@ public class DefaultWorkbenchFeaturesMenusHelper {
 
     public List<Menus> getRoles() {
         final Set<Role> roles = identity.getRoles();
-        final List<Menus> result = new ArrayList<>( roles.size() );
+        final List<Menus> result = new ArrayList<>(roles.size());
 
-        result.add( MenuFactory.newSimpleItem( constants.LogOut() ).respondsWith( new LogoutCommand() ).endMenu().build() );
-        for ( final Role role : roles ) {
-            if ( !role.getName().equals( "IS_REMEMBER_ME" ) ) {
-                result.add( MenuFactory.newSimpleItem( constants.Role() + ": " + role.getName() ).endMenu().build() );
+        result.add(MenuFactory.newSimpleItem(constants.LogOut()).respondsWith(new LogoutCommand()).endMenu().build());
+        for (final Role role : roles) {
+            if (!role.getName().equals("IS_REMEMBER_ME")) {
+                result.add(MenuFactory.newSimpleItem(constants.Role() + ": " + role.getName()).endMenu().build());
             }
         }
 
@@ -265,10 +268,10 @@ public class DefaultWorkbenchFeaturesMenusHelper {
 
     public List<Menus> getGroups() {
         final Set<Group> groups = identity.getGroups();
-        final List<Menus> result = new ArrayList<Menus>( groups.size() );
+        final List<Menus> result = new ArrayList<Menus>(groups.size());
 
-        for ( final Group group : groups ) {
-            result.add( MenuFactory.newSimpleItem( constants.Group() + ": " + group.getName() ).endMenu().build() );
+        for (final Group group : groups) {
+            result.add(MenuFactory.newSimpleItem(constants.Group() + ": " + group.getName()).endMenu().build());
         }
 
         return result;
@@ -331,32 +334,26 @@ public class DefaultWorkbenchFeaturesMenusHelper {
     }
 
     public PlaceRequest resolvePlaceRequest(String perspectiveId) {
-        switch (perspectiveId) {
-            case AUTHORING:
-                return new ConditionalPlaceRequest(AUTHORING)
-                        .when(p -> libraryMonitor.thereIsAtLeastOneProjectAccessible())
-                        .orElse(new DefaultPlaceRequest(LIBRARY));
-            default:
-                return new DefaultPlaceRequest(perspectiveId);
-        }
+        return new DefaultPlaceRequest(perspectiveId);
     }
 
     protected class LogoutCommand implements Command {
 
         @Override
         public void execute() {
-            perspectiveManager.savePerspectiveState( () -> authService.call( ( o ) -> doRedirect( getRedirectURL() ) ).logout() );
+            perspectiveManager.savePerspectiveState(() -> authService.call((o) -> doRedirect(getRedirectURL())).logout());
         }
 
-        void doRedirect( final String url ) {
-            redirect( url );
+        void doRedirect(final String url) {
+            redirect(url);
         }
 
         String getRedirectURL() {
             final String gwtModuleBaseURL = getGWTModuleBaseURL();
             final String gwtModuleName = getGWTModuleName();
             final String locale = getLocale();
-            final String url = gwtModuleBaseURL.replaceFirst( "/" + gwtModuleName + "/", "/logout.jsp?locale=" + locale );
+            final String url = gwtModuleBaseURL.replaceFirst("/" + gwtModuleName + "/",
+                                                             "/logout.jsp?locale=" + locale);
             return url;
         }
 
@@ -371,10 +368,9 @@ public class DefaultWorkbenchFeaturesMenusHelper {
         String getLocale() {
             return LocaleInfo.getCurrentLocale().getLocaleName();
         }
-
     }
 
-    public static native void redirect( String url )/*-{
+    public static native void redirect(String url)/*-{
         $wnd.location = url;
     }-*/;
 }

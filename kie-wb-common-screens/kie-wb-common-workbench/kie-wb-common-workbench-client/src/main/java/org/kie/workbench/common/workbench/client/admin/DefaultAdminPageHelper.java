@@ -20,13 +20,16 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
+import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.LanguageConfigurationHandler;
+import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.WorkbenchConfigurationPresenter;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.kie.workbench.common.workbench.client.admin.resources.i18n.PreferencesConstants;
+import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
@@ -43,6 +46,7 @@ import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.ActivityResourceType;
 
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMIN;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.GUVNOR_M2REPO;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.SECURITY_MANAGEMENT;
 
 public class DefaultAdminPageHelper {
@@ -73,11 +77,36 @@ public class DefaultAdminPageHelper {
     @Inject
     private UberfireBreadcrumbs breadcrumbs;
 
+    @Inject
+    private WorkbenchConfigurationPresenter workbenchConfigurationPresenter;
+
+    @Inject
+    private LanguageConfigurationHandler languageConfigurationHandler;
+
     public void setup() {
         adminPage.addScreen("root",
                             constants.Settings());
         adminPage.setDefaultScreen("root");
 
+        addSecurityPerspective();
+        addArtifactsPerspective();
+        addDataSourcePerspective();
+        addDataSetPerspective();
+        addGlobalPreferences();
+        addGeneralSettings();
+    }
+
+    private void addGeneralSettings() {
+        adminPage.addTool("root",
+                          constants.Languages(),
+                          "fa-language",
+                          "general",
+                          () -> {
+                              workbenchConfigurationPresenter.show(languageConfigurationHandler);
+                          });
+    }
+
+    private void addSecurityPerspective() {
         if (hasAccessToPerspective(PerspectiveIds.SECURITY_MANAGEMENT)) {
             adminPage.addTool("root",
                               constants.Roles(),
@@ -163,30 +192,84 @@ public class DefaultAdminPageHelper {
                                                                                                                        1,
                                                                                                                        null)));
         }
+    }
 
-        adminPage.addPreference("root",
-                                "ProjectPreferences",
-                                translationService.format(PreferencesConstants.ProjectPreferences_Label),
-                                "fa-pencil-square-o",
-                                "preferences",
-                                globalPreferenceScope.resolve(),
-                                AdminPageOptions.WITH_BREADCRUMBS);
+    private void addArtifactsPerspective() {
+        if (hasAccessToPerspective(PerspectiveIds.GUVNOR_M2REPO)) {
+            adminPage.addTool("root",
+                              constants.Artifacts(),
+                              "fa-download",
+                              "perspectives",
+                              () -> {
+                                  final Command accessArtifacts = () -> placeManager.goTo(GUVNOR_M2REPO);
+                                  accessArtifacts.execute();
+                                  addAdminBreadcrumbs(GUVNOR_M2REPO,
+                                                      constants.Artifacts(),
+                                                      accessArtifacts);
+                              });
+        }
+    }
 
-        adminPage.addPreference("root",
-                                "LibraryPreferences",
-                                translationService.format(PreferencesConstants.LibraryPreferences_Title),
-                                "fa-cubes",
-                                "preferences",
-                                globalPreferenceScope.resolve(),
-                                AdminPageOptions.WITH_BREADCRUMBS);
+    private void addDataSourcePerspective() {
+        if (hasAccessToPerspective(PerspectiveIds.DATASOURCE_MANAGEMENT)) {
+            adminPage.addTool("root",
+                              constants.DataSources(),
+                              "fa-database",
+                              "perspectives",
+                              () -> {
+                                  final Command accessDataSources = () -> placeManager.goTo(PerspectiveIds.DATASOURCE_MANAGEMENT);
+                                  accessDataSources.execute();
+                                  addAdminBreadcrumbs(PerspectiveIds.DATASOURCE_MANAGEMENT,
+                                                      constants.DataSources(),
+                                                      accessDataSources);
+                              });
+        }
+    }
 
-        adminPage.addPreference("root",
-                                "ArtifactRepositoryPreference",
-                                translationService.format(PreferencesConstants.ArtifactRepositoryPreferences_Title),
-                                "fa-archive",
-                                "preferences",
-                                globalPreferenceScope.resolve(),
-                                AdminPageOptions.WITH_BREADCRUMBS);
+    private void addDataSetPerspective() {
+        if (hasAccessToPerspective(PerspectiveIds.DATASET_AUTHORING)) {
+            adminPage.addTool("root",
+                              constants.DataSets(),
+                              "fa-folder-open",
+                              "perspectives",
+                              () -> {
+                                  final Command accessDataSets = () -> placeManager.goTo(PerspectiveIds.DATASET_AUTHORING);
+                                  accessDataSets.execute();
+                                  addAdminBreadcrumbs(PerspectiveIds.DATASET_AUTHORING,
+                                                      constants.DataSets(),
+                                                      accessDataSets);
+                              });
+        }
+    }
+
+    private void addGlobalPreferences() {
+        final boolean canEditGlobalPreferences = authorizationManager.authorize(WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES,
+                                                                                sessionInfo.getIdentity());
+        if (canEditGlobalPreferences) {
+            adminPage.addPreference("root",
+                                    "ProjectPreferences",
+                                    translationService.format(PreferencesConstants.ProjectPreferences_Label),
+                                    "fa-pencil-square-o",
+                                    "preferences",
+                                    globalPreferenceScope.resolve(),
+                                    AdminPageOptions.WITH_BREADCRUMBS);
+
+            adminPage.addPreference("root",
+                                    "LibraryPreferences",
+                                    translationService.format(PreferencesConstants.LibraryPreferences_Title),
+                                    "fa-cubes",
+                                    "preferences",
+                                    globalPreferenceScope.resolve(),
+                                    AdminPageOptions.WITH_BREADCRUMBS);
+
+            adminPage.addPreference("root",
+                                    "ArtifactRepositoryPreference",
+                                    translationService.format(PreferencesConstants.ArtifactRepositoryPreferences_Title),
+                                    "fa-archive",
+                                    "preferences",
+                                    globalPreferenceScope.resolve(),
+                                    AdminPageOptions.WITH_BREADCRUMBS);
+        }
     }
 
     private void addAdminBreadcrumbs(final String perspective,

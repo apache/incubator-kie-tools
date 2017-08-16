@@ -29,6 +29,7 @@ import org.uberfire.security.client.authz.tree.impl.DefaultLoadOptions;
 import org.uberfire.security.impl.authz.DefaultPermissionManager;
 
 import static org.guvnor.m2repo.security.MavenRepositoryPagedJarTableFeatures.JAR_DOWNLOAD;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_SOURCES;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.PLANNER_AVAILABLE;
 import static org.mockito.Mockito.*;
@@ -41,7 +42,8 @@ public class WorkbenchTreeProviderTest {
             RepositoryFeatures.CONFIGURE_REPOSITORY,
             EDIT_SOURCES,
             PLANNER_AVAILABLE,
-            JAR_DOWNLOAD
+            JAR_DOWNLOAD,
+            EDIT_GLOBAL_PREFERENCES
     };
 
     private DefaultPermissionManager permissionManager;
