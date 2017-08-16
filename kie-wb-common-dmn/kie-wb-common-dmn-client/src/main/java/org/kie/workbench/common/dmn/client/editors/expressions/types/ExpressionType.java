@@ -21,6 +21,7 @@ public enum ExpressionType {
     UNDEFINED,
     LITERAL_EXPRESSION,
     CONTEXT,
-    DECISION_TABLE
+    DECISION_TABLE,
+    RELATION
 
 }

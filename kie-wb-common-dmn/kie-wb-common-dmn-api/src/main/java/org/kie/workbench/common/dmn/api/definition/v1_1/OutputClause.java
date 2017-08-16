@@ -30,6 +30,12 @@ public class OutputClause extends DMNElement {
     private QName typeRef;
 
     public OutputClause() {
+        this(new Id(),
+             new Description(),
+             new UnaryTests(),
+             new LiteralExpression(),
+             "",
+             new QName());
     }
 
     public OutputClause(final @MapsTo("id") Id id,

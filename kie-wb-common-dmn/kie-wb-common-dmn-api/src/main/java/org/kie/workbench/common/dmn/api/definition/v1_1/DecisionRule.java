@@ -30,6 +30,10 @@ public class DecisionRule extends DMNElement {
     private List<LiteralExpression> outputEntry;
 
     public DecisionRule() {
+        this(new Id(),
+             new Description(),
+             new ArrayList<>(),
+             new ArrayList<>());
     }
 
     public DecisionRule(final @MapsTo("id") Id id,

@@ -27,6 +27,10 @@ public class InputClause extends DMNElement {
     private UnaryTests inputValues;
 
     public InputClause() {
+        this(new Id(),
+             new Description(),
+             new LiteralExpression(),
+             new UnaryTests());
     }
 
     public InputClause(final @MapsTo("id") Id id,

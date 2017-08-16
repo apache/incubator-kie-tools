@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
+import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
@@ -37,10 +38,12 @@ import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingl
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public abstract class BaseSingletonDOMElementFactoryTest<F extends BaseSingletonDOMElementFactory, E extends BaseDOMElement> {
 
@@ -69,7 +72,7 @@ public abstract class BaseSingletonDOMElementFactoryTest<F extends BaseSingleton
     private ArgumentCaptor<E> domElementOnDisplayArgumentCaptor;
 
     @Mock
-    protected GridLienzoPanel gridPanel;
+    protected DMNGridPanel gridPanel;
 
     @Mock
     protected GridLayer gridLayer;

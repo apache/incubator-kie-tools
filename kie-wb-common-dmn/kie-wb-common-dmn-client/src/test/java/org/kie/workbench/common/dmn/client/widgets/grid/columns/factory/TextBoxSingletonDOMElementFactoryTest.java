@@ -18,12 +18,14 @@ package org.kie.workbench.common.dmn.client.widgets.grid.columns.factory;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class TextBoxSingletonDOMElementFactoryTest extends BaseSingletonDOMElementFactoryTest<TextBoxSingletonDOMElementFactory, TextBoxDOMElement> {
@@ -35,7 +37,12 @@ public class TextBoxSingletonDOMElementFactoryTest extends BaseSingletonDOMEleme
                                                      gridWidget,
                                                      sessionManager,
                                                      sessionCommandManager,
-                                                     uiModelMapper) {
+                                                     (gc) -> new DeleteCellValueCommand(gc,
+                                                                                        () -> uiModelMapper,
+                                                                                        gridLayer::batch),
+                                                     (gcv) -> new SetCellValueCommand(gcv,
+                                                                                      () -> uiModelMapper,
+                                                                                      gridLayer::batch)) {
             @Override
             public TextBoxDOMElement createDomElement(final GridLayer gridLayer,
                                                       final GridWidget gridWidget,
@@ -54,6 +61,11 @@ public class TextBoxSingletonDOMElementFactoryTest extends BaseSingletonDOMEleme
                                                      gridWidget,
                                                      sessionManager,
                                                      sessionCommandManager,
-                                                     uiModelMapper);
+                                                     (gc) -> new DeleteCellValueCommand(gc,
+                                                                                        () -> uiModelMapper,
+                                                                                        gridLayer::batch),
+                                                     (gcv) -> new SetCellValueCommand(gcv,
+                                                                                      () -> uiModelMapper,
+                                                                                      gridLayer::batch));
     }
 }

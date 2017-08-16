@@ -30,6 +30,10 @@ public class ElementCollection extends NamedElement {
     private List<DMNElementReference> drgElement;
 
     public ElementCollection() {
+        this(new Id(),
+             new Description(),
+             new Name(),
+             new ArrayList<>());
     }
 
     public ElementCollection(final @MapsTo("id") Id id,

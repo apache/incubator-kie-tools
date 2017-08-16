@@ -22,16 +22,10 @@
         */
         .kie-dmn-container {
             width: 1415px;
-            height: 500px;
+            height: 600px;
             position: relative;
             top: 0;
             overflow: hidden;
-        }
-
-        .select-expression-editor {
-            position: relative;
-            top:0;
-            z-index: 1000;
         }
 
         .expression-editor {
@@ -39,21 +33,27 @@
             z-index: 1;
         }
 
-        .exit-button{
+        .control-buttons {
             position: absolute;
-            bottom: 0;
+            top: 475px;
+            z-index: 1000;
+        }
+
+        .exit-button {
+            position: absolute;
+            top: 508px;
             z-index: 1000;
         }
 
     </style>
 
     <div class="kie-dmn-container">
-        <div class="select-expression-editor">
-            <select class="bootstrap-select" data-field="expressionEditorDefinition"></select>
+        <div class="expression-editor">
+            <div data-field="dmn-table"></div>
         </div>
 
-        <div class="expression-editor">
-            <div data-field="expressionEditor"></div>
+        <div class="control-buttons">
+            <div data-field="editorControls"></div>
         </div>
 
         <div class="exit-button">

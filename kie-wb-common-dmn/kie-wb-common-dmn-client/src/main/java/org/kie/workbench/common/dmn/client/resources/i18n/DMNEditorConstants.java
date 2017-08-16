@@ -20,5 +20,14 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
-    public static final String ExpressionEditor_SelectExpressionType = "ExpressionEditor.SelectExpressionType";
+    public static final String ExpressionEditor_UndefinedExpressionType = "ExpressionEditor.UndefinedExpressionType";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ExpressionEditor_LiteralExpressionType = "ExpressionEditor.LiteralExpressionType";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ExpressionEditor_ContextExpressionType = "ExpressionEditor.ContextExpressionType";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ExpressionEditor_DecisionTableExpressionType = "ExpressionEditor.DecisionTableExpressionType";
 }

@@ -17,28 +17,63 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import java.util.Optional;
+
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseExpressionEditorView;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
+import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
+import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.Session;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 @ApplicationScoped
 public class DecisionTableEditorDefinition implements ExpressionEditorDefinition<DecisionTable> {
 
-    private DecisionTableEditorView view;
+    private DMNGridPanel gridPanel;
+    private DMNGridLayer gridLayer;
+    private SessionManager sessionManager;
+    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
+    private ManagedInstance<DecisionTableGridControls> controlsProvider;
 
     public DecisionTableEditorDefinition() {
         //CDI proxy
     }
 
     @Inject
-    public DecisionTableEditorDefinition(final DecisionTableEditorView view) {
-        this.view = view;
+    public DecisionTableEditorDefinition(final @DMNEditor DMNGridPanel gridPanel,
+                                         final @DMNEditor DMNGridLayer gridLayer,
+                                         final SessionManager sessionManager,
+                                         final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                         final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
+                                         final ManagedInstance<DecisionTableGridControls> controlsProvider) {
+        this.gridPanel = gridPanel;
+        this.gridLayer = gridLayer;
+        this.sessionManager = sessionManager;
+        this.sessionCommandManager = sessionCommandManager;
+        this.editorSelectedEvent = editorSelectedEvent;
+        this.controlsProvider = controlsProvider;
     }
 
     @Override
@@ -53,26 +88,54 @@ public class DecisionTableEditorDefinition implements ExpressionEditorDefinition
 
     @Override
     public Optional<DecisionTable> getModelClass() {
-        return Optional.of(new DecisionTable());
+        final DecisionTable dtable = new DecisionTable();
+        dtable.setHitPolicy(HitPolicy.ANY);
+        dtable.setPreferredOrientation(DecisionTableOrientation.RULE_AS_ROW);
+
+        final InputClause ic = new InputClause();
+        final LiteralExpression le = new LiteralExpression();
+        le.setText("input");
+        ic.setInputExpression(le);
+        dtable.getInput().add(ic);
+
+        final OutputClause oc = new OutputClause();
+        oc.setName("output");
+        dtable.getOutput().add(oc);
+
+        final DecisionRule dr = new DecisionRule();
+        final UnaryTests drut = new UnaryTests();
+        drut.setText("unary test");
+        dr.getInputEntry().add(drut);
+
+        final LiteralExpression drle = new LiteralExpression();
+        drle.setText("literal expression");
+        dr.getOutputEntry().add(drle);
+
+        final Description d = new Description();
+        d.setValue("A rule");
+        dr.setDescription(d);
+
+        dtable.getRule().add(dr);
+
+        return Optional.of(dtable);
     }
 
     @Override
-    public BaseExpressionEditorView.Editor<DecisionTable> getEditor() {
-        return new BaseExpressionEditorView.Editor<DecisionTable>() {
-            @Override
-            public IsElement getView() {
-                return view;
-            }
-
-            @Override
-            public void setHasName(final Optional<HasName> hasName) {
-                //Unsupported
-            }
-
-            @Override
-            public void setExpression(final DecisionTable expression) {
-                //Unsupported
-            }
-        };
+    @SuppressWarnings("unused")
+    public Optional<GridWidget> getEditor(final GridCellTuple parent,
+                                          final HasExpression hasExpression,
+                                          final Optional<DecisionTable> expression,
+                                          final Optional<HasName> hasName,
+                                          final boolean nested) {
+        return Optional.of(new DecisionTableGrid(parent,
+                                                 hasExpression,
+                                                 expression,
+                                                 hasName,
+                                                 gridPanel,
+                                                 gridLayer,
+                                                 sessionManager,
+                                                 sessionCommandManager,
+                                                 editorSelectedEvent,
+                                                 controlsProvider.get()));
     }
 }

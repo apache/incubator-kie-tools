@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;

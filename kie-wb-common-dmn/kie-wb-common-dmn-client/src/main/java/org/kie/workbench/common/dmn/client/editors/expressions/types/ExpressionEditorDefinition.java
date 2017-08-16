@@ -18,7 +18,11 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types;
 
 import java.util.Optional;
 
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public interface ExpressionEditorDefinition<T extends Expression> {
 
@@ -28,5 +32,9 @@ public interface ExpressionEditorDefinition<T extends Expression> {
 
     Optional<T> getModelClass();
 
-    BaseExpressionEditorView.Editor<T> getEditor();
+    Optional<GridWidget> getEditor(final GridCellTuple parent,
+                                   final HasExpression hasExpression,
+                                   final Optional<T> expression,
+                                   final Optional<HasName> hasName,
+                                   final boolean nested);
 }

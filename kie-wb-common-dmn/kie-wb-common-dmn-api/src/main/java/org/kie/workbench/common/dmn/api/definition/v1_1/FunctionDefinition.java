@@ -36,7 +36,7 @@ public class FunctionDefinition extends Expression implements HasExpression {
         this(new Id(),
              new Description(),
              new QName(),
-             new LiteralExpression());
+             null);
     }
 
     public FunctionDefinition(final @MapsTo("id") Id id,

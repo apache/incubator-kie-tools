@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.jboss.errai.common.client.api.IsElement;
@@ -23,11 +22,12 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.client.mvp.UberElement;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.mvp.Command;
 
 public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.api.IsElement,
@@ -43,16 +43,17 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
 
         void setExpression(final Optional<Expression> expression);
 
+        void onExpressionEditorSelected(final ExpressionEditorSelectedEvent event);
+
         void setExitCommand(final Command exitCommand);
 
         void exit();
-
-        void onExpressionTypeChanged(final ExpressionType type);
     }
 
-    void setExpressionEditorTypes(final List<ExpressionEditorDefinition<Expression>> expressionEditorDefinitions);
+    void setEditor(final ExpressionEditorDefinition<Expression> definition,
+                   final HasExpression hasExpression,
+                   final Optional<HasName> hasName,
+                   final Optional<Expression> expression);
 
-    void selectExpressionEditorType(final ExpressionType type);
-
-    void setSubEditor(final org.jboss.errai.ui.client.local.api.IsElement editor);
+    void onExpressionEditorSelected(final Optional<GridWidget> oEditor);
 }

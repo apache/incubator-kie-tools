@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.client.widgets.palette.bs3.factory;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;

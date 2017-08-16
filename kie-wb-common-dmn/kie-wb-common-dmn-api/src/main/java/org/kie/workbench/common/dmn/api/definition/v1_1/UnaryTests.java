@@ -27,6 +27,10 @@ public class UnaryTests extends DMNElement {
     private String expressionLanguage;
 
     public UnaryTests() {
+        this(new Id(),
+             new Description(),
+             "",
+             "");
     }
 
     public UnaryTests(final @MapsTo("id") Id id,

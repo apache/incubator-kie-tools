@@ -35,6 +35,14 @@ public class ItemDefinition extends NamedElement {
     private Boolean isCollection;
 
     public ItemDefinition() {
+        this(new Id(),
+             new Description(),
+             new Name(),
+             new QName(),
+             new UnaryTests(),
+             new ArrayList<>(),
+             "",
+             false);
     }
 
     public ItemDefinition(final @MapsTo("id") Id id,

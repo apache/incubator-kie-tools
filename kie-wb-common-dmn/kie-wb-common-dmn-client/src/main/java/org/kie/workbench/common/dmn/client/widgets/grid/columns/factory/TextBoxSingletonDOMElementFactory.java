@@ -16,38 +16,45 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.columns.factory;
 
+import java.util.function.Function;
+
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
+import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 public class TextBoxSingletonDOMElementFactory extends BaseSingletonDOMElementFactory<String, TextBox, TextBoxDOMElement> {
 
-    private SessionManager sessionManager;
-    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private BaseUIModelMapper<?> uiModelMapper;
+    private final SessionManager sessionManager;
+    private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    private final Function<GridCellTuple, AbstractCanvasGraphCommand> hasNoValueCommand;
+    private final Function<GridCellValueTuple, AbstractCanvasGraphCommand> hasValueCommand;
 
-    public TextBoxSingletonDOMElementFactory(final GridLienzoPanel gridPanel,
+    public TextBoxSingletonDOMElementFactory(final DMNGridPanel gridPanel,
                                              final GridLayer gridLayer,
                                              final GridWidget gridWidget,
                                              final SessionManager sessionManager,
                                              final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                             final BaseUIModelMapper<?> uiModelMapper) {
+                                             final Function<GridCellTuple, AbstractCanvasGraphCommand> hasNoValueCommand,
+                                             final Function<GridCellValueTuple, AbstractCanvasGraphCommand> hasValueCommand) {
         super(gridPanel,
               gridLayer,
               gridWidget);
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
-        this.uiModelMapper = uiModelMapper;
+        this.hasNoValueCommand = hasNoValueCommand;
+        this.hasValueCommand = hasValueCommand;
     }
 
     @Override
@@ -68,7 +75,8 @@ public class TextBoxSingletonDOMElementFactory extends BaseSingletonDOMElementFa
                                        gridWidget,
                                        sessionManager,
                                        sessionCommandManager,
-                                       uiModelMapper);
+                                       hasNoValueCommand,
+                                       hasValueCommand);
         widget.addBlurHandler((event) -> {
             destroyResources();
             gridPanel.setFocus(true);

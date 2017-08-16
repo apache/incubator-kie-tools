@@ -30,6 +30,9 @@ public class Context extends Expression {
     private List<ContextEntry> contextEntry;
 
     public Context() {
+        this(new Id(),
+             new Description(),
+             new QName());
     }
 
     public Context(final @MapsTo("id") Id id,

@@ -32,6 +32,9 @@ public abstract class NamedElement extends DMNElement implements HasName {
     protected Name name;
 
     public NamedElement() {
+        this(new Id(),
+             new Description(),
+             new Name());
     }
 
     public NamedElement(final Id id,

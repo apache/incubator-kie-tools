@@ -15,27 +15,26 @@
  */
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
-import org.kie.workbench.common.dmn.client.commands.SetExpressionTypeCommand;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolbar;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -47,14 +46,14 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     private ExpressionEditorView view;
     private SessionManager sessionManager;
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    private ExpressionEditorDefinitions expressionEditorDefinitions;
+
     private Optional<Command> exitCommand;
 
-    private Optional<HasName> hasName;
+    private Optional<HasName> hasName = Optional.empty();
     private HasExpression hasExpression;
 
     private ToolbarCommandStateHandler toolbarCommandStateHandler;
-
-    private List<ExpressionEditorDefinition<Expression>> expressionEditorDefinitions = new ArrayList<>();
 
     public ExpressionEditor() {
         //CDI proxy
@@ -65,15 +64,12 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     public ExpressionEditor(final ExpressionEditorView view,
                             final SessionManager sessionManager,
                             final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                            final Instance<ExpressionEditorDefinition> expressionEditorDefinitionBeans) {
+                            final ExpressionEditorDefinitions expressionEditorDefinitions) {
         this.view = view;
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
+        this.expressionEditorDefinitions = expressionEditorDefinitions;
         this.view.init(this);
-
-        expressionEditorDefinitionBeans.forEach(t -> this.expressionEditorDefinitions.add(t));
-        this.expressionEditorDefinitions.sort((o1, o2) -> o1.getType().ordinal() - o2.getType().ordinal());
-        this.view.setExpressionEditorTypes(expressionEditorDefinitions);
     }
 
     @Override
@@ -101,27 +97,28 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
 
     @Override
     public void setExpression(final Optional<Expression> expression) {
-        if (!expression.isPresent()) {
-            expressionEditorDefinitions.stream()
-                    .filter(ed -> !ed.getModelClass().isPresent())
-                    .findFirst()
-                    .ifPresent(ed -> {
-                        view.selectExpressionEditorType(ed.getType());
-                        view.setSubEditor(ed.getEditor().getView());
-                    });
-        } else {
-            expressionEditorDefinitions.stream()
-                    .filter(ed -> ed.getModelClass().isPresent())
-                    .filter(ed -> ed.getModelClass().get().getClass().equals(expression.get().getClass()))
-                    .findFirst()
-                    .ifPresent(ed -> {
-                        view.selectExpressionEditorType(ed.getType());
-                        final BaseExpressionEditorView.Editor<Expression> editor = ed.getEditor();
-                        view.setSubEditor(editor.getView());
-                        editor.setHasName(hasName);
-                        editor.setExpression(expression.get());
-                    });
+        final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitions.getExpressionEditorDefinition(expression);
+        expressionEditorDefinition.ifPresent(ed -> {
+            view.setEditor(ed,
+                           hasExpression,
+                           hasName,
+                           expression);
+        });
+    }
+
+    @Override
+    public void onExpressionEditorSelected(final @Observes ExpressionEditorSelectedEvent event) {
+        if (isSameSession(event.getSession())) {
+            view.onExpressionEditorSelected(event.getEditor());
         }
+    }
+
+    private boolean isSameSession(final ClientSession other) {
+        return null != other && null != getSession() && other.equals(getSession());
+    }
+
+    private ClientSession getSession() {
+        return sessionManager.getCurrentSession();
     }
 
     @Override
@@ -135,21 +132,6 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
             toolbarCommandStateHandler.exit();
             c.execute();
         });
-    }
-
-    @Override
-    public void onExpressionTypeChanged(final ExpressionType type) {
-        final Optional<Expression> expression = expressionEditorDefinitions
-                .stream()
-                .filter(e -> e.getType().equals(type))
-                .map(ExpressionEditorDefinition::getModelClass)
-                .findFirst()
-                .get();
-
-        sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                      new SetExpressionTypeCommand(hasExpression,
-                                                                   expression,
-                                                                   this));
     }
 
     //Package-protected for Unit Tests

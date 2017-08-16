@@ -42,9 +42,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DMNEditDecisionToolboxActionTest {
@@ -75,8 +78,7 @@ public class DMNEditDecisionToolboxActionTest {
 
     @Before
     public void setup() throws Exception {
-        decisionNode =
-                new NodeImpl<>(E_UUID);
+        decisionNode = new NodeImpl<>(E_UUID);
         decision = new Decision();
         final Bounds bounds = new BoundsImpl(new BoundImpl(0d,
                                                            0d),
@@ -89,6 +91,7 @@ public class DMNEditDecisionToolboxActionTest {
         when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
         when(graphIndex.get(eq(E_UUID))).thenReturn(decisionNode);
         when(sessionManager.getCurrentSession()).thenReturn(session);
+
         this.tested = new DMNEditDecisionToolboxAction(sessionManager,
                                                        translationService,
                                                        editExpressionEvent);
@@ -105,16 +108,16 @@ public class DMNEditDecisionToolboxActionTest {
     @Test
     public void testAction() {
         final MouseClickEvent event = mock(MouseClickEvent.class);
-        ToolboxAction<AbstractCanvasHandler> cascade =
-                tested.onMouseClick(canvasHandler,
-                                    E_UUID,
-                                    event);
+        final ToolboxAction<AbstractCanvasHandler> cascade = tested.onMouseClick(canvasHandler,
+                                                                                 E_UUID,
+                                                                                 event);
         assertEquals(tested,
                      cascade);
-        final ArgumentCaptor<EditExpressionEvent> eventCaptor =
-                ArgumentCaptor.forClass(EditExpressionEvent.class);
+
+        final ArgumentCaptor<EditExpressionEvent> eventCaptor = ArgumentCaptor.forClass(EditExpressionEvent.class);
         verify(editExpressionEvent,
                times(1)).fire(eventCaptor.capture());
+
         final EditExpressionEvent editExprEvent = eventCaptor.getValue();
         assertEquals(decision,
                      editExprEvent.getHasExpression());

@@ -23,4 +23,17 @@ public interface HasName {
     Name getName();
 
     void setName(final Name name);
+
+    HasName NOP = new HasName() {
+
+        @Override
+        public Name getName() {
+            return new Name("");
+        }
+
+        @Override
+        public void setName(final Name name) {
+            //Do nothing
+        }
+    };
 }

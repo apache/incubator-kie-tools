@@ -19,6 +19,8 @@ package org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.mockito.Mock;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -39,6 +41,11 @@ public class TextAreaDOMElementTest extends BaseDOMElementTest<TextArea, TextAre
                                       gridWidget,
                                       sessionManager,
                                       sessionCommandManager,
-                                      uiModelMapper);
+                                      (gc) -> new DeleteCellValueCommand(gc,
+                                                                         () -> uiModelMapper,
+                                                                         gridLayer::batch),
+                                      (gcv) -> new SetCellValueCommand(gcv,
+                                                                       () -> uiModelMapper,
+                                                                       gridLayer::batch));
     }
 }

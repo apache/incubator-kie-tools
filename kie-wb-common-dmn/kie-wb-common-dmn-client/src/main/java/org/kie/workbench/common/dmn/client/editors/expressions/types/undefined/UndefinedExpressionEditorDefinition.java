@@ -17,33 +17,61 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 
 import java.util.Optional;
+import java.util.function.Supplier;
+
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseExpressionEditorView;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
+import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.Session;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 @ApplicationScoped
 public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefinition<Expression> {
 
+    private DMNGridPanel gridPanel;
+    private DMNGridLayer gridLayer;
+    private SessionManager sessionManager;
+    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
     private TranslationService ts;
-    private UndefinedExpressionEditorView view;
 
     public UndefinedExpressionEditorDefinition() {
         //CDI proxy
     }
 
     @Inject
-    public UndefinedExpressionEditorDefinition(final TranslationService ts,
-                                               final UndefinedExpressionEditorView view) {
+    public UndefinedExpressionEditorDefinition(final @DMNEditor DMNGridPanel gridPanel,
+                                               final @DMNEditor DMNGridLayer gridLayer,
+                                               final SessionManager sessionManager,
+                                               final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                               final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                                               final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
+                                               final TranslationService ts) {
+        this.gridPanel = gridPanel;
+        this.gridLayer = gridLayer;
+        this.sessionManager = sessionManager;
+        this.sessionCommandManager = sessionCommandManager;
+        this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
+        this.editorSelectedEvent = editorSelectedEvent;
         this.ts = ts;
-        this.view = view;
     }
 
     @Override
@@ -53,7 +81,7 @@ public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefi
 
     @Override
     public String getName() {
-        return ts.getTranslation(DMNEditorConstants.ExpressionEditor_SelectExpressionType);
+        return ts.getTranslation(DMNEditorConstants.ExpressionEditor_UndefinedExpressionType);
     }
 
     @Override
@@ -62,22 +90,21 @@ public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefi
     }
 
     @Override
-    public BaseExpressionEditorView.Editor<Expression> getEditor() {
-        return new BaseExpressionEditorView.Editor<Expression>() {
-            @Override
-            public IsElement getView() {
-                return view;
-            }
-
-            @Override
-            public void setHasName(final Optional<HasName> hasName) {
-                //Unsupported
-            }
-
-            @Override
-            public void setExpression(final Expression expression) {
-                //Unsupported
-            }
-        };
+    public Optional<GridWidget> getEditor(final GridCellTuple parent,
+                                          final HasExpression hasExpression,
+                                          final Optional<Expression> expression,
+                                          final Optional<HasName> hasName,
+                                          final boolean nested) {
+        return Optional.of(new UndefinedExpressionGrid(parent,
+                                                       hasExpression,
+                                                       expression,
+                                                       hasName,
+                                                       gridPanel,
+                                                       gridLayer,
+                                                       sessionManager,
+                                                       sessionCommandManager,
+                                                       expressionEditorDefinitionsSupplier,
+                                                       editorSelectedEvent,
+                                                       nested));
     }
 }

@@ -33,6 +33,13 @@ public class DecisionService extends NamedElement {
     private List<DMNElementReference> inputData;
 
     public DecisionService() {
+        this(new Id(),
+             new Description(),
+             new Name(),
+             new ArrayList<>(),
+             new ArrayList<>(),
+             new ArrayList<>(),
+             new ArrayList<>());
     }
 
     public DecisionService(final @MapsTo("id") Id id,

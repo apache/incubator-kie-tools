@@ -28,6 +28,9 @@ public class Import extends DMNModelInstrumentedBase {
     protected String importType;
 
     public Import() {
+        this("",
+             new LocationURI(),
+             "");
     }
 
     public Import(final String namespace,

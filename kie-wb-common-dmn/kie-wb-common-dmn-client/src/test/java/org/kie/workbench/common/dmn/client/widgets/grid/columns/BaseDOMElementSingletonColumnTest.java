@@ -21,12 +21,15 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
+import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
@@ -34,9 +37,11 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRende
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonDOMElementFactory, D extends BaseDOMElement, W extends Widget & HasValue & Focusable, C extends BaseGridColumn & HasSingletonDOMElementResource> {
 
@@ -46,11 +51,19 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
     @Mock
     protected GridBodyCellRenderContext context;
 
+    @Mock
+    protected DMNGridLayer gridLayer;
+
+    @Mock
+    protected GridWidget gridWidget;
+
     @Captor
     protected ArgumentCaptor<Callback<D>> domElementOnCreationCallbackCaptor;
 
     @Captor
     protected ArgumentCaptor<Callback<D>> domElementOnDisplayCallbackCaptor;
+
+    protected GridData model;
 
     private F factory;
 
@@ -62,6 +75,7 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
 
     @Before
     public void setup() {
+        this.model = new DMNGridData(gridLayer);
         this.factory = getFactory();
         this.domElement = getDomElement();
         this.widget = getWidget();

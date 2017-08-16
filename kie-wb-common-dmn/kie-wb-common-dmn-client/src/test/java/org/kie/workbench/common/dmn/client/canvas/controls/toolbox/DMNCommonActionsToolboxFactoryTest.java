@@ -25,6 +25,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
@@ -45,9 +46,15 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DMNCommonActionsToolboxFactoryTest {
@@ -62,6 +69,9 @@ public class DMNCommonActionsToolboxFactoryTest {
 
     @Mock
     private DMNEditDecisionToolboxAction editDecisionToolboxAction;
+
+    @Mock
+    private DMNEditBusinessKnowledgeModelToolboxAction editBusinessKnowledgeModelToolboxAction;
 
     @Mock
     private ActionsToolboxView view;
@@ -83,6 +93,7 @@ public class DMNCommonActionsToolboxFactoryTest {
                 .thenReturn(Collections.singleton(deleteNodeAction));
         this.tested = new DMNCommonActionsToolboxFactory(commonActionsToolboxFactory,
                                                          () -> editDecisionToolboxAction,
+                                                         () -> editBusinessKnowledgeModelToolboxAction,
                                                          () -> view);
     }
 
@@ -123,9 +134,8 @@ public class DMNCommonActionsToolboxFactoryTest {
         final View<Decision> nodeContent = new ViewImpl<>(decision,
                                                           bounds);
         decisionNode.setContent(nodeContent);
-        final Optional<Toolbox<?>> _toolbox =
-                tested.build(canvasHandler,
-                             decisionNode);
+        final Optional<Toolbox<?>> _toolbox = tested.build(canvasHandler,
+                                                           decisionNode);
         assertTrue(_toolbox.isPresent());
         Toolbox<?> toolbox = _toolbox.get();
         assertTrue(toolbox instanceof ActionsToolbox);
@@ -138,6 +148,43 @@ public class DMNCommonActionsToolboxFactoryTest {
         assertEquals(deleteNodeAction,
                      actionsIt.next());
         assertEquals(editDecisionToolboxAction,
+                     actionsIt.next());
+        assertFalse(actionsIt.hasNext());
+        verify(view,
+               times(1)).init(eq(actionsToolbox));
+        verify(view,
+               times(2)).addButton(any(Glyph.class),
+                                   anyString(),
+                                   any(Consumer.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testBuildToolboxForBusinessKnowledgeModelType() {
+        final Node<View<BusinessKnowledgeModel>, Edge> bkmNode =
+                new NodeImpl<>("bkmNode1");
+        final BusinessKnowledgeModel bkm = new BusinessKnowledgeModel();
+        final Bounds bounds = new BoundsImpl(new BoundImpl(0d,
+                                                           0d),
+                                             new BoundImpl(100d,
+                                                           150d));
+        final View<BusinessKnowledgeModel> nodeContent = new ViewImpl<>(bkm,
+                                                                        bounds);
+        bkmNode.setContent(nodeContent);
+        final Optional<Toolbox<?>> _toolbox = tested.build(canvasHandler,
+                                                           bkmNode);
+        assertTrue(_toolbox.isPresent());
+        Toolbox<?> toolbox = _toolbox.get();
+        assertTrue(toolbox instanceof ActionsToolbox);
+        final ActionsToolbox actionsToolbox = (ActionsToolbox) toolbox;
+        assertEquals("bkmNode1",
+                     actionsToolbox.getElementUUID());
+        assertEquals(2,
+                     actionsToolbox.size());
+        final Iterator<ToolboxAction> actionsIt = actionsToolbox.iterator();
+        assertEquals(deleteNodeAction,
+                     actionsIt.next());
+        assertEquals(editBusinessKnowledgeModelToolboxAction,
                      actionsIt.next());
         assertFalse(actionsIt.hasNext());
         verify(view,

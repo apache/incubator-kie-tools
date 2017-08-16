@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.components.palette.widget;
 
 import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

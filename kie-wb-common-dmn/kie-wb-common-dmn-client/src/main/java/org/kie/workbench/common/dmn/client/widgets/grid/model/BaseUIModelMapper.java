@@ -32,4 +32,12 @@ public abstract class BaseUIModelMapper<E extends Expression> implements UIModel
         this.uiModel = uiModel;
         this.dmnModel = dmnModel;
     }
+
+    public Supplier<GridData> getUiModel() {
+        return uiModel;
+    }
+
+    public Supplier<Optional<E>> getDmnModel() {
+        return dmnModel;
+    }
 }

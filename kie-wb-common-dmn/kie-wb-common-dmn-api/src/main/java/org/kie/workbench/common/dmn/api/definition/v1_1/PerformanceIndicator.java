@@ -30,6 +30,11 @@ public class PerformanceIndicator extends BusinessContextElement {
     private List<DMNElementReference> impactingDecision;
 
     public PerformanceIndicator() {
+        this(new Id(),
+             new Description(),
+             new Name(),
+             "",
+             new ArrayList<>());
     }
 
     public PerformanceIndicator(final @MapsTo("id") Id id,

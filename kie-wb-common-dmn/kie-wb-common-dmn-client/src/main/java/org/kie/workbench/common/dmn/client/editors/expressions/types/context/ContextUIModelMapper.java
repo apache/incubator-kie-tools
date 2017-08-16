@@ -20,28 +20,82 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNExpressionCellValue;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
 
+    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+
     public ContextUIModelMapper(final Supplier<GridData> uiModel,
-                                final Supplier<Optional<Context>> dmnModel) {
+                                final Supplier<Optional<Context>> dmnModel,
+                                final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
         super(uiModel,
               dmnModel);
+        this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
     }
 
     @Override
     public void fromDMNModel(final int rowIndex,
                              final int columnIndex) {
-        //TODO {manstis} Context Editor is incomplete
+        dmnModel.get().ifPresent(context -> {
+            switch (columnIndex) {
+                case 0:
+                    final String name = context.getContextEntry().get(rowIndex).getVariable().getName().getValue();
+                    uiModel.get().setCell(rowIndex,
+                                          columnIndex,
+                                          new BaseGridCellValue<>(name));
+                    break;
+                case 1:
+                    final ContextEntry ce = context.getContextEntry().get(rowIndex);
+                    final Optional<Expression> expression = Optional.ofNullable(ce.getExpression());
+
+                    final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression);
+                    expressionEditorDefinition.ifPresent(ed -> {
+                        final Optional<GridWidget> editor = ed.getEditor(GridCellTuple.make(rowIndex,
+                                                                                            columnIndex,
+                                                                                            uiModel.get()),
+                                                                         ce,
+                                                                         expression,
+                                                                         Optional.ofNullable(ce.getVariable()),
+                                                                         true);
+                        uiModel.get().setCell(rowIndex,
+                                              columnIndex,
+                                              new DMNExpressionCellValue(editor));
+                    });
+            }
+        });
     }
 
     @Override
     public void toDMNModel(final int rowIndex,
                            final int columnIndex,
                            final Supplier<Optional<GridCellValue<?>>> cell) {
-        //TODO {manstis} Context Editor is incomplete
+        dmnModel.get().ifPresent(context -> {
+            switch (columnIndex) {
+                case 0:
+                    context.getContextEntry()
+                            .get(rowIndex)
+                            .getVariable()
+                            .setName(new Name(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString()));
+                    break;
+                case 1:
+                    cell.get().ifPresent(ecv -> {
+                        context.getContextEntry()
+                                .get(rowIndex)
+                                .setExpression((Expression) ecv.getValue());
+                    });
+            }
+        });
     }
 }

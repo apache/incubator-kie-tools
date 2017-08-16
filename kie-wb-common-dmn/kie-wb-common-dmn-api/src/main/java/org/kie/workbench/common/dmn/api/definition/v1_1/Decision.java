@@ -106,7 +106,7 @@ public class Decision extends DRGElement implements HasExpression,
                                 new Question(),
                                 new AllowedAnswers(),
                                 new InformationItem(),
-                                new LiteralExpression(),
+                                null,
                                 new BackgroundSet(),
                                 new FontSet(),
                                 new RectangleDimensionsSet());

@@ -20,11 +20,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.AbstractActionsToolboxFactory;
@@ -42,22 +44,27 @@ public class DMNCommonActionsToolboxFactory
 
     private final ActionsToolboxFactory commonActionsToolboxFactory;
     private final Supplier<DMNEditDecisionToolboxAction> editDecisionToolboxActions;
+    private final Supplier<DMNEditBusinessKnowledgeModelToolboxAction> editBusinessKnowledgeModelToolboxActions;
     private final Supplier<ActionsToolboxView> views;
 
     @Inject
     public DMNCommonActionsToolboxFactory(final @CommonActionsToolbox ActionsToolboxFactory commonActionsToolboxFactory,
                                           final @Any ManagedInstance<DMNEditDecisionToolboxAction> editDecisionToolboxActions,
+                                          final @Any ManagedInstance<DMNEditBusinessKnowledgeModelToolboxAction> editBusinessKnowledgeModelToolboxActions,
                                           final @CommonActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this(commonActionsToolboxFactory,
              editDecisionToolboxActions::get,
+             editBusinessKnowledgeModelToolboxActions::get,
              views::get);
     }
 
     DMNCommonActionsToolboxFactory(final ActionsToolboxFactory commonActionsToolboxFactory,
                                    final Supplier<DMNEditDecisionToolboxAction> editDecisionToolboxActions,
+                                   final Supplier<DMNEditBusinessKnowledgeModelToolboxAction> editBusinessKnowledgeModelToolboxActions,
                                    final Supplier<ActionsToolboxView> views) {
         this.commonActionsToolboxFactory = commonActionsToolboxFactory;
         this.editDecisionToolboxActions = editDecisionToolboxActions;
+        this.editBusinessKnowledgeModelToolboxActions = editBusinessKnowledgeModelToolboxActions;
         this.views = views;
     }
 
@@ -74,9 +81,12 @@ public class DMNCommonActionsToolboxFactory
         final List<ToolboxAction<AbstractCanvasHandler>> actions =
                 new ArrayList<>(commonActionsToolboxFactory.getActions(canvasHandler,
                                                                        element));
-        // If the definition is Decision type, add an additional toolbox action for editing it.
+
+        // Add specific additional toolbox actions for different DMN node-types.
         if (isDecision(element)) {
             actions.add(editDecisionToolboxActions.get());
+        } else if (isBusinessKnowledgeModel(element)) {
+            actions.add(editBusinessKnowledgeModelToolboxActions.get());
         }
         return actions;
     }
@@ -85,5 +95,11 @@ public class DMNCommonActionsToolboxFactory
         return null != element.asNode()
                 && element.getContent() instanceof Definition
                 && ((Definition) element.getContent()).getDefinition() instanceof Decision;
+    }
+
+    private boolean isBusinessKnowledgeModel(final Element<?> element) {
+        return null != element.asNode()
+                && element.getContent() instanceof Definition
+                && ((Definition) element.getContent()).getDefinition() instanceof BusinessKnowledgeModel;
     }
 }
