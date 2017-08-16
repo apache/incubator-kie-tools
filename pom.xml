@@ -51,7 +51,7 @@
   <properties>
     <uberfire.version>${project.version}</uberfire.version>
     <!-- Exception as it is needed for gwt-maven-plugin version-->
-    <version.com.google.gwt>2.8.0</version.com.google.gwt>
+    <version.com.google.gwt>2.8.1</version.com.google.gwt>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
     <version.com.google.guava>20.0</version.com.google.guava>
     <version.org.apache.tomcat>7.0.61</version.org.apache.tomcat>
