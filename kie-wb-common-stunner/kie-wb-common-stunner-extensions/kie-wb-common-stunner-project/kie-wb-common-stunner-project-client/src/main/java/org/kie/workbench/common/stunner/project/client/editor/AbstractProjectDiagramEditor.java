@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.project.client.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -87,6 +88,7 @@ import static java.util.logging.Level.FINE;
 public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType> extends KieEditor {
 
     private static Logger LOGGER = Logger.getLogger(AbstractProjectDiagramEditor.class.getName());
+    private static final String TITLE_FORMAT_TEMPLATE = "#title.#suffix - #type";
 
     public interface View extends UberView<AbstractProjectDiagramEditor>,
                                   KieEditorView,
@@ -545,9 +547,28 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     private void updateTitle(final String title) {
         // Change editor's title.
-        this.title = title;
+        this.title = formatTitle(title);
         changeTitleNotificationEvent.fire(new ChangeTitleWidgetEvent(this.place,
                                                                      this.title));
+    }
+
+    /**
+     * Format the Diagram title to be displayed on the Editor.
+     * This method can be override to customization and the default implementation just return the title from the diagram metadata.
+     * @param title diagram metadata title
+     * @return formatted title
+     */
+    protected String formatTitle(final String title) {
+        if(Objects.isNull(resourceType)){
+            return title;
+        }
+        return TITLE_FORMAT_TEMPLATE
+            .replace("#title",
+                     title)
+            .replace("#suffix",
+                     resourceType.getSuffix())
+            .replace("#type",
+                     resourceType.getShortName());
     }
 
     private AbstractClientFullSession getSession() {

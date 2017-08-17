@@ -54,6 +54,7 @@ import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidato
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.model.menu.MenuItem;
 
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -81,6 +82,9 @@ public class AbstractProjectDiagramEditorTest {
     @Mock
     private ProjectMessagesListener projectMessagesListener;
 
+    @Mock
+    private ClientResourceTypeMock resourceType;
+
     abstract class ClientResourceTypeMock implements ClientResourceType {
 
     }
@@ -106,7 +110,7 @@ public class AbstractProjectDiagramEditorTest {
                                                                              mock(ErrorPopupPresenter.class),
                                                                              mock(EventSourceMock.class),
                                                                              mock(SavePopUpPresenter.class),
-                                                                             mock(ClientResourceTypeMock.class),
+                                                                             resourceType,
                                                                              mock(ClientProjectDiagramService.class),
                                                                              mock(SessionManager.class),
                                                                              mock(SessionPresenterFactory.class),
@@ -171,5 +175,16 @@ public class AbstractProjectDiagramEditorTest {
                                   any(DefaultFileNameValidator.class));
         verify(fileMenuBuilder,
                never()).addDelete(any(Path.class));
+    }
+
+    @Test
+    public void testFormatTitle() {
+        String title = "testDiagram";
+        when(resourceType.getSuffix()).thenReturn("bpmn");
+        when(resourceType.getShortName()).thenReturn("Business Process");
+
+        String formattedTitle = presenter.formatTitle(title);
+        assertEquals(formattedTitle,
+                     "testDiagram.bpmn - Business Process");
     }
 }
