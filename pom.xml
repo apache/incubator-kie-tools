@@ -42,7 +42,6 @@
     <module>drools-wb-services</module>
     <module>drools-wb-screens</module>
     <module>drools-wb-webapp</module>
-    <module>drools-wb-jcr2vfs-migration</module>
   </modules>
 
   <dependencyManagement>
