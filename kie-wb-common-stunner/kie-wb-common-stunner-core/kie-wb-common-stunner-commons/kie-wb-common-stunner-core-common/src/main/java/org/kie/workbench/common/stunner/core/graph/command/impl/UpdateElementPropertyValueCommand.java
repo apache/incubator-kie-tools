@@ -71,7 +71,7 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
     @Override
     @SuppressWarnings("unchecked")
     public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
-        final Element<Definition<?>> element = (Element<Definition<?>>) checkNodeNotNull(context);
+        final Element<Definition<?>> element = (Element<Definition<?>>) checkElementNotNull(context);
         final Object p = GraphUtils.getProperty(context.getDefinitionManager(),
                                                 element,
                                                 propertyId);
@@ -98,6 +98,13 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
         if (null == node) {
             node = super.getNodeNotNull(context,
                                         elementUUID);
+        }
+        return node;
+    }
+
+    private Element checkElementNotNull(final GraphCommandExecutionContext context) {
+        if (null == node) {
+            return super.getElementNotNull(context, elementUUID);
         }
         return node;
     }

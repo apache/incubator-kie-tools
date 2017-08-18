@@ -63,7 +63,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
         typeArguments = {EmbeddedSubprocess.class},
         arguments = {"Sequence flow connectors cannot exceed the embbedded subprocess' bounds. " +
                 "Both source and target nodes must be in same parent process."})
-
 @FormDefinition(
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED

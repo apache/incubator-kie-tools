@@ -17,11 +17,13 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.comboBoxEditor;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.ConditionExpression;
+import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.SequenceFlowExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ConditionalComboBoxFieldDefinition;
@@ -57,20 +59,17 @@ public class ConditionalComboBoxFieldRendererTest {
   @Mock
   private FormRenderingContext renderingContext;
 
+  @Mock
+  private FormRenderingContext renderingContextParent;
+
   @Spy
   @InjectMocks
   private ConditionalComboBoxFieldRenderer conditionalComboBoxFieldRenderer = new ConditionalComboBoxFieldRenderer(comboBoxFixedValuesWidgetView,
                                                                                                                    adapterManager);
 
-  @Before
-  public void setup() {
-    when(conditionalComboBoxFieldDefinition.getRelatedField()).thenReturn("onEntryAction;onExitAction");
-  }
-
   @Test
   public void refreshFieldCondition() throws Exception {
-    reset(comboBoxFixedValuesWidgetView);
-    reset(conditionalComboBoxFieldRenderer);
+    resetMocks();
 
     conditionalComboBoxFieldRenderer.refreshFieldCondition(null);
     conditionalComboBoxFieldRenderer.refreshFieldCondition("");
@@ -86,25 +85,25 @@ public class ConditionalComboBoxFieldRendererTest {
 
   @Test
   public void init() throws Exception {
-    reset(comboBoxFixedValuesWidgetView);
-    reset(conditionalComboBoxFieldRenderer);
-    reset(adapterManager);
-    reset(renderingContext);
+    resetMocks();
 
     EmbeddedSubprocess embeddedSubprocess = new EmbeddedSubprocess.EmbeddedSubprocessBuilder().build();
     OnEntryAction onEntryAction = embeddedSubprocess.getOnEntryAction();
     OnExitAction onExitAction = embeddedSubprocess.getOnExitAction();
 
-    when(renderingContext.getModel()).thenReturn(embeddedSubprocess);
-    when(adapterManager.forProperty()).thenReturn(Mockito.mock(PropertyAdapter.class));
-    when(adapterManager.forProperty().getValue(onEntryAction)).thenReturn("value");
-    when(adapterManager.forProperty().getValue(onExitAction)).thenReturn("");
-
+    //static mock
     PowerMockito.mockStatic(ClientBindingUtils.class);
     BDDMockito.given(ClientBindingUtils.getProxiedValue(embeddedSubprocess,
                                                         "onEntryAction")).willReturn(onEntryAction);
     BDDMockito.given(ClientBindingUtils.getProxiedValue(embeddedSubprocess,
                                                         "onExitAction")).willReturn(onExitAction);
+
+    //instances mock
+    when(conditionalComboBoxFieldDefinition.getRelatedField()).thenReturn("onEntryAction;onExitAction");
+    when(renderingContext.getModel()).thenReturn(embeddedSubprocess);
+    when(adapterManager.forProperty()).thenReturn(Mockito.mock(PropertyAdapter.class));
+    when(adapterManager.forProperty().getValue(onEntryAction)).thenReturn("value");
+    when(adapterManager.forProperty().getValue(onExitAction)).thenReturn("");
 
     conditionalComboBoxFieldRenderer.init(renderingContext,
                                           conditionalComboBoxFieldDefinition);
@@ -115,8 +114,61 @@ public class ConditionalComboBoxFieldRendererTest {
     when(adapterManager.forProperty().getValue(onEntryAction)).thenReturn(null);
     when(adapterManager.forProperty().getValue(onExitAction)).thenReturn("");
 
+    conditionalComboBoxFieldRenderer.init(renderingContext,
+                                          conditionalComboBoxFieldDefinition);
+
     verify(conditionalComboBoxFieldRenderer,
            times(1)).setReadOnly(false);
+  }
+
+  private void resetMocks() {
+    reset(comboBoxFixedValuesWidgetView);
+    reset(conditionalComboBoxFieldRenderer);
+    reset(adapterManager);
+    reset(renderingContext);
+  }
+
+  @Test
+  public void initWithDefinitionSet() throws Exception {
+    resetMocks();
+
+    SequenceFlow sequenceFlow = new SequenceFlow.SequenceFlowBuilder().build();
+    SequenceFlowExecutionSet sequenceFlowExecutionSet = sequenceFlow.getExecutionSet();
+    ConditionExpression conditionExpression = sequenceFlowExecutionSet.getConditionExpression();
+
+    //static mock
+    PowerMockito.mockStatic(ClientBindingUtils.class);
+    BDDMockito.given(ClientBindingUtils.getProxiedValue(sequenceFlow,
+                                                        "executionSet")).willReturn(sequenceFlowExecutionSet);
+    BDDMockito.given(ClientBindingUtils.getProxiedValue(sequenceFlowExecutionSet,
+                                                        "conditionExpression")).willReturn(conditionExpression);
+
+    //instances mock
+    when(conditionalComboBoxFieldDefinition.getRelatedField()).thenReturn("executionSet.conditionExpression");
+    when(renderingContext.getModel()).thenReturn(null);
+    when(renderingContext.getParentContext()).thenReturn(renderingContextParent);
+    when(renderingContextParent.getModel()).thenReturn(sequenceFlow);
+    when(adapterManager.forProperty()).thenReturn(Mockito.mock(PropertyAdapter.class));
+
+    when(adapterManager.forProperty().getValue(conditionExpression)).thenReturn("value");
+    conditionalComboBoxFieldRenderer.init(renderingContext,
+                                          conditionalComboBoxFieldDefinition);
+    verify(conditionalComboBoxFieldRenderer,
+           never()).setReadOnly(true);
+    verify(conditionalComboBoxFieldRenderer,
+           times(1)).setReadOnly(false);
+
+    when(adapterManager.forProperty().getValue(conditionExpression)).thenReturn("");
+    conditionalComboBoxFieldRenderer.init(renderingContext,
+                                          conditionalComboBoxFieldDefinition);
+    verify(conditionalComboBoxFieldRenderer,
+           times(1)).setReadOnly(true);
+
+    when(adapterManager.forProperty().getValue(conditionExpression)).thenReturn(null);
+    conditionalComboBoxFieldRenderer.init(renderingContext,
+                                          conditionalComboBoxFieldDefinition);
+    verify(conditionalComboBoxFieldRenderer,
+           atLeastOnce()).setReadOnly(true);
   }
 
   @Test

@@ -72,6 +72,7 @@ public class UpdateElementPropertyValueCommandTest extends AbstractGraphCommandT
         when(propertyAdapter.getId(eq(property))).thenReturn(PROPERTY_ID);
         when(propertyAdapter.getValue(eq(property))).thenReturn(PROPERTY_OLD_VALUE);
         when(graphIndex.getNode(eq(UUID))).thenReturn(candidate);
+        when(graphIndex.get(eq(UUID))).thenReturn(candidate);
         this.tested = new UpdateElementPropertyValueCommand(UUID,
                                                             PROPERTY_ID,
                                                             PROPERTY_VALUE);
@@ -112,7 +113,7 @@ public class UpdateElementPropertyValueCommandTest extends AbstractGraphCommandT
 
     @Test(expected = BadCommandArgumentsException.class)
     public void testExecuteNodeNotFound() {
-        when(graphIndex.getNode(eq(UUID))).thenReturn(null);
+        when(graphIndex.get(eq(UUID))).thenReturn(null);
         tested.execute(graphCommandExecutionContext);
     }
 

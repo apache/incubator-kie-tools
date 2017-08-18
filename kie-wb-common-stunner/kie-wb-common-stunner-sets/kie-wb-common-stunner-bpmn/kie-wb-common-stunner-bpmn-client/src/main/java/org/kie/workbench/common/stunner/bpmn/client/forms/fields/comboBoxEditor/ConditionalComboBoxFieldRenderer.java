@@ -18,12 +18,14 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.comboBoxEditor
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeListener;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.comboBoxEditor.annotation.FixedValues;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ConditionalComboBoxFieldDefinition;
 import org.kie.workbench.common.stunner.bpmn.util.MultipleFieldStringSerializer;
 import org.kie.workbench.common.stunner.core.client.definition.adapter.binding.ClientBindingUtils;
@@ -31,6 +33,8 @@ import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 
 /**
  * Render a {@link ConditionalComboBoxFieldDefinition} based on a relatedField with condition to be {@code not empty} or {@code null} to be editable.
+ * The relatedField should can be just one simple field e.g. "name", or it can be a list of fields separated by a delimiter {@code ;} e.g. "documentation;name".
+ * Each relatedField can be composed by an hierarchy that is a sequence of sub-fields that should be separated by  a delimiter {@code .} e.g. "general.name"
  */
 @Dependent
 public class ConditionalComboBoxFieldRenderer extends AbstractComboBoxFieldRenderer<ConditionalComboBoxFieldDefinition> {
@@ -68,22 +72,55 @@ public class ConditionalComboBoxFieldRenderer extends AbstractComboBoxFieldRende
     }
   }
 
+  private Object getModelFromFormContext(FormRenderingContext renderingContext) {
+    if (Objects.isNull(renderingContext.getModel()) && Objects.nonNull(renderingContext.getParentContext())) {
+      return getModelFromFormContext(renderingContext.getParentContext());
+    }
+    return renderingContext.getModel();
+  }
+
   private void checkCurrentRelatedFieldValues(FormRenderingContext renderingContext,
                                               List<String> fields) {
-    final Object formModel = renderingContext.getModel();
+    final Object formModel = getModelFromFormContext(renderingContext);
+
     setReadOnly(fields.stream().allMatch(f -> {
-      Object relatedFieldDefinition = ClientBindingUtils.getProxiedValue(formModel,
-                                                                         f);
+      Object relatedFieldDefinition = getFormFieldProxiedDefinition(formModel,
+                                                                    extractSubFields(f));
       return verifyReadOnlyCondition(adapterManager.forProperty().getValue(relatedFieldDefinition));
     }));
   }
 
+  private Object getFormFieldProxiedDefinition(Object formModel,
+                                               String... fieldSequence) {
+    if (fieldSequence == null || fieldSequence.length == 0) {
+      throw new IllegalArgumentException("Empty fields to get from model");
+    }
+    String firstField = Stream.of(fieldSequence).findFirst().get();
+    Object proxiedDefinition = ClientBindingUtils.getProxiedValue(formModel,
+                                                                  firstField);
+    if (proxiedDefinition instanceof BPMNPropertySet) {
+      return getFormFieldProxiedDefinition(proxiedDefinition,
+                                           Stream.of(fieldSequence).filter(f -> !Objects.equals(f,
+                                                                                                firstField)).toArray(String[]::new));
+    }
+    return proxiedDefinition;
+  }
+
   private void initializeListeners(List<String> fields) {
-    fields.forEach(f -> fieldChangeListeners.add(
-        new FieldChangeListener(f,
+    fields.forEach(field -> fieldChangeListeners.add(
+        new FieldChangeListener(extractLastSubField(field),
                                 (name, value) -> refreshFieldCondition(value)))
 
     );
+  }
+
+  private String extractLastSubField(String field) {
+    String[] extractedSubFields = extractSubFields(field);
+    return extractedSubFields[extractedSubFields.length -1];
+  }
+
+  private String[] extractSubFields(String field) {
+    return MultipleFieldStringSerializer.deserializeSubfields(field).stream().toArray(String[]::new);
   }
 
   private List<String> extractFields(ConditionalComboBoxFieldDefinition field) {

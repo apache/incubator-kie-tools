@@ -22,29 +22,46 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Serialize/Deserialize a set of {@link String} fields to a String.
+ * Serialize/Deserialize a set of {@link String} fields to a String, the delimiter is {@literal ;}
+ * and Serialize/Deserialize a set of {@link String} sub-fields to a String, the delimiter is {@literal .}
  */
 public class MultipleFieldStringSerializer {
 
-  public static final String SEPARATOR = ";";
+  public static final String FIELD_SEPARATOR = ";";
+
+  public static final String SUBFIELD_SEPARATOR = ".";
 
   public static final String serialize(String... fields) {
-    return Stream.of(fields).collect(Collectors.joining(SEPARATOR));
+    return Stream.of(fields).collect(Collectors.joining(FIELD_SEPARATOR));
   }
 
   public static List<String> deserialize(String value) {
     return MultipleFieldStringSerializer.split(value,
-                             SEPARATOR);
+                                               FIELD_SEPARATOR);
   }
 
-  private static List<String> split(String input, String delim){
-    if(Objects.isNull(input)){
+  public static final String serializeSubfields(String... fields) {
+    return Stream.of(fields).collect(Collectors.joining(SUBFIELD_SEPARATOR));
+  }
+
+  public static List<String> deserializeSubfields(String value) {
+    return MultipleFieldStringSerializer.split(value,
+                                               SUBFIELD_SEPARATOR);
+  }
+
+  private static List<String> split(String input,
+                                    String delim) {
+    if (Objects.isNull(input)) {
       throw new IllegalArgumentException("Null input");
     }
 
-    if(Objects.isNull(delim)){
+    if (Objects.isNull(delim)) {
       throw new IllegalArgumentException("Null delimiter");
     }
-    return Stream.of(input.split(delim)).collect(Collectors.toList());
+    return Stream.of(input.split(escape(delim))).collect(Collectors.toList());
+  }
+
+  private static String escape(String delim) {
+    return "\\" + delim;
   }
 }

@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.eclipse.bpmn2.Activity;
@@ -43,6 +44,7 @@ import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl;
 import org.eclipse.emf.ecore.util.FeatureMap;
+import org.eclipse.jgit.diff.Sequence;
 import org.jboss.drools.MetaDataType;
 import org.junit.Before;
 import org.junit.Test;
@@ -1810,6 +1812,9 @@ public class BPMNDiagramMarshallerTest {
     @Test
     public void testMarshallSequenceFlow() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SEQUENCEFLOW);
+        assertConditionLanguage(diagram,
+                                "_C9F8F30D-E772-4504-A480-6EC894B289DC",
+                                "javascript");
         String result = tested.marshall(diagram);
         assertDiagram(result,
                       1,
@@ -1817,8 +1822,32 @@ public class BPMNDiagramMarshallerTest {
                       5);
         assertTrue(result.contains("language=\"http://www.javascript.com/javascript\"><![CDATA[age >= 10;]]></bpmn2:conditionExpression>"));
         assertTrue(result.contains("language=\"http://www.java.com/java\"><![CDATA[age\n" +
-                                           "<\n" +
-                                           "10;]]></bpmn2:conditionExpression>"));
+                                       "<\n" +
+                                       "10;]]></bpmn2:conditionExpression>"));
+    }
+
+    private void assertConditionLanguage(Diagram<Graph, Metadata> diagram,
+                                         String id,
+                                         String value) {
+        List<Node> nodes = getNodes(diagram);
+        Optional<SequenceFlow> sequenceFlow =
+            Stream.concat(nodes.stream().flatMap(node -> {
+                              List<Edge> d = node.getInEdges();
+                              return d.stream();
+                          }),
+                          nodes.stream().flatMap(node -> {
+                              List<Edge> d = node.getOutEdges();
+                              return d.stream();
+                          }))
+                .filter(edge -> edge.getUUID().equals(id))
+                .map(node -> (View) node.getContent())
+                .filter(view -> view.getDefinition() instanceof SequenceFlow)
+                .map(view -> ((SequenceFlow) view.getDefinition()))
+                .findFirst();
+
+        String conditionLanguage = (sequenceFlow.isPresent() ? sequenceFlow.get().getExecutionSet().getConditionExpressionLanguage().getValue() : null);
+        assertEquals(value,
+                     conditionLanguage);
     }
 
     @Test

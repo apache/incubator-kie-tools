@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
@@ -87,5 +88,17 @@ public abstract class AbstractGraphCommand implements Command<GraphCommandExecut
                                                    "Node not found for [" + uuid + "].");
         }
         return (Node<C, Edge>) node;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <C> Element<C> getElementNotNull(final GraphCommandExecutionContext context,
+                                               final String uuid) {
+        final Element element = context.getGraphIndex().get(uuid);
+        if (null == element) {
+            throw new BadCommandArgumentsException(this,
+                                                   uuid,
+                                                   "Element not found for [" + uuid + "].");
+        }
+        return (Element<C>) element;
     }
 }

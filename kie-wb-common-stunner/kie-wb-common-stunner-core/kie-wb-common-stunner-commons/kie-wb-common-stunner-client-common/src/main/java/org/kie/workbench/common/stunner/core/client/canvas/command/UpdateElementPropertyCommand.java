@@ -40,9 +40,13 @@ public class UpdateElementPropertyCommand extends AbstractCanvasGraphCommand {
     @Override
     @SuppressWarnings("unchecked")
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
-        return new UpdateElementPropertyValueCommand((Node) element,
-                                                     propertyId,
-                                                     value);
+        return (element instanceof Node ?
+            new UpdateElementPropertyValueCommand((Node) element,
+                                                  propertyId,
+                                                  value) :
+            new UpdateElementPropertyValueCommand(element.getUUID(),
+                                                  propertyId,
+                                                  value));
     }
 
     @Override
