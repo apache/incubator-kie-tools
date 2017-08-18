@@ -11,7 +11,11 @@
 }
 
 .canvas-view {
-    position: relative;
+    position: absolute;
+    top:0;
+    bottom: 0;
+    right: 0;
+    left: 0;
     padding-right: 10px;
     padding-top: 5px;
     padding-bottom: 10px;
@@ -50,6 +54,11 @@
 
 .canvas-panel {
     width: 100%;
-    position: relative;
-    left: 48px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding-left: 48px;
+    overflow: scroll;
 }
