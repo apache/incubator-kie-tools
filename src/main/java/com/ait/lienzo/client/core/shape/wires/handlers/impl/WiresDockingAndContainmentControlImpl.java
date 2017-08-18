@@ -419,7 +419,8 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
                                         scratchPad,
                                         shape,
                                         isDockingAllowed,
-                                        hotSpotSize);
+                                        hotSpotSize,
+                                        m_layer);
     }
 
     protected ColorMapBackedPicker makeColorMapBackedPicker(final WiresLayer m_layer,
