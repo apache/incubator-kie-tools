@@ -45,9 +45,7 @@ import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.ActivityResourceType;
 
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMIN;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.GUVNOR_M2REPO;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.SECURITY_MANAGEMENT;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.*;
 
 public class DefaultAdminPageHelper {
 
@@ -84,6 +82,14 @@ public class DefaultAdminPageHelper {
     private LanguageConfigurationHandler languageConfigurationHandler;
 
     public void setup() {
+        setup(true,
+              true,
+              true);
+    }
+
+    public void setup(boolean projectPreferencesEnabled,
+                      boolean libraryPreferencesEnabled,
+                      boolean artifactRepositoryPreferencesEnabled) {
         adminPage.addScreen("root",
                             constants.Settings());
         adminPage.setDefaultScreen("root");
@@ -92,7 +98,9 @@ public class DefaultAdminPageHelper {
         addArtifactsPerspective();
         addDataSourcePerspective();
         addDataSetPerspective();
-        addGlobalPreferences();
+        addGlobalPreferences(projectPreferencesEnabled,
+                             libraryPreferencesEnabled,
+                             artifactRepositoryPreferencesEnabled);
         addGeneralSettings();
     }
 
@@ -101,9 +109,7 @@ public class DefaultAdminPageHelper {
                           constants.Languages(),
                           "fa-language",
                           "general",
-                          () -> {
-                              workbenchConfigurationPresenter.show(languageConfigurationHandler);
-                          });
+                          () -> workbenchConfigurationPresenter.show(languageConfigurationHandler));
     }
 
     private void addSecurityPerspective() {
@@ -242,10 +248,17 @@ public class DefaultAdminPageHelper {
         }
     }
 
-    private void addGlobalPreferences() {
+    private void addGlobalPreferences(boolean projectPreferencesEnabled,
+                                      boolean libraryPreferencesEnabled,
+                                      boolean artifactRepositoryPreferencesEnabled) {
         final boolean canEditGlobalPreferences = authorizationManager.authorize(WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES,
                                                                                 sessionInfo.getIdentity());
-        if (canEditGlobalPreferences) {
+
+        if (canEditGlobalPreferences == false) {
+            return;
+        }
+
+        if (projectPreferencesEnabled) {
             adminPage.addPreference("root",
                                     "ProjectPreferences",
                                     translationService.format(PreferencesConstants.ProjectPreferences_Label),
@@ -253,7 +266,9 @@ public class DefaultAdminPageHelper {
                                     "preferences",
                                     globalPreferenceScope.resolve(),
                                     AdminPageOptions.WITH_BREADCRUMBS);
+        }
 
+        if (libraryPreferencesEnabled) {
             adminPage.addPreference("root",
                                     "LibraryPreferences",
                                     translationService.format(PreferencesConstants.LibraryPreferences_Title),
@@ -261,7 +276,9 @@ public class DefaultAdminPageHelper {
                                     "preferences",
                                     globalPreferenceScope.resolve(),
                                     AdminPageOptions.WITH_BREADCRUMBS);
+        }
 
+        if (artifactRepositoryPreferencesEnabled){
             adminPage.addPreference("root",
                                     "ArtifactRepositoryPreference",
                                     translationService.format(PreferencesConstants.ArtifactRepositoryPreferences_Title),

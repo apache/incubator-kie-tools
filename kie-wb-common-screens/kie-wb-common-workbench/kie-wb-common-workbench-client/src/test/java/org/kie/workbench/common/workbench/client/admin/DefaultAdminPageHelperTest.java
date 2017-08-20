@@ -233,11 +233,80 @@ public class DefaultAdminPageHelperTest {
     }
 
     @Test
+    public void preferencesShouldBeSavedOnGlobalScopeWhenUserHasPermissionAndEnabledTest() {
+        final PreferenceScope globalScope = mock(PreferenceScope.class);
+        doReturn(globalScope).when(globalPreferenceScope).resolve();
+
+        doReturn(true).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES),
+                                                            any());
+
+        defaultAdminPageHelper.setup(true,
+                                     true,
+                                     true);
+
+        verify(adminPage,
+               times(3)).addPreference(anyString(),
+                                       anyString(),
+                                       anyString(),
+                                       anyString(),
+                                       anyString(),
+                                       any(PreferenceScope.class),
+                                       eq(AdminPageOptions.WITH_BREADCRUMBS));
+
+        verify(adminPage,
+               times(3)).addPreference(anyString(),
+                                       anyString(),
+                                       anyString(),
+                                       anyString(),
+                                       anyString(),
+                                       eq(globalScope),
+                                       eq(AdminPageOptions.WITH_BREADCRUMBS));
+    }
+
+    @Test
+    public void preferencesShouldNotBeAddedWhenUserHasPermissionAndDisabledTest() {
+        doReturn(true).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES),
+                                                             any());
+
+        defaultAdminPageHelper.setup(false,
+                                     false,
+                                     false);
+
+        verify(adminPage,
+               never()).addPreference(anyString(),
+                                      anyString(),
+                                      anyString(),
+                                      anyString(),
+                                      anyString(),
+                                      any(PreferenceScope.class),
+                                      any());
+    }
+
+    @Test
     public void preferencesShouldNotBeAddedWhenUserHasNoPermissionTest() {
         doReturn(false).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES),
                                                              any());
 
         defaultAdminPageHelper.setup();
+
+        verify(adminPage,
+               never()).addPreference(anyString(),
+                                      anyString(),
+                                      anyString(),
+                                      anyString(),
+                                      anyString(),
+                                      any(PreferenceScope.class),
+                                      any());
+    }
+
+    @Test
+    public void preferencesShouldNotBeAddedWhenUserHasNoPermissionAndDisabledTest() {
+        doReturn(false).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES),
+                                                             any());
+
+        defaultAdminPageHelper.setup(false,
+                                     false,
+                                     false);
 
         verify(adminPage,
                never()).addPreference(anyString(),
