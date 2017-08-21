@@ -57,6 +57,10 @@ public interface GridPinnedModeManager extends IsPinnedModeAware {
      */
     TransformMediator getDefaultTransformMediator();
 
+    void addOnEnterPinnedModeCommand(final Command command);
+
+    void addOnExitPinnedModeCommand(final Command command);
+
     /**
      * Container for the previous Viewport state; to support "unpinning" to revert to the previous Viewport transformation.
      */

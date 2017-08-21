@@ -24,6 +24,7 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.LienzoPanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.user.client.Command;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +36,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.DefaultPinnedModeManager;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -222,6 +224,34 @@ public class DefaultGridLayerTest {
         gridLayer.refreshGridWidgetConnectors();
 
         checkConnectorsVisibility(false);
+    }
+
+    @Test
+    public void testAddOnEnterPinnedModeCommand() {
+
+        final DefaultGridLayer defaultGridLayer = spy(new DefaultGridLayer());
+        final DefaultPinnedModeManager defaultPinnedModeManager = mock(DefaultPinnedModeManager.class);
+        final Command command = mock(Command.class);
+
+        doReturn(defaultPinnedModeManager).when(defaultGridLayer).getPinnedModeManager();
+
+        defaultGridLayer.addOnEnterPinnedModeCommand(command);
+
+        verify(defaultPinnedModeManager).addOnEnterPinnedModeCommand(command);
+    }
+
+    @Test
+    public void testAddOnExitPinnedModeCommand() {
+
+        final DefaultGridLayer defaultGridLayer = spy(new DefaultGridLayer());
+        final DefaultPinnedModeManager defaultPinnedModeManager = mock(DefaultPinnedModeManager.class);
+        final Command command = mock(Command.class);
+
+        doReturn(defaultPinnedModeManager).when(defaultGridLayer).getPinnedModeManager();
+
+        defaultGridLayer.addOnExitPinnedModeCommand(command);
+
+        verify(defaultPinnedModeManager).addOnExitPinnedModeCommand(command);
     }
 
     private void checkConnectorsVisibility(final boolean isVisible) {

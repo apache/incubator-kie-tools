@@ -161,6 +161,7 @@ public class WiresGridsDemoViewImpl extends Composite implements WiresGridsDemoV
     @Override
     public void refresh() {
         gridLayer.batch();
+        gridPanel.refreshScrollPosition();
     }
 
     @Override
@@ -202,6 +203,7 @@ public class WiresGridsDemoViewImpl extends Composite implements WiresGridsDemoV
 
         gridPanel.getViewport().setTransform(transform);
         gridPanel.getViewport().batch();
+        gridPanel.refreshScrollPosition();
     }
 
     @Override

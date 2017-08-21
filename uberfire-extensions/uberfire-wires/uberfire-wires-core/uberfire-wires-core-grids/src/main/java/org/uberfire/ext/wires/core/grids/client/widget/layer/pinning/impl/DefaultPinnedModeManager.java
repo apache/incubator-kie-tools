@@ -15,7 +15,9 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.ait.lienzo.client.core.mediator.IMediator;
@@ -39,9 +41,15 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
 
     private final GridLayer gridLayer;
 
+    private final List<Command> onEnterPinnedModeCommands;
+
+    private final List<Command> onExitPinnedModeCommands;
+
     private PinnedContext context = null;
 
     public DefaultPinnedModeManager(final GridLayer gridLayer) {
+        this.onEnterPinnedModeCommands = new ArrayList<>();
+        this.onExitPinnedModeCommands = new ArrayList<>();
         this.gridLayer = PortablePreconditions.checkNotNull("gridLayer",
                                                             gridLayer);
     }
@@ -84,7 +92,8 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
         final GridWidgetEnterPinnedModeAnimation enterAnimation = new GridWidgetEnterPinnedModeAnimation(gridWidget,
                                                                                                          gridWidgetsToFadeFromView,
                                                                                                          gridWidgetConnectorsToFadeFromView,
-                                                                                                         onStartCommand);
+                                                                                                         onStartCommand,
+                                                                                                         onEnterPinnedModeCommands);
         enterAnimation.run();
     }
 
@@ -113,7 +122,8 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
         final GridWidgetExitPinnedModeAnimation exitAnimation = new GridWidgetExitPinnedModeAnimation(context,
                                                                                                       gridWidgetsToFadeIntoView,
                                                                                                       gridWidgetConnectorsToFadeIntoView,
-                                                                                                      onCompleteCommand);
+                                                                                                      onCompleteCommand,
+                                                                                                      onExitPinnedModeCommands);
         exitAnimation.run();
     }
 
@@ -176,5 +186,15 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
     @Override
     public TransformMediator getDefaultTransformMediator() {
         return gridLayer.getDefaultTransformMediator();
+    }
+
+    @Override
+    public void addOnEnterPinnedModeCommand(final Command command) {
+        onEnterPinnedModeCommands.add(command);
+    }
+
+    @Override
+    public void addOnExitPinnedModeCommand(final Command command) {
+        onExitPinnedModeCommands.add(command);
     }
 }

@@ -15,6 +15,7 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.grid.animation;
 
+import java.util.List;
 import java.util.Set;
 
 import com.ait.lienzo.client.core.animation.AnimationTweener;
@@ -39,7 +40,8 @@ public class GridWidgetExitPinnedModeAnimation extends TimedAnimation {
     public GridWidgetExitPinnedModeAnimation(final GridPinnedModeManager.PinnedContext state,
                                              final Set<GridWidget> gridWidgets,
                                              final Set<IPrimitive<?>> gridWidgetConnectors,
-                                             final Command onCompleteCommand) {
+                                             final Command onCompleteCommand,
+                                             final List<Command> onExitPinnedModeCommands) {
         super(500,
               new IAnimationCallback() {
 
@@ -106,10 +108,12 @@ public class GridWidgetExitPinnedModeAnimation extends TimedAnimation {
                   @Override
                   public void onClose(final IAnimation animation,
                                       final IAnimationHandle handle) {
-                      gridWidget.getLayer().setListening(true);
-                      gridWidget.getLayer().batch();
+                      state.getGridWidget().getLayer().setListening(true);
+                      state.getGridWidget().getLayer().batch();
 
                       onCompleteCommand.execute();
+
+                      onExitPinnedModeCommands.forEach(Command::execute);
                   }
 
                   private Point2D getViewportTranslation() {

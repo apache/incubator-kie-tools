@@ -37,7 +37,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMe
  */
 public class RestrictedMousePanMediator extends AbstractMediator {
 
-    private final GridLayer gridLayer;
+    private GridLayer gridLayer;
 
     private TransformMediator transformMediator;
 
@@ -49,6 +49,9 @@ public class RestrictedMousePanMediator extends AbstractMediator {
 
     public RestrictedMousePanMediator(final GridLayer gridLayer) {
         this.gridLayer = gridLayer;
+    }
+
+    protected RestrictedMousePanMediator() {
     }
 
     public boolean isDragging() {
@@ -70,8 +73,15 @@ public class RestrictedMousePanMediator extends AbstractMediator {
     }
 
     protected void setCursor(final Style.Cursor cursor) {
-        final Viewport viewport = gridLayer.getViewport();
-        viewport.getElement().getStyle().setCursor(cursor);
+        getLayerViewport().getElement().getStyle().setCursor(cursor);
+    }
+
+    protected Viewport getLayerViewport() {
+        return getGridLayer().getViewport();
+    }
+
+    GridLayer getGridLayer() {
+        return gridLayer;
     }
 
     @Override

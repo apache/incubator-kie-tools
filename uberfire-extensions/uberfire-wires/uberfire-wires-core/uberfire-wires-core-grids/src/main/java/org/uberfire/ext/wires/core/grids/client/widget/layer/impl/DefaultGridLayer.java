@@ -438,6 +438,20 @@ public class DefaultGridLayer extends Layer implements GridLayer {
     }
 
     @Override
+    public void addOnEnterPinnedModeCommand(final Command command) {
+        getPinnedModeManager().addOnEnterPinnedModeCommand(command);
+    }
+
+    @Override
+    public void addOnExitPinnedModeCommand(final Command command) {
+        getPinnedModeManager().addOnExitPinnedModeCommand(command);
+    }
+
+    DefaultPinnedModeManager getPinnedModeManager() {
+        return pinnedModeManager;
+    }
+
+    @Override
     public Bounds getVisibleBounds() {
         updateVisibleBounds();
         return bounds;
