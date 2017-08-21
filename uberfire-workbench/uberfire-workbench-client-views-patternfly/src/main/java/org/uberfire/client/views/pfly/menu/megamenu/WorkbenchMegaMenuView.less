@@ -93,10 +93,12 @@
     background-color: @navbar-pf-navbar-nav-active-active-bg-color;
     color: @navbar-pf-active-color;
     border-top: 1px solid @navbar-pf-navbar-utility-hover-border-color;
+    display: inline-block;
+    vertical-align: top;
+    float: none;
     @media (min-width: @grid-float-breakpoint) {
       color: @color-pf-black-300;
       border-top: none;
-
     }
   }
   //styles the section to connect visually to the dropdown toggle
@@ -152,7 +154,10 @@
     }
   }
 
+  .navbar {
+    border-top-width: 3px;
+  }
   .navbar-pf {
-    border-top: 0;
+    background-color: @color-pf-black;
   }
 }

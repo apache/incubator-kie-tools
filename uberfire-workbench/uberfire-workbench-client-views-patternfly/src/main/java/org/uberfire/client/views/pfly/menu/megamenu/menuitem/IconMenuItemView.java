@@ -16,6 +16,7 @@
 
 package org.uberfire.client.views.pfly.menu.megamenu.menuitem;
 
+import java.util.stream.Stream;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.Anchor;
@@ -46,12 +47,9 @@ public class IconMenuItemView implements IsElement,
     }
 
     @Override
-    public void setIconClass(String iconClass) {
+    public void setIconClass(final String iconClass) {
         if (iconClass != null && !iconClass.isEmpty()) {
-            final String[] classes = iconClass.split(" ");
-            for (String clazz : classes) {
-                icon.getClassList().add(clazz);
-            }
+            Stream.of(iconClass.split(" ")).forEach(clazz -> icon.getClassList().add(clazz));
         }
     }
 
