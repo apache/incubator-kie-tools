@@ -45,6 +45,8 @@ public class KModuleContentHandler {
 
     private XStream createXStream() {
         XStream xStream = new XStream(new DomDriver());
+        String[] voidDeny = {"void.class", "Void.class"};
+        xStream.denyTypes(voidDeny);
 
         xStream.registerConverter(new KModuleConverter());
         xStream.registerConverter(new KBaseConverter());

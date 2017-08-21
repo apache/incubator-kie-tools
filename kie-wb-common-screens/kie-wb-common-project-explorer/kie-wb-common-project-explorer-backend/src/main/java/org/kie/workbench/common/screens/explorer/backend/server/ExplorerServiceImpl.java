@@ -144,16 +144,20 @@ public class ExplorerServiceImpl
     @Managed
     private ExecutorService executorService;
 
-    private XStream xs = new XStream();
+    private XStream xs;
 
+    // Boilerplate sacrifice for Weld
     public ExplorerServiceImpl() {
-        // Boilerplate sacrifice for Weld
+        xs = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xs.denyTypes(voidDeny);
     }
 
     public ExplorerServiceImpl( final IOService ioService,
                                 final KieProjectService projectService,
                                 final OrganizationalUnitService organizationalUnitService,
                                 final User identity ) {
+        this();
         this.ioService = ioService;
         this.projectService = projectService;
         this.organizationalUnitService = organizationalUnitService;

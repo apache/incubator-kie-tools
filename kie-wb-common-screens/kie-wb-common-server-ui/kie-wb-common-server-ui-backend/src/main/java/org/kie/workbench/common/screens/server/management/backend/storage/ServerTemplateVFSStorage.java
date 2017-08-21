@@ -45,14 +45,18 @@ public class ServerTemplateVFSStorage implements KieServerTemplateStorage {
     private IOService ioService;
     private FileSystem fileSystem;
 
-    private final XStream xs = new XStream();
+    private XStream xs;
 
     //enable proxy
     public ServerTemplateVFSStorage() {
+        xs = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xs.denyTypes(voidDeny);
     }
 
     @Inject
     public ServerTemplateVFSStorage( @Named("configIO") final IOService ioService, @Named("systemFS") final FileSystem fileSystem ) {
+        this();
         this.ioService = ioService;
         this.fileSystem = fileSystem;
     }

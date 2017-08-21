@@ -50,9 +50,14 @@ public class ServerTemplateMigrationTest {
 
     private IOService ioService;
     private FileSystem fileSystem;
+    private XStream xstream;
 
     @Before
     public void setup() throws IOException {
+        String[] voidDeny = {"void.class", "Void.class"};
+        xstream = new XStream();
+        xstream.denyTypes(voidDeny);
+
         fileSystemTestingUtils.setup();
 
         ioService = fileSystemTestingUtils.getIoService();
@@ -79,7 +84,7 @@ public class ServerTemplateMigrationTest {
 
         ServerTemplateMigration templateMigration = new ServerTemplateMigration();
 
-        templateMigration.migrate(path.getParent(), ioService, new XStream(), templateStorage);
+        templateMigration.migrate(path.getParent(), ioService, xstream, templateStorage);
 
         boolean exists = templateStorage.exists(serverTemplateId);
         assertTrue(exists);
@@ -165,7 +170,7 @@ public class ServerTemplateMigrationTest {
 
         ServerTemplateMigration templateMigration = new ServerTemplateMigration();
 
-        templateMigration.migrate(path.getParent(), ioService, new XStream(), templateStorage);
+        templateMigration.migrate(path.getParent(), ioService, xstream, templateStorage);
 
         boolean exists = templateStorage.exists(serverTemplateId);
         assertTrue(exists);
@@ -203,7 +208,7 @@ public class ServerTemplateMigrationTest {
 
         ServerTemplateMigration templateMigration = new ServerTemplateMigration();
 
-        templateMigration.migrate(path.getParent(), ioService, new XStream(), templateStorage);
+        templateMigration.migrate(path.getParent(), ioService, xstream, templateStorage);
 
         boolean exists = templateStorage.exists(serverTemplateId);
         assertTrue(exists);
@@ -253,7 +258,7 @@ public class ServerTemplateMigrationTest {
 
         ServerTemplateMigration templateMigration = new ServerTemplateMigration();
 
-        templateMigration.migrate(path.getParent(), ioService, new XStream(), templateStorage);
+        templateMigration.migrate(path.getParent(), ioService, xstream, templateStorage);
 
         boolean exists = templateStorage.exists(serverTemplateId);
         assertTrue(exists);
