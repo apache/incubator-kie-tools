@@ -18,25 +18,31 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.editor;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import javax.enterprise.inject.Instance;
 
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.datamodeller.validation.DataObjectValidationService;
+import org.kie.workbench.common.screens.datamodeller.model.editor.FieldMetadata;
+import org.kie.workbench.common.screens.datamodeller.model.editor.FieldMetadataProvider;
+import org.kie.workbench.common.screens.datamodeller.model.editor.ImageWrapper;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.uberfire.mocks.MockInstanceImpl;
 import org.uberfire.mvp.Command;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DataObjectBrowserViewImplTest {
-
-    @Mock
-    private DataObjectValidationService dataObjectValidationService;
 
     @Mock
     private ValidationPopup validationPopup;
@@ -46,14 +52,17 @@ public class DataObjectBrowserViewImplTest {
     @Before
     public void setUp() {
         this.view = new DataObjectBrowserViewImpl(
-                validationPopup);
+                validationPopup,
+                new MockInstanceImpl<>());
     }
 
     @Test
     public void showValidationPopupForDeletion() {
         List<ValidationMessage> validationMessages = Collections.EMPTY_LIST;
-        Command yesCommand = () -> {};
-        Command noCommand = () -> {};
+        Command yesCommand = () -> {
+        };
+        Command noCommand = () -> {
+        };
 
         view.showValidationPopupForDeletion(validationMessages,
                                             yesCommand,
@@ -64,5 +73,39 @@ public class DataObjectBrowserViewImplTest {
                 yesCommand,
                 noCommand,
                 validationMessages);
+    }
+
+    @Test
+    public void addPropertyTypeBrowseColumn() {
+        FieldMetadataProvider fieldMetadataProvider = objectProperty -> {
+            if ("testField".equals(objectProperty.getName())) {
+                ImageWrapper imageWrapper = new ImageWrapper("testUri",
+                                                             "testDescription");
+                FieldMetadata fieldMetadata = new FieldMetadata(imageWrapper);
+                return Optional.of(fieldMetadata);
+            }
+            return Optional.empty();
+        };
+        Instance<FieldMetadataProvider> fieldMetadataProviderInstance = new MockInstanceImpl<>(fieldMetadataProvider);
+        view = new DataObjectBrowserViewImpl(validationPopup,
+                                             fieldMetadataProviderInstance);
+
+        Column<ObjectProperty, List<ImageWrapper>> column = view.createPropertyTypeBrowseColumn();
+
+        ObjectProperty matchingObjectProperty = new ObjectPropertyImpl("testField",
+                                                                       "className",
+                                                                       false);
+        List<ImageWrapper> imageWrapperList = column.getValue(matchingObjectProperty);
+
+        assertEquals(1,
+                     imageWrapperList.size());
+
+        ObjectProperty nonMatchingObjectProperty = new ObjectPropertyImpl("nonMatchingTestField",
+                                                                          "className",
+                                                                          false);
+        imageWrapperList = column.getValue(nonMatchingObjectProperty);
+
+        assertEquals(0,
+                     imageWrapperList.size());
     }
 }

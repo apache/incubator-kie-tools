@@ -16,11 +16,16 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.editor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import com.google.gwt.cell.client.FieldUpdater;
@@ -29,7 +34,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
@@ -40,15 +44,18 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
+import org.guvnor.messageconsole.client.console.HyperLinkCell;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
-import org.kie.workbench.common.screens.datamodeller.client.resources.images.ImagesResources;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring.ShowUsagesPopup;
+import org.kie.workbench.common.screens.datamodeller.model.editor.FieldMetadata;
+import org.kie.workbench.common.screens.datamodeller.model.editor.FieldMetadataProvider;
+import org.kie.workbench.common.screens.datamodeller.model.editor.ImageWrapper;
 import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
@@ -89,8 +96,9 @@ public class DataObjectBrowserViewImpl
     @UiField(provided = true)
     SimpleTable<ObjectProperty> propertiesTable = new BrowserSimpleTable<ObjectProperty>(1000);
 
-    @Inject
     private ValidationPopup validationPopup;
+
+    private List<FieldMetadataProvider> fieldMetadataProviderList = new ArrayList<>();
 
     Map<Column<?, ?>, ColumnId> columnIds = new HashMap<Column<?, ?>, ColumnId>();
 
@@ -103,9 +111,11 @@ public class DataObjectBrowserViewImpl
     private int tableHeight = 480;
 
     @Inject
-    public DataObjectBrowserViewImpl(final ValidationPopup validationPopup) {
+    public DataObjectBrowserViewImpl(final ValidationPopup validationPopup,
+                                     final Instance<FieldMetadataProvider> fieldMetadataProviderInstance) {
         initWidget(uiBinder.createAndBindUi(this));
         this.validationPopup = validationPopup;
+        fieldMetadataProviderInstance.iterator().forEachRemaining(fieldMetadataProviderList::add);
     }
 
     @PostConstruct
@@ -272,49 +282,64 @@ public class DataObjectBrowserViewImpl
     }
 
     private void addPropertyTypeBrowseColumn() {
+        propertiesTable.addColumn(createPropertyTypeBrowseColumn(),
+                                  " ");
+    }
 
-        ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell(true,
-                                                                                  20);
-        final Column<ObjectProperty, ImageResource> column = new Column<ObjectProperty, ImageResource>(typeImageCell) {
+    Column<ObjectProperty, List<ImageWrapper>> createPropertyTypeBrowseColumn() {
+        final int defaultColumnWidth = 40;
+        final Column<ObjectProperty, List<ImageWrapper>> column = new Column<ObjectProperty, List<ImageWrapper>>(new MultiImageCell()) {
+            int maxColumnWidth = defaultColumnWidth;
             @Override
-            public ImageResource getValue(final ObjectProperty property) {
-                if (presenter != null && presenter.isSelectablePropertyType(property)) {
-                    return ImagesResources.INSTANCE.BrowseObject();
-                } else {
-                    return null;
+            public List<ImageWrapper> getValue(final ObjectProperty property) {
+                List<ImageWrapper> imageWrapperList = fieldMetadataProviderList.stream()
+                        .map(p -> p.getFieldMetadata(property))
+                        .flatMap(s -> s.map(Stream::of).orElseGet(Stream::empty))
+                        .map(FieldMetadata::getImageWrapper)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+                if (!imageWrapperList.isEmpty()) {
+                    // image count * (image width + right margin) + cell padding
+                    int targetColumnWidth = imageWrapperList.size() * (MultiImageCell.IMAGE_WIDTH + 5) + 20;
+                    if (targetColumnWidth > maxColumnWidth) {
+                        maxColumnWidth = targetColumnWidth;
+                    }
+                    propertiesTable.setColumnWidth(this,
+                                                   maxColumnWidth,
+                                                   Style.Unit.PX);
                 }
+                return imageWrapperList;
             }
         };
-
-        column.setFieldUpdater(new FieldUpdater<ObjectProperty, ImageResource>() {
-            public void update(final int index,
-                               final ObjectProperty property,
-                               final ImageResource value) {
-
-                presenter.onSelectPropertyType(property);
-            }
-        });
-
-        propertiesTable.addColumn(column,
-                                  " ");
         propertiesTable.setColumnWidth(column,
-                                       38,
+                                       defaultColumnWidth,
                                        Style.Unit.PX);
+        return column;
     }
 
     private void addPropertyTypeColumn() {
-
-        Column<ObjectProperty, String> column = new Column<ObjectProperty, String>(new TextCell()) {
+        Column<ObjectProperty, HyperLinkCell.HyperLink> column = new Column<ObjectProperty, HyperLinkCell.HyperLink>(new HyperLinkCell()) {
 
             @Override
-            public String getValue(ObjectProperty objectProperty) {
-                if (objectProperty.getName() != null && presenter != null) {
-                    return presenter.getPropertyTypeDisplayValue(objectProperty);
+            public HyperLinkCell.HyperLink getValue(ObjectProperty objectProperty) {
+                if (presenter != null && objectProperty.getName() != null) {
+                    final String textValue = presenter.getPropertyTypeDisplayValue(objectProperty);
+                    if (presenter.isSelectablePropertyType(objectProperty)) {
+                        return HyperLinkCell.HyperLink.newLink(textValue);
+                    } else {
+                        return HyperLinkCell.HyperLink.newText(textValue);
+                    }
                 } else {
-                    return "";
+                    return HyperLinkCell.HyperLink.newText("");
                 }
             }
         };
+
+        column.setFieldUpdater((index, objectProperty, value) -> {
+            if (presenter != null && presenter.isSelectablePropertyType(objectProperty)) {
+                presenter.onSelectPropertyType(objectProperty);
+            }
+        });
 
         column.setSortable(true);
         propertiesTable.addColumn(column,
