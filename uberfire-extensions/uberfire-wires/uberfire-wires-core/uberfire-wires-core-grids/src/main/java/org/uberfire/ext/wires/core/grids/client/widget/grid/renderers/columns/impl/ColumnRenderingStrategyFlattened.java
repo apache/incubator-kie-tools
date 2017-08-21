@@ -99,7 +99,7 @@ public class ColumnRenderingStrategyFlattened {
             final Group cc = column.getColumnRenderer().renderCell((GridCell) cell,
                                                                    cellContext);
             if (cc != null) {
-                cc.setX(0).setY(y).setListening(false);
+                cc.setX(0).setY(y).setListening(true);
                 columnGroup.add(cc);
             }
         }

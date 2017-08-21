@@ -122,4 +122,12 @@ public interface GridWidget extends IPrimitive<Group>,
     default boolean onDragHandle(final INodeXYEvent event) {
         return false;
     }
+
+    default double getAbsoluteX() {
+        return getX();
+    }
+
+    default double getAbsoluteY() {
+        return getY();
+    }
 }

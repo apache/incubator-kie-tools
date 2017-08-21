@@ -133,7 +133,7 @@ public class ColumnRenderingStrategyMerged {
                                                                                   row.getHeight());
                 mixedValueGroup.setX(0)
                         .setY(y)
-                        .setListening(false);
+                        .setListening(true);
                 g.add(mixedValueGroup);
             }
 
@@ -177,7 +177,7 @@ public class ColumnRenderingStrategyMerged {
                                                                        cellContext);
                 cc.setX(0)
                         .setY(y)
-                        .setListening(false);
+                        .setListening(true);
                 columnGroup.add(cc);
 
                 //Skip remainder of merged block
@@ -214,7 +214,7 @@ public class ColumnRenderingStrategyMerged {
                                                                        cellContext);
                 cc.setX(0)
                         .setY(_y)
-                        .setListening(false);
+                        .setListening(true);
                 columnGroup.add(cc);
 
                 //Skip remainder of merged block

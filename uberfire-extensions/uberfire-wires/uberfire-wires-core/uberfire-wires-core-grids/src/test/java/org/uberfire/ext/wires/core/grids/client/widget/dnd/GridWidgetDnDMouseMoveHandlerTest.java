@@ -25,7 +25,6 @@ import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.Viewport;
-import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style;
@@ -141,8 +140,8 @@ public class GridWidgetDnDMouseMoveHandlerTest {
         when(gridWidget.getRendererHelper()).thenReturn(helper);
         when(gridWidget.getWidth()).thenReturn(150.0);
         when(gridWidget.getHeight()).thenReturn(124.0);
-        when(gridWidget.getLocation()).thenReturn(new Point2D(100,
-                                                              100));
+        when(gridWidget.getAbsoluteX()).thenReturn(100.0);
+        when(gridWidget.getAbsoluteY()).thenReturn(100.0);
 
         final BaseGridRendererHelper.RenderingInformation ri = new BaseGridRendererHelper.RenderingInformation(mock(Bounds.class),
                                                                                                                uiModel.getColumns(),

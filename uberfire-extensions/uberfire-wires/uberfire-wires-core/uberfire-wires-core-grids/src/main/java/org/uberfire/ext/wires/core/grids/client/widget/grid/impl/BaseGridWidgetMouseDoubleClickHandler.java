@@ -67,7 +67,7 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
      * Enters or exits "pinned" mode; where one GridWidget is displayed and is scrollable.
      * @param event
      */
-    boolean handleHeaderCellDoubleClick(final NodeMouseDoubleClickEvent event) {
+    protected boolean handleHeaderCellDoubleClick(final NodeMouseDoubleClickEvent event) {
         //Convert Canvas co-ordinate to Grid co-ordinate
         final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(gridWidget,
                                                                           new Point2D(event.getX(),
@@ -97,7 +97,7 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
         return true;
     }
 
-    private double getHeaderRowsYOffset() {
+    protected double getHeaderRowsYOffset() {
         final GridData model = gridWidget.getModel();
         final int headerRowCount = model.getHeaderRowCount();
         final double headerHeight = renderer.getHeaderHeight();
@@ -115,7 +115,7 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
      * @param event
      */
 
-    boolean handleBodyCellDoubleClick(final NodeMouseDoubleClickEvent event) {
+    protected boolean handleBodyCellDoubleClick(final NodeMouseDoubleClickEvent event) {
         //Convert Canvas co-ordinate to Grid co-ordinate
         final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(gridWidget,
                                                                           new Point2D(event.getX(),

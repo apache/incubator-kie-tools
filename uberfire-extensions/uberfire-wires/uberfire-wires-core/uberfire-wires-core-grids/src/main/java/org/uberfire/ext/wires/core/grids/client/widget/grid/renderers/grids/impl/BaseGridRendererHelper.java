@@ -159,13 +159,13 @@ public class BaseGridRendererHelper {
         final GridRenderer renderer = view.getRenderer();
 
         //Simple bounds check
-        if (view.getX() > vpX + vpWidth) {
+        if (view.getAbsoluteX() > vpX + vpWidth) {
             return null;
-        } else if (view.getX() + view.getWidth() < vpX) {
+        } else if (view.getAbsoluteX() + view.getWidth() < vpX) {
             return null;
-        } else if (view.getY() > vpY + vpHeight) {
+        } else if (view.getAbsoluteY() > vpY + vpHeight) {
             return null;
-        } else if (view.getY() + view.getHeight() < vpY) {
+        } else if (view.getAbsoluteY() + view.getHeight() < vpY) {
             return null;
         }
 
@@ -173,20 +173,20 @@ public class BaseGridRendererHelper {
         boolean isFixedHeader = false;
         boolean isFloatingHeader = false;
         if (view.isSelected()) {
-            if (view.getY() < vpY) {
+            if (view.getAbsoluteY() < vpY) {
                 //GridWidget is selected and clipped at the top
-                if (view.getY() + view.getHeight() > vpY + renderer.getHeaderHeight()) {
+                if (view.getAbsoluteY() + view.getHeight() > vpY + renderer.getHeaderHeight()) {
                     //GridWidget is taller than the Header; add floating header
                     isFloatingHeader = true;
                 } else {
                     //GridWidget is shorter than the Header; add fixed header
                     isFixedHeader = true;
                 }
-            } else if (view.getY() <= vpY + vpHeight) {
+            } else if (view.getAbsoluteY() <= vpY + vpHeight) {
                 //GridWidget is selected and not clipped at the top; add fixed header
                 isFixedHeader = true;
             }
-        } else if (view.getY() + renderer.getHeaderHeight() > vpY && view.getY() < vpY + vpHeight) {
+        } else if (view.getAbsoluteY() + renderer.getHeaderHeight() > vpY && view.getAbsoluteY() < vpY + vpHeight) {
             //GridWidget is not selected; add fixed header
             isFixedHeader = true;
         }
@@ -195,7 +195,7 @@ public class BaseGridRendererHelper {
         GridRow row;
         int minVisibleRowIndex = 0;
         if (model.getRowCount() > 0) {
-            double clipTop = vpY - view.getY() - (isFloatingHeader ? 0.0 : renderer.getHeaderHeight());
+            double clipTop = vpY - view.getAbsoluteY() - (isFloatingHeader ? 0.0 : renderer.getHeaderHeight());
             while ((row = model.getRow(minVisibleRowIndex)).getHeight() < clipTop && minVisibleRowIndex < model.getRowCount() - 1) {
                 clipTop = clipTop - row.getHeight();
                 minVisibleRowIndex++;
@@ -204,7 +204,7 @@ public class BaseGridRendererHelper {
 
         int maxVisibleRowIndex = minVisibleRowIndex;
         if (model.getRowCount() > 0) {
-            double clipBottom = vpY - view.getY() - renderer.getHeaderHeight() + vpHeight - getRowOffset(minVisibleRowIndex);
+            double clipBottom = vpY - view.getAbsoluteY() - renderer.getHeaderHeight() + vpHeight - getRowOffset(minVisibleRowIndex);
             while ((row = model.getRow(maxVisibleRowIndex)).getHeight() < clipBottom && maxVisibleRowIndex < model.getRowCount() - 1) {
                 clipBottom = clipBottom - row.getHeight();
                 maxVisibleRowIndex++;
@@ -216,14 +216,14 @@ public class BaseGridRendererHelper {
         for (GridColumn<?> column : model.getColumns()) {
             allColumns.add(column);
             final double floatingColumnsWidth = getWidth(floatingColumns);
-            if (view.getX() + x + column.getWidth() >= vpX + floatingColumnsWidth) {
-                if (view.getX() + x < vpX + vpWidth) {
+            if (view.getAbsoluteX() + x + column.getWidth() >= vpX + floatingColumnsWidth) {
+                if (view.getAbsoluteX() + x < vpX + vpWidth) {
                     bodyColumns.add(column);
                 }
             }
             if (view.isSelected()) {
                 if (column.isFloatable()) {
-                    if (view.getX() + x < vpX + floatingColumnsWidth) {
+                    if (view.getAbsoluteX() + x < vpX + floatingColumnsWidth) {
                         allColumns.remove(column);
                         bodyColumns.remove(column);
                         floatingColumns.add(column);
@@ -236,7 +236,7 @@ public class BaseGridRendererHelper {
         }
 
         //If the floating columns obscure the body columns remove the float and just show the body columns
-        if (view.getX() + x - vpX < getWidth(floatingColumns)) {
+        if (view.getAbsoluteX() + x - vpX < getWidth(floatingColumns)) {
             allColumns.clear();
             bodyColumns.clear();
             floatingColumns.clear();
@@ -244,8 +244,8 @@ public class BaseGridRendererHelper {
 
             x = 0;
             for (GridColumn<?> column : model.getColumns()) {
-                if (view.getX() + x + column.getWidth() >= vpX) {
-                    if (view.getX() + x < vpX + vpWidth) {
+                if (view.getAbsoluteX() + x + column.getWidth() >= vpX) {
+                    if (view.getAbsoluteX() + x < vpX + vpWidth) {
                         bodyColumns.add(column);
                     }
                 }
@@ -389,7 +389,7 @@ public class BaseGridRendererHelper {
      */
     private double getFloatingColumnOffset() {
         final Bounds bounds = getVisibleBounds();
-        return bounds.getX() - view.getX();
+        return bounds.getX() - view.getAbsoluteX();
     }
 
     /**
@@ -400,8 +400,8 @@ public class BaseGridRendererHelper {
     private double getHeaderOffsetY() {
         final double vpY = getVisibleBounds().getY();
         if (view.isSelected()) {
-            if (view.getY() < vpY && view.getY() + view.getHeight() > vpY + view.getRenderer().getHeaderHeight()) {
-                return vpY - view.getY();
+            if (view.getAbsoluteY() < vpY && view.getAbsoluteY() + view.getHeight() > vpY + view.getRenderer().getHeaderHeight()) {
+                return vpY - view.getAbsoluteY();
             }
         }
         return 0.0;

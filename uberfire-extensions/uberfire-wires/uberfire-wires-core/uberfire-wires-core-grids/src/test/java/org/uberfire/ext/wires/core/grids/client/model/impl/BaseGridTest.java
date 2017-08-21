@@ -80,6 +80,7 @@ public abstract class BaseGridTest {
         private boolean isMerged;
         private int mergedCellCount;
         private Object value;
+
         private Expected(final boolean isMerged,
                          final int mergedCellCount,
                          final Object value) {
@@ -87,6 +88,7 @@ public abstract class BaseGridTest {
             this.mergedCellCount = mergedCellCount;
             this.value = value;
         }
+
         private Expected(final Object value) {
             this.value = value;
         }

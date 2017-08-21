@@ -23,6 +23,9 @@ import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.GroupOf;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -96,28 +99,28 @@ public class BaseGridWidget extends Group implements GridWidget {
         });
     }
 
-    BaseGridRendererHelper getBaseGridRendererHelper() {
+    protected BaseGridRendererHelper getBaseGridRendererHelper() {
         return new BaseGridRendererHelper(this);
     }
 
-    CellSelectionManager getCellSelectionManager() {
+    protected CellSelectionManager getCellSelectionManager() {
         return new BaseCellSelectionManager(this);
     }
 
-    NodeMouseClickHandler getGridMouseClickHandler(final GridSelectionManager selectionManager) {
+    protected NodeMouseClickHandler getGridMouseClickHandler(final GridSelectionManager selectionManager) {
         return new BaseGridWidgetMouseClickHandler(this,
                                                    selectionManager,
                                                    renderer);
     }
 
-    NodeMouseClickHandler getGridMouseCellSelectorClickHandler(final GridSelectionManager selectionManager) {
+    protected NodeMouseClickHandler getGridMouseCellSelectorClickHandler(final GridSelectionManager selectionManager) {
         return new GridCellSelectorMouseClickHandler(this,
                                                      selectionManager,
                                                      renderer);
     }
 
-    NodeMouseDoubleClickHandler getGridMouseDoubleClickHandler(final GridSelectionManager selectionManager,
-                                                               final GridPinnedModeManager pinnedModeManager) {
+    protected NodeMouseDoubleClickHandler getGridMouseDoubleClickHandler(final GridSelectionManager selectionManager,
+                                                                         final GridPinnedModeManager pinnedModeManager) {
         return new BaseGridWidgetMouseDoubleClickHandler(this,
                                                          selectionManager,
                                                          pinnedModeManager,
@@ -164,6 +167,32 @@ public class BaseGridWidget extends Group implements GridWidget {
         double height = renderer.getHeaderHeight();
         height = height + rendererHelper.getRowOffset(model.getRowCount());
         return height;
+    }
+
+    @Override
+    public double getAbsoluteX() {
+        double x = getX();
+        Node<?> parent = getParent();
+        while (!(parent == null || parent instanceof Layer)) {
+            if (parent instanceof GroupOf) {
+                x = x + ((GroupOf) parent).getX();
+            }
+            parent = parent.getParent();
+        }
+        return x;
+    }
+
+    @Override
+    public double getAbsoluteY() {
+        double y = getY();
+        Node<?> parent = getParent();
+        while (!(parent == null || parent instanceof Layer)) {
+            if (parent instanceof GroupOf) {
+                y = y + ((GroupOf) parent).getY();
+            }
+            parent = parent.getParent();
+        }
+        return y;
     }
 
     @Override
@@ -482,10 +511,10 @@ public class BaseGridWidget extends Group implements GridWidget {
         final double floatingX = floatingBlockInformation.getX();
         final double floatingWidth = floatingBlockInformation.getWidth();
 
-        final double clipMinY = getY() + (header == null ? 0.0 : header.getY() + getRenderer().getHeaderHeight());
-        final double clipMinX = getX() + floatingX + floatingWidth;
-        final GridBodyRenderContext context = new GridBodyRenderContext(getX(),
-                                                                        getY(),
+        final double clipMinY = getAbsoluteY() + (header == null ? 0.0 : header.getY() + getRenderer().getHeaderHeight());
+        final double clipMinX = getAbsoluteX() + floatingX + floatingWidth;
+        final GridBodyRenderContext context = new GridBodyRenderContext(getAbsoluteX(),
+                                                                        getAbsoluteY(),
                                                                         absoluteColumnOffsetX,
                                                                         clipMinY,
                                                                         clipMinX,
@@ -543,10 +572,10 @@ public class BaseGridWidget extends Group implements GridWidget {
         final double floatingX = floatingBlockInformation.getX();
         final double floatingWidth = floatingBlockInformation.getWidth();
 
-        final double clipMinY = getY() + (header == null ? 0.0 : header.getY() + getRenderer().getHeaderHeight());
-        final double clipMinX = getX() + floatingX + floatingWidth;
-        final GridBodyRenderContext context = new GridBodyRenderContext(getX(),
-                                                                        getY(),
+        final double clipMinY = getAbsoluteY() + (header == null ? 0.0 : header.getY() + getRenderer().getHeaderHeight());
+        final double clipMinX = getAbsoluteX() + floatingX + floatingWidth;
+        final GridBodyRenderContext context = new GridBodyRenderContext(getAbsoluteX(),
+                                                                        getAbsoluteY(),
                                                                         absoluteColumnOffsetX,
                                                                         clipMinY,
                                                                         clipMinX,

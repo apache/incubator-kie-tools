@@ -15,6 +15,8 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids;
 
+import java.util.function.BiFunction;
+
 import com.ait.lienzo.client.core.shape.Group;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -132,4 +134,13 @@ public interface GridRenderer {
                              final double cellY,
                              final double cellWidth,
                              final double cellHeight);
+
+    /**
+     * Sets the constraint to control rendering of columns. The default implementation does not render to
+     * the SelectionLayer as a performance optimisation and only their basic definition, e.g. size, background
+     * colour, grid is rendered to support selection. Nested tables need to be rendered to the SelectionLayer
+     * to support their selection and other User interactions.
+     * @param columnRenderingConstraint
+     */
+    void setColumnRenderConstraint(final BiFunction<Boolean, GridColumn<?>, Boolean> columnRenderingConstraint);
 }

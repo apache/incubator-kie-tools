@@ -62,7 +62,7 @@ public class BaseGridWidgetTest {
                                                           pinnedModeManager,
                                                           renderer) {
             @Override
-            CellSelectionManager getCellSelectionManager() {
+            protected CellSelectionManager getCellSelectionManager() {
                 return cellSelectionManager;
             }
         };

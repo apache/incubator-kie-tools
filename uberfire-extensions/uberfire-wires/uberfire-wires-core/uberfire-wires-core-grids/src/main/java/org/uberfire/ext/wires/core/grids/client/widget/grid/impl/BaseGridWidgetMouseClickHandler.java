@@ -72,7 +72,7 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
      * delegate a response to GridSelectionManager.
      * @param event
      */
-    boolean handleHeaderCellClick(final NodeMouseClickEvent event) {
+    protected boolean handleHeaderCellClick(final NodeMouseClickEvent event) {
         //Convert Canvas co-ordinate to Grid co-ordinate
         final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(gridWidget,
                                                                           new Point2D(event.getX(),
@@ -109,7 +109,7 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
         return false;
     }
 
-    private double getHeaderRowsYOffset() {
+    protected double getHeaderRowsYOffset() {
         final GridData model = gridWidget.getModel();
         final int headerRowCount = model.getHeaderRowCount();
         final double headerHeight = renderer.getHeaderHeight();
@@ -120,7 +120,7 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
         return headerRowsYOffset;
     }
 
-    boolean handleBodyCellClick(final NodeMouseClickEvent event) {
+    protected boolean handleBodyCellClick(final NodeMouseClickEvent event) {
         //Convert Canvas co-ordinate to Grid co-ordinate
         final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(gridWidget,
                                                                           new Point2D(event.getX(),

@@ -106,7 +106,7 @@ public class DefaultGridLayer extends Layer implements GridLayer {
         addNodeMouseDownHandler(new NodeMouseDownHandler() {
             @Override
             public void onNodeMouseDown(final NodeMouseDownEvent event) {
-                for (GridWidget gridWidget : gridWidgets) {
+                for (GridWidget gridWidget : getGridWidgets()) {
                     for (GridColumn<?> gridColumn : gridWidget.getModel().getColumns()) {
                         if (gridColumn instanceof HasSingletonDOMElementResource) {
                             ((HasSingletonDOMElementResource) gridColumn).flush();
@@ -327,7 +327,7 @@ public class DefaultGridLayer extends Layer implements GridLayer {
     @Override
     public void select(final GridWidget selectedGridWidget) {
         boolean selectionChanged = false;
-        for (GridWidget gridWidget : gridWidgets) {
+        for (GridWidget gridWidget : getGridWidgets()) {
             if (gridWidget.isSelected()) {
                 if (!gridWidget.equals(selectedGridWidget)) {
                     selectionChanged = true;

@@ -212,7 +212,7 @@ public class BaseGridColumn<T> implements GridColumn<T> {
         if (link != null ? !link.equals(that.link) : that.link != null) {
             return false;
         }
-        return headerMetaData.equals(that.headerMetaData);
+        return getHeaderMetaData().equals(that.getHeaderMetaData());
     }
 
     @Override
@@ -236,7 +236,7 @@ public class BaseGridColumn<T> implements GridColumn<T> {
         result = ~~result;
         result = 31 * result + index;
         result = ~~result;
-        result = 31 * result + headerMetaData.hashCode();
+        result = 31 * result + getHeaderMetaData().hashCode();
         result = ~~result;
         return result;
     }

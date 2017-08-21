@@ -99,12 +99,12 @@ public class BaseGridWidgetRenderingTest {
                                                           pinnedModeManager,
                                                           renderer) {
             @Override
-            CellSelectionManager getCellSelectionManager() {
+            protected CellSelectionManager getCellSelectionManager() {
                 return BaseGridWidgetRenderingTest.this.cellSelectionManager;
             }
 
             @Override
-            BaseGridRendererHelper getBaseGridRendererHelper() {
+            protected BaseGridRendererHelper getBaseGridRendererHelper() {
                 return BaseGridWidgetRenderingTest.this.rendererHelper;
             }
         };

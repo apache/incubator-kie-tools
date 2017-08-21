@@ -16,6 +16,7 @@
 package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Line;
@@ -53,6 +54,8 @@ public class BaseGridRenderer implements GridRenderer {
     private static final String LINK_ICON = "\ue144";
 
     protected GridRendererTheme theme;
+
+    protected BiFunction<Boolean, GridColumn<?>, Boolean> columnRenderingConstraint = (isSelectionLayer, gridColumn) -> !isSelectionLayer;
 
     public BaseGridRenderer(final GridRendererTheme theme) {
         setTheme(theme);
@@ -248,28 +251,28 @@ public class BaseGridRenderer implements GridRenderer {
             }
         }
 
-        //Don't render the Header's detail if we're rendering the SelectionLayer
-        if (isSelectionLayer) {
-            return g;
-        }
-
         //Column title and grid lines
         x = 0;
         for (final GridColumn<?> column : visibleBlockColumns) {
             if (column.isVisible()) {
                 final double columnWidth = column.getWidth();
-                final int columnIndex = visibleBlockColumns.indexOf(column);
-                final GridHeaderColumnRenderContext headerCellRenderContext = new GridHeaderColumnRenderContext(allBlockColumns,
-                                                                                                                visibleBlockColumns,
-                                                                                                                columnIndex,
-                                                                                                                model,
-                                                                                                                this);
-                final Group headerGroup = column.getColumnRenderer().renderHeader(column.getHeaderMetaData(),
-                                                                                  headerCellRenderContext,
-                                                                                  renderingInformation);
-                headerGroup.setX(x);
-                g.add(headerGroup);
 
+                //Don't render the Body's detail if we're rendering the SelectionLayer
+                if (columnRenderingConstraint.apply(isSelectionLayer,
+                                                    column)) {
+
+                    final int columnIndex = visibleBlockColumns.indexOf(column);
+                    final GridHeaderColumnRenderContext headerCellRenderContext = new GridHeaderColumnRenderContext(allBlockColumns,
+                                                                                                                    visibleBlockColumns,
+                                                                                                                    columnIndex,
+                                                                                                                    model,
+                                                                                                                    this);
+                    final Group headerGroup = column.getColumnRenderer().renderHeader(column.getHeaderMetaData(),
+                                                                                      headerCellRenderContext,
+                                                                                      renderingInformation);
+                    headerGroup.setX(x);
+                    g.add(headerGroup);
+                }
                 x = x + columnWidth;
             }
         }
@@ -279,14 +282,20 @@ public class BaseGridRenderer implements GridRenderer {
         for (final GridColumn<?> column : visibleBlockColumns) {
             if (column.isVisible()) {
                 final double w = column.getWidth();
-                if (column.isLinked()) {
-                    final Text t = theme.getBodyText()
-                            .setFontFamily(LINK_FONT_FAMILY)
-                            .setFontSize(LINK_FONT_SIZE)
-                            .setText(LINK_ICON)
-                            .setY(headerRowsYOffset + LINK_FONT_SIZE)
-                            .setX(x + w - LINK_FONT_SIZE);
-                    g.add(t);
+
+                //Don't render the Body's detail if we're rendering the SelectionLayer
+                if (columnRenderingConstraint.apply(isSelectionLayer,
+                                                    column)) {
+
+                    if (column.isLinked()) {
+                        final Text t = theme.getBodyText()
+                                .setFontFamily(LINK_FONT_FAMILY)
+                                .setFontSize(LINK_FONT_SIZE)
+                                .setText(LINK_ICON)
+                                .setY(headerRowsYOffset + LINK_FONT_SIZE)
+                                .setX(x + w - LINK_FONT_SIZE);
+                        g.add(t);
+                    }
                 }
                 x = x + w;
             }
@@ -350,36 +359,36 @@ public class BaseGridRenderer implements GridRenderer {
             }
         }
 
-        //Don't render the Body's detail if we're rendering the SelectionLayer
-        if (isSelectionLayer) {
-            return g;
-        }
-
         x = 0;
         for (GridColumn<?> column : blockColumns) {
             if (column.isVisible()) {
                 final double columnWidth = column.getWidth();
-                final double columnRelativeX = rendererHelper.getColumnOffset(blockColumns,
-                                                                              blockColumns.indexOf(column)) + absoluteColumnOffsetX;
-                final boolean isFloating = floatingBlockInformation.getColumns().contains(column);
-                final GridBodyColumnRenderContext columnContext = new GridBodyColumnRenderContext(absoluteGridX,
-                                                                                                  absoluteGridY,
-                                                                                                  absoluteGridX + columnRelativeX,
-                                                                                                  clipMinY,
-                                                                                                  clipMinX,
-                                                                                                  minVisibleRowIndex,
-                                                                                                  maxVisibleRowIndex,
-                                                                                                  isFloating,
-                                                                                                  model,
-                                                                                                  transform,
-                                                                                                  renderer);
-                final Group columnGroup = column.getColumnRenderer().renderColumn(column,
-                                                                                  columnContext,
-                                                                                  rendererHelper,
-                                                                                  renderingInformation);
-                columnGroup.setX(x);
-                g.add(columnGroup);
 
+                //Don't render the Body's detail if we're rendering the SelectionLayer
+                if (columnRenderingConstraint.apply(isSelectionLayer,
+                                                    column)) {
+
+                    final double columnRelativeX = rendererHelper.getColumnOffset(blockColumns,
+                                                                                  blockColumns.indexOf(column)) + absoluteColumnOffsetX;
+                    final boolean isFloating = floatingBlockInformation.getColumns().contains(column);
+                    final GridBodyColumnRenderContext columnContext = new GridBodyColumnRenderContext(absoluteGridX,
+                                                                                                      absoluteGridY,
+                                                                                                      absoluteGridX + columnRelativeX,
+                                                                                                      clipMinY,
+                                                                                                      clipMinX,
+                                                                                                      minVisibleRowIndex,
+                                                                                                      maxVisibleRowIndex,
+                                                                                                      isFloating,
+                                                                                                      model,
+                                                                                                      transform,
+                                                                                                      renderer);
+                    final Group columnGroup = column.getColumnRenderer().renderColumn(column,
+                                                                                      columnContext,
+                                                                                      rendererHelper,
+                                                                                      renderingInformation);
+                    columnGroup.setX(x);
+                    g.add(columnGroup);
+                }
                 x = x + columnWidth;
             }
         }
@@ -410,5 +419,10 @@ public class BaseGridRenderer implements GridRenderer {
                                         cellY,
                                         cellWidth,
                                         cellHeight);
+    }
+
+    @Override
+    public void setColumnRenderConstraint(final BiFunction<Boolean, GridColumn<?>, Boolean> columnRenderingConstraint) {
+        this.columnRenderingConstraint = columnRenderingConstraint;
     }
 }

@@ -50,7 +50,8 @@ public class CoordinateUtilities {
                                       point.getY());
         transform.transform(p,
                             p);
-        return p.add(view.getLocation().mul(-1.0));
+        return p.add(new Point2D(view.getAbsoluteX(),
+                                 view.getAbsoluteY()).mul(-1.0));
     }
 
     /**

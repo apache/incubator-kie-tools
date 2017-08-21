@@ -120,8 +120,8 @@ public class BaseGridWidgetMouseDoubleClickHandlerTest {
         when(event.getX()).thenReturn(100);
         when(event.getY()).thenReturn(100);
 
-        when(gridWidget.getLocation()).thenReturn(new Point2D(100,
-                                                              100));
+        when(gridWidget.getAbsoluteX()).thenReturn(100.0);
+        when(gridWidget.getAbsoluteY()).thenReturn(100.0);
 
         handler.onNodeMouseDoubleClick(event);
 
@@ -144,8 +144,8 @@ public class BaseGridWidgetMouseDoubleClickHandlerTest {
         when(event.getX()).thenReturn(100);
         when(event.getY()).thenReturn(100);
 
-        when(gridWidget.getLocation()).thenReturn(new Point2D(100,
-                                                              100));
+        when(gridWidget.getAbsoluteX()).thenReturn(100.0);
+        when(gridWidget.getAbsoluteY()).thenReturn(100.0);
 
         handler.onNodeMouseDoubleClick(event);
 

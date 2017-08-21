@@ -319,16 +319,16 @@ public class BaseCellSelectionManager implements CellSelectionManager {
         final double floatingWidth = floatingBlockInformation.getWidth();
 
         //Construct context of MouseEvent
-        final double cellX = gridWidget.getX() + offsetX;
-        final double cellY = gridWidget.getY() + renderer.getHeaderHeight() + getRowOffset(uiRowIndex,
-                                                                                           uiColumnIndex,
-                                                                                           rendererHelper);
+        final double cellX = gridWidget.getAbsoluteX() + offsetX;
+        final double cellY = gridWidget.getAbsoluteY() + renderer.getHeaderHeight() + getRowOffset(uiRowIndex,
+                                                                                                   uiColumnIndex,
+                                                                                                   rendererHelper);
         final double cellHeight = getCellHeight(uiRowIndex,
                                                 uiColumnIndex);
 
         final Group header = gridWidget.getHeader();
-        final double clipMinY = gridWidget.getY() + header.getY() + renderer.getHeaderHeight();
-        final double clipMinX = gridWidget.getX() + floatingX + floatingWidth;
+        final double clipMinY = gridWidget.getAbsoluteY() + header.getY() + renderer.getHeaderHeight();
+        final double clipMinX = gridWidget.getAbsoluteX() + floatingX + floatingWidth;
 
         final GridBodyCellRenderContext context = new GridBodyCellRenderContext(cellX,
                                                                                 cellY,
