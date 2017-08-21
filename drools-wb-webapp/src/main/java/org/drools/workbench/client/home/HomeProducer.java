@@ -20,9 +20,13 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.home.model.HomeModel;
 import org.kie.workbench.common.screens.home.model.HomeModelProvider;
+import org.kie.workbench.common.screens.home.model.HomeShortcut;
+import org.kie.workbench.common.screens.home.model.HomeShortcutLink;
 import org.kie.workbench.common.screens.home.model.ModelUtils;
 import org.uberfire.client.mvp.PlaceManager;
 
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.BUSINESS_DASHBOARDS;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.DEPLOYMENTS;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.DROOLS_ADMIN;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.LIBRARY;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.SERVER_MANAGEMENT;
@@ -38,18 +42,31 @@ public class HomeProducer implements HomeModelProvider {
         final HomeModel model = new HomeModel("Welcome to KIE Workbench",
                                               "KIE Workbench offers a set of flexible tools, that support the way you need to work. Select a tool below to get started.",
                                               "images/home_bg.jpg");
-        model.addShortcut(ModelUtils.makeShortcut("pficon-blueprint",
-                                                  "Design",
-                                                  "Model, build, and publish your artifacts.",
-                                                  () -> placeManager.goTo(LIBRARY),
-                                                  LIBRARY,
-                                                  PERSPECTIVE));
-        model.addShortcut(ModelUtils.makeShortcut("pficon-build",
-                                                  "DevOps",
-                                                  "Run and manage servers and active instances.",
-                                                  () -> placeManager.goTo(SERVER_MANAGEMENT),
-                                                  SERVER_MANAGEMENT,
-                                                  PERSPECTIVE));
+
+        final HomeShortcut design = ModelUtils.makeShortcut("pficon-blueprint",
+                                                            "Design",
+                                                            "Create and modify {0} and {1}.",
+                                                            () -> placeManager.goTo(LIBRARY),
+                                                            LIBRARY,
+                                                            PERSPECTIVE);
+        design.addLink(new HomeShortcutLink("projects",
+                                            LIBRARY));
+        design.addLink(new HomeShortcutLink("dashboards",
+                                            BUSINESS_DASHBOARDS));
+
+        final HomeShortcut devOps = ModelUtils.makeShortcut("pficon-build",
+                                                            "DevOps",
+                                                            "Administer {0} and {1}.",
+                                                            () -> placeManager.goTo(SERVER_MANAGEMENT),
+                                                            SERVER_MANAGEMENT,
+                                                            PERSPECTIVE);
+        devOps.addLink(new HomeShortcutLink("deployments",
+                                            DEPLOYMENTS));
+        devOps.addLink(new HomeShortcutLink("servers",
+                                            SERVER_MANAGEMENT));
+
+        model.addShortcut(design);
+        model.addShortcut(devOps);
 
         return model;
     }
