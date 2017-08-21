@@ -24,6 +24,7 @@ import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.Workbench;
 import org.uberfire.client.workbench.widgets.menu.megamenu.brand.MegaMenuBrand;
 import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.ChildContextMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.GroupContextMenuItemPresenter;
@@ -48,7 +49,8 @@ public class WorkbenchMegaMenuStandalonePresenter extends WorkbenchMegaMenuPrese
                                          final ManagedInstance<ChildMenuItemPresenter> childMenuItemPresenters,
                                          final ManagedInstance<GroupMenuItemPresenter> groupMenuItemPresenters,
                                          final ManagedInstance<ChildContextMenuItemPresenter> childContextMenuItemPresenters,
-                                         final ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters) {
+                                         final ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters,
+                                         final Workbench workbench) {
         super(authzManager,
               perspectiveManager,
               activityManager,
@@ -61,7 +63,8 @@ public class WorkbenchMegaMenuStandalonePresenter extends WorkbenchMegaMenuPrese
               childMenuItemPresenters,
               groupMenuItemPresenters,
               childContextMenuItemPresenters,
-              groupContextMenuItemPresenters);
+              groupContextMenuItemPresenters,
+              workbench);
     }
 
     @Override

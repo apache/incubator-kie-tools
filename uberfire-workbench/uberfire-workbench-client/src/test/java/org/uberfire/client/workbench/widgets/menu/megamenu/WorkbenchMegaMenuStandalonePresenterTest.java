@@ -27,6 +27,7 @@ import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.Workbench;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.widgets.menu.megamenu.brand.MegaMenuBrand;
 import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.ChildContextMenuItemPresenter;
@@ -91,6 +92,9 @@ public class WorkbenchMegaMenuStandalonePresenterTest {
     @Mock
     private ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters;
 
+    @Mock
+    private Workbench workbench;
+
     private WorkbenchMegaMenuStandalonePresenter presenter;
 
     @Before
@@ -108,7 +112,8 @@ public class WorkbenchMegaMenuStandalonePresenterTest {
                                                                  childMenuItemPresenters,
                                                                  groupMenuItemPresenters,
                                                                  childContextMenuItemPresenters,
-                                                                 groupContextMenuItemPresenters));
+                                                                 groupContextMenuItemPresenters,
+                                                                 workbench));
         doReturn(mock(ChildMenuItemPresenter.class)).when(childMenuItemPresenters).get();
     }
 

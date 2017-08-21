@@ -25,12 +25,14 @@ import org.jboss.errai.ui.client.local.api.IsElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.Workbench;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.widgets.menu.megamenu.base.CanBeDisabled;
 import org.uberfire.client.workbench.widgets.menu.megamenu.base.HasChildren;
@@ -97,6 +99,9 @@ public class WorkbenchMegaMenuPresenterTest {
     private ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters;
 
     @Mock
+    private Workbench workbench;
+
+    @Mock
     private WorkbenchMegaMenuPresenter.View view;
 
     private WorkbenchMegaMenuPresenter presenter;
@@ -116,7 +121,8 @@ public class WorkbenchMegaMenuPresenterTest {
                                                        childMenuItemPresenters,
                                                        groupMenuItemPresenters,
                                                        childContextMenuItemPresenters,
-                                                       groupContextMenuItemPresenters));
+                                                       groupContextMenuItemPresenters,
+                                                       workbench));
         reset(view);
         presenter.selectableMenuItemByIdentifier = spy(new HashMap<>());
         presenter.hasChildrenMenuItemByIdentifier = spy(new HashMap<>());
@@ -687,38 +693,50 @@ public class WorkbenchMegaMenuPresenterTest {
 
     @Test
     public void setupHomeLinkWithNoDefaultPerspective() {
-        doReturn(null).when(perspectiveManager).getDefaultPerspectiveIdentifier();
+        doReturn(null).when(workbench).getHomePerspectiveActivity();
         doReturn(true).when(presenter).hasAccessToPerspective(any());
 
         presenter.setupHomeLink();
 
-        verify(view,
-               never()).setHomeLinkAction(any());
-        verify(view).hideHomeLink();
+        ArgumentCaptor<Command> commandCaptor = ArgumentCaptor.forClass(Command.class);
+        verify(view).setHomeLinkAction(commandCaptor.capture());
+        commandCaptor.getValue().execute();
+
+        verify(placeManager,
+               never()).goTo(anyString());
     }
 
     @Test
     public void setupHomeLinkWithNoPermissionToAccessDefaultPerspective() {
-        doReturn("identifier").when(perspectiveManager).getDefaultPerspectiveIdentifier();
+        final PerspectiveActivity homePerspective = mock(PerspectiveActivity.class);
+        doReturn("identifier").when(homePerspective).getIdentifier();
+        doReturn(homePerspective).when(workbench).getHomePerspectiveActivity();
         doReturn(false).when(presenter).hasAccessToPerspective(any());
 
         presenter.setupHomeLink();
 
-        verify(view,
-               never()).setHomeLinkAction(any());
-        verify(view).hideHomeLink();
+        ArgumentCaptor<Command> commandCaptor = ArgumentCaptor.forClass(Command.class);
+        verify(view).setHomeLinkAction(commandCaptor.capture());
+        commandCaptor.getValue().execute();
+
+        verify(placeManager,
+               never()).goTo(anyString());
     }
 
     @Test
     public void setupHomeLinkWithPermissionToAccessDefaultPerspective() {
-        doReturn("identifier").when(perspectiveManager).getDefaultPerspectiveIdentifier();
+        final PerspectiveActivity homePerspective = mock(PerspectiveActivity.class);
+        doReturn("identifier").when(homePerspective).getIdentifier();
+        doReturn(homePerspective).when(workbench).getHomePerspectiveActivity();
         doReturn(true).when(presenter).hasAccessToPerspective(any());
 
         presenter.setupHomeLink();
 
-        verify(view).setHomeLinkAction(any());
-        verify(view,
-               never()).hideHomeLink();
+        ArgumentCaptor<Command> commandCaptor = ArgumentCaptor.forClass(Command.class);
+        verify(view).setHomeLinkAction(commandCaptor.capture());
+        commandCaptor.getValue().execute();
+
+        verify(placeManager).goTo("identifier");
     }
 
     class MegaMenuBrandMock implements MegaMenuBrand {

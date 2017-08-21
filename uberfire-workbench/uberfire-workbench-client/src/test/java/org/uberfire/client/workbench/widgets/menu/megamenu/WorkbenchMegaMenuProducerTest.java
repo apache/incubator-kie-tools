@@ -26,6 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.Workbench;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
@@ -98,6 +99,9 @@ public class WorkbenchMegaMenuProducerTest {
     @Mock
     private ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters;
 
+    @Mock
+    private Workbench workbench;
+
     private WorkbenchMegaMenuProducer producer;
     private boolean isStandalone = false;
 
@@ -115,7 +119,8 @@ public class WorkbenchMegaMenuProducerTest {
                                                  childMenuItemPresenters,
                                                  groupMenuItemPresenters,
                                                  childContextMenuItemPresenters,
-                                                 groupContextMenuItemPresenters) {
+                                                 groupContextMenuItemPresenters,
+                                                 workbench) {
             @Override
             boolean isStandalone() {
                 return isStandalone;

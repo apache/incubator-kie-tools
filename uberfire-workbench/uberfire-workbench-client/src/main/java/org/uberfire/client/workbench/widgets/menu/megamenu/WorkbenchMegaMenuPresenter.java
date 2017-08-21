@@ -29,6 +29,7 @@ import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
+import org.uberfire.client.workbench.Workbench;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.widgets.menu.base.WorkbenchBaseMenuPresenter;
 import org.uberfire.client.workbench.widgets.menu.base.WorkbenchBaseMenuUtils;
@@ -95,8 +96,6 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
                                         HasChildren parentPresenter);
 
         void setContextMenuActive(boolean active);
-
-        void hideHomeLink();
     }
 
     private AuthorizationManager authzManager;
@@ -112,6 +111,7 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
     private ManagedInstance<GroupMenuItemPresenter> groupMenuItemPresenters;
     private ManagedInstance<ChildContextMenuItemPresenter> childContextMenuItemPresenters;
     private ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters;
+    private Workbench workbench;
 
     Map<String, Selectable> selectableMenuItemByIdentifier = new HashMap<>();
     Map<String, HasChildren> hasChildrenMenuItemByIdentifier = new HashMap<>();
@@ -129,7 +129,8 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
                                       final ManagedInstance<ChildMenuItemPresenter> childMenuItemPresenters,
                                       final ManagedInstance<GroupMenuItemPresenter> groupMenuItemPresenters,
                                       final ManagedInstance<ChildContextMenuItemPresenter> childContextMenuItemPresenters,
-                                      final ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters) {
+                                      final ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters,
+                                      final Workbench workbench) {
         this.authzManager = authzManager;
         this.perspectiveManager = perspectiveManager;
         this.activityManager = activityManager;
@@ -143,6 +144,7 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
         this.groupMenuItemPresenters = groupMenuItemPresenters;
         this.childContextMenuItemPresenters = childContextMenuItemPresenters;
         this.groupContextMenuItemPresenters = groupContextMenuItemPresenters;
+        this.workbench = workbench;
 
         setup();
     }
@@ -376,14 +378,15 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
     }
 
     void setupHomeLink() {
-        final String defaultPerspectiveIdentifier = perspectiveManager.getDefaultPerspectiveIdentifier();
-        if (defaultPerspectiveIdentifier != null
-                && !defaultPerspectiveIdentifier.isEmpty()
-                && hasAccessToPerspective(defaultPerspectiveIdentifier)) {
-            view.setHomeLinkAction(() -> placeManager.goTo(defaultPerspectiveIdentifier));
-        } else {
-            view.hideHomeLink();
-        }
+        view.setHomeLinkAction(() -> {
+            final PerspectiveActivity homePerspectiveActivity = workbench.getHomePerspectiveActivity();
+            if (homePerspectiveActivity != null) {
+                final String homePerspectiveIdentifier = homePerspectiveActivity.getIdentifier();
+                if (hasAccessToPerspective(homePerspectiveIdentifier)) {
+                    placeManager.goTo(homePerspectiveIdentifier);
+                }
+            }
+        });
     }
 
     boolean hasAccessToPerspective(final String perspectiveId) {

@@ -258,9 +258,4 @@ public class WorkbenchMegaMenuView implements WorkbenchMegaMenuPresenter.View,
             }
         }
     }
-
-    @Override
-    public void hideHomeLink() {
-        homeLink.setHidden(true);
-    }
 }

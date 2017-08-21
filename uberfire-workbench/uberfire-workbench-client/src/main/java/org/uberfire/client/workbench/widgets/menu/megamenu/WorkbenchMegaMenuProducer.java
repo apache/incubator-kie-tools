@@ -27,6 +27,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.Workbench;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.widgets.menu.megamenu.brand.MegaMenuBrand;
 import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.ChildContextMenuItemPresenter;
@@ -52,6 +53,7 @@ public class WorkbenchMegaMenuProducer {
     private ManagedInstance<GroupMenuItemPresenter> groupMenuItemPresenters;
     private ManagedInstance<ChildContextMenuItemPresenter> childContextMenuItemPresenters;
     private ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters;
+    private Workbench workbench;
     private WorkbenchMegaMenuPresenter instance = null;
 
     public WorkbenchMegaMenuProducer() {
@@ -71,7 +73,8 @@ public class WorkbenchMegaMenuProducer {
                                      final ManagedInstance<ChildMenuItemPresenter> childMenuItemPresenters,
                                      final ManagedInstance<GroupMenuItemPresenter> groupMenuItemPresenters,
                                      final ManagedInstance<ChildContextMenuItemPresenter> childContextMenuItemPresenters,
-                                     final ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters) {
+                                     final ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters,
+                                     final Workbench workbench) {
         this.authzManager = authzManager;
         this.perspectiveManager = perspectiveManager;
         this.activityManager = activityManager;
@@ -85,6 +88,7 @@ public class WorkbenchMegaMenuProducer {
         this.groupMenuItemPresenters = groupMenuItemPresenters;
         this.childContextMenuItemPresenters = childContextMenuItemPresenters;
         this.groupContextMenuItemPresenters = groupContextMenuItemPresenters;
+        this.workbench = workbench;
     }
 
     @Produces
@@ -112,7 +116,8 @@ public class WorkbenchMegaMenuProducer {
                                               childMenuItemPresenters,
                                               groupMenuItemPresenters,
                                               childContextMenuItemPresenters,
-                                              groupContextMenuItemPresenters);
+                                              groupContextMenuItemPresenters,
+                                              workbench);
     }
 
     WorkbenchMegaMenuStandalonePresenter makeStandaloneMegaMenuPresenter() {
@@ -128,7 +133,8 @@ public class WorkbenchMegaMenuProducer {
                                                         childMenuItemPresenters,
                                                         groupMenuItemPresenters,
                                                         childContextMenuItemPresenters,
-                                                        groupContextMenuItemPresenters);
+                                                        groupContextMenuItemPresenters,
+                                                        workbench);
     }
 
     protected void onPerspectiveChange(final @Observes PerspectiveChange perspectiveChange) {
