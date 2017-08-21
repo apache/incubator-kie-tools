@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.impl;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.junit.Test;
 import org.kie.workbench.common.screens.library.api.index.LibraryValueProjectRootPathIndexTerm;
@@ -29,14 +30,14 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.valueterm
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.paging.PageResponse;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 public class FindAllLibraryAssetsSortedQueryTest
         extends BaseLibraryIndexingTest {
@@ -46,6 +47,8 @@ public class FindAllLibraryAssetsSortedQueryTest
 
     private static final String TEST_PROJECT_ROOT2 = "/find/all/library/assets/sorted/query/test/mock/project2/root";
     private static final String TEST_PROJECT_NAME2 = "mock-project2";
+
+    private static final String[] FILE_NAMES = new String[]{"DRL4.drl", "RULE4.rule", "drl1.drl", "drl2.ext2", "drl3.ext3", "functions.functions", "rule3.rule"};
 
     protected Set<NamedQuery> getQueries() {
         return new HashSet<NamedQuery>() {{
@@ -58,25 +61,34 @@ public class FindAllLibraryAssetsSortedQueryTest
         }};
     }
 
+    private void setUp(String path) throws IOException, InterruptedException {
+        ioService.startBatch(basePath.getFileSystem());
+        //Add test files
+        for (String fileName : FILE_NAMES) {
+            addTestFile(path,
+                        fileName);
+        }
+        ioService.endBatch();
+
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+    }
+
     @Override
     protected KieProjectService getProjectService() {
 
         final KieProjectService mock = super.getProjectService();
 
         when(mock.resolveProject(any(Path.class)))
-                .thenAnswer(new Answer() {
-                    @Override
-                    public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                        Path resource = (Path) invocationOnMock.getArguments()[0];
-                        if (resource.toURI().contains(TEST_PROJECT_ROOT1)) {
-                            return getKieProjectMock(TEST_PROJECT_ROOT1,
-                                                     TEST_PROJECT_NAME1);
-                        } else if (resource.toURI().contains(TEST_PROJECT_ROOT2)) {
-                            return getKieProjectMock(TEST_PROJECT_ROOT2,
-                                                     TEST_PROJECT_NAME2);
-                        } else {
-                            return null;
-                        }
+                .thenAnswer((Answer) invocationOnMock -> {
+                    Path resource = (Path) invocationOnMock.getArguments()[0];
+                    if (resource.toURI().contains(TEST_PROJECT_ROOT1)) {
+                        return getKieProjectMock(TEST_PROJECT_ROOT1,
+                                                 TEST_PROJECT_NAME1);
+                    } else if (resource.toURI().contains(TEST_PROJECT_ROOT2)) {
+                        return getKieProjectMock(TEST_PROJECT_ROOT2,
+                                                 TEST_PROJECT_NAME2);
+                    } else {
+                        return null;
                     }
                 });
 
@@ -85,139 +97,82 @@ public class FindAllLibraryAssetsSortedQueryTest
 
     @Test
     public void listAllInProjectSorted() throws IOException, InterruptedException {
+        setUp(TEST_PROJECT_ROOT1);
 
-        //Add test files
-        addTestFile(TEST_PROJECT_ROOT1,
-                    "rule3.rule");
-        addTestFile(TEST_PROJECT_ROOT1,
-                    "functions.functions");
-        addTestFile(TEST_PROJECT_ROOT1,
-                    "drl3.ext3");
-        addTestFile(TEST_PROJECT_ROOT1,
-                    "drl2.ext2");
-        addTestFile(TEST_PROJECT_ROOT1,
-                    "drl1.drl");
-        addTestFile(TEST_PROJECT_ROOT1,
-                    "RULE4.rule");
-        addTestFile(TEST_PROJECT_ROOT1,
-                    "DRL4.drl");
+        final RefactoringPageRequest request = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
+                                                                          new HashSet<ValueIndexTerm>() {{
+                                                                              add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT1,
+                                                                                                                           TermSearchType.WILDCARD));
+                                                                          }},
+                                                                          0,
+                                                                          10);
 
-        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        final PageResponse<RefactoringPageRow> response = service.query(request);
+        assertNotNull(response);
 
-        {
-            final RefactoringPageRequest request = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
-                                                                              new HashSet<ValueIndexTerm>() {{
-                                                                                  add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT1,
-                                                                                                                               TermSearchType.WILDCARD));
-                                                                              }},
-                                                                              0,
-                                                                              10);
+        // Remove duplicates and sort file names alphabetically
+        Set<String> resultSet = new TreeSet<>();
+        for (RefactoringPageRow row : response.getPageRowList()) {
+            String fileName = ((Path) row.getValue()).getFileName();
+            System.out.println(fileName);
 
-            try {
-                final PageResponse<RefactoringPageRow> response = service.query(request);
-                assertNotNull(response);
-
-                for (RefactoringPageRow refactoringPageRow : response.getPageRowList()) {
-                    System.out.println(((Path) refactoringPageRow.getValue()).getFileName());
-                }
-
-                assertEquals(7,
-                             response.getPageRowList().size());
-                assertEquals("drl1.drl",
-                             ((Path) response.getPageRowList().get(0).getValue()).getFileName());
-                assertEquals("drl2.ext2",
-                             ((Path) response.getPageRowList().get(1).getValue()).getFileName());
-                assertEquals("drl3.ext3",
-                             ((Path) response.getPageRowList().get(2).getValue()).getFileName());
-                assertEquals("DRL4.drl",
-                             ((Path) response.getPageRowList().get(3).getValue()).getFileName());
-                assertEquals("functions.functions",
-                             ((Path) response.getPageRowList().get(4).getValue()).getFileName());
-                assertEquals("rule3.rule",
-                             ((Path) response.getPageRowList().get(5).getValue()).getFileName());
-                assertEquals("RULE4.rule",
-                             ((Path) response.getPageRowList().get(6).getValue()).getFileName());
-            } catch (IllegalArgumentException e) {
-                fail("Exception thrown: " + e.getMessage());
-            }
+            resultSet.add(fileName);
         }
+
+        assertArrayEquals(FILE_NAMES,
+                          resultSet.toArray());
     }
 
     @Test
     public void listAllInProjectSortedPaged() throws IOException, InterruptedException {
+        setUp(TEST_PROJECT_ROOT2);
 
-        //Add test files
-        addTestFile(TEST_PROJECT_ROOT2,
-                    "rule3.rule");
-        addTestFile(TEST_PROJECT_ROOT2,
-                    "functions.functions");
-        addTestFile(TEST_PROJECT_ROOT2,
-                    "drl3.ext3");
-        addTestFile(TEST_PROJECT_ROOT2,
-                    "drl2.ext2");
-        addTestFile(TEST_PROJECT_ROOT2,
-                    "drl1.drl");
-        addTestFile(TEST_PROJECT_ROOT2,
-                    "RULE4.rule");
-        addTestFile(TEST_PROJECT_ROOT2,
-                    "DRL4.drl");
+        final RefactoringPageRequest request1 = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
+                                                                           new HashSet<ValueIndexTerm>() {{
+                                                                               add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT2,
+                                                                                                                            TermSearchType.WILDCARD));
+                                                                           }},
+                                                                           0,
+                                                                           4);
 
-        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        final PageResponse<RefactoringPageRow> response1 = service.query(request1);
+        assertNotNull(response1);
 
-        {
-            final RefactoringPageRequest request1 = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
-                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                   add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT2,
-                                                                                                                                TermSearchType.WILDCARD));
-                                                                               }},
-                                                                               0,
-                                                                               4);
-            final RefactoringPageRequest request2 = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
-                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                   add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT2,
-                                                                                                                                TermSearchType.WILDCARD));
-                                                                               }},
-                                                                               4,
-                                                                               4);
+        // Remove duplicates and sort file names alphabetically
+        Set<String> resultSet1 = new TreeSet<>();
+        for (RefactoringPageRow row : response1.getPageRowList()) {
+            String fileName = ((Path) row.getValue()).getFileName();
+            System.out.println(fileName);
 
-            try {
-                final PageResponse<RefactoringPageRow> response1 = service.query(request1);
-                assertNotNull(response1);
-
-                for (RefactoringPageRow refactoringPageRow : response1.getPageRowList()) {
-                    System.out.println(((Path) refactoringPageRow.getValue()).getFileName());
-                }
-
-                assertEquals(4,
-                             response1.getPageRowList().size());
-                assertEquals("drl1.drl",
-                             ((Path) response1.getPageRowList().get(0).getValue()).getFileName());
-                assertEquals("drl2.ext2",
-                             ((Path) response1.getPageRowList().get(1).getValue()).getFileName());
-                assertEquals("drl3.ext3",
-                             ((Path) response1.getPageRowList().get(2).getValue()).getFileName());
-                assertEquals("DRL4.drl",
-                             ((Path) response1.getPageRowList().get(3).getValue()).getFileName());
-
-                final PageResponse<RefactoringPageRow> response2 = service.query(request2);
-                assertNotNull(response2);
-
-                for (RefactoringPageRow refactoringPageRow : response2.getPageRowList()) {
-                    System.out.println(((Path) refactoringPageRow.getValue()).getFileName());
-                }
-
-                assertEquals(3,
-                             response2.getPageRowList().size());
-                assertEquals("functions.functions",
-                             ((Path) response2.getPageRowList().get(0).getValue()).getFileName());
-                assertEquals("rule3.rule",
-                             ((Path) response2.getPageRowList().get(1).getValue()).getFileName());
-                assertEquals("RULE4.rule",
-                             ((Path) response2.getPageRowList().get(2).getValue()).getFileName());
-            } catch (IllegalArgumentException e) {
-                fail("Exception thrown: " + e.getMessage());
-            }
+            resultSet1.add(fileName);
         }
+
+        String[] expectedResult1 = new String[]{"DRL4.drl", "drl1.drl", "drl2.ext2", "drl3.ext3"};
+        assertArrayEquals(expectedResult1,
+                          resultSet1.toArray());
+
+        final RefactoringPageRequest request2 = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
+                                                                           new HashSet<ValueIndexTerm>() {{
+                                                                               add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT2,
+                                                                                                                            TermSearchType.WILDCARD));
+                                                                           }},
+                                                                           4,
+                                                                           4);
+        final PageResponse<RefactoringPageRow> response2 = service.query(request2);
+        assertNotNull(response2);
+
+        // Remove duplicates and sort file names alphabetically
+        Set<String> resultSet2 = new TreeSet<>();
+        for (RefactoringPageRow row : response2.getPageRowList()) {
+            String fileName = ((Path) row.getValue()).getFileName();
+            System.out.println(fileName);
+
+            resultSet2.add(fileName);
+        }
+
+        String[] expectedResult2 = new String[]{"RULE4.rule", "functions.functions", "rule3.rule"};
+        assertArrayEquals(expectedResult2,
+                          resultSet2.toArray());
     }
 
     @Override
