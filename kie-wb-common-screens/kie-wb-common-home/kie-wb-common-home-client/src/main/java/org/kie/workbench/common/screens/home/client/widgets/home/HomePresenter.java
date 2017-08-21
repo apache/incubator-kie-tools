@@ -20,18 +20,15 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.home.client.resources.i18n.HomeConstants;
 import org.kie.workbench.common.screens.home.client.widgets.shortcut.ShortcutPresenter;
 import org.kie.workbench.common.screens.home.model.HomeModel;
 import org.kie.workbench.common.screens.home.model.HomeModelProvider;
-import org.kie.workbench.common.screens.home.model.HomeShortcut;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.security.authz.AuthorizationManager;
 
 @Dependent
 @WorkbenchScreen(identifier = "org.kie.workbench.common.screens.home.client.HomePresenter")
@@ -54,24 +51,16 @@ public class HomePresenter {
 
     private HomeModelProvider modelProvider;
 
-    private AuthorizationManager authorizationManager;
-
-    private User user;
-
     private ManagedInstance<ShortcutPresenter> shortcutPresenters;
 
     @Inject
     public HomePresenter(final View view,
                          final TranslationService translationService,
                          final HomeModelProvider modelProvider,
-                         final AuthorizationManager authorizationManager,
-                         final User user,
                          final ManagedInstance<ShortcutPresenter> shortcutPresenters) {
         this.view = view;
         this.translationService = translationService;
         this.modelProvider = modelProvider;
-        this.authorizationManager = authorizationManager;
-        this.user = user;
         this.shortcutPresenters = shortcutPresenters;
     }
 
@@ -82,25 +71,10 @@ public class HomePresenter {
         view.setDescription(model.getDescription());
         view.setBackgroundImageUrl(model.getBackgroundImageUrl());
         model.getShortcuts().forEach(shortcut -> {
-            if (authorize(shortcut)) {
-                final ShortcutPresenter shortcutPresenter = shortcutPresenters.get();
-                shortcutPresenter.setup(shortcut);
-                view.addShortcut(shortcutPresenter);
-            }
+            final ShortcutPresenter shortcutPresenter = shortcutPresenters.get();
+            shortcutPresenter.setup(shortcut);
+            view.addShortcut(shortcutPresenter);
         });
-    }
-
-    private boolean authorize(final HomeShortcut shortcut) {
-        if (shortcut.getResource() != null) {
-            return authorizationManager.authorize(shortcut.getResource(),
-                                                  shortcut.getResourceAction(),
-                                                  user);
-        } else if (shortcut.getPermission() != null) {
-            return authorizationManager.authorize(shortcut.getPermission(),
-                                                  user);
-        } else {
-            return true;
-        }
     }
 
     @WorkbenchPartTitle

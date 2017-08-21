@@ -33,20 +33,21 @@ import static org.kie.workbench.common.workbench.client.PerspectiveIds.BUSINESS_
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.DATASET_AUTHORING;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.DATASOURCE_MANAGEMENT;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.DEPLOYMENTS;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.DROOLS_ADMIN;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.EXECUTION_ERRORS;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.GUVNOR_M2REPO;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.HOME;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.JOBS;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.LIBRARY;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.PLANNER_ADMIN;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.PLUGIN_AUTHORING;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_DASHBOARD;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_DEFINITIONS;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_INSTANCES;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.SECURITY_MANAGEMENT;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.SERVER_MANAGEMENT;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.SOCIAL_HOME;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.SOCIAL_USER_HOME;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.TASKS;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.TASKS_ADMIN;
 
 /**
  * This is an example of how to customize some of the permission tree nodes.
@@ -84,32 +85,26 @@ public class PermissionTreeSetup {
                                                    i18n.Admin());
         perspectiveTreeProvider.setPerspectiveName(SECURITY_MANAGEMENT,
                                                    i18n.SecurityManagement());
-        perspectiveTreeProvider.setPerspectiveName(LIBRARY,
-                                                   i18n.ProjectAuthoring());
         perspectiveTreeProvider.setPerspectiveName(GUVNOR_M2REPO,
                                                    i18n.ArtifactRepository());
-        perspectiveTreeProvider.setPerspectiveName(ADMINISTRATION,
-                                                   i18n.Administration());
-        perspectiveTreeProvider.setPerspectiveName(DROOLS_ADMIN,
-                                                   i18n.DroolsAdministration());
-        perspectiveTreeProvider.setPerspectiveName(PLANNER_ADMIN,
-                                                   i18n.PlannerAdministration());
-        perspectiveTreeProvider.setPerspectiveName(PROCESS_DEFINITIONS,
-                                                   i18n.ProcessDefinitions());
-        perspectiveTreeProvider.setPerspectiveName(PROCESS_INSTANCES,
-                                                   i18n.ProcessInstances());
-        perspectiveTreeProvider.setPerspectiveName(PLUGIN_AUTHORING,
-                                                   i18n.Plugins());
-        perspectiveTreeProvider.setPerspectiveName(APPS,
-                                                   i18n.Apps());
         perspectiveTreeProvider.setPerspectiveName(DATASET_AUTHORING,
                                                    i18n.DataSets());
         perspectiveTreeProvider.setPerspectiveName(DATASOURCE_MANAGEMENT,
                                                    i18n.DataSources());
+        perspectiveTreeProvider.setPerspectiveName(LIBRARY,
+                                                   i18n.ProjectAuthoring());
+        perspectiveTreeProvider.setPerspectiveName(BUSINESS_DASHBOARDS,
+                                                   i18n.Business_Dashboards());
         perspectiveTreeProvider.setPerspectiveName(DEPLOYMENTS,
                                                    i18n.Process_Deployments());
         perspectiveTreeProvider.setPerspectiveName(SERVER_MANAGEMENT,
                                                    i18n.Rule_Deployments());
+        perspectiveTreeProvider.setPerspectiveName(PROCESS_DEFINITIONS,
+                                                   i18n.ProcessDefinitions());
+        perspectiveTreeProvider.setPerspectiveName(PROCESS_INSTANCES,
+                                                   i18n.ProcessInstances());
+        perspectiveTreeProvider.setPerspectiveName(TASKS_ADMIN,
+                                                   i18n.Tasks_Admin());
         perspectiveTreeProvider.setPerspectiveName(JOBS,
                                                    i18n.Jobs());
         perspectiveTreeProvider.setPerspectiveName(EXECUTION_ERRORS,
@@ -118,8 +113,8 @@ public class PermissionTreeSetup {
                                                    i18n.Tasks());
         perspectiveTreeProvider.setPerspectiveName(PROCESS_DASHBOARD,
                                                    i18n.Process_Dashboard());
-        perspectiveTreeProvider.setPerspectiveName(BUSINESS_DASHBOARDS,
-                                                   i18n.Business_Dashboards());
+        perspectiveTreeProvider.setPerspectiveName(APPS,
+                                                   i18n.Apps());
 
         // Exclude some perspectives
         perspectiveTreeProvider.excludePerspectiveId(AUTHORING); /* kie-wb-distributions */
@@ -131,6 +126,12 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.excludePerspectiveId("WiresTreesPerspective"); /* uberfire */
         perspectiveTreeProvider.excludePerspectiveId("WiresGridsDemoPerspective"); /* uberfire */
         perspectiveTreeProvider.excludePerspectiveId("PreferencesCentralPerspective"); /* uberfire */
+        perspectiveTreeProvider.excludePerspectiveId(ADMINISTRATION); /* kie-wb-distributions */
+        perspectiveTreeProvider.excludePerspectiveId(PLUGIN_AUTHORING); /* uberfire */
+        perspectiveTreeProvider.excludePerspectiveId(SOCIAL_HOME); /* uberfire */
+        perspectiveTreeProvider.excludePerspectiveId(SOCIAL_USER_HOME); /* uberfire */
+        perspectiveTreeProvider.excludePerspectiveId("Asset Management"); /* guvnor */
+        perspectiveTreeProvider.excludePerspectiveId(SOCIAL_USER_HOME); /* uberfire */
 
         // Set the desired display order
         workbenchTreeProvider.setRootNodePosition(0);

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.screens.home.client.widgets.home;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,13 +28,10 @@ import org.kie.workbench.common.screens.home.model.ModelUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
-import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceAction;
 import org.uberfire.security.ResourceType;
-import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,12 +42,6 @@ public class HomePresenterTest {
 
     @Mock
     private TranslationService translationService;
-
-    @Mock
-    private AuthorizationManager authorizationManager;
-
-    @Mock
-    private User user;
 
     @Mock
     private ManagedInstance<ShortcutPresenter> shortcutPresenters;
@@ -91,19 +81,11 @@ public class HomePresenterTest {
         presenter = new HomePresenter(view,
                                       translationService,
                                       modelProvider,
-                                      authorizationManager,
-                                      user,
                                       shortcutPresenters);
     }
 
     @Test
-    public void setupWithPermissionsTest() {
-        doReturn(true).when(authorizationManager).authorize(any(Resource.class),
-                                                            any(ResourceAction.class),
-                                                            any(User.class));
-        doReturn(true).when(authorizationManager).authorize(anyString(),
-                                                            any(User.class));
-
+    public void setupTest() {
         presenter.setup();
 
         verify(view).setWelcome("welcome");
@@ -111,22 +93,5 @@ public class HomePresenterTest {
         verify(view).setBackgroundImageUrl("backgroundImageUrl");
         verify(view,
                times(3)).addShortcut(any());
-    }
-
-    @Test
-    public void setupWithoutPermissionsTest() {
-        doReturn(false).when(authorizationManager).authorize(any(Resource.class),
-                                                             any(ResourceAction.class),
-                                                             any(User.class));
-        doReturn(false).when(authorizationManager).authorize(anyString(),
-                                                             any(User.class));
-
-        presenter.setup();
-
-        verify(view).setWelcome("welcome");
-        verify(view).setDescription("description");
-        verify(view).setBackgroundImageUrl("backgroundImageUrl");
-        verify(view,
-               times(1)).addShortcut(any());
     }
 }

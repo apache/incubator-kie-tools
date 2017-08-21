@@ -15,6 +15,9 @@
 
 package org.kie.workbench.common.screens.home.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
 import org.uberfire.security.Resource;
@@ -27,11 +30,13 @@ public class HomeShortcut {
     private final String iconCss;
     private final String heading;
     private final String subHeading;
-    private Command onClickCommand;
 
+    private Command onClickCommand;
     private String permission;
     private Resource resource;
     private ResourceAction resourceAction;
+
+    private List<HomeShortcutLink> links = new ArrayList<>();
 
     public HomeShortcut(final String iconCss,
                         final String heading,
@@ -55,6 +60,10 @@ public class HomeShortcut {
                                             resourceType);
         }
         this.resourceAction = resourceAction;
+    }
+
+    public void addLink(final HomeShortcutLink link) {
+        links.add(link);
     }
 
     public String getIconCss() {
@@ -83,5 +92,9 @@ public class HomeShortcut {
 
     public ResourceAction getResourceAction() {
         return resourceAction;
+    }
+
+    public List<HomeShortcutLink> getLinks() {
+        return links;
     }
 }

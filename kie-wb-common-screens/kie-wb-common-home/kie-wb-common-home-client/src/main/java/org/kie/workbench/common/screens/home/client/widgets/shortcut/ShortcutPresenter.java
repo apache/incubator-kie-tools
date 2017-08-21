@@ -19,7 +19,13 @@ package org.kie.workbench.common.screens.home.client.widgets.shortcut;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.screens.home.client.widgets.shortcut.subheading.ShortcutSubHeadingLinkPresenter;
+import org.kie.workbench.common.screens.home.client.widgets.shortcut.subheading.ShortcutSubHeadingTextPresenter;
+import org.kie.workbench.common.screens.home.client.widgets.shortcut.utils.ShortcutHelper;
 import org.kie.workbench.common.screens.home.model.HomeShortcut;
+import org.kie.workbench.common.screens.home.model.HomeShortcutLink;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.mvp.Command;
 
@@ -31,16 +37,28 @@ public class ShortcutPresenter {
 
         void setHeading(String icon);
 
-        void setSubHeading(String icon);
-
         void setAction(Command action);
+
+        void addSubHeadingChild(IsElement child);
     }
 
     private View view;
 
+    private ShortcutHelper shortcutHelper;
+
+    private ManagedInstance<ShortcutSubHeadingLinkPresenter> linkPresenters;
+
+    private ManagedInstance<ShortcutSubHeadingTextPresenter> textPresenters;
+
     @Inject
-    public ShortcutPresenter(final View view) {
+    public ShortcutPresenter(final View view,
+                             final ShortcutHelper shortcutHelper,
+                             final ManagedInstance<ShortcutSubHeadingLinkPresenter> linkPresenters,
+                             final ManagedInstance<ShortcutSubHeadingTextPresenter> textPresenters) {
         this.view = view;
+        this.shortcutHelper = shortcutHelper;
+        this.linkPresenters = linkPresenters;
+        this.textPresenters = textPresenters;
     }
 
     @PostConstruct
@@ -51,8 +69,39 @@ public class ShortcutPresenter {
     public void setup(final HomeShortcut shortcut) {
         view.setIcon(shortcut.getIconCss());
         view.setHeading(shortcut.getHeading());
-        view.setSubHeading(shortcut.getSubHeading());
-        view.setAction(shortcut.getOnClickCommand());
+        setupAction(shortcut);
+        setupSubHeading(shortcut);
+    }
+
+    private void setupSubHeading(HomeShortcut shortcut) {
+        int part = 1;
+        addText(shortcut.getSubHeading(),
+                part);
+        for (HomeShortcutLink link : shortcut.getLinks()) {
+            addLink(link);
+            addText(shortcut.getSubHeading(),
+                    ++part);
+        }
+    }
+
+    private void setupAction(HomeShortcut shortcut) {
+        if (shortcutHelper.authorize(shortcut)) {
+            view.setAction(shortcut.getOnClickCommand());
+        }
+    }
+
+    private void addText(final String subHeading,
+                         final int part) {
+        final ShortcutSubHeadingTextPresenter textPresenter = textPresenters.get();
+        textPresenter.setup(subHeading,
+                            part);
+        view.addSubHeadingChild(textPresenter.getView());
+    }
+
+    private void addLink(final HomeShortcutLink link) {
+        final ShortcutSubHeadingLinkPresenter linkPresenter = linkPresenters.get();
+        linkPresenter.setup(link);
+        view.addSubHeadingChild(linkPresenter.getView());
     }
 
     public View getView() {

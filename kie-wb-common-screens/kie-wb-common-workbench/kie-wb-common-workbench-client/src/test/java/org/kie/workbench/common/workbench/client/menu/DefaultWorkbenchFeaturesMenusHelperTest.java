@@ -274,7 +274,9 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     }
 
     @Test
-    public void addUtilitiesMenuItemsTest() {
+    public void addUtilitiesMenuItemsWithAllPermissionsTest() {
+        doReturn(true).when(menusHelper).hasAccessToPerspective(anyString());
+
         menusHelper.addUtilitiesMenuItems();
 
         ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass(Menus.class);
@@ -286,6 +288,24 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
         assertEquals(1,
                      menusList.size());
         assertEquals(5,
+                     menusList.get(0).getItems().size());
+    }
+
+    @Test
+    public void addUtilitiesMenuItemsWithoutPermissionsTest() {
+        doReturn(false).when(menusHelper).hasAccessToPerspective(anyString());
+
+        menusHelper.addUtilitiesMenuItems();
+
+        ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass(Menus.class);
+        verify(menuBar,
+               times(1)).addMenus(menusCaptor.capture());
+
+        List<Menus> menusList = menusCaptor.getAllValues();
+
+        assertEquals(1,
+                     menusList.size());
+        assertEquals(3,
                      menusList.get(0).getItems().size());
     }
 

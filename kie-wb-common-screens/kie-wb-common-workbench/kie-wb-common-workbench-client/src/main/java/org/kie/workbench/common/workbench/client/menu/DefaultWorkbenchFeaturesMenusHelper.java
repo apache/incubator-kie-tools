@@ -52,6 +52,9 @@ import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPres
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.ResourceRef;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -88,6 +91,8 @@ public class DefaultWorkbenchFeaturesMenusHelper {
     protected UtilityMenuBar utilityMenuBar;
     protected WorkbenchMegaMenuPresenter menuBar;
     protected AboutCommand aboutCommand;
+    private AuthorizationManager authorizationManager;
+    private SessionInfo sessionInfo;
 
     public DefaultWorkbenchFeaturesMenusHelper() {
     }
@@ -101,7 +106,9 @@ public class DefaultWorkbenchFeaturesMenusHelper {
                                                UserMenu userMenu,
                                                UtilityMenuBar utilityMenuBar,
                                                WorkbenchMegaMenuPresenter menuBar,
-                                               AboutCommand aboutCommand) {
+                                               AboutCommand aboutCommand,
+                                               AuthorizationManager authorizationManager,
+                                               SessionInfo sessionInfo) {
         this.iocManager = iocManager;
         this.activityManager = activityManager;
         this.perspectiveManager = perspectiveManager;
@@ -111,6 +118,8 @@ public class DefaultWorkbenchFeaturesMenusHelper {
         this.utilityMenuBar = utilityMenuBar;
         this.menuBar = menuBar;
         this.aboutCommand = aboutCommand;
+        this.authorizationManager = authorizationManager;
+        this.sessionInfo = sessionInfo;
     }
 
     public List<? extends MenuItem> getHomeViews(final boolean socialEnabled) {
@@ -197,19 +206,23 @@ public class DefaultWorkbenchFeaturesMenusHelper {
     public void addUtilitiesMenuItems() {
         addUserMenuItems();
 
-        final Menus utilityMenus =
-                MenuFactory
-                        .newTopLevelCustomMenu(iocManager.lookupBean(AppsCustomMenuBuilder.class).getInstance())
-                        .endMenu()
-                        .newTopLevelCustomMenu(iocManager.lookupBean(CustomSplashHelp.class).getInstance())
-                        .endMenu()
-                        .newTopLevelCustomMenu(iocManager.lookupBean(AdminCustomMenuBuilder.class).getInstance())
-                        .endMenu()
-                        .newTopLevelCustomMenu(iocManager.lookupBean(ResetPerspectivesMenuBuilder.class).getInstance())
-                        .endMenu()
-                        .newTopLevelCustomMenu(userMenu)
-                        .endMenu()
-                        .build();
+        TopLevelMenusBuilder<MenuBuilder> menuBuilder;
+
+        if (hasAccessToPerspective(APPS)) {
+            menuBuilder = MenuFactory.newTopLevelCustomMenu(iocManager.lookupBean(AppsCustomMenuBuilder.class).getInstance()).endMenu();
+            menuBuilder.newTopLevelCustomMenu(iocManager.lookupBean(CustomSplashHelp.class).getInstance()).endMenu();
+        } else {
+            menuBuilder = MenuFactory.newTopLevelCustomMenu(iocManager.lookupBean(CustomSplashHelp.class).getInstance()).endMenu();
+        }
+
+        if (hasAccessToPerspective(ADMIN)) {
+            menuBuilder.newTopLevelCustomMenu(iocManager.lookupBean(AdminCustomMenuBuilder.class).getInstance()).endMenu();
+        }
+
+        menuBuilder.newTopLevelCustomMenu(iocManager.lookupBean(ResetPerspectivesMenuBuilder.class).getInstance()).endMenu();
+        menuBuilder.newTopLevelCustomMenu(userMenu).endMenu();
+
+        final Menus utilityMenus = menuBuilder.build();
 
         menuBar.addMenus(utilityMenus);
     }
@@ -335,6 +348,13 @@ public class DefaultWorkbenchFeaturesMenusHelper {
 
     public PlaceRequest resolvePlaceRequest(String perspectiveId) {
         return new DefaultPlaceRequest(perspectiveId);
+    }
+
+    boolean hasAccessToPerspective(final String perspectiveId) {
+        ResourceRef resourceRef = new ResourceRef(perspectiveId,
+                                                  ActivityResourceType.PERSPECTIVE);
+        return authorizationManager.authorize(resourceRef,
+                                              sessionInfo.getIdentity());
     }
 
     protected class LogoutCommand implements Command {

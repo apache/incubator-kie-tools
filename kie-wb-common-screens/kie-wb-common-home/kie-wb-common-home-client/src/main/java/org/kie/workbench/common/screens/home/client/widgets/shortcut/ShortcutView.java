@@ -66,12 +66,12 @@ public class ShortcutView implements ShortcutPresenter.View,
     }
 
     @Override
-    public void setSubHeading(final String subHeading) {
-        this.subHeading.setTextContent(subHeading);
+    public void setAction(final Command action) {
+        card.setOnclick(event -> action.execute());
     }
 
     @Override
-    public void setAction(final Command action) {
-        card.setOnclick(event -> action.execute());
+    public void addSubHeadingChild(org.jboss.errai.common.client.api.IsElement child) {
+        subHeading.appendChild(child.getElement());
     }
 }

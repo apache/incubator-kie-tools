@@ -146,4 +146,6 @@ public interface DefaultWorkbenchConstants
     String EditGlobalPreferencesHelp();
 
     String Languages();
+
+    String Tasks_Admin();
 }

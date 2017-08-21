@@ -33,7 +33,7 @@
     background-size: cover;
     .blank-slate-pf {
       background-color: transparent;
-      color: @color-pf-white;
+      color: @color-pf-black-300;
       border: 0;
     }
     .kie-circle-icon {
@@ -95,8 +95,6 @@
 
     }
     &:hover, &:focus, &:active {
-      color: @brand-primary;
-
       .kie-hero-card__icon {
         background-color: @brand-primary;
         color: @color-pf-white;
@@ -162,4 +160,13 @@
     font-size: 4em;
   }
 
+  .kie-hero-card__link {
+    font-weight: bold;
+  }
+
+  .kie-hero-card__link.disabled {
+    pointer-events: none;
+    font-weight: normal;
+    color: #d1d1d1;
+  }
 }
