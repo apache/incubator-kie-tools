@@ -67,16 +67,12 @@ public class FormDefinitionIndexerTest extends BaseIndexingTest<FormResourceType
             "testTask-taskform.frm"
     };
 
-    private FormModelVisitorProvider provider;
-
-    private FormModelVisitor visitor;
-
     private TestFormDefinitionIndexer indexer;
 
     @Override
     public void setup() throws IOException {
-        visitor = mock(FormModelVisitor.class);
-        provider = mock(FormModelVisitorProvider.class);
+        FormModelVisitor visitor = mock(FormModelVisitor.class);
+        FormModelVisitorProvider provider = mock(FormModelVisitorProvider.class);
         when(provider.getModelType()).thenReturn(FormModel.class);
         when(provider.getVisitor()).thenReturn(visitor);
 
@@ -124,20 +120,22 @@ public class FormDefinitionIndexerTest extends BaseIndexingTest<FormResourceType
             }
 
             assertNotNull(response);
+
+            Set<RefactoringPageRow> result = new HashSet(response.getPageRowList());
+
             assertEquals(paths.length,
-                         response.getPageRowList().size());
+                         result.size());
         }
         {
-
             final Set<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>() {{
                 add(new ValueResourceIndexTerm("*",
                                                ResourceType.FORM,
                                                ValueIndexTerm.TermSearchType.WILDCARD));
             }};
             try {
-                List<RefactoringPageRow> response = service.query(
+                Set<RefactoringPageRow> response = new HashSet(service.query(
                         FindFormDefinitionIdsQuery.NAME,
-                        queryTerms);
+                        queryTerms));
                 assertNotNull(response);
                 assertEquals(paths.length,
                              response.size());
