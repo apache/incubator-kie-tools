@@ -82,7 +82,7 @@ public class DirectionalLine extends AbstractDirectionalMultiPointShape<Directio
 
     @Override
     public boolean parse(final Attributes attr) {
-        final Point2DArray points = attr.getControlPoints().noAdjacentPoints();
+        final Point2DArray points = attr.getControlPoints();
 
         final Point2D p1 = points.get(0);
         final double x1 = p1.getX();
