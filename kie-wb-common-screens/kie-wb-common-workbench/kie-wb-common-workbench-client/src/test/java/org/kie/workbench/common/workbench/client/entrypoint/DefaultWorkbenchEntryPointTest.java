@@ -26,7 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.kie.workbench.common.workbench.client.library.LibraryMonitor;
 import org.mockito.Mock;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.ActivityBeansCache;
@@ -45,9 +44,6 @@ public class DefaultWorkbenchEntryPointTest {
     private DefaultWorkbenchEntryPoint entryPoint;
 
     @Mock
-    private LibraryMonitor libraryMonitorMock;
-
-    @Mock
     private Callback<String> callback1;
 
     @Mock
@@ -58,46 +54,44 @@ public class DefaultWorkbenchEntryPointTest {
         mockAppConfigService();
         mockActivityBeansCache();
 
-        entryPoint = spy( new DefaultWorkbenchEntryPoint( appConfigServiceCallerMock,
-                                                          activityBeansCache ) {
-            {
-                libraryMonitor = libraryMonitorMock;
-            }
-
+        entryPoint = spy(new DefaultWorkbenchEntryPoint(appConfigServiceCallerMock,
+                                                        activityBeansCache) {
             @Override
             protected void setupMenu() {
             }
-        } );
-        doNothing().when( entryPoint ).hideLoadingPopup();
+        });
+        doNothing().when(entryPoint).hideLoadingPopup();
     }
 
     @Test
     public void startDefaultWorkbenchTest() {
         entryPoint.startDefaultWorkbench();
 
-        verify( entryPoint ).loadPreferences();
-        verify( entryPoint ).loadStyles();
-        verify( libraryMonitorMock ).initialize();
+        verify(entryPoint).loadPreferences();
+        verify(entryPoint).loadStyles();
     }
 
     @Test
     public void loadPreferencesTest() {
         entryPoint.loadPreferences();
 
-        verify( entryPoint ).setupMenu();
-        verify( entryPoint ).setupAdminPage();
+        verify(entryPoint).setupMenu();
+        verify(entryPoint).setupAdminPage();
 
-        Assert.assertEquals( "value", ApplicationPreferences.getStringPref( "key" ) );
+        Assert.assertEquals("value",
+                            ApplicationPreferences.getStringPref("key"));
     }
+
     private void mockActivityBeansCache() {
-        activityBeansCache = mock( ActivityBeansCache.class );
+        activityBeansCache = mock(ActivityBeansCache.class);
     }
 
     private void mockAppConfigService() {
-        appConfigService = mock( AppConfigService.class );
+        appConfigService = mock(AppConfigService.class);
         Map<String, String> preferencesMap = new HashMap<>();
-        preferencesMap.put( "key", "value" );
-        doReturn( preferencesMap ).when( appConfigService ).loadPreferences();
-        appConfigServiceCallerMock = new CallerMock<>( appConfigService );
+        preferencesMap.put("key",
+                           "value");
+        doReturn(preferencesMap).when(appConfigService).loadPreferences();
+        appConfigServiceCallerMock = new CallerMock<>(appConfigService);
     }
 }

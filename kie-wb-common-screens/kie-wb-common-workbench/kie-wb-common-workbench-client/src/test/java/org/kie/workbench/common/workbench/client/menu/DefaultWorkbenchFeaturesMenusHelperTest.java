@@ -305,7 +305,7 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
 
         assertEquals(1,
                      menusList.size());
-        assertEquals(3,
+        assertEquals(4,
                      menusList.get(0).getItems().size());
     }
 

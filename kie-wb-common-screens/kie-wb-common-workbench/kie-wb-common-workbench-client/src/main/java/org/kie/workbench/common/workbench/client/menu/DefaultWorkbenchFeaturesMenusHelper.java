@@ -37,9 +37,9 @@ import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.kie.workbench.common.widgets.client.menu.AboutCommand;
+import org.kie.workbench.common.widgets.client.menu.AppLauncherMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.ResetPerspectivesMenuBuilder;
 import org.kie.workbench.common.workbench.client.menu.custom.AdminCustomMenuBuilder;
-import org.kie.workbench.common.workbench.client.menu.custom.AppsCustomMenuBuilder;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.menu.CustomSplashHelp;
 import org.uberfire.client.menu.WorkbenchViewModeSwitcherMenuBuilder;
@@ -208,12 +208,8 @@ public class DefaultWorkbenchFeaturesMenusHelper {
 
         TopLevelMenusBuilder<MenuBuilder> menuBuilder;
 
-        if (hasAccessToPerspective(APPS)) {
-            menuBuilder = MenuFactory.newTopLevelCustomMenu(iocManager.lookupBean(AppsCustomMenuBuilder.class).getInstance()).endMenu();
-            menuBuilder.newTopLevelCustomMenu(iocManager.lookupBean(CustomSplashHelp.class).getInstance()).endMenu();
-        } else {
-            menuBuilder = MenuFactory.newTopLevelCustomMenu(iocManager.lookupBean(CustomSplashHelp.class).getInstance()).endMenu();
-        }
+        menuBuilder = MenuFactory.newTopLevelCustomMenu(iocManager.lookupBean(AppLauncherMenuBuilder.class).getInstance()).endMenu();
+        menuBuilder.newTopLevelCustomMenu(iocManager.lookupBean(CustomSplashHelp.class).getInstance()).endMenu();
 
         if (hasAccessToPerspective(ADMIN)) {
             menuBuilder.newTopLevelCustomMenu(iocManager.lookupBean(AdminCustomMenuBuilder.class).getInstance()).endMenu();

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.workbench.client.entrypoint;
 
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -33,7 +32,6 @@ import org.jboss.errai.ioc.client.api.UncaughtExceptionHandler;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.resources.RoundedCornersResource;
 import org.kie.workbench.common.workbench.client.error.DefaultWorkbenchErrorCallback;
-import org.kie.workbench.common.workbench.client.library.LibraryMonitor;
 import org.slf4j.Logger;
 import org.uberfire.client.mvp.ActivityBeansCache;
 
@@ -42,9 +40,6 @@ public abstract class DefaultWorkbenchEntryPoint {
     @Inject
     private Logger logger;
 
-    @Inject
-    protected LibraryMonitor libraryMonitor;
-
     protected Caller<AppConfigService> appConfigService;
 
     protected ActivityBeansCache activityBeansCache;
@@ -52,8 +47,8 @@ public abstract class DefaultWorkbenchEntryPoint {
     private DefaultWorkbenchErrorCallback defaultErrorCallback = new DefaultWorkbenchErrorCallback();
 
     @Inject
-    public DefaultWorkbenchEntryPoint( Caller<AppConfigService> appConfigService,
-                                       ActivityBeansCache activityBeansCache ) {
+    public DefaultWorkbenchEntryPoint(Caller<AppConfigService> appConfigService,
+                                      ActivityBeansCache activityBeansCache) {
         this.appConfigService = appConfigService;
         this.activityBeansCache = activityBeansCache;
     }
@@ -66,27 +61,29 @@ public abstract class DefaultWorkbenchEntryPoint {
     protected void setupAdminPage() {
     }
 
-    @PostConstruct
+    @AfterInitialization
     public void startDefaultWorkbench() {
         initializeWorkbench();
     }
 
     @UncaughtExceptionHandler
-    private void handleUncaughtException( Throwable t ) {
-        defaultErrorCallback.error( null, t );
+    private void handleUncaughtException(Throwable t) {
+        defaultErrorCallback.error(null,
+                                   t);
 
-        logger.error( "Uncaught exception encountered", t );
+        logger.error("Uncaught exception encountered",
+                     t);
     }
 
     void loadPreferences() {
-        appConfigService.call( new RemoteCallback<Map<String, String>>() {
+        appConfigService.call(new RemoteCallback<Map<String, String>>() {
             @Override
-            public void callback( final Map<String, String> response ) {
-                ApplicationPreferences.setUp( response );
+            public void callback(final Map<String, String> response) {
+                ApplicationPreferences.setUp(response);
                 setupMenu();
                 setupAdminPage();
             }
-        } ).loadPreferences();
+        }).loadPreferences();
     }
 
     void loadStyles() {
@@ -96,24 +93,23 @@ public abstract class DefaultWorkbenchEntryPoint {
     @AfterInitialization
     public void hideLoadingPopup() {
         @SuppressWarnings("GwtToHtmlReferences")
-        final Element e = RootPanel.get( "loading" ).getElement();
+        final Element e = RootPanel.get("loading").getElement();
 
         new Animation() {
             @Override
-            protected void onUpdate( double progress ) {
-                e.getStyle().setOpacity( 1.0 - progress );
+            protected void onUpdate(double progress) {
+                e.getStyle().setOpacity(1.0 - progress);
             }
 
             @Override
             protected void onComplete() {
-                e.getStyle().setVisibility( Style.Visibility.HIDDEN );
+                e.getStyle().setVisibility(Style.Visibility.HIDDEN);
             }
-        }.run( 500 );
+        }.run(500);
     }
 
     private void initializeWorkbench() {
         loadPreferences();
         loadStyles();
-        libraryMonitor.initialize();
     }
 }
