@@ -15,20 +15,12 @@
 
 package org.kie.workbench.common.screens.library.client.perspective;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.screens.library.api.ProjectInfo;
-import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
-import org.kie.workbench.common.widgets.client.search.ContextualSearch;
-import org.kie.workbench.common.widgets.client.search.SearchBehavior;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
@@ -45,12 +37,6 @@ public class LibraryPerspective {
 
     private LibraryPlaces libraryPlaces;
 
-    private ContextualSearch contextualSearch;
-
-    private Event<FilterUpdateEvent> filterUpdateEvent;
-
-    private PlaceManager placeManager;
-
     private PerspectiveDefinition perspectiveDefinition;
 
     private boolean refresh = true;
@@ -59,14 +45,8 @@ public class LibraryPerspective {
     }
 
     @Inject
-    public LibraryPerspective(final LibraryPlaces libraryPlaces,
-                              final ContextualSearch contextualSearch,
-                              final Event<FilterUpdateEvent> filterUpdateEvent,
-                              final PlaceManager placeManager) {
+    public LibraryPerspective(final LibraryPlaces libraryPlaces) {
         this.libraryPlaces = libraryPlaces;
-        this.contextualSearch = contextualSearch;
-        this.filterUpdateEvent = filterUpdateEvent;
-        this.placeManager = placeManager;
     }
 
     @Perspective
@@ -75,12 +55,6 @@ public class LibraryPerspective {
         perspectiveDefinition.setName("Library Perspective");
 
         return perspectiveDefinition;
-    }
-
-    @PostConstruct
-    public void registerSearchHandler() {
-        contextualSearch.setPerspectiveSearchBehavior(LibraryPlaces.LIBRARY_PERSPECTIVE,
-                                                      getSearchBehavior());
     }
 
     @OnStartup
@@ -102,24 +76,6 @@ public class LibraryPerspective {
     @OnClose
     public void onClose() {
         libraryPlaces.hideDocks();
-    }
-
-    SearchBehavior getSearchBehavior() {
-        return searchFilter -> {
-            final ProjectInfo projectInfo = libraryPlaces.getProjectInfo();
-            final Command callback = () -> filterUpdateEvent.fire(new FilterUpdateEvent(searchFilter));
-
-            if (projectInfo != null && projectInfo.getProject() != null) {
-                if (PlaceStatus.CLOSE.equals(placeManager.getStatus(LibraryPlaces.PROJECT_SCREEN))) {
-                    libraryPlaces.goToProject(projectInfo,
-                                              false,
-                                              callback);
-                } else {
-                    placeManager.goTo(LibraryPlaces.PROJECT_SCREEN);
-                    callback.execute();
-                }
-            }
-        };
     }
 
     public PanelDefinition getRootPanel() {

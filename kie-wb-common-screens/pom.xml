@@ -21,7 +21,6 @@
     <module>kie-wb-common-project-imports-editor</module>
     <module>kie-wb-common-project-editor</module>
     <module>kie-wb-common-project-explorer</module>
-    <module>kie-wb-common-search-screen</module>
     <module>kie-wb-common-data-modeller</module>
     <module>kie-wb-common-home</module>
     <module>kie-wb-common-java-editor</module>
