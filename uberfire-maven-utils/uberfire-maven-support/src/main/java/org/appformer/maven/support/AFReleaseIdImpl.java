@@ -18,8 +18,11 @@ package org.appformer.maven.support;
 
 import java.io.Externalizable;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.StringReader;
+import java.util.Properties;
 
 import static java.lang.Character.isWhitespace;
 
@@ -115,6 +118,36 @@ public class AFReleaseIdImpl implements AFReleaseId,
 
     public static String getPomPropertiesPath(AFReleaseId releaseId) {
         return "META-INF/maven/" + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/pom.properties";
+    }
+
+    public static AFReleaseId fromPropertiesString( String path ) {
+        Properties props = new Properties();
+        try {
+            props.load(new StringReader( path) );
+            return getReleaseIdFromProperties(props, path);
+        } catch (IOException e) {
+            throw new RuntimeException("pom.properties was malformed\n" + path, e);
+        }
+    }
+
+    public static AFReleaseId fromPropertiesStream( InputStream stream, String path ) {
+        Properties props = new Properties();
+        try {
+            props.load(stream);
+            return getReleaseIdFromProperties(props, path);
+        } catch (IOException e) {
+            throw new RuntimeException("pom.properties was malformed\n" + path, e);
+        }
+    }
+
+    private static AFReleaseId getReleaseIdFromProperties( Properties props, String path ) {
+        String groupId = props.getProperty("groupId");
+        String artifactId = props.getProperty("artifactId");
+        String version = props.getProperty("version");
+        if (isEmpty(groupId) || isEmpty(artifactId) || isEmpty(version)) {
+            throw new RuntimeException("pom.properties exists but ReleaseId content is malformed\n" + path);
+        }
+        return new AFReleaseIdImpl( groupId, artifactId, version);
     }
 
     public String getCompilationCachePathPrefix() {

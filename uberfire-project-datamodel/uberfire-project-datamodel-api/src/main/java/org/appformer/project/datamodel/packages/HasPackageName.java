@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,19 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
-package org.uberfire.commons.async;
 
-import java.util.concurrent.Executor;
-import javax.ejb.Local;
-
-import org.uberfire.commons.lifecycle.Disposable;
+package org.appformer.project.datamodel.packages;
 
 /**
- * EJB local interface for a disposable Executor
+ * Models marked with this interface support a Package Name.
  */
-@Local
-public interface DisposableExecutor extends Executor,
-                                            Disposable {
+public interface HasPackageName {
+
+    String getPackageName();
+
+    void setPackageName( final String packageName );
 
 }
