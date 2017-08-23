@@ -304,6 +304,7 @@ public class DefaultMavenCompilerTest {
     //
     @Test
     public void buildWithAllDecoratorsTest() throws Exception {
+        String alternateSettingsAbsPath = new File("src/test/settings.xml").getAbsolutePath();
         AFCompiler compiler = MavenCompilerFactory.getCompiler(Decorator.JGIT_BEFORE_AND_LOG_AFTER);
 
         String MASTER_BRANCH = "master";
@@ -340,17 +341,15 @@ public class DefaultMavenCompilerTest {
         Path tmpRootCloned = Files.createTempDirectory("cloned");
         Path tmpCloned = Files.createDirectories(Paths.get(tmpRootCloned.toString(),
                                                            ".clone.git"));
-        //@TODO find a way to retrieve the address git://... of the repo
+
         final Git cloned = Git.cloneRepository().setURI("git://localhost:9418/repo").setBare(false).setDirectory(tmpCloned.toFile()).call();
 
         assertNotNull(cloned);
 
-        //@TODO refactor and use only one between the URI or Git
-        //@TODO find a way to resolve the problem of the prjname inside .git folder
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(Paths.get(tmpCloned + "/dummy"));
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
                                                                info,
-                                                               new String[]{MavenCLIArgs.COMPILE},
+                                                               new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                new HashMap<>(),
                                                                Boolean.TRUE);
         CompilationResponse res = compiler.compileSync(req);

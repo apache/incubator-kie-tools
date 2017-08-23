@@ -309,6 +309,7 @@ public class KieDefaultMavenCompilerTest {
     //
     @Test
     public void buildWithAllDecoratorsTest() throws Exception {
+        String alternateSettingsAbsPath = new File("src/test/settings.xml").getAbsolutePath();
         AFCompiler compiler = KieMavenCompilerFactory.getCompiler(KieDecorator.JGIT_BEFORE_AND_LOG_AFTER);
 
         String MASTER_BRANCH = "master";
@@ -355,7 +356,7 @@ public class KieDefaultMavenCompilerTest {
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(Paths.get(tmpCloned + "/dummy"));
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
                                                                info,
-                                                               new String[]{MavenCLIArgs.COMPILE},
+                                                               new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                new HashMap<>(),
                                                                Boolean.TRUE);
         CompilationResponse res = compiler.compileSync(req);
