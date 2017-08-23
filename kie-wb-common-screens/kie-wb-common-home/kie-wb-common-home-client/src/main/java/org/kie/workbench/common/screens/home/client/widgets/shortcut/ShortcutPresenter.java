@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.home.client.widgets.shortcut;
 
+import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -33,9 +34,9 @@ public class ShortcutPresenter {
 
     public interface View extends UberElement<ShortcutPresenter> {
 
-        void setIcon(String icon);
+        void addIconClass(String iconClass);
 
-        void setHeading(String icon);
+        void setHeading(String heading);
 
         void setAction(Command action);
 
@@ -67,13 +68,20 @@ public class ShortcutPresenter {
     }
 
     public void setup(final HomeShortcut shortcut) {
-        view.setIcon(shortcut.getIconCss());
+        setupIcon(shortcut);
         view.setHeading(shortcut.getHeading());
         setupAction(shortcut);
         setupSubHeading(shortcut);
     }
 
-    private void setupSubHeading(HomeShortcut shortcut) {
+    private void setupIcon(final HomeShortcut shortcut) {
+        final String iconClass = shortcut.getIconCss();
+        if (iconClass != null && !iconClass.isEmpty()) {
+            Stream.of(iconClass.split(" ")).forEach(clazz -> view.addIconClass(clazz));
+        }
+    }
+
+    private void setupSubHeading(final HomeShortcut shortcut) {
         int part = 1;
         addText(shortcut.getSubHeading(),
                 part);
@@ -84,7 +92,7 @@ public class ShortcutPresenter {
         }
     }
 
-    private void setupAction(HomeShortcut shortcut) {
+    private void setupAction(final HomeShortcut shortcut) {
         if (shortcutHelper.authorize(shortcut)) {
             view.setAction(shortcut.getOnClickCommand());
         }

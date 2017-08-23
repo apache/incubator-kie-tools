@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.home.client.widgets.shortcut;
 
+import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -55,8 +56,8 @@ public class ShortcutView implements ShortcutPresenter.View,
     }
 
     @Override
-    public void setIcon(final String icon) {
-        this.icon.getClassList().add(icon);
+    public void addIconClass(final String iconClass) {
+        icon.getClassList().add(iconClass);
     }
 
     @Override

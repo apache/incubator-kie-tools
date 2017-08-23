@@ -79,7 +79,7 @@ public class ShortcutPresenterTest {
 
     @Test
     public void setupTest() {
-        final HomeShortcut shortcut = ModelUtils.makeShortcut("iconCss",
+        final HomeShortcut shortcut = ModelUtils.makeShortcut("iconCss iconCss2",
                                                               "heading",
                                                               "subHeadingPrefix{0}subHeadingSuffix",
                                                               mock(Command.class));
@@ -89,7 +89,8 @@ public class ShortcutPresenterTest {
 
         presenter.setup(shortcut);
 
-        verify(view).setIcon(shortcut.getIconCss());
+        verify(view).addIconClass("iconCss");
+        verify(view).addIconClass("iconCss2");
         verify(view).setHeading(shortcut.getHeading());
         verify(view).setAction(shortcut.getOnClickCommand());
 
