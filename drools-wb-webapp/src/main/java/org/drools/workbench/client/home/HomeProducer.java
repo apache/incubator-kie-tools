@@ -43,7 +43,7 @@ public class HomeProducer implements HomeModelProvider {
                                               "KIE Workbench offers a set of flexible tools, that support the way you need to work. Select a tool below to get started.",
                                               "images/home_bg.jpg");
 
-        final HomeShortcut design = ModelUtils.makeShortcut("pficon-blueprint",
+        final HomeShortcut design = ModelUtils.makeShortcut("pficon pficon-blueprint",
                                                             "Design",
                                                             "Create and modify {0} and {1}.",
                                                             () -> placeManager.goTo(LIBRARY),
@@ -54,7 +54,7 @@ public class HomeProducer implements HomeModelProvider {
         design.addLink(new HomeShortcutLink("dashboards",
                                             BUSINESS_DASHBOARDS));
 
-        final HomeShortcut devOps = ModelUtils.makeShortcut("pficon-build",
+        final HomeShortcut devOps = ModelUtils.makeShortcut("fa fa-gears",
                                                             "DevOps",
                                                             "Administer {0} and {1}.",
                                                             () -> placeManager.goTo(SERVER_MANAGEMENT),
