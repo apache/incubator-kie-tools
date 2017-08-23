@@ -27,7 +27,7 @@
   </parent>
 
   <artifactId>uberfire-io</artifactId>
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
 
   <name>UberFire I/O</name>
   <description>
@@ -89,28 +89,5 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>org.uberfire.io</Bundle-SymbolicName>
-            <Import-Package>
-              !org.uberfire.io,
-              *
-            </Import-Package>
-            <Private-Package></Private-Package>
-            <Export-Package>
-              org.uberfire.io*
-            </Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-
-    </plugins>
-  </build>
 
 </project>
