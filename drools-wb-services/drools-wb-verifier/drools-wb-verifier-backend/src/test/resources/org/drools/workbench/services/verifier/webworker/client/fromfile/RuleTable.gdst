@@ -139,12 +139,12 @@
   </auditLog>
   <imports>
     <imports>
-      <org.drools.workbench.models.datamodel.imports.Import>
+      <org.appformer.project.datamodel.imports.Import>
         <type>com.redhat.sample.Employee</type>
-      </org.drools.workbench.models.datamodel.imports.Import>
-      <org.drools.workbench.models.datamodel.imports.Import>
+      </org.appformer.project.datamodel.imports.Import>
+      <org.appformer.project.datamodel.imports.Import>
         <type>com.redhat.sample.Person</type>
-      </org.drools.workbench.models.datamodel.imports.Import>
+      </org.appformer.project.datamodel.imports.Import>
     </imports>
   </imports>
   <packageName>example.demoproject</packageName>

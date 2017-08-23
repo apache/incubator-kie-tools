@@ -16,9 +16,9 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.MethodInfo;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.appformer.project.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.MethodInfo;
+import org.appformer.project.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.ExpressionCollection;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;

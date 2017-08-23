@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.dtable.shared;
 
 import java.util.ArrayList;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;

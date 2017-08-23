@@ -23,8 +23,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.DateConverter;
+import org.appformer.project.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.DateConverter;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.dtable.model.JVMDateConverter;
 import org.junit.Before;

@@ -19,7 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.editor.menu;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;

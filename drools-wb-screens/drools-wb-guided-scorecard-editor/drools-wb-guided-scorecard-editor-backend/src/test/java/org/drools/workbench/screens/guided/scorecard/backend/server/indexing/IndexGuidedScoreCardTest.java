@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.lucene.search.Query;
-import org.drools.workbench.models.datamodel.imports.Import;
+import org.appformer.project.datamodel.imports.Import;
 import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardXMLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;

@@ -19,8 +19,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.workbench.models.datamodel.imports.Import;
-import org.drools.workbench.models.datamodel.imports.Imports;
+import org.appformer.project.datamodel.imports.Import;
+import org.appformer.project.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;

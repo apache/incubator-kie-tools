@@ -17,7 +17,7 @@ package org.drools.workbench.screens.guided.rule.backend.server;
 
 import java.util.List;
 
-import org.drools.workbench.models.datamodel.imports.Imports;
+import org.appformer.project.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FactPattern;

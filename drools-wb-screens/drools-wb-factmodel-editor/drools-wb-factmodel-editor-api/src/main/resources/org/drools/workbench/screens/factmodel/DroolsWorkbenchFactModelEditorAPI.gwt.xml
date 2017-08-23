@@ -20,6 +20,7 @@
     "http://www.gwtproject.org/doctype/2.7.0/gwt-module.dtd">
 <module>
 
+  <inherits name="org.appformer.project.datamodel.AFProjectDataModelAPI"/>
   <inherits name="org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI"/>
 
   <inherits name="org.guvnor.common.services.GuvnorServicesAPI"/>

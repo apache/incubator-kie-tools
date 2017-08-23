@@ -24,7 +24,7 @@ import javax.inject.Inject;
 import org.drools.compiler.lang.dsl.DSLMapping;
 import org.drools.compiler.lang.dsl.DSLMappingEntry;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.dsltext.type.DSLResourceTypeDefinition;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;

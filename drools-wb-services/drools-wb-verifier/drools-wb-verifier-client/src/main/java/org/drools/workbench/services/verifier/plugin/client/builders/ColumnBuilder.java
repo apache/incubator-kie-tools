@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.services.verifier.plugin.client.builders;
 
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.Column;
 

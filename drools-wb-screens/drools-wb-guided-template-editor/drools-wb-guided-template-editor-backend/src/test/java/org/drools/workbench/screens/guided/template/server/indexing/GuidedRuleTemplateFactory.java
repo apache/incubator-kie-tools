@@ -18,8 +18,8 @@ package org.drools.workbench.screens.guided.template.server.indexing;
 
 import java.util.Collection;
 
-import org.drools.workbench.models.datamodel.imports.Import;
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.imports.Import;
+import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;

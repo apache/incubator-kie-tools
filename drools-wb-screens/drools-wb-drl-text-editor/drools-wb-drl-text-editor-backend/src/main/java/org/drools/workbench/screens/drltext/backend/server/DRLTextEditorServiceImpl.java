@@ -23,10 +23,10 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
-import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
+import org.appformer.project.datamodel.commons.packages.PackageNameParser;
+import org.appformer.project.datamodel.commons.packages.PackageNameWriter;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.datamodel.packages.HasPackageName;
+import org.appformer.project.datamodel.packages.HasPackageName;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.screens.drltext.model.DrlModelContent;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;

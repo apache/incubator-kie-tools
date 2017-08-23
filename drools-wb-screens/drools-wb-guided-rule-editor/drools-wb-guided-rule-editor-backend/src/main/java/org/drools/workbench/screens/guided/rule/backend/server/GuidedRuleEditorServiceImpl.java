@@ -29,7 +29,7 @@ import javax.inject.Named;
 
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.commons.backend.rule.RuleModelIActionPersistenceExtension;
-import org.drools.workbench.models.datamodel.imports.Import;
+import org.appformer.project.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;

@@ -18,8 +18,8 @@ package org.drools.workbench.screens.guided.scorecard.backend.server.indexing;
 
 import java.util.Collection;
 
-import org.drools.workbench.models.datamodel.imports.Import;
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.imports.Import;
+import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 

@@ -20,7 +20,7 @@ import java.math.BigInteger;
 import java.util.Date;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.BigDecimalValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.BigIntegerValue;

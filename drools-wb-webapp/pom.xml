@@ -282,6 +282,17 @@
       <artifactId>log4j-over-slf4j</artifactId>
     </dependency>
 
+
+    <!-- Models held within AppFormer -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-datamodel-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-datamodel-commons</artifactId>
+    </dependency>
+
     <!-- Models held within Drools -->
     <dependency>
       <groupId>org.drools</groupId>
@@ -1071,6 +1082,9 @@
           <runTarget>drools-wb.html</runTarget>
           <hostedWebapp>src/main/webapp</hostedWebapp>
           <compileSourcesArtifacts>
+            <compileSourcesArtifact>org.uberfire:uberfire-project-datamodel-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-project-datamodel-commons</compileSourcesArtifact>
+
             <!-- Guvnor -->
             <compileSourcesArtifact>org.guvnor:guvnor-asset-mgmt-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-asset-mgmt-client</compileSourcesArtifact>

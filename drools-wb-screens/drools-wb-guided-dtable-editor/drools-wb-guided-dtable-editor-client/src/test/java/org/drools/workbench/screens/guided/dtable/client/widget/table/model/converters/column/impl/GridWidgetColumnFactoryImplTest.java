@@ -19,7 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.con
 import java.util.ArrayList;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;

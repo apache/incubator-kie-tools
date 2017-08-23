@@ -16,8 +16,8 @@
 
 package org.drools.workbench.screens.globals.backend.server.util;
 
-import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
-import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
+import org.appformer.project.datamodel.commons.packages.PackageNameParser;
+import org.appformer.project.datamodel.commons.packages.PackageNameWriter;
 import org.uberfire.commons.data.Pair;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.GlobalsParser;
 import org.drools.workbench.screens.globals.model.Global;

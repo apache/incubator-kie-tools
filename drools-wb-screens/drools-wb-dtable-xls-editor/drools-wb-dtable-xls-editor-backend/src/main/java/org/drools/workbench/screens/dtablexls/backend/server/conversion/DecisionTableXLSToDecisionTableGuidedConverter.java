@@ -453,7 +453,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
 
         //Make collections of existing Imports so we don't duplicate them when adding the new
         List<String> existingImports = new ArrayList<String>();
-        for ( org.drools.workbench.models.datamodel.imports.Import item : projectImports.getImports().getImports() ) {
+        for ( org.appformer.project.datamodel.imports.Import item : projectImports.getImports().getImports() ) {
             existingImports.add( item.getType() );
         }
 
@@ -464,7 +464,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
                 isModified = true;
                 result.addMessage( "Created Import for '" + item.getClassName() + "'.",
                                    ConversionMessageType.INFO );
-                projectImports.getImports().addImport( new org.drools.workbench.models.datamodel.imports.Import( item.getClassName() ) );
+                projectImports.getImports().addImport( new org.appformer.project.datamodel.imports.Import( item.getClassName() ) );
             }
         }
 
@@ -492,7 +492,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
             //Add imports
             final GuidedDecisionTable52 dtable = dtables.get( iCounter );
             for ( Import item : imports ) {
-                dtable.getImports().addImport( new org.drools.workbench.models.datamodel.imports.Import( item.getClassName() ) );
+                dtable.getImports().addImport( new org.appformer.project.datamodel.imports.Import( item.getClassName() ) );
             }
 
             //Make new resource

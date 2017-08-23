@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.rule.client.util;
 import java.util.Date;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
-import org.drools.workbench.models.datamodel.oracle.DateConverter;
+import org.appformer.project.datamodel.oracle.DateConverter;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 
 /**

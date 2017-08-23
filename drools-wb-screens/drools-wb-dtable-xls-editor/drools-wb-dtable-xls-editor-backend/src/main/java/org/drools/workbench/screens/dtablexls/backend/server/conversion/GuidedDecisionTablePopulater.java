@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionRetractFact;
 import org.drools.workbench.models.datamodel.rule.IAction;

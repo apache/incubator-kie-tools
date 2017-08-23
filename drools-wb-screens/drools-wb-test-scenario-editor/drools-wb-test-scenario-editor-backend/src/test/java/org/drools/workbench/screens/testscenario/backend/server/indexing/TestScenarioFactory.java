@@ -19,7 +19,7 @@ package org.drools.workbench.screens.testscenario.backend.server.indexing;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.workbench.models.datamodel.imports.Import;
+import org.appformer.project.datamodel.imports.Import;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Field;
 import org.drools.workbench.models.testscenarios.shared.FieldData;

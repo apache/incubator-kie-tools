@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.utilities
 
 import java.util.Map;
 
-import org.drools.workbench.models.datamodel.oracle.DropDownData;
+import org.appformer.project.datamodel.oracle.DropDownData;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.jboss.errai.common.client.api.Caller;

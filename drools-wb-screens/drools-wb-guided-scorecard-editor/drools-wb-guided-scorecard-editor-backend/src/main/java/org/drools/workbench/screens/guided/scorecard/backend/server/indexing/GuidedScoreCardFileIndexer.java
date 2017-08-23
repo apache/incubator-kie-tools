@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.scorecard.backend.server.indexing;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardXMLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;

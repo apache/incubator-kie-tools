@@ -18,7 +18,7 @@ package org.drools.workbench.screens.testscenario.backend.server;
 import java.util.HashSet;
 import java.util.List;
 
-import org.drools.workbench.models.datamodel.imports.Import;
+import org.appformer.project.datamodel.imports.Import;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;

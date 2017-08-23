@@ -19,8 +19,8 @@ package org.drools.workbench.services.verifier.webworker.client.testutil;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.workbench.models.datamodel.imports.Import;
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.imports.Import;
+import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.IPattern;

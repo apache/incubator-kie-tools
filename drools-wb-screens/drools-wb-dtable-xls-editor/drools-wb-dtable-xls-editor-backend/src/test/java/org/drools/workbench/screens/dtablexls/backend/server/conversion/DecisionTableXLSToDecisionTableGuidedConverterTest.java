@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.template.parser.DecisionTableParseException;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.appformer.project.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;

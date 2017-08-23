@@ -15,11 +15,11 @@
  */
 package org.drools.workbench.screens.guided.scorecard.backend.server.indexing;
 
-import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleUtils;
-import org.drools.workbench.models.datamodel.imports.Import;
-import org.drools.workbench.models.datamodel.imports.Imports;
-import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.appformer.project.datamodel.commons.oracle.ProjectDataModelOracleUtils;
+import org.appformer.project.datamodel.imports.Import;
+import org.appformer.project.datamodel.imports.Imports;
+import org.appformer.project.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.kie.workbench.common.services.refactoring.ResourceReference;

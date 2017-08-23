@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.appformer.project.datamodel.oracle.ModelField;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;

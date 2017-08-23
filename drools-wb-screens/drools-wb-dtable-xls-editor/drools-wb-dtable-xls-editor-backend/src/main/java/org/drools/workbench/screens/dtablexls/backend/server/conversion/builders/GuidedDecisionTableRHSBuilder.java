@@ -27,7 +27,7 @@ import org.drools.decisiontable.parser.RuleSheetParserUtil;
 import org.drools.template.model.SnippetBuilder;
 import org.drools.template.model.SnippetBuilder.SnippetType;
 import org.drools.template.parser.DecisionTableParseException;
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessageType;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;

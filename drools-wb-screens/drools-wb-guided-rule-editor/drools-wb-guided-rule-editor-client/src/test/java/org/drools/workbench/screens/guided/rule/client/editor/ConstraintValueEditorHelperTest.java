@@ -20,10 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import javax.enterprise.inject.Instance;
 
-import org.drools.workbench.models.datamodel.oracle.DropDownData;
-import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
+import org.appformer.project.datamodel.oracle.DropDownData;
+import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.appformer.project.datamodel.oracle.ModelField;
+import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;

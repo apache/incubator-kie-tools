@@ -25,7 +25,7 @@ import java.util.function.BiConsumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
-import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
+import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.workitems.PortableFloatParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;

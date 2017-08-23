@@ -20,6 +20,7 @@
     "http://www.gwtproject.org/doctype/2.7.0/gwt-module.dtd">
 <module>
 
+  <inherits name="org.appformer.project.datamodel.AFProjectDataModelAPI"/>
   <inherits name="org.drools.workbench.models.guided.dtable.DroolsWorkbenchModelsGuidedDTable"/>
   <inherits name="org.drools.workbench.services.verifier.api.VerifierApi"/>
   <inherits name="com.google.web.bindery.autobean.AutoBean"/>

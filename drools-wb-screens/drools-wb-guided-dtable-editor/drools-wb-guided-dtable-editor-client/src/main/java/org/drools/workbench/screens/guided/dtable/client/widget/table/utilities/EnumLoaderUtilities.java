@@ -23,7 +23,7 @@ import java.util.TreeMap;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.workbench.models.datamodel.oracle.DropDownData;
+import org.appformer.project.datamodel.oracle.DropDownData;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.jboss.errai.common.client.api.Caller;

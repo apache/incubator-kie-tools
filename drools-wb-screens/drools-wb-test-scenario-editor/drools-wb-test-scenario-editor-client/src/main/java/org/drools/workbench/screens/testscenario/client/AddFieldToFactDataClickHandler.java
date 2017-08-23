@@ -18,8 +18,8 @@ package org.drools.workbench.screens.testscenario.client;
 import java.util.List;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import org.drools.workbench.models.datamodel.oracle.MethodInfo;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.appformer.project.datamodel.oracle.MethodInfo;
+import org.appformer.project.datamodel.oracle.ModelField;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.FieldPlaceHolder;
 import org.drools.workbench.models.testscenarios.shared.Fixture;

@@ -21,6 +21,7 @@
 
   <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorAPI"/>
 
+  <inherits name="org.appformer.project.datamodel.AFProjectDataModelAPI"/>
   <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
   <inherits name="org.guvnor.common.services.GuvnorServicesAPI"/>
 

@@ -17,6 +17,16 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-datamodel-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-datamodel-commons</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-factmodel-editor-api</artifactId>
     </dependency>

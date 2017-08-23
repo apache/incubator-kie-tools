@@ -18,11 +18,11 @@ package org.drools.workbench.screens.drltext.backend.server.indexing;
 import java.util.HashMap;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleImpl;
-import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.appformer.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.appformer.project.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.appformer.project.datamodel.oracle.ModelField;
+import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.shared.project.KieProjectService;

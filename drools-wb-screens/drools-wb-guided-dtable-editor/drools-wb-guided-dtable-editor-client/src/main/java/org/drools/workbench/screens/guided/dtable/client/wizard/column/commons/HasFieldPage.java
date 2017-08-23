@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.commons;
 
-import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
+import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.PatternWrapper;
 

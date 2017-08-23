@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.rule.client.editor.validator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -30,7 +30,7 @@ import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 
 public class GuidedRuleEditorValidator {
