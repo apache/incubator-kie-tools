@@ -17,7 +17,7 @@ package org.kie.workbench.common.widgets.metadata.client;
 
 import java.lang.reflect.Field;
 
-import org.drools.workbench.models.datamodel.imports.Imports;
+import org.appformer.project.datamodel.imports.Imports;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Overview;

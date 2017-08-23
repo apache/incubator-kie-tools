@@ -62,7 +62,7 @@ public class AnnotationUtils {
      * @param clazz
      * @return
      */
-    public static Set<org.drools.workbench.models.datamodel.oracle.Annotation> getClassAnnotations( Class<?> clazz ) {
+    public static Set<org.appformer.project.datamodel.oracle.Annotation> getClassAnnotations( Class<?> clazz ) {
 
         if ( clazz == null ) {
             return Collections.EMPTY_SET;
@@ -76,7 +76,7 @@ public class AnnotationUtils {
      * @param field
      * @return
      */
-    public static Set<org.drools.workbench.models.datamodel.oracle.Annotation> getFieldAnnotations( Field field ) {
+    public static Set<org.appformer.project.datamodel.oracle.Annotation> getFieldAnnotations( Field field ) {
 
         return getFieldAnnotations( field, false );
     }
@@ -87,7 +87,7 @@ public class AnnotationUtils {
      * @param inherited
      * @return
      */
-    public static Set<org.drools.workbench.models.datamodel.oracle.Annotation> getFieldAnnotations( Field field,
+    public static Set<org.appformer.project.datamodel.oracle.Annotation> getFieldAnnotations( Field field,
                                                                                                     boolean inherited ) {
 
         if ( field == null ) {
@@ -97,9 +97,9 @@ public class AnnotationUtils {
         return getAnnotations( field.getDeclaredAnnotations(), inherited );
     }
 
-    private static Set<org.drools.workbench.models.datamodel.oracle.Annotation> getAnnotations( final java.lang.annotation.Annotation[] annotations,
+    private static Set<org.appformer.project.datamodel.oracle.Annotation> getAnnotations( final java.lang.annotation.Annotation[] annotations,
                                                                                                 boolean checkInheritance ) {
-        final Set<org.drools.workbench.models.datamodel.oracle.Annotation> fieldAnnotations = new LinkedHashSet<>();
+        final Set<org.appformer.project.datamodel.oracle.Annotation> fieldAnnotations = new LinkedHashSet<>();
         for ( java.lang.annotation.Annotation a : annotations ) {
 
             if ( checkInheritance ) {
@@ -108,7 +108,7 @@ public class AnnotationUtils {
                 }
             }
 
-            final org.drools.workbench.models.datamodel.oracle.Annotation fieldAnnotation = new org.drools.workbench.models.datamodel.oracle.Annotation( a.annotationType().getName() );
+            final org.appformer.project.datamodel.oracle.Annotation fieldAnnotation = new org.appformer.project.datamodel.oracle.Annotation( a.annotationType().getName() );
             for ( Method m : a.annotationType().getDeclaredMethods() ) {
                 final String methodName = m.getName();
                 fieldAnnotation.addParameter( methodName, getAnnotationAttributeValue( a, methodName ) );

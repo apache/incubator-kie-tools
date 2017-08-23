@@ -19,7 +19,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.workbench.models.datamodel.oracle.TypeSource;
+import org.appformer.project.datamodel.oracle.TypeSource;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;

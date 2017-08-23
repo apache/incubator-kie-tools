@@ -15,8 +15,8 @@
 
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
-import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleImpl;
-import org.drools.workbench.models.datamodel.oracle.TypeSource;
+import org.appformer.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.appformer.project.datamodel.oracle.TypeSource;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.testclasses.superclasses.PapaSmurf;
 

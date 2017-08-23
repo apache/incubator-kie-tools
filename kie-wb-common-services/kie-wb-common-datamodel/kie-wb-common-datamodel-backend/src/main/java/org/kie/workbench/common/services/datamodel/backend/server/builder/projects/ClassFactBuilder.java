@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleImpl;
-import org.drools.workbench.models.datamodel.oracle.Annotation;
-import org.drools.workbench.models.datamodel.oracle.MethodInfo;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.oracle.TypeSource;
+import org.appformer.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.appformer.project.datamodel.oracle.Annotation;
+import org.appformer.project.datamodel.oracle.MethodInfo;
+import org.appformer.project.datamodel.oracle.ModelField;
+import org.appformer.project.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.AnnotationUtils;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.BlackLists;
 

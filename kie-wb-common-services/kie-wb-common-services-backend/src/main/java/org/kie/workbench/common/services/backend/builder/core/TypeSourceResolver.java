@@ -17,7 +17,7 @@ package org.kie.workbench.common.services.backend.builder.core;
 
 import java.util.Set;
 
-import org.drools.workbench.models.datamodel.oracle.TypeSource;
+import org.appformer.project.datamodel.oracle.TypeSource;
 import org.kie.scanner.KieModuleMetaData;
 
 public class TypeSourceResolver {

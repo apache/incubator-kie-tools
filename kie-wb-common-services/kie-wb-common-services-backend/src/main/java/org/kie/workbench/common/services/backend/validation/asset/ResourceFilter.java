@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.services.backend.validation.asset;
 
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.DirectoryStream;
 

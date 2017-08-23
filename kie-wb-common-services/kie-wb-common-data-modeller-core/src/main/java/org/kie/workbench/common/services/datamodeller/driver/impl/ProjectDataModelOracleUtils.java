@@ -18,9 +18,9 @@ package org.kie.workbench.common.services.datamodeller.driver.impl;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 
-import org.drools.workbench.models.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.TypeSource;
+import org.appformer.project.datamodel.oracle.ModelField;
+import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
+import org.appformer.project.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;

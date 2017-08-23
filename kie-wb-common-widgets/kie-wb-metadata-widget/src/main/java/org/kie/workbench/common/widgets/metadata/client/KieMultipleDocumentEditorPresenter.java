@@ -19,7 +19,7 @@ package org.kie.workbench.common.widgets.metadata.client;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.models.datamodel.imports.Imports;
+import org.appformer.project.datamodel.imports.Imports;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView.KieEditorWrapperPresenter;

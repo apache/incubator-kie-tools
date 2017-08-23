@@ -36,6 +36,12 @@
       <artifactId>kie-internal</artifactId>
     </dependency>
 
+    <!-- data model -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-datamodel-api</artifactId>
+    </dependency>
+
     <!-- kie-wb-common -->
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
@@ -108,15 +114,11 @@
     <!-- drools -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-datamodel-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-commons</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-datamodel-commons</artifactId>
     </dependency>
 
     <dependency>

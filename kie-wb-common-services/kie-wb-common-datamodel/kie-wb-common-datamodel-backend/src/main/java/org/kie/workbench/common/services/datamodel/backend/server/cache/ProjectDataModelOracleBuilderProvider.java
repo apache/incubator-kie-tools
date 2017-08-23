@@ -20,9 +20,9 @@ import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
 
-import org.drools.workbench.models.datamodel.imports.Import;
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.TypeSource;
+import org.appformer.project.datamodel.imports.Import;
+import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
+import org.appformer.project.datamodel.oracle.TypeSource;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfo;
 import org.kie.workbench.common.services.backend.builder.core.TypeSourceResolver;

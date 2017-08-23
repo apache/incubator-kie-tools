@@ -18,7 +18,7 @@ package org.kie.workbench.common.widgets.client.datamodel;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.workbench.models.datamodel.imports.HasImports;
+import org.appformer.project.datamodel.imports.HasImports;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.backend.vfs.Path;

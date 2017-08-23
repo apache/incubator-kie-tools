@@ -19,6 +19,8 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
+  <inherits name="org.appformer.project.datamodel.AFProjectDataModelAPI"/>
+
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="org.uberfire.UberfireBackend"/>
@@ -31,7 +33,6 @@
   <inherits name="org.uberfire.ext.security.management.UberfireSecurityManagementWorkbench"/>
 
   <!-- Guvnor, Drools & KIE workbench integration.-->
-  <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
   <inherits name="org.guvnor.structure.GuvnorStructureClient"/>
   <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorAPI"/>
   <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorClient"/>

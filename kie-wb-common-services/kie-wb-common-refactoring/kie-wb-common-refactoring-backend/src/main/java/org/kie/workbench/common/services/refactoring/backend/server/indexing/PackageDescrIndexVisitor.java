@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.appformer.project.datamodel.oracle.ModelField;
+import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.compiler.compiler.DrlExprParser;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
@@ -79,9 +81,6 @@ import org.drools.compiler.lang.descr.UnitDescr;
 import org.drools.compiler.lang.descr.VariableRestrictionDescr;
 import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.oracle.ModelField.FIELD_CLASS_TYPE;
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.ResourceReference;
@@ -748,7 +747,7 @@ public class PackageDescrIndexVisitor extends ResourceReferenceCollector {
             ModelField[] mfs = entry.getValue();
             String key = entry.getKey();
             for (ModelField mf : mfs) {
-                if (mf.getClassType().equals(FIELD_CLASS_TYPE.REGULAR_CLASS)) {
+                if (mf.getClassType().equals(ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS)) {
                     if (mf.getClassName().endsWith("." + typeName)) {
                         return mf.getClassName();
                     } else if (mf.getType().endsWith("." + typeName)) {

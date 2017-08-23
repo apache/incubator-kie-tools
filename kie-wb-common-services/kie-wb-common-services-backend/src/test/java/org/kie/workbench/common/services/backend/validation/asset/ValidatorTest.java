@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.services.backend.validation.asset;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -36,12 +38,16 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.mocks.FileSystemTestingUtils;
 
 import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ValidatorTest {
+
+    private FileSystemTestingUtils fileSystemTestingUtils = new FileSystemTestingUtils();
 
     @Mock
     Path path;
@@ -53,19 +59,21 @@ public class ValidatorTest {
 
     @Before
     public void setUp() throws Exception {
+        fileSystemTestingUtils.setup();
         testFileSystem = new TestFileSystem();
-        validatorBuildService = testFileSystem.getReference( ValidatorBuildService.class );
-        validator = new DefaultGenericKieValidator( validatorBuildService );
+        validatorBuildService = testFileSystem.getReference(ValidatorBuildService.class);
+        validator = new DefaultGenericKieValidator(validatorBuildService);
     }
 
     @After
     public void tearDown() throws Exception {
         testFileSystem.tearDown();
+        fileSystemTestingUtils.cleanup();
     }
 
     @Test
     public void testValidateWithAValidDRLFile() throws Throwable {
-        final Path path = path( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
+        final Path path = path("/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl");
         final String content = "package org.kie.workbench.common.services.builder.tests.test1\n" +
                 "\n" +
                 "rule R2\n" +
@@ -74,15 +82,15 @@ public class ValidatorTest {
                 "then\n" +
                 "end";
 
-        List<ValidationMessage> errors = validator.validate( path,
-                                                             content );
+        List<ValidationMessage> errors = validator.validate(path,
+                                                            content);
 
-        assertTrue( errors.isEmpty() );
+        assertTrue(errors.isEmpty());
     }
 
     @Test
     public void testValidateWithAInvalidDRLFile() throws Throwable {
-        final Path path = path( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
+        final Path path = path("/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl");
         final String content = "package org.kie.workbench.common.services.builder.tests.test1\n" +
                 "\n" +
                 "rule R2\n" +
@@ -91,15 +99,15 @@ public class ValidatorTest {
                 "then\n" +
                 "end";
 
-        List<ValidationMessage> errors = validator.validate( path,
-                                                             content );
+        List<ValidationMessage> errors = validator.validate(path,
+                                                            content);
 
-        assertFalse( errors.isEmpty() );
+        assertFalse(errors.isEmpty());
     }
 
     @Test
     public void testValidateWithAValidJavaFile() throws Throwable {
-        final Path path1 = path( "/GuvnorM2RepoDependencyExample1/src/main/java/org/kie/workbench/common/services/builder/tests/test1/Bean.java" );
+        final Path path1 = path("/GuvnorM2RepoDependencyExample1/src/main/java/org/kie/workbench/common/services/builder/tests/test1/Bean.java");
         final String content = "package org.kie.workbench.common.services.builder.tests.test1;\n" +
                 "\n" +
                 "public class Bean {\n" +
@@ -111,15 +119,15 @@ public class ValidatorTest {
                 "\n" +
                 "}";
 
-        List<ValidationMessage> validate = validator.validate( path1,
-                                                               content );
+        List<ValidationMessage> validate = validator.validate(path1,
+                                                              content);
 
-        assertTrue( validate.isEmpty() );
+        assertTrue(validate.isEmpty());
     }
 
     @Test
     public void testValidateWithAInvalidJavaFile() throws Throwable {
-        final Path path1 = path( "/GuvnorM2RepoDependencyExample1/src/main/java/org/kie/workbench/common/services/builder/tests/test1/Bean.java" );
+        final Path path1 = path("/GuvnorM2RepoDependencyExample1/src/main/java/org/kie/workbench/common/services/builder/tests/test1/Bean.java");
         final String content = "package org.kie.workbench.common.services.builder.tests.test1;\n" +
                 "\n" +
                 "public class Bean {\n" +
@@ -127,83 +135,88 @@ public class ValidatorTest {
                 "\n" +
                 "}\n";
 
-        List<ValidationMessage> validate = validator.validate( path1,
-                                                               content );
+        List<ValidationMessage> validate = validator.validate(path1,
+                                                              content);
 
-        assertFalse( validate.isEmpty() );
+        assertFalse(validate.isEmpty());
     }
 
     @Test
     public void testValidateWhenTheresNoProject() throws Exception {
-        Path path = path( "/META-INF/beans.xml" );
-        URL urlToValidate = this.getClass().getResource( "/META-INF/beans.xml" );
+        final URI originRepo = URI.create("git://repo");
 
-        List<ValidationMessage> errors = validator.validate( path,
-                                                             Resources.toString( urlToValidate,
-                                                                                 Charsets.UTF_8 ) );
+        final FileSystem origin = fileSystemTestingUtils.getIoService().newFileSystem(originRepo,
+                                                                                      new HashMap<String, Object>() {{
+                                                                                          put("init",
+                                                                                              Boolean.TRUE);
+                                                                                      }});
+        Path path = Paths.convert(origin.getPath("/META-INF/beans.xml"));
+        URL urlToValidate = this.getClass().getResource("/META-INF/beans.xml");
 
-        assertTrue( errors.isEmpty() );
+        List<ValidationMessage> errors = validator.validate(path,
+                                                            Resources.toString(urlToValidate,
+                                                                               Charsets.UTF_8));
+        assertTrue(errors.isEmpty());
     }
 
     @Test
     public void testFilterMessageWhenMessageIsInvalid() throws Throwable {
-        Path path = path( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
-        ValidationMessage errorMessage = errorMessage( path( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule1.drl" ) );
+        Path path = path("/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl");
+        ValidationMessage errorMessage = errorMessage(path("/GuvnorM2RepoDependencyExample1/src/main/resources/rule1.drl"));
 
-        List<ValidationMessage> result = applyPredicate( errorMessage,
-                                                         validator.fromValidatedPath( path ) );
+        List<ValidationMessage> result = applyPredicate(errorMessage,
+                                                        validator.fromValidatedPath(path));
 
-        assertTrue( result.isEmpty() );
+        assertTrue(result.isEmpty());
     }
 
     @Test
     public void testFilterMessageWhenMessageIsValid() throws Throwable {
-        Path path = path( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
-        ValidationMessage errorMessage = errorMessage( path );
+        Path path = path("/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl");
+        ValidationMessage errorMessage = errorMessage(path);
 
-        List<ValidationMessage> result = applyPredicate( errorMessage,
-                                                         validator.fromValidatedPath( path ) );
+        List<ValidationMessage> result = applyPredicate(errorMessage,
+                                                        validator.fromValidatedPath(path));
 
-        assertFalse( result.isEmpty() );
+        assertFalse(result.isEmpty());
     }
 
     @Test
     public void testFilterMessageWhenMessageIsBlank() throws Throwable {
-        Path path = path( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
-        ValidationMessage errorMessage = errorMessage( null );
+        Path path = path("/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl");
+        ValidationMessage errorMessage = errorMessage(null);
 
-        List<ValidationMessage> result = applyPredicate( errorMessage,
-                                                         validator.fromValidatedPath( path ) );
+        List<ValidationMessage> result = applyPredicate(errorMessage,
+                                                        validator.fromValidatedPath(path));
 
-        assertFalse( result.isEmpty() );
+        assertFalse(result.isEmpty());
     }
 
-    private List<ValidationMessage> applyPredicate( final ValidationMessage errorMessage,
-                                                    final Predicate<ValidationMessage> predicate ) {
-        return validationMessages( errorMessage )
+    private List<ValidationMessage> applyPredicate(final ValidationMessage errorMessage,
+                                                   final Predicate<ValidationMessage> predicate) {
+        return validationMessages(errorMessage)
                 .stream()
-                .filter( predicate )
-                .collect( Collectors.toList() );
+                .filter(predicate)
+                .collect(Collectors.toList());
     }
 
-    private ArrayList<ValidationMessage> validationMessages( final ValidationMessage errorMessage ) {
+    private ArrayList<ValidationMessage> validationMessages(final ValidationMessage errorMessage) {
         return new ArrayList<ValidationMessage>() {{
-            add( errorMessage );
+            add(errorMessage);
         }};
     }
 
-    private ValidationMessage errorMessage( Path path ) {
-        return new ValidationMessage( 0,
-                                      Level.ERROR,
-                                      path,
-                                      0,
-                                      0,
-                                      null );
+    private ValidationMessage errorMessage(Path path) {
+        return new ValidationMessage(0,
+                                     Level.ERROR,
+                                     path,
+                                     0,
+                                     0,
+                                     null);
     }
 
-    private Path path( final String resourceName ) throws URISyntaxException {
-        final URL urlToValidate = this.getClass().getResource( resourceName );
-        return Paths.convert( testFileSystem.fileSystemProvider.getPath( urlToValidate.toURI() ) );
+    private Path path(final String resourceName) throws URISyntaxException {
+        final URL urlToValidate = this.getClass().getResource(resourceName);
+        return Paths.convert(testFileSystem.fileSystemProvider.getPath(urlToValidate.toURI()));
     }
-
 }

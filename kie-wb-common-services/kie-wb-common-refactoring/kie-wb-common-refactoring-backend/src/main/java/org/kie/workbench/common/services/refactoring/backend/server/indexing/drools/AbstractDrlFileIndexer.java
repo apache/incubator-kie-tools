@@ -17,10 +17,10 @@ package org.kie.workbench.common.services.refactoring.backend.server.indexing.dr
 
 import java.util.List;
 
+import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.api.io.ResourceType;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;

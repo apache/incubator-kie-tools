@@ -15,8 +15,8 @@
  */
 package org.kie.workbench.common.services.datamodel.model;
 
-import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.appformer.project.datamodel.oracle.ModelField;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**

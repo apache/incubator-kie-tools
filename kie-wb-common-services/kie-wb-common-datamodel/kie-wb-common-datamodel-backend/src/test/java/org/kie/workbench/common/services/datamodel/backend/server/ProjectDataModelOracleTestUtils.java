@@ -17,7 +17,7 @@ package org.kie.workbench.common.services.datamodel.backend.server;
 
 import java.util.Set;
 
-import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.appformer.project.datamodel.oracle.ModelField;
 
 import static org.junit.Assert.*;
 

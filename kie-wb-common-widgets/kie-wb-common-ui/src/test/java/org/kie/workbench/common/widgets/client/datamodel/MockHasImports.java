@@ -15,8 +15,8 @@
 
 package org.kie.workbench.common.widgets.client.datamodel;
 
-import org.drools.workbench.models.datamodel.imports.HasImports;
-import org.drools.workbench.models.datamodel.imports.Imports;
+import org.appformer.project.datamodel.imports.HasImports;
+import org.appformer.project.datamodel.imports.Imports;
 
 public class MockHasImports implements HasImports {
 

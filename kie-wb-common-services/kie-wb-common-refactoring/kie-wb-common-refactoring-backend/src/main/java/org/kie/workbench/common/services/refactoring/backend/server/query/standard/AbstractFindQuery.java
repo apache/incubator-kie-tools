@@ -19,11 +19,11 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import org.apache.lucene.search.Query;
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.MultipleTermQueryBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.QueryBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  *

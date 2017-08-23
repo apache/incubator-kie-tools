@@ -18,8 +18,8 @@ package org.kie.workbench.common.services.datamodel.backend.server.builder.proje
 import java.util.Collections;
 import java.util.Map;
 
-import org.drools.workbench.models.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.oracle.TypeSource;
+import org.appformer.project.datamodel.oracle.ModelField;
+import org.appformer.project.datamodel.oracle.TypeSource;
 
 /**
  * Simple builder for Fact Types

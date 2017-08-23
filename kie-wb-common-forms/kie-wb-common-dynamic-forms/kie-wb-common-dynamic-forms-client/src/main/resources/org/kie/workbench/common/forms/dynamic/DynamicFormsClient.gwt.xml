@@ -10,7 +10,7 @@
 
   <inherits name="org.uberfire.commons.UberfireCommons"/>
 
-  <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
+  <inherits name="org.appformer.project.datamodel.AFProjectDataModelAPI"/>
 
   <inherits name="org.uberfire.ext.layout.editor.UberfireLayoutEditorClient"/>
 

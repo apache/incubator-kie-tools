@@ -18,10 +18,10 @@ package org.kie.workbench.common.widgets.client.datamodel;
 import java.util.Set;
 import javax.enterprise.inject.Instance;
 
-import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleImpl;
-import org.drools.workbench.models.datamodel.oracle.Annotation;
+import org.appformer.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.appformer.project.datamodel.oracle.Annotation;
+import org.appformer.project.datamodel.oracle.TypeSource;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.junit.Test;

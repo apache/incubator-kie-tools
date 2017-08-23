@@ -23,8 +23,8 @@ import java.util.function.Predicate;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.TypeSource;
+import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
+import org.appformer.project.datamodel.oracle.TypeSource;
 import org.guvnor.ala.pipeline.ConfigExecutor;
 import org.guvnor.ala.registry.PipelineRegistry;
 import org.guvnor.ala.registry.inmemory.InMemoryPipelineRegistry;

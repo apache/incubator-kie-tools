@@ -17,7 +17,7 @@ package org.kie.workbench.common.services.datamodel.backend.server.builder.proje
 
 import java.util.Map;
 
-import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleImpl;
+import org.appformer.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
 
 /**
  * Builder for Fact Types

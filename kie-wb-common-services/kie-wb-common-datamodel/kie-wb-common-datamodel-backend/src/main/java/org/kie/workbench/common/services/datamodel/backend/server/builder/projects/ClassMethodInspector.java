@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.workbench.models.datamodel.oracle.MethodInfo;
+import org.appformer.project.datamodel.oracle.MethodInfo;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.BlackLists;
 
 /**

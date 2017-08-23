@@ -19,8 +19,8 @@ package org.kie.workbench.common.widgets.configresource.client.widget.bound;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.imports.Import;
-import org.drools.workbench.models.datamodel.imports.Imports;
+import org.appformer.project.datamodel.imports.Import;
+import org.appformer.project.datamodel.imports.Imports;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.mvp.UberView;
 

@@ -20,7 +20,7 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.DataType;
 
 /**
  * Translates Java's Type System to Guvnor's Type System

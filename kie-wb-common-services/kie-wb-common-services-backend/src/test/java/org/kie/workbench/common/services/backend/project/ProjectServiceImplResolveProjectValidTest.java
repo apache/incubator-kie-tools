@@ -58,7 +58,11 @@ public class ProjectServiceImplResolveProjectValidTest extends ProjectTestBase {
 
         //Test a non-Project Path resolves to null
         final Project result = projectService.resolveProject( testPath );
-        assertNull( result );
+
+        //The current `logic` to resolve to parent, end up resolving the project itself
+        assertEquals( result.getProjectName(), "kie-wb-common-services-backend" );
+        assertEquals( result.getPom().getGav().getArtifactId(), "kie-wb-common-services-backend" );
+        assertEquals( result.getPom().getGav().getGroupId(), "org.kie.workbench.services" );
     }
 
     @Test

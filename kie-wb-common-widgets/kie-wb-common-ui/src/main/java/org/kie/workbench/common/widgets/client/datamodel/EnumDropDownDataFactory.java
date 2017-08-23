@@ -19,7 +19,7 @@ package org.kie.workbench.common.widgets.client.datamodel;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.drools.workbench.models.datamodel.oracle.DropDownData;
+import org.appformer.project.datamodel.oracle.DropDownData;
 
 import static org.kie.workbench.common.widgets.client.datamodel.DataModelHelper.*;
 
