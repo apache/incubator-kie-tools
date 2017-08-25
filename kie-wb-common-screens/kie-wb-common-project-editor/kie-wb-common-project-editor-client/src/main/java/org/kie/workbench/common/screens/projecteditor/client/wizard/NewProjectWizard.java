@@ -15,6 +15,15 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.wizard;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
@@ -40,15 +49,6 @@ import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @Dependent
 public class NewProjectWizard
         extends AbstractWizard
@@ -71,22 +71,22 @@ public class NewProjectWizard
     //Used by ErrorCallback for "OK" operation, when New Project is to be created.
     private Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> errors = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
         put(GAVAlreadyExistsException.class,
-                new CommandWithThrowableDrivenErrorCallback.CommandWithThrowable() {
-                    @Override
-                    public void execute(final Throwable parameter) {
-                        busyIndicatorView.hideBusyIndicator();
-                        conflictingRepositoriesPopup.setContent(pomWizardPage.getPom().getGav(),
-                                ((GAVAlreadyExistsException) parameter).getRepositories(),
-                                new Command() {
-                                    @Override
-                                    public void execute() {
-                                        conflictingRepositoriesPopup.hide();
-                                        onComplete(DeploymentMode.FORCED);
-                                    }
-                                });
-                        conflictingRepositoriesPopup.show();
-                    }
-                });
+            new CommandWithThrowableDrivenErrorCallback.CommandWithThrowable() {
+                @Override
+                public void execute(final Throwable parameter) {
+                    busyIndicatorView.hideBusyIndicator();
+                    conflictingRepositoriesPopup.setContent(pomWizardPage.getPom().getGav(),
+                                                            ((GAVAlreadyExistsException) parameter).getRepositories(),
+                                                            new Command() {
+                                                                @Override
+                                                                public void execute() {
+                                                                    conflictingRepositoriesPopup.hide();
+                                                                    onComplete(DeploymentMode.FORCED);
+                                                                }
+                                                            });
+                    conflictingRepositoriesPopup.show();
+                }
+            });
     }};
 
     public NewProjectWizard() {
@@ -150,8 +150,8 @@ public class NewProjectWizard
     @Override
     public void initialise() {
         pomWizardPage.setPom(new POMBuilder()
-                .setGroupId(context.getActiveOrganizationalUnit().getDefaultGroupId())
-                .build());
+                                     .setGroupId(context.getActiveOrganizationalUnit().getDefaultGroupId())
+                                     .build());
     }
 
     @Override
@@ -170,20 +170,20 @@ public class NewProjectWizard
 
     private void onComplete(final DeploymentMode mode) {
         final String url = GWT.getModuleBaseURL();
-        final String baseUrl = url.replace(GWT.getModuleName() + "/", "");
+        final String baseUrl = url.replace(GWT.getModuleName() + "/",
+                                           "");
         busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
         projectServiceCaller.call(getSuccessCallback(),
-                new CommandWithThrowableDrivenErrorCallback(busyIndicatorView,
-                        errors)).newProject(context.getActiveRepositoryRoot(),
-                pomWizardPage.getPom(),
-                baseUrl,
-                mode);
+                                  new CommandWithThrowableDrivenErrorCallback(busyIndicatorView,
+                                                                              errors)).newProject(context.getActiveRepositoryRoot(),
+                                                                                                  pomWizardPage.getPom(),
+                                                                                                  baseUrl,
+                                                                                                  mode);
     }
 
     @Override
     public void close() {
         super.close();
-        invokeCallback(null);
     }
 
     @Override
@@ -223,5 +223,4 @@ public class NewProjectWizard
             projectCallback = null;
         }
     }
-
 }
