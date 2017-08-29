@@ -87,7 +87,7 @@
     <version.com.ahome-it.lienzo-tests>2.0.287-RELEASE</version.com.ahome-it.lienzo-tests>
 
     <version.org.jboss.spec.javax.enterprise.concurrent>1.0.0.Final</version.org.jboss.spec.javax.enterprise.concurrent>
-
+    <version.bundle.plugin>3.3.0</version.bundle.plugin><!-- 3.2.0 sometimes fails with NPE during parallel build-->
     <!-- Make OSGi happy -->
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
     <!-- TODO fix all the modules to have all direct dependencies specified, then remove this property -->
