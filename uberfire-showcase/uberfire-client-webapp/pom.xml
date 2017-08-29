@@ -31,10 +31,6 @@
   <name>UberFire Showcase Client Only WebApp</name>
   <description>UberFire Showcase Client Only WebApp</description>
 
-  <properties>
-    <maven.compiler.fork>true</maven.compiler.fork><!-- Workaround for random annotation processor fails. See AF-600 for more details.-->
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>
