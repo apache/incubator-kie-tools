@@ -31,10 +31,6 @@
   <name>UberFire Backend CDI Extensions</name>
   <description>UberFire Backend CDI Extensions</description>
 
-  <properties>
-    <maven.compiler.fork>true</maven.compiler.fork><!-- Workaround for random annotation processor fails. See AF-600 for more details.-->
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>

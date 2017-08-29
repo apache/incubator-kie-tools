@@ -26,11 +26,6 @@
   <description>Uberfire Preferences Backend</description>
   <artifactId>uberfire-preferences-backend</artifactId>
   <packaging>jar</packaging>
-
-  <properties>
-    <maven.compiler.fork>true</maven.compiler.fork><!-- Workaround for random annotation processor fails. See AF-600 for more details.-->
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
