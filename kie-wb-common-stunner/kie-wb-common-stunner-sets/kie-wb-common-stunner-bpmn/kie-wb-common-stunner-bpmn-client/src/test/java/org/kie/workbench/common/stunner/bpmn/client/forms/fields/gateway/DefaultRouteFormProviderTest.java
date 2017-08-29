@@ -193,5 +193,6 @@ public class DefaultRouteFormProviderTest {
                      values.get("sequence : Edge4"));
         assertEquals("Exclusive Gateway",
                      values.get("sequence : Edge5"));
+        assertNull(values.get(null));
     }
 }

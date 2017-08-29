@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.gateway;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public class DefaultRouteFormProvider implements SelectorDataProvider {
     @Override
     public SelectorData getSelectorData(FormRenderingContext context) {
         List<Edge> outEdges = getGatewayOutEdges(context);
-        Map<String, String> values = new TreeMap<>();
+        Map<String, String> values = new HashMap<>();
         if (outEdges != null) {
             for (Edge outEdge : outEdges) {
                 // routeIdentifier is flowName followed by flowId
@@ -97,7 +98,7 @@ public class DefaultRouteFormProvider implements SelectorDataProvider {
             }
         }
         return new SelectorData(values,
-                                "");
+                                null);
     }
 
     protected List<Edge> getGatewayOutEdges(FormRenderingContext context) {
