@@ -1,11 +1,11 @@
-/**
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -31,9 +30,7 @@ import org.gwtbootstrap3.client.ui.Legend;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.editor.DataObjectBrowser;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain.MainDomainEditor;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring.ShowUsagesPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
@@ -49,7 +46,7 @@ public class DataModelerScreenViewImpl
 
     }
 
-    private static DataModelerScreenViewBinder uiBinder = GWT.create( DataModelerScreenViewBinder.class );
+    private static DataModelerScreenViewBinder uiBinder = GWT.create(DataModelerScreenViewBinder.class);
 
     @UiField
     Column dataObjectPanel;
@@ -65,28 +62,28 @@ public class DataModelerScreenViewImpl
     private MainDomainEditor mainDomainEditor;
 
     @Inject
-    public DataModelerScreenViewImpl( DataObjectBrowser dataObjectBrowser,
-            MainDomainEditor mainDomainEditor ) {
-        initWidget( uiBinder.createAndBindUi( this ) );
+    public DataModelerScreenViewImpl(DataObjectBrowser dataObjectBrowser,
+                                     MainDomainEditor mainDomainEditor) {
+        initWidget(uiBinder.createAndBindUi(this));
         this.dataObjectBrowser = dataObjectBrowser;
         this.mainDomainEditor = mainDomainEditor;
     }
 
     @PostConstruct
     private void initUI() {
-        dataObjectPanel.add( dataObjectBrowser );
-        domainContainerPanel.add( mainDomainEditor );
+        dataObjectPanel.add(dataObjectBrowser);
+        domainContainerPanel.add(mainDomainEditor);
     }
 
     @Override
-    public void setContext( DataModelerContext context ) {
-        dataObjectBrowser.setContext( context );
-        mainDomainEditor.setContext( context );
+    public void setContext(DataModelerContext context) {
+        dataObjectBrowser.setContext(context);
+        mainDomainEditor.setContext(context);
     }
 
     @Override
-    public void refreshTypeLists( boolean keepSelection ) {
-        mainDomainEditor.refreshTypeList( keepSelection );
+    public void refreshTypeLists(boolean keepSelection) {
+        mainDomainEditor.refreshTypeList(keepSelection);
     }
 
     @Override
@@ -95,106 +92,79 @@ public class DataModelerScreenViewImpl
     }
 
     @Override
-    public void showUsagesPopupForDeletion( String message,
-            List<Path> paths,
-            Command yesCommand,
-            Command cancelCommand ) {
+    public void showYesNoCancelPopup(String title,
+                                     String message,
+                                     Command yesCommand,
+                                     String yesButtonText,
+                                     ButtonType yesButtonType,
+                                     Command noCommand,
+                                     String noButtonText,
+                                     ButtonType noButtonType) {
 
-        ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForDeletion(
-                message,
-                paths,
-                yesCommand,
-                cancelCommand );
-        showUsagesPopup.setClosable( false );
-        showUsagesPopup.show();
-    }
-
-    @Override
-    public void showUsagesPopupForRenaming( String message,
-            List<Path> paths,
-            Command yesCommand,
-            Command cancelCommand ) {
-
-        ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForRenaming(
-                message,
-                paths,
-                yesCommand,
-                cancelCommand );
-        showUsagesPopup.setClosable( false );
-        showUsagesPopup.show();
-    }
-
-    @Override
-    public void showYesNoCancelPopup( String title,
-            String message,
-            Command yesCommand,
-            String yesButtonText,
-            ButtonType yesButtonType,
-            Command noCommand,
-            String noButtonText,
-            ButtonType noButtonType ) {
-
-        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( title,
-                message,
-                yesCommand,
-                yesButtonText,
-                yesButtonType,
-                noCommand,
-                noButtonText,
-                noButtonType,
-                new Command() {
-                    @Override
-                    public void execute() {
-                        //do nothing, but let the cancel button be shown.
-                    }
-                },
-                null,
-                null );
-        yesNoCancelPopup.setClosable( false );
+        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(title,
+                                                                                 message,
+                                                                                 yesCommand,
+                                                                                 yesButtonText,
+                                                                                 yesButtonType,
+                                                                                 noCommand,
+                                                                                 noButtonText,
+                                                                                 noButtonType,
+                                                                                 new Command() {
+                                                                                     @Override
+                                                                                     public void execute() {
+                                                                                         //do nothing, but let the cancel button be shown.
+                                                                                     }
+                                                                                 },
+                                                                                 null,
+                                                                                 null);
+        yesNoCancelPopup.setClosable(false);
         yesNoCancelPopup.show();
     }
 
     @Override
-    public void showYesNoCancelPopup( String title,
-            String message,
-            Command yesCommand,
-            Command noCommand ) {
+    public void showYesNoCancelPopup(String title,
+                                     String message,
+                                     Command yesCommand,
+                                     Command noCommand) {
 
-        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( title,
-                message,
-                yesCommand,
-                noCommand,
-                new Command() {
-                    @Override
-                    public void execute() {
-                        //do nothing, but let the cancel button be shown.
-                    }
-                } );
-        yesNoCancelPopup.setClosable( false );
+        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(title,
+                                                                                 message,
+                                                                                 yesCommand,
+                                                                                 noCommand,
+                                                                                 new Command() {
+                                                                                     @Override
+                                                                                     public void execute() {
+                                                                                         //do nothing, but let the cancel button be shown.
+                                                                                     }
+                                                                                 });
+        yesNoCancelPopup.setClosable(false);
         yesNoCancelPopup.show();
     }
 
     @Override
-    public void showParseErrorsDialog( String title, String message, Command onCloseCommand ) {
+    public void showParseErrorsDialog(String title,
+                                      String message,
+                                      Command onCloseCommand) {
 
-        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( title,
-                message,
-                onCloseCommand,
-                CommonConstants.INSTANCE.OK(),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null );
-        yesNoCancelPopup.setClosable( false );
+        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(title,
+                                                                                 message,
+                                                                                 onCloseCommand,
+                                                                                 CommonConstants.INSTANCE.OK(),
+                                                                                 null,
+                                                                                 null,
+                                                                                 null,
+                                                                                 null,
+                                                                                 null,
+                                                                                 null,
+                                                                                 null);
+        yesNoCancelPopup.setClosable(false);
         yesNoCancelPopup.show();
     }
 
     @Override
-    public void setDomainContainerTitle( String title, String tooltip ) {
-        domainContainerTitle.setText( title );
-        domainContainerTitle.setTitle( tooltip );
+    public void setDomainContainerTitle(String title,
+                                        String tooltip) {
+        domainContainerTitle.setText(title);
+        domainContainerTitle.setTitle(tooltip);
     }
 }

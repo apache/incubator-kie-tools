@@ -16,58 +16,30 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain;
 
-import java.util.List;
-
 import com.google.gwt.user.client.ui.Composite;
 import org.kie.workbench.common.screens.datamodeller.client.util.ErrorPopupHelper;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring.ShowUsagesPopup;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 
 public abstract class MainEditorAbstractView<T>
-    extends Composite
-    implements MainEditorView<T> {
+        extends Composite
+        implements MainEditorView<T> {
 
     protected T presenter;
 
     @Override
-    public void init( T presenter ) {
+    public void init(T presenter) {
         this.presenter = presenter;
     }
 
-    public void showUsagesPopupForRenaming( String message,
-            List<Path> usedByFiles,
-            Command yesCommand,
-            Command noCommand ) {
-
-        ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForRenaming( message,
-                usedByFiles,
-                yesCommand,
-                noCommand );
-
-        showUsagesPopup.setClosable( false );
-        showUsagesPopup.show();
+    public void showErrorPopup(String message) {
+        ErrorPopupHelper.showErrorPopup(message);
     }
 
-    public void showUsagesPopupForChanging( String message,
-            List<Path> usedByFiles,
-            Command yesCommand,
-            Command noCommand ) {
-
-        ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForChanging( message,
-                usedByFiles,
-                yesCommand,
-                noCommand );
-
-        showUsagesPopup.setClosable( false );
-        showUsagesPopup.show();
-    }
-
-    public void showErrorPopup( String message ) {
-        ErrorPopupHelper.showErrorPopup( message );
-    }
-
-    public void showErrorPopup( String message, final Command afterShowCommand, final Command afterCloseCommand ) {
-        ErrorPopupHelper.showErrorPopup( message, afterShowCommand, afterCloseCommand );
+    public void showErrorPopup(String message,
+                               final Command afterShowCommand,
+                               final Command afterCloseCommand) {
+        ErrorPopupHelper.showErrorPopup(message,
+                                        afterShowCommand,
+                                        afterCloseCommand);
     }
 }

@@ -245,16 +245,4 @@ public class DataModelerServiceTest {
         verify(ioService,
                times(1)).endBatch();
     }
-
-    @Test
-    public void findClassUsagesOfRecentlyDeletedProject() {
-        final Path projectPath = mock(Path.class);
-        doReturn(null).when(projectService).resolveProject(projectPath);
-
-        final List<Path> classUsages = dataModelerService.findClassUsages(projectPath,
-                                                                          "myClass");
-
-        assertEquals(Collections.emptyList(),
-                     classUsages);
-    }
 }

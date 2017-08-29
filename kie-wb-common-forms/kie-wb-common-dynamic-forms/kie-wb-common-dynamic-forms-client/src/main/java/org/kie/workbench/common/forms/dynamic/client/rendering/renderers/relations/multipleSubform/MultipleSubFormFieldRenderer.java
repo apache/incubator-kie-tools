@@ -58,9 +58,13 @@ public class MultipleSubFormFieldRenderer extends FieldRenderer<MultipleSubFormF
         }
         if (field.getCreationForm() == null || field.getCreationForm().isEmpty()) {
             configErrors.add(FormRenderingConstants.MultipleSubformNoCreationForm);
+        } else if (!renderingContext.getAvailableForms().containsKey(field.getCreationForm())) {
+            configErrors.add(FormRenderingConstants.MultipleSubformWrongCreationForm);
         }
         if (field.getEditionForm() == null || field.getEditionForm().isEmpty()) {
             configErrors.add(FormRenderingConstants.MultipleSubformNoEditionForm);
+        } else if (!renderingContext.getAvailableForms().containsKey(field.getEditionForm())) {
+            configErrors.add(FormRenderingConstants.MultipleSubformWongEditionForm);
         }
         return configErrors;
     }

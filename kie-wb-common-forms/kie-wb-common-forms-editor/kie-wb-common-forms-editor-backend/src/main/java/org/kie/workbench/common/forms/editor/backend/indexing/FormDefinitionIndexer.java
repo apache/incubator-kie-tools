@@ -22,7 +22,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.model.Package;
 import org.kie.workbench.common.forms.editor.type.FormResourceTypeDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
@@ -31,7 +30,6 @@ import org.kie.workbench.common.services.refactoring.Resource;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.kie.workbench.common.services.shared.project.KieProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -85,10 +83,11 @@ public class FormDefinitionIndexer extends AbstractFileIndexer {
             FormModel model = formDefinition.getModel();
 
             if (model != null) {
-                FormModelVisitorProvider provider = visitorProviders.get(model.getClass());
+                FormModelVisitorProvider provider = getProviderForModel(model.getClass());
                 if (provider != null) {
                     FormModelVisitor modelVisitor = provider.getVisitor();
-                    modelVisitor.index(model);
+                    modelVisitor.index(formDefinition,
+                                       model);
                     addReferencedResourcesToIndexBuilder(builder,
                                                          modelVisitor);
                 }
@@ -101,12 +100,8 @@ public class FormDefinitionIndexer extends AbstractFileIndexer {
         return builder;
     }
 
-    public KieProject getProject(Path path) {
-        return projectService.resolveProject(Paths.convert(path));
-    }
-
-    public Package getPackage(Path path) {
-        return projectService.resolvePackage(Paths.convert(path));
+    protected FormModelVisitorProvider getProviderForModel(Class<? extends FormModel> modelClass) {
+        return visitorProviders.get(modelClass);
     }
 
     @Override

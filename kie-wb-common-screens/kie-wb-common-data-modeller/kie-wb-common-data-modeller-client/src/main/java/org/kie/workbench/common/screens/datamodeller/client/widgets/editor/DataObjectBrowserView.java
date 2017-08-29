@@ -94,11 +94,6 @@ public interface DataObjectBrowserView
                               final String cancelButtonText,
                               final ButtonType cancelButtonType);
 
-    void showUsagesPopupForDeletion(final String message,
-                                    final List<Path> usedByFiles,
-                                    final Command yesCommand,
-                                    final Command cancelCommand);
-
     void showValidationPopupForDeletion(final List<ValidationMessage> validationMessages,
                                         final Command yesCommand,
                                         final Command cancelCommand);

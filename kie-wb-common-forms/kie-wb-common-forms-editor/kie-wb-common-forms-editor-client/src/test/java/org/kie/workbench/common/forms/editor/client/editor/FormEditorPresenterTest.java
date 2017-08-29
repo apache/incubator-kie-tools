@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidato
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.*;
@@ -399,7 +400,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
                                         any(DefaultFileNameValidator.class));
         verify(menuBuilderMock).addRename(any(Path.class),
                                           any(DefaultFileNameValidator.class));
-        verify(menuBuilderMock).addDelete(any(Path.class));
+        verify(menuBuilderMock).addDelete(any(Command.class));
 
         assertNotNull(presenter.getMenus());
         verify(menuBuilderMock,
@@ -427,5 +428,46 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         assertNotNull(presenter.getMenus());
         verify(menuBuilderMock,
                atLeastOnce()).build();
+    }
+
+    @Test
+    public void testSafeDeleteWithoutUsages() {
+        loadContent();
+
+        presenter.safeDelete();
+
+        verify(showAssetUsagesDisplayer).showAssetUsages(anyString(), any(), any(), any(), any(), any());
+
+        verify(deletePopUpPresenter).show(any());
+
+        deletePopUpPresenter.delete();
+
+        verify(formEditorService).delete(any(), any());
+        verify(view).hideBusyIndicator();
+        verify(notificationEvent).fire(any());
+    }
+
+    @Test
+    public void testSafeDeleteWithUsages() {
+        loadContent();
+
+        assetUsages.add(mock(Path.class));
+
+        presenter.safeDelete();
+
+        verify(showAssetUsagesDisplayer).showAssetUsages(anyString(), any(), any(), any(), any(), any());
+
+        verify(deletePopUpPresenter, never()).show(any());
+
+        showAssetUsagesDisplayer.onOk();
+        showAssetUsagesDisplayer.onClose();
+
+        verify(deletePopUpPresenter).show(any());
+
+        deletePopUpPresenter.delete();
+
+        verify(formEditorService).delete(any(), any());
+        verify(view).hideBusyIndicator();
+        verify(notificationEvent).fire(any());
     }
 }

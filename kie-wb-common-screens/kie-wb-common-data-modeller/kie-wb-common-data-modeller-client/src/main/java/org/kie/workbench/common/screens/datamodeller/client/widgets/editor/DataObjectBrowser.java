@@ -60,6 +60,8 @@ import org.kie.workbench.common.screens.datamodeller.validation.DataObjectValida
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.refactoring.client.usages.ShowAssetUsagesDisplayer;
+import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.client.mvp.PlaceManager;
@@ -104,6 +106,8 @@ public class DataObjectBrowser
 
     protected boolean readonly = true;
 
+    protected ShowAssetUsagesDisplayer showAssetUsagesDisplayer;
+
     @Inject
     public DataObjectBrowser(DomainHandlerRegistry handlerRegistry,
                              DataModelCommandBuilder commandBuilder,
@@ -115,7 +119,8 @@ public class DataObjectBrowser
                              Event<LockRequiredEvent> lockRequiredEvent,
                              PlaceManager placeManager,
                              NewFieldPopup newFieldPopup,
-                             DataObjectBrowserView view) {
+                             DataObjectBrowserView view,
+                             ShowAssetUsagesDisplayer showAssetUsagesDisplayer) {
 
         this.handlerRegistry = handlerRegistry;
         this.commandBuilder = commandBuilder;
@@ -128,6 +133,7 @@ public class DataObjectBrowser
         this.placeManager = placeManager;
         this.newFieldPopup = newFieldPopup;
         this.view = view;
+        this.showAssetUsagesDisplayer = showAssetUsagesDisplayer;
 
         view.init(this);
         view.setTableHeight(DataObjectBrowserHelper.calculateTableHeight(0));
@@ -364,41 +370,11 @@ public class DataObjectBrowser
 
             final Path currentPath = getContext().getEditorModelContent() != null ? getContext().getEditorModelContent().getPath() : null;
 
-            modelerService.call(new RemoteCallback<List<Path>>() {
-
-                @Override
-                public void callback(List<Path> paths) {
-
-                    if (paths != null && paths.size() > 0) {
-                        //If usages for this field were detected in project assets
-                        //show the confirmation message to the user.
-
-                        view.showUsagesPopupForDeletion(
-                                Constants.INSTANCE.modelEditor_confirm_deletion_of_used_field(objectProperty.getName()),
-                                paths,
-                                new Command() {
-                                    @Override
-                                    public void execute() {
-                                        deleteProperty(objectProperty,
-                                                       index);
-                                    }
-                                },
-                                new Command() {
-                                    @Override
-                                    public void execute() {
-                                        //do nothing.
-                                    }
-                                }
-                        );
-                    } else {
-                        //no usages, just proceed with the deletion.
-                        deleteProperty(objectProperty,
-                                       index);
-                    }
-                }
-            }).findFieldUsages(currentPath,
-                               className,
-                               fieldName);
+            showAssetUsagesDisplayer.showAssetPartUsages(Constants.INSTANCE.modelEditor_confirm_deletion_of_used_field(objectProperty.getName()),
+                                                         currentPath, className, fieldName,
+                                                         PartType.FIELD, () -> deleteProperty(objectProperty,
+                                                                               index),
+                                                         () ->{});
         }
     }
 

@@ -44,7 +44,7 @@ public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition> 
         container.clear();
         container.add(new Legend(field.getLabel()));
         container.add(subFormWidget);
-        if (renderingContext != null && field.getNestedForm() != null) {
+        if (renderingContext != null && field.getNestedForm() != null && renderingContext.getAvailableForms().containsKey(field.getNestedForm())) {
             FormRenderingContext nestedContext = renderingContext.getCopyFor(field.getNestedForm(),
                                                                              null);
             if (field.getReadOnly()) {
@@ -60,6 +60,8 @@ public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition> 
 
         if (field.getNestedForm() == null || field.getNestedForm().isEmpty()) {
             configErrors.add(FormRenderingConstants.SubFormNoForm);
+        } else if (!renderingContext.getAvailableForms().containsKey(field.getNestedForm())) {
+            configErrors.add(FormRenderingConstants.SubFormWrongForm);
         }
         return configErrors;
     }

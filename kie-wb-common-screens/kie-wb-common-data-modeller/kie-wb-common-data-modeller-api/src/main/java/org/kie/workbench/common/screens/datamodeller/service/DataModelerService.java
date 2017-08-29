@@ -91,10 +91,6 @@ public interface DataModelerService {
 
     Map<String, AnnotationDefinition> getAnnotationDefinitions();
 
-    List<Path> findClassUsages( Path currentPath, String className );
-
-    List<Path> findFieldUsages( Path currentPath, String className, String fieldName );
-
     List<String> findPersistableClasses( final Path path );
 
     Boolean isPersistableClass( final String className, final Path path );

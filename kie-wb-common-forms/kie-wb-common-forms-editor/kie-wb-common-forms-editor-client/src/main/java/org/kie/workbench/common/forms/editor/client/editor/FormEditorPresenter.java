@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,8 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
+import org.kie.workbench.common.forms.editor.client.editor.changes.ChangesNotificationDisplayer;
 import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorSyncPaletteEvent;
-import org.kie.workbench.common.forms.editor.client.editor.modelChanges.ModelChangesDisplayer;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.kie.workbench.common.forms.editor.client.type.FormDefinitionResourceType;
@@ -41,6 +41,8 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.model.HasFormModelProperties;
+import org.kie.workbench.common.services.refactoring.client.usages.ShowAssetUsagesDisplayer;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -59,6 +61,7 @@ import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
 
@@ -88,28 +91,32 @@ public class FormEditorPresenter extends KieEditor {
     @Inject
     protected FormEditorHelper editorHelper;
 
+    private ShowAssetUsagesDisplayer showAssetUsagesDisplayer;
+
     protected ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents;
 
     private FormEditorView view;
-    private ModelChangesDisplayer modelChangesDisplayer;
+    private ChangesNotificationDisplayer changesNotificationDisplayer;
     private FormDefinitionResourceType resourceType;
     private Caller<FormEditorService> editorService;
     private TranslationService translationService;
 
     @Inject
     public FormEditorPresenter(FormEditorView view,
-                               ModelChangesDisplayer modelChangesDisplayer,
+                               ChangesNotificationDisplayer changesNotificationDisplayer,
                                FormDefinitionResourceType resourceType,
                                Caller<FormEditorService> editorService,
                                TranslationService translationService,
-                               ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents) {
+                               ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents,
+                               ShowAssetUsagesDisplayer showAssetUsagesDisplayer) {
         super(view);
         this.view = view;
-        this.modelChangesDisplayer = modelChangesDisplayer;
+        this.changesNotificationDisplayer = changesNotificationDisplayer;
         this.resourceType = resourceType;
         this.editorService = editorService;
         this.translationService = translationService;
         this.editorFieldLayoutComponents = editorFieldLayoutComponents;
+        this.showAssetUsagesDisplayer = showAssetUsagesDisplayer;
     }
 
     @OnStartup
@@ -175,10 +182,8 @@ public class FormEditorPresenter extends KieEditor {
 
         view.setupLayoutEditor(layoutEditor);
 
-        if (content.getSynchronizationResult() != null && content.getSynchronizationResult().hasChanges()) {
-            modelChangesDisplayer.show(content,
-                                       this::synchronizeLayoutEditor);
-        }
+        changesNotificationDisplayer.show(content,
+                                          this::synchronizeLayoutEditor);
     }
 
     protected void loadLayoutEditor() {
@@ -250,7 +255,7 @@ public class FormEditorPresenter extends KieEditor {
                              fileNameValidator)
                     .addRename(versionRecordManager.getPathToLatest(),
                                fileNameValidator)
-                    .addDelete(versionRecordManager.getPathToLatest());
+                    .addDelete(this::safeDelete);
         }
 
         fileMenuBuilder
@@ -348,6 +353,29 @@ public class FormEditorPresenter extends KieEditor {
             removeAllDraggableGroupComponent(editorHelper.getAvailableFields().values());
             addAllDraggableGroupComponent(editorHelper.getAvailableFields().values());
         }
+    }
+
+    public void safeDelete() {
+        showAssetUsagesDisplayer.showAssetUsages(translationService.format(FormEditorConstants.FormEditorPresenterFormUsages,
+                                                                           versionRecordManager.getCurrentPath().getFileName()),
+                                                 versionRecordManager.getCurrentPath(),
+                                                 editorHelper.getContent().getDefinition().getId(),
+                                                 ResourceType.FORM,
+                                                 () -> onDelete(versionRecordManager.getPathToLatest()),
+                                                 () -> {
+                                                 });
+    }
+
+    private void onDelete(ObservablePath pathToLatest) {
+        deletePopUpPresenter.show(comment -> {
+            view.showBusyIndicator(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Deleting());
+            editorService.call(response -> {
+                view.hideBusyIndicator();
+                notification.fire(new NotificationEvent(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemDeletedSuccessfully(),
+                                                        NotificationEvent.NotificationType.SUCCESS));
+            }).delete(pathToLatest,
+                      comment);
+        });
     }
 
     @OnMayClose

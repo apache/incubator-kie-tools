@@ -52,14 +52,12 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring.ShowUsagesPopup;
 import org.kie.workbench.common.screens.datamodeller.model.editor.FieldMetadata;
 import org.kie.workbench.common.screens.datamodeller.model.editor.FieldMetadataProvider;
 import org.kie.workbench.common.screens.datamodeller.model.editor.ImageWrapper;
 import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
@@ -443,21 +441,6 @@ public class DataObjectBrowserViewImpl
 
         yesNoCancelPopup.setClosable(false);
         yesNoCancelPopup.show();
-    }
-
-    @Override
-    public void showUsagesPopupForDeletion(final String message,
-                                           final List<Path> usedByFiles,
-                                           final Command yesCommand,
-                                           final Command cancelCommand) {
-
-        ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForDeletion(message,
-                                                                                    usedByFiles,
-                                                                                    yesCommand,
-                                                                                    cancelCommand);
-
-        showUsagesPopup.setClosable(false);
-        showUsagesPopup.show();
     }
 
     @Override

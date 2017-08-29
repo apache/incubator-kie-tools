@@ -30,6 +30,7 @@ import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -339,6 +340,80 @@ public class DataModelerScreenPresenterTest
                never()).showCopyValidationMessages(any(Command.class),
                                                    any(Command.class),
                                                    anyListOf(ValidationMessage.class));
+    }
+
+    @Test
+    public void onSafeDeleteWithOriginalClassName() {
+        loadFileSuccessfulTest(false);
+
+        presenter.onSafeDelete();
+
+        verify(showAssetUsages).showAssetUsages(anyString(),
+                                                any(),
+                                                anyString(),
+                                                any(),
+                                                any(),
+                                                any());
+        verify(validationService,
+               never()).validateForDelete(any(),
+                                          any());
+        verify(deletePopUpPresenter,
+               never()).show(any());
+    }
+
+    @Test
+    public void onSafeDeleteWithoutOriginalClassName() {
+        loadFileSuccessfulTest(false);
+
+        presenter.context.getEditorModelContent().setOriginalClassName(null);
+
+        presenter.onSafeDelete();
+
+        verify(showAssetUsages,
+               never()).showAssetUsages(anyString(),
+                                        any(),
+                                        anyString(),
+                                        any(),
+                                        any(),
+                                        any());
+        verify(validationService).validateForDelete(any(),
+                                                    any());
+        verify(deletePopUpPresenter).show(any());
+    }
+
+    @Test
+    public void onSafeRenameWithOriginalClassName() {
+        loadFileSuccessfulTest(false);
+
+        presenter.onSafeRename();
+
+        verify(showAssetUsages).showAssetUsages(anyString(),
+                                                any(),
+                                                anyString(),
+                                                any(),
+                                                any(),
+                                                any());
+
+        verify(renamePopUpPresenter, never()).show(any(Path.class), any(Validator.class), any(CommandWithFileNameAndCommitMessage.class));
+
+    }
+
+    @Test
+    public void onSafeRenameWithoutOriginalClassName() {
+        loadFileSuccessfulTest(false);
+
+        presenter.context.getEditorModelContent().setOriginalClassName(null);
+
+        presenter.onSafeRename();
+
+        verify(showAssetUsages, never()).showAssetUsages(anyString(),
+                                                any(),
+                                                anyString(),
+                                                any(),
+                                                any(),
+                                                any());
+
+        verify(renamePopUpPresenter).show(any(Path.class), any(Validator.class), any(CommandWithFileNameAndCommitMessage.class));
     }
 
     @Test

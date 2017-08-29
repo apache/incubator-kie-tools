@@ -21,6 +21,11 @@ import javax.enterprise.context.Dependent;
 import org.kie.workbench.common.forms.editor.backend.indexing.FormModelVisitor;
 import org.kie.workbench.common.forms.editor.backend.indexing.FormModelVisitorProvider;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
+import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.model.ModelProperty;
+import org.kie.workbench.common.services.refactoring.ResourceReference;
+import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 
 @Dependent
@@ -37,12 +42,26 @@ public class BusinessProcessFormModelVisitor extends FormModelVisitor<BusinessPr
     }
 
     @Override
-    public void index(BusinessProcessFormModel formModel) {
-        addResourceReference(formModel.getProcessId(),
-                             ResourceType.BPMN2);
+    public void index(FormDefinition formDefinition,
+                      BusinessProcessFormModel formModel) {
+        ResourceReference reference = addResourceReference(formModel.getProcessId(),
+                                                           ResourceType.BPMN2);
         addResourceReference(formModel.getProcessName(),
                              ResourceType.BPMN2_NAME);
-        formModel.getProperties().forEach(property -> addResourceReference(property.getTypeInfo().getClassName(),
-                                                                           ResourceType.JAVA));
+        formModel.getProperties().forEach(property -> visitProperty(reference,
+                                                                    formDefinition,
+                                                                    property));
+    }
+
+    protected void visitProperty(ResourceReference reference,
+                                 FormDefinition formDefinition,
+                                 ModelProperty property) {
+        addResourceReference(property.getTypeInfo().getClassName(),
+                             ResourceType.JAVA);
+        FieldDefinition field = formDefinition.getFieldByBoundProperty(property);
+        if (field != null) {
+            reference.addPartReference(property.getName(),
+                                       PartType.VARIABLE);
+        }
     }
 }

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -93,11 +92,7 @@ import org.kie.workbench.common.services.datamodeller.driver.model.DriverError;
 import org.kie.workbench.common.services.datamodeller.driver.model.ModelDriverResult;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
-import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
-import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
-import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.kie.workbench.common.services.refactoring.service.impact.QueryOperationRequest;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +103,6 @@ import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.SegmentedPath;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
@@ -1205,50 +1199,6 @@ public class DataModelerServiceImpl
     }
 
     @Override
-    public List<Path> findClassUsages(Path currentPath,
-                                      String className) {
-
-        KieProject project = projectService.resolveProject(currentPath);
-
-        if (project == null) {
-            return Collections.emptyList();
-        }
-
-        String branch = "master";
-        if (currentPath instanceof SegmentedPath) {
-            branch = ((SegmentedPath) currentPath).getSegmentId();
-        }
-
-        QueryOperationRequest request = QueryOperationRequest
-                .references(className,
-                            ResourceType.JAVA)
-                .inProjectRootPathURI(project.getRootPath().toURI())
-                .onBranch(branch);
-        return executeReferencesQuery(request);
-    }
-
-    @Override
-    public List<Path> findFieldUsages(Path currentPath,
-                                      String className,
-                                      String fieldName) {
-
-        KieProject project = projectService.resolveProject(currentPath);
-
-        String branch = "master";
-        if (currentPath instanceof SegmentedPath) {
-            branch = ((SegmentedPath) currentPath).getSegmentId();
-        }
-
-        QueryOperationRequest request = QueryOperationRequest
-                .referencesPart(className,
-                                fieldName,
-                                PartType.FIELD)
-                .inProjectRootPathURI(project.getRootPath().toURI())
-                .onBranch(branch);
-        return executeReferencesQuery(request);
-    }
-
-    @Override
     public List<String> findPersistableClasses(final Path path) {
         List<String> classes = new ArrayList<String>();
         KieProject project = projectService.resolveProject(path);
@@ -1280,26 +1230,6 @@ public class DataModelerServiceImpl
             }
         }
         return false;
-    }
-
-    private List<Path> executeReferencesQuery(QueryOperationRequest request) {
-
-        List<Path> results = new ArrayList<Path>();
-        try {
-
-            final List<RefactoringPageRow> queryResults = queryService.queryToList(request);
-            if (queryResults != null) {
-                for (RefactoringPageRow row : queryResults) {
-                    results.add((org.uberfire.backend.vfs.Path) row.getValue());
-                }
-            }
-            return results;
-        } catch (Exception e) {
-            String msg = "Unable to query lucene index for resource references: " + e.getMessage();
-            logger.error(msg);
-            throw new ServiceException(msg,
-                                       e);
-        }
     }
 
     @Override

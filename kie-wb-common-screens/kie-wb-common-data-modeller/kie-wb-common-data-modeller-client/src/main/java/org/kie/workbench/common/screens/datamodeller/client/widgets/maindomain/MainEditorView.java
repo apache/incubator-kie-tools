@@ -16,19 +16,11 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain;
 
-import java.util.List;
-
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.HasErrorPopup;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.BaseEditorView;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.mvp.Command;
 
 public interface MainEditorView<T>
         extends BaseEditorView<T>,
-        HasErrorPopup {
-
-    void showUsagesPopupForRenaming( String message, List<Path> usedByFiles, Command yesCommand, Command noCommand );
-
-    void showUsagesPopupForChanging( String message, List<Path> usedByFiles, Command yesCommand, Command noCommand );
+                HasErrorPopup {
 
 }

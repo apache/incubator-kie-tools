@@ -16,10 +16,11 @@
 
 package org.kie.workbench.common.forms.editor.backend.indexing;
 
+import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 
 public abstract class FormModelVisitor<FM extends FormModel> extends ResourceReferenceCollector {
 
-    public abstract void index(FM formModel);
+    public abstract void index(FormDefinition formDefinition, FM formModel);
 }

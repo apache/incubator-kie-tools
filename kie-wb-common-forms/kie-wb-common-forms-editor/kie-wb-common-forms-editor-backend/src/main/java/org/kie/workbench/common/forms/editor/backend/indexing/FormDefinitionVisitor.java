@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.forms.editor.backend.indexing;
 
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.HasNestedForm;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.IsCRUDDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.services.refactoring.Resource;
@@ -41,5 +43,16 @@ public class FormDefinitionVisitor extends ResourceReferenceCollector {
                          PartType.FORM_FIELD);
         addResourceReference(fieldDefinition.getStandaloneClassName(),
                              ResourceType.JAVA);
+        if (fieldDefinition instanceof HasNestedForm) {
+            HasNestedForm nestedForm = (HasNestedForm) fieldDefinition;
+            addResourceReference(nestedForm.getNestedForm(),
+                                 ResourceType.FORM);
+        } else if (fieldDefinition instanceof IsCRUDDefinition) {
+            IsCRUDDefinition crudDefinition = (IsCRUDDefinition) fieldDefinition;
+            addResourceReference(crudDefinition.getCreationForm(),
+                                 ResourceType.FORM);
+            addResourceReference(crudDefinition.getEditionForm(),
+                                 ResourceType.FORM);
+        }
     }
 }

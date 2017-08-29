@@ -30,11 +30,13 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
@@ -46,45 +48,55 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FormEditorServiceImplTest {
 
-    static final String FORM_NAME = "formName";
+    private static final String COMMIT_MESSAGE = "commit message";
 
-    static final String FULL_FORM_NAME = FORM_NAME + "." + FormResourceTypeDefinition.EXTENSION;
+    private static final String FORM_NAME = "formName";
 
-    @Mock
-    Path path;
-
-    @Mock
-    IOService ioService;
+    private static final String FULL_FORM_NAME = FORM_NAME + "." + FormResourceTypeDefinition.EXTENSION;
 
     @Mock
-    SessionInfo sessionInfo;
+    private Path path;
 
     @Mock
-    Event<ResourceOpenedEvent> resourceOpenedEvent;
-
-    FieldManager fieldManager = new TestFieldManager();
+    private IOService ioService;
 
     @Mock
-    FormModelHandlerManager modelHandlerManager;
+    private SessionInfo sessionInfo;
 
     @Mock
-    KieProjectService projectService;
+    private Event<ResourceOpenedEvent> resourceOpenedEvent;
+
+    private FieldManager fieldManager = new TestFieldManager();
 
     @Mock
-    FormDefinitionSerializer formDefinitionSerializer;
+    private FormModelHandlerManager modelHandlerManager;
 
     @Mock
-    VFSFormFinderService vfsFormFinderService;
+    private KieProjectService projectService;
 
     @Mock
-    CommentedOptionFactory commentedOptionFactory;
+    private KieProject project;
 
-    FormEditorServiceImpl formEditorService;
+    @Mock
+    private FormDefinitionSerializer formDefinitionSerializer;
+
+    @Mock
+    private VFSFormFinderService vfsFormFinderService;
+
+    @Mock
+    private DeleteService deleteService;
+
+    @Mock
+    private CommentedOptionFactory commentedOptionFactory;
+
+    private FormEditorServiceImpl formEditorService;
 
     @Before
     public void init() {
@@ -96,9 +108,11 @@ public class FormEditorServiceImplTest {
                                                       projectService,
                                                       formDefinitionSerializer,
                                                       vfsFormFinderService,
+                                                      deleteService,
                                                       commentedOptionFactory);
 
         when(path.toURI()).thenReturn("default:///src/main/resources/test.frm");
+        when(projectService.resolveProject(any())).thenReturn(project);
     }
 
     @Test
@@ -109,6 +123,37 @@ public class FormEditorServiceImplTest {
 
         Path resultPath = formEditorService.createForm(path, FULL_FORM_NAME, formModel);
         assertNotNull(resultPath);
+    }
+
+    @Test
+    public void testDeleteForm() {
+        formEditorService.delete(path, COMMIT_MESSAGE);
+
+        verify(projectService).resolveProject(path);
+
+        verify(deleteService).delete(path, COMMIT_MESSAGE);
+    }
+
+    @Test
+    public void testDeleteFormWrongProject() {
+        when(projectService.resolveProject(any())).thenReturn(null);
+
+        formEditorService.delete(path, COMMIT_MESSAGE);
+
+        verify(projectService).resolveProject(path);
+
+        verify(deleteService, never()).delete(path, COMMIT_MESSAGE);
+    }
+
+    @Test
+    public void testDeleteFormWithException() {
+        when(projectService.resolveProject(any())).thenThrow(new IllegalStateException("Testing exception handling"));
+
+        formEditorService.delete(path, COMMIT_MESSAGE);
+
+        verify(projectService).resolveProject(path);
+
+        verify(deleteService, never()).delete(path, COMMIT_MESSAGE);
     }
 
     protected String verifyNewForm(InvocationOnMock invocationOnMock) {

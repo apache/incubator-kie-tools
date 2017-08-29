@@ -1,12 +1,12 @@
-/**
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
- * <p/>
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -62,6 +62,8 @@ import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.JavaTypeInfo;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.JavaTypeInfoImpl;
+import org.kie.workbench.common.services.refactoring.client.usages.ShowAssetUsagesDisplayer;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
@@ -107,16 +109,6 @@ public class DataModelerScreenPresenter
         void setContext(DataModelerContext context);
 
         void refreshTypeLists(boolean keepCurrentSelection);
-
-        void showUsagesPopupForDeletion(String message,
-                                        List<Path> paths,
-                                        Command yesCommand,
-                                        Command cancelCommand);
-
-        void showUsagesPopupForRenaming(String message,
-                                        List<Path> paths,
-                                        Command yesCommand,
-                                        Command cancelCommand);
 
         void showYesNoCancelPopup(String title,
                                   String message,
@@ -185,6 +177,9 @@ public class DataModelerScreenPresenter
 
     @Inject
     protected AuthorizationManager authorizationManager;
+
+    @Inject
+    protected ShowAssetUsagesDisplayer showAssetUsagesDisplayer;
 
     protected DataModelerContext context;
 
@@ -312,44 +307,21 @@ public class DataModelerScreenPresenter
         }
     }
 
-    private void onSafeDelete() {
+    public void onSafeDelete() {
 
         if (context.getEditorModelContent().getOriginalClassName() != null) {
             //if we are about to delete a .java file that could be parsed without errors, and we can calculate the
             //className then we can check for class usages prior to deletion.
 
             final String className = context.getEditorModelContent().getOriginalClassName();
-            modelerService.call(new RemoteCallback<List<Path>>() {
 
-                @Override
-                public void callback(List<Path> paths) {
-
-                    if (paths != null && paths.size() > 0) {
-                        //If usages for this class were detected in project assets
-                        //show the confirmation message to the user.
-
-                        view.showUsagesPopupForDeletion(
-                                Constants.INSTANCE.modelEditor_confirm_deletion_of_used_class(className),
-                                paths,
-                                new Command() {
-                                    @Override
-                                    public void execute() {
-                                        onDelete(versionRecordManager.getPathToLatest());
-                                    }
-                                },
-                                new Command() {
-                                    @Override
-                                    public void execute() {
-                                        //do nothing.
-                                    }
-                                });
-                    } else {
-                        //no usages, just proceed with the deletion.
-                        onDelete(versionRecordManager.getPathToLatest());
-                    }
-                }
-            }).findClassUsages(versionRecordManager.getPathToLatest(),
-                               className);
+            showAssetUsagesDisplayer.showAssetUsages(Constants.INSTANCE.modelEditor_confirm_deletion_of_used_class(className),
+                                                     versionRecordManager.getCurrentPath(),
+                                                     className,
+                                                     ResourceType.JAVA,
+                                                     () -> onDelete(versionRecordManager.getPathToLatest()),
+                                                     () -> {
+                                                     });
         } else {
             //we couldn't parse the class, so no check can be done. Just proceed with the standard
             //file deletion procedure.
@@ -425,7 +397,7 @@ public class DataModelerScreenPresenter
         };
     }
 
-    private void onSafeRename() {
+    public void onSafeRename() {
 
         if (context.getEditorModelContent().getOriginalClassName() != null) {
             //if we are about to rename a .java file that could be parsed without errors, and we can calculate the
@@ -434,38 +406,13 @@ public class DataModelerScreenPresenter
 
             final String className = context.getEditorModelContent().getOriginalClassName();
 
-            modelerService.call(new RemoteCallback<List<Path>>() {
-
-                @Override
-                public void callback(List<Path> paths) {
-
-                    if (paths != null && paths.size() > 0) {
-                        //If usages for this class were detected in project assets
-                        //show the confirmation message to the user.
-
-                        view.showUsagesPopupForRenaming(
-                                Constants.INSTANCE.modelEditor_confirm_renaming_of_used_class(className),
-                                paths,
-                                new Command() {
-                                    @Override
-                                    public void execute() {
-                                        rename();
-                                    }
-                                },
-                                new Command() {
-                                    @Override
-                                    public void execute() {
-                                        //do nothing.
-                                    }
-                                }
-                        );
-                    } else {
-                        //no usages, just proceed with the deletion.
-                        rename();
-                    }
-                }
-            }).findClassUsages(versionRecordManager.getPathToLatest(),
-                               className);
+            showAssetUsagesDisplayer.showAssetUsages(Constants.INSTANCE.modelEditor_confirm_renaming_of_used_class(className),
+                                                     versionRecordManager.getCurrentPath(),
+                                                     className,
+                                                     ResourceType.JAVA,
+                                                     () -> rename(),
+                                                     () -> {
+                                                     });
         } else {
             //we couldn't parse the class, so no check can be done. Just proceed with the standard
             //file renaming procedure.

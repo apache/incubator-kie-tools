@@ -82,10 +82,13 @@ public class FormDefinitionIndexerTest extends BaseIndexingTest<FormResourceType
 
         when(providersInstance.iterator()).thenReturn(providers.iterator());
 
-        indexer = new TestFormDefinitionIndexer(new FormResourceTypeDefinition(),
+        indexer = spy(new TestFormDefinitionIndexer(new FormResourceTypeDefinition(),
                                                 new FormDefinitionSerializerImpl(new FieldSerializer(),
                                                                                  new FormModelSerializer()),
-                                                providersInstance);
+                                                providersInstance));
+
+        when(indexer.getProviderForModel(any())).thenReturn(provider);
+
         super.setup();
     }
 

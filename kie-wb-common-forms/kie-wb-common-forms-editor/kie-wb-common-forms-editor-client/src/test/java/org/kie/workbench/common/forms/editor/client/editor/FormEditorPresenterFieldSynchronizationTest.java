@@ -39,9 +39,8 @@ public class FormEditorPresenterFieldSynchronizationTest extends FormEditorPrese
     public void testNoChangesOnModel() {
         loadContent();
 
-        verify(modelChangesDisplayer,
-               never()).show(any(),
-                             any());
+        verify(modelChangesDisplayer).show(any(),
+                                           any());
     }
 
     @Test

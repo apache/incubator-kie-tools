@@ -24,10 +24,11 @@ import com.google.gwtmockito.GwtMock;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
-import org.kie.workbench.common.forms.editor.client.editor.modelChanges.ModelChangesDisplayer;
+import org.kie.workbench.common.forms.editor.client.editor.changes.ChangesNotificationDisplayer;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.client.resources.images.FormEditorImageResources;
 import org.kie.workbench.common.forms.editor.client.type.FormDefinitionResourceType;
@@ -44,11 +45,18 @@ import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
 import org.kie.workbench.common.forms.model.impl.PortableJavaModel;
 import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
+import org.kie.workbench.common.services.refactoring.client.usages.ShowAssetUsagesDisplayer;
+import org.kie.workbench.common.services.refactoring.client.usages.ShowAssetUsagesDisplayerView;
+import org.kie.workbench.common.services.refactoring.service.AssetsUsageService;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpView;
+import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -77,13 +85,13 @@ public class FormEditorPresenterAbstractTest {
     protected FormEditorHelper editorHelper;
 
     @Mock
-    protected ModelChangesDisplayer modelChangesDisplayer;
+    protected ChangesNotificationDisplayer modelChangesDisplayer;
 
     @GwtMock
     protected FormEditorImageResources formEditorImageResources;
 
     @Mock
-    VersionRecordManager versionRecordManager;
+    protected VersionRecordManager versionRecordManager;
 
     @Mock
     protected FormEditorPresenter.FormEditorView view;
@@ -124,6 +132,24 @@ public class FormEditorPresenterAbstractTest {
     @Mock
     protected ProjectContext workbenchContext;
 
+    @Mock
+    protected DeletePopUpView deletePopUpView;
+
+    @Mock
+    protected ToggleCommentPresenter toggleCommentPresenter;
+
+    protected DeletePopUpPresenter deletePopUpPresenter;
+
+    @Mock
+    protected ShowAssetUsagesDisplayerView assetUsagesDisplayerView;
+
+    @Mock
+    protected AssetsUsageService assetsUsagService;
+
+    protected List<Path> assetUsages = new ArrayList<>();
+
+    protected ShowAssetUsagesDisplayer showAssetUsagesDisplayer;
+
     protected CallerMock<FormEditorService> editorServiceCallerMock;
 
     protected FormEditorPresenter presenter;
@@ -160,12 +186,26 @@ public class FormEditorPresenterAbstractTest {
         when(menuBuilderMock.addNewTopLevelMenu(any(MenuItem.class))).thenReturn(menuBuilderMock);
         when(menuBuilderMock.build()).thenReturn(mock(Menus.class));
 
+        when(versionRecordManager.getCurrentPath()).thenReturn(path);
+
+        when(translationService.format(anyString(), anyString())).thenReturn("");
+
+        showAssetUsagesDisplayer = spy(new ShowAssetUsagesDisplayer(assetUsagesDisplayerView,
+                                                                translationService,
+                                                                new CallerMock<>(assetsUsagService)));
+
+        when(assetUsagesDisplayerView.getDefaultMessageContainer()).thenReturn(mock(HTMLElement.class));
+        when(assetsUsagService.getAssetUsages(anyString(), any(), any())).thenReturn(assetUsages);
+
+        deletePopUpPresenter = spy(new DeletePopUpPresenter(deletePopUpView, toggleCommentPresenter));
+
         presenter = new FormEditorPresenter(view,
                                             modelChangesDisplayer,
                                             formDefinitionResourceType,
                                             editorServiceCallerMock,
                                             translationService,
-                                            editorFieldLayoutComponents) {
+                                            editorFieldLayoutComponents,
+                                            showAssetUsagesDisplayer) {
             {
                 kieView = mock(KieEditorWrapperView.class);
                 versionRecordManager = FormEditorPresenterAbstractTest.this.versionRecordManager;
@@ -175,10 +215,10 @@ public class FormEditorPresenterAbstractTest {
                 layoutEditor = layoutEditorMock;
                 htmlLayoutDragComponent = FormEditorPresenterAbstractTest.this.htmlLayoutDragComponent;
                 notification = notificationEvent;
-                versionRecordManager = mock(VersionRecordManager.class);
                 fileMenuBuilder = menuBuilderMock;
                 workbenchContext = FormEditorPresenterAbstractTest.this.workbenchContext;
                 projectController = FormEditorPresenterAbstractTest.this.projectController;
+                deletePopUpPresenter = FormEditorPresenterAbstractTest.this.deletePopUpPresenter;
             }
 
             protected void addSourcePage() {

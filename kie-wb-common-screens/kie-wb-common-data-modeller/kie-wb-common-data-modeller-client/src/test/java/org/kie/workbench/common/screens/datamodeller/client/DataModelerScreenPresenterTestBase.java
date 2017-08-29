@@ -52,6 +52,7 @@ import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
+import org.kie.workbench.common.services.refactoring.client.usages.ShowAssetUsagesDisplayer;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
@@ -64,6 +65,7 @@ import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
@@ -157,6 +159,12 @@ public abstract class DataModelerScreenPresenterTestBase {
     @Mock
     protected ProjectContext workbenchContext;
 
+    @Mock
+    protected DeletePopUpPresenter deletePopUpPresenter;
+
+    @Mock
+    protected ShowAssetUsagesDisplayer showAssetUsages;
+
     protected DataModelerScreenPresenter presenter;
 
     /**
@@ -244,6 +252,8 @@ public abstract class DataModelerScreenPresenterTestBase {
                 fileMenuBuilder = DataModelerScreenPresenterTestBase.this.fileMenuBuilder;
                 workbenchContext = DataModelerScreenPresenterTestBase.this.workbenchContext;
                 projectController = DataModelerScreenPresenterTestBase.this.projectController;
+                deletePopUpPresenter = DataModelerScreenPresenterTestBase.this.deletePopUpPresenter;
+                showAssetUsagesDisplayer = DataModelerScreenPresenterTestBase.this.showAssetUsages;
                 uiStarted = true;
             }
 

@@ -21,8 +21,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -50,7 +48,7 @@ public class MainDataObjectFieldEditorViewImpl
 
     }
 
-    private static DataObjectFieldEditorUIBinder uiBinder = GWT.create( DataObjectFieldEditorUIBinder.class );
+    private static DataObjectFieldEditorUIBinder uiBinder = GWT.create(DataObjectFieldEditorUIBinder.class);
 
     @UiField
     FormLabel nameLabel;
@@ -74,41 +72,42 @@ public class MainDataObjectFieldEditorViewImpl
     CheckBox isTypeMultiple;
 
     public MainDataObjectFieldEditorViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @PostConstruct
     protected void init() {
-        typeSelector.addValueChangeHandler( e -> presenter.onTypeChange() );
+        typeSelector.addValueChangeHandler(e -> presenter.onTypeChange());
 
-        isTypeMultiple.addClickHandler( new ClickHandler() {
-            @Override public void onClick( ClickEvent event ) {
+        isTypeMultiple.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
                 presenter.onTypeMultipleChange();
             }
-        } );
+        });
 
-        name.addValueChangeHandler( new ValueChangeHandler<String>() {
+        name.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
-            public void onValueChange( ValueChangeEvent<String> event ) {
+            public void onValueChange(ValueChangeEvent<String> event) {
                 presenter.onNameChange();
             }
-        } );
+        });
 
-        label.addValueChangeHandler( new ValueChangeHandler<String>() {
+        label.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
-            public void onValueChange( ValueChangeEvent<String> event ) {
+            public void onValueChange(ValueChangeEvent<String> event) {
                 presenter.onLabelChange();
             }
-        } );
+        });
 
-        description.addValueChangeHandler( new ValueChangeHandler<String>() {
+        description.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
-            public void onValueChange( ValueChangeEvent<String> event ) {
+            public void onValueChange(ValueChangeEvent<String> event) {
                 presenter.onDescriptionChange();
             }
-        } );
+        });
 
-        setReadonly( true );
+        setReadonly(true);
     }
 
     @Override
@@ -117,13 +116,13 @@ public class MainDataObjectFieldEditorViewImpl
     }
 
     @Override
-    public void setName( String name ) {
-        this.name.setText( name );
+    public void setName(String name) {
+        this.name.setText(name);
     }
 
     @Override
-    public void setNameOnError( boolean onError ) {
-        nameFormGroup.setValidationState( onError ? ValidationState.ERROR : ValidationState.NONE );
+    public void setNameOnError(boolean onError) {
+        nameFormGroup.setValidationState(onError ? ValidationState.ERROR : ValidationState.NONE);
     }
 
     @Override
@@ -137,8 +136,8 @@ public class MainDataObjectFieldEditorViewImpl
     }
 
     @Override
-    public void setLabel( String label ) {
-        this.label.setText( label );
+    public void setLabel(String label) {
+        this.label.setText(label);
     }
 
     @Override
@@ -147,8 +146,8 @@ public class MainDataObjectFieldEditorViewImpl
     }
 
     @Override
-    public void setDescription( String description ) {
-        this.description.setText( description );
+    public void setDescription(String description) {
+        this.description.setText(description);
     }
 
     @Override
@@ -157,8 +156,9 @@ public class MainDataObjectFieldEditorViewImpl
     }
 
     @Override
-    public void setType( String type ) {
-        UIUtil.setSelectedValue( typeSelector, type );
+    public void setType(String type) {
+        UIUtil.setSelectedValue(typeSelector,
+                                type);
     }
 
     @Override
@@ -167,29 +167,34 @@ public class MainDataObjectFieldEditorViewImpl
     }
 
     @Override
-    public void setMultipleType( boolean multipleType ) {
-        this.isTypeMultiple.setValue( multipleType );
+    public void setMultipleType(boolean multipleType) {
+        this.isTypeMultiple.setValue(multipleType);
     }
 
     @Override
-    public void setMultipleTypeEnabled( boolean enabled ) {
-        isTypeMultiple.setEnabled( enabled );
+    public void setMultipleTypeEnabled(boolean enabled) {
+        isTypeMultiple.setEnabled(enabled);
     }
 
     @Override
-    public void setReadonly( boolean readonly ) {
+    public void setReadonly(boolean readonly) {
         boolean value = !readonly;
 
-        name.setEnabled( value );
-        label.setEnabled( value );
-        description.setEnabled( value );
-        typeSelector.setEnabled( value );
-        UIUtil.refreshSelect( typeSelector );
-        isTypeMultiple.setEnabled( value );
+        name.setEnabled(value);
+        label.setEnabled(value);
+        description.setEnabled(value);
+        typeSelector.setEnabled(value);
+        UIUtil.refreshSelect(typeSelector);
+        isTypeMultiple.setEnabled(value);
     }
 
     @Override
-    public void initTypeList( List<Pair<String, String>> options, String selectedValue, boolean includeEmptyItem ) {
-        UIUtil.initList( typeSelector, options, selectedValue, includeEmptyItem );
+    public void initTypeList(List<Pair<String, String>> options,
+                             String selectedValue,
+                             boolean includeEmptyItem) {
+        UIUtil.initList(typeSelector,
+                        options,
+                        selectedValue,
+                        includeEmptyItem);
     }
 }

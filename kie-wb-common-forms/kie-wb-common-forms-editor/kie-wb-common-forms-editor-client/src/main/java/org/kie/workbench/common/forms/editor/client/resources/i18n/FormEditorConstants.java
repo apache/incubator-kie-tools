@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,9 @@ public interface FormEditorConstants {
 
     @TranslationKey(defaultValue = "")
     String FormEditorPresenterTitle = "FormEditorPresenter.title";
+
+    @TranslationKey(defaultValue = "")
+    String FormEditorPresenterFormUsages = "FormEditorPresenter.formUsages";
 
     @TranslationKey(defaultValue = "")
     String FormEditorPresenterComponentsPalette = "FormEditorPresenter.componentsPalette";
@@ -97,19 +100,31 @@ public interface FormEditorConstants {
     String DefaultFormModelLabel = "DefaultFormModel.label";
 
     @TranslationKey(defaultValue = "Notification")
-    String ModelChangesDisplayerViewImplTitle = "ModelChangesDisplayerViewImpl.title";
+    String ChangesNotificationDisplayerTitle = "ChangesNotificationDisplayer.title";
 
     @TranslationKey(defaultValue = "")
-    String PropertiesConflictsDisplayerViewIpmlRemoved1 = "PropertiesConflictsDisplayerViewIpml.removed1";
+    String ModelPropertyRemoved1 = "ModelProperty.removed1";
 
     @TranslationKey(defaultValue = "")
-    String PropertiesConflictsDisplayerViewIpmlRemoved2 = "PropertiesConflictsDisplayerViewIpml.removed2";
+    String ModelPropertyRemoved2 = "ModelProperty.removed2";
 
     @TranslationKey(defaultValue = "")
-    String PropertiesConflictsDisplayerViewIpmlTypeConflict1 = "PropertiesConflictsDisplayerViewIpml.typeConflict1";
+    String ModelPropertyTypeConflict1 = "ModelProperty.typeConflict1";
 
     @TranslationKey(defaultValue = "")
-    String PropertiesConflictsDisplayerViewIpmlTypeConflict2 = "PropertiesConflictsDisplayerViewIpml.typeConflict2";
+    String ModelPropertyTypeConflict2 = "ModelProperty.typeConflict2";
+
+    @TranslationKey(defaultValue = "")
+    String NestedFormsConflictHandlerNestedForm = "NestedFormsConflictHandler.nestedForm";
+
+    @TranslationKey(defaultValue = "")
+    String NestedFormsConflictHandlerCreationForm = "NestedFormsConflictHandler.creationForm";
+
+    @TranslationKey(defaultValue = "")
+    String NestedFormsConflictHandlerEditionForm = "NestedFormsConflictHandler.editionForm";
+
+    @TranslationKey(defaultValue = "")
+    String NestedFormsConflictHandlerFix = "NestedFormsConflictHandler.fix";
 
     @TranslationKey(defaultValue = "Show more")
     String ConflictElementViewImplShowMore= "ConflictElementViewImpl.showMore";

@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain;
 
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -25,7 +24,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommandBuilder;
@@ -42,6 +40,8 @@ import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.refactoring.client.usages.ShowAssetUsagesDisplayer;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 
@@ -56,23 +56,29 @@ public class MainDataObjectEditor
 
     private Caller<DataModelerService> modelerService;
 
+    private ShowAssetUsagesDisplayer showAssetUsagesDisplayer;
+
     @Inject
-    public MainDataObjectEditor( MainDataObjectEditorView view,
-            DomainHandlerRegistry handlerRegistry,
-            Event<DataModelerEvent> dataModelerEvent,
-            DataModelCommandBuilder commandBuilder,
-            ValidatorService validatorService,
-            Caller<DataModelerService> modelerService ) {
-        super( handlerRegistry, dataModelerEvent, commandBuilder );
+    public MainDataObjectEditor(MainDataObjectEditorView view,
+                                DomainHandlerRegistry handlerRegistry,
+                                Event<DataModelerEvent> dataModelerEvent,
+                                DataModelCommandBuilder commandBuilder,
+                                ValidatorService validatorService,
+                                Caller<DataModelerService> modelerService,
+                                ShowAssetUsagesDisplayer showAssetUsagesDisplayer) {
+        super(handlerRegistry,
+              dataModelerEvent,
+              commandBuilder);
         this.view = view;
         this.validatorService = validatorService;
         this.modelerService = modelerService;
-        view.init( this );
+        this.showAssetUsagesDisplayer = showAssetUsagesDisplayer;
+        view.init(this);
     }
 
     @PostConstruct
     protected void init() {
-        setReadonly( true );
+        setReadonly(true);
     }
 
     @Override
@@ -90,30 +96,30 @@ public class MainDataObjectEditor
         return MainDomainEditor.MAIN_DOMAIN;
     }
 
-    public void onContextChange( DataModelerContext context ) {
+    public void onContextChange(DataModelerContext context) {
         this.context = context;
-        view.initPackageSelector( context );
-        super.onContextChange( context );
+        view.initPackageSelector(context);
+        super.onContextChange(context);
     }
 
     private DataModel getDataModel() {
         return getContext() != null ? getContext().getDataModel() : null;
     }
 
-    public void refreshTypeList( boolean keepSelection ) {
-        initSuperClassList( keepSelection );
+    public void refreshTypeList(boolean keepSelection) {
+        initSuperClassList(keepSelection);
     }
 
-    public void setReadonly( boolean readonly ) {
-        super.setReadonly( readonly );
-        view.setReadonly( readonly );
+    public void setReadonly(boolean readonly) {
+        super.setReadonly(readonly);
+        view.setReadonly(readonly);
     }
 
     @Override
     public void onNameChange() {
-        if ( getDataObject() != null ) {
+        if (getDataObject() != null) {
 
-            view.setNameOnError( false );
+            view.setNameOnError(false);
 
             final String packageName = getDataObject().getPackageName();
             final String oldValue = getDataObject().getName();
@@ -122,276 +128,259 @@ public class MainDataObjectEditor
             final String originalClassName = getContext() != null ? getContext().getEditorModelContent().getOriginalClassName() : null;
             final Path currentPath = getContext() != null && getContext().getEditorModelContent() != null ? getContext().getEditorModelContent().getPath() : null;
 
-            if ( originalClassName != null ) {
-                modelerService.call( new RemoteCallback<List<Path>>() {
-
-                    @Override
-                    public void callback( List<Path> paths ) {
-
-                        if ( paths != null && paths.size() > 0 ) {
-                            //If usages for this field were detected in project assets
-                            //show the confirmation message to the user.
-
-                            view.showUsagesPopupForRenaming(
-                                    Constants.INSTANCE.modelEditor_confirm_renaming_of_used_class( originalClassName ),
-                                    paths,
-                                    new org.uberfire.mvp.Command() {
-                                        @Override
-                                        public void execute() {
-                                            doClassNameChange( packageName, oldValue, newValue );
-                                        }
-                                    },
-                                    new org.uberfire.mvp.Command() {
-                                        @Override
-                                        public void execute() {
-                                            //do nothing.
-                                            view.setName( oldValue );
-                                        }
-                                    }
-                            );
-
-                        } else {
-                            //no usages, just proceed with the class name change.
-                            doClassNameChange( packageName, oldValue, newValue );
-                        }
-                    }
-                } ).findClassUsages( currentPath, originalClassName );
+            if (originalClassName != null) {
+                showAssetUsagesDisplayer.showAssetUsages(Constants.INSTANCE.modelEditor_confirm_renaming_of_used_class(originalClassName),
+                                                         currentPath,
+                                                         originalClassName,
+                                                         ResourceType.JAVA,
+                                                         () -> doClassNameChange(packageName,
+                                                                                 oldValue,
+                                                                                 newValue),
+                                                         () -> view.setName(oldValue));
             } else {
-                doClassNameChange( packageName, oldValue, newValue );
+                doClassNameChange(packageName,
+                                  oldValue,
+                                  newValue);
             }
         }
     }
 
     @Override
     public void onLabelChange() {
-        if ( getDataObject() != null ) {
-            String value = DataModelerUtils.nullTrim( view.getLabel() );
-            DataModelCommand command = commandBuilder.buildDataObjectAnnotationValueChangeCommand( getContext(),
-                    getName(), getDataObject(), MainDomainAnnotations.LABEL_ANNOTATION, "value", value, true );
+        if (getDataObject() != null) {
+            String value = DataModelerUtils.nullTrim(view.getLabel());
+            DataModelCommand command = commandBuilder.buildDataObjectAnnotationValueChangeCommand(getContext(),
+                                                                                                  getName(),
+                                                                                                  getDataObject(),
+                                                                                                  MainDomainAnnotations.LABEL_ANNOTATION,
+                                                                                                  "value",
+                                                                                                  value,
+                                                                                                  true);
             command.execute();
         }
     }
 
     @Override
     public void onDescriptionChange() {
-        if ( getDataObject() != null ) {
-            String value = DataModelerUtils.nullTrim( view.getDescription() );
-            DataModelCommand command = commandBuilder.buildDataObjectAnnotationValueChangeCommand( getContext(),
-                    getName(), getDataObject(), MainDomainAnnotations.DESCRIPTION_ANNOTATION, "value", value, true );
+        if (getDataObject() != null) {
+            String value = DataModelerUtils.nullTrim(view.getDescription());
+            DataModelCommand command = commandBuilder.buildDataObjectAnnotationValueChangeCommand(getContext(),
+                                                                                                  getName(),
+                                                                                                  getDataObject(),
+                                                                                                  MainDomainAnnotations.DESCRIPTION_ANNOTATION,
+                                                                                                  "value",
+                                                                                                  value,
+                                                                                                  true);
             command.execute();
         }
     }
 
     @Override
     public void onSuperClassChange() {
-        if ( getDataObject() != null ) {
+        if (getDataObject() != null) {
 
-            view.setSuperClassOnError( false );
+            view.setSuperClassOnError(false);
 
             final String newSuperClass = view.getSuperClass();
             final String oldSuperClass = getDataObject().getSuperClassName();
 
             // No change needed
-            if ( ( ( "".equals( newSuperClass ) || UIUtil.NOT_SELECTED.equals( newSuperClass ) ) && oldSuperClass == null ) ||
-                    newSuperClass.equals( oldSuperClass ) ) {
+            if ((("".equals(newSuperClass) || UIUtil.NOT_SELECTED.equals(newSuperClass)) && oldSuperClass == null) ||
+                    newSuperClass.equals(oldSuperClass)) {
                 return;
             }
 
-            if ( newSuperClass != null && !"".equals( newSuperClass ) && !UIUtil.NOT_SELECTED.equals( newSuperClass ) ) {
-                validatorService.canExtend( getContext(), getDataObject().getClassName(), newSuperClass, new ValidatorCallback() {
-                    @Override
-                    public void onFailure() {
-                        view.showErrorPopup( Constants.INSTANCE.validation_error_cyclic_extension( getDataObject().getClassName(), newSuperClass ), null, new Command() {
-                            @Override
-                            public void execute() {
-                                view.setSuperClassOnError( true );
-                                view.setSuperClassOnFocus();
-                            }
-                        } );
-                    }
+            if (newSuperClass != null && !"".equals(newSuperClass) && !UIUtil.NOT_SELECTED.equals(newSuperClass)) {
+                validatorService.canExtend(getContext(),
+                                           getDataObject().getClassName(),
+                                           newSuperClass,
+                                           new ValidatorCallback() {
+                                               @Override
+                                               public void onFailure() {
+                                                   view.showErrorPopup(Constants.INSTANCE.validation_error_cyclic_extension(getDataObject().getClassName(),
+                                                                                                                            newSuperClass),
+                                                                       null,
+                                                                       new Command() {
+                                                                           @Override
+                                                                           public void execute() {
+                                                                               view.setSuperClassOnError(true);
+                                                                               view.setSuperClassOnFocus();
+                                                                           }
+                                                                       });
+                                               }
 
-                    @Override
-                    public void onSuccess() {
-                        commandBuilder.buildDataObjectSuperClassChangeCommand( getContext(), getName(),
-                                getDataObject(), newSuperClass ).execute();
+                                               @Override
+                                               public void onSuccess() {
+                                                   commandBuilder.buildDataObjectSuperClassChangeCommand(getContext(),
+                                                                                                         getName(),
+                                                                                                         getDataObject(),
+                                                                                                         newSuperClass).execute();
 
-                        getDataObject().setSuperClassName( newSuperClass );
-                    }
-                } );
+                                                   getDataObject().setSuperClassName(newSuperClass);
+                                               }
+                                           });
             } else {
-                commandBuilder.buildDataObjectSuperClassChangeCommand( getContext(), getName(),
-                        getDataObject(), null ).execute();
+                commandBuilder.buildDataObjectSuperClassChangeCommand(getContext(),
+                                                                      getName(),
+                                                                      getDataObject(),
+                                                                      null).execute();
             }
         }
     }
 
     @Override
     public void onPackageAdded() {
-        if ( getDataObject() != null ) {
-            doPackageChange( view.getNewPackageName() );
+        if (getDataObject() != null) {
+            doPackageChange(view.getNewPackageName());
         }
     }
 
     @Override
     public void onPackageChange() {
-        if ( getDataObject() != null ) {
-            doPackageChange( view.getPackageName() );
+        if (getDataObject() != null) {
+            doPackageChange(view.getPackageName());
         }
     }
 
-    public void doPackageChange( String packageName ) {
+    public void doPackageChange(String packageName) {
 
-        if ( getDataObject() != null ) {
+        if (getDataObject() != null) {
 
-            view.setPackageNameOnError( false );
+            view.setPackageNameOnError(false);
 
             final String originalClassName = getContext() != null ? getContext().getEditorModelContent().getOriginalClassName() : null;
-            final String newPackageName = packageName != null && !"".equals( packageName ) && !UIUtil.NOT_SELECTED.equals( packageName ) ? packageName : null;
+            final String newPackageName = packageName != null && !"".equals(packageName) && !UIUtil.NOT_SELECTED.equals(packageName) ? packageName : null;
             final String oldPackageName = getDataObject().getPackageName();
             final Path currentPath = getContext() != null && getContext().getEditorModelContent() != null ? getContext().getEditorModelContent().getPath() : null;
 
-            if ( ( oldPackageName != null && !oldPackageName.equals( newPackageName ) ) ||
-                    ( oldPackageName == null && newPackageName != null ) ) {
+            if ((oldPackageName != null && !oldPackageName.equals(newPackageName)) ||
+                    (oldPackageName == null && newPackageName != null)) {
                 //the user is trying to change the package name
 
-                modelerService.call( new RemoteCallback<List<Path>>() {
-
-                    @Override
-                    public void callback( List<Path> paths ) {
-
-                        if ( paths != null && paths.size() > 0 ) {
-                            //If usages for this class were detected in project assets
-                            //show the confirmation message to the user.
-
-                            view.showUsagesPopupForChanging(
-                                    Constants.INSTANCE.modelEditor_confirm_package_change_of_used_class( originalClassName ),
-                                    paths,
-                                    new org.uberfire.mvp.Command() {
-                                        @Override
-                                        public void execute() {
-                                            doPackageChange( oldPackageName, newPackageName );
-                                        }
-                                    },
-                                    new org.uberfire.mvp.Command() {
-                                        @Override
-                                        public void execute() {
-                                            //do nothing.
-                                            view.setPackageName( oldPackageName );
-                                        }
-                                    }
-                            );
-
-                        } else {
-                            //no usages, just proceed with the package change.
-                            doPackageChange( oldPackageName, newPackageName );
-                        }
-                    }
-                } ).findClassUsages( currentPath, originalClassName );
+                showAssetUsagesDisplayer.showAssetUsages(Constants.INSTANCE.modelEditor_confirm_package_change_of_used_class(originalClassName),
+                                                         currentPath,
+                                                         originalClassName,
+                                                         ResourceType.JAVA,
+                                                         () -> doPackageChange(oldPackageName,
+                                                                               newPackageName),
+                                                         () -> view.setPackageName(oldPackageName));
             } else {
-                doPackageChange( oldPackageName, newPackageName );
+                doPackageChange(oldPackageName,
+                                newPackageName);
             }
         }
-
     }
 
     @Override
-    protected void loadDataObject( DataObject dataObject ) {
+    protected void loadDataObject(DataObject dataObject) {
         clear();
-        setReadonly( true );
-        if ( dataObject != null ) {
+        setReadonly(true);
+        if (dataObject != null) {
             this.dataObject = dataObject;
 
-            view.setName( dataObject.getName() );
+            view.setName(dataObject.getName());
 
-            Annotation annotation = dataObject.getAnnotation( MainDomainAnnotations.LABEL_ANNOTATION );
-            if ( annotation != null ) {
-                view.setLabel( AnnotationValueHandler.getStringValue( annotation, MainDomainAnnotations.VALUE_PARAM ) );
+            Annotation annotation = dataObject.getAnnotation(MainDomainAnnotations.LABEL_ANNOTATION);
+            if (annotation != null) {
+                view.setLabel(AnnotationValueHandler.getStringValue(annotation,
+                                                                    MainDomainAnnotations.VALUE_PARAM));
             }
 
-            annotation = dataObject.getAnnotation( MainDomainAnnotations.DESCRIPTION_ANNOTATION );
-            if ( annotation != null ) {
-                view.setDescription( AnnotationValueHandler.getStringValue( annotation, MainDomainAnnotations.VALUE_PARAM ) );
+            annotation = dataObject.getAnnotation(MainDomainAnnotations.DESCRIPTION_ANNOTATION);
+            if (annotation != null) {
+                view.setDescription(AnnotationValueHandler.getStringValue(annotation,
+                                                                          MainDomainAnnotations.VALUE_PARAM));
             }
 
-            view.setPackageName( dataObject.getPackageName() );
+            view.setPackageName(dataObject.getPackageName());
 
-            initSuperClassList( false );
+            initSuperClassList(false);
 
-            setReadonly( getContext() == null || getContext().isReadonly() );
+            setReadonly(getContext() == null || getContext().isReadonly());
         }
     }
 
-    private void initSuperClassList( boolean keepSelection ) {
-        String currentValue = keepSelection ? view.getSuperClass() : ( dataObject != null ? dataObject.getSuperClassName() : null );
+    private void initSuperClassList(boolean keepSelection) {
+        String currentValue = keepSelection ? view.getSuperClass() : (dataObject != null ? dataObject.getSuperClassName() : null);
         view.initSuperClassList(
-                DataModelerUtils.buildSuperclassOptions( getDataModel(), dataObject ),
-                currentValue );
-
+                DataModelerUtils.buildSuperclassOptions(getDataModel(),
+                                                        dataObject),
+                currentValue);
     }
 
-    private void doClassNameChange( final String packageName,
-            final String oldValue,
-            final String newValue ) {
+    private void doClassNameChange(final String packageName,
+                                   final String oldValue,
+                                   final String newValue) {
 
         final Command afterCloseCommand = new Command() {
             @Override
             public void execute() {
-                view.setNameOnError( true );
+                view.setNameOnError(true);
                 view.setAllNameNameText();
             }
         };
 
         // In case an invalid name (entered before), was corrected to the original value, don't do anything but reset the label style
-        if ( oldValue.equals( newValue ) ) {
-            view.setNameOnError( false );
+        if (oldValue.equals(newValue)) {
+            view.setNameOnError(false);
             return;
         }
         // Otherwise validate
-        validatorService.isValidIdentifier( newValue, new ValidatorCallback() {
-            @Override
-            public void onFailure() {
-                view.showErrorPopup( Constants.INSTANCE.validation_error_invalid_object_identifier( newValue ), null, afterCloseCommand );
-            }
+        validatorService.isValidIdentifier(newValue,
+                                           new ValidatorCallback() {
+                                               @Override
+                                               public void onFailure() {
+                                                   view.showErrorPopup(Constants.INSTANCE.validation_error_invalid_object_identifier(newValue),
+                                                                       null,
+                                                                       afterCloseCommand);
+                                               }
 
-            @Override
-            public void onSuccess() {
-                validatorService.isUniqueEntityName( packageName, newValue, getDataModel(), new ValidatorCallback() {
-                    @Override
-                    public void onFailure() {
-                        view.showErrorPopup( Constants.INSTANCE.validation_error_object_already_exists( newValue, packageName ), null, afterCloseCommand );
-                    }
+                                               @Override
+                                               public void onSuccess() {
+                                                   validatorService.isUniqueEntityName(packageName,
+                                                                                       newValue,
+                                                                                       getDataModel(),
+                                                                                       new ValidatorCallback() {
+                                                                                           @Override
+                                                                                           public void onFailure() {
+                                                                                               view.showErrorPopup(Constants.INSTANCE.validation_error_object_already_exists(newValue,
+                                                                                                                                                                             packageName),
+                                                                                                                   null,
+                                                                                                                   afterCloseCommand);
+                                                                                           }
 
-                    @Override
-                    public void onSuccess() {
-                        view.setNameOnError( false );
+                                                                                           @Override
+                                                                                           public void onSuccess() {
+                                                                                               view.setNameOnError(false);
 
-                        commandBuilder.buildDataObjectNameChangeCommand( getContext(), getName(),
-                                getDataObject(), newValue ).execute();
-
-                    }
-                } );
-            }
-        } );
-
+                                                                                               commandBuilder.buildDataObjectNameChangeCommand(getContext(),
+                                                                                                                                               getName(),
+                                                                                                                                               getDataObject(),
+                                                                                                                                               newValue).execute();
+                                                                                           }
+                                                                                       });
+                                               }
+                                           });
     }
 
-    private void doPackageChange( String oldPackageName,
-            String newPackageName ) {
+    private void doPackageChange(String oldPackageName,
+                                 String newPackageName) {
 
-        commandBuilder.buildDataObjectPackageChangeCommand( getContext(), getName(),
-                getDataObject(), newPackageName ).execute();
-
+        commandBuilder.buildDataObjectPackageChangeCommand(getContext(),
+                                                           getName(),
+                                                           getDataObject(),
+                                                           newPackageName).execute();
     }
 
     public void clear() {
-        view.setNameOnError( false );
-        view.setName( null );
-        view.setLabel( null );
-        view.setDescription( null );
-        view.setPackageNameOnError( false );
+        view.setNameOnError(false);
+        view.setName(null);
+        view.setLabel(null);
+        view.setDescription(null);
+        view.setPackageNameOnError(false);
 
         view.clearPackageList();
         view.clearSuperClassList();
-        view.setSuperClassOnError( false );
+        view.setSuperClassOnError(false);
     }
 }

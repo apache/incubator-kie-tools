@@ -42,11 +42,13 @@ import org.kie.workbench.common.forms.model.HasFormModelProperties;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.services.backend.service.KieService;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
@@ -73,8 +75,9 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
 
     protected VFSFormFinderService vfsFormFinderService;
 
-    private CommentedOptionFactory commentedOptionFactory;
+    protected DeleteService deleteService;
 
+    private CommentedOptionFactory commentedOptionFactory;
 
     @Inject
     public FormEditorServiceImpl(@Named("ioStrategy") IOService ioService,
@@ -85,6 +88,7 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
                                  KieProjectService projectService,
                                  FormDefinitionSerializer formDefinitionSerializer,
                                  VFSFormFinderService vfsFormFinderService,
+                                 DeleteService deleteService,
                                  CommentedOptionFactory commentedOptionFactory) {
         this.ioService = ioService;
         this.sessionInfo = sessionInfo;
@@ -95,6 +99,7 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
         this.formDefinitionSerializer = formDefinitionSerializer;
         this.vfsFormFinderService = vfsFormFinderService;
         this.commentedOptionFactory = commentedOptionFactory;
+        this.deleteService = deleteService;
     }
 
     @Override
@@ -133,14 +138,19 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
     @Override
     public void delete(Path path,
                        String comment) {
+        try {
+            KieProject project = projectService.resolveProject(path);
+            if (project == null) {
+                logger.warn("Form : " + path.toURI() + " does not belong to a valid project");
+                return;
+            }
 
-    }
-
-    @Override
-    public Path rename(Path path,
-                       String newName,
-                       String comment) {
-        return null;
+            deleteService.delete(path,
+                                 comment);
+        } catch (final Exception e) {
+            logger.error("Form: " + path.toURI() + " couldn't be deleted due to the following error. ",
+                         e);
+        }
     }
 
     @Override

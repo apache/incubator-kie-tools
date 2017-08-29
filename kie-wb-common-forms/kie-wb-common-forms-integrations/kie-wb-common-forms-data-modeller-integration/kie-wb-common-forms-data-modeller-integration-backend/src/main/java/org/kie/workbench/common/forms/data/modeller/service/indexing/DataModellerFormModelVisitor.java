@@ -18,9 +18,14 @@ package org.kie.workbench.common.forms.data.modeller.service.indexing;
 
 import javax.enterprise.context.Dependent;
 
+import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.editor.backend.indexing.FormModelVisitor;
 import org.kie.workbench.common.forms.editor.backend.indexing.FormModelVisitorProvider;
+import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.services.refactoring.ResourceReference;
+import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 
 @Dependent
@@ -37,8 +42,16 @@ public class DataModellerFormModelVisitor extends FormModelVisitor<DataObjectFor
     }
 
     @Override
-    public void index(DataObjectFormModel formModel) {
-        addResourceReference(formModel.getClassName(),
-                             ResourceType.JAVA);
+    public void index(FormDefinition formDefinition, DataObjectFormModel formModel) {
+        ResourceReference reference = addResourceReference(formModel.getClassName(),
+                                                           ResourceType.JAVA);
+
+        formDefinition.getFields().forEach(fieldDefinition -> visitField(reference, fieldDefinition));
+    }
+
+    protected void visitField(ResourceReference reference, FieldDefinition fieldDefinition) {
+        if (!StringUtils.isEmpty(fieldDefinition.getBinding())) {
+            reference.addPartReference(fieldDefinition.getBinding(), PartType.FIELD);
+        }
     }
 }

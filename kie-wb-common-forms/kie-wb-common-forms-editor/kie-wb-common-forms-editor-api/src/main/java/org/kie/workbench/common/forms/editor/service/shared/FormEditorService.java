@@ -15,22 +15,26 @@
  */
 package org.kie.workbench.common.forms.editor.service.shared;
 
-import org.guvnor.common.services.shared.file.SupportsUpdate;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
-import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 
 @Remote
-public interface FormEditorService extends SupportsUpdate<FormModelerContent>,
-                                           SupportsRename,
-                                           SupportsDelete {
+public interface FormEditorService {
 
     Path createForm(Path path,
                     String formName,
                     FormModel formModel);
 
-    public FormModelerContent loadContent(Path path);
+    FormModelerContent loadContent(Path path);
+
+    void delete(final Path path,
+                final String comment);
+
+    Path save(Path path,
+              FormModelerContent content,
+              Metadata metadata,
+              String comment);
 }

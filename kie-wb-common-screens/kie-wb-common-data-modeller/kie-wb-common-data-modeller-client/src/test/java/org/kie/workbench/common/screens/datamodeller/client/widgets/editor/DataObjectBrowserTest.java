@@ -26,6 +26,8 @@ import javax.enterprise.event.Event;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
@@ -38,6 +40,9 @@ import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
+import org.kie.workbench.common.services.refactoring.client.usages.ShowAssetUsagesDisplayer;
+import org.kie.workbench.common.services.refactoring.client.usages.ShowAssetUsagesDisplayerView;
+import org.kie.workbench.common.services.refactoring.service.AssetsUsageService;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.uberfire.backend.vfs.Path;
@@ -77,9 +82,26 @@ public class DataObjectBrowserTest
 
     Event<DataModelerEvent> dataModelerEvent = mock(EventSourceMock.class);
 
+    @Mock
+    AssetsUsageService assetsUsageService;
+
+    @Mock
+    ShowAssetUsagesDisplayerView assetUsagesDisplayerView;
+
+    @Mock
+    TranslationService translationService;
+
+    ShowAssetUsagesDisplayer showAssetUsagesDisplayer;
+
     protected DataObjectBrowser createBrowser() {
 
         newFieldPopup = new NewFieldPopup(newFieldPopupView);
+
+        when(assetUsagesDisplayerView.getDefaultMessageContainer()).thenReturn(mock(HTMLElement.class));
+
+        showAssetUsagesDisplayer = spy(new ShowAssetUsagesDisplayer(assetUsagesDisplayerView,
+                                                                    translationService,
+                                                                    new CallerMock<>(assetsUsageService)));
 
         DataObjectBrowser objectBrowser = new DataObjectBrowser(handlerRegistry,
                                                                 commandBuilder,
@@ -91,7 +113,8 @@ public class DataObjectBrowserTest
                                                                 lockRequiredEvent,
                                                                 placeManager,
                                                                 newFieldPopup,
-                                                                view);
+                                                                view,
+                                                                showAssetUsagesDisplayer);
 
         //emulate the @PostConstruct method invocation.
         objectBrowser.init();
@@ -129,14 +152,22 @@ public class DataObjectBrowserTest
 
         objectBrowser.setContext(context);
 
-        when(modelerService.findFieldUsages(dummyPath,
-                                            dataObject.getClassName(),
-                                            objectProperty.getName()))
-                .thenReturn(new ArrayList<Path>());
+        when(assetsUsageService.getAssetPartUsages(any(),
+                                                   any(),
+                                                   any(),
+                                                   any())).thenReturn(new ArrayList<>());
 
         //field3 is on position 2 by construction.
         objectBrowser.onDeleteProperty(objectProperty,
                                        2);
+
+        verify(showAssetUsagesDisplayer).showAssetPartUsages(anyString(),
+                                                             any(),
+                                                             any(),
+                                                             any(),
+                                                             any(),
+                                                             any(),
+                                                             any());
 
         //if field3 was removed, then field2 should have been selected.
         verify(view).setSelectedRow(dataObject.getProperty("field2"),

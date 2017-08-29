@@ -27,8 +27,17 @@ public interface FormRenderingConstants {
     String MultipleSubformNoCreationForm = "MultipleSubform.noCreationForm";
 
     @TranslationKey(defaultValue = "")
+    String MultipleSubformWrongCreationForm = "MultipleSubform.wrongCreationForm";
+
+    @TranslationKey(defaultValue = "")
     String MultipleSubformNoEditionForm = "MultipleSubform.noEditionForm";
 
     @TranslationKey(defaultValue = "")
+    String MultipleSubformWongEditionForm = "MultipleSubform.wrongEditionForm";
+
+    @TranslationKey(defaultValue = "")
     String SubFormNoForm = "SubForm.noForm";
+
+    @TranslationKey(defaultValue = "")
+    String SubFormWrongForm = "SubForm.wrongForm";
 }

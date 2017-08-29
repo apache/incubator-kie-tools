@@ -21,6 +21,10 @@ import javax.enterprise.context.Dependent;
 import org.kie.workbench.common.forms.editor.backend.indexing.FormModelVisitor;
 import org.kie.workbench.common.forms.editor.backend.indexing.FormModelVisitorProvider;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
+import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.services.refactoring.ResourceReference;
+import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
+import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 
 @Dependent
@@ -37,7 +41,7 @@ public class TaskFormModelVisitor extends FormModelVisitor<TaskFormModel> implem
     }
 
     @Override
-    public void index(TaskFormModel formModel) {
+    public void index(FormDefinition formDefinition, TaskFormModel formModel) {
         addResourceReference(formModel.getProcessId(),
                              ResourceType.BPMN2);
         formModel.getProperties().forEach(property -> addResourceReference(property.getTypeInfo().getClassName(),
