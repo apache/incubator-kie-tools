@@ -212,6 +212,8 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     }
 
     void setupSubMenu() {
+        disableButtonMenu();
+
         getAddColumn().addClickHandler((e) -> addColumn());
         getEditColumns().addClickHandler((e) -> editColumns());
     }
@@ -242,6 +244,16 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     @Override
     public HandlerRegistration addKeyDownHandler(final KeyDownHandler handler) {
         return gridPanel.addKeyDownHandler(handler);
+    }
+
+    void enableButtonMenu() {
+        getAddColumn().setEnabled(true);
+        getEditColumns().setEnabled(true);
+    }
+
+    void disableButtonMenu() {
+        getAddColumn().setEnabled(false);
+        getEditColumns().setEnabled(false);
     }
 
     @Override
@@ -327,6 +339,9 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
         final Command remove = () -> {
             gridLayer.remove(gridWidget);
             gridLayer.batch();
+
+            disableButtonMenu();
+
             afterRemovalCommand.execute();
         };
         if (gridLayer.isGridPinned()) {
@@ -722,8 +737,9 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     @Override
     public void select(final GridWidget selectedGridWidget) {
-        ruleSelector.setEnabled(true);
-        gridLayer.select(selectedGridWidget);
+        enableButtonMenu();
+        getRuleSelector().setEnabled(true);
+        getGridLayer().select(selectedGridWidget);
     }
 
     @Override
@@ -808,6 +824,10 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     GuidedDecisionTableAccordion getAccordion() {
         return accordion;
+    }
+
+    DefaultGridLayer getGridLayer() {
+        return gridLayer;
     }
 
     interface GuidedDecisionTableModellerViewImplUiBinder extends UiBinder<Widget, GuidedDecisionTableModellerViewImpl> {

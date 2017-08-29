@@ -187,6 +187,7 @@ public class GuidedDecisionTableModellerViewImplTest {
 
         view.setupSubMenu();
 
+        verify(view).disableButtonMenu();
         verify(addColumn).addClickHandler(any());
         verify(editColumns).addClickHandler(any());
     }
@@ -271,6 +272,53 @@ public class GuidedDecisionTableModellerViewImplTest {
         view.addKeyDownHandler(handler);
 
         verify(mockGridPanel).addKeyDownHandler(eq(handler));
+    }
+
+    @Test
+    public void testEnableButtonMenu() {
+
+        final Button addColumn = mock(Button.class);
+        final Button editColumns = mock(Button.class);
+
+        doReturn(addColumn).when(view).getAddColumn();
+        doReturn(editColumns).when(view).getEditColumns();
+
+        view.enableButtonMenu();
+
+        verify(addColumn).setEnabled(true);
+        verify(editColumns).setEnabled(true);
+    }
+
+    @Test
+    public void testDisableButtonMenu() {
+
+        final Button addColumn = mock(Button.class);
+        final Button editColumns = mock(Button.class);
+
+        doReturn(addColumn).when(view).getAddColumn();
+        doReturn(editColumns).when(view).getEditColumns();
+
+        view.disableButtonMenu();
+
+        verify(addColumn).setEnabled(false);
+        verify(editColumns).setEnabled(false);
+    }
+
+    @Test
+    public void testSelect() {
+
+        final GridWidget gridWidget = mock(GridWidget.class);
+        final RuleSelector ruleSelector = mock(RuleSelector.class);
+        final DefaultGridLayer gridLayer = mock(DefaultGridLayer.class);
+
+        doReturn(ruleSelector).when(view).getRuleSelector();
+        doReturn(gridLayer).when(view).getGridLayer();
+
+        view.select(gridWidget);
+
+        verify(view).enableButtonMenu();
+        verify(ruleSelector).setEnabled(true);
+        verify(gridLayer).select(gridWidget);
     }
 
     private AttributeCol52 attributeColumn() {
