@@ -41,9 +41,6 @@ public interface FieldManager {
     FieldDefinition getFieldFromProvider(String typeCode,
                                          TypeInfo typeInfo);
 
-    FieldDefinition getFieldFromProviderWithType(String typeCode,
-                                                 TypeInfo typeInfo);
-
     FieldDefinition getDefinitionByFieldType(Class<? extends FieldType> fieldType,
                                              TypeInfo typeInfo);
 }

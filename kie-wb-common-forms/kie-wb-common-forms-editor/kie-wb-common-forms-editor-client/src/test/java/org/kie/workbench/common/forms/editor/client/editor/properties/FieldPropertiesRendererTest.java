@@ -26,6 +26,7 @@ import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFor
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.dynamic.DynamicDataBinderEditor;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.statik.StaticDataBinderEditor;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
@@ -58,7 +59,6 @@ public class FieldPropertiesRendererTest {
     @Mock
     private FieldPropertiesRendererHelper helper;
 
-    @Mock
     private FieldManager fieldManager;
 
     @Mock
@@ -70,6 +70,7 @@ public class FieldPropertiesRendererTest {
     }
 
     protected void loadContent() {
+        fieldManager = spy(new TestFieldManager());
         renderer = spy(new FieldPropertiesRenderer(view,
                                                    dynamicFormModelGenerator,
                                                    staticDataBindingEditor,
@@ -77,7 +78,6 @@ public class FieldPropertiesRendererTest {
                                                    fieldManager));
         renderer.init();
 
-        when(fieldManager.getDefinitionByFieldType(any())).thenReturn(new TextBoxFieldDefinition());
         when(helper.getCurrentField()).thenReturn(lastNameField);
         when(helper.getCurrentRenderingContext()).thenReturn(context);
 
@@ -99,6 +99,8 @@ public class FieldPropertiesRendererTest {
         assertNotNull(renderer.fieldCopy);
         verify(renderer,
                times(1)).resetFieldCopy(any());
+        verify(fieldManager).getFieldFromProvider(any(),
+                                                  any());
     }
 
     @Test

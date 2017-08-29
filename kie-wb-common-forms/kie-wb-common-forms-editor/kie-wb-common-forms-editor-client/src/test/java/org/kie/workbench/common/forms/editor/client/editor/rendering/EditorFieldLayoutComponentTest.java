@@ -35,10 +35,12 @@ import org.kie.workbench.common.forms.editor.client.editor.properties.FieldPrope
 import org.kie.workbench.common.forms.editor.client.editor.properties.FieldPropertiesRendererHelper;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.type.RadioGroupFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.model.TypeInfo;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.mockito.Mock;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
@@ -61,41 +63,40 @@ public class EditorFieldLayoutComponentTest {
     @Mock
     private ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents;
 
-    protected FormModelerContent content;
+    private FormModelerContent content;
 
     private FormEditorHelper formEditorHelper;
 
     @Mock
-    protected FieldPropertiesRenderer.FieldPropertiesRendererView fieldPropertiesRendererView;
+    private FieldPropertiesRenderer.FieldPropertiesRendererView fieldPropertiesRendererView;
 
     @Mock
-    protected FieldPropertiesRenderer propertiesRenderer;
+    private FieldPropertiesRenderer propertiesRenderer;
 
     @Mock
-    protected LayoutDragComponentHelper layoutDragComponentHelper;
+    private LayoutDragComponentHelper layoutDragComponentHelper;
 
     @Mock
-    protected EventSourceMock<FormEditorSyncPaletteEvent> syncPaletteEvent;
+    private EventSourceMock<FormEditorSyncPaletteEvent> syncPaletteEvent;
 
     @Mock
-    protected FieldRendererManager fieldRendererManager;
+    private FieldRendererManager fieldRendererManager;
 
     @Mock
-    protected FieldRenderer fieldRenderer;
+    private FieldRenderer fieldRenderer;
 
     @Mock
-    protected TranslationService translationService;
+    private TranslationService translationService;
 
     @Mock
-    protected FormEditorRenderingContext context;
+    private FormEditorRenderingContext context;
+
+    private FieldManager fieldManager;
 
     @Mock
-    protected FieldManager fieldManager;
+    private FormDefinition formDefinition;
 
-    @Mock
-    protected FormDefinition formDefinition;
-
-    protected FieldDefinition fieldDefinition;
+    private FieldDefinition fieldDefinition;
 
     private LayoutComponent layoutComponent = new LayoutComponent(EditorFieldLayoutComponent.class.getName());
 
@@ -110,6 +111,7 @@ public class EditorFieldLayoutComponentTest {
 
     @Before
     public void init() {
+        fieldManager = spy(new TestFieldManager());
 
         when(editorFieldLayoutComponents.get()).thenAnswer(invocationOnMock -> {
             final EditorFieldLayoutComponent mocked = mock(EditorFieldLayoutComponent.class);
@@ -290,16 +292,20 @@ public class EditorFieldLayoutComponentTest {
     @Test
     public void testOnFieldTypeChange() {
 
-        FieldDefinition newField = mock(FieldDefinition.class);
-        when(fieldManager.getDefinitionByFieldTypeName(anyString())).thenReturn(newField);
         FieldDefinition result = propertiesRendererHelper.onFieldTypeChange(fieldDefinition,
-                                                                            "RadioGroup");
+                                                                            RadioGroupFieldType.NAME);
 
-        verify(newField).copyFrom(fieldDefinition);
-        verify(newField).setId(fieldDefinition.getId());
-        verify(newField).setName(fieldDefinition.getName());
-        assertSame(newField,
-                   result);
+        verify(fieldManager).getFieldFromProvider(RadioGroupFieldType.NAME,
+                                                  fieldDefinition.getFieldTypeInfo());
+
+        assertEquals(fieldDefinition.getId(),
+                     result.getId());
+        assertEquals(fieldDefinition.getName(),
+                     result.getName());
+        assertEquals(fieldDefinition.getBinding(),
+                     result.getBinding());
+        assertNotEquals(fieldDefinition.getClass(),
+                        result.getClass());
     }
 
     @Test
@@ -378,10 +384,11 @@ public class EditorFieldLayoutComponentTest {
         FieldDefinition newField = mock(FieldDefinition.class);
 
         when(newField.getId()).thenReturn(EditorFieldLayoutComponent.FIELD_ID);
-        when(fieldManager.getDefinitionByFieldTypeName(anyString())).thenReturn(newField);
+        doReturn(newField).when(fieldManager).getFieldFromProvider(anyString(),
+                                                                   any(TypeInfo.class));
 
         FieldDefinition fieldCopy = propertiesRendererHelper.onFieldTypeChange(fieldDefinition,
-                                                                               "RadioGroup");
+                                                                               RadioGroupFieldType.NAME);
         editorFieldLayoutComponent.setSettingValue(EditorFieldLayoutComponent.FORM_ID,
                                                    EditorFieldLayoutComponent.FORM_ID);
         editorFieldLayoutComponent.setSettingValue(EditorFieldLayoutComponent.FIELD_ID,

@@ -103,7 +103,7 @@ public class FieldPropertiesRenderer implements IsWidget {
     }
 
     public FieldDefinition resetFieldCopy(final FieldDefinition originalField) {
-        fieldCopy = fieldManager.getDefinitionByFieldType(originalField.getFieldType());
+        fieldCopy = fieldManager.getFieldFromProvider(originalField.getFieldType().getTypeName(), originalField.getFieldTypeInfo());
         fieldCopy.copyFrom(originalField);
         fieldCopy.setId(originalField.getId());
         fieldCopy.setName(originalField.getName());

@@ -224,33 +224,6 @@ public abstract class AbstractFieldManager implements FieldManager {
     }
 
     @Override
-    public FieldDefinition getFieldFromProviderWithType(String typeCode,
-                                                        TypeInfo typeInfo) {
-        Assert.notNull("TypeCode cannot be null",
-                       typeCode);
-        Assert.notNull("TypeInfo cannot be null",
-                       typeInfo);
-
-        FieldProvider provider = entityTypeFieldProvider.get(typeCode);
-
-        if (provider == null) {
-            provider = multipleEntityTypeFieldProvider.get(typeCode);
-        }
-
-        if (provider != null) {
-            return provider.getFieldByType(typeInfo);
-        }
-
-        for (BasicTypeFieldProvider basicProvider : basicProviders) {
-            if (basicProvider.getFieldTypeName().equals(typeCode)) {
-                return basicProvider.createFieldByType(typeInfo);
-            }
-        }
-
-        return null;
-    }
-
-    @Override
     public FieldDefinition getDefinitionByFieldType(Class<? extends FieldType> fieldType,
                                                     TypeInfo typeInfo) {
         FieldProvider provider = providerByFieldType.get(fieldType);

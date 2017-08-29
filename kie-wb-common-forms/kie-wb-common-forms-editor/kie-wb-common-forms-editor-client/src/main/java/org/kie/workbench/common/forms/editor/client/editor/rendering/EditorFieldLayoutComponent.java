@@ -129,7 +129,7 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
             @Override
             public FieldDefinition onFieldTypeChange(FieldDefinition field,
                                                      String newType) {
-                FieldDefinition fieldCopy = fieldManager.getDefinitionByFieldTypeName(newType);
+                FieldDefinition fieldCopy = fieldManager.getFieldFromProvider(newType, field.getFieldTypeInfo());
                 fieldCopy.copyFrom(field);
                 fieldCopy.setId(field.getId());
                 fieldCopy.setName(field.getName());
