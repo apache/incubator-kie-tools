@@ -47,6 +47,7 @@
   <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
   <inherits name='org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI'/>
   <inherits name='org.kie.workbench.common.services.refactoring.KieWorkbenchCommonRefactoringAPI'/>
+  <inherits name='org.kie.workbench.common.services.refactoring.KieWorkbenchCommonRefactoringClient'/>
 
   <!-- Models for Drools Workbench Screens -->
   <inherits name="org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon"/>
