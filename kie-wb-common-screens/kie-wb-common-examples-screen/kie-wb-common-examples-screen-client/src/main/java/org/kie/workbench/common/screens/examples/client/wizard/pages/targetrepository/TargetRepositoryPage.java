@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.examples.client.wizard.pages.organizationalunit;
+package org.kie.workbench.common.screens.examples.client.wizard.pages.targetrepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,19 +40,19 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
 @Dependent
-public class OUPage extends BaseExamplesWizardPage implements OUPageView.Presenter {
+public class TargetRepositoryPage extends BaseExamplesWizardPage implements TargetRepositoryPageView.Presenter {
 
-    private OUPageView view;
+    private TargetRepositoryPageView view;
 
-    public OUPage() {
+    public TargetRepositoryPage() {
         //Zero-argument constructor for CDI proxies
     }
 
     @Inject
-    public OUPage(final OUPageView view,
-                  final TranslationService translator,
-                  final Caller<ExamplesService> examplesService,
-                  final Event<WizardPageStatusChangeEvent> pageStatusChangedEvent) {
+    public TargetRepositoryPage(final TargetRepositoryPageView view,
+                                final TranslationService translator,
+                                final Caller<ExamplesService> examplesService,
+                                final Event<WizardPageStatusChangeEvent> pageStatusChangedEvent) {
         super(translator,
               examplesService,
               pageStatusChangedEvent);
@@ -62,8 +62,7 @@ public class OUPage extends BaseExamplesWizardPage implements OUPageView.Present
     @PostConstruct
     public void init() {
         view.init(this);
-        view.setTargetRepositoryPlaceHolder(translator.format(ExamplesScreenConstants.OrganizationalUnitPage_WizardTargetRepositoryPlaceHolder));
-        view.setOrganizationalUnitsPlaceHolder(translator.format(ExamplesScreenConstants.OrganizationalUnitPage_WizardOrganizationalUnitsPlaceHolder));
+        view.setTargetRepositoryPlaceHolder(translator.format(ExamplesScreenConstants.TargetRepositoryPage_WizardTargetRepositoryPlaceHolder));
     }
 
     @Override
@@ -73,7 +72,7 @@ public class OUPage extends BaseExamplesWizardPage implements OUPageView.Present
 
     @Override
     public String getTitle() {
-        return translator.format(ExamplesScreenConstants.OrganizationalUnitPage_WizardSelectOrganizationalUnitPageTitle);
+        return translator.format(ExamplesScreenConstants.TargetRepositoryPage_WizardTargetRepositoryPageTitle);
     }
 
     @Override
@@ -89,33 +88,13 @@ public class OUPage extends BaseExamplesWizardPage implements OUPageView.Present
     @Override
     public void isComplete(final Callback<Boolean> callback) {
         final ExampleTargetRepository targetRepository = model.getTargetRepository();
-        final ExampleOrganizationalUnit targetOrganizationalUnit = model.getTargetOrganizationalUnit();
         validateOrganizationalUnit(targetRepository,
-                                   targetOrganizationalUnit,
                                    new Callback<Boolean>() {
                                        @Override
                                        public void callback(final Boolean result) {
                                            callback.callback(result);
                                        }
                                    });
-    }
-
-    @Override
-    public void setOrganizationalUnits(final Set<ExampleOrganizationalUnit> organizationalUnits) {
-        if (organizationalUnits == null) {
-            view.setOrganizationalUnits(Collections.<ExampleOrganizationalUnit>emptyList());
-            return;
-        }
-        final List<ExampleOrganizationalUnit> sortedOrganizationalUnits = sort(organizationalUnits);
-        view.setOrganizationalUnits(sortedOrganizationalUnits);
-        if (sortedOrganizationalUnits.size() > 0) {
-            if (model.getTargetOrganizationalUnit() != null) {
-                view.setOrganizationalUnit(model.getTargetOrganizationalUnit());
-            } else {
-                model.setTargetOrganizationalUnit(sortedOrganizationalUnits.get(0));
-                view.setOrganizationalUnit(sortedOrganizationalUnits.get(0));
-            }
-        }
     }
 
     private List<ExampleOrganizationalUnit> sort(final Set<ExampleOrganizationalUnit> repositories) {
@@ -138,42 +117,19 @@ public class OUPage extends BaseExamplesWizardPage implements OUPageView.Present
         pageStatusChangedEvent.fire(new WizardPageStatusChangeEvent(this));
     }
 
-    @Override
-    public void setTargetOrganizationalUnit(final ExampleOrganizationalUnit organizationalUnit) {
-        model.setTargetOrganizationalUnit(organizationalUnit);
-        view.setOrganizationalUnit(organizationalUnit);
-        pageStatusChangedEvent.fire(new WizardPageStatusChangeEvent(this));
-    }
-
     private void validateOrganizationalUnit(final ExampleTargetRepository targetRepository,
-                                            final ExampleOrganizationalUnit targetOrganizationalUnit,
                                             final Callback<Boolean> callback) {
         boolean isValid = true;
-        if (targetOrganizationalUnit == null) {
-            view.setTargetOrganizationalUnitGroupType(ValidationState.ERROR);
-            view.showTargetOrganizationalUnitHelpMessage(translator.format(ExamplesScreenConstants.OrganizationalUnitPage_WizardSelectOrganizationalUnitMandatory));
-            isValid = false;
-        } else {
-            final String targetOrganizationalUnitName = targetOrganizationalUnit.getName();
-            if (targetOrganizationalUnitName == null || targetOrganizationalUnitName.trim().isEmpty()) {
-                view.setTargetOrganizationalUnitGroupType(ValidationState.ERROR);
-                view.showTargetOrganizationalUnitHelpMessage(translator.format(ExamplesScreenConstants.OrganizationalUnitPage_WizardSelectOrganizationalUnitMandatory));
-                isValid = false;
-            } else {
-                view.setTargetOrganizationalUnitGroupType(ValidationState.NONE);
-                view.hideTargetOrganizationalUnitHelpMessage();
-            }
-        }
 
         if (targetRepository == null) {
             view.setTargetRepositoryGroupType(ValidationState.ERROR);
-            view.showTargetRepositoryHelpMessage(translator.format(ExamplesScreenConstants.OrganizationalUnitPage_WizardSelectTargetRepositoryMandatory));
+            view.showTargetRepositoryHelpMessage(translator.format(ExamplesScreenConstants.TargetRepositoryPage_WizardSelectTargetRepositoryMandatory));
             callback.callback(false);
         } else {
             final String targetRepositoryName = targetRepository.getAlias();
             if (targetRepositoryName == null || targetRepositoryName.trim().isEmpty()) {
                 view.setTargetRepositoryGroupType(ValidationState.ERROR);
-                view.showTargetRepositoryHelpMessage(translator.format(ExamplesScreenConstants.OrganizationalUnitPage_WizardSelectTargetRepositoryMandatory));
+                view.showTargetRepositoryHelpMessage(translator.format(ExamplesScreenConstants.TargetRepositoryPage_WizardSelectTargetRepositoryMandatory));
                 callback.callback(false);
             } else {
                 final boolean _isValid = isValid;
@@ -185,7 +141,7 @@ public class OUPage extends BaseExamplesWizardPage implements OUPageView.Present
                             view.hideTargetRepositoryHelpMessage();
                         } else {
                             view.setTargetRepositoryGroupType(ValidationState.ERROR);
-                            view.showTargetRepositoryHelpMessage(translator.format(ExamplesScreenConstants.OrganizationalUnitPage_WizardSelectTargetRepositoryInvalid));
+                            view.showTargetRepositoryHelpMessage(translator.format(ExamplesScreenConstants.TargetRepositoryPage_WizardSelectTargetRepositoryInvalid));
                         }
                         callback.callback(valid && _isValid);
                     }

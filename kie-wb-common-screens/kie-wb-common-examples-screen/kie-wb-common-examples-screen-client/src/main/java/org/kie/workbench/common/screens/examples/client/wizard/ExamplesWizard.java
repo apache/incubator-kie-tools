@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.examples.client.wizard;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -31,9 +30,9 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.examples.client.resources.i18n.ExamplesScreenConstants;
 import org.kie.workbench.common.screens.examples.client.wizard.model.ExamplesWizardModel;
 import org.kie.workbench.common.screens.examples.client.wizard.pages.ExamplesWizardPage;
-import org.kie.workbench.common.screens.examples.client.wizard.pages.organizationalunit.OUPage;
+import org.kie.workbench.common.screens.examples.client.wizard.pages.targetrepository.TargetRepositoryPage;
 import org.kie.workbench.common.screens.examples.client.wizard.pages.project.ProjectPage;
-import org.kie.workbench.common.screens.examples.client.wizard.pages.repository.RepositoryPage;
+import org.kie.workbench.common.screens.examples.client.wizard.pages.sourcerepository.SourceRepositoryPage;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ExampleTargetRepository;
@@ -56,8 +55,8 @@ public class ExamplesWizard extends AbstractWizard {
 
     private ExamplesWizardModel model;
     private List<WizardPage> pages = new ArrayList<WizardPage>();
-    private RepositoryPage repositoryPage;
-    private OUPage organizationalUnitPage;
+    private SourceRepositoryPage sourceRepositoryPage;
+    private TargetRepositoryPage organizationalUnitPage;
     private BusyIndicatorView busyIndicatorView;
     private Caller<ExamplesService> examplesService;
     private Event<ProjectContextChangeEvent> event;
@@ -68,17 +67,17 @@ public class ExamplesWizard extends AbstractWizard {
     }
 
     @Inject
-    public ExamplesWizard(final RepositoryPage repositoryPage,
+    public ExamplesWizard(final SourceRepositoryPage sourceRepositoryPage,
                           final ProjectPage projectPage,
-                          final OUPage organizationalUnitPage,
+                          final TargetRepositoryPage organizationalUnitPage,
                           final BusyIndicatorView busyIndicatorView,
                           final Caller<ExamplesService> examplesService,
                           final Event<ProjectContextChangeEvent> event,
                           final TranslationService translator) {
-        pages.add(repositoryPage);
+        pages.add(sourceRepositoryPage);
         pages.add(projectPage);
         pages.add(organizationalUnitPage);
-        this.repositoryPage = repositoryPage;
+        this.sourceRepositoryPage = sourceRepositoryPage;
         this.organizationalUnitPage = organizationalUnitPage;
         this.busyIndicatorView = busyIndicatorView;
         this.examplesService = examplesService;
@@ -97,9 +96,7 @@ public class ExamplesWizard extends AbstractWizard {
             @Override
             public void callback(final ExamplesMetaData metaData) {
                 final ExampleRepository repository = metaData.getRepository();
-                repositoryPage.setPlaygroundRepository(repository);
-                final Set<ExampleOrganizationalUnit> organizationalUnits = metaData.getOrganizationalUnits();
-                organizationalUnitPage.setOrganizationalUnits(organizationalUnits);
+                sourceRepositoryPage.setPlaygroundRepository(repository);
                 ExamplesWizard.super.start();
             }
         }).getMetaData();
@@ -123,6 +120,10 @@ public class ExamplesWizard extends AbstractWizard {
         WizardPage page = pages.get(pageNumber);
         page.prepareView();
         return page.asWidget();
+    }
+
+    ExamplesWizardModel getModel() {
+        return this.model;
     }
 
     @Override
@@ -178,7 +179,7 @@ public class ExamplesWizard extends AbstractWizard {
 
     public void setDefaultTargetOrganizationalUnit(final String ouName) {
         final ExampleOrganizationalUnit targetOrganizationalUnit = new ExampleOrganizationalUnit(ouName);
-        this.organizationalUnitPage.setTargetOrganizationalUnit(targetOrganizationalUnit);
+        this.model.setTargetOrganizationalUnit(targetOrganizationalUnit);
     }
 
     public void setDefaultTargetRepository(final String repositoryAlias) {

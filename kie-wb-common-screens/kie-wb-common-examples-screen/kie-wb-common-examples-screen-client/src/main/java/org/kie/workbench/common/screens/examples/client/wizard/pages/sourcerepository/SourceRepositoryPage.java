@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.examples.client.wizard.pages.repository;
+package org.kie.workbench.common.screens.examples.client.wizard.pages.sourcerepository;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -34,21 +34,21 @@ import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.util.URIUtil;
 
 @Dependent
-public class RepositoryPage extends BaseExamplesWizardPage implements RepositoryPageView.Presenter {
+public class SourceRepositoryPage extends BaseExamplesWizardPage implements SourceRepositoryPageView.Presenter {
 
-    private RepositoryPageView view;
+    private SourceRepositoryPageView view;
 
     private ExampleRepository stockRepository;
 
-    public RepositoryPage() {
+    public SourceRepositoryPage() {
         //Zero-argument constructor for CDI proxies
     }
 
     @Inject
-    public RepositoryPage(final RepositoryPageView view,
-                          final TranslationService translator,
-                          final Caller<ExamplesService> examplesService,
-                          final Event<WizardPageStatusChangeEvent> pageStatusChangedEvent) {
+    public SourceRepositoryPage(final SourceRepositoryPageView view,
+                                final TranslationService translator,
+                                final Caller<ExamplesService> examplesService,
+                                final Event<WizardPageStatusChangeEvent> pageStatusChangedEvent) {
         super(translator,
               examplesService,
               pageStatusChangedEvent);
@@ -58,7 +58,7 @@ public class RepositoryPage extends BaseExamplesWizardPage implements Repository
     @PostConstruct
     public void init() {
         view.init(this);
-        view.setPlaceHolder(translator.format(ExamplesScreenConstants.RepositoryPage_WizardRepositoriesPlaceHolder));
+        view.setPlaceHolder(translator.format(ExamplesScreenConstants.SourceRepositoryPage_WizardRepositoriesPlaceHolder));
     }
 
     @Override
@@ -68,7 +68,7 @@ public class RepositoryPage extends BaseExamplesWizardPage implements Repository
 
     @Override
     public String getTitle() {
-        return translator.format(ExamplesScreenConstants.RepositoryPage_WizardSelectRepositoryPageTitle);
+        return translator.format(ExamplesScreenConstants.SourceRepositoryPage_WizardSelectRepositoryPageTitle);
     }
 
     @Override
@@ -113,6 +113,7 @@ public class RepositoryPage extends BaseExamplesWizardPage implements Repository
     @Override
     public void onCustomRepositorySelected() {
         view.showRepositoryUrlInputForm();
+        model.setSelectedRepository(null);
         pageStatusChangedEvent.fire(new WizardPageStatusChangeEvent(this));
     }
 
@@ -125,19 +126,19 @@ public class RepositoryPage extends BaseExamplesWizardPage implements Repository
     private boolean validateUrl(final ExampleRepository selectedRepository) {
         if (selectedRepository == null) {
             view.setUrlGroupType(ValidationState.ERROR);
-            view.showUrlHelpMessage(translator.format(ExamplesScreenConstants.RepositoryPage_WizardSelectRepositoryURLMandatory));
+            view.showUrlHelpMessage(translator.format(ExamplesScreenConstants.SourceRepositoryPage_WizardSelectRepositoryURLMandatory));
             return false;
         }
         final String url = selectedRepository.getUrl();
         if (url == null || url.trim().isEmpty()) {
             selectedRepository.setUrlValid(false);
             view.setUrlGroupType(ValidationState.ERROR);
-            view.showUrlHelpMessage(translator.format(ExamplesScreenConstants.RepositoryPage_WizardSelectRepositoryURLMandatory));
+            view.showUrlHelpMessage(translator.format(ExamplesScreenConstants.SourceRepositoryPage_WizardSelectRepositoryURLMandatory));
             return false;
         } else if (!isUrlValid(url)) {
             selectedRepository.setUrlValid(false);
             view.setUrlGroupType(ValidationState.ERROR);
-            view.showUrlHelpMessage(translator.format(ExamplesScreenConstants.RepositoryPage_WizardSelectRepositoryURLFormatInvalid));
+            view.showUrlHelpMessage(translator.format(ExamplesScreenConstants.SourceRepositoryPage_WizardSelectRepositoryURLFormatInvalid));
             return false;
         } else {
             selectedRepository.setUrlValid(true);

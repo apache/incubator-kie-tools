@@ -27,36 +27,30 @@ public interface ExamplesScreenConstants {
     String ExamplesWizard_SettingUpExamples = "ExamplesWizard.SettingUpExamples";
 
     @TranslationKey(defaultValue = "")
-    String RepositoryPage_WizardSelectRepositoryPageTitle = "RepositoryPage.WizardSelectRepositoryPageTitle";
+    String SourceRepositoryPage_WizardSelectRepositoryPageTitle = "SourceRepositoryPage.WizardSourceRepositoryPageTitle";
 
     @TranslationKey(defaultValue = "")
-    String RepositoryPage_WizardRepositoriesPlaceHolder = "RepositoryPage.WizardRepositoriesPlaceHolder";
+    String SourceRepositoryPage_WizardRepositoriesPlaceHolder = "SourceRepositoryPage.WizardRepositoriesPlaceHolder";
 
     @TranslationKey(defaultValue = "")
-    String RepositoryPage_WizardSelectRepositoryURLMandatory = "RepositoryPage.WizardSelectRepositoryURLMandatory";
+    String SourceRepositoryPage_WizardSelectRepositoryURLMandatory = "SourceRepositoryPage.WizardSelectRepositoryURLMandatory";
 
     @TranslationKey(defaultValue = "")
-    String RepositoryPage_WizardSelectRepositoryURLFormatInvalid = "RepositoryPage.WizardSelectRepositoryURLFormatInvalid";
+    String SourceRepositoryPage_WizardSelectRepositoryURLFormatInvalid = "SourceRepositoryPage.WizardSelectRepositoryURLFormatInvalid";
 
     @TranslationKey(defaultValue = "")
     String ProjectPage_WizardSelectProjectPageTitle = "ProjectPage.WizardSelectProjectPageTitle";
 
     @TranslationKey(defaultValue = "")
-    String OrganizationalUnitPage_WizardSelectOrganizationalUnitPageTitle = "OrganizationalUnitPage.WizardSelectOrganizationalUnitPageTitle";
+    String TargetRepositoryPage_WizardTargetRepositoryPageTitle = "TargetRepositoryPage.WizardTargetRepositoryPageTitle";
 
     @TranslationKey(defaultValue = "")
-    String OrganizationalUnitPage_WizardTargetRepositoryPlaceHolder = "OrganizationalUnitPage.WizardTargetRepositoryPlaceHolder";
+    String TargetRepositoryPage_WizardTargetRepositoryPlaceHolder = "TargetRepositoryPage.WizardTargetRepositoryPlaceHolder";
 
     @TranslationKey(defaultValue = "")
-    String OrganizationalUnitPage_WizardOrganizationalUnitsPlaceHolder = "OrganizationalUnitPage.WizardOrganizationalUnitsPlaceHolder";
+    String TargetRepositoryPage_WizardSelectTargetRepositoryMandatory = "TargetRepositoryPage.WizardSelectTargetRepositoryMandatory";
 
     @TranslationKey(defaultValue = "")
-    String OrganizationalUnitPage_WizardSelectTargetRepositoryMandatory = "OrganizationalUnitPage.WizardSelectTargetRepositoryMandatory";
-
-    @TranslationKey(defaultValue = "")
-    String OrganizationalUnitPage_WizardSelectTargetRepositoryInvalid = "OrganizationalUnitPage.WizardSelectTargetRepositoryInvalid";
-
-    @TranslationKey(defaultValue = "")
-    String OrganizationalUnitPage_WizardSelectOrganizationalUnitMandatory = "OrganizationalUnitPage.WizardSelectOrganizationalUnitMandatory";
+    String TargetRepositoryPage_WizardSelectTargetRepositoryInvalid = "TargetRepositoryPage.WizardSelectTargetRepositoryInvalid";
 
 }

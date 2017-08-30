@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.examples.client.wizard.pages.repository;
+package org.kie.workbench.common.screens.examples.client.wizard.pages.sourcerepository;
 
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.uberfire.client.mvp.UberView;
 
-public interface RepositoryPageView extends UberView<RepositoryPage> {
+public interface SourceRepositoryPageView extends UberView<SourceRepositoryPage> {
 
     void initialise();
 

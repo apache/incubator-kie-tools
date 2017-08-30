@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.examples.client.wizard.pages.repository;
+package org.kie.workbench.common.screens.examples.client.wizard.pages.sourcerepository;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -43,12 +43,12 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RepositoryPageTest {
+public class SourceRepositoryPageTest {
 
     private static final String EXAMPLE_REPOSITORY = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
 
     @Mock
-    private RepositoryPageView view;
+    private SourceRepositoryPageView view;
 
     @Mock
     private TranslationService translator;
@@ -67,16 +67,16 @@ public class RepositoryPageTest {
     @Captor
     private ArgumentCaptor<ExampleRepository> repositoryArgumentCaptor;
 
-    private RepositoryPage page;
+    private SourceRepositoryPage page;
 
     private ExamplesWizardModel model;
 
     @Before
     public void setup() {
-        page = new RepositoryPage(view,
-                                  translator,
-                                  examplesServiceCaller,
-                                  pageStatusChangedEvent) {
+        page = new SourceRepositoryPage(view,
+                                        translator,
+                                        examplesServiceCaller,
+                                        pageStatusChangedEvent) {
             @Override
             boolean isUrlValid(final String url) {
                 try {
@@ -152,6 +152,7 @@ public class RepositoryPageTest {
     @Test
     public void testCustomRepositorySelected() {
         page.onCustomRepositorySelected();
+        assertNull(model.getSelectedRepository());
         verify(view,
                times(1)).showRepositoryUrlInputForm();
     }

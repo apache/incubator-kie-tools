@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.examples.client.wizard.pages.repository;
+package org.kie.workbench.common.screens.examples.client.wizard.pages.sourcerepository;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -35,10 +35,7 @@ import org.uberfire.ext.widgets.common.client.common.StyleHelper;
 
 @Dependent
 @Templated
-public class RepositoryPageViewImpl extends Composite implements RepositoryPageView {
-
-    @DataField("repository-type")
-    Element repositoryType = DOM.createDiv();
+public class SourceRepositoryPageViewImpl extends Composite implements SourceRepositoryPageView {
 
     @Inject
     @DataField("stockRadio")
@@ -58,10 +55,10 @@ public class RepositoryPageViewImpl extends Composite implements RepositoryPageV
     @DataField("repository-help")
     Element repositoryHelp = DOM.createSpan();
 
-    private RepositoryPage presenter;
+    private SourceRepositoryPage presenter;
 
     @Override
-    public void init(final RepositoryPage presenter) {
+    public void init(final SourceRepositoryPage presenter) {
         this.presenter = presenter;
     }
 

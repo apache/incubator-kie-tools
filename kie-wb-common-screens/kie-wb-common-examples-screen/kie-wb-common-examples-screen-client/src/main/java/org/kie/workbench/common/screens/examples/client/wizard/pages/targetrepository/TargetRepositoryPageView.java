@@ -14,36 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.examples.client.wizard.pages.organizationalunit;
-
-import java.util.List;
-import java.util.Set;
+package org.kie.workbench.common.screens.examples.client.wizard.pages.targetrepository;
 
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
-import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ExampleTargetRepository;
 import org.uberfire.client.mvp.UberView;
 
-public interface OUPageView extends UberView<OUPage> {
+public interface TargetRepositoryPageView extends UberView<TargetRepositoryPage> {
 
     interface Presenter {
 
-        void setOrganizationalUnits(final Set<ExampleOrganizationalUnit> organizationalUnits);
-
         void setTargetRepository(final ExampleTargetRepository repository);
-
-        void setTargetOrganizationalUnit(final ExampleOrganizationalUnit organizationalUnit);
     }
 
     void initialise();
 
     void setTargetRepositoryPlaceHolder(final String placeHolder);
-
-    void setOrganizationalUnitsPlaceHolder(final String placeHolder);
-
-    void setOrganizationalUnits(final List<ExampleOrganizationalUnit> organizationalUnits);
-
-    void setOrganizationalUnit(final ExampleOrganizationalUnit organizationalUnit);
 
     void setTargetRepository(final ExampleTargetRepository repository);
 
@@ -52,10 +38,4 @@ public interface OUPageView extends UberView<OUPage> {
     void showTargetRepositoryHelpMessage(final String message);
 
     void hideTargetRepositoryHelpMessage();
-
-    void setTargetOrganizationalUnitGroupType(final ValidationState state);
-
-    void showTargetOrganizationalUnitHelpMessage(final String message);
-
-    void hideTargetOrganizationalUnitHelpMessage();
 }

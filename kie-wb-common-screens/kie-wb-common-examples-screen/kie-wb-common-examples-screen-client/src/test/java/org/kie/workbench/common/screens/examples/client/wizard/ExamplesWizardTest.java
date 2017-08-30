@@ -28,9 +28,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.examples.client.wizard.model.ExamplesWizardModel;
-import org.kie.workbench.common.screens.examples.client.wizard.pages.organizationalunit.OUPage;
+import org.kie.workbench.common.screens.examples.client.wizard.pages.targetrepository.TargetRepositoryPage;
 import org.kie.workbench.common.screens.examples.client.wizard.pages.project.ProjectPage;
-import org.kie.workbench.common.screens.examples.client.wizard.pages.repository.RepositoryPage;
+import org.kie.workbench.common.screens.examples.client.wizard.pages.sourcerepository.SourceRepositoryPage;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ExampleTargetRepository;
@@ -65,11 +65,11 @@ public class ExamplesWizardTest {
         add(new ExampleOrganizationalUnit(EXAMPLE_ORGANIZATIONAL_UNIT2));
     }};
     @Mock
-    private RepositoryPage repositoryPage;
+    private SourceRepositoryPage sourceRepositoryPage;
     @Mock
     private ProjectPage projectPage;
     @Mock
-    private OUPage organizationalUnitPage;
+    private TargetRepositoryPage organizationalUnitPage;
     @Mock
     private BusyIndicatorView busyIndicatorView;
     private ExamplesService examplesService = mock(ExamplesService.class);
@@ -85,8 +85,6 @@ public class ExamplesWizardTest {
     private TranslationService translator;
     @Captor
     private ArgumentCaptor<ExampleRepository> repositoryArgumentCaptor;
-    @Captor
-    private ArgumentCaptor<Set<ExampleOrganizationalUnit>> organizationalUnitsArgumentCaptor;
     @Mock
     private Callback<Boolean> callback;
     private ExamplesMetaData metaData = new ExamplesMetaData(repository,
@@ -96,7 +94,7 @@ public class ExamplesWizardTest {
 
     @Before
     public void setup() {
-        wizard = new ExamplesWizard(repositoryPage,
+        wizard = new ExamplesWizard(sourceRepositoryPage,
                                     projectPage,
                                     organizationalUnitPage,
                                     busyIndicatorView,
@@ -115,34 +113,30 @@ public class ExamplesWizardTest {
         final ArgumentCaptor<ExamplesWizardModel> modelArgumentCaptor = ArgumentCaptor.forClass(ExamplesWizardModel.class);
 
         wizard.start();
-        verify(repositoryPage,
+        verify(sourceRepositoryPage,
                times(1)).initialise();
         verify(projectPage,
                times(1)).initialise();
         verify(organizationalUnitPage,
                times(1)).initialise();
-        verify(repositoryPage,
+        verify(sourceRepositoryPage,
                times(1)).setModel(modelArgumentCaptor.capture());
         verify(projectPage,
                times(1)).setModel(modelArgumentCaptor.getValue());
         verify(organizationalUnitPage,
                times(1)).setModel(modelArgumentCaptor.getValue());
-        verify(repositoryPage,
+        verify(sourceRepositoryPage,
                times(1)).setPlaygroundRepository(repositoryArgumentCaptor.capture());
-        verify(organizationalUnitPage,
-               times(1)).setOrganizationalUnits(organizationalUnitsArgumentCaptor.capture());
 
         assertEquals(repository,
                      repositoryArgumentCaptor.getValue());
-        assertEquals(organizationalUnits,
-                     organizationalUnitsArgumentCaptor.getValue());
     }
 
     @Test
     public void testClose() {
         wizard.close();
 
-        verify(repositoryPage,
+        verify(sourceRepositoryPage,
                times(1)).destroy();
         verify(projectPage,
                times(1)).destroy();
@@ -153,9 +147,9 @@ public class ExamplesWizardTest {
     @Test
     public void testGetPageWidget() {
         wizard.getPageWidget(0);
-        verify(repositoryPage,
+        verify(sourceRepositoryPage,
                times(1)).prepareView();
-        verify(repositoryPage,
+        verify(sourceRepositoryPage,
                times(1)).asWidget();
 
         wizard.getPageWidget(1);
@@ -181,7 +175,7 @@ public class ExamplesWizardTest {
                 callback.callback(false);
                 return null;
             }
-        }).when(repositoryPage).isComplete(any(Callback.class));
+        }).when(sourceRepositoryPage).isComplete(any(Callback.class));
 
         wizard.isComplete(callback);
 
@@ -241,7 +235,7 @@ public class ExamplesWizardTest {
                 callback.callback(true);
                 return null;
             }
-        }).when(repositoryPage).isComplete(any(Callback.class));
+        }).when(sourceRepositoryPage).isComplete(any(Callback.class));
         doAnswer(new Answer<Boolean>() {
             @Override
             public Boolean answer(final InvocationOnMock invocation) throws Throwable {
@@ -284,5 +278,32 @@ public class ExamplesWizardTest {
                                        any(List.class));
         verify(event,
                times(1)).fire(any(ProjectContextChangeEvent.class));
+    }
+
+    @Test
+    public void testSetDefaultTargetOrganizationalUnit() {
+        wizard.setDefaultTargetOrganizationalUnit("testOU");
+
+        ExampleOrganizationalUnit targetOrganizationalUnit = wizard.getModel().getTargetOrganizationalUnit();
+
+        assertNotNull(targetOrganizationalUnit);
+        assertEquals("testOU",
+                     targetOrganizationalUnit.getName());
+    }
+
+    @Test
+    public void testSetDefaultTargetRepository() {
+        wizard.setDefaultTargetRepository("testRepository");
+
+        ArgumentCaptor<ExampleTargetRepository> targetRepositoryArgumentCaptor = ArgumentCaptor.forClass(ExampleTargetRepository.class);
+
+        verify(organizationalUnitPage,
+               times(1)).setTargetRepository(targetRepositoryArgumentCaptor.capture());
+
+        ExampleTargetRepository capturedRepository = targetRepositoryArgumentCaptor.getValue();
+
+        assertNotNull(capturedRepository);
+        assertEquals("testRepository",
+                     capturedRepository.getAlias());
     }
 }
