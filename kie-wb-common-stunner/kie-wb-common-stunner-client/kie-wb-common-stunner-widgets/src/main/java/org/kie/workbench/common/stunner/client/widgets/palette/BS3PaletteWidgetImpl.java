@@ -151,6 +151,11 @@ public class BS3PaletteWidgetImpl extends AbstractPalette<DefinitionSetPalette>
         }
     }
 
+    @Override
+    public void setVisible(boolean visible) {
+        view.showEmptyView(!visible);
+    }
+
     protected ShapeFactory getShapeFactory() {
         final DefinitionSetPalette palette = paletteDefinition;
         return shapeManager.getDefaultShapeSet(palette.getDefinitionSetId()).getShapeFactory();

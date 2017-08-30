@@ -119,5 +119,6 @@ public class BS3PaletteWidgetViewImpl implements BS3PaletteWidgetView,
     @Override
     public void showEmptyView(boolean showEmptyView) {
         palette.setHidden(showEmptyView);
+        ul.setHidden(showEmptyView);
     }
 }

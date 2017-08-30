@@ -70,6 +70,7 @@ import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.events.AbstractPlaceEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceHiddenEvent;
@@ -118,15 +119,10 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private ExportToPngSessionCommand sessionExportImagePNGCommand;
     private ExportToJpgSessionCommand sessionExportImageJPGCommand;
     private ExportToPdfSessionCommand sessionExportPDFCommand;
-
     private Event<OnDiagramFocusEvent> onDiagramFocusEvent;
     private Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent;
     protected SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter;
     private String title = "Project Diagram Editor";
-
-    AbstractProjectDiagramEditor() {
-
-    }
 
     @Inject
     public AbstractProjectDiagramEditor(final View view,
@@ -671,16 +667,21 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         return getCurrentDiagramHash() != originalHash;
     }
 
+    private boolean verifyEventIdentifier(AbstractPlaceEvent event) {
+        return (Objects.equals(getEditorIdentifier(),
+                               event.getPlace().getIdentifier()) &&
+            Objects.equals(place,
+                           event.getPlace()));
+    }
+
     public void hideDiagramEditorDocks(@Observes PlaceHiddenEvent event) {
-        if (getEditorIdentifier().equals(event.getPlace().getIdentifier()) &&
-                place != null && place.equals(event.getPlace())) {
+        if (verifyEventIdentifier(event)) {
             onDiagramLostFocusEvent.fire(new OnDiagramLoseFocusEvent());
         }
     }
 
     public void showDiagramEditorDocks(@Observes PlaceGainFocusEvent event) {
-        if (getEditorIdentifier().equals(event.getPlace().getIdentifier()) &&
-                place != null && place.equals(event.getPlace())) {
+        if (verifyEventIdentifier(event)) {
             onDiagramFocusEvent.fire(new OnDiagramFocusEvent());
         }
     }

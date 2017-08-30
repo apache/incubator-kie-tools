@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenResizeEventObserver;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
@@ -54,9 +55,11 @@ public class SessionPresenterFactoryImpl implements SessionPresenterFactory<Diag
     private final ManagedInstance<NotificationsObserver> notificationsObserverInstances;
     private final BS3PaletteFactory paletteWidgetFactory;
     private final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEventInstances;
+    private final ScreenResizeEventObserver screenResizeEventObserver;
 
     protected SessionPresenterFactoryImpl() {
         this(null,
+             null,
              null,
              null,
              null,
@@ -78,7 +81,8 @@ public class SessionPresenterFactoryImpl implements SessionPresenterFactory<Diag
                                        final ManagedInstance<SessionPresenter.View> viewInstances,
                                        ManagedInstance<NotificationsObserver> notificationsObserverInstances,
                                        final BS3PaletteFactory paletteWidgetFactory,
-                                       final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEventInstances) {
+                                       final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEventInstances,
+                                       final ScreenResizeEventObserver screenResizeEventObserver) {
         this.sessionManager = sessionManager;
         this.commandManagerInstances = commandManagerInstances;
         this.viewerToolbarFactoryInstances = viewerToolbarFactoryInstances;
@@ -89,6 +93,7 @@ public class SessionPresenterFactoryImpl implements SessionPresenterFactory<Diag
         this.notificationsObserverInstances = notificationsObserverInstances;
         this.viewInstances = viewInstances;
         this.sessionDiagramOpenedEventInstances = sessionDiagramOpenedEventInstances;
+        this.screenResizeEventObserver = screenResizeEventObserver;
     }
 
     @Override
@@ -129,6 +134,7 @@ public class SessionPresenterFactoryImpl implements SessionPresenterFactory<Diag
                                             paletteWidgetFactory,
                                             diagramViewerViewInstances.get(),
                                             notificationsObserverInstances.get(),
-                                            viewInstances.get());
+                                            viewInstances.get(),
+                                            screenResizeEventObserver);
     }
 }

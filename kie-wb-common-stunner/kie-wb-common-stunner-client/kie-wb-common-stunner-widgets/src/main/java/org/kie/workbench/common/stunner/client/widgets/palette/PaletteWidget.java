@@ -57,5 +57,7 @@ public interface PaletteWidget<D extends PaletteDefinition>
 
     void unbind();
 
+    void setVisible(boolean visible);
+
     HTMLElement getElement();
 }

@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolba
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenErrorView;
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenPanelView;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -80,6 +81,7 @@ import org.uberfire.workbench.model.menu.Menus;
 import static java.util.logging.Level.FINE;
 
 @Dependent
+@DiagramEditor
 @WorkbenchScreen(identifier = SessionDiagramEditorScreen.SCREEN_ID)
 public class SessionDiagramEditorScreen {
 

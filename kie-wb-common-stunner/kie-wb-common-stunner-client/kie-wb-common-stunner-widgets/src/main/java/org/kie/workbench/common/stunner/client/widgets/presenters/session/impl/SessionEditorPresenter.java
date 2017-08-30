@@ -30,6 +30,9 @@ import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenResizeEventObserver;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
@@ -57,7 +60,8 @@ public class SessionEditorPresenter<S extends AbstractClientFullSession, H exten
                            final BS3PaletteFactory paletteWidgetFactory,
                            final WidgetWrapperView diagramEditorView,
                            final NotificationsObserver notificationsObserver,
-                           final View view) {
+                           final View view,
+                           final ScreenResizeEventObserver screenResizeEventObserver) {
         super(sessionManager,
               view,
               Optional.of((ToolbarFactory<S>) toolbarFactory),
@@ -66,6 +70,18 @@ public class SessionEditorPresenter<S extends AbstractClientFullSession, H exten
         this.sessionDiagramOpenedEvent = sessionDiagramOpenedEvent;
         this.editor = new CustomSessionEditor(commandManager,
                                               diagramEditorView);
+
+        //Registering event observers
+        screenResizeEventObserver.registerEventCallback(ScreenMaximizedEvent.class, event -> onScreenMaximized(event));
+        screenResizeEventObserver.registerEventCallback(ScreenMinimizedEvent.class, event -> onScreenMinimized(event));
+    }
+
+    private void onScreenMaximized(ScreenMaximizedEvent event) {
+        getPalette().setVisible(event.isDiagramScreen());
+    }
+
+    private void onScreenMinimized(ScreenMinimizedEvent event) {
+        getPalette().setVisible(true);
     }
 
     @Override

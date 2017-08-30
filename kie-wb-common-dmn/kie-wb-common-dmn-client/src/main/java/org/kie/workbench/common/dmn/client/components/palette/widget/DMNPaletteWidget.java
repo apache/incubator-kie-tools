@@ -207,4 +207,9 @@ public class DMNPaletteWidget extends AbstractPalette<DefinitionsPalette>
         view.destroy();
         this.itemDropCallback = null;
     }
+
+    @Override
+    public void setVisible(boolean visible) {
+        view.showEmptyView(!visible);
+    }
 }

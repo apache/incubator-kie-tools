@@ -19,8 +19,6 @@ package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.stunner.client.widgets.notification.CommandNotification;
 import org.kie.workbench.common.stunner.client.widgets.notification.Notification;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationContext;
@@ -35,7 +33,6 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarFactory;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinition;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPalette;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -71,10 +68,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         this.hasToolbar = true;
         this.hasPalette = true;
         this.typePredicate = Optional.empty();
-    }
-
-    private static String buildHtmlEscapedText(final String message) {
-        return new SafeHtmlBuilder().appendEscapedLines(message).toSafeHtml().asString();
     }
 
     public abstract E getDisplayer();
@@ -234,7 +227,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         }
         if (hasPalette) {
             this.palette = buildPalette(session);
-            getView().setPaletteWidget(ElementWrapperWidget.getWidget(getPalette().getElement()));
+            getView().setPaletteWidget(getPalette());
         }
         getView().setCanvasWidget(getDisplayer().getView());
         getView().showLoading(false);
@@ -261,7 +254,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     private void showError(final ClientRuntimeError error) {
         if (isDisplayErrors()) {
             getView().showLoading(false);
-            getView().showError(buildHtmlEscapedText(error.getMessage()));
+            getView().showError(error.getMessage());
         }
     }
 
@@ -299,22 +292,22 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
 
     private void showNotificationMessage(final Notification notification) {
         if (isThisContext(notification)) {
-            showMessage(buildHtmlEscapedText(notification.getMessage()));
+            showMessage(notification.getMessage());
         }
     }
 
     private void showCommandError(final CommandNotification notification) {
         if (isThisContext(notification)) {
-            showError(buildHtmlEscapedText(notification.getMessage()));
+            showError(notification.getMessage());
         }
     }
 
     private void showValidationError(final ValidationFailedNotification notification) {
         if (isThisContext(notification)) {
             if (Notification.Type.ERROR.equals(notification.getType())) {
-                showError(buildHtmlEscapedText(notification.getMessage()));
+                showError(notification.getMessage());
             } else {
-                showWarning(buildHtmlEscapedText(notification.getMessage()));
+                showWarning(notification.getMessage());
             }
         }
     }

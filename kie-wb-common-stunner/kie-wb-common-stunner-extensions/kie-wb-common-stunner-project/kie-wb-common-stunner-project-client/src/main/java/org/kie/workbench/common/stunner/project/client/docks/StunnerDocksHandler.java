@@ -22,6 +22,7 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.workbench.client.docks.impl.AbstractWorkbenchDocksHandler;
@@ -58,5 +59,10 @@ public class StunnerDocksHandler extends AbstractWorkbenchDocksHandler {
     public void onDiagramLoseFocusEvent(@Observes OnDiagramLoseFocusEvent event) {
         refreshDocks(true,
                      true);
+    }
+
+    private void onDiagramEditorMaximized(@Observes ScreenMaximizedEvent event) {
+        refreshDocks(true,
+                     false);
     }
 }
