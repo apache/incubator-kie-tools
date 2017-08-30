@@ -22,7 +22,6 @@ import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class GraphNodeStoreImpl implements GraphNodeStore<Node> {
