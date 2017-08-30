@@ -25,7 +25,10 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.client.resources.HitPolicyInternationalizer;
 import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.Heading;
+import org.gwtbootstrap3.client.ui.html.Paragraph;
 
 /**
  * A control providing options for creating a Guided Decision Table asset
@@ -38,7 +41,7 @@ public class GuidedDecisionTableOptions extends Composite {
 
     }
 
-    private static GuidedDecisionTableOptionsBinder uiBinder = GWT.create( GuidedDecisionTableOptionsBinder.class );
+    private static GuidedDecisionTableOptionsBinder uiBinder = GWT.create(GuidedDecisionTableOptionsBinder.class);
 
     @UiField
     CheckBox chkUseWizard;
@@ -46,19 +49,29 @@ public class GuidedDecisionTableOptions extends Composite {
     @UiField(provided = true)
     HitPolicySelector hitPolicySelector;
 
+    @UiField
+    Heading hitPolicyDescriptionHeading;
+
+    @UiField
+    Paragraph hitPolicyDescriptionText;
+
     private boolean isUsingWizard = false;
 
     private GuidedDecisionTable52.TableFormat tableFormat = GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY;
     private GuidedDecisionTable52.HitPolicy hitPolicy = GuidedDecisionTable52.HitPolicy.NONE;
 
     @Inject
-    public GuidedDecisionTableOptions( final HitPolicySelector hitPolicySelector ) {
+    public GuidedDecisionTableOptions(final HitPolicySelector hitPolicySelector) {
         this.hitPolicySelector = hitPolicySelector;
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
-        hitPolicySelector.addValueChangeHandler( result -> GuidedDecisionTableOptions.this.hitPolicy = result );
+        hitPolicySelector.addValueChangeHandler(result -> {
+            GuidedDecisionTableOptions.this.hitPolicy = result;
+            setHitPolicyDescription(result);
+        });
+
+        setHitPolicyDescription(GuidedDecisionTable52.HitPolicy.NONE);
     }
-
 
     public boolean isUsingWizard() {
         return this.isUsingWizard;
@@ -72,20 +85,23 @@ public class GuidedDecisionTableOptions extends Composite {
         return hitPolicy;
     }
 
-
     @UiHandler(value = "chkUseWizard")
-    void chkUseWizardClick( ClickEvent event ) {
+    void chkUseWizardClick(ClickEvent event) {
         this.isUsingWizard = chkUseWizard.getValue();
     }
 
     @UiHandler(value = "optExtendedEntry")
-    void optExtendedEntryClick( ClickEvent event ) {
+    void optExtendedEntryClick(ClickEvent event) {
         tableFormat = GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY;
     }
 
     @UiHandler(value = "optLimitedEntry")
-    void optLimitedEntryClick( ClickEvent event ) {
+    void optLimitedEntryClick(ClickEvent event) {
         tableFormat = GuidedDecisionTable52.TableFormat.LIMITED_ENTRY;
     }
 
+    private void setHitPolicyDescription(GuidedDecisionTable52.HitPolicy hitPolicy) {
+        hitPolicyDescriptionHeading.setText(HitPolicyInternationalizer.internationalize(hitPolicy));
+        hitPolicyDescriptionText.setText(HitPolicyInternationalizer.internationalizeDescription(hitPolicy));
+    }
 }

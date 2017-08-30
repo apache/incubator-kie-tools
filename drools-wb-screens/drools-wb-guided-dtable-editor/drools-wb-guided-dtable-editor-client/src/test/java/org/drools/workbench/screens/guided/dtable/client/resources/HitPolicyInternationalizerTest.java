@@ -32,32 +32,46 @@ public class HitPolicyInternationalizerTest {
 
     @Test
     public void internationalize() throws
-                                   Exception {
-        assertEquals( "RuleOrderHitPolicy",
-                      HitPolicyInternationalizer.internationalize( GuidedDecisionTable52.HitPolicy.RULE_ORDER ) );
-        assertEquals( "FirstHitPolicy",
-                      HitPolicyInternationalizer.internationalize( GuidedDecisionTable52.HitPolicy.FIRST_HIT ) );
-        assertEquals( "UniqueHitPolicy",
-                      HitPolicyInternationalizer.internationalize( GuidedDecisionTable52.HitPolicy.UNIQUE_HIT ) );
-        assertEquals( "ResolvedHitPolicy",
-                      HitPolicyInternationalizer.internationalize( GuidedDecisionTable52.HitPolicy.RESOLVED_HIT ) );
-        assertEquals( "NoneHitPolicy",
-                      HitPolicyInternationalizer.internationalize( GuidedDecisionTable52.HitPolicy.NONE ) );
+            Exception {
+        assertEquals("RuleOrderHitPolicy",
+                     HitPolicyInternationalizer.internationalize(GuidedDecisionTable52.HitPolicy.RULE_ORDER));
+        assertEquals("FirstHitPolicy",
+                     HitPolicyInternationalizer.internationalize(GuidedDecisionTable52.HitPolicy.FIRST_HIT));
+        assertEquals("UniqueHitPolicy",
+                     HitPolicyInternationalizer.internationalize(GuidedDecisionTable52.HitPolicy.UNIQUE_HIT));
+        assertEquals("ResolvedHitPolicy",
+                     HitPolicyInternationalizer.internationalize(GuidedDecisionTable52.HitPolicy.RESOLVED_HIT));
+        assertEquals("NoneHitPolicy",
+                     HitPolicyInternationalizer.internationalize(GuidedDecisionTable52.HitPolicy.NONE));
+    }
+
+    @Test
+    public void internationalizeDescription() throws
+            Exception {
+        assertEquals("RuleOrderHitPolicyDescription",
+                     HitPolicyInternationalizer.internationalizeDescription(GuidedDecisionTable52.HitPolicy.RULE_ORDER));
+        assertEquals("FirstHitPolicyDescription",
+                     HitPolicyInternationalizer.internationalizeDescription(GuidedDecisionTable52.HitPolicy.FIRST_HIT));
+        assertEquals("UniqueHitPolicyDescription",
+                     HitPolicyInternationalizer.internationalizeDescription(GuidedDecisionTable52.HitPolicy.UNIQUE_HIT));
+        assertEquals("ResolvedHitPolicyDescription",
+                     HitPolicyInternationalizer.internationalizeDescription(GuidedDecisionTable52.HitPolicy.RESOLVED_HIT));
+        assertEquals("NoneHitPolicyDescription",
+                     HitPolicyInternationalizer.internationalizeDescription(GuidedDecisionTable52.HitPolicy.NONE));
     }
 
     @Test
     public void deInternationalize() throws
-                                     Exception {
-        assertEquals( GuidedDecisionTable52.HitPolicy.RULE_ORDER,
-                      HitPolicyInternationalizer.deInternationalize( "RuleOrderHitPolicy" ) );
-        assertEquals( GuidedDecisionTable52.HitPolicy.RESOLVED_HIT,
-                      HitPolicyInternationalizer.deInternationalize( "ResolvedHitPolicy" ) );
-        assertEquals( GuidedDecisionTable52.HitPolicy.FIRST_HIT,
-                      HitPolicyInternationalizer.deInternationalize( "FirstHitPolicy" ) );
-        assertEquals( GuidedDecisionTable52.HitPolicy.UNIQUE_HIT,
-                      HitPolicyInternationalizer.deInternationalize( "UniqueHitPolicy" ) );
-        assertEquals( GuidedDecisionTable52.HitPolicy.NONE,
-                      HitPolicyInternationalizer.deInternationalize( "NoneHitPolicy" ) );
-
+            Exception {
+        assertEquals(GuidedDecisionTable52.HitPolicy.RULE_ORDER,
+                     HitPolicyInternationalizer.deInternationalize("RuleOrderHitPolicy"));
+        assertEquals(GuidedDecisionTable52.HitPolicy.RESOLVED_HIT,
+                     HitPolicyInternationalizer.deInternationalize("ResolvedHitPolicy"));
+        assertEquals(GuidedDecisionTable52.HitPolicy.FIRST_HIT,
+                     HitPolicyInternationalizer.deInternationalize("FirstHitPolicy"));
+        assertEquals(GuidedDecisionTable52.HitPolicy.UNIQUE_HIT,
+                     HitPolicyInternationalizer.deInternationalize("UniqueHitPolicy"));
+        assertEquals(GuidedDecisionTable52.HitPolicy.NONE,
+                     HitPolicyInternationalizer.deInternationalize("NoneHitPolicy"));
     }
 }

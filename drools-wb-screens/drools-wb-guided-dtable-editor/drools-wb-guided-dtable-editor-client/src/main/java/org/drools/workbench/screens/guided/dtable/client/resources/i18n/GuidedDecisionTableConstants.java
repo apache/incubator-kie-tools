@@ -213,6 +213,8 @@ public interface GuidedDecisionTableConstants
     //Wizard
     String UseWizardToBuildAsset();
 
+    String UseWizardTooltip();
+
     String DecisionTableWizard();
 
     String DecisionTableWizardSummary();
@@ -326,19 +328,31 @@ public interface GuidedDecisionTableConstants
 
     String HitPolicy();
 
+    String HitPolicyTooltip();
+
     String NoneHitPolicy();
+
+    String NoneHitPolicyDescription();
 
     String UniqueHitPolicy();
 
+    String UniqueHitPolicyDescription();
+
     String FirstHitPolicy();
 
+    String FirstHitPolicyDescription();
+
     String RuleOrderHitPolicy();
+
+    String RuleOrderHitPolicyDescription();
 
     String None();
 
     String HasPriorityOverRow();
 
     String ResolvedHitPolicy();
+
+    String ResolvedHitPolicyDescription();
 
     String NoColumnsAvailable();
 

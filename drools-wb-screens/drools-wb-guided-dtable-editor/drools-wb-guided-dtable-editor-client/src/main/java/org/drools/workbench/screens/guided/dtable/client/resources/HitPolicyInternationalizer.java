@@ -20,12 +20,12 @@ import org.uberfire.commons.validation.PortablePreconditions;
 
 public class HitPolicyInternationalizer {
 
-    public static String internationalize( final GuidedDecisionTable52.HitPolicy hitPolicy ) {
+    public static String internationalize(final GuidedDecisionTable52.HitPolicy hitPolicy) {
 
-        PortablePreconditions.checkNotNull( "hitPolicy",
-                                            hitPolicy );
+        PortablePreconditions.checkNotNull("hitPolicy",
+                                           hitPolicy);
 
-        switch ( hitPolicy ) {
+        switch (hitPolicy) {
             case NONE:
                 return GuidedDecisionTableConstants.INSTANCE.NoneHitPolicy();
             case UNIQUE_HIT:
@@ -41,17 +41,38 @@ public class HitPolicyInternationalizer {
         }
     }
 
-    public static GuidedDecisionTable52.HitPolicy deInternationalize( final String internalization ) {
+    public static String internationalizeDescription(final GuidedDecisionTable52.HitPolicy hitPolicy) {
 
-        PortablePreconditions.checkNotNull( "internalization",
-                                            internalization );
+        PortablePreconditions.checkNotNull("hitPolicy",
+                                           hitPolicy);
 
-        for ( final GuidedDecisionTable52.HitPolicy hitPolicy : GuidedDecisionTable52.HitPolicy.values() ) {
-            if ( internalization.equals( internationalize( hitPolicy ) ) ) {
+        switch (hitPolicy) {
+            case NONE:
+                return GuidedDecisionTableConstants.INSTANCE.NoneHitPolicyDescription();
+            case UNIQUE_HIT:
+                return GuidedDecisionTableConstants.INSTANCE.UniqueHitPolicyDescription();
+            case FIRST_HIT:
+                return GuidedDecisionTableConstants.INSTANCE.FirstHitPolicyDescription();
+            case RULE_ORDER:
+                return GuidedDecisionTableConstants.INSTANCE.RuleOrderHitPolicyDescription();
+            case RESOLVED_HIT:
+                return GuidedDecisionTableConstants.INSTANCE.ResolvedHitPolicyDescription();
+            default:
+                return hitPolicy.name();
+        }
+    }
+
+    public static GuidedDecisionTable52.HitPolicy deInternationalize(final String internalization) {
+
+        PortablePreconditions.checkNotNull("internalization",
+                                           internalization);
+
+        for (final GuidedDecisionTable52.HitPolicy hitPolicy : GuidedDecisionTable52.HitPolicy.values()) {
+            if (internalization.equals(internationalize(hitPolicy))) {
                 return hitPolicy;
             }
         }
 
-        throw new IllegalArgumentException( "Could not find hit policy with internalization: " + internalization );
+        throw new IllegalArgumentException("Could not find hit policy with internalization: " + internalization);
     }
 }
