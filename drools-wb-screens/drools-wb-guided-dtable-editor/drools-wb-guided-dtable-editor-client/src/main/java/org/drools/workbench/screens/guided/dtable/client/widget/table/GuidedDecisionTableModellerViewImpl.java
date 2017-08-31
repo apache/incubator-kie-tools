@@ -19,6 +19,7 @@ import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -89,14 +90,8 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
             Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
                 @Override
                 public void execute() {
-                    final int width = getParent().getOffsetWidth();
-                    final int height = getParent().getOffsetHeight();
-                    if ((width != 0) && (height != 0)) {
-                        domElementContainer.setPixelSize(width,
-                                                         height);
-                        lienzoPanel.setPixelSize(width,
-                                                 height);
-                    }
+                    updatePanelSize();
+                    refreshScrollPosition();
 
                     final TransformMediator restriction = mousePanMediator.getTransformMediator();
                     final Transform transform = restriction.adjust(gridLayer.getViewport().getTransform(),
@@ -203,6 +198,10 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
         mousePanMediator.setTransformMediator(defaultTransformMediator);
         gridPanel.getViewport().getMediators().push(mousePanMediator);
         mousePanMediator.setBatchDraw(true);
+
+        gridPanel.setBounds(getBounds());
+        gridPanel.getMainPanel().addDomHandler(scrollEvent -> getPresenter().updateRadar(),
+                                               ScrollEvent.getType());
 
         //Wire-up widgets
         gridPanel.add(gridLayer);
@@ -364,6 +363,11 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
                                        final Collection<String> availableParentRuleNames) {
         ruleSelector.setRuleName(selectedParentRuleName);
         ruleSelector.setRuleNames(availableParentRuleNames);
+    }
+
+    @Override
+    public void refreshScrollPosition() {
+        gridPanel.refreshScrollPosition();
     }
 
     private VerticalPanel makeDefaultPanel() {
@@ -709,6 +713,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
                                                           gridLayer.getVisibleBounds());
         gridPanel.getViewport().setTransform(newTransform);
         gridPanel.getViewport().batch();
+        gridPanel.refreshScrollPosition();
     }
 
     @Override

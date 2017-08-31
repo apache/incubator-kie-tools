@@ -642,6 +642,20 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
+    public void addOnEnterPinnedModeCommand(final Command command) {
+        getParent().addOnEnterPinnedModeCommand(command);
+    }
+
+    @Override
+    public void addOnExitPinnedModeCommand(final Command command) {
+        getParent().addOnExitPinnedModeCommand(command);
+    }
+
+    GuidedDecisionTableModellerView.Presenter getParent() {
+        return parent;
+    }
+
+    @Override
     public void getPackageParentRuleNames(final ParameterizedCommand<Collection<String>> command) {
         ruleNameService.call(new RemoteCallback<Collection<String>>() {
             @Override
@@ -847,9 +861,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         try {
             append.execute();
 
-            parent.updateLinks();
-
-            view.getLayer().draw();
+            refreshView();
 
             //Log addition of column
             model.getAuditLog().add(new InsertColumnAuditLogEntry(identity.getIdentifier(),
@@ -868,9 +880,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         try {
             synchronizer.appendRow();
 
-            parent.updateLinks();
-
-            view.getLayer().draw();
+            refreshView();
 
             //Log insertion of row
             model.getAuditLog().add(new InsertRowAuditLogEntry(identity.getIdentifier(),
@@ -878,6 +888,13 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         } catch (ModelSynchronizer.MoveColumnVetoException e) {
             //Swallow
         }
+    }
+
+    void refreshView() {
+        getParent().updateLinks();
+        getParent().refreshScrollPosition();
+
+        view.getLayer().draw();
     }
 
     @Override
@@ -916,9 +933,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         try {
             synchronizer.deleteColumn(column);
 
-            parent.updateLinks();
-
-            view.getLayer().draw();
+            refreshView();
 
             //Log deletion of column
             model.getAuditLog().add(new DeleteColumnAuditLogEntry(identity.getIdentifier(),
@@ -1252,9 +1267,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         try {
             synchronizer.deleteRow(rowIndex);
 
-            parent.updateLinks();
-
-            view.getLayer().draw();
+            refreshView();
 
             //Log deletion of column
             model.getAuditLog().add(new DeleteRowAuditLogEntry(identity.getIdentifier(),
@@ -1313,9 +1326,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         try {
             synchronizer.insertRow(rowIndex);
 
-            parent.updateLinks();
-
-            view.getLayer().draw();
+            refreshView();
 
             //Log insertion of row
             model.getAuditLog().add(new InsertRowAuditLogEntry(identity.getIdentifier(),

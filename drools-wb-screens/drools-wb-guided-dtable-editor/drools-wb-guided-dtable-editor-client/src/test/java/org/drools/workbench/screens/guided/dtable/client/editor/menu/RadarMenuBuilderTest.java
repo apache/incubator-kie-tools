@@ -151,6 +151,8 @@ public class RadarMenuBuilderTest {
 
         verify(modellerLayer,
                times(1)).batch();
+
+        verify(modellerView).refreshScrollPosition();
     }
 
     @Test

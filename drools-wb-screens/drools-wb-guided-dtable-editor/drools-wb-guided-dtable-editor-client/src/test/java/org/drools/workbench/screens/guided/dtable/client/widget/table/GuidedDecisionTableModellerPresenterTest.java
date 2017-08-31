@@ -39,7 +39,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.accordion.GuidedDecisionTableAccordion;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableColumnSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTablePinnedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
@@ -52,7 +51,6 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuided
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -715,6 +713,32 @@ public class GuidedDecisionTableModellerPresenterTest {
         assertEquals(presenter,
                      pinnedEvent.getPresenter());
         assertFalse(pinnedEvent.isPinned());
+    }
+
+    @Test
+    public void testAddOnEnterPinnedModeCommand() {
+
+        final Command command = mock(Command.class);
+        final GridLayer gridLayer = mock(GridLayer.class);
+
+        doReturn(gridLayer).when(view).getGridLayerView();
+
+        presenter.addOnEnterPinnedModeCommand(command);
+
+        verify(gridLayer).addOnEnterPinnedModeCommand(command);
+    }
+
+    @Test
+    public void testAddOnExitPinnedModeCommand() {
+
+        final Command command = mock(Command.class);
+        final GridLayer gridLayer = mock(GridLayer.class);
+
+        doReturn(gridLayer).when(view).getGridLayerView();
+
+        presenter.addOnExitPinnedModeCommand(command);
+
+        verify(gridLayer).addOnExitPinnedModeCommand(command);
     }
 
     @Test

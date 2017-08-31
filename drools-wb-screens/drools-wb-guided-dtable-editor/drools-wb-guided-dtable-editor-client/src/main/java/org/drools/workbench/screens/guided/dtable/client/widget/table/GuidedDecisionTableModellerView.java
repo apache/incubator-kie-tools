@@ -70,6 +70,8 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
     void refreshRuleInheritance(final String selectedParentRuleName,
                                 final Collection<String> availableParentRuleNames);
 
+    void refreshScrollPosition();
+
     void refreshAttributeWidget(final List<AttributeCol52> attributeColumns);
 
     void refreshMetaDataWidget(final List<MetadataCol52> metaDataColumns);
@@ -138,6 +140,8 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
         void updateRadar();
 
         void onViewPinned(final boolean isPinned);
+
+        void refreshScrollPosition();
 
         void updateLinks();
 

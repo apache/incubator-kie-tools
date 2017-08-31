@@ -337,6 +337,16 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     }
 
     @Override
+    public void addOnEnterPinnedModeCommand(final Command command) {
+        view.getGridLayerView().addOnEnterPinnedModeCommand(command);
+    }
+
+    @Override
+    public void addOnExitPinnedModeCommand(final Command command) {
+        view.getGridLayerView().addOnExitPinnedModeCommand(command);
+    }
+
+    @Override
     public void onDecisionTableSelected(final @Observes DecisionTableSelectedEvent event) {
         final Optional<GuidedDecisionTableView.Presenter> dtPresenter = event.getPresenter();
         if (!dtPresenter.isPresent()) {
@@ -458,6 +468,11 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     public void onViewPinned(final boolean isPinned) {
         pinnedEvent.fire(new DecisionTablePinnedEvent(this,
                                                       isPinned));
+    }
+
+    @Override
+    public void refreshScrollPosition() {
+        view.refreshScrollPosition();
     }
 
     @Override

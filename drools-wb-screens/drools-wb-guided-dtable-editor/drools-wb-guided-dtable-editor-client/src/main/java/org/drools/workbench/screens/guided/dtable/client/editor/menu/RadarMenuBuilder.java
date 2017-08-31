@@ -146,5 +146,6 @@ public class RadarMenuBuilder implements MenuFactory.CustomMenuBuilder,
 
         modeller.getView().getGridLayerView().getViewport().setTransform(newTransform);
         modeller.getView().getGridLayerView().batch();
+        modeller.getView().refreshScrollPosition();
     }
 }

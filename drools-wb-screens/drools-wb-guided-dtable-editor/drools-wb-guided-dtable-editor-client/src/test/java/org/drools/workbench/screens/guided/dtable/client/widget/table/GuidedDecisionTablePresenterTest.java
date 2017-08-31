@@ -26,6 +26,7 @@ import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
+import com.ait.lienzo.client.core.shape.Layer;
 import com.google.gwt.user.client.Command;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.appformer.project.datamodel.oracle.DataType;
@@ -1598,5 +1599,46 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         verify(gridLayer,
                times(1)).draw();
+    }
+
+    @Test
+    public void testAddOnEnterPinnedModeCommand() {
+
+        final GuidedDecisionTableModellerView.Presenter parent = mock(GuidedDecisionTableModellerView.Presenter.class);
+        final Command command = mock(Command.class);
+
+        doReturn(parent).when(dtPresenter).getParent();
+
+        dtPresenter.addOnEnterPinnedModeCommand(command);
+
+        verify(parent).addOnEnterPinnedModeCommand(command);
+    }
+
+    @Test
+    public void testAddOnExitPinnedModeCommand() {
+
+        final GuidedDecisionTableModellerView.Presenter parent = mock(GuidedDecisionTableModellerView.Presenter.class);
+        final Command command = mock(Command.class);
+
+        doReturn(parent).when(dtPresenter).getParent();
+
+        dtPresenter.addOnExitPinnedModeCommand(command);
+
+        verify(parent).addOnExitPinnedModeCommand(command);
+    }
+
+    @Test
+    public void testRefreshView() {
+        final GuidedDecisionTableModellerView.Presenter parent = mock(GuidedDecisionTableModellerView.Presenter.class);
+        final Layer layer = mock(Layer.class);
+
+        doReturn(parent).when(dtPresenter).getParent();
+        doReturn(layer).when(view).getLayer();
+
+        dtPresenter.refreshView();
+
+        verify(parent).updateLinks();
+        verify(parent).refreshScrollPosition();
+        verify(layer).draw();
     }
 }

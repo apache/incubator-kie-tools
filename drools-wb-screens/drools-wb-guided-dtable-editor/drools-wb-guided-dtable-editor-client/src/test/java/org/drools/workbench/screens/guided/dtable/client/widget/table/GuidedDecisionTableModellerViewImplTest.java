@@ -321,6 +321,13 @@ public class GuidedDecisionTableModellerViewImplTest {
         verify(gridLayer).select(gridWidget);
     }
 
+    @Test
+    public void testRefreshScrollPosition() {
+        view.refreshScrollPosition();
+
+        verify(mockGridPanel).refreshScrollPosition();
+    }
+
     private AttributeCol52 attributeColumn() {
         final AttributeCol52 attributeCol52 = mock(AttributeCol52.class);
         final DTCellValue52 defaultValue = mock(DTCellValue52.class);
