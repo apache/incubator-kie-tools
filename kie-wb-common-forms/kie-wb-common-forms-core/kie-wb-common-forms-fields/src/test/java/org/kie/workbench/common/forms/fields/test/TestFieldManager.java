@@ -29,7 +29,6 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.prov
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.provider.TextAreaFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.provider.TextBoxFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.provider.MultipleSubFormFieldProvider;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.objectSelector.provider.ObjectSelectorFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.provider.SubFormFieldProvider;
 
 public class TestFieldManager extends AbstractFieldManager {
@@ -82,7 +81,6 @@ public class TestFieldManager extends AbstractFieldManager {
         });
         registerFieldProvider(new SubFormFieldProvider());
         registerFieldProvider(new MultipleSubFormFieldProvider());
-        registerFieldProvider(new ObjectSelectorFieldProvider());
     }
 
     public Collection<BasicTypeFieldProvider> getAllBasicTypeProviders() {

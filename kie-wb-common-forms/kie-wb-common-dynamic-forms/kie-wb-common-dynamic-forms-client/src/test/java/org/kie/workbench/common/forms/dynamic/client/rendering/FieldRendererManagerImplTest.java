@@ -36,7 +36,6 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.TextBox
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.date.DatePickerFieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.picture.PictureFieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.multipleSubform.MultipleSubFormFieldRenderer;
-import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.selector.ObjectSelectorFieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.SubFormFieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.listBox.EnumListBoxFieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.listBox.StringListBoxFieldRenderer;
@@ -65,8 +64,6 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.def
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.type.TextBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.type.MultipleSubFormFieldType;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.objectSelector.definition.ObjectSelectorFieldDefinition;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.objectSelector.type.ObjectSelectorFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.type.SubFormFieldType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
@@ -112,9 +109,6 @@ public class FieldRendererManagerImplTest {
                          null);
         registerRenderer(SliderFieldRenderer.class,
                          SliderFieldType.NAME,
-                         null);
-        registerRenderer(ObjectSelectorFieldRenderer.class,
-                         ObjectSelectorFieldType.NAME,
                          null);
         registerRenderer(MultipleSubFormFieldRenderer.class,
                          MultipleSubFormFieldType.NAME,
@@ -170,7 +164,6 @@ public class FieldRendererManagerImplTest {
         testRendererFor(new TextAreaFieldDefinition());
         testRendererFor(new IntegerSliderDefinition());
         testRendererFor(new DoubleSliderDefinition());
-        testRendererFor(new ObjectSelectorFieldDefinition());
         testRendererFor(new MultipleSubFormFieldDefinition());
         testRendererFor(new SubFormFieldDefinition());
         testRendererFor(new TextBoxFieldDefinition());
