@@ -79,6 +79,16 @@ public class DMNBaseGridWidget extends BaseGridWidget {
             }
 
             @Override
+            public void addOnEnterPinnedModeCommand(final Command command) {
+                //Do nothing. The DMN Editor does not support interaction with a PinnedModeManager.
+            }
+
+            @Override
+            public void addOnExitPinnedModeCommand(final Command command) {
+                //Do nothing. The DMN Editor does not support interaction with a PinnedModeManager.
+            }
+
+            @Override
             public PinnedContext getPinnedContext() {
                 return gridLayer.getPinnedContext();
             }

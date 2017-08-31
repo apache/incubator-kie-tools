@@ -72,11 +72,11 @@ public class LiteralExpressionEditorViewImplTest {
         final Mediators m = view.getGridPanel().getViewport().getMediators();
         final List<IMediator> mediators = new ArrayList<>();
         m.iterator().forEachRemaining(mediators::add);
-        assertEquals(1,
+        assertEquals(2,
                      mediators.size());
-        assertTrue(mediators.get(0) instanceof RestrictedMousePanMediator);
+        assertTrue(mediators.get(1) instanceof RestrictedMousePanMediator);
 
-        final RestrictedMousePanMediator mediator = (RestrictedMousePanMediator) mediators.get(0);
+        final RestrictedMousePanMediator mediator = (RestrictedMousePanMediator) mediators.get(1);
         assertTrue(mediator.getTransformMediator() instanceof BoundaryTransformMediator);
     }
 
