@@ -190,7 +190,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     void setupGridPanel() {
         //Lienzo stuff - Set default scale
-        final Transform transform = new Transform().scale(VP_SCALE);
+        final Transform transform = newTransform().scale(VP_SCALE);
         gridPanel.getViewport().setTransform(transform);
 
         //Lienzo stuff - Add mouse pan support
@@ -698,7 +698,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     @Override
     public void setZoom(final int zoom) {
         //Set zoom preserving translation
-        final Transform transform = new Transform();
+        final Transform transform = newTransform();
         final double tx = gridPanel.getViewport().getTransform().getTranslateX();
         final double ty = gridPanel.getViewport().getTransform().getTranslateY();
         transform.translate(tx,
@@ -833,6 +833,10 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     DefaultGridLayer getGridLayer() {
         return gridLayer;
+    }
+
+    Transform newTransform() {
+        return new Transform();
     }
 
     interface GuidedDecisionTableModellerViewImplUiBinder extends UiBinder<Widget, GuidedDecisionTableModellerViewImpl> {

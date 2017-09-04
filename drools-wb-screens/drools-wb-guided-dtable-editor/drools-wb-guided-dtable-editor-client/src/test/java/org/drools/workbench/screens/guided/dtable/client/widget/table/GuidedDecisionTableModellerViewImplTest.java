@@ -19,8 +19,15 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ait.lienzo.client.core.mediator.Mediators;
+import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.dev.util.collect.HashMap;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.ScrollEvent;
+import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -39,10 +46,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
 import static org.junit.Assert.*;
@@ -325,6 +334,96 @@ public class GuidedDecisionTableModellerViewImplTest {
     public void testRefreshScrollPosition() {
         view.refreshScrollPosition();
 
+        verify(mockGridPanel).refreshScrollPosition();
+    }
+
+    @Test
+    public void testSetup() throws Exception {
+        final AbsolutePanel mainPanel = mock(AbsolutePanel.class);
+        final Transform transform = mock(Transform.class);
+        final Viewport viewport = mock(Viewport.class);
+        final Mediators mediators = mock(Mediators.class);
+        final Element element = mock(Element.class);
+
+        doReturn(transform).when(transform).scale(anyDouble());
+
+        doReturn(transform).when(view).newTransform();
+
+        doReturn(mediators).when(viewport).getMediators();
+
+        doReturn(element).when(mockGridPanel).getElement();
+        doReturn(mainPanel).when(mockGridPanel).getMainPanel();
+        doReturn(viewport).when(mockGridPanel).getViewport();
+
+        view.setup();
+
+        verify(view).setupSubMenu();
+        verify(view).setupGridPanel();
+        verify(mediators).push(restrictedMousePanMediator);
+    }
+
+    @Test
+    public void testRadarIsUpdatedAfterScrolling() throws Exception {
+        final ArgumentCaptor<ScrollHandler> scrollHandler = ArgumentCaptor.forClass(ScrollHandler.class);
+        final ScrollEvent scrollEvent = mock(ScrollEvent.class);
+        final AbsolutePanel mainPanel = mock(AbsolutePanel.class);
+        final Transform transform = mock(Transform.class);
+        final Viewport viewport = mock(Viewport.class);
+        final Mediators mediators = mock(Mediators.class);
+        final Element element = mock(Element.class);
+
+        doReturn(transform).when(transform).scale(anyDouble());
+
+        doReturn(presenter).when(view).getPresenter();
+        doReturn(transform).when(view).newTransform();
+
+        doReturn(mediators).when(viewport).getMediators();
+
+        doReturn(element).when(mockGridPanel).getElement();
+        doReturn(mainPanel).when(mockGridPanel).getMainPanel();
+        doReturn(viewport).when(mockGridPanel).getViewport();
+
+        view.setupGridPanel();
+
+        verify(mainPanel).addDomHandler(scrollHandler.capture(),
+                                        eq(ScrollEvent.getType()));
+
+        scrollHandler.getValue().onScroll(scrollEvent);
+
+        verify(presenter).updateRadar();
+    }
+
+    @Test
+    public void testScrollbarsUpdatedAfterZoom() throws Exception {
+        final double x = 10.0;
+        final double y = 20.0;
+        final int zoom = 70;
+        final Transform transform = mock(Transform.class);
+        final Viewport viewport = mock(Viewport.class);
+        final TransformMediator mediator = mock(TransformMediator.class);
+
+        doReturn(transform).when(mediator).adjust(eq(transform),
+                                                  any());
+
+        doReturn(mediator).when(restrictedMousePanMediator).getTransformMediator();
+
+        doReturn(x).when(transform).getTranslateX();
+        doReturn(y).when(transform).getTranslateY();
+
+        doReturn(transform).when(view).newTransform();
+
+        doReturn(transform).when(viewport).getTransform();
+
+        doReturn(viewport).when(mockGridPanel).getViewport();
+
+        view.setZoom(zoom);
+
+        verify(transform).translate(x,
+                                    y);
+        verify(transform).scale(zoom / 100.0);
+        verify(viewport,
+               times(2)).setTransform(transform);
+        verify(viewport).batch();
         verify(mockGridPanel).refreshScrollPosition();
     }
 
