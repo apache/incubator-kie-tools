@@ -468,6 +468,7 @@
                   <outputDirectory>${project.build.directory}</outputDirectory>
                 </artifactItem>
               </artifactItems>
+              <skip>${gwt.compiler.skip}</skip>
             </configuration>
           </execution>
         </executions>
