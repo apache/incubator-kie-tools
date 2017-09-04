@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.date;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker;
 import org.gwtbootstrap3.extras.datetimepicker.client.ui.DateTimePicker;
@@ -56,6 +57,7 @@ public class DatePickerFieldRenderer extends FieldRenderer<DatePickerFieldDefini
             box.setAutoClose(true);
             box.setHighlightToday(true);
             box.setShowTodayButton(true);
+            box.setContainer(RootPanel.get());
             handler = readOnly -> box.setEnabled(!readOnly);
             input = box;
         }
