@@ -17,13 +17,13 @@ package org.kie.workbench.common.forms.editor.client.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.apache.deltaspike.core.util.StringUtils;
+import org.assertj.core.api.Assertions;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -38,6 +38,9 @@ import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingC
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorService;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition.DatePickerFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.definition.DecimalBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.definition.IntegerBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.definition.IntegerSliderDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
@@ -66,7 +69,13 @@ public class FormEditorHelperTest {
 
     private FieldDefinition nameField;
 
+    private TextBoxFieldDefinition lastNameField;
+
     private FieldDefinition marriedField;
+
+    private IntegerBoxFieldDefinition ageField;
+
+    private DecimalBoxFieldDefinition weightField;
 
     private TestFormEditorHelper formEditorHelper;
 
@@ -299,10 +308,37 @@ public class FormEditorHelperTest {
     }
 
     @Test
-    public void testGetCompatibleFieldCodes() {
-        List<String> compatibleFieldIds = formEditorHelper.getCompatibleModelFields(nameField);
-        assertTrue(compatibleFieldIds.size() > 0);
-        assertTrue(compatibleFieldIds.contains(nameField.getId()));
+    public void testGetCompatibleModelFields() {
+        List<String> compatibleModelFields = formEditorHelper.getCompatibleModelFields(nameField);
+        assertEquals(2,
+                     compatibleModelFields.size());
+        Assertions.assertThat(compatibleModelFields).containsExactly(lastNameField.getId(),
+                                                                     nameField.getId());
+
+        // Getting compatible model propertynames for an integerbox field -> only checks integer properties (age -> integer)
+        compatibleModelFields = formEditorHelper.getCompatibleModelFields(ageField);
+        assertEquals(1,
+                     compatibleModelFields.size());
+        Assertions.assertThat(compatibleModelFields).containsOnly(ageField.getId());
+
+        // Getting compatible model propertynames for an decimalbox field -> only checks decimal properties (weight -> double)
+        compatibleModelFields = formEditorHelper.getCompatibleModelFields(weightField);
+        assertEquals(1,
+                     compatibleModelFields.size());
+        Assertions.assertThat(compatibleModelFields).containsOnly(weightField.getId());
+
+        IntegerSliderDefinition slider = new IntegerSliderDefinition();
+        slider.setId("slider");
+        slider.setName("slider");
+        slider.setLabel("slider");
+
+        // Getting compatible model propertynames for an integer slider field -> slider's are available for integer &
+        // decimal properties (age -> integer & weight -> double)
+        compatibleModelFields = formEditorHelper.getCompatibleModelFields(slider);
+        assertEquals(2,
+                     compatibleModelFields.size());
+        Assertions.assertThat(compatibleModelFields).containsExactly(ageField.getId(),
+                                                                     weightField.getId());
     }
 
     @Test
@@ -358,7 +394,6 @@ public class FormEditorHelperTest {
         name.setLabel("Name");
         name.setPlaceHolder("Name");
         name.setBinding("name");
-        name.setStandaloneClassName(String.class.getName());
         nameField = name;
 
         TextBoxFieldDefinition lastName = new TextBoxFieldDefinition();
@@ -367,28 +402,42 @@ public class FormEditorHelperTest {
         lastName.setLabel("Last Name");
         lastName.setPlaceHolder("Last Name");
         lastName.setBinding("lastName");
-        lastName.setStandaloneClassName(String.class.getName());
+        lastNameField = lastName;
 
         DatePickerFieldDefinition birthday = new DatePickerFieldDefinition();
         birthday.setId("birthday");
         birthday.setName("employee_birthday");
         birthday.setLabel("Birthday");
         birthday.setBinding("birthday");
-        birthday.setStandaloneClassName(Date.class.getName());
 
         CheckBoxFieldDefinition married = new CheckBoxFieldDefinition();
         married.setId("married");
         married.setName("employee_married");
         married.setLabel("Married");
         married.setBinding("married");
-        married.setStandaloneClassName(Boolean.class.getName());
         marriedField = married;
+
+        IntegerBoxFieldDefinition age = new IntegerBoxFieldDefinition();
+        age.setId("age");
+        age.setName("employee_age");
+        age.setLabel("Age");
+        age.setBinding("age");
+        ageField = age;
+
+        DecimalBoxFieldDefinition weight = new DecimalBoxFieldDefinition();
+        weight.setId("weight");
+        weight.setName("employee_weight");
+        weight.setLabel("Weight");
+        weight.setBinding("weight");
+        weightField = weight;
 
         employeeFields = new ArrayList<>();
         employeeFields.add(name);
         employeeFields.add(lastName);
         employeeFields.add(birthday);
         employeeFields.add(married);
+        employeeFields.add(age);
+        employeeFields.add(weight);
 
         modelProperties = new ArrayList<>();
 

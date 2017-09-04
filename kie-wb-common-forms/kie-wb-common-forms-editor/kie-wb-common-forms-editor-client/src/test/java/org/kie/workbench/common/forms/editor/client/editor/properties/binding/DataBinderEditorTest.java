@@ -56,7 +56,7 @@ public abstract class DataBinderEditorTest<EDITOR extends DataBindingEditor> {
         fields.add(CP);
 
         when(helper.getCurrentField()).thenReturn(fieldDefinition);
-        when(helper.getAvailableModelFields()).thenReturn(fields);
+        when(helper.getAvailableModelFields(fieldDefinition)).thenReturn(fields);
 
         when(fieldDefinition.getBinding()).thenReturn(FIELD_BINDING);
     }

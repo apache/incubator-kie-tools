@@ -43,8 +43,8 @@ public class DynamicDataBinderEditorTest extends DataBinderEditorTest<DynamicDat
         editor.setUp();
         verify(view).init(editor);
 
-        editor.init(helper,
-                    FIELD_BINDING,
+        editor.init(fieldDefinition,
+                    helper,
                     mock(Command.class));
 
         verify(view).clear();

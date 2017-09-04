@@ -103,8 +103,8 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
             }
 
             @Override
-            public List<String> getAvailableModelFields() {
-                return editorHelper.getCompatibleModelFields(field);
+            public List<String> getAvailableModelFields(final FieldDefinition fieldDefinition) {
+                return editorHelper.getCompatibleModelFields(fieldDefinition);
             }
 
             @Override

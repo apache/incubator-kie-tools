@@ -42,11 +42,14 @@ public class StaticDataBinderEditorTest extends DataBinderEditorTest<StaticDataB
 
     @Test
     public void testFunctionallity() {
+        when(fieldDefinition.getBinding()).thenReturn(NAME);
+
         editor.setUp();
+
         verify(view).init(editor);
 
-        editor.init(helper,
-                    NAME,
+        editor.init(fieldDefinition,
+                    helper,
                     mock(Command.class));
 
         verify(view).clear();

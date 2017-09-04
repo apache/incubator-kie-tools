@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.forms.editor.client.editor.properties.binding.dynamic;
 
+import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -24,6 +25,7 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.forms.editor.client.editor.properties.FieldPropertiesRendererHelper;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DataBindingEditor;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DynamicFormModel;
+import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.uberfire.mvp.Command;
 
 @DynamicFormModel
@@ -46,19 +48,15 @@ public class DynamicDataBinderEditor implements DataBindingEditor,
     }
 
     @Override
-    public void init(FieldPropertiesRendererHelper helper,
-                     String binding,
-                     Command onChangeCallback) {
+    public void init(final FieldDefinition fieldDefinition,
+                     final FieldPropertiesRendererHelper helper,
+                     final Command onChangeCallback) {
 
         view.clear();
 
         this.onChangeCallback = onChangeCallback;
 
-        if (binding == null) {
-            binding = "";
-        }
-
-        view.setFieldBinding(binding);
+        view.setFieldBinding(Optional.ofNullable(fieldDefinition.getBinding()).orElse(""));
     }
 
     @Override

@@ -184,19 +184,15 @@ public class FormEditorHelper {
     }
 
     public List<String> getCompatibleModelFields(FieldDefinition field) {
-        Collection<String> compatibles = fieldManager.getCompatibleFields(field);
+        Collection<String> compatibles = fieldManager.getCompatibleTypes(field);
 
         Set<String> result = new TreeSet<>();
         if (field.getBinding() != null && !field.getBinding().isEmpty()) {
             result.add(field.getBinding());
         }
-        for (String compatibleType : compatibles) {
-            for (FieldDefinition definition : availableFields.values()) {
-                if (definition.getFieldType().getTypeName().equals(compatibleType) && definition.getBinding() != null) {
-                    result.add(definition.getBinding());
-                }
-            }
-        }
+
+        availableFields.values().stream().filter(availableField -> compatibles.contains(availableField.getStandaloneClassName())).forEach(availableField -> result.add(availableField.getBinding()));
+
         return new ArrayList<>(result);
     }
 

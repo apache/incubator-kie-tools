@@ -195,6 +195,20 @@ public abstract class AbstractFieldManager implements FieldManager {
     }
 
     @Override
+    public Collection<String> getCompatibleTypes(FieldDefinition fieldDefinition) {
+        FieldProvider provider = providersByFieldCode.get(fieldDefinition.getFieldType().getTypeName());
+
+        if(provider == null) {
+            throw new IllegalArgumentException("Unexpected field type '" + fieldDefinition.getFieldType().getTypeName() + "'");
+        }
+
+        if (provider instanceof BasicTypeFieldProvider) {
+            return Arrays.asList(((BasicTypeFieldProvider)provider).getSupportedTypes());
+        }
+        return Arrays.asList(fieldDefinition.getStandaloneClassName());
+    }
+
+    @Override
     public FieldDefinition getFieldFromProvider(String typeCode,
                                                 TypeInfo typeInfo) {
         Assert.notNull("TypeInfo cannot be null",

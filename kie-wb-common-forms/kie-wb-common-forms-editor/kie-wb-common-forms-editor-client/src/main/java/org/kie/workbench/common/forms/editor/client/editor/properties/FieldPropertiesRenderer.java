@@ -151,8 +151,8 @@ public class FieldPropertiesRenderer implements IsWidget {
                             FormEditorRenderingContext context) {
         FormModel roodFormModel = helper.getCurrentRenderingContext().getRootForm().getModel();
         final DataBindingEditor editor = roodFormModel instanceof DynamicModel ? dynamicDataBindingEditor : staticDataBindingEditor;
-        editor.init(helper,
-                    fieldCopy.getBinding(),
+        editor.init(fieldCopy,
+                    helper,
                     () -> onFieldBindingChange(editor.getBinding()));
         view.render(helper,
                     context,

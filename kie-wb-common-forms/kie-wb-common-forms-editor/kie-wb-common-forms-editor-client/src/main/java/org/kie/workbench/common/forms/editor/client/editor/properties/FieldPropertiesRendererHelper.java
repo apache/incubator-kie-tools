@@ -28,7 +28,7 @@ public interface FieldPropertiesRendererHelper {
 
     FieldDefinition getCurrentField();
 
-    List<String> getAvailableModelFields();
+    List<String> getAvailableModelFields(FieldDefinition fieldDefinition);
 
     List<String> getCompatibleFieldTypes(FieldDefinition fieldDefinition);
 

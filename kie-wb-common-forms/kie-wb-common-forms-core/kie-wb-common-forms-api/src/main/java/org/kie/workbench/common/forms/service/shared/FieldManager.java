@@ -38,6 +38,8 @@ public interface FieldManager {
 
     Collection<String> getCompatibleFields(FieldDefinition fieldDefinition);
 
+    Collection<String> getCompatibleTypes(FieldDefinition fieldDefinition);
+
     FieldDefinition getFieldFromProvider(String typeCode,
                                          TypeInfo typeInfo);
 

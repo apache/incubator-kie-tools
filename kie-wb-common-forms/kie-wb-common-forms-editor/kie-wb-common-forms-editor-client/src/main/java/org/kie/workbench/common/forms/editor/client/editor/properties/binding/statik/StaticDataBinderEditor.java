@@ -24,6 +24,7 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.forms.editor.client.editor.properties.FieldPropertiesRendererHelper;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DataBindingEditor;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.StaticFormModel;
+import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.uberfire.mvp.Command;
 
 @StaticFormModel
@@ -48,9 +49,9 @@ public class StaticDataBinderEditor implements DataBindingEditor,
     }
 
     @Override
-    public void init(FieldPropertiesRendererHelper helper,
-                     String binding,
-                     Command onChangeCallback) {
+    public void init(final FieldDefinition fieldDefinition,
+                     final FieldPropertiesRendererHelper helper,
+                     final Command onChangeCallback) {
 
         view.clear();
 
@@ -58,10 +59,10 @@ public class StaticDataBinderEditor implements DataBindingEditor,
 
         hasSelectedValue = false;
 
-        helper.getAvailableModelFields().forEach(property -> {
+        helper.getAvailableModelFields(fieldDefinition).forEach(property -> {
             if (property != null) {
 
-                boolean isSelected = property.equals(binding);
+                boolean isSelected = property.equals(fieldDefinition.getBinding());
 
                 view.addModelField(property,
                                    isSelected);
