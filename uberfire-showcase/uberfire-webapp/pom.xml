@@ -32,6 +32,7 @@
   <description>UberFire Showcase WebApp</description>
 
   <properties>
+    <gwt.compiler.skip>false</gwt.compiler.skip>
     <!-- Add the absolute path for $JBOSS_HOME below to manage another instance -->
     <errai.jboss.home>${project.build.directory}/wildfly-${version.org.wildfly.gwt.sdm}</errai.jboss.home>
   </properties>
