@@ -17,12 +17,15 @@
 package com.ait.lienzo.client.core.shape.wires.picker;
 
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.BackingColorMapUtils;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
+import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.ColorKeyRotor;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
@@ -46,14 +49,53 @@ public class ColorMapBackedPicker
 
     protected double                           m_borderWidth;
 
+    protected WiresLayer m_layer;
+
     public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes, ScratchPad scratchPad, WiresShape shapeToSkip)
     {
-        this(shapes, scratchPad, shapeToSkip, false, 0);
+        this(shapes,
+             scratchPad,
+             shapeToSkip,
+             false,
+             0,
+             null);
     }
 
-    public ColorMapBackedPicker( NFastArrayList<WiresShape> shapes, ScratchPad scratchPad, final WiresShape shapeToSkip, boolean addHotspots, double borderWidth )
+    public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes,
+                                ScratchPad scratchPad,
+                                final WiresShape shapeToSkip,
+                                boolean addHotspots,
+                                double borderWidth) {
+        this(shapes,
+             scratchPad,
+             shapeToSkip,
+             addHotspots,
+             borderWidth,
+             null);
+    }
+
+    public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes,
+                                ScratchPad scratchPad,
+                                NFastArrayList<WiresShape> shapesToSkip,
+                                boolean addHotspots,
+                                double borderWidth) {
+        this(shapes,
+             scratchPad,
+             shapesToSkip,
+             addHotspots,
+             borderWidth,
+             null);
+    }
+
+    public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes,
+                                ScratchPad scratchPad,
+                                final WiresShape shapeToSkip,
+                                boolean addHotspots,
+                                double borderWidth,
+                                WiresLayer layer)
     {
         m_scratchPad = scratchPad;
+        m_layer = layer;
         m_ctx = scratchPad.getContext();
         m_shapesToSkip.add(shapeToSkip);
         init( shapes,
@@ -61,9 +103,15 @@ public class ColorMapBackedPicker
               borderWidth);
     }
 
-    public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes, ScratchPad scratchPad, NFastArrayList<WiresShape> shapesToSkip, boolean addHotspots, double borderWidth)
+    public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes,
+                                ScratchPad scratchPad,
+                                NFastArrayList<WiresShape> shapesToSkip,
+                                boolean addHotspots,
+                                double borderWidth,
+                                WiresLayer layer)
     {
         m_scratchPad = scratchPad;
+        m_layer = layer;
         m_ctx = scratchPad.getContext();
         for(int j = 0; j < shapesToSkip.size(); j++) {
             m_shapesToSkip.add(shapesToSkip.get(j));
@@ -131,6 +179,15 @@ public class ColorMapBackedPicker
 
     public PickerPart findShapeAt(int x, int y)
     {
+        if (null != m_layer) {
+            Point2D temp = new Point2D(x,
+                                       y);
+            m_layer.getLayer().getViewport().getTransform().getInverse().transform(temp,
+                                                                                   temp);
+            x = (int) Math.round(temp.getX());
+            y = (int) Math.round(temp.getY());
+        }
+
         String color = BackingColorMapUtils.findColorAtPoint(m_imageData, x, y);
         if (color != null)
         {
