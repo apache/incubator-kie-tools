@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -31,14 +30,12 @@ import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.TextMetrics;
 import com.ait.lienzo.client.core.util.ScratchPad;
-import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.json.client.JSONObject;
 
 /**
@@ -47,10 +44,6 @@ import com.google.gwt.json.client.JSONObject;
 public class Text extends Shape<Text>
 {
     private static final boolean                             GRADFILLS = LienzoCore.get().isSafariBroken();
-
-    private static final ScratchPad                          FORBOUNDS = new ScratchPad(1, 1);
-
-    private static final NFastStringMap<NFastDoubleArrayJSO> OFFSCACHE = new NFastStringMap<NFastDoubleArrayJSO>();
 
     private final DrawString STROKE = new DrawString() {
         @Override
@@ -74,17 +67,16 @@ public class Text extends Shape<Text>
         }
     };
 
-    private BoundingBox wrapBoundaries;
+    private ITextWrapper wrapper = new TextNoWrap(this);
 
     /**
-     * Constructor. Creates an instance of text.
+     * Constructor. Creates an instance of text. Default no-wrap text wrapping.
      * 
      * @param text
      */
     public Text(String text)
     {
         super(ShapeType.TEXT);
-        wrapBoundaries = null;
 
         final LienzoCore globals = LienzoCore.get();
 
@@ -92,20 +84,19 @@ public class Text extends Shape<Text>
         {
             text = "";
         }
-        setText(text).setFontFamily(globals.getDefaultFontFamily()).setFontStyle(globals.getDefaultFontStyle()).setFontSize(globals.getDefaultFontSize()).setWrapBoundaries(null);
+        setText(text).setFontFamily(globals.getDefaultFontFamily()).setFontStyle(globals.getDefaultFontStyle()).setFontSize(globals.getDefaultFontSize());
     }
 
     /**
-     * Constructor. Creates an instance of text.
+     * Constructor. Creates an instance of text. Default no-wrap text wrapping.
      * 
      * @param text 
      * @param family font family
-     * @param points font size
+     * @param size font size
      */
     public Text(String text, String family, double size)
     {
         super(ShapeType.TEXT);
-        wrapBoundaries = null;
 
         final LienzoCore globals = LienzoCore.get();
 
@@ -121,21 +112,20 @@ public class Text extends Shape<Text>
         {
             size = globals.getDefaultFontSize();
         }
-        setText(text).setFontFamily(family).setFontStyle(globals.getDefaultFontStyle()).setFontSize(size).setWrapBoundaries(null);
+        setText(text).setFontFamily(family).setFontStyle(globals.getDefaultFontStyle()).setFontSize(size);
     }
 
     /**
-     * Constructor. Creates an instance of text.
+     * Constructor. Creates an instance of text. Default no-wrap text wrapping.
      * 
      * @param text
      * @param family font family
      * @param style font style (bold, italic, etc)
-     * @param points font size
+     * @param size font size
      */
     public Text(String text, String family, String style, double size)
     {
         super(ShapeType.TEXT);
-        wrapBoundaries = null;
 
         final LienzoCore globals = LienzoCore.get();
 
@@ -155,7 +145,7 @@ public class Text extends Shape<Text>
         {
             size = globals.getDefaultFontSize();
         }
-        setText(text).setFontFamily(family).setFontStyle(style).setFontSize(size).setWrapBoundaries(null);
+        setText(text).setFontFamily(family).setFontStyle(style).setFontSize(size);
     }
 
     protected Text(JSONObject node, ValidationContext ctx) throws ValidationException
@@ -166,145 +156,18 @@ public class Text extends Shape<Text>
     @Override
     public BoundingBox getBoundingBox()
     {
-        if (null == wrapBoundaries) {
-            return getBoundingBoxForString(getText());
-        }
-        double width = wrapBoundaries.getWidth();
-        int numOfLines = 1;
-        String[] words = getText().split(" ");
-        StringBuilder nextLine = new StringBuilder(words[0]);
-        for (int i = 1; i < words.length; i++) {
-            if (getBoundingBoxForString(nextLine + " " + words[i]).getWidth() <= wrapBoundaries.getWidth())
-            {
-                nextLine.append(" ").append(words[i]);
-            }
-            else {
-                nextLine.setLength(words[i].length());
-                nextLine.replace(0,words[i].length(),words[i]);
-                numOfLines++;
-            }
-        }
-        double height = getBoundingBoxForString(getText()).getHeight();
-        height = height * numOfLines;
-        return new BoundingBox().addX(0).addX(width).addY(0).addY(height);
+        return wrapper.getBoundingBox();
     }
 
     private BoundingBox getBoundingBoxForString(String string) {
-        return getBoundingBox(string, getFontSize(), getFontStyle(), getFontFamily(), getTextUnit(), getTextBaseLine(), getTextAlign());
+        return TextUtils.getBoundingBox(string, getFontSize(), getFontStyle(), getFontFamily(), getTextUnit(), getTextBaseLine(), getTextAlign());
     }
 
-    private static final native NFastDoubleArrayJSO getTextOffsets(CanvasPixelArray data, int wide, int high, int base)
-    /*-{
-		var top = -1;
-		var bot = -1;
-		for (var y = 0; ((y < high) && (top < 0)); y++) {
-			for (var x = 0; ((x < wide) && (top < 0)); x++) {
-				if (data[(y * wide + x) * 4] != 0) {
-					top = y;
-				}
-			}
-		}
-		if (top < 0) {
-			top = 0;
-		}
-		for (var y = high - 1; ((y > top) && (bot < 0)); y--) {
-			for (var x = 0; ((x < wide) && (bot < 0)); x++) {
-				if (data[(y * wide + x) * 4] != 0) {
-					bot = y;
-				}
-			}
-		}
-		if ((top < 0) || (bot < 0)) {
-			return null;
-		}
-		return [ top - base, bot - base ];
-    }-*/;
-
-    private static final NFastDoubleArrayJSO getTextOffsets(final String font, final TextBaseLine baseline)
-    {
-        FORBOUNDS.getContext().setTextFont(font);
-
-        FORBOUNDS.getContext().setTextAlign(TextAlign.LEFT);
-
-        FORBOUNDS.getContext().setTextBaseline(TextBaseLine.ALPHABETIC);
-
-        final int m = (int) FORBOUNDS.getContext().measureText("M").getWidth();
-
-        final int w = (int) FORBOUNDS.getContext().measureText("Mg").getWidth();
-
-        final int h = (m * 4);
-
-        final ScratchPad temp = new ScratchPad(w, h);
-
-        final Context2D ctxt = temp.getContext();
-
-        ctxt.setFillColor(ColorName.BLACK);
-
-        ctxt.fillRect(0, 0, w, h);
-
-        ctxt.setTextFont(font);
-
-        ctxt.setTextAlign(TextAlign.LEFT);
-
-        ctxt.setTextBaseline(baseline);
-
-        ctxt.setFillColor(ColorName.WHITE);
-
-        ctxt.fillText("Mg", 0, m * 2);
-
-        return getTextOffsets(ctxt.getImageData(0, 0, w, h).getData(), w, h, m * 2);
-    }
-
-    private final static BoundingBox getBoundingBox(final String text, final double size, final String style, final String family, final TextUnit unit, final TextBaseLine baseline, final TextAlign align)
-    {
-        if ((null == text) || (text.isEmpty()) || (false == (size > 0)))
-        {
-            return new BoundingBox(0, 0, 0, 0);
-        }
-        final String font = getFontString(size, unit, style, family);
-
-        final String base = font + " " + baseline.getValue();
-
-        NFastDoubleArrayJSO offs = OFFSCACHE.get(base);
-
-        if (null == offs)
-        {
-            OFFSCACHE.put(base, offs = getTextOffsets(font, baseline));
-        }
-        if (null == offs)
-        {
-            return new BoundingBox(0, 0, 0, 0);
-        }
-        FORBOUNDS.getContext().setTextFont(font);
-
-        FORBOUNDS.getContext().setTextAlign(TextAlign.LEFT);
-
-        FORBOUNDS.getContext().setTextBaseline(TextBaseLine.ALPHABETIC);
-
-        final double wide = FORBOUNDS.getContext().measureText(text).getWidth();
-
-        final BoundingBox bbox = new BoundingBox().addY(offs.get(0)).addY(offs.get(1));
-
-        switch (align)
-        {
-            case LEFT:
-            case START:
-                bbox.addX(0).addX(wide);
-                break;
-            case END:
-            case RIGHT:
-                bbox.addX(0).addX(0 - wide);
-                break;
-            case CENTER:
-                bbox.addX(wide / 2).addX(0 - (wide / 2));
-                break;
-        }
-        return bbox;
-    }
-
+    @Deprecated
     public static final String getFontString(final double size, final TextUnit unit, final String style, final String family)
     {
-        return style + " " + size + unit.toString() + " " + family;
+        //public static method preserved for compatibility
+        return TextUtils.getFontString(size, unit, style, family);
     }
 
     @Override
@@ -524,92 +387,7 @@ public class Text extends Shape<Text>
 
     private void drawString(final Context2D context, final Attributes attr, DrawString drawCommand)
     {
-        if (null != wrapBoundaries) {
-            String[] words = attr.getText().split(" ");
-            StringBuilder nextLine = new StringBuilder(words[0]);
-            ArrayList<String> lines = new ArrayList<>();
-            for (int i = 1; i < words.length; i++) {
-                if (getBoundingBoxForString(nextLine + " " + words[i]).getWidth() <= wrapBoundaries.getWidth())
-                {
-                    nextLine.append(" ").append(words[i]);
-                }
-                else {
-                    lines.add(nextLine.toString());
-                    nextLine.setLength(words[i].length());
-                    nextLine.replace(0,words[i].length(),words[i]);
-                }
-            }
-            lines.add(nextLine.toString());
-
-            double xOffset = 0;
-
-            switch (getTextAlign()) {
-                case START:
-                case LEFT:
-                    xOffset = 0;
-                    break;
-
-                case CENTER:
-                    xOffset = wrapBoundaries.getWidth()/2;
-                    break;
-
-                case END:
-                case RIGHT:
-                    xOffset = wrapBoundaries.getWidth();
-                    break;
-            }
-
-            for (int i = 0; i < lines.size(); i++){
-                String line = lines.get(i);
-                int toPad = (int)Math.round((wrapBoundaries.getWidth() - getBoundingBoxForString(line).getWidth())/getBoundingBoxForString(" ").getWidth());
-                line = padString(line, line.length() + toPad, ' ', getTextAlign());
-                drawCommand.draw(context,line,xOffset,i + 0.8);
-            }
-        }
-        else {
-            drawCommand.draw(context,attr.getText(),0,0);
-        }
-    }
-
-    private String padString(String string, int targetSize, char padChar, TextAlign where) {
-        if (string.length() >= targetSize) {
-            return string;
-        }
-
-        int toPad = targetSize - string.length();
-        StringBuilder buffer = new StringBuilder(targetSize);
-        switch (where) {
-            case END:
-            case RIGHT:
-                for (int i = 0; i < toPad; i++) {
-                    buffer.append(padChar);
-                }
-                buffer.append(string);
-                return buffer.toString();
-
-            case START:
-            case LEFT:
-                buffer.append(string);
-                for (int i = 0; i < toPad; i++) {
-                    buffer.append(padChar);
-                }
-                return buffer.toString();
-
-            case CENTER:
-                int leftPad = toPad / 2;
-                int rightPad = toPad - leftPad;
-                for (int i = 0; i < leftPad; i++) {
-                    buffer.append(padChar);
-                }
-                buffer.append(string);
-                for (int i = 0; i < rightPad; i++) {
-                    buffer.append(padChar);
-                }
-                return buffer.toString();
-
-            default:
-                return string;
-        }
+        wrapper.drawString(context,attr,drawCommand);
     }
 
     /**
@@ -850,13 +628,12 @@ public class Text extends Shape<Text>
         return asAttributes(Attribute.TEXT, Attribute.FONT_SIZE, Attribute.FONT_STYLE, Attribute.FONT_FAMILY, Attribute.TEXT_UNIT, Attribute.TEXT_ALIGN, Attribute.TEXT_BASELINE, Attribute.WIDTH);
     }
 
-    public BoundingBox getWrapBoundaries() {
-        return wrapBoundaries;
+    public ITextWrapper getWrapper() {
+        return wrapper;
     }
 
-    public Text setWrapBoundaries(BoundingBox boundaries) {
-        wrapBoundaries = boundaries;
-        getAttributes().setWidth((null != boundaries)? boundaries.getWidth() : 0);
+    public Text setWrapper(final ITextWrapper wrapper) {
+        this.wrapper = wrapper;
         return this;
     }
 
@@ -890,7 +667,7 @@ public class Text extends Shape<Text>
         }
     }
 
-    private interface DrawString {
+    interface DrawString {
         void draw(Context2D c, String s, double xOffset, double lineNum);
     }
 }
