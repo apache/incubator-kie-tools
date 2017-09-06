@@ -573,7 +573,7 @@ final class LienzoHandlerManager
 
         m_drag_mode = node.getDragMode();
 
-        m_dragContext = new DragContext(event, node);
+        m_dragContext = new DragContext(event, node, m_viewport.getTransform().getInverse());
 
         m_drag_node.setDragging(true);
 
