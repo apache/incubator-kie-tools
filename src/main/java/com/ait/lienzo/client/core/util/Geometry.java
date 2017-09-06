@@ -1122,12 +1122,21 @@ public final class Geometry
             // without this the project throw an error as you cannot unit() something of length 0,0
             p.offset(offsetP.getX(), offsetP.getY());
         }
-        p = getProjection(c, p, width);
+        try {
+            p = getProjection(c,
+                              p,
+                              width);
 
-        Set<Point2D>[] set    =  Geometry.getCardinalIntersects(path, new Point2DArray(c, p));
-        Point2DArray   points = Geometry.removeInnerPoints(c, set);
+            Set<Point2D>[] set = Geometry.getCardinalIntersects(path,
+                                                                new Point2DArray(c,
+                                                                                 p));
+            Point2DArray points = Geometry.removeInnerPoints(c,
+                                                             set);
 
-        return points.get(1);
+            return (points.size() > 1) ? points.get(1) : null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public static Point2DArray getIntersectPolyLinePath(Point2DArray points, PathPartList path, boolean closed)
