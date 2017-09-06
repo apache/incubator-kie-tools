@@ -147,13 +147,16 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
     {
         if (m_flex)
         {
-            int wide = getParent().getOffsetWidth();
-
-            int high = getParent().getOffsetHeight();
-
-            if ((wide != 0) && (high != 0))
+            if (getParent() != null)
             {
-                setPixelSize(wide, high);
+                int wide = getParent().getOffsetWidth();
+
+                int high = getParent().getOffsetHeight();
+
+                if ((wide != 0) && (high != 0))
+                {
+                    setPixelSize(wide, high);
+                }
             }
         }
     }
