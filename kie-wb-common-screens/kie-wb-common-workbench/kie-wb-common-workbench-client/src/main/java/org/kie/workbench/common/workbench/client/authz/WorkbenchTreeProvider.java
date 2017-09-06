@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,7 @@ import org.uberfire.security.client.authz.tree.impl.PermissionGroupNode;
 import org.uberfire.security.client.authz.tree.impl.PermissionLeafNode;
 
 import static org.guvnor.m2repo.security.MavenRepositoryPagedJarTableFeatures.JAR_DOWNLOAD;
-import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES;
-import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_SOURCES;
-import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.PLANNER_AVAILABLE;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.*;
 
 /**
  * A tree permission provider which add general workbench permissions non tied to any specific resource.
@@ -43,12 +41,11 @@ import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.
 @ApplicationScoped
 public class WorkbenchTreeProvider implements PermissionTreeProvider {
 
-    private PermissionManager permissionManager;
-    private int rootNodePosition = 0;
-    private DefaultWorkbenchConstants i18n = DefaultWorkbenchConstants.INSTANCE;
-
     public static final String NODE_TYPE = "type";
     public static final String NODE_ROOT = "root";
+    private PermissionManager permissionManager;
+    private int rootNodePosition = 0;
+    protected DefaultWorkbenchConstants i18n = DefaultWorkbenchConstants.INSTANCE;
 
     public WorkbenchTreeProvider() {
     }
@@ -84,37 +81,41 @@ public class WorkbenchTreeProvider implements PermissionTreeProvider {
 
         if (parent.propertyEquals(NODE_TYPE,
                                   NODE_ROOT)) {
-            List<PermissionNode> result = new ArrayList<>();
-
-            PermissionLeafNode node1 = createPermissionLeafNode(RepositoryFeatures.CONFIGURE_REPOSITORY,
-                                                                i18n.ConfigureRepositories(),
-                                                                i18n.ConfigureRepositoriesHelp());
-            PermissionLeafNode node2 = createPermissionLeafNode(EDIT_SOURCES,
-                                                                i18n.DataModelerEditSources(),
-                                                                i18n.DataModelerEditSourcesHelp());
-            PermissionLeafNode node3 = createPermissionLeafNode(PLANNER_AVAILABLE,
-                                                                i18n.ResourcePlanner(),
-                                                                i18n.ResourcePlannerHelp());
-            PermissionLeafNode node4 = createPermissionLeafNode(JAR_DOWNLOAD,
-                                                                i18n.MavenRepositoryPagedJarTableDownloadJar(),
-                                                                i18n.MavenRepositoryPagedJarTableDownloadJarHelp());
-            PermissionLeafNode node5 = createPermissionLeafNode(EDIT_GLOBAL_PREFERENCES,
-                                                                i18n.EditGlobalPreferences(),
-                                                                i18n.EditGlobalPreferencesHelp());
-
-            result.add(node1);
-            result.add(node2);
-            result.add(node3);
-            result.add(node4);
-            result.add(node5);
-
-            callback.afterLoad(result);
+            callback.afterLoad(createPermissions());
         }
     }
 
-    private PermissionLeafNode createPermissionLeafNode(String permissionName,
-                                                        String nodeName,
-                                                        String nodeHelp) {
+    protected List<PermissionNode> createPermissions() {
+        List<PermissionNode> permissions = new ArrayList<>();
+
+        PermissionLeafNode node1 = createPermissionLeafNode(RepositoryFeatures.CONFIGURE_REPOSITORY,
+                                                            i18n.ConfigureRepositories(),
+                                                            i18n.ConfigureRepositoriesHelp());
+        PermissionLeafNode node2 = createPermissionLeafNode(EDIT_SOURCES,
+                                                            i18n.DataModelerEditSources(),
+                                                            i18n.DataModelerEditSourcesHelp());
+        PermissionLeafNode node3 = createPermissionLeafNode(PLANNER_AVAILABLE,
+                                                            i18n.ResourcePlanner(),
+                                                            i18n.ResourcePlannerHelp());
+        PermissionLeafNode node4 = createPermissionLeafNode(JAR_DOWNLOAD,
+                                                            i18n.MavenRepositoryPagedJarTableDownloadJar(),
+                                                            i18n.MavenRepositoryPagedJarTableDownloadJarHelp());
+        PermissionLeafNode node5 = createPermissionLeafNode(EDIT_GLOBAL_PREFERENCES,
+                                                            i18n.EditGlobalPreferences(),
+                                                            i18n.EditGlobalPreferencesHelp());
+
+        permissions.add(node1);
+        permissions.add(node2);
+        permissions.add(node3);
+        permissions.add(node4);
+        permissions.add(node5);
+
+        return permissions;
+    }
+
+    protected PermissionLeafNode createPermissionLeafNode(String permissionName,
+                                                          String nodeName,
+                                                          String nodeHelp) {
         Permission permission = permissionManager.createPermission(permissionName,
                                                                    true);
         PermissionLeafNode node = new PermissionLeafNode();

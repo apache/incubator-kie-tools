@@ -17,6 +17,7 @@
 package org.kie.workbench.common.workbench.client.authz;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.security.ProjectTreeProvider;
@@ -55,27 +56,24 @@ import static org.kie.workbench.common.workbench.client.PerspectiveIds.TASKS_ADM
 @ApplicationScoped
 public class PermissionTreeSetup {
 
+    @Inject
     private WorkbenchTreeProvider workbenchTreeProvider;
+
+    @Inject
     private PerspectiveTreeProvider perspectiveTreeProvider;
-    private OrganizationalUnitTreeProvider orgUnitTreeProvider;
-    private RepositoryTreeProvider repositoryTreeProvider;
-    private ProjectTreeProvider projectTreeProvider;
+
+    @Inject
+    private Instance<OrganizationalUnitTreeProvider> orgUnitTreeProvider;
+
+    @Inject
+    private Instance<RepositoryTreeProvider> repositoryTreeProvider;
+
+    @Inject
+    private Instance<ProjectTreeProvider> projectTreeProvider;
+
     private DefaultWorkbenchConstants i18n = DefaultWorkbenchConstants.INSTANCE;
 
     public PermissionTreeSetup() {
-    }
-
-    @Inject
-    public PermissionTreeSetup(WorkbenchTreeProvider workbenchTreeProvider,
-                               PerspectiveTreeProvider perspectiveTreeProvider,
-                               OrganizationalUnitTreeProvider orgUnitTreeProvider,
-                               RepositoryTreeProvider repositoryTreeProvider,
-                               ProjectTreeProvider projectTreeProvider) {
-        this.workbenchTreeProvider = workbenchTreeProvider;
-        this.perspectiveTreeProvider = perspectiveTreeProvider;
-        this.orgUnitTreeProvider = orgUnitTreeProvider;
-        this.repositoryTreeProvider = repositoryTreeProvider;
-        this.projectTreeProvider = projectTreeProvider;
     }
 
     public void configureTree() {
@@ -136,8 +134,14 @@ public class PermissionTreeSetup {
         // Set the desired display order
         workbenchTreeProvider.setRootNodePosition(0);
         perspectiveTreeProvider.setRootNodePosition(1);
-        orgUnitTreeProvider.setRootNodePosition(2);
-        repositoryTreeProvider.setRootNodePosition(3);
-        projectTreeProvider.setRootNodePosition(4);
+        if(orgUnitTreeProvider.isUnsatisfied() == false) {
+            orgUnitTreeProvider.get().setRootNodePosition(2);
+        }
+        if(repositoryTreeProvider.isUnsatisfied() == false) {
+            repositoryTreeProvider.get().setRootNodePosition(3);
+        }
+        if(projectTreeProvider.isUnsatisfied() == false) {
+            projectTreeProvider.get().setRootNodePosition(4);
+        }
     }
 }
