@@ -184,6 +184,14 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
         return cast();
     }
 
+    @Override
+    public void refresh() {
+        super.refresh();
+        if (null != getShape()) {
+            textViewDecorator.setTextBoundaries(getShape().getBoundingBox());
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public T updateFillGradient(final double width,
                                 final double height) {
@@ -195,6 +203,7 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
                                                                                width,
                                                                                height);
             getShape().setFillGradient(gradient);
+            textViewDecorator.setTextBoundaries(getShape().getBoundingBox());
         }
         return cast();
     }
@@ -356,14 +365,23 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
         HandlerRegistration r0 = addWiresResizeStartHandler(wiresResizeStartEvent -> {
             final ResizeEvent event = buildResizeEvent(wiresResizeStartEvent);
             resizeHandler.start(event);
+            removeChild(textViewDecorator.getView());
+            addTextAsChild();
+            textViewDecorator.setTextBoundaries(getShape().getBoundingBox());
         });
         HandlerRegistration r1 = addWiresResizeStepHandler(wiresResizeStepEvent -> {
             final ResizeEvent event = buildResizeEvent(wiresResizeStepEvent);
             resizeHandler.handle(event);
+            removeChild(textViewDecorator.getView());
+            addTextAsChild();
+            textViewDecorator.setTextBoundaries(getShape().getBoundingBox());
         });
         HandlerRegistration r2 = addWiresResizeEndHandler(wiresResizeEndEvent -> {
             final ResizeEvent event = buildResizeEvent(wiresResizeEndEvent);
             resizeHandler.end(event);
+            removeChild(textViewDecorator.getView());
+            addTextAsChild();
+            textViewDecorator.setTextBoundaries(getShape().getBoundingBox());
         });
         return new HandlerRegistration[]{r0, r1, r2};
     }

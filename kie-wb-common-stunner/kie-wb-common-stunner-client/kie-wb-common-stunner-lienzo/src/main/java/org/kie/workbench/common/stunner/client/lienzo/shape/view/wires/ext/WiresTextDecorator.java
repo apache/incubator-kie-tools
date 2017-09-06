@@ -20,7 +20,9 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ColorName;
+import com.ait.lienzo.shared.core.types.TextAlign;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -77,7 +79,8 @@ public class WiresTextDecorator {
                 .setFillColor(ColorName.BLACK)
                 .setStrokeWidth(1)
                 .setDraggable(false)
-                .setAlpha(0);
+                .setAlpha(0)
+                .setTextAlign(TextAlign.CENTER);
         this.currentTextLayout = LayoutContainer.Layout.CENTER;
         textContainer.add(text);
         // Ensure path bounds are available on the selection context.
@@ -154,7 +157,11 @@ public class WiresTextDecorator {
 
     @SuppressWarnings("unchecked")
     public void setTitle(final String title) {
-        text.setText(title);
+        if (null == title) {
+            text.setText(null);
+        } else {
+            text.setText(title.trim());
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -176,6 +183,7 @@ public class WiresTextDecorator {
         }
         final boolean changed = !currentTextLayout.equals(layout);
         this.currentTextLayout = layout;
+        setTextBoundaries(text.getWrapBoundaries());
         return changed;
     }
 
@@ -248,5 +256,34 @@ public class WiresTextDecorator {
     private boolean hasText() {
         final String text = this.text.getText();
         return null != text && text.trim().length() > 0;
+    }
+
+    public void setTextBoundaries(BoundingBox boundaries) {
+        switch (getLayout()) {
+            case LEFT:
+                if (null != boundaries) {
+                    text.setWrapBoundaries(new BoundingBox(boundaries.getMinY(),
+                                                           boundaries.getMaxX(),
+                                                           boundaries.getMaxY(),
+                                                           boundaries.getMaxX()));
+                }
+                break;
+
+            case RIGHT:
+                if (null != boundaries) {
+                    text.setWrapBoundaries(new BoundingBox(boundaries.getMinY(),
+                                                           boundaries.getMaxX(),
+                                                           boundaries.getMaxY(),
+                                                           boundaries.getMaxX()));
+                }
+                break;
+
+            case TOP:
+            case CENTER:
+            case BOTTOM:
+            default:
+                text.setWrapBoundaries(boundaries);
+                break;
+        }
     }
 }

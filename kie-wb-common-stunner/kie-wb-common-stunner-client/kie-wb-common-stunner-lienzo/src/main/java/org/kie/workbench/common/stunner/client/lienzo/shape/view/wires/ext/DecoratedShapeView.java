@@ -103,6 +103,7 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
                              0d,
                              width,
                              height);
+        refresh();
         return (T) this;
     }
 
