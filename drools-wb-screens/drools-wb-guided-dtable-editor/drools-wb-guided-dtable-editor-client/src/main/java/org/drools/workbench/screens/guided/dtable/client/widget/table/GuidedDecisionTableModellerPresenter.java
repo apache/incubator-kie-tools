@@ -468,6 +468,7 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     public void onViewPinned(final boolean isPinned) {
         pinnedEvent.fire(new DecisionTablePinnedEvent(this,
                                                       isPinned));
+        view.setPinnedModeIndicatorVisibility(isPinned);
     }
 
     @Override

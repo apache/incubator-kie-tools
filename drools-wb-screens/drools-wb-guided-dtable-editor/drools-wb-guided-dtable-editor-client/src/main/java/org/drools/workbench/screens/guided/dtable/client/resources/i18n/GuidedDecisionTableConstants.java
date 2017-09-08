@@ -359,4 +359,6 @@ public interface GuidedDecisionTableConstants
     String AddColumn();
 
     String EditColumns();
+
+    String TablePinnedModeHelp();
 }

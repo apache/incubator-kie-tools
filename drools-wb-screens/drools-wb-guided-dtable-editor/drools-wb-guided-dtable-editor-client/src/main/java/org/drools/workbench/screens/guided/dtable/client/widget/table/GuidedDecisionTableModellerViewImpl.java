@@ -49,6 +49,8 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.co
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
@@ -81,6 +83,9 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     @UiField
     Button editColumns;
+
+    @UiField
+    Icon pinnedModeIndicator;
 
     @UiField(provided = true)
     GridLienzoPanel gridPanel = new GridLienzoPanel() {
@@ -126,6 +131,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     public GuidedDecisionTableModellerViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
+        pinnedModeIndicator.setSize(IconSize.LARGE);
     }
 
     DefaultGridLayer defaultGridLayer() {
@@ -755,6 +761,11 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     @Override
     public Set<GridWidget> getGridWidgets() {
         return gridLayer.getGridWidgets();
+    }
+
+    @Override
+    public void setPinnedModeIndicatorVisibility(final boolean visibility) {
+        pinnedModeIndicator.setVisible(visibility);
     }
 
     GuidedDecisionTableAccordion getGuidedDecisionTableAccordion() {

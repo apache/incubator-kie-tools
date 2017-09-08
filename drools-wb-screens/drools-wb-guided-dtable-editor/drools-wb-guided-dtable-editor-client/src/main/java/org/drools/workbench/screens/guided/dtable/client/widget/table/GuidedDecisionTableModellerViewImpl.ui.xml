@@ -49,6 +49,10 @@
       outline: none !important;
     }
 
+    .buttonMenu i {
+      margin-left: 10px;
+    }
+
     .container {
       display: flex;
       flex-direction: column;
@@ -86,7 +90,9 @@
   <g:HTMLPanel styleName="{css.container}">
 
     <g:FlowPanel styleName="{css.buttonMenu}">
-      <b:Button ui:field="addColumn" text="{i18n.AddColumn}"/><b:Button ui:field="editColumns" text="{i18n.EditColumns}"/>
+      <b:Button ui:field="addColumn" text="{i18n.AddColumn}"/>
+      <b:Button ui:field="editColumns" text="{i18n.EditColumns}"/>
+      <b:Icon ui:field="pinnedModeIndicator" type="THUMB_TACK" title="{i18n.TablePinnedModeHelp}" visible="false"/>
     </g:FlowPanel>
 
     <g:FlowPanel>
@@ -97,6 +103,7 @@
       <div class="glyphicon-triangle-top"></div>
       <div class="glyphicon-triangle-bottom"></div>
       <div class="glyphicon-link"></div>
+      <div class="glyphicon-thumb-tack"></div>
     </g:HTMLPanel>
 
     <g:HTMLPanel styleName="{css.canvas}">

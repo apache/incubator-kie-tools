@@ -41,6 +41,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.accordion.
 import org.drools.workbench.screens.guided.dtable.client.widget.table.accordion.GuidedDecisionTableAccordionItem;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.AttributeColumnConfigRowView;
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Icon;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,6 +88,9 @@ public class GuidedDecisionTableModellerViewImplTest {
 
     @Mock
     GuidedDecisionTableView.Presenter viewPresenter;
+
+    @Mock
+    Icon pinnedModeIndicator;
 
     GuidedDecisionTableModellerViewImpl view;
 
@@ -427,6 +431,20 @@ public class GuidedDecisionTableModellerViewImplTest {
         verify(mockGridPanel).refreshScrollPosition();
     }
 
+    @Test
+    public void testPinnedModeVisible() throws Exception {
+        view.setPinnedModeIndicatorVisibility(true);
+
+        verify(pinnedModeIndicator).setVisible(true);
+    }
+
+    @Test
+    public void testPinnedModeHidden() throws Exception {
+        view.setPinnedModeIndicatorVisibility(false);
+
+        verify(pinnedModeIndicator).setVisible(false);
+    }
+
     private AttributeCol52 attributeColumn() {
         final AttributeCol52 attributeCol52 = mock(AttributeCol52.class);
         final DTCellValue52 defaultValue = mock(DTCellValue52.class);
@@ -441,6 +459,7 @@ public class GuidedDecisionTableModellerViewImplTest {
 
         public GuidedDecisionTableModellerViewImplFake() {
             this.gridPanel = mockGridPanel;
+            this.pinnedModeIndicator = GuidedDecisionTableModellerViewImplTest.this.pinnedModeIndicator;
         }
 
         DefaultGridLayer defaultGridLayer() {

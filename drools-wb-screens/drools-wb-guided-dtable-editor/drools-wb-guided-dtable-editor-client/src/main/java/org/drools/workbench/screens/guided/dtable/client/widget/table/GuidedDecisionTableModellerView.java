@@ -88,6 +88,8 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
 
     Bounds getBounds();
 
+    void setPinnedModeIndicatorVisibility(final boolean visible);
+
     interface Presenter extends GridPinnedModeManager,
                                 ViewMenuBuilder.SupportsZoom,
                                 InsertMenuBuilder.SupportsInsertColumn {

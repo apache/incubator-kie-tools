@@ -697,6 +697,7 @@ public class GuidedDecisionTableModellerPresenterTest {
         assertEquals(presenter,
                      pinnedEvent.getPresenter());
         assertTrue(pinnedEvent.isPinned());
+        verify(view).setPinnedModeIndicatorVisibility(true);
     }
 
     @Test
@@ -713,6 +714,7 @@ public class GuidedDecisionTableModellerPresenterTest {
         assertEquals(presenter,
                      pinnedEvent.getPresenter());
         assertFalse(pinnedEvent.isPinned());
+        verify(view).setPinnedModeIndicatorVisibility(false);
     }
 
     @Test
