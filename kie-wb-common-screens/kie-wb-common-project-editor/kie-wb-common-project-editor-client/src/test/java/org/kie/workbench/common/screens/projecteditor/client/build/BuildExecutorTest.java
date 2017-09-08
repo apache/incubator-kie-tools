@@ -50,6 +50,7 @@ import org.kie.server.controller.api.model.spec.RuleConfig;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.workbench.common.screens.projecteditor.client.editor.DeploymentScreenPopupViewImpl;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.screens.server.management.model.RuntimeStrategy;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.mockito.ArgumentCaptor;
@@ -400,7 +401,7 @@ public class BuildExecutorTest {
 
         doReturn(ruleConfig).when(buildExecutor).makeRuleConfig();
 
-        final Map<Capability, ContainerConfig> configs = buildExecutor.makeConfigs(serverTemplate);
+        final Map<Capability, ContainerConfig> configs = buildExecutor.makeConfigs(serverTemplate, new HashMap<>());
 
         assertTrue(configs.keySet().contains(Capability.RULE));
         assertTrue(configs.values().contains(ruleConfig));
@@ -415,17 +416,58 @@ public class BuildExecutorTest {
         final ProcessConfig processConfig = mock(ProcessConfig.class);
 
         doReturn(ruleConfig).when(buildExecutor).makeRuleConfig();
-        doReturn(processConfig).when(buildExecutor).makeProcessConfig();
+        doReturn(processConfig).when(buildExecutor).makeProcessConfig(new HashMap<>());
         doReturn(true).when(buildExecutor).hasProcessCapability(any());
 
-        final Map<Capability, ContainerConfig> configs = buildExecutor.makeConfigs(serverTemplate);
+        final Map<Capability, ContainerConfig> configs = buildExecutor.makeConfigs(serverTemplate, new HashMap<>());
 
         assertTrue(configs.keySet().contains(Capability.RULE));
         assertTrue(configs.keySet().contains(Capability.PROCESS));
         assertTrue(configs.values().contains(ruleConfig));
         assertTrue(configs.values().contains(processConfig));
-        assertEquals(2,
-                     configs.size());
+        assertEquals(2, configs.size());
+        
+    }
+    
+    @Test
+    public void testMakeConfigsWhenServerTemplateHasProcessCapabilityWithDefaultStrategy() {
+        final ServerTemplate serverTemplate = mock(ServerTemplate.class);
+        final RuleConfig ruleConfig = mock(RuleConfig.class);
+
+        doReturn(ruleConfig).when(buildExecutor).makeRuleConfig();
+        doReturn(true).when(buildExecutor).hasProcessCapability(any());
+
+        Map<String, String> params = new HashMap<>();
+        final Map<Capability, ContainerConfig> configs = buildExecutor.makeConfigs(serverTemplate, params);
+
+        assertTrue(configs.keySet().contains(Capability.RULE));
+        assertTrue(configs.keySet().contains(Capability.PROCESS));
+        assertTrue(configs.values().contains(ruleConfig));
+        assertEquals(2, configs.size());
+        
+        ProcessConfig processConf = (ProcessConfig) configs.get(Capability.PROCESS);
+        assertEquals(RuntimeStrategy.SINGLETON.name(), processConf.getRuntimeStrategy());
+    }
+    
+    @Test
+    public void testMakeConfigsWhenServerTemplateHasProcessCapabilityWithStrategy() {
+        final ServerTemplate serverTemplate = mock(ServerTemplate.class);
+        final RuleConfig ruleConfig = mock(RuleConfig.class);
+
+        doReturn(ruleConfig).when(buildExecutor).makeRuleConfig();
+        doReturn(true).when(buildExecutor).hasProcessCapability(any());
+
+        Map<String, String> params = new HashMap<>();
+        params.put("RuntimeStrategy", RuntimeStrategy.PER_PROCESS_INSTANCE.name());
+        final Map<Capability, ContainerConfig> configs = buildExecutor.makeConfigs(serverTemplate, params);
+
+        assertTrue(configs.keySet().contains(Capability.RULE));
+        assertTrue(configs.keySet().contains(Capability.PROCESS));
+        assertTrue(configs.values().contains(ruleConfig));
+        assertEquals(2, configs.size());
+        
+        ProcessConfig processConf = (ProcessConfig) configs.get(Capability.PROCESS);
+        assertEquals(RuntimeStrategy.PER_PROCESS_INSTANCE.name(), processConf.getRuntimeStrategy());
     }
 
     private void verifyNotification(final String message,

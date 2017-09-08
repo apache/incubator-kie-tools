@@ -300,7 +300,8 @@ public class BuildExecutor {
                 saveContainerSpec(containerId,
                                   containerAlias,
                                   serverTemplate,
-                                  startContainer);
+                                  startContainer,
+                                  result.getParameters());
             } else {
                 event = new NotificationEvent(ProjectEditorResources.CONSTANTS.BuildFailed(),
                                               NotificationEvent.NotificationType.ERROR);
@@ -316,11 +317,13 @@ public class BuildExecutor {
     private void saveContainerSpec(final String containerId,
                                    final String containerAlias,
                                    final ServerTemplate serverTemplate,
-                                   final Boolean startContainer) {
+                                   final Boolean startContainer,
+                                   final Map<String, String> parameters) {
         if (containerId != null && serverTemplate != null && serverTemplate.getId() != null) {
             final ContainerSpec containerSpec = makeContainerSpec(containerId,
                                                                   containerAlias,
-                                                                  serverTemplate);
+                                                                  serverTemplate,
+                                                                  parameters);
 
             specManagementService.call(aVoid -> {
                 notificationEvent.fire(new NotificationEvent(ProjectEditorResources.CONSTANTS.DeploySuccessful(),
@@ -336,7 +339,8 @@ public class BuildExecutor {
 
     private ContainerSpec makeContainerSpec(final String containerId,
                                             final String containerAlias,
-                                            final ServerTemplate serverTemplate) {
+                                            final ServerTemplate serverTemplate,
+                                            final Map<String, String> parameters) {
 
         final ReleaseId releaseId = makeReleaseId();
         final KieContainerStatus status = KieContainerStatus.STOPPED;
@@ -348,7 +352,8 @@ public class BuildExecutor {
                                  serverTemplateKey,
                                  releaseId,
                                  status,
-                                 makeConfigs(serverTemplate));
+                                 makeConfigs(serverTemplate,
+                                		 parameters));
     }
 
     private ReleaseId makeReleaseId() {
@@ -364,12 +369,13 @@ public class BuildExecutor {
         }).startContainer(containerSpec);
     }
 
-    Map<Capability, ContainerConfig> makeConfigs(final ServerTemplate serverTemplate) {
+    Map<Capability, ContainerConfig> makeConfigs(final ServerTemplate serverTemplate,
+            									 final Map<String, String> parameters) {
         final Map<Capability, ContainerConfig> configs = new HashMap<>();
 
         if (hasProcessCapability(serverTemplate)) {
             configs.put(Capability.PROCESS,
-                        makeProcessConfig());
+                        makeProcessConfig(parameters));
         }
 
         configs.put(Capability.RULE,
@@ -383,8 +389,10 @@ public class BuildExecutor {
                               KieScannerStatus.STOPPED);
     }
 
-    ProcessConfig makeProcessConfig() {
-        return new ProcessConfig(RuntimeStrategy.SINGLETON.name(),
+    ProcessConfig makeProcessConfig(final Map<String, String> parameters) {    	
+    	String strategy = parameters.getOrDefault("RuntimeStrategy", RuntimeStrategy.SINGLETON.name());
+    	
+        return new ProcessConfig(strategy,
                                  "",
                                  "",
                                  MergeMode.MERGE_COLLECTIONS.name());

@@ -309,6 +309,8 @@ public class BuildHelper {
                         pom.getGav( ) );
                 message.append( " Maven: SUCCESSFUL" );
                 if ( !suppressHandlers ) {
+                	
+                	results.addParameter("RootPath", project.getRootPath().toURI());
                     for ( PostBuildHandler handler : handlers ) {
                         try {
                             handler.process( results );
