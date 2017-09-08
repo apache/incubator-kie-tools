@@ -27,8 +27,10 @@ import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.client.core.shape.Layer;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import junit.framework.Assert;
 import org.appformer.project.datamodel.oracle.DataType;
 import org.appformer.project.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -44,6 +46,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.IssueSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableColumnSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshActionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
@@ -407,11 +410,14 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     public void link() {
         final GuidedDecisionTableView.Presenter dtPresenter2 = mock(GuidedDecisionTableView.Presenter.class);
         final GuidedDecisionTableView.Presenter dtPresenter3 = mock(GuidedDecisionTableView.Presenter.class);
-        final Set<GuidedDecisionTableView.Presenter> dtPresenters = new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add(dtPresenter);
-            add(dtPresenter2);
-            add(dtPresenter3);
-        }};
+        final Set<GuidedDecisionTableView.Presenter> dtPresenters = new HashSet<GuidedDecisionTableView.Presenter>() {
+
+            {
+                add(dtPresenter);
+                add(dtPresenter2);
+                add(dtPresenter3);
+            }
+        };
         when(dtPresenter.getModel()).thenReturn(model1);
         when(dtPresenter2.getModel()).thenReturn(model2);
         when(dtPresenter3.getModel()).thenReturn(model3);
@@ -620,11 +626,14 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         final GuidedDecisionTableView dtView3 = mock(GuidedDecisionTableView.class);
         final GuidedDecisionTableView.Presenter dtPresenter2 = setupPresenter();
         final GuidedDecisionTableView.Presenter dtPresenter3 = setupPresenter();
-        final Set<GuidedDecisionTableView.Presenter> dtPresenters = new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add(dtPresenter);
-            add(dtPresenter2);
-            add(dtPresenter3);
-        }};
+        final Set<GuidedDecisionTableView.Presenter> dtPresenters = new HashSet<GuidedDecisionTableView.Presenter>() {
+
+            {
+                add(dtPresenter);
+                add(dtPresenter2);
+                add(dtPresenter3);
+            }
+        };
 
         when(dtPresenter.getModel()).thenReturn(model1);
         when(dtPresenter2.getModel()).thenReturn(model2);
@@ -1144,6 +1153,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
                times(1)).deleteColumn(eq(condition));
         verify(modellerPresenter,
                times(1)).updateLinks();
+        checkDTSelectionsChangedEventFired(1);
     }
 
     @Test
@@ -1163,6 +1173,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
                times(1)).deleteColumn(eq(column));
         verify(modellerPresenter,
                times(1)).updateLinks();
+        checkDTSelectionsChangedEventFired(1);
     }
 
     @Test
@@ -1181,6 +1192,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         verify(refreshAttributesPanelEvent,
                times(2)).fire(any(RefreshAttributesPanelEvent.class));
+        checkDTSelectionsChangedEventFired(1);
     }
 
     @Test
@@ -1348,6 +1360,8 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
                times(1)).deleteCell(rowRangeCaptor.capture(),
                                     columnIndexCaptor.capture());
 
+        checkDTSelectionsChangedEventFired(2);
+
         final Integer columnIndex = columnIndexCaptor.getValue();
         final GridData.Range rowRange = rowRangeCaptor.getValue();
         assertEquals(0,
@@ -1360,9 +1374,12 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
     @Test
     public void onDeleteSelectedCellsWithSelectionWithBooleanColumn() {
-        final AttributeCol52 column = new AttributeCol52() {{
-            setAttribute(RuleAttributeWidget.ENABLED_ATTR);
-        }};
+        final AttributeCol52 column = new AttributeCol52() {
+
+            {
+                setAttribute(RuleAttributeWidget.ENABLED_ATTR);
+            }
+        };
         dtPresenter.appendColumn(column);
 
         final GridData uiModel = dtPresenter.getUiModel();
@@ -1374,13 +1391,17 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         verify(synchronizer,
                never()).deleteCell(any(GridData.Range.class),
                                    any(Integer.class));
+        checkDTSelectionsChangedEventFired(1);
     }
 
     @Test
     public void onDeleteSelectedCellsWithSelectionsWithBooleanColumn() {
-        final AttributeCol52 column = new AttributeCol52() {{
-            setAttribute(RuleAttributeWidget.ENABLED_ATTR);
-        }};
+        final AttributeCol52 column = new AttributeCol52() {
+
+            {
+                setAttribute(RuleAttributeWidget.ENABLED_ATTR);
+            }
+        };
         dtPresenter.appendColumn(column);
 
         final GridData uiModel = dtPresenter.getUiModel();
@@ -1400,6 +1421,8 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         verify(synchronizer,
                never()).deleteCell(any(GridData.Range.class),
                                    eq(2));
+        checkDTSelectionsChangedEventFired(3);
+
         final GridCell<?> booleanCell = uiModel.getCell(0,
                                                         2);
         assertNotNull(booleanCell);
@@ -1426,9 +1449,12 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
     @Test
     public void onDeleteSelectedColumnsWithSelections() throws ModelSynchronizer.MoveColumnVetoException {
-        final AttributeCol52 column = new AttributeCol52() {{
-            setAttribute("attribute1");
-        }};
+        final AttributeCol52 column = new AttributeCol52() {
+
+            {
+                setAttribute("attribute1");
+            }
+        };
         dtPresenter.appendColumn(column);
         final GridData uiModel = dtPresenter.getUiModel();
         uiModel.selectCell(0,
@@ -1438,6 +1464,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         verify(synchronizer,
                times(1)).deleteColumn(eq(column));
+        checkDTSelectionsChangedEventFired(2);
     }
 
     @Test
@@ -1462,6 +1489,8 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
                times(1)).deleteRow(eq(0));
         verify(synchronizer,
                times(1)).deleteRow(eq(1));
+
+        checkDTSelectionsChangedEventFired(4);
     }
 
     @Test
@@ -1641,4 +1670,24 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         verify(parent).refreshScrollPosition();
         verify(layer).draw();
     }
+
+    /*
+     * check that valid DT selections change events are fired the correct number of times for a test case
+     */
+    private void checkDTSelectionsChangedEventFired(int times) {
+        final ArgumentCaptor<DecisionTableSelectionsChangedEvent> dtSelectionsChangedEventCaptor = ArgumentCaptor.forClass(DecisionTableSelectionsChangedEvent.class);
+
+        verify(decisionTableSelectionsChangedEvent,
+               times(times)).fire(dtSelectionsChangedEventCaptor.capture());
+
+        final List<DecisionTableSelectionsChangedEvent> dtSelectionsChangedEvents = dtSelectionsChangedEventCaptor.getAllValues();
+
+        assertNotNull(dtSelectionsChangedEvents);
+        assertEquals(dtSelectionsChangedEvents.size(),
+                     times);
+        dtSelectionsChangedEvents.stream().map(DecisionTableSelectionsChangedEvent::getPresenter).forEach(p -> assertEquals("Invalid DecisionTableSelectionsChangedEvent detected.",
+                                                                                                                            p,
+                                                                                                                            dtPresenter));
+    }
+
 }

@@ -341,13 +341,15 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                         parent.getView().asWidget(),
                                         placeRequest,
                                         () -> currentPath.getFileName() + " - " + resourceType.getDescription(),
-                                        () -> {/*nothing*/}),
+                                        () -> {
+                                            /*nothing*/}),
                          parent);
     }
 
     //Instantiate UiModel overriding cell selection to inform MenuItems about changes to selected cells.
     GuidedDecisionTableUiModel makeUiModel() {
         return new GuidedDecisionTableUiModel(synchronizer) {
+
             @Override
             public Range selectCell(final int rowIndex,
                                     final int columnIndex) {
@@ -379,6 +381,29 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
             public boolean isColumnDraggingEnabled() {
                 return access.isEditable();
             }
+
+            @Override
+            public Range deleteCell(int rowIndex,
+                                    int columnIndex) {
+
+                Range cellRange = super.deleteCell(rowIndex,
+                                                   columnIndex);
+                decisionTableSelectionsChangedEvent.fire(new DecisionTableSelectionsChangedEvent(GuidedDecisionTablePresenter.this));
+                return cellRange;
+            }
+
+            @Override
+            public void deleteColumn(GridColumn<?> column) {
+                super.deleteColumn(column);
+                decisionTableSelectionsChangedEvent.fire(new DecisionTableSelectionsChangedEvent(GuidedDecisionTablePresenter.this));
+            }
+
+            @Override
+            public Range deleteRow(int rowIndex) {
+                Range rowRange = super.deleteRow(rowIndex);
+                decisionTableSelectionsChangedEvent.fire(new DecisionTableSelectionsChangedEvent(GuidedDecisionTablePresenter.this));
+                return rowRange;
+            }
         };
     }
 
@@ -392,8 +417,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                                renderer,
                                                this,
                                                model,
-                                               notificationEvent
-        );
+                                               notificationEvent);
     }
 
     void initialiseUtilities() {
@@ -468,10 +492,12 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         view.registerNodeMouseDoubleClickHandler((event) -> {
             if (view.isNodeMouseEventOverCaption(event)) {
                 if (isGridPinned()) {
-                    exitPinnedMode(() -> {/*Nothing*/});
+                    exitPinnedMode(() -> {
+                        /*Nothing*/});
                 } else {
                     enterPinnedMode(view,
-                                    () -> {/*Nothing*/});
+                                    () -> {
+                                        /*Nothing*/});
                 }
             }
         });
@@ -505,6 +531,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         }
         Collections.sort(converters,
                          new Comparator<BaseColumnConverter>() {
+
                              @Override
                              public int compare(final BaseColumnConverter o1,
                                                 final BaseColumnConverter o2) {
@@ -658,6 +685,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     @Override
     public void getPackageParentRuleNames(final ParameterizedCommand<Collection<String>> command) {
         ruleNameService.call(new RemoteCallback<Collection<String>>() {
+
             @Override
             public void callback(final Collection<String> ruleNames) {
                 command.execute(ruleNames);
@@ -673,9 +701,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public boolean hasColumnDefinitions() {
-        return model.getAttributeCols().size() > 0
-                || model.getConditionsCount() > 0
-                || model.getActionCols().size() > 0;
+        return model.getAttributeCols().size() > 0 || model.getConditionsCount() > 0 || model.getActionCols().size() > 0;
     }
 
     @Override
