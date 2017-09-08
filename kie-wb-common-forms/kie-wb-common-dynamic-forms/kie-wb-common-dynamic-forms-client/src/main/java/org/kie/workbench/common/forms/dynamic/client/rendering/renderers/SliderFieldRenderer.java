@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.slider.Slider;
@@ -44,6 +45,22 @@ public class SliderFieldRenderer extends FieldRenderer<SliderBaseDefinition>
                             field.getPrecision().doubleValue(),
                             field.getStep().doubleValue());
         slider.setEnabled(!field.getReadOnly() && renderingContext.getRenderMode().equals(RenderMode.EDIT_MODE));
+
+        int precision = field.getPrecision().intValue();
+        NumberFormat format = createFormatter(precision);
+        slider.setFormatter((Double value) -> format.format(value));
+    }
+
+    private NumberFormat createFormatter(int precision) {
+        String pattern = "0";
+        if (precision > 0) {
+            pattern += ".";
+            while (precision > 0) {
+                pattern += "0";
+                precision--;
+            }
+        }
+        return NumberFormat.getFormat(pattern);
     }
 
     @Override
