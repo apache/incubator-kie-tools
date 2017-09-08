@@ -16,24 +16,33 @@
 
 package org.kie.workbench.common.forms.editor.client.editor.test;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.forms.editor.client.editor.FormEditorHelper;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
+import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.service.shared.FieldManager;
+import org.kie.workbench.common.forms.model.FieldType;
 import org.uberfire.commons.data.Pair;
 
 public class TestFormEditorHelper extends FormEditorHelper {
 
-    public TestFormEditorHelper(FieldManager fieldManager,
+    public TestFormEditorHelper(TestFieldManager fieldManager,
                                 ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents) {
         super(fieldManager,
               editorFieldLayoutComponents);
+        fieldManager.getAllBasicTypeProviders().stream().forEach((provider) -> {
+            editorFieldTypes.add(provider.getDefaultField().getFieldType());
+        });
     }
 
     public Map<String, Pair<EditorFieldLayoutComponent, FieldDefinition>> getUnbindedFields() {
         return unbindedFields;
+    }
+
+    public Collection<FieldType> getEditorFieldTypes() {
+        return editorFieldTypes;
     }
 }

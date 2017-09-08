@@ -30,6 +30,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.kie.workbench.common.forms.editor.client.editor.changes.ChangesNotificationDisplayer;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
+import org.kie.workbench.common.forms.editor.client.editor.test.TestFormEditorHelper;
 import org.kie.workbench.common.forms.editor.client.resources.images.FormEditorImageResources;
 import org.kie.workbench.common.forms.editor.client.type.FormDefinitionResourceType;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
@@ -172,8 +173,8 @@ public class FormEditorPresenterAbstractTest {
 
         editorServiceCallerMock = new CallerMock<>(formEditorService);
 
-        editorHelper = spy(new FormEditorHelper(new TestFieldManager(),
-                                                editorFieldLayoutComponents));
+        editorHelper = spy(new TestFormEditorHelper(new TestFieldManager(),
+                                                    editorFieldLayoutComponents));
 
         when(layoutEditorMock.getLayout()).thenReturn(new LayoutTemplate());
 
@@ -188,16 +189,20 @@ public class FormEditorPresenterAbstractTest {
 
         when(versionRecordManager.getCurrentPath()).thenReturn(path);
 
-        when(translationService.format(anyString(), anyString())).thenReturn("");
+        when(translationService.format(anyString(),
+                                       anyString())).thenReturn("");
 
         showAssetUsagesDisplayer = spy(new ShowAssetUsagesDisplayer(assetUsagesDisplayerView,
-                                                                translationService,
-                                                                new CallerMock<>(assetsUsagService)));
+                                                                    translationService,
+                                                                    new CallerMock<>(assetsUsagService)));
 
         when(assetUsagesDisplayerView.getDefaultMessageContainer()).thenReturn(mock(HTMLElement.class));
-        when(assetsUsagService.getAssetUsages(anyString(), any(), any())).thenReturn(assetUsages);
+        when(assetsUsagService.getAssetUsages(anyString(),
+                                              any(),
+                                              any())).thenReturn(assetUsages);
 
-        deletePopUpPresenter = spy(new DeletePopUpPresenter(deletePopUpView, toggleCommentPresenter));
+        deletePopUpPresenter = spy(new DeletePopUpPresenter(deletePopUpView,
+                                                            toggleCommentPresenter));
 
         presenter = new FormEditorPresenter(view,
                                             modelChangesDisplayer,

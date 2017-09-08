@@ -24,17 +24,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.kie.workbench.common.forms.editor.client.EditorFieldTypesProvider;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.model.DynamicModel;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.FieldType;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.model.HasFormModelProperties;
@@ -56,6 +61,16 @@ public class FormEditorHelper {
 
     protected Map<String, Pair<EditorFieldLayoutComponent, FieldDefinition>> unbindedFields = new HashMap<>();
 
+    protected Collection<FieldType> editorFieldTypes = new ArrayList<>();
+
+    @PostConstruct
+    public void init() {
+        Collection<SyncBeanDef<EditorFieldTypesProvider>> providers = IOC.getBeanManager().lookupBeans(EditorFieldTypesProvider.class);
+        providers.stream().map(SyncBeanDef::getInstance)
+                .sorted((EditorFieldTypesProvider providerA, EditorFieldTypesProvider providerB) -> providerA.getPriority() - providerB.getPriority())
+                .forEach((EditorFieldTypesProvider editorProvider) -> editorFieldTypes.addAll(editorProvider.getFieldTypes()));
+    }
+
     @Inject
     public FormEditorHelper(FieldManager fieldManager,
                             ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents) {
@@ -74,10 +89,10 @@ public class FormEditorHelper {
             return;
         }
 
-        for (String baseType : fieldManager.getBaseFieldTypes()) {
+        for (FieldType baseType : editorFieldTypes) {
             EditorFieldLayoutComponent layoutComponent = editorFieldLayoutComponents.get();
             if (layoutComponent != null) {
-                FieldDefinition field = fieldManager.getDefinitionByFieldTypeName(baseType);
+                FieldDefinition field = fieldManager.getDefinitionByFieldType(baseType);
                 field.setName(generateUnboundFieldName(field));
 
                 layoutComponent.init(content.getRenderingContext(),
@@ -197,7 +212,9 @@ public class FormEditorHelper {
     }
 
     public List<String> getCompatibleFieldTypes(FieldDefinition field) {
-        return new ArrayList<>(fieldManager.getCompatibleFields(field));
+        List<String> editorFieldTypeCodes = editorFieldTypes.stream().map(FieldType::getTypeName).collect(Collectors.toList());
+        return fieldManager.getCompatibleFields(field).stream().filter((fieldCode) -> editorFieldTypeCodes.contains(fieldCode))
+                .collect(Collectors.toList());
     }
 
     public FieldDefinition switchToField(FieldDefinition originalField,
