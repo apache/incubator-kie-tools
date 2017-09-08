@@ -17,8 +17,6 @@
 package org.kie.workbench.common.widgets.configresource.client.widget.unbound;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
@@ -40,7 +38,7 @@ public class AddImportPopup extends BaseModal {
 
     }
 
-    private static AddGlobalPopupBinder uiBinder = GWT.create( AddGlobalPopupBinder.class );
+    private static AddGlobalPopupBinder uiBinder = GWT.create(AddGlobalPopupBinder.class);
 
     @UiField
     FormGroup importTypeGroup;
@@ -53,55 +51,42 @@ public class AddImportPopup extends BaseModal {
 
     private Command callbackCommand;
 
-    private final Command okCommand = new Command() {
-        @Override
-        public void execute() {
-            onOKButtonClick();
-        }
-    };
+    private final Command okCommand = this::onOKButtonClick;
 
-    private final Command cancelCommand = new Command() {
-        @Override
-        public void execute() {
-            hide();
-        }
-    };
+    private final Command cancelCommand = this::hide;
 
-    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand,
-                                                                                      cancelCommand );
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons(okCommand,
+                                                                                     cancelCommand);
 
     public AddImportPopup() {
-        setTitle( ImportConstants.INSTANCE.addImportPopupTitle() );
+        setTitle(ImportConstants.INSTANCE.addImportPopupTitle());
 
-        add( new ModalBody() {{
-            add( uiBinder.createAndBindUi( AddImportPopup.this ) );
-        }} );
-        add( footer );
+        add(new ModalBody() {{
+            add(uiBinder.createAndBindUi(AddImportPopup.this));
+        }});
+        add(footer);
 
-        importTypeTextBox.addKeyPressHandler( new KeyPressHandler() {
-            @Override
-            public void onKeyPress( final KeyPressEvent event ) {
-                importTypeGroup.setValidationState( ValidationState.NONE );
-                importTypeHelpInline.setText( "" );
-            }
-        } );
+        importTypeTextBox.addKeyPressHandler((event) -> {
+            importTypeGroup.setValidationState(ValidationState.NONE);
+            importTypeHelpInline.setText("");
+        });
     }
 
     private void onOKButtonClick() {
         boolean hasError = false;
-        if ( importTypeTextBox.getText() == null || importTypeTextBox.getText().trim().isEmpty() ) {
-            importTypeGroup.setValidationState( ValidationState.ERROR );
-            importTypeHelpInline.setText( ImportConstants.INSTANCE.importTypeIsMandatory() );
+        if (importTypeTextBox.getText() == null || importTypeTextBox.getText().trim().isEmpty()) {
+            importTypeGroup.setValidationState(ValidationState.ERROR);
+            importTypeHelpInline.setText(ImportConstants.INSTANCE.importTypeIsMandatory());
             hasError = true;
         } else {
-            importTypeGroup.setValidationState( ValidationState.NONE );
+            importTypeGroup.setValidationState(ValidationState.NONE);
         }
 
-        if ( hasError ) {
+        if (hasError) {
             return;
         }
 
-        if ( callbackCommand != null ) {
+        if (callbackCommand != null) {
             callbackCommand.execute();
         }
         hide();
@@ -111,16 +96,15 @@ public class AddImportPopup extends BaseModal {
         return importTypeTextBox.getValue();
     }
 
-    public void setCommand( final Command callbackCommand ) {
+    public void setCommand(final Command callbackCommand) {
         this.callbackCommand = callbackCommand;
     }
 
     @Override
     public void show() {
-        importTypeTextBox.setText( "" );
-        importTypeGroup.setValidationState( ValidationState.NONE );
-        importTypeHelpInline.setText( "" );
+        importTypeTextBox.setText("");
+        importTypeGroup.setValidationState(ValidationState.NONE);
+        importTypeHelpInline.setText("");
         super.show();
     }
-
 }

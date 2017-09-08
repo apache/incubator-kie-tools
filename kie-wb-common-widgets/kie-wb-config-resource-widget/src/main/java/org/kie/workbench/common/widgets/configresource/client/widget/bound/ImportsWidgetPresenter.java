@@ -68,39 +68,43 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
         this.importTypes = checkNotNull("importTypes",
                                         importTypes);
 
-        internalFactTypes.clear();
-        externalFactTypes.clear();
-        modelFactTypes.clear();
+        getInternalFactTypes().clear();
+        getExternalFactTypes().clear();
+        getModelFactTypes().clear();
 
         //Get list of types within the package
         for (String importType : dmo.getInternalFactTypes()) {
-            internalFactTypes.add(new Import(importType.replaceAll("\\$",
-                                                                   ".")));
+            getInternalFactTypes().add(new Import(importType.replaceAll("\\$",
+                                                                        ".")));
         }
 
         //Get list of potential imports
         for (String importType : dmo.getExternalFactTypes()) {
-            externalFactTypes.add(new Import(importType.replaceAll("\\$",
-                                                                   ".")));
+            getExternalFactTypes().add(new Import(importType.replaceAll("\\$",
+                                                                        ".")));
         }
 
         //Remove internal imports from model's imports (this should never be the case, but it exists "in the wild")
-        modelFactTypes.addAll(importTypes.getImports());
-        modelFactTypes.removeAll(internalFactTypes);
+        getModelFactTypes().addAll(importTypes.getImports());
+        getModelFactTypes().removeAll(getInternalFactTypes());
 
-        view.setContent(internalFactTypes,
-                        externalFactTypes,
-                        modelFactTypes,
+        //Remove external imports that have already been imported
+        getExternalFactTypes().removeAll(getModelFactTypes());
+
+        view.setContent(getInternalFactTypes(),
+                        getExternalFactTypes(),
+                        getModelFactTypes(),
                         isReadOnly);
     }
 
     @Override
     public boolean isInternalImport(final Import importType) {
-        return internalFactTypes.contains(importType);
+        return getInternalFactTypes().contains(importType);
     }
 
     @Override
     public void onAddImport(final Import importType) {
+        getExternalFactTypes().remove(importType);
         importTypes.getImports().add(importType);
         dmo.filter();
 
@@ -111,6 +115,7 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
 
     @Override
     public void onRemoveImport(final Import importType) {
+        getExternalFactTypes().add(importType);
         importTypes.getImports().remove(importType);
         dmo.filter();
 
@@ -122,5 +127,17 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
     @Override
     public Widget asWidget() {
         return view.asWidget();
+    }
+
+    List<Import> getInternalFactTypes() {
+        return internalFactTypes;
+    }
+
+    List<Import> getExternalFactTypes() {
+        return externalFactTypes;
+    }
+
+    List<Import> getModelFactTypes() {
+        return modelFactTypes;
     }
 }

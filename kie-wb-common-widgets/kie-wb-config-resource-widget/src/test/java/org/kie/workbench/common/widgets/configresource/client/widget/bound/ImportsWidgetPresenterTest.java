@@ -38,16 +38,16 @@ import static org.mockito.Mockito.*;
 public class ImportsWidgetPresenterTest {
 
     @Mock
-    ImportsWidgetView view;
+    private ImportsWidgetView view;
 
     @Mock
-    Event<ImportAddedEvent> importAddedEvent;
+    private Event<ImportAddedEvent> importAddedEvent;
 
     @Mock
-    Event<ImportRemovedEvent> importRemovedEvent;
+    private Event<ImportRemovedEvent> importRemovedEvent;
 
     @Mock
-    AsyncPackageDataModelOracle dmo;
+    private AsyncPackageDataModelOracle dmo;
 
     @Captor
     private ArgumentCaptor<List<Import>> internalFactTypesCaptor;
@@ -64,26 +64,26 @@ public class ImportsWidgetPresenterTest {
     @Captor
     private ArgumentCaptor<ImportRemovedEvent> importRemovedEventCaptor;
 
+    private ImportsWidgetPresenter presenter;
+
     @Before
     public void setup() {
         when(dmo.getInternalFactTypes()).thenReturn(new String[]{"Internal1", "Internal2", "Internal3"});
         when(dmo.getExternalFactTypes()).thenReturn(new String[]{"org.pkg1.External1", "org.pkg1.External2", "org.pkg1.External3"});
+
+        this.presenter = new ImportsWidgetPresenter(view,
+                                                    importAddedEvent,
+                                                    importRemovedEvent);
     }
 
     @Test
     public void testSetup() {
-        final ImportsWidgetPresenter presenter = new ImportsWidgetPresenter(view,
-                                                                            importAddedEvent,
-                                                                            importRemovedEvent);
         verify(view,
                times(1)).init(presenter);
     }
 
     @Test
     public void testSetContent() {
-        final ImportsWidgetPresenter presenter = new ImportsWidgetPresenter(view,
-                                                                            importAddedEvent,
-                                                                            importRemovedEvent);
         final Imports imports = new Imports();
         imports.addImport(new Import("Internal1"));
 
@@ -125,26 +125,59 @@ public class ImportsWidgetPresenterTest {
     }
 
     @Test
+    public void testSetContentWithExternalImport() {
+        final Imports imports = new Imports();
+        imports.addImport(new Import("org.pkg1.External1"));
+
+        presenter.setContent(dmo,
+                             imports,
+                             false);
+
+        verify(view,
+               times(1)).setContent(internalFactTypesCaptor.capture(),
+                                    externalFactTypesCaptor.capture(),
+                                    importsFactTypesCaptor.capture(),
+                                    eq(false));
+
+        assertEquals(3,
+                     internalFactTypesCaptor.getValue().size());
+        assertContains("Internal1",
+                       internalFactTypesCaptor.getValue());
+        assertContains("Internal2",
+                       internalFactTypesCaptor.getValue());
+        assertContains("Internal3",
+                       internalFactTypesCaptor.getValue());
+
+        assertEquals(2,
+                     externalFactTypesCaptor.getValue().size());
+        assertContains("org.pkg1.External2",
+                       externalFactTypesCaptor.getValue());
+        assertContains("org.pkg1.External3",
+                       externalFactTypesCaptor.getValue());
+
+        assertEquals(1,
+                     importsFactTypesCaptor.getValue().size());
+        assertContains("org.pkg1.External1",
+                       importsFactTypesCaptor.getValue());
+
+        assertEquals(1,
+                     imports.getImports().size());
+        assertContains("org.pkg1.External1",
+                       imports.getImports());
+    }
+
+    @Test
     public void isInternalImportWithoutSetup() {
-        final ImportsWidgetPresenter presenter = new ImportsWidgetPresenter(view,
-                                                                            importAddedEvent,
-                                                                            importRemovedEvent);
         assertFalse(presenter.isInternalImport(mock(Import.class)));
     }
 
     @Test
     public void isInternalImportWithoutSetupNullImportType() {
-        final ImportsWidgetPresenter presenter = new ImportsWidgetPresenter(view,
-                                                                            importAddedEvent,
-                                                                            importRemovedEvent);
         assertFalse(presenter.isInternalImport(null));
     }
 
     @Test
     public void isInternalImportInternalImportType() {
-        final ImportsWidgetPresenter presenter = new ImportsWidgetPresenter(view,
-                                                                            importAddedEvent,
-                                                                            importRemovedEvent);
         final Imports imports = new Imports();
         final Import importType = new Import("Internal1");
         imports.addImport(importType);
@@ -158,9 +191,6 @@ public class ImportsWidgetPresenterTest {
 
     @Test
     public void isInternalImportExternalImportType() {
-        final ImportsWidgetPresenter presenter = new ImportsWidgetPresenter(view,
-                                                                            importAddedEvent,
-                                                                            importRemovedEvent);
         final Imports imports = new Imports();
         final Import importType = new Import("External1");
         imports.addImport(importType);
@@ -169,14 +199,11 @@ public class ImportsWidgetPresenterTest {
                              imports,
                              false);
 
-        assertFalse(presenter.isInternalImport(mock(Import.class)));
+        assertFalse(presenter.isInternalImport(importType));
     }
 
     @Test
     public void testOnImportAdded() {
-        final ImportsWidgetPresenter presenter = new ImportsWidgetPresenter(view,
-                                                                            importAddedEvent,
-                                                                            importRemovedEvent);
         final Imports imports = new Imports();
         imports.addImport(new Import("Internal1"));
 
@@ -200,10 +227,25 @@ public class ImportsWidgetPresenterTest {
     }
 
     @Test
+    public void testOnImportAddedExternal() {
+        final Imports imports = new Imports();
+
+        presenter.setContent(dmo,
+                             imports,
+                             false);
+
+        presenter.onAddImport(new Import("org.pkg1.External1"));
+
+        assertEquals(1,
+                     imports.getImports().size());
+        assertContains("org.pkg1.External1",
+                       imports.getImports());
+        assertNotContains("org.pkg1.External1",
+                          presenter.getExternalFactTypes());
+    }
+
+    @Test
     public void testOnImportRemoved() {
-        final ImportsWidgetPresenter presenter = new ImportsWidgetPresenter(view,
-                                                                            importAddedEvent,
-                                                                            importRemovedEvent);
         final Imports imports = new Imports();
         imports.addImport(new Import("Internal1"));
 
@@ -222,13 +264,43 @@ public class ImportsWidgetPresenterTest {
                      importRemovedEventCaptor.getValue().getImport().getType());
     }
 
+    @Test
+    public void testOnImportRemovedExternal() {
+        final Imports imports = new Imports();
+        imports.addImport(new Import("org.pkg1.External1"));
+
+        presenter.setContent(dmo,
+                             imports,
+                             false);
+
+        presenter.onRemoveImport(new Import("org.pkg1.External1"));
+
+        assertEquals(0,
+                     imports.getImports().size());
+
+        assertContains("org.pkg1.External1",
+                       presenter.getExternalFactTypes());
+    }
+
     private static void assertContains(final String factType,
                                        final List<Import> factTypes) {
-        for (Import i : factTypes) {
-            if (i.getType().equals(factType)) {
-                return;
-            }
-        }
-        fail("Expected Fact Type '" + factType + "' was not found.");
+        assertTrue("Expected Fact Type '" + factType + "' was not found.",
+                   factTypes
+                           .stream()
+                           .map(Import::getType)
+                           .filter(t -> t.equals(factType))
+                           .findAny()
+                           .isPresent());
+    }
+
+    private static void assertNotContains(final String factType,
+                                          final List<Import> factTypes) {
+        assertFalse("Fact Type '" + factType + "' was found but was not expected.",
+                    factTypes
+                            .stream()
+                            .map(Import::getType)
+                            .filter(t -> t.equals(factType))
+                            .findAny()
+                            .isPresent());
     }
 }

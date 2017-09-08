@@ -18,9 +18,9 @@ package org.kie.workbench.common.widgets.configresource.client.widget.unbound;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -30,7 +30,6 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -43,8 +42,11 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
+import org.kie.workbench.common.widgets.configresource.client.widget.Sorters;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
+import org.uberfire.mvp.ParameterizedCommand;
 
 public class ImportsWidgetViewImpl
         extends Composite
@@ -55,121 +57,147 @@ public class ImportsWidgetViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create( Binder.class );
+    private static Binder uiBinder = GWT.create(Binder.class);
 
     @UiField
     Button addImportButton;
 
     @UiField(provided = true)
-    CellTable<Import> table = new CellTable<Import>();
+    CellTable<Import> table = new CellTable<>();
 
-    @Inject
     private AddImportPopup addImportPopup;
-
-    @Inject
     private javax.enterprise.event.Event<LockRequiredEvent> lockRequired;
 
-    private List<Import> importTypes = new ArrayList<Import>();
-    private ListDataProvider<Import> dataProvider = new ListDataProvider<Import>();
+    private List<Import> importTypes = new ArrayList<>();
+    private ListDataProvider<Import> dataProvider = new ListDataProvider<>();
     private final Command addImportCommand = makeAddImportCommand();
+    private final ParameterizedCommand<Import> removeImportCommand = makeRemoveImportCommand();
 
     private ImportsWidgetView.Presenter presenter;
 
     private boolean isReadOnly = false;
 
     public ImportsWidgetViewImpl() {
+        //CDI proxy
+    }
+
+    @Inject
+    public ImportsWidgetViewImpl(final AddImportPopup addImportPopup,
+                                 final Event<LockRequiredEvent> lockRequired) {
+        this.addImportPopup = addImportPopup;
+        this.lockRequired = lockRequired;
+
         setup();
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
         //Disable until content is loaded
-        addImportButton.setEnabled( false );
+        addImportButton.setEnabled(false);
     }
 
     private void setup() {
         //Setup table
-        table.setStriped( true );
-        table.setCondensed( true );
-        table.setBordered( true );
-        table.setEmptyTableWidget( new Label( ImportConstants.INSTANCE.noImportsDefined() ) );
+        table.setStriped(true);
+        table.setCondensed(true);
+        table.setBordered(true);
+        table.setEmptyTableWidget(new Label(ImportConstants.INSTANCE.noImportsDefined()));
 
         //Columns
         final TextColumn<Import> importTypeColumn = new TextColumn<Import>() {
 
             @Override
-            public String getValue( final Import importType ) {
+            public String getValue(final Import importType) {
                 return importType.getType();
             }
         };
 
-        final ButtonCell deleteImportButton = new ButtonCell( IconType.TRASH, ButtonType.DANGER, ButtonSize.SMALL );
-        final Column<Import, String> deleteImportColumn = new Column<Import, String>( deleteImportButton ) {
+        final ButtonCell deleteImportButton = new ButtonCell(IconType.TRASH,
+                                                             ButtonType.DANGER,
+                                                             ButtonSize.SMALL);
+        final Column<Import, String> deleteImportColumn = new Column<Import, String>(deleteImportButton) {
             @Override
-            public String getValue( final Import importType ) {
+            public String getValue(final Import importType) {
                 return ImportConstants.INSTANCE.remove();
             }
         };
-        deleteImportColumn.setFieldUpdater( new FieldUpdater<Import, String>() {
-            public void update( final int index,
-                                final Import importType,
-                                final String value ) {
-                if ( isReadOnly ) {
-                    return;
-                }
-                if ( Window.confirm( ImportConstants.INSTANCE.promptForRemovalOfImport0( importType.getType() ) ) ) {
-                    dataProvider.getList().remove( index );
-                }
+        deleteImportColumn.setFieldUpdater((index, importType, value) -> {
+            if (isReadOnly) {
+                return;
             }
-        } );
+            final YesNoCancelPopup confirm = YesNoCancelPopup.newYesNoCancelPopup(ImportConstants.INSTANCE.remove(),
+                                                                                  ImportConstants.INSTANCE.promptForRemovalOfImport0(importType.getType()),
+                                                                                  () -> getRemoveImportCommand().execute(importType),
+                                                                                  () -> {/*Nothing*/},
+                                                                                  null);
+            confirm.show();
+        });
 
-        table.addColumn( importTypeColumn,
-                         new TextHeader( ImportConstants.INSTANCE.importType() ) );
-        table.addColumn( deleteImportColumn,
-                         ImportConstants.INSTANCE.remove() );
+        table.addColumn(importTypeColumn,
+                        new TextHeader(ImportConstants.INSTANCE.importType()));
+        table.addColumn(deleteImportColumn,
+                        ImportConstants.INSTANCE.remove());
 
         //Link data
-        dataProvider.addDataDisplay( table );
-        dataProvider.setList( importTypes );
+        getDataProvider().addDataDisplay(table);
+        getDataProvider().setList(importTypes);
     }
 
     @Override
-    public void init( final ImportsWidgetView.Presenter presenter ) {
+    public void init(final ImportsWidgetView.Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setContent( final List<Import> importTypes,
-                            final boolean isReadOnly ) {
+    public void setContent(final List<Import> importTypes,
+                           final boolean isReadOnly) {
         this.importTypes = importTypes;
-        this.dataProvider.setList( importTypes );
-        this.addImportButton.setEnabled( !isReadOnly );
+        this.getDataProvider().setList(importTypes);
+        this.getDataProvider().getList().sort(Sorters.sortByFQCN());
+        this.addImportButton.setEnabled(!isReadOnly);
         this.isReadOnly = isReadOnly;
     }
 
     @UiHandler("addImportButton")
-    public void onClickAddImportButton( final ClickEvent event ) {
-        addImportPopup.setCommand( addImportCommand );
+    public void onClickAddImportButton(final ClickEvent event) {
+        addImportPopup.setCommand(addImportCommand);
         addImportPopup.show();
     }
 
-    private Command makeAddImportCommand() {
-        return new Command() {
-
-            @Override
-            public void execute() {
-                final Import importType = new Import( addImportPopup.getImportType() );
-                dataProvider.getList().add( importType );
-                lockRequired.fire( new LockRequiredEvent() );
-            }
-        };
-    }
-
     @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
+    public void showBusyIndicator(final String message) {
+        BusyPopup.showMessage(message);
     }
 
     @Override
     public void hideBusyIndicator() {
         BusyPopup.close();
+    }
+
+    Command makeAddImportCommand() {
+        return () -> {
+            final Import importType = new Import(addImportPopup.getImportType());
+            getDataProvider().getList().add(importType);
+            getDataProvider().getList().sort(Sorters.sortByFQCN());
+            lockRequired.fire(new LockRequiredEvent());
+        };
+    }
+
+    Command getAddImportCommand() {
+        return addImportCommand;
+    }
+
+    ParameterizedCommand<Import> makeRemoveImportCommand() {
+        return (i) -> {
+            getDataProvider().getList().remove(i);
+            getDataProvider().getList().sort(Sorters.sortByFQCN());
+            lockRequired.fire(new LockRequiredEvent());
+        };
+    }
+
+    ParameterizedCommand<Import> getRemoveImportCommand() {
+        return removeImportCommand;
+    }
+
+    ListDataProvider<Import> getDataProvider() {
+        return dataProvider;
     }
 }

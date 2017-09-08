@@ -29,14 +29,12 @@ public interface ImportsWidgetView
 
     interface Presenter {
 
-        void setContent( final ProjectImports importTypes,
-                         final boolean isReadOnly );
+        void setContent(final ProjectImports importTypes,
+                        final boolean isReadOnly);
 
         Widget asWidget();
-
     }
 
-    void setContent( final List<Import> importTypes,
-                     final boolean isReadOnly );
-
+    void setContent(final List<Import> importTypes,
+                    final boolean isReadOnly);
 }

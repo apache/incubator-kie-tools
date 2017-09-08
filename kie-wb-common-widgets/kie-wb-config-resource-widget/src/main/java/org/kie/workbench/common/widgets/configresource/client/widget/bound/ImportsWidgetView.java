@@ -44,6 +44,6 @@ public interface ImportsWidgetView
 
     void setContent(final List<Import> internalFactTypes,
                     final List<Import> externalFactTypes,
-                    final List<Import> importTypes,
+                    final List<Import> modelFactTypes,
                     final boolean isReadOnly);
 }

@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.ProjectImports;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class ImportsWidgetPresenter
         implements ImportsWidgetView.Presenter,
@@ -34,24 +34,23 @@ public class ImportsWidgetPresenter
     }
 
     @Inject
-    public ImportsWidgetPresenter( final ImportsWidgetView view ) {
+    public ImportsWidgetPresenter(final ImportsWidgetView view) {
         this.view = view;
-        view.init( this );
+        view.init(this);
     }
 
     @Override
-    public void setContent( final ProjectImports importTypes,
-                            final boolean isReadOnly ) {
-        checkNotNull( "importTypes",
-                      importTypes );
+    public void setContent(final ProjectImports importTypes,
+                           final boolean isReadOnly) {
+        checkNotNull("importTypes",
+                     importTypes);
 
-        view.setContent( importTypes.getImports().getImports(),
-                         isReadOnly );
+        view.setContent(importTypes.getImports().getImports(),
+                        isReadOnly);
     }
 
     @Override
     public Widget asWidget() {
         return view.asWidget();
     }
-
 }
