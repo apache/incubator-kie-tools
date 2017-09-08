@@ -16,11 +16,17 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
+import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
 import org.guvnor.common.services.project.events.NewProjectEvent;
+import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -30,6 +36,7 @@ import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.widgets.client.callbacks.CommandWithThrowableDrivenErrorCallback;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -78,6 +85,8 @@ public class NewProjectScreen {
 
     private LibraryPreferences libraryPreferences;
 
+    private ConflictingRepositoriesPopup conflictingRepositoriesPopup;
+
     LibraryInfo libraryInfo;
 
     @Inject
@@ -89,7 +98,8 @@ public class NewProjectScreen {
                             final View view,
                             final SessionInfo sessionInfo,
                             final Event<NewProjectEvent> newProjectEvent,
-                            final LibraryPreferences libraryPreferences) {
+                            final LibraryPreferences libraryPreferences,
+                            final ConflictingRepositoriesPopup conflictingRepositoriesPopup) {
         this.libraryService = libraryService;
         this.placeManager = placeManager;
         this.busyIndicatorView = busyIndicatorView;
@@ -99,6 +109,7 @@ public class NewProjectScreen {
         this.sessionInfo = sessionInfo;
         this.newProjectEvent = newProjectEvent;
         this.libraryPreferences = libraryPreferences;
+        this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;
     }
 
     @OnStartup
@@ -126,17 +137,27 @@ public class NewProjectScreen {
 
     public void createProject(final String projectName,
                               final String projectDescription) {
+        createProject(projectName,
+                      projectDescription,
+                      DeploymentMode.VALIDATED);
+    }
+
+    private void createProject(final String projectName,
+                               final String projectDescription,
+                               final DeploymentMode mode) {
         busyIndicatorView.showBusyIndicator(view.getCreatingProjectMessage());
 
         validateFields(projectName,
                        projectDescription,
                        () -> {
                            libraryService.call(getSuccessCallback(),
-                                               getErrorCallBack()).createProject(projectName,
-                                                                                 libraryPlaces.getSelectedOrganizationalUnit(),
-                                                                                 libraryPlaces.getSelectedRepository(),
-                                                                                 getBaseURL(),
-                                                                                 projectDescription);
+                                               getErrorCallback(projectName,
+                                                                projectDescription)).createProject(projectName,
+                                                                                                   libraryPlaces.getSelectedOrganizationalUnit(),
+                                                                                                   libraryPlaces.getSelectedRepository(),
+                                                                                                   getBaseURL(),
+                                                                                                   projectDescription,
+                                                                                                   mode);
                        });
     }
 
@@ -167,20 +188,40 @@ public class NewProjectScreen {
         };
     }
 
-    private ErrorCallback<?> getErrorCallBack() {
-        return (o, throwable) -> {
-            hideLoadingBox();
+    private ErrorCallback<?> getErrorCallback(final String projectName,
+                                              final String projectDescription) {
 
-            if (isDuplicatedProjectName(throwable)) {
-                notificationEvent.fire(new NotificationEvent(view.getDuplicatedProjectMessage(),
-                                                             NotificationEvent.NotificationType.ERROR));
-                return false;
-            }
+        Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> errors = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
+            put(GAVAlreadyExistsException.class,
+                parameter -> {
+                    libraryService.call((GAV gav) -> {
+                        hideLoadingBox();
+                        conflictingRepositoriesPopup.setContent(gav,
+                                                                ((GAVAlreadyExistsException) parameter).getRepositories(),
+                                                                () -> {
+                                                                    conflictingRepositoriesPopup.hide();
+                                                                    createProject(projectName,
+                                                                                  projectDescription,
+                                                                                  DeploymentMode.FORCED);
+                                                                });
+                        conflictingRepositoriesPopup.show();
+                    }).createGAV(projectName,
+                                 libraryPlaces.getSelectedOrganizationalUnit());
+                });
+            put(FileAlreadyExistsException.class,
+                parameter -> {
+                    hideLoadingBox();
+                    notificationEvent.fire(new NotificationEvent(view.getDuplicatedProjectMessage(),
+                                                                 NotificationEvent.NotificationType.ERROR));
+                });
+        }};
 
-            notificationEvent.fire(new NotificationEvent(view.getInvalidNameMessage(),
-                                                         NotificationEvent.NotificationType.ERROR));
-            return false;
-        };
+        return createErrorCallback(errors);
+    }
+
+    ErrorCallback<?> createErrorCallback(Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> errors) {
+        return new CommandWithThrowableDrivenErrorCallback(busyIndicatorView,
+                                                           errors);
     }
 
     boolean isDuplicatedProjectName(Throwable throwable) {

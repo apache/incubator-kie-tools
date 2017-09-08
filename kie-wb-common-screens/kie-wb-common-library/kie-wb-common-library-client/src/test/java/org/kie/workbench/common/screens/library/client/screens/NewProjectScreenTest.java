@@ -18,11 +18,12 @@ package org.kie.workbench.common.screens.library.client.screens;
 import java.util.ArrayList;
 import javax.enterprise.event.Event;
 
+import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
 import org.guvnor.common.services.project.events.NewProjectEvent;
+import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,6 +75,9 @@ public class NewProjectScreenTest {
     @Mock
     private LibraryPreferences libraryPreferences;
 
+    @Mock
+    private ConflictingRepositoriesPopup conflictingRepositoriesPopup;
+
     private NewProjectScreen newProjectScreen;
 
     private LibraryInfo libraryInfo;
@@ -95,7 +99,8 @@ public class NewProjectScreenTest {
                                                     view,
                                                     sessionInfo,
                                                     newProjectEvent,
-                                                    libraryPreferences));
+                                                    libraryPreferences,
+                                                    conflictingRepositoriesPopup));
 
         doReturn("baseUrl").when(newProjectScreen).getBaseURL();
 
@@ -140,7 +145,8 @@ public class NewProjectScreenTest {
                                              organizationalUnit,
                                              repository,
                                              "baseUrl",
-                                             "description");
+                                             "description",
+                                             DeploymentMode.VALIDATED);
     }
 
     @Test
@@ -174,35 +180,13 @@ public class NewProjectScreenTest {
     }
 
     @Test
-    public void createProjectWithInvalidProjectNameTest() {
-        doThrow(new RuntimeException()).when(libraryService).createProject(anyString(),
-                                                                           any(),
-                                                                           any(Repository.class),
-                                                                           anyString(),
-                                                                           anyString());
-
-        newProjectScreen.createProject("projectName",
-                                       "description");
-
-        verify(busyIndicatorView).showBusyIndicator(anyString());
-        verify(newProjectEvent,
-               never()).fire(any(NewProjectEvent.class));
-        verify(busyIndicatorView).hideBusyIndicator();
-        verify(notificationEvent).fire(new NotificationEvent(view.getInvalidNameMessage(),
-                                                             NotificationEvent.NotificationType.ERROR));
-        verify(libraryPlaces,
-               never()).goToProject(any(ProjectInfo.class));
-        verify(placeManager,
-               never()).closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
-    }
-
-    @Test
     public void createProjectWithDuplicatedNameTest() {
         doThrow(new FileAlreadyExistsException()).when(libraryService).createProject(anyString(),
                                                                                      any(),
                                                                                      any(Repository.class),
                                                                                      anyString(),
-                                                                                     anyString());
+                                                                                     anyString(),
+                                                                                     any());
         doAnswer(invocationOnMock -> ((Throwable) invocationOnMock.getArguments()[0]).getCause() instanceof FileAlreadyExistsException)
                 .when(newProjectScreen).isDuplicatedProjectName(any());
 
@@ -220,5 +204,4 @@ public class NewProjectScreenTest {
         verify(placeManager,
                never()).closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
     }
-
 }

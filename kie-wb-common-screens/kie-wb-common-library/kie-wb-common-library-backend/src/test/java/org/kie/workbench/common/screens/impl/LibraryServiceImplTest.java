@@ -27,6 +27,7 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
@@ -279,12 +280,13 @@ public class LibraryServiceImplTest {
                                      organizationalUnit,
                                      repository,
                                      "baseURL",
-                                     "description");
+                                     "description",
+                                     DeploymentMode.VALIDATED);
 
         verify(kieProjectService).newProject(eq(projectRootPath),
                                              pomArgumentCaptor.capture(),
                                              eq("baseURL"),
-                                             any());
+                                             eq(DeploymentMode.VALIDATED));
 
         final POM pom = pomArgumentCaptor.getValue();
         assertEquals("ouGroupID",
@@ -581,7 +583,6 @@ public class LibraryServiceImplTest {
         when(preferences.getProjectPreferences().getDescription()).thenReturn("desc");
 
         GAV gav = libraryService.createGAV("proj",
-                                           preferences,
                                            organizationalUnit);
         POM proj = libraryService.createPOM("proj",
                                             "description",
@@ -603,7 +604,6 @@ public class LibraryServiceImplTest {
         when(preferences.getProjectPreferences().getVersion()).thenReturn("1.0");
 
         GAV gav = libraryService.createGAV("proj",
-                                           preferences,
                                            organizationalUnit);
 
         assertEquals(organizationalUnit.getDefaultGroupId(),

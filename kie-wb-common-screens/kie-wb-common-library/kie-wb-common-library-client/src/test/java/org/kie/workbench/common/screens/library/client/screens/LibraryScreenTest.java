@@ -150,6 +150,10 @@ public class LibraryScreenTest {
                      libraryScreen.projects.size());
         assertEquals(1,
                      libraryScreen.filterProjects("project1").size());
+        assertEquals(1,
+                     libraryScreen.filterProjects("roject1").size());
+        assertEquals(0,
+                     libraryScreen.filterProjects("unexistent").size());
     }
 
     @Test
@@ -158,5 +162,17 @@ public class LibraryScreenTest {
 
         verify(view).setFilterName("name");
         verify(libraryScreen).filterProjects("name");
+    }
+
+    @Test
+    public void projectsAreNotNullAfterInjection() {
+        final LibraryScreen libraryScreen = spy(new LibraryScreen(view,
+                                                                  placeManager,
+                                                                  libraryPlaces,
+                                                                  projectDetailEvent,
+                                                                  libraryServiceCaller,
+                                                                  projectController));
+
+        assertNotNull(libraryScreen.projects);
     }
 }

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
@@ -86,6 +87,7 @@ public class LibraryScreen {
         this.projectDetailEvent = projectDetailEvent;
         this.libraryService = libraryService;
         this.projectController = projectController;
+        this.projects = Collections.emptyList();
     }
 
     @PostConstruct
@@ -119,7 +121,7 @@ public class LibraryScreen {
 
     public List<Project> filterProjects(final String filter) {
         List<Project> filteredProjects = projects.stream()
-                .filter(p -> p.getProjectName().toUpperCase().startsWith(filter.toUpperCase()))
+                .filter(p -> p.getProjectName().toUpperCase().contains(filter.toUpperCase()))
                 .collect(Collectors.toList());
 
         updateView(filteredProjects);

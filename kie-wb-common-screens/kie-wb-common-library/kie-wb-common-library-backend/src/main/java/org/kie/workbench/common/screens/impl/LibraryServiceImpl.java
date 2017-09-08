@@ -167,17 +167,15 @@ public class LibraryServiceImpl implements LibraryService {
                                     final OrganizationalUnit selectedOrganizationalUnit,
                                     final Repository selectedRepository,
                                     final String baseURL,
-                                    final String projectDescription) {
+                                    final String projectDescription,
+                                    final DeploymentMode mode) {
         final Path selectedRepositoryRootPath = selectedRepository.getRoot();
-        final LibraryPreferences preferences = getPreferences();
 
         final GAV gav = createGAV(projectName,
-                                  preferences,
                                   selectedOrganizationalUnit);
         final POM pom = createPOM(projectName,
                                   projectDescription,
                                   gav);
-        final DeploymentMode mode = DeploymentMode.VALIDATED;
 
         final KieProject kieProject = kieProjectService.newProject(selectedRepositoryRootPath,
                                                                    pom,
@@ -318,6 +316,16 @@ public class LibraryServiceImpl implements LibraryService {
         return new ArrayList<>(ouService.getOrganizationalUnits());
     }
 
+    @Override
+    public GAV createGAV(final String projectName,
+                         final OrganizationalUnit selectedOrganizationalUnit) {
+        final LibraryPreferences preferences = getPreferences();
+        return new GAV(selectedOrganizationalUnit.getDefaultGroupId(),
+                       projectName.replace(" ",
+                                           ""),
+                       preferences.getProjectPreferences().getVersion());
+    }
+
     LibraryPreferences getPreferences() {
         preferences.load();
         return preferences;
@@ -334,15 +342,6 @@ public class LibraryServiceImpl implements LibraryService {
         return new POM(projectName,
                        projectDescription,
                        gav);
-    }
-
-    GAV createGAV(final String projectName,
-                  final LibraryPreferences preferences,
-                  final OrganizationalUnit selectedOrganizationalUnit) {
-        return new GAV(selectedOrganizationalUnit.getDefaultGroupId(),
-                       projectName.replace(" ",
-                                           ""),
-                       preferences.getProjectPreferences().getVersion());
     }
 
     private Optional<Object> getAttribute(final String attribute,

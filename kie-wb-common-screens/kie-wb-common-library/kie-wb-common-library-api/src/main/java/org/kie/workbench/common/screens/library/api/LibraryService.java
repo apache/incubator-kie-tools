@@ -19,7 +19,9 @@ package org.kie.workbench.common.screens.library.api;
 import java.util.List;
 import java.util.Set;
 
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.server.annotations.Remote;
@@ -43,7 +45,8 @@ public interface LibraryService {
                              final OrganizationalUnit selectedOrganizationalUnit,
                              final Repository selectedRepository,
                              final String baseURL,
-                             final String projectDescription);
+                             final String projectDescription,
+                             final DeploymentMode mode);
 
     Boolean thereIsAProjectInTheWorkbench();
 
@@ -64,4 +67,7 @@ public interface LibraryService {
     Project importProject(final ExampleProject exampleProject);
 
     List<OrganizationalUnit> getOrganizationalUnits();
+
+    GAV createGAV(final String projectName,
+                  final OrganizationalUnit selectedOrganizationalUnit);
 }
