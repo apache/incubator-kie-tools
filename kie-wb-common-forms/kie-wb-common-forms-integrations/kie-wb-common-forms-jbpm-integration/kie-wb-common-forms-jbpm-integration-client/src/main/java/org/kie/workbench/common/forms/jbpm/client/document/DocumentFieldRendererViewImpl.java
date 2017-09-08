@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style;
@@ -43,6 +44,7 @@ import org.uberfire.ext.widgets.common.client.common.FileUploadFormEncoder;
 
 @Templated
 public class DocumentFieldRendererViewImpl extends Composite implements DocumentFieldRendererView {
+    public static String UPLOAD_FILE_SERVLET_URL_PATTERN = "documentUploadServlet";
 
     public final String SIZE_UNITS[] = new String[]{"bytes", "Kb", "Mb"};
 
@@ -54,9 +56,9 @@ public class DocumentFieldRendererViewImpl extends Composite implements Document
     protected DivElement inputContainer = Document.get().createDivElement();
 
     @DataField
-    protected Form documentForm = new Form();
+    protected Form documentForm = GWT.create(Form.class);
 
-    private FileUploadFormEncoder formEncoder = new FileUploadFormEncoder();
+    private FileUploadFormEncoder formEncoder = GWT.create(FileUploadFormEncoder.class);
 
     protected FileUpload uploader;
 
@@ -79,7 +81,7 @@ public class DocumentFieldRendererViewImpl extends Composite implements Document
         uploader.setName("document");
         documentForm.setEncoding(FormPanel.ENCODING_MULTIPART);
         documentForm.setMethod(FormPanel.METHOD_POST);
-        documentForm.setAction("/documentUploadServlet");
+        documentForm.setAction(UPLOAD_FILE_SERVLET_URL_PATTERN);
         formEncoder.addUtf8Charset(documentForm);
         documentForm.add(uploader);
         documentForm.addSubmitCompleteHandler(event -> {
