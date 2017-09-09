@@ -672,22 +672,25 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
     @Override
     public void dragEnd()
     {
-        m_isDragging = false;
-
-        m_alignAndDistributeMatchesCallback.dragEnd();
-
-        // We do not want the nested indexed shapes to impact the bounding box
-        // so remove them, they will be added once the index has been made.
-        List<ShapePair> pairs = new ArrayList<ShapePair>();
-        removeChildrenIfIndexed(m_group, pairs);
-
-        indexOn(m_group);
-
-        // re-add the children, index before it adds the next nested child
-        for (ShapePair pair : pairs)
+        if (m_isDragging)
         {
-            pair.parent.add(pair.child);
-            indexOn(pair.handler);
+            m_isDragging = false;
+
+            m_alignAndDistributeMatchesCallback.dragEnd();
+
+            // We do not want the nested indexed shapes to impact the bounding box
+            // so remove them, they will be added once the index has been made.
+            List<ShapePair> pairs = new ArrayList<ShapePair>();
+            removeChildrenIfIndexed(m_group, pairs);
+
+            indexOn(m_group);
+
+            // re-add the children, index before it adds the next nested child
+            for (ShapePair pair : pairs)
+            {
+                pair.parent.add(pair.child);
+                indexOn(pair.handler);
+            }
         }
     }
 

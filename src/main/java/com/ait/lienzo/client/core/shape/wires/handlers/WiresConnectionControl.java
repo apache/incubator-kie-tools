@@ -10,8 +10,7 @@ package com.ait.lienzo.client.core.shape.wires.handlers;
  * user interaction behaviours rather than defaults.
  *
  */
-public interface WiresConnectionControl extends DragControl
+public interface WiresConnectionControl extends WiresMoveControl
 {
-
 
 }

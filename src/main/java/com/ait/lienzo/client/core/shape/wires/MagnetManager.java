@@ -31,6 +31,7 @@ import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.ColorKeyRotor;
 import com.ait.lienzo.client.core.types.ImageData;
@@ -237,7 +238,7 @@ public class MagnetManager
         this.m_ctrlSize = m_ctrlSize;
     }
 
-    private static Point2DArray getWiresIntersectionPoints(final WiresShape wiresShape, Direction[] requestedCardinals)
+    public static Point2DArray getWiresIntersectionPoints(final WiresShape wiresShape, Direction[] requestedCardinals)
     {
         return Geometry.getCardinalIntersects(wiresShape.getPath(), requestedCardinals);
     }
@@ -290,17 +291,12 @@ public class MagnetManager
             return m_wiresShape;
         }
 
-        public IPrimitive<?> getPrimTarget()
-        {
-            return getGroup();
-        }
-
         @Override
         public void onAttributesChanged(AttributesChangedEvent event)
         {
             if (!m_isDragging && event.any(Attribute.X, Attribute.Y))
             {
-                shapeMoved();
+                getControl().shapeMoved();
             }
         }
 
@@ -314,51 +310,13 @@ public class MagnetManager
         public void onNodeDragEnd(NodeDragEndEvent event)
         {
             m_isDragging = false;
-            shapeMoved();
+            getControl().shapeMoved();
         }
 
         @Override
         public void onNodeDragMove(NodeDragMoveEvent event)
         {
-            shapeMoved();
-        }
-
-        public void shapeMoved()
-        {
-            IPrimitive<?> prim = getPrimTarget();
-            Point2D absLoc = prim.getComputedLocation();
-            double x = absLoc.getX();
-            double y = absLoc.getY();
-            shapeMoved(x, y);
-        }
-
-        private void shapeMoved(final double x, final double y)
-        {
-            for (int i = 0; i < m_list.size(); i++)
-            {
-                WiresMagnet m = (WiresMagnet) m_list.getHandle(i);
-                m.shapeMoved(x, y);
-            }
-
-            batch();
-        }
-
-        public void shapeChanged()
-        {
-            if (m_list.isEmpty() )
-            {
-                return;
-            }
-            Direction[] cardinals = m_list.size() == 9 ? EIGHT_CARDINALS: FOUR_CARDINALS;
-            final Point2DArray points = MagnetManager.getWiresIntersectionPoints(m_wiresShape, cardinals);
-            final int size = m_list.size() <= points.size() ? m_list.size() : points.size();
-            for (int i = 0; i < size; i++)
-            {
-                Point2D p = points.get(i);
-                WiresMagnet m = (WiresMagnet) m_list.getHandle(i);
-                m.setRx(p.getX()).setRy(p.getY());
-            }
-            this.shapeMoved();
+            getControl().shapeMoved();
         }
 
         public void show()
@@ -410,6 +368,10 @@ public class MagnetManager
         public WiresMagnet getMagnet(int index)
         {
             return (WiresMagnet) m_list.getHandle(index);
+        }
+
+        private WiresMagnetsControl getControl() {
+            return getWiresShape().getControl().getMagnetsControl();
         }
 
         private void batch()

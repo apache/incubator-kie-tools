@@ -104,6 +104,10 @@ public class WiresLayoutContainer implements LayoutContainer
         return height;
     }
 
+    public Point2D getOffset() {
+        return offset;
+    }
+
     public WiresLayoutContainer add(final IPrimitive<?> child)
     {
 
@@ -122,7 +126,7 @@ public class WiresLayoutContainer implements LayoutContainer
             child.setID(UUID.uuid());
         }
 
-        group.add(child);
+        addChild(child);
 
         if (null != layout)
         {
@@ -140,6 +144,12 @@ public class WiresLayoutContainer implements LayoutContainer
         }
 
         return this;
+    }
+
+    protected void addChild(final IPrimitive<?> child)
+    {
+
+        group.add(child);
     }
 
     public WiresLayoutContainer remove(final IPrimitive<?> child)

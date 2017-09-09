@@ -329,13 +329,9 @@ public class WiresShapeControlHandleList implements IControlHandleList
 
         m_wires_shape.getLayoutContainer().execute();
 
-        if (null != m_wires_shape.getMagnets())
-        {
-            m_wires_shape.getMagnets().shapeChanged();
+        if (null != m_wires_shape.getControl()) {
+            m_wires_shape.getControl().getMagnetsControl().shapeChanged();
         }
-
-        // For now, move path to bottom to make controls and magnets visible.
-        m_wires_shape.getPath().moveToBottom();
 
         // Layout content whilst resizing
         m_wires_shape.getLayoutHandler().requestLayout( m_wires_shape );

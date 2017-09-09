@@ -27,7 +27,6 @@ import com.ait.lienzo.client.core.types.ColorKeyRotor;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.ScratchPad;
-import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
@@ -41,102 +40,33 @@ public class ColorMapBackedPicker
 
     protected final NFastStringMap<PickerPart> m_colorMap = new NFastStringMap<>();
 
-    protected final NFastArrayList<WiresShape> m_shapesToSkip = new NFastArrayList<>();
+    private final PickerOptions                m_options;
 
     protected ImageData                        m_imageData;
 
-    protected boolean                          m_addHotspots;
+    protected WiresLayer                       m_layer;
 
-    protected double                           m_borderWidth;
-
-    protected WiresLayer m_layer;
-
-    public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes, ScratchPad scratchPad, WiresShape shapeToSkip)
-    {
-        this(shapes,
-             scratchPad,
-             shapeToSkip,
-             false,
-             0,
-             null);
-    }
-
-    public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes,
+    public ColorMapBackedPicker(WiresLayer layer,
+                                NFastArrayList<WiresShape> shapes,
                                 ScratchPad scratchPad,
-                                final WiresShape shapeToSkip,
-                                boolean addHotspots,
-                                double borderWidth) {
-        this(shapes,
-             scratchPad,
-             shapeToSkip,
-             addHotspots,
-             borderWidth,
-             null);
-    }
-
-    public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes,
-                                ScratchPad scratchPad,
-                                NFastArrayList<WiresShape> shapesToSkip,
-                                boolean addHotspots,
-                                double borderWidth) {
-        this(shapes,
-             scratchPad,
-             shapesToSkip,
-             addHotspots,
-             borderWidth,
-             null);
-    }
-
-    public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes,
-                                ScratchPad scratchPad,
-                                final WiresShape shapeToSkip,
-                                boolean addHotspots,
-                                double borderWidth,
-                                WiresLayer layer)
+                                PickerOptions options)
     {
         m_scratchPad = scratchPad;
         m_layer = layer;
         m_ctx = scratchPad.getContext();
-        m_shapesToSkip.add(shapeToSkip);
-        init( shapes,
-              addHotspots,
-              borderWidth);
-    }
-
-    public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes,
-                                ScratchPad scratchPad,
-                                NFastArrayList<WiresShape> shapesToSkip,
-                                boolean addHotspots,
-                                double borderWidth,
-                                WiresLayer layer)
-    {
-        m_scratchPad = scratchPad;
-        m_layer = layer;
-        m_ctx = scratchPad.getContext();
-        for(int j = 0; j < shapesToSkip.size(); j++) {
-            m_shapesToSkip.add(shapesToSkip.get(j));
-        }
-        init( shapes,
-              addHotspots,
-              borderWidth);
-    }
-
-    private void init(NFastArrayList<WiresShape> shapes, boolean addHotspots, double borderWidth) {
-        this.m_addHotspots = addHotspots;
-        this.m_borderWidth = borderWidth;
-        this.m_scratchPad.clear();
-
+        m_options = options;
+        m_scratchPad.clear();
         addShapes(shapes);
-
-        this.m_imageData = m_ctx.getImageData(0, 0, m_scratchPad.getWidth(), m_scratchPad.getHeight());
+        m_imageData = m_ctx.getImageData(0, 0, m_scratchPad.getWidth(), m_scratchPad.getHeight());
     }
+
 
     protected void addShapes(NFastArrayList<WiresShape> shapes)
     {
         for (int j = 0; j < shapes.size(); j++)
         {
             WiresShape prim = shapes.get(j);
-            if ( m_shapesToSkip.contains( prim ) )
+            if ( m_options.shapesToSkip.contains( prim ) )
             {
                 continue;
             }
@@ -145,9 +75,9 @@ public class ColorMapBackedPicker
             drawShape(m_colorKeyRotor.next(), multiPath.getStrokeWidth(), new PickerPart(prim, PickerPart.ShapePart.BODY), true);
             addSupplementaryPaths(prim);
 
-            if (m_addHotspots)
+            if (m_options.hotspotsEnabled)
             {
-                drawShape(m_colorKeyRotor.next(), m_borderWidth, new PickerPart(prim, PickerPart.ShapePart.BORDER_HOTSPOT), false);
+                drawShape(m_colorKeyRotor.next(), m_options.hotspotWidth, new PickerPart(prim, PickerPart.ShapePart.BORDER_HOTSPOT), false);
 
                 // need to be able to detect the difference between the actual border selection and the border hotspot
                 drawShape(m_colorKeyRotor.next(), multiPath.getStrokeWidth(), new PickerPart(prim, PickerPart.ShapePart.BORDER), false);
@@ -199,5 +129,35 @@ public class ColorMapBackedPicker
         }
         return null;
     }
+
+    public PickerOptions getPickerOptions() {
+        return m_options;
+    }
+
+    public static final class PickerOptions {
+        private final NFastArrayList<WiresShape> shapesToSkip;
+        private final boolean hotspotsEnabled;
+        private final double hotspotWidth;
+
+        public PickerOptions(final boolean hotspotsEnabled,
+                             final double hotspotWidth) {
+            this.shapesToSkip = new NFastArrayList<WiresShape>();
+            this.hotspotsEnabled = hotspotsEnabled;
+            this.hotspotWidth = hotspotWidth;
+        }
+
+        public NFastArrayList<WiresShape> getShapesToSkip() {
+            return shapesToSkip;
+        }
+
+        public boolean isHotspotsEnabled() {
+            return hotspotsEnabled;
+        }
+
+        public double getHotspotWidth() {
+            return hotspotWidth;
+        }
+    }
+
 
 }

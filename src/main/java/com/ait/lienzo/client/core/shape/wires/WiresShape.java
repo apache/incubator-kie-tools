@@ -17,39 +17,30 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.event.*;
-import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.wires.MagnetManager.Magnets;
-import com.ait.lienzo.client.core.shape.wires.event.*;
-import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingAndContainmentControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
-import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.widget.DragConstraintEnforcer;
-import com.ait.lienzo.client.widget.DragContext;
-import com.ait.lienzo.shared.core.types.EventPropagationMode;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.ait.tooling.nativetools.client.util.Console;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HandlerRegistration;
-
 import java.util.Map;
 import java.util.Objects;
 
+import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
+import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.wires.MagnetManager.Magnets;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHandler;
+import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.shared.core.types.EventPropagationMode;
+import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
+
 public class WiresShape extends WiresContainer
 {
-    interface WiresShapeHandler extends NodeMouseDownHandler, NodeMouseUpHandler, NodeMouseClickHandler, NodeDragEndHandler, DragConstraintEnforcer
-    {
-
-        void setAlignAndDistributeControl(AlignAndDistributeControl alignAndDistributeHandler);
-
-        void setDockingAndContainmentControl(WiresDockingAndContainmentControl m_dockingAndContainmentControl);
-
-        WiresShapeControl getControl();
-
-    }
 
     private MultiPath                   m_drawnObject;
 
@@ -61,7 +52,7 @@ public class WiresShape extends WiresContainer
 
     private boolean                     m_resizable;
 
-    private WiresShapeHandler           m_handler;
+    private WiresShapeControl           m_control;
 
     public WiresShape(final MultiPath path)
     {
@@ -87,25 +78,9 @@ public class WiresShape extends WiresContainer
         init();
     }
 
-    public double getX()
-    {
-        return getGroup().getX();
-    }
-
-    public WiresShape setX(final double x)
-    {
-        getGroup().setX(x);
-        return this;
-    }
-
-    public double getY()
-    {
-        return getGroup().getY();
-    }
-
-    public WiresShape setY(final double y)
-    {
-        getGroup().setY(y);
+    @Override
+    public WiresShape setLocation(final Point2D p) {
+        super.setLocation(p);
         return this;
     }
 
@@ -171,20 +146,12 @@ public class WiresShape extends WiresContainer
         }
     }
 
-    public void addWiresShapeHandler( final HandlerRegistrationManager registrationManager,
-                                      final WiresShapeHandler handler )
-    {
-        registrationManager.register(getGroup().addNodeMouseClickHandler(handler));
-        registrationManager.register(getGroup().addNodeMouseDownHandler(handler));
-        registrationManager.register(getGroup().addNodeMouseUpHandler(handler));
-        registrationManager.register(getGroup().addNodeDragEndHandler(handler));
-        getGroup().setDragConstraints(handler);
-        m_handler = handler;
+    void setWiresShapeControl( final WiresShapeControl control ) {
+        m_control = control;
     }
 
-    public WiresShapeHandler getHandler()
-    {
-        return m_handler;
+    public WiresShapeControl getControl() {
+        return m_control;
     }
 
     public MultiPath getPath()
@@ -289,7 +256,7 @@ public class WiresShape extends WiresContainer
         super.shapeMoved();
         if (getMagnets() != null)
         {
-            getMagnets().shapeMoved();
+            getControl().getMagnetsControl().shapeMoved();
         }
 
     }
@@ -313,69 +280,6 @@ public class WiresShape extends WiresContainer
     LayoutContainer getLayoutContainer()
     {
         return m_innerLayoutContainer;
-    }
-
-    static class WiresShapeHandlerImpl implements WiresShape.WiresShapeHandler
-    {
-        private final WiresShapeControl shapeControl;
-
-        private WiresManager m_wiresManager;
-
-        WiresShapeHandlerImpl(WiresShape shape, WiresManager wiresManager )
-        {
-            this.shapeControl = wiresManager.getControlFactory().newShapeControl(shape, wiresManager);
-            m_wiresManager = wiresManager;
-        }
-
-        public void setAlignAndDistributeControl(AlignAndDistributeControl alignAndDistributeHandler)
-        {
-            this.shapeControl.setAlignAndDistributeControl(alignAndDistributeHandler);
-        }
-
-        public void setDockingAndContainmentControl(WiresDockingAndContainmentControl m_dockingAndContainmentControl)
-        {
-            this.shapeControl.setDockingAndContainmentControl(m_dockingAndContainmentControl);
-        }
-
-        @Override
-        public void startDrag(DragContext dragContext)
-        {
-            this.shapeControl.dragStart(dragContext);
-        }
-
-        @Override
-        public boolean adjust(final Point2D dxy)
-        {
-            return this.shapeControl.dragAdjust(dxy);
-        }
-
-        @Override
-        public void onNodeDragEnd(NodeDragEndEvent event)
-        {
-            this.shapeControl.dragEnd(event.getDragContext());
-        }
-
-        @Override
-        public void onNodeMouseDown(NodeMouseDownEvent event)
-        {
-            this.shapeControl.onNodeMouseDown(event);
-        }
-
-        @Override
-        public void onNodeMouseUp(NodeMouseUpEvent event)
-        {
-            this.shapeControl.onNodeMouseUp(event);
-        }
-
-        @Override public void onNodeMouseClick(NodeMouseClickEvent event)
-        {
-            this.shapeControl.onNodeClick(event);
-        }
-
-        public WiresShapeControl getControl()
-        {
-            return shapeControl;
-        }
     }
 
     @Override public boolean equals(Object o)

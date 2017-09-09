@@ -1257,29 +1257,31 @@ public final class Geometry
     public static Point2DArray getIntersectPolyLinePath(Point2DArray points, PathPartList path, boolean closed)
     {
         Point2DArray intersectPoints = null;
-        int size = closed ? points.size():  points.size()-1;
-        for (int i = 0; i < size; i++)
-        {
-            Point2D p1 = points.get(i);
-            Point2D p2;
-            if(closed)
+        if (null != path) {
+            int size = closed ? points.size():  points.size()-1;
+            for (int i = 0; i < size; i++)
             {
-                p2 = (i < size - 1) ? points.get(i + 1) : points.get(0);
-            }
-            else
-            {
-                p2 = points.get(i+1);
-            }
-            Point2DArray segmentIntersectPoints =  getIntersectLineSegmentPath(p1, p2, path);
-            if ( segmentIntersectPoints != null)
-            {
-                if (intersectPoints == null)
+                Point2D p1 = points.get(i);
+                Point2D p2;
+                if(closed)
                 {
-                    intersectPoints = new Point2DArray();
+                    p2 = (i < size - 1) ? points.get(i + 1) : points.get(0);
                 }
-                for (Point2D p : segmentIntersectPoints)
+                else
                 {
-                    intersectPoints.push(p);
+                    p2 = points.get(i+1);
+                }
+                Point2DArray segmentIntersectPoints =  getIntersectLineSegmentPath(p1, p2, path);
+                if ( segmentIntersectPoints != null)
+                {
+                    if (intersectPoints == null)
+                    {
+                        intersectPoints = new Point2DArray();
+                    }
+                    for (Point2D p : segmentIntersectPoints)
+                    {
+                        intersectPoints.push(p);
+                    }
                 }
             }
         }
