@@ -27,6 +27,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +45,7 @@ import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.*;
@@ -689,6 +691,24 @@ public class KieMultipleDocumentEditorTest
     }
 
     @Test
+    public void testSaveSuccessCallback() {
+        final TestDocument document = createTestDocument();
+        final int currentHashCode = document.hashCode();
+        final Path documentPath = document.getCurrentPath();
+
+        final RemoteCallback<Path> callback = editor.getSaveSuccessCallback(document,
+                                                                            currentHashCode);
+
+        callback.callback(documentPath);
+
+        verify(editorView).hideBusyIndicator();
+        verify(versionRecordManager).reloadVersions(eq(documentPath));
+        verify(notificationEvent).fire(any(NotificationEvent.class));
+        verify(document).setOriginalHashCode(eq(currentHashCode));
+        verify(overviewWidget).resetDirty();
+    }
+
+    @Test
     public void testDoSaveCheckForAndHandleConcurrentUpdate_NoConcurrentUpdate() {
         final TestDocument document = createTestDocument();
 
@@ -786,7 +806,7 @@ public class KieMultipleDocumentEditorTest
     @Test
     @SuppressWarnings("unchecked")
     public void testOpenDocumentInEditor_OneDocumentNotAlreadyRegistered() {
-        //Mock rtwo documents being available, one is already registered; the other is not.
+        //Mock two documents being available, one is already registered; the other is not.
         final TestDocument document = createTestDocument();
         final ObservablePath currentPath = document.getCurrentPath();
         registerDocument(document);

@@ -716,6 +716,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
             versionRecordManager.reloadVersions(path);
             notificationEvent.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
             document.setOriginalHashCode(currentHashCode);
+            overviewWidget.resetDirty();
         };
     }
 }
