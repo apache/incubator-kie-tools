@@ -177,6 +177,10 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-backend</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+    </dependency>
 
     <!-- Testing scope. -->
 

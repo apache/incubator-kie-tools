@@ -53,7 +53,7 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.v1_1.D
         Node<View<Decision>, ?> node = (Node<View<Decision>, ?>) factoryManager.newElement(dmn.getId(),
                                                                                            Decision.class).asNode();
         Id id = new Id(dmn.getId());
-        Description description = new Description(dmn.getDescription());
+        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         Name name = new Name(dmn.getName());
         InformationItem informationItem = InformationItemPropertyConverter.wbFromDMN(dmn.getVariable());
         Expression expression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression());
@@ -76,7 +76,7 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.v1_1.D
         Decision source = node.getContent().getDefinition();
         org.kie.dmn.model.v1_1.Decision d = new org.kie.dmn.model.v1_1.Decision();
         d.setId(source.getId().getValue());
-        d.setDescription(source.getDescription().getValue());
+        d.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         d.setName(source.getName().getValue());
         d.setVariable(InformationItemPropertyConverter.dmnFromWB(source.getVariable()));
         d.setExpression(ExpressionPropertyConverter.dmnFromWB(source.getExpression()));

@@ -50,7 +50,7 @@ public class KnowledgeSourceConverter implements NodeConverter<org.kie.dmn.model
         Node<View<KnowledgeSource>, ?> node = (Node<View<KnowledgeSource>, ?>) factoryManager.newElement(dmn.getId(),
                                                                                                          KnowledgeSource.class).asNode();
         Id id = new Id(dmn.getId());
-        Description description = new Description(dmn.getDescription());
+        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         Name name = new Name(dmn.getName());
         KnowledgeSourceType ksType = new KnowledgeSourceType(dmn.getType());
         LocationURI locationURI = new LocationURI(dmn.getLocationURI());
@@ -71,7 +71,7 @@ public class KnowledgeSourceConverter implements NodeConverter<org.kie.dmn.model
         KnowledgeSource source = node.getContent().getDefinition();
         org.kie.dmn.model.v1_1.KnowledgeSource result = new org.kie.dmn.model.v1_1.KnowledgeSource();
         result.setId(source.getId().getValue());
-        result.setDescription(source.getDescription().getValue());
+        result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         result.setName(source.getName().getValue());
         result.setType(source.getType().getValue());
         result.setLocationURI(source.getLocationURI().getValue());

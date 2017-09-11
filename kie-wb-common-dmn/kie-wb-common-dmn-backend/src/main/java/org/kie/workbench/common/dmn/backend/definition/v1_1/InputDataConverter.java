@@ -43,7 +43,7 @@ public class InputDataConverter implements NodeConverter<org.kie.dmn.model.v1_1.
         Node<View<InputData>, ?> node = (Node<View<InputData>, ?>) factoryManager.newElement(dmn.getId(),
                                                                                              InputData.class).asNode();
         Id id = new Id(dmn.getId());
-        Description description = new Description(dmn.getDescription());
+        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         Name name = new Name(dmn.getName());
         InformationItem informationItem = InformationItemPropertyConverter.wbFromDMN(dmn.getVariable());
         InputData inputData = new InputData(id,
@@ -62,7 +62,7 @@ public class InputDataConverter implements NodeConverter<org.kie.dmn.model.v1_1.
         InputData source = node.getContent().getDefinition();
         org.kie.dmn.model.v1_1.InputData result = new org.kie.dmn.model.v1_1.InputData();
         result.setId(source.getId().getValue());
-        result.setDescription(source.getDescription().getValue());
+        result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         result.setName(source.getName().getValue());
         result.setVariable(InformationItemPropertyConverter.dmnFromWB(source.getVariable()));
         return result;

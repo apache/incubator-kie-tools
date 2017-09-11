@@ -1,15 +1,57 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-					  xmlns="http://www.trisotech.com/definitions/_8afa6c24-55c8-43cf-8a02-fdde7fc5d1f2"
-					  xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-					  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
-					  xmlns:trisofeed="http://trisotech.com/feed"
-					  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-					  exporter="DMN Modeler" exporterVersion="5.2.1"
-					  id="_8afa6c24-55c8-43cf-8a02-fdde7fc5d1f2" name="three decisions in a diamond shape"
-					  namespace="http://www.trisotech.com/definitions/_8afa6c24-55c8-43cf-8a02-fdde7fc5d1f2"
-					  triso:logoChoice="Default">
-  <semantic:extensionElements/>
+                      xmlns="http://www.trisotech.com/definitions/_8afa6c24-55c8-43cf-8a02-fdde7fc5d1f2"
+                      xmlns:dmndi="java://org.kie.workbench.common.dmn.backend.definition.v1_1.dd"
+                      xmlns:di="http://www.omg.org/spec/CMMN/20151109/DI"
+                      xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:trisofeed="http://trisotech.com/feed"
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:dc="http://www.omg.org/spec/CMMN/20151109/DC"
+                      id="_8afa6c24-55c8-43cf-8a02-fdde7fc5d1f2" name="three decisions in a diamond shape"
+                      expressionLanguage="http://www.omg.org/spec/FEEL/20140401"
+                      typeLanguage="http://www.omg.org/spec/FEEL/20140401"
+                      namespace="http://www.trisotech.com/definitions/_8afa6c24-55c8-43cf-8a02-fdde7fc5d1f2">
+  <semantic:extensionElements>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape id="dmnshape-_e920f38a-293c-41b8-adb3-69d0dc184fab" dmnElementRef="_e920f38a-293c-41b8-adb3-69d0dc184fab">
+        <dc:Bounds x="300.0" y="400.0" width="100.0" height="50.0"></dc:Bounds>
+        <dc:BgColor red="0" green="253" blue="25"></dc:BgColor>
+        <dc:BorderColor red="253" green="0" blue="0"></dc:BorderColor>
+        <dmndi:BorderSize value="1.0"></dmndi:BorderSize>
+        <dmndi:DMNFontStyle fontName="Open Sans" fontSize="10.0" fontBorderSize="0.0">
+          <dc:FontColor red="0" green="0" blue="0"></dc:FontColor>
+        </dmndi:DMNFontStyle>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_4cd17e52-6253-41d6-820d-5824bf5197f3" dmnElementRef="_4cd17e52-6253-41d6-820d-5824bf5197f3">
+        <dc:Bounds x="500.0" y="500.0" width="100.0" height="50.0"></dc:Bounds>
+        <dc:BgColor red="255" green="255" blue="255"></dc:BgColor>
+        <dc:BorderColor red="0" green="0" blue="0"></dc:BorderColor>
+        <dmndi:BorderSize value="0.5"></dmndi:BorderSize>
+        <dmndi:DMNFontStyle fontName="Open Sans" fontSize="24.0" fontBorderSize="1.0">
+          <dc:FontColor red="255" green="0" blue="0"></dc:FontColor>
+        </dmndi:DMNFontStyle>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_9b061fc3-8109-42e2-9fe4-fc39c90b654e" dmnElementRef="_9b061fc3-8109-42e2-9fe4-fc39c90b654e">
+        <dc:Bounds x="487.5" y="275.0" width="125.0" height="75.0"></dc:Bounds>
+        <dc:BgColor red="255" green="255" blue="255"></dc:BgColor>
+        <dc:BorderColor red="0" green="0" blue="0"></dc:BorderColor>
+        <dmndi:BorderSize value="0.5"></dmndi:BorderSize>
+        <dmndi:DMNFontStyle fontName="Open Sans" fontSize="10.0" fontBorderSize="0.0">
+          <dc:FontColor red="0" green="0" blue="0"></dc:FontColor>
+        </dmndi:DMNFontStyle>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_f49f9c34-29d5-4e72-91d2-f4f92117c8da" dmnElementRef="_f49f9c34-29d5-4e72-91d2-f4f92117c8da">
+        <dc:Bounds x="700.0" y="400.0" width="100.0" height="50.0"></dc:Bounds>
+        <dc:BgColor red="247" green="255" blue="0"></dc:BgColor>
+        <dc:BorderColor red="0" green="51" blue="255"></dc:BorderColor>
+        <dmndi:BorderSize value="2.0"></dmndi:BorderSize>
+        <dmndi:DMNFontStyle fontName="Open Sans" fontSize="10.0" fontBorderSize="0.0">
+          <dc:FontColor red="0" green="0" blue="0"></dc:FontColor>
+        </dmndi:DMNFontStyle>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </semantic:extensionElements>
   <semantic:inputData id="_4cd17e52-6253-41d6-820d-5824bf5197f3" name="My Name" triso:displayName="My Name">
     <semantic:variable id="_4843aaec-2707-4b24-92a4-17a522b27bec" name="My Name" typeRef="feel:string"/>
   </semantic:inputData>

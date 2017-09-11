@@ -49,7 +49,7 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
         Node<View<BusinessKnowledgeModel>, ?> node = (Node<View<BusinessKnowledgeModel>, ?>) factoryManager.newElement(dmn.getId(),
                                                                                                                        BusinessKnowledgeModel.class).asNode();
         Id id = new Id(dmn.getId());
-        Description description = new Description(dmn.getDescription());
+        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         Name name = new Name(dmn.getName());
         InformationItem informationItem = InformationItemPropertyConverter.wbFromDMN(dmn.getVariable());
         FunctionDefinition functionDefinition = FunctionDefinitionConverter.wbFromDMN(dmn.getEncapsulatedLogic());
@@ -70,7 +70,7 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
         BusinessKnowledgeModel source = node.getContent().getDefinition();
         org.kie.dmn.model.v1_1.BusinessKnowledgeModel result = new org.kie.dmn.model.v1_1.BusinessKnowledgeModel();
         result.setId(source.getId().getValue());
-        result.setDescription(source.getDescription().getValue());
+        result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         result.setName(source.getName().getValue());
         result.setVariable(InformationItemPropertyConverter.dmnFromWB(source.getVariable()));
         result.setEncapsulatedLogic(FunctionDefinitionConverter.dmnFromWB(source.getEncapsulatedLogic()));

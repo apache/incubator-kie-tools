@@ -29,7 +29,7 @@ public class FunctionDefinitionConverter {
             return null;
         }
         Id id = new Id(dmn.getId());
-        Description description = new Description(dmn.getDescription());
+        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef());
         Expression expression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression());
         FunctionDefinition result = new FunctionDefinition(id,
@@ -45,7 +45,7 @@ public class FunctionDefinitionConverter {
         }
         org.kie.dmn.model.v1_1.FunctionDefinition result = new org.kie.dmn.model.v1_1.FunctionDefinition();
         result.setId(wb.getId().getValue());
-        result.setDescription(wb.getDescription().getValue());
+        result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
         result.setExpression(ExpressionPropertyConverter.dmnFromWB(wb.getExpression()));

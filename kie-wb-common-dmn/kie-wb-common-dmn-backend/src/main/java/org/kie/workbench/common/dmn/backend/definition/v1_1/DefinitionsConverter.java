@@ -20,6 +20,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDiagram;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
 public class DefinitionsConverter {
@@ -31,7 +32,7 @@ public class DefinitionsConverter {
         Id id = new Id(dmn.getId());
         Name name = new Name(dmn.getName());
         String namespace = dmn.getNamespace();
-        Description description = new Description(dmn.getDescription());
+        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         Definitions result = new Definitions();
         result.setId(id);
         result.setName(name);
@@ -55,8 +56,20 @@ public class DefinitionsConverter {
         result.setId(defaultId);
         result.setName(defaulName);
         result.setNamespace(defaultNamespace);
-        result.setDescription((wb.getDescription() != null) ? wb.getDescription().getValue() : null);
+        result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         result.getNsContext().putAll(wb.getNsContext());
+        
+        // Need manually setup custom namespace URI if the diagram was created from the UI.
+        if (!result.getPrefixForNamespaceURI(DMNDiagram.DMNV11_DD).isPresent()) {
+            result.getNsContext().put("dmndi", DMNDiagram.DMNV11_DD);
+        }
+        if (!result.getPrefixForNamespaceURI(DMNDiagram.DMNV11_DC).isPresent()) {
+            result.getNsContext().put("dc", DMNDiagram.DMNV11_DC);
+        }
+        if (!result.getPrefixForNamespaceURI(DMNDiagram.DMNV11_DI).isPresent()) {
+            result.getNsContext().put("di", DMNDiagram.DMNV11_DI);
+        }
+        
         return result;
     }
 }

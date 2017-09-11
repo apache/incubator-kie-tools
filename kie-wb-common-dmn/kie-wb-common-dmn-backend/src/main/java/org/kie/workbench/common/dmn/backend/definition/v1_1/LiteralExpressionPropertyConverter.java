@@ -26,7 +26,7 @@ public class LiteralExpressionPropertyConverter {
 
     public static LiteralExpression wbFromDMN(final org.kie.dmn.model.v1_1.LiteralExpression dmn) {
         Id id = new Id(dmn.getId());
-        Description description = new Description(dmn.getDescription());
+        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef());
         String text = dmn.getText();
         String expressionLanguage = dmn.getExpressionLanguage();
