@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,10 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import junit.framework.Assert;
 import org.appformer.project.datamodel.oracle.DataType;
 import org.appformer.project.datamodel.oracle.DropDownData;
+import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
@@ -682,8 +686,16 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
                                            final String factType,
                                            final String field) {
         final BRLActionColumn brlAction = new BRLActionColumn();
-        BRLActionVariableColumn variableColumn = new BRLActionVariableColumn(null,
-                                                                             null,
+        final ActionInsertFact aif = new ActionInsertFact(factType);
+        final ActionFieldValue afv = new ActionFieldValue(field,
+                                                          "$var",
+                                                          DataType.TYPE_STRING);
+        afv.setNature(FieldNatureType.TYPE_VARIABLE);
+        aif.addFieldValue(afv);
+        brlAction.setDefinition(Collections.singletonList(aif));
+
+        BRLActionVariableColumn variableColumn = new BRLActionVariableColumn("$var",
+                                                                             DataType.TYPE_STRING,
                                                                              factType,
                                                                              field);
         brlAction.getChildColumns().add(variableColumn);

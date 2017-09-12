@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
-import org.drools.workbench.models.datamodel.rule.ActionSetField;
+import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
@@ -46,14 +46,14 @@ public class DefaultGuidedDecisionTableLinkManagerTest {
     @Before
     public void setup() {
         final DefaultGuidedDecisionTableLinkManager wrapped = new DefaultGuidedDecisionTableLinkManager();
-        manager = spy( wrapped );
+        manager = spy(wrapped);
     }
 
     @Test
     public void onlyOneDecisionTableThereforeNoLinks() {
-        manager.link( new GuidedDecisionTable52(),
-                      null,
-                      ( s, t ) -> fail( "There should be no links" ) );
+        manager.link(new GuidedDecisionTable52(),
+                     null,
+                     (s, t) -> fail("There should be no links"));
     }
 
     @Test
@@ -61,35 +61,35 @@ public class DefaultGuidedDecisionTableLinkManagerTest {
         //Columns: Row#[0], Description[1], Condition[2], Action[3]
         final GuidedDecisionTable52 dt1 = new GuidedDecisionTable52();
         final Pattern52 p1 = new Pattern52();
-        p1.setBoundName( "$f" );
-        p1.setFactType( "Fact" );
+        p1.setBoundName("$f");
+        p1.setFactType("Fact");
         final ConditionCol52 p1c1 = new ConditionCol52();
-        p1c1.setFactField( "field" );
-        p1.getChildColumns().add( p1c1 );
-        dt1.getConditions().add( p1 );
+        p1c1.setFactField("field");
+        p1.getChildColumns().add(p1c1);
+        dt1.getConditions().add(p1);
         final ActionSetFieldCol52 asf = new ActionSetFieldCol52();
-        asf.setBoundName( "$f" );
-        asf.setFactField( "field" );
-        dt1.getActionCols().add( asf );
+        asf.setBoundName("$f");
+        asf.setFactField("field");
+        dt1.getActionCols().add(asf);
 
         //Columns: Row#[0], Description[1], Condition[2]
         final GuidedDecisionTable52 dt2 = new GuidedDecisionTable52();
         final Pattern52 p2 = new Pattern52();
-        p2.setBoundName( "$f" );
-        p2.setFactType( "Fact" );
+        p2.setBoundName("$f");
+        p2.setFactType("Fact");
         final ConditionCol52 p2c1 = new ConditionCol52();
-        p2c1.setFactField( "field" );
-        p2.getChildColumns().add( p2c1 );
-        dt2.getConditions().add( p2 );
+        p2c1.setFactField("field");
+        p2.getChildColumns().add(p2c1);
+        dt2.getConditions().add(p2);
 
-        manager.link( dt1,
-                      dt2,
-                      ( s, t ) -> {
-                          assertEquals( 3,
-                                        s );
-                          assertEquals( 2,
-                                        t );
-                      } );
+        manager.link(dt1,
+                     dt2,
+                     (s, t) -> {
+                         assertEquals(3,
+                                      s);
+                         assertEquals(2,
+                                      t);
+                     });
     }
 
     @Test
@@ -97,68 +97,109 @@ public class DefaultGuidedDecisionTableLinkManagerTest {
         //Columns: Row#[0], Description[1], Action[2]
         final GuidedDecisionTable52 dt1 = new GuidedDecisionTable52();
         final ActionInsertFactCol52 aif = new ActionInsertFactCol52();
-        aif.setFactType( "Fact" );
-        aif.setFactField( "field" );
-        dt1.getActionCols().add( aif );
+        aif.setFactType("Fact");
+        aif.setFactField("field");
+        dt1.getActionCols().add(aif);
 
         //Columns: Row#[0], Description[1], Condition[2]
         final GuidedDecisionTable52 dt2 = new GuidedDecisionTable52();
         final Pattern52 p2 = new Pattern52();
-        p2.setBoundName( "$f" );
-        p2.setFactType( "Fact" );
+        p2.setBoundName("$f");
+        p2.setFactType("Fact");
         final ConditionCol52 p2c1 = new ConditionCol52();
-        p2c1.setFactField( "field" );
-        p2.getChildColumns().add( p2c1 );
-        dt2.getConditions().add( p2 );
+        p2c1.setFactField("field");
+        p2.getChildColumns().add(p2c1);
+        dt2.getConditions().add(p2);
 
-        manager.link( dt1,
-                      dt2,
-                      ( s, t ) -> {
-                          assertEquals( 2,
-                                        s );
-                          assertEquals( 2,
-                                        t );
-                      } );
+        manager.link(dt1,
+                     dt2,
+                     (s, t) -> {
+                         assertEquals(2,
+                                      s);
+                         assertEquals(2,
+                                      t);
+                     });
     }
 
     @Test
-    public void fieldConstraintWithActionBRLFragmentFieldWithBoolean() {
+    public void fieldConstraintWithActionBRLFragmentFieldWithoutTemplateKey() {
         //Columns: Row#[0], Description[1], Action[2]
         final GuidedDecisionTable52 dt1 = new GuidedDecisionTable52();
         final BRLActionColumn brl = new BRLActionColumn();
-        final ActionSetField asf = new ActionSetField();
-        asf.setVariable( "$f" );
-        asf.addFieldValue( new ActionFieldValue() {{
-            setField( "field" );
-            setValue( "10" );
-            setNature( FieldNatureType.TYPE_LITERAL );
-        }} );
-        brl.setDefinition( new ArrayList<IAction>() {{
-            add( asf );
-        }} );
-        brl.getChildColumns().add( new BRLActionVariableColumn( "",
-                                                                DataType.TYPE_BOOLEAN ) );
+        final ActionInsertFact aif = new ActionInsertFact();
+        aif.setFactType("Fact");
+        aif.addFieldValue(new ActionFieldValue() {{
+            setField("field");
+            setValue("10");
+            setNature(FieldNatureType.TYPE_LITERAL);
+        }});
+        brl.setDefinition(new ArrayList<IAction>() {{
+            add(aif);
+        }});
+        brl.getChildColumns().add(new BRLActionVariableColumn("",
+                                                              DataType.TYPE_BOOLEAN));
 
-        dt1.getActionCols().add( brl );
+        dt1.getActionCols().add(brl);
 
         //Columns: Row#[0], Description[1], Condition[2]
         final GuidedDecisionTable52 dt2 = new GuidedDecisionTable52();
         final Pattern52 p2 = new Pattern52();
-        p2.setBoundName( "$f" );
-        p2.setFactType( "Fact" );
+        p2.setBoundName("$f");
+        p2.setFactType("Fact");
         final ConditionCol52 p2c1 = new ConditionCol52();
-        p2c1.setFactField( "field" );
-        p2.getChildColumns().add( p2c1 );
-        dt2.getConditions().add( p2 );
+        p2c1.setFactField("field");
+        p2.getChildColumns().add(p2c1);
+        dt2.getConditions().add(p2);
 
-        manager.link( dt1,
-                      dt2,
-                      ( s, t ) -> {
-                          assertEquals( 3,
-                                        s );
-                          assertEquals( 2,
-                                        t );
-                      } );
+        manager.link(dt1,
+                     dt2,
+                     (s, t) -> {
+                         assertEquals(2,
+                                      s);
+                         assertEquals(2,
+                                      t);
+                     });
     }
 
+    @Test
+    public void fieldConstraintWithActionBRLFragmentFieldWithTemplateKey() {
+        //Columns: Row#[0], Description[1], Action[2]
+        final GuidedDecisionTable52 dt1 = new GuidedDecisionTable52();
+        final BRLActionColumn brl = new BRLActionColumn();
+        final ActionInsertFact aif = new ActionInsertFact("Fact");
+        aif.addFieldValue(new ActionFieldValue() {{
+            setField("field");
+            setValue("10");
+            setType(DataType.TYPE_STRING);
+            setNature(FieldNatureType.TYPE_TEMPLATE);
+        }});
+        brl.setDefinition(new ArrayList<IAction>() {{
+            add(aif);
+        }});
+        brl.getChildColumns().add(new BRLActionVariableColumn("$f",
+                                                              DataType.TYPE_STRING,
+                                                              "Fact",
+                                                              "field"));
+
+        dt1.getActionCols().add(brl);
+
+        //Columns: Row#[0], Description[1], Condition[2]
+        final GuidedDecisionTable52 dt2 = new GuidedDecisionTable52();
+        final Pattern52 p2 = new Pattern52();
+        p2.setBoundName("$f");
+        p2.setFactType("Fact");
+        final ConditionCol52 p2c1 = new ConditionCol52();
+        p2c1.setFactField("field");
+        p2.getChildColumns().add(p2c1);
+        dt2.getConditions().add(p2);
+
+        manager.link(dt1,
+                     dt2,
+                     (s, t) -> {
+                         assertEquals(2,
+                                      s);
+                         assertEquals(2,
+                                      t);
+                     });
+    }
 }
