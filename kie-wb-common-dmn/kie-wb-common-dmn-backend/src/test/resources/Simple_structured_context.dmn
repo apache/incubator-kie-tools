@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_4c10d45a-15ac-42e7-aa60-ed96fa9d1bf0" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.3.3" id="_4c10d45a-15ac-42e7-aa60-ed96fa9d1bf0" name="Simple structured context" namespace="http://www.trisotech.com/definitions/_4c10d45a-15ac-42e7-aa60-ed96fa9d1bf0" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:decision id="_f885182a-bccb-49c6-9707-2d38431dc0af" name="Decision Logic 1" triso:displayName="Decision Logic 1">
+    <semantic:variable id="_446285bc-96e9-438e-9f83-29576c3273b7" name="Decision Logic 1"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_125f902c-2de4-4404-bd99-604c33c3e7a9"/>
+    </semantic:informationRequirement>
+    <semantic:context id="_27f2f4f4-dbc9-46a8-bdc5-fce5cdffdfa6">
+      <semantic:contextEntry>
+        <semantic:variable id="_b8d8e468-9d80-4492-8171-bdcd30a6c107" name="My Variable"/>
+        <semantic:literalExpression id="_df0ce41c-8f82-435b-bc47-d883defa3cc6">
+          <semantic:text>Input Name</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_c1a1b3b0-5ab8-4887-967b-904027b39153" name="My Constants"/>
+        <semantic:context id="_404419d2-bd2e-4ae8-9f2d-6aa162878418">
+          <semantic:contextEntry>
+            <semantic:variable id="_2fe7f2a5-7148-4693-9e7d-e0aa939feb17" name="Prefix" typeRef="feel:string"/>
+            <semantic:literalExpression id="_30b93c39-fa3a-4b97-995c-cf4b9c37a382">
+              <semantic:text>"Hello, "</semantic:text>
+            </semantic:literalExpression>
+          </semantic:contextEntry>
+          <semantic:contextEntry>
+            <semantic:variable id="_152f273c-0680-4dd0-b420-383bdce81b44" name="Postfix" typeRef="feel:string"/>
+            <semantic:literalExpression id="_545979e5-2df2-478d-8288-6c0570877a50">
+              <semantic:text>"!"</semantic:text>
+            </semantic:literalExpression>
+          </semantic:contextEntry>
+        </semantic:context>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:literalExpression id="_0613b857-1c43-4e28-9ad5-9c0afbc8f0ad">
+          <semantic:text>My Constants.Prefix + My Variable + My Constants.Postfix</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+  <semantic:inputData id="_125f902c-2de4-4404-bd99-604c33c3e7a9" name="Input Name" triso:displayName="Input Name">
+    <semantic:variable id="_5e0f9702-3bb6-46bb-84e3-637030606ee9" name="Input Name" typeRef="feel:string"/>
+  </semantic:inputData>
+</semantic:definitions>

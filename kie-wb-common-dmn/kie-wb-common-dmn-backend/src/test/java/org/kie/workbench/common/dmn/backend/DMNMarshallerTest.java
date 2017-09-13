@@ -99,6 +99,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.commons.uuid.UUID;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DMNMarshallerTest {
@@ -739,5 +740,54 @@ public class DMNMarshallerTest {
                                                       Class<?> clazz) {
         assertTrue(node.getContent() instanceof View);
         assertTrue(clazz.isInstance(((View<?>) node.getContent()).getDefinition()));
+    }
+    
+    @Test
+    public void test_Simple_structured_context() throws IOException {
+        final DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/Simple_structured_context.dmn"));
+        DMNModel dmnModel = runtime.getModels().get(0);
+
+        DMNContext dmnContext = runtime.newContext();
+        dmnContext.set("Input Name",
+                       "John Doe");
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel,
+                                                  dmnContext);
+        assertFalse(dmnResult.getMessages().toString(),
+                    dmnResult.hasErrors());
+        DMNContext result = dmnResult.getContext();
+        assertEquals("Hello, John Doe!",
+                     result.get("Decision Logic 1"));
+    }
+
+    private DMNRuntime roundTripUnmarshalMarshalThenUnmarshalDMN(InputStream dmnXmlInputStream) throws IOException {
+        DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
+                                            applicationFactoryManager);
+
+        // first unmarshal from DMN XML to Stunner DMN Graph
+        @SuppressWarnings("unchecked")
+        Graph<?, Node<?, ?>> g = m.unmarshall(null,
+                                              dmnXmlInputStream);
+
+        // round trip to Stunner DMN Graph back to DMN XML
+        DiagramImpl diagram = new DiagramImpl("",
+                                              null);
+        diagram.setGraph(g);
+
+        String mString = m.marshall(diagram);
+        System.out.println(mString);
+
+        // now unmarshal once more, from the marshalled just done above, into a DMNRuntime
+        final KieServices ks = KieServices.Factory.get();
+        String uuid = UUID.uuid(8);
+        final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie",
+                                                                                    uuid,
+                                                                                    "1.0"),
+                                                                    ks.getResources().newByteArrayResource(mString.getBytes()).setTargetPath("src/main/resources/" + uuid + ".dmn"));
+
+        final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        assertNotNull(runtime);
+        assertFalse(runtime.getModels().isEmpty());
+
+        return runtime;
     }
 }
