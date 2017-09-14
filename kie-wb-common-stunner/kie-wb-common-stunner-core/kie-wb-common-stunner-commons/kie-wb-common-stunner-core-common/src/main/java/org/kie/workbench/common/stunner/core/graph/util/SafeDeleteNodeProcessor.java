@@ -16,10 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.graph.util;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -70,7 +71,7 @@ public class SafeDeleteNodeProcessor {
 
     @SuppressWarnings("unchecked")
     public void run(final Callback callback) {
-        final Stack<Node<View, Edge>> nodes = new Stack<Node<View, Edge>>();
+        final Deque<Node<View, Edge>> nodes = new ArrayDeque();
         processedConnectors.clear();
         childrenTraverseProcessor
                 .setRootUUID(candidate.getUUID())
@@ -92,10 +93,12 @@ public class SafeDeleteNodeProcessor {
                                   return true;
                               }
                           });
-        // Process delete for children nodes.
-        nodes.forEach(node -> processNode(node,
-                                          callback,
-                                          false));
+
+        // Process delete for children nodes
+        nodes.descendingIterator().forEachRemaining(node -> processNode(node,
+                                                                        callback,
+                                                                        false));
+
         // Process candidate's delete.
         processNode(candidate,
                     callback,

@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -38,13 +39,18 @@ public class SafeDeleteNodeProcessorTest {
     private SafeDeleteNodeProcessor.Callback callback;
 
     private TestingGraphMockHandler graphTestHandler;
+    private TestingGraphMockHandler graphTestHandlerContainer;
     private TestingGraphInstanceBuilder.TestGraph2 graphHolder;
+    private TestingGraphInstanceBuilder.TestGraph3 graphHolderContainer;
+
     private SafeDeleteNodeProcessor tested;
 
     @Before
     public void setup() throws Exception {
         this.graphTestHandler = new TestingGraphMockHandler();
+        this.graphTestHandlerContainer = new TestingGraphMockHandler();
         this.graphHolder = TestingGraphInstanceBuilder.newGraph2(graphTestHandler);
+        this.graphHolderContainer = TestingGraphInstanceBuilder.newGraph3(graphTestHandlerContainer);
     }
 
     @Test
@@ -138,5 +144,46 @@ public class SafeDeleteNodeProcessorTest {
                times(1)).deleteNode(eq(graphHolder.startNode));
         verify(callback,
                times(1)).deleteCandidateNode(eq(graphHolder.parentNode));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testDeleteParentWithNonEmptyContainerInside() {
+        this.tested = new SafeDeleteNodeProcessor(new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl()),
+                                                  graphHolderContainer.graph,
+                                                  graphHolderContainer.parentNode);
+        tested.run(callback);
+
+        InOrder inOrder = inOrder(callback);
+
+        inOrder.verify(callback,
+                       times(1)).deleteConnector(eq(graphHolderContainer.edge2));
+
+        inOrder.verify(callback,
+                       times(1)).removeChild(eq(graphHolderContainer.containerNode),
+                                             eq(graphHolderContainer.endNode));
+        inOrder.verify(callback,
+                       times(1)).deleteNode(eq(graphHolderContainer.endNode));
+
+        inOrder.verify(callback,
+                       times(1)).deleteConnector(eq(graphHolderContainer.edge1));
+
+        inOrder.verify(callback,
+                       times(1)).removeChild(eq(graphHolderContainer.containerNode),
+                                             eq(graphHolderContainer.intermNode));
+        inOrder.verify(callback,
+                       times(1)).deleteNode(eq(graphHolderContainer.intermNode));
+
+        inOrder.verify(callback,
+                       times(1)).removeChild(eq(graphHolderContainer.containerNode),
+                                             eq(graphHolderContainer.startNode));
+        inOrder.verify(callback,
+                       times(1)).deleteNode(eq(graphHolderContainer.startNode));
+
+        inOrder.verify(callback,
+                       times(1)).deleteNode(eq(graphHolderContainer.containerNode));
+
+        inOrder.verify(callback,
+                       times(1)).deleteCandidateNode(eq(graphHolderContainer.parentNode));
     }
 }

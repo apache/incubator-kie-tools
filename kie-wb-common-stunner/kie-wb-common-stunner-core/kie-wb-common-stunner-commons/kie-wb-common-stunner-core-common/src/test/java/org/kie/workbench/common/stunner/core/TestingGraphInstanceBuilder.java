@@ -38,6 +38,9 @@ public class TestingGraphInstanceBuilder {
     public static final Set<String> DEF2_LABELS = Collections.singleton("label2");
     public static final String DEF3_ID = "def3";
     public static final Set<String> DEF3_LABELS = Collections.singleton("label3");
+    public static final String DEF4_ID = "def4";
+    public static final Set<String> DEF4_LABELS = Collections.singleton("label4");
+
     public static final String EDGE1_ID = "edge11d";
     public static final String EDGE2_ID = "edge21d";
     public static final String PARENT_NODE_UUID = "parent1";
@@ -46,6 +49,7 @@ public class TestingGraphInstanceBuilder {
     public static final String END_NODE_UUID = "node3";
     public static final String EDGE1_UUID = "edge1";
     public static final String EDGE2_UUID = "edge2";
+    public static final String CONTAINER_NODE_UUID = "container1";
 
     /**
      * **********
@@ -102,7 +106,37 @@ public class TestingGraphInstanceBuilder {
         return buildTestGraph2(handler);
     }
 
+    /**
+     * **********
+     * * Graph3 *
+     * **********
+     * <p>
+     * Structure:
+     * -                       parentNode
+     * ----------------------------------------------------------------------
+     * |                       containerNode                                 |
+     * |   -----------------------------------------------------------       |
+     * |   | startNode --(edge1)--> intermNode --(edge2)--> endNode  |       |
+     * |   -----------------------------------------------------------       |
+     * |                                                                     |
+     * ----------------------------------------------------------------------
+     */
 
+    public static class TestGraph3 {
+
+        public Graph graph;
+        public Node parentNode;
+        public Node containerNode;
+        public Node startNode;
+        public Node intermNode;
+        public Node endNode;
+        public Edge edge1;
+        public Edge edge2;
+    }
+
+    public static TestGraph3 newGraph3(final TestingGraphMockHandler handler) {
+        return buildTestGraph3(handler);
+    }
 
     /*
         ************ PRIVATE BUILDER METHODS ******************
@@ -192,6 +226,59 @@ public class TestingGraphInstanceBuilder {
                 .connectTo(result.edge2,
                            result.endNode);
         result.evaluationsCount = 23;
+        return result;
+    }
+
+    private static TestGraph3 buildTestGraph3(final TestingGraphMockHandler graphTestHandler) {
+        TestGraph3 result = new TestGraph3();
+        result.graph = graphTestHandler.graph;
+        result.parentNode =
+                graphTestHandler.newNode(PARENT_NODE_UUID,
+                                         DEF0_ID,
+                                         Optional.of(DEF0_LABELS));
+        result.containerNode =
+                graphTestHandler.newNode(CONTAINER_NODE_UUID,
+                                         DEF4_ID,
+                                         Optional.of(DEF4_LABELS));
+
+        result.startNode =
+                graphTestHandler.newNode(START_NODE_UUID,
+                                         DEF1_ID,
+                                         Optional.of(DEF1_LABELS));
+        result.intermNode =
+                graphTestHandler.newNode(INTERM_NODE_UUID,
+                                         DEF2_ID,
+                                         Optional.of(DEF2_LABELS));
+        result.endNode =
+                graphTestHandler.newNode(END_NODE_UUID,
+                                         DEF3_ID,
+                                         Optional.of(DEF3_LABELS));
+        result.edge1 =
+                graphTestHandler.newEdge(EDGE1_UUID,
+                                         EDGE1_ID,
+                                         Optional.empty());
+        result.edge2 =
+                graphTestHandler.newEdge(EDGE2_UUID,
+                                         EDGE2_ID,
+                                         Optional.empty());
+        graphTestHandler
+                .setChild(result.parentNode,
+                          result.containerNode)
+                .setChild(result.containerNode,
+                          result.startNode)
+                .setChild(result.containerNode,
+                          result.intermNode)
+                .setChild(result.containerNode,
+                          result.endNode)
+                .addEdge(result.edge1,
+                         result.startNode)
+                .connectTo(result.edge1,
+                           result.intermNode)
+                .addEdge(result.edge2,
+                         result.intermNode)
+                .connectTo(result.edge2,
+                           result.endNode);
+
         return result;
     }
 }
