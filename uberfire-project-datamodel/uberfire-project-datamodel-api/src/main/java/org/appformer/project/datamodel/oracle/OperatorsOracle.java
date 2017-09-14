@@ -36,7 +36,7 @@ public class OperatorsOracle {
 
     public static final String[] COMPARABLE_CONNECTIVES = new String[]{ "|| ==", "|| !=", "&& !=", "&& >", "&& <", "|| >", "|| <", "&& >=", "&& <=", "|| <=", "|| >=" };
 
-    public static final String[] STRING_OPERATORS = new String[]{ "==", "!=", "<", ">", "<=", ">=", "matches", "soundslike", "== null", "!= null" };
+    public static final String[] STRING_OPERATORS = new String[]{ "==", "!=", "<", ">", "<=", ">=", "matches", "not matches", "soundslike", "not soundslike", "== null", "!= null" };
 
     public static final String[] STRING_CONNECTIVES = new String[]{ "|| ==", "|| !=", "&& !=", "&& >", "&& <", "|| >", "|| <", "&& >=", "&& <=", "|| <=", "|| >=", "&& matches", "|| matches" };
 
