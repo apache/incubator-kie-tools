@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.scrollbars.GridLienzoScrollHandler;
 
@@ -37,7 +38,10 @@ import static org.mockito.Mockito.*;
 public class GridLienzoPanelTest {
 
     @Mock
-    private AbsolutePanel mainPanel;
+    private AbsolutePanel rootPanel;
+
+    @Mock
+    private AbsolutePanel scrollPanel;
 
     @Mock
     private AbsolutePanel internalScrollPanel;
@@ -58,7 +62,8 @@ public class GridLienzoPanelTest {
 
         gridLienzoPanel = spy(new GridLienzoPanel());
 
-        doReturn(mainPanel).when(gridLienzoPanel).getMainPanel();
+        doReturn(rootPanel).when(gridLienzoPanel).getRootPanel();
+        doReturn(scrollPanel).when(gridLienzoPanel).getScrollPanel();
         doReturn(internalScrollPanel).when(gridLienzoPanel).getInternalScrollPanel();
         doReturn(domElementContainer).when(gridLienzoPanel).getDomElementContainer();
         doReturn(lienzoPanel).when(gridLienzoPanel).getLienzoPanel();
@@ -66,14 +71,45 @@ public class GridLienzoPanelTest {
     }
 
     @Test
-    public void testSetupMainPanel() {
+    public void testSetupPanels() {
 
-        gridLienzoPanel.setupMainPanel();
+        doNothing().when(gridLienzoPanel).setupScrollPanel();
+        doNothing().when(gridLienzoPanel).setupDomElementContainer();
+        doNothing().when(gridLienzoPanel).setupRootPanel();
+
+        gridLienzoPanel.setupPanels();
+
+        final InOrder inOrder = inOrder(gridLienzoPanel);
+
+        inOrder.verify(gridLienzoPanel).setupScrollPanel();
+        inOrder.verify(gridLienzoPanel).setupDomElementContainer();
+        inOrder.verify(gridLienzoPanel).setupRootPanel();
+        inOrder.verify(gridLienzoPanel).add(rootPanel);
+    }
+
+    @Test
+    public void testSetupScrollPanel() {
+
+        gridLienzoPanel.setupScrollPanel();
+
+        verify(scrollPanel).add(internalScrollPanel);
+    }
+
+    @Test
+    public void testSetupDomElementContainer() {
+
+        gridLienzoPanel.setupDomElementContainer();
 
         verify(domElementContainer).add(lienzoPanel);
-        verify(mainPanel).add(internalScrollPanel);
-        verify(mainPanel).add(domElementContainer);
-        verify(gridLienzoPanel).add(mainPanel);
+    }
+
+    @Test
+    public void testSetupRootPanel() {
+
+        gridLienzoPanel.setupRootPanel();
+
+        verify(rootPanel).add(domElementContainer);
+        verify(rootPanel).add(scrollPanel);
     }
 
     @Test
@@ -146,8 +182,8 @@ public class GridLienzoPanelTest {
                                                  height - scrollHeight);
         verify(lienzoPanel).setPixelSize(width - scrollWidth,
                                          height - scrollHeight);
-        verify(mainPanel).setPixelSize(width,
-                                       height);
+        verify(scrollPanel).setPixelSize(width,
+                                         height);
     }
 
     @Test
@@ -171,7 +207,7 @@ public class GridLienzoPanelTest {
         verify(lienzoPanel,
                never()).setPixelSize(anyInt(),
                                      anyInt());
-        verify(mainPanel,
+        verify(scrollPanel,
                never()).setPixelSize(anyInt(),
                                      anyInt());
     }

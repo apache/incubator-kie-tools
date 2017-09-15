@@ -22,6 +22,9 @@ import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.LienzoPanel;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseWheelEvent;
+import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -55,14 +58,28 @@ public class GridLienzoScrollHandler {
         setupGridLienzoScrollStyle();
         setupScrollBarSynchronization();
         setupMouseDragSynchronization();
+        setupContextSwitcher();
+    }
+
+    void setupContextSwitcher() {
+        getDomElementContainer().addDomHandler(disablePointerEvents(), MouseWheelEvent.getType());
+        getPanel().addMouseMoveHandler(enablePointerEvents());
+    }
+
+    MouseWheelHandler disablePointerEvents() {
+        return event -> gridLienzoScrollUI().disablePointerEvents(getDomElementContainer());
+    }
+
+    MouseMoveHandler enablePointerEvents() {
+        return event -> gridLienzoScrollUI().enablePointerEvents(getDomElementContainer());
     }
 
     public Integer scrollbarWidth() {
-        return getMainPanel().getElement().getOffsetWidth() - getMainPanel().getElement().getClientWidth();
+        return getScrollPanel().getElement().getOffsetWidth() - getScrollPanel().getElement().getClientWidth();
     }
 
     public Integer scrollbarHeight() {
-        return getMainPanel().getElement().getOffsetHeight() - getMainPanel().getElement().getClientHeight();
+        return getScrollPanel().getElement().getOffsetHeight() - getScrollPanel().getElement().getClientHeight();
     }
 
     void setupGridLienzoScrollStyle() {
@@ -74,8 +91,8 @@ public class GridLienzoScrollHandler {
     }
 
     void setupScrollBarSynchronization() {
-        getMainPanel().addDomHandler(onScroll(),
-                                     ScrollEvent.getType());
+        getScrollPanel().addDomHandler(onScroll(),
+                                       ScrollEvent.getType());
         synchronizeScrollSize();
     }
 
@@ -186,20 +203,24 @@ public class GridLienzoScrollHandler {
         return mousePanMediator;
     }
 
-    AbsolutePanel getMainPanel() {
-        return panel.getMainPanel();
+    AbsolutePanel getScrollPanel() {
+        return getPanel().getScrollPanel();
     }
 
     AbsolutePanel getInternalScrollPanel() {
-        return panel.getInternalScrollPanel();
+        return getPanel().getInternalScrollPanel();
     }
 
     AbsolutePanel getDomElementContainer() {
-        return panel.getDomElementContainer();
+        return getPanel().getDomElementContainer();
     }
 
     LienzoPanel getLienzoPanel() {
-        return panel.getLienzoPanel();
+        return getPanel().getLienzoPanel();
+    }
+
+    GridLienzoPanel getPanel() {
+        return panel;
     }
 
     DefaultGridLayer getDefaultGridLayer() {

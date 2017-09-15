@@ -25,6 +25,10 @@ import com.ait.lienzo.client.widget.LienzoPanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseWheelEvent;
+import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.user.client.Element;
@@ -67,6 +71,7 @@ public class GridLienzoScrollHandlerTest {
 
     @Before
     public void setUp() {
+
         this.gridLienzoScrollHandler = spy(new GridLienzoScrollHandler(gridLienzoPanel));
 
         doReturn(transform).when(viewport).getTransform();
@@ -78,19 +83,23 @@ public class GridLienzoScrollHandlerTest {
 
     @Test
     public void testInit() {
+
         doNothing().when(gridLienzoScrollHandler).setupGridLienzoScrollStyle();
         doNothing().when(gridLienzoScrollHandler).setupScrollBarSynchronization();
         doNothing().when(gridLienzoScrollHandler).setupMouseDragSynchronization();
+        doNothing().when(gridLienzoScrollHandler).setupContextSwitcher();
 
         gridLienzoScrollHandler.init();
 
         verify(gridLienzoScrollHandler).setupGridLienzoScrollStyle();
         verify(gridLienzoScrollHandler).setupScrollBarSynchronization();
         verify(gridLienzoScrollHandler).setupMouseDragSynchronization();
+        verify(gridLienzoScrollHandler).setupContextSwitcher();
     }
 
     @Test
     public void testSetupGridLienzoScrollStyle() {
+
         final GridLienzoScrollUI scrollUI = mock(GridLienzoScrollUI.class);
 
         doReturn(scrollUI).when(gridLienzoScrollHandler).gridLienzoScrollUI();
@@ -110,18 +119,18 @@ public class GridLienzoScrollHandlerTest {
     @Test
     public void testSetupScrollBarSynchronization() {
 
-        final AbsolutePanel mainPanel = mock(AbsolutePanel.class);
+        final AbsolutePanel scrollPanel = mock(AbsolutePanel.class);
         final ScrollHandler scrollHandler = mock(ScrollHandler.class);
 
         doReturn(scrollHandler).when(gridLienzoScrollHandler).onScroll();
-        doReturn(mainPanel).when(gridLienzoScrollHandler).getMainPanel();
+        doReturn(scrollPanel).when(gridLienzoScrollHandler).getScrollPanel();
         doNothing().when(gridLienzoScrollHandler).synchronizeScrollSize();
 
         gridLienzoScrollHandler.setupScrollBarSynchronization();
 
         verify(gridLienzoScrollHandler).synchronizeScrollSize();
-        verify(mainPanel).addDomHandler(scrollHandler,
-                                        ScrollEvent.getType());
+        verify(scrollPanel).addDomHandler(scrollHandler,
+                                          ScrollEvent.getType());
     }
 
     @Test
@@ -413,13 +422,13 @@ public class GridLienzoScrollHandlerTest {
     }
 
     @Test
-    public void testGetMainPanel() {
+    public void testGetScrollPanel() {
 
         final AbsolutePanel expectedPanel = mock(AbsolutePanel.class);
 
-        doReturn(expectedPanel).when(gridLienzoPanel).getMainPanel();
+        doReturn(expectedPanel).when(gridLienzoPanel).getScrollPanel();
 
-        final AbsolutePanel actualPanel = gridLienzoScrollHandler.getMainPanel();
+        final AbsolutePanel actualPanel = gridLienzoScrollHandler.getScrollPanel();
 
         assertEquals(expectedPanel,
                      actualPanel);
@@ -516,15 +525,15 @@ public class GridLienzoScrollHandlerTest {
     @Test
     public void testScrollbarWidth() {
 
-        final AbsolutePanel mainPanel = mock(AbsolutePanel.class);
+        final AbsolutePanel scrollPanel = mock(AbsolutePanel.class);
         final Element element = mock(Element.class);
         final Integer offsetWidth = 1014;
         final Integer clientWidth = 1000;
 
         doReturn(offsetWidth).when(element).getOffsetWidth();
         doReturn(clientWidth).when(element).getClientWidth();
-        doReturn(element).when(mainPanel).getElement();
-        doReturn(mainPanel).when(gridLienzoScrollHandler).getMainPanel();
+        doReturn(element).when(scrollPanel).getElement();
+        doReturn(scrollPanel).when(gridLienzoScrollHandler).getScrollPanel();
 
         final Integer expectedScrollbarWidth = offsetWidth - clientWidth;
         final Integer actualScrollbarWidth = gridLienzoScrollHandler.scrollbarWidth();
@@ -536,21 +545,71 @@ public class GridLienzoScrollHandlerTest {
     @Test
     public void testScrollbarHeight() {
 
-        final AbsolutePanel mainPanel = mock(AbsolutePanel.class);
+        final AbsolutePanel scrollPanel = mock(AbsolutePanel.class);
         final Element element = mock(Element.class);
         final Integer offsetHeight = 1014;
         final Integer clientHeight = 1000;
 
         doReturn(offsetHeight).when(element).getOffsetHeight();
         doReturn(clientHeight).when(element).getClientHeight();
-        doReturn(element).when(mainPanel).getElement();
-        doReturn(mainPanel).when(gridLienzoScrollHandler).getMainPanel();
+        doReturn(element).when(scrollPanel).getElement();
+        doReturn(scrollPanel).when(gridLienzoScrollHandler).getScrollPanel();
 
         final Integer expectedScrollbarHeight = offsetHeight - clientHeight;
         final Integer actualScrollbarHeight = gridLienzoScrollHandler.scrollbarHeight();
 
         assertEquals(expectedScrollbarHeight,
                      actualScrollbarHeight);
+    }
+
+    @Test
+    public void testSetupContextSwitcher() {
+
+        final AbsolutePanel domElementContainer = mock(AbsolutePanel.class);
+        final LienzoPanel lienzoPanel = mock(LienzoPanel.class);
+        final MouseWheelHandler wheelHandler = mock(MouseWheelHandler.class);
+        final MouseMoveHandler moveHandler = mock(MouseMoveHandler.class);
+
+        doReturn(domElementContainer).when(gridLienzoPanel).getDomElementContainer();
+        doReturn(wheelHandler).when(gridLienzoScrollHandler).disablePointerEvents();
+        doReturn(moveHandler).when(gridLienzoScrollHandler).enablePointerEvents();
+
+        gridLienzoScrollHandler.setupContextSwitcher();
+
+        verify(domElementContainer).addDomHandler(wheelHandler, MouseWheelEvent.getType());
+        verify(gridLienzoPanel).addMouseMoveHandler(moveHandler);
+    }
+
+    @Test
+    public void testEnablePointerEvents() {
+
+        final MouseMoveEvent mouseMoveEvent = mock(MouseMoveEvent.class);
+        final AbsolutePanel domElementContainer = mock(AbsolutePanel.class);
+        final GridLienzoScrollUI scrollUI = mock(GridLienzoScrollUI.class);
+
+        doReturn(domElementContainer).when(gridLienzoPanel).getDomElementContainer();
+        doReturn(scrollUI).when(gridLienzoScrollHandler).gridLienzoScrollUI();
+        doNothing().when(scrollUI).disablePointerEvents(any());
+
+        gridLienzoScrollHandler.enablePointerEvents().onMouseMove(mouseMoveEvent);
+
+        verify(scrollUI).enablePointerEvents(domElementContainer);
+    }
+
+    @Test
+    public void testDisablePointerEvents() {
+
+        final MouseWheelEvent mouseWheelEvent = mock(MouseWheelEvent.class);
+        final AbsolutePanel domElementContainer = mock(AbsolutePanel.class);
+        final GridLienzoScrollUI scrollUI = mock(GridLienzoScrollUI.class);
+
+        doReturn(domElementContainer).when(gridLienzoPanel).getDomElementContainer();
+        doReturn(scrollUI).when(gridLienzoScrollHandler).gridLienzoScrollUI();
+        doNothing().when(scrollUI).disablePointerEvents(any());
+
+        gridLienzoScrollHandler.disablePointerEvents().onMouseWheel(mouseWheelEvent);
+
+        verify(scrollUI).disablePointerEvents(domElementContainer);
     }
 
     private Viewport viewportMock() {

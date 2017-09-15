@@ -56,25 +56,24 @@ public class GridLienzoScrollUITest {
 
         gridLienzoScrollUI.setup();
 
-        verify(gridLienzoScrollUI).applyMainPanelStyle();
-        verify(gridLienzoScrollUI).applyMakeInternalScrollPanel();
+        verify(gridLienzoScrollUI).applyScrollPanelStyle();
+        verify(gridLienzoScrollUI).applyInternalScrollPanelStyle();
         verify(gridLienzoScrollUI).applyDomElementContainerStyle();
     }
 
     @Test
-    public void testApplyMainPanelStyle() {
+    public void testApplyScrollPanelStyle() {
 
-        gridLienzoScrollUI.applyMainPanelStyle();
+        gridLienzoScrollUI.applyScrollPanelStyle();
 
         verify(style).setPosition(Style.Position.RELATIVE);
         verify(style).setOverflow(Style.Overflow.SCROLL);
-        verify(style).setZIndex(1);
     }
 
     @Test
-    public void testApplyMakeInternalScrollPanel() {
+    public void testApplyInternalScrollPanelStyle() {
 
-        gridLienzoScrollUI.applyMakeInternalScrollPanel();
+        gridLienzoScrollUI.applyInternalScrollPanelStyle();
 
         verify(style).setPosition(Style.Position.ABSOLUTE);
     }
@@ -86,7 +85,38 @@ public class GridLienzoScrollUITest {
 
         gridLienzoScrollUI.applyDomElementContainerStyle();
 
-        verify(style).setPosition(Style.Position.FIXED);
+        verify(style).setPosition(Style.Position.ABSOLUTE);
+        verify(style).setZIndex(1);
+    }
+
+    @Test
+    public void testEnablePointerEvents() {
+
+        final Widget widget = mock(Widget.class);
+
+        gridLienzoScrollUI.enablePointerEvents(widget);
+
+        verify(gridLienzoScrollUI).setPointerEvents(widget, "initial");
+    }
+
+    @Test
+    public void testDisablePointerEvents() {
+
+        final Widget widget = mock(Widget.class);
+
+        gridLienzoScrollUI.disablePointerEvents(widget);
+
+        verify(gridLienzoScrollUI).setPointerEvents(widget, "none");
+    }
+
+    @Test
+    public void testSetPointerEvents() {
+
+        final Widget widget = mock(Widget.class);
+
+        gridLienzoScrollUI.setPointerEvents(widget, "none");
+
+        verify(style).setProperty(eq("pointerEvents"), eq("none"));
     }
 
     @Test

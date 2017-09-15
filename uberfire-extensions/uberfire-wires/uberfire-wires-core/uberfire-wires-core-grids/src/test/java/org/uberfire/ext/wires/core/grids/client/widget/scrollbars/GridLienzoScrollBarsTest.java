@@ -56,7 +56,7 @@ public class GridLienzoScrollBarsTest {
     @Test
     public void testGetHorizontalScrollPosition() {
 
-        doReturn(panel()).when(gridLienzoScrollHandler).getMainPanel();
+        doReturn(scrollPanel()).when(gridLienzoScrollHandler).getScrollPanel();
 
         final Double position = gridLienzoScrollBars.getHorizontalScrollPosition();
 
@@ -68,7 +68,7 @@ public class GridLienzoScrollBarsTest {
     @Test
     public void testGetHorizontalScrollPositionWhenScrollbarIsDisabled() {
 
-        doReturn(emptyPanel()).when(gridLienzoScrollHandler).getMainPanel();
+        doReturn(emptyPanel()).when(gridLienzoScrollHandler).getScrollPanel();
 
         final Double position = gridLienzoScrollBars.getHorizontalScrollPosition();
 
@@ -80,7 +80,7 @@ public class GridLienzoScrollBarsTest {
     @Test
     public void testGetVerticalScrollPosition() {
 
-        doReturn(panel()).when(gridLienzoScrollHandler).getMainPanel();
+        doReturn(scrollPanel()).when(gridLienzoScrollHandler).getScrollPanel();
 
         final Double position = gridLienzoScrollBars.getVerticalScrollPosition();
 
@@ -92,7 +92,7 @@ public class GridLienzoScrollBarsTest {
     @Test
     public void testGetVerticalScrollPositionWhenScrollbarIsDisabled() {
 
-        doReturn(emptyPanel()).when(gridLienzoScrollHandler).getMainPanel();
+        doReturn(emptyPanel()).when(gridLienzoScrollHandler).getScrollPanel();
 
         final Double position = gridLienzoScrollBars.getVerticalScrollPosition();
 
@@ -104,7 +104,7 @@ public class GridLienzoScrollBarsTest {
     @Test
     public void testSetHorizontalScrollPosition() {
 
-        doReturn(panel()).when(gridLienzoScrollHandler).getMainPanel();
+        doReturn(scrollPanel()).when(gridLienzoScrollHandler).getScrollPanel();
 
         final Double percentage = 100d * SCROLL_LEFT / (SCROLL_WIDTH - CLIENT_WIDTH);
 
@@ -116,7 +116,7 @@ public class GridLienzoScrollBarsTest {
     @Test
     public void testSetVerticalScrollPosition() {
 
-        doReturn(panel()).when(gridLienzoScrollHandler).getMainPanel();
+        doReturn(scrollPanel()).when(gridLienzoScrollHandler).getScrollPanel();
 
         final Double percentage = 100d * SCROLL_TOP / (SCROLL_HEIGHT - CLIENT_HEIGHT);
 
@@ -130,15 +130,15 @@ public class GridLienzoScrollBarsTest {
 
         final Panel expectedPanel = mock(AbsolutePanel.class);
 
-        doReturn(expectedPanel).when(gridLienzoScrollHandler).getMainPanel();
+        doReturn(expectedPanel).when(gridLienzoScrollHandler).getScrollPanel();
 
-        final Panel actualPanel = gridLienzoScrollBars.panel();
+        final Panel actualPanel = gridLienzoScrollBars.scrollPanel();
 
         assertEquals(expectedPanel,
                      actualPanel);
     }
 
-    private Panel panel() {
+    private Panel scrollPanel() {
 
         final Panel panel = mock(AbsolutePanel.class);
         final Element element = mock(Element.class);

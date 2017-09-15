@@ -33,9 +33,9 @@ class GridLienzoScrollBars {
 
     Double getHorizontalScrollPosition() {
 
-        final Integer scrollLeft = panel().getElement().getScrollLeft();
-        final Integer scrollWidth = panel().getElement().getScrollWidth();
-        final Integer clientWidth = panel().getElement().getClientWidth();
+        final Integer scrollLeft = scrollPanel().getElement().getScrollLeft();
+        final Integer scrollWidth = scrollPanel().getElement().getScrollWidth();
+        final Integer clientWidth = scrollPanel().getElement().getClientWidth();
         final Integer level = scrollWidth - clientWidth;
 
         return level == 0 ? 0d : 100d * scrollLeft / level;
@@ -43,8 +43,8 @@ class GridLienzoScrollBars {
 
     void setHorizontalScrollPosition(final Double percentage) {
 
-        final Integer scrollWidth = panel().getElement().getScrollWidth();
-        final Integer clientWidth = panel().getElement().getClientWidth();
+        final Integer scrollWidth = scrollPanel().getElement().getScrollWidth();
+        final Integer clientWidth = scrollPanel().getElement().getClientWidth();
         final Integer max = scrollWidth - clientWidth;
 
         setScrollLeft((int) ((max * percentage) / 100));
@@ -52,9 +52,9 @@ class GridLienzoScrollBars {
 
     Double getVerticalScrollPosition() {
 
-        final Integer scrollTop = panel().getElement().getScrollTop();
-        final Integer scrollHeight = panel().getElement().getScrollHeight();
-        final Integer clientHeight = panel().getElement().getClientHeight();
+        final Integer scrollTop = scrollPanel().getElement().getScrollTop();
+        final Integer scrollHeight = scrollPanel().getElement().getScrollHeight();
+        final Integer clientHeight = scrollPanel().getElement().getClientHeight();
         final Integer level = scrollHeight - clientHeight;
 
         return level == 0 ? 0d : 100d * scrollTop / level;
@@ -62,22 +62,22 @@ class GridLienzoScrollBars {
 
     void setVerticalScrollPosition(final Double percentage) {
 
-        final Integer scrollHeight = panel().getElement().getScrollHeight();
-        final Integer clientHeight = panel().getElement().getClientHeight();
+        final Integer scrollHeight = scrollPanel().getElement().getScrollHeight();
+        final Integer clientHeight = scrollPanel().getElement().getClientHeight();
         final Integer max = scrollHeight - clientHeight;
 
         setScrollTop((int) ((max * percentage) / 100));
     }
 
     void setScrollTop(final Integer scrollTop) {
-        panel().getElement().setScrollTop(scrollTop);
+        scrollPanel().getElement().setScrollTop(scrollTop);
     }
 
     void setScrollLeft(final Integer scrollLeft) {
-        panel().getElement().setScrollLeft(scrollLeft);
+        scrollPanel().getElement().setScrollLeft(scrollLeft);
     }
 
-    Panel panel() {
-        return gridLienzoScrollHandler.getMainPanel();
+    Panel scrollPanel() {
+        return gridLienzoScrollHandler.getScrollPanel();
     }
 }

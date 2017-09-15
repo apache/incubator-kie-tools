@@ -22,6 +22,9 @@ public interface GridLienzoScrollable {
 
     void updatePanelSize();
 
+    void updatePanelSize(final Integer width,
+                         final Integer height);
+
     void refreshScrollPosition();
 
     void setBounds(final Bounds bounds);
