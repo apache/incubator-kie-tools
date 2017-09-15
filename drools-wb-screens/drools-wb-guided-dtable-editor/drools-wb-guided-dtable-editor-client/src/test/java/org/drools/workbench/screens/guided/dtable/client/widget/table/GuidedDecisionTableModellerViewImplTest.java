@@ -23,13 +23,17 @@ import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.dev.util.collect.HashMap;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -63,36 +67,39 @@ import static org.mockito.Mockito.*;
 public class GuidedDecisionTableModellerViewImplTest {
 
     @Mock
-    FlowPanel flowPanel;
+    private FlowPanel flowPanel;
 
     @Mock
-    GridLienzoPanel mockGridPanel;
+    private GridLienzoPanel mockGridPanel;
 
     @Mock
-    DefaultGridLayer gridLayer;
+    private DefaultGridLayer gridLayer;
 
     @Mock
-    DefaultGridLayer defaultGridLayer;
+    private DefaultGridLayer defaultGridLayer;
 
     @Mock
-    RestrictedMousePanMediator restrictedMousePanMediator;
+    private RestrictedMousePanMediator restrictedMousePanMediator;
 
     @Mock
-    VerticalPanel attributeConfigWidget;
+    private VerticalPanel attributeConfigWidget;
 
     @Mock
-    GuidedDecisionTableAccordion accordion;
+    private GuidedDecisionTableAccordion accordion;
 
     @Mock
-    GuidedDecisionTableModellerView.Presenter presenter;
+    private GuidedDecisionTableModellerView.Presenter presenter;
 
     @Mock
-    GuidedDecisionTableView.Presenter viewPresenter;
+    private GuidedDecisionTableView.Presenter viewPresenter;
 
     @Mock
-    Icon pinnedModeIndicator;
+    private Icon pinnedModeIndicator;
 
-    GuidedDecisionTableModellerViewImpl view;
+    @Mock
+    private RootPanel rootPanel;
+
+    private GuidedDecisionTableModellerViewImpl view;
 
     @Before
     public void setup() {
@@ -284,12 +291,28 @@ public class GuidedDecisionTableModellerViewImplTest {
 
         view.addKeyDownHandler(handler);
 
+        verify(rootPanel,
+               never()).addDomHandler(eq(handler),
+                                      eq(KeyDownEvent.getType()));
         verify(mockGridPanel).addKeyDownHandler(eq(handler));
     }
 
     @Test
-    public void testEnableButtonMenu() {
+    public void testAddMouseDownHandlerAttachesToRootPanel() {
+        //Ensure nobody thinks its a good idea to attach to the GridPanel at some time in the future!
+        //See https://issues.jboss.org/browse/GUVNOR-3491
+        final MouseDownHandler handler = mock(MouseDownHandler.class);
 
+        view.addMouseDownHandler(handler);
+
+        verify(mockGridPanel,
+               never()).addMouseDownHandler(eq(handler));
+        verify(rootPanel).addDomHandler(eq(handler),
+                                        eq(MouseDownEvent.getType()));
+    }
+
+    @Test
+    public void testEnableButtonMenu() {
         final Button addColumn = mock(Button.class);
         final Button editColumns = mock(Button.class);
 
@@ -304,7 +327,6 @@ public class GuidedDecisionTableModellerViewImplTest {
 
     @Test
     public void testDisableButtonMenu() {
-
         final Button addColumn = mock(Button.class);
         final Button editColumns = mock(Button.class);
 
@@ -319,7 +341,6 @@ public class GuidedDecisionTableModellerViewImplTest {
 
     @Test
     public void testSelect() {
-
         final GridWidget gridWidget = mock(GridWidget.class);
         final RuleSelector ruleSelector = mock(RuleSelector.class);
         final DefaultGridLayer gridLayer = mock(DefaultGridLayer.class);
@@ -468,6 +489,11 @@ public class GuidedDecisionTableModellerViewImplTest {
 
         RestrictedMousePanMediator restrictedMousePanMediator() {
             return restrictedMousePanMediator;
+        }
+
+        @Override
+        RootPanel rootPanel() {
+            return rootPanel;
         }
     }
 }
