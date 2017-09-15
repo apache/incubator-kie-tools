@@ -221,7 +221,7 @@ public class FactPatternConstraintsPageTest {
                                     conditionCol,
                                     callback);
 
-        verify(callback).callback(new String[]{"==", "!=", "<", ">", "<=", ">=", "matches", "soundslike", "== null", "!= null", "in", "not in"});
+        verify(callback).callback(new String[]{"==", "!=", "<", ">", "<=", ">=", "matches", "not matches", "soundslike", "not soundslike", "== null", "!= null", "in", "not in"});
     }
 
     @Test
@@ -233,7 +233,7 @@ public class FactPatternConstraintsPageTest {
                                     conditionCol,
                                     callback);
 
-        verify(callback).callback(new String[]{"==", "!=", "<", ">", "<=", ">=", "matches", "soundslike", "== null", "!= null"});
+        verify(callback).callback(new String[]{"==", "!=", "<", ">", "<=", ">=", "matches", "not matches", "soundslike", "not soundslike", "== null", "!= null"});
     }
 
     @Test
