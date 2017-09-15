@@ -104,6 +104,7 @@ public class PagedTable<T>
               gridGlobalPreferences);
         this.showPageSizesSelector = showPageSizesSelector;
         this.pageSize = pageSize;
+        this.dataGrid.setPageStart(0);
         this.dataGrid.setPageSize(pageSize);
         PagedTableHelper.setSelectedValue(pageSizesSelector,
                                           String.valueOf(pageSize));
@@ -140,6 +141,7 @@ public class PagedTable<T>
 
     public final void loadPageSizePreferences() {
         pageSize = getPageSizeStored();
+        this.dataGrid.setPageStart(0);
         this.dataGrid.setPageSize(pageSize);
         this.pager.setPageSize(pageSize);
         int height = ((pageSize <= 0 ? 1 : pageSize) * ROW_HEIGHT_PX) + HEIGHT_OFFSET_PX;

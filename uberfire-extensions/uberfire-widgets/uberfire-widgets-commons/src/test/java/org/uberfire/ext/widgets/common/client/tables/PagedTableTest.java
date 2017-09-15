@@ -54,5 +54,19 @@ public class PagedTableTest {
         pagedTable.loadPageSizePreferences();
         verify(pagedTable.dataGrid, times(1)).setHeight(eq(EXPECTED_HEIGHT_PX + "px"));
     }
+
+    @Test
+    public void testLoadPageSizePreferencesResetsPageStart() throws Exception {
+        final int PAGE_SIZE = 10;
+
+        PagedTable pagedTable = new PagedTable(PAGE_SIZE);
+        pagedTable.dataGrid = spy(pagedTable.dataGrid);
+
+        verify(pagedTable.dataGrid, times(0)).setPageStart(0);
+
+        pagedTable.loadPageSizePreferences();
+        verify(pagedTable.dataGrid, times(1)).setPageStart(0);
+    }
+
     
 }
