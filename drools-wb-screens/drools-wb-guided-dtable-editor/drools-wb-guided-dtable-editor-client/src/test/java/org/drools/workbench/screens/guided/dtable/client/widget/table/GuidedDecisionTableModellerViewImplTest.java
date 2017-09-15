@@ -377,7 +377,7 @@ public class GuidedDecisionTableModellerViewImplTest {
         doReturn(mediators).when(viewport).getMediators();
 
         doReturn(element).when(mockGridPanel).getElement();
-        doReturn(mainPanel).when(mockGridPanel).getMainPanel();
+        doReturn(mainPanel).when(mockGridPanel).getScrollPanel();
         doReturn(viewport).when(mockGridPanel).getViewport();
 
         view.setup();
@@ -405,7 +405,7 @@ public class GuidedDecisionTableModellerViewImplTest {
         doReturn(mediators).when(viewport).getMediators();
 
         doReturn(element).when(mockGridPanel).getElement();
-        doReturn(mainPanel).when(mockGridPanel).getMainPanel();
+        doReturn(mainPanel).when(mockGridPanel).getScrollPanel();
         doReturn(viewport).when(mockGridPanel).getViewport();
 
         view.setupGridPanel();

@@ -208,8 +208,8 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
         mousePanMediator.setBatchDraw(true);
 
         gridPanel.setBounds(getBounds());
-        gridPanel.getMainPanel().addDomHandler(scrollEvent -> getPresenter().updateRadar(),
-                                               ScrollEvent.getType());
+        gridPanel.getScrollPanel().addDomHandler(scrollEvent -> getPresenter().updateRadar(),
+                                                 ScrollEvent.getType());
 
         //Wire-up widgets
         gridPanel.add(gridLayer);
