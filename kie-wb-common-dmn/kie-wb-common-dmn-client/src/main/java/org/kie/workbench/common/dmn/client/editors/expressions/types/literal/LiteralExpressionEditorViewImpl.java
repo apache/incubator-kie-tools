@@ -107,6 +107,9 @@ public class LiteralExpressionEditorViewImpl extends BaseExpressionEditorViewImp
         uiModelMapper.fromDMNModel(0,
                                    0);
         gridLayer.batch();
+
+        getGridPanel().updatePanelSize(LIENZO_PANEL_WIDTH,
+                                       LIENZO_PANEL_HEIGHT);
     }
 
     //For Unit Tests

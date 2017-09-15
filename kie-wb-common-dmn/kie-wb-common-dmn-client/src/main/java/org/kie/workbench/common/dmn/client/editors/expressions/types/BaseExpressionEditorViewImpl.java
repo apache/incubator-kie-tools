@@ -45,6 +45,10 @@ public abstract class BaseExpressionEditorViewImpl<P extends BaseExpressionEdito
 
     private static final double VP_SCALE = 1.0;
 
+    public static final int LIENZO_PANEL_WIDTH = 1000;
+
+    public static final int LIENZO_PANEL_HEIGHT = 450;
+
     protected TranslationService ts;
     protected SessionManager sessionManager;
     protected SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
@@ -67,20 +71,13 @@ public abstract class BaseExpressionEditorViewImpl<P extends BaseExpressionEdito
     protected BaseUIModelMapper<E> uiModelMapper;
 
     public GridLienzoPanel defaultGridPanel() {
-        return new GridLienzoPanel(1000,
-                                   450) {
+        return new GridLienzoPanel(LIENZO_PANEL_WIDTH,
+                                   LIENZO_PANEL_HEIGHT) {
 
             @Override
             public void onResize() {
                 Scheduler.get().scheduleDeferred(() -> {
-                    final int width = getParent().getOffsetWidth();
-                    final int height = getParent().getOffsetHeight();
-                    if ((width != 0) && (height != 0)) {
-                        domElementContainer.setPixelSize(width,
-                                                         height);
-                        lienzoPanel.setPixelSize(width,
-                                                 height);
-                    }
+                    updatePanelSize();
 
                     final TransformMediator restriction = mousePanMediator.getTransformMediator();
                     final Transform transform = restriction.adjust(gridLayer.getViewport().getTransform(),

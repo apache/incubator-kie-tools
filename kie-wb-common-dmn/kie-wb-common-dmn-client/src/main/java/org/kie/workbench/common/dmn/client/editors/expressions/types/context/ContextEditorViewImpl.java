@@ -43,6 +43,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.StringDOMElementSingletonColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.BlueTheme;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 @Templated
@@ -110,6 +111,17 @@ public class ContextEditorViewImpl extends BaseExpressionEditorViewImpl<ContextE
     @Override
     public void setExpression(final Context expression) {
         this.expression = Optional.of(expression);
-        gridLayer.batch();
+
+        getGridLayer().batch();
+        getGridPanel().updatePanelSize(LIENZO_PANEL_WIDTH,
+                                       LIENZO_PANEL_HEIGHT);
+    }
+
+    DefaultGridLayer getGridLayer() {
+        return gridLayer;
+    }
+
+    Optional<Context> getExpression() {
+        return expression;
     }
 }

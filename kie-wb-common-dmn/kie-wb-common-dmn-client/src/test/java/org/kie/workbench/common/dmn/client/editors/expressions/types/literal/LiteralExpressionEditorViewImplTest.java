@@ -33,9 +33,13 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
 import static org.junit.Assert.*;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.BaseExpressionEditorViewImpl.LIENZO_PANEL_HEIGHT;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.BaseExpressionEditorViewImpl.LIENZO_PANEL_WIDTH;
+import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class LiteralExpressionEditorViewImplTest {
@@ -55,9 +59,7 @@ public class LiteralExpressionEditorViewImplTest {
 
     @Before
     public void setup() {
-        this.view = new LiteralExpressionEditorViewImpl(ts,
-                                                        sessionManager,
-                                                        sessionCommandManager);
+        this.view = makeLiteralExpressionEditorView();
     }
 
     @Test
@@ -96,12 +98,39 @@ public class LiteralExpressionEditorViewImplTest {
 
     @Test
     public void checkSetExpression() {
-        final LiteralExpression expression = new LiteralExpression();
-        expression.setText(TEXT);
+        final LiteralExpression expression = makeLiteralExpression(TEXT);
+        final GridLienzoPanel lienzoPanel = mock(GridLienzoPanel.class);
+        final LiteralExpressionEditorViewImpl view = makeLiteralExpressionEditorView(lienzoPanel);
+
         view.setExpression(expression);
 
+        verify(lienzoPanel).updatePanelSize(LIENZO_PANEL_WIDTH,
+                                            LIENZO_PANEL_HEIGHT);
         assertEquals(TEXT,
-                     view.getGridWidget().getModel().getCell(0,
-                                                             0).getValue().getValue().toString());
+                     view.getGridWidget().getModel().getCell(0, 0).getValue().getValue().toString());
+    }
+
+    private LiteralExpression makeLiteralExpression(final String text) {
+        final LiteralExpression expression = new LiteralExpression();
+
+        expression.setText(text);
+
+        return expression;
+    }
+
+    private LiteralExpressionEditorViewImpl makeLiteralExpressionEditorView() {
+        return new LiteralExpressionEditorViewImpl(ts,
+                                                   sessionManager,
+                                                   sessionCommandManager);
+    }
+
+    private LiteralExpressionEditorViewImpl makeLiteralExpressionEditorView(final GridLienzoPanel lienzoPanel) {
+        return new LiteralExpressionEditorViewImpl(ts,
+                                                   sessionManager,
+                                                   sessionCommandManager) {
+            public GridLienzoPanel getGridPanel() {
+                return lienzoPanel;
+            }
+        };
     }
 }
