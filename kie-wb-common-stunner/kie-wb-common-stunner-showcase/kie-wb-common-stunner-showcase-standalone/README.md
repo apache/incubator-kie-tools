@@ -27,7 +27,7 @@ Running the application
         -Xms1g
         -Xss1M
         -XX:CompileThreshold=7000
-        -Derrai.jboss.home=$PATH_OF_YOUR_CLONED_KIE_WB_COMMON_REPO/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-standalone/target/wildfly-10.0.0.Final
+        -Derrai.jboss.home=$PATH_OF_YOUR_CLONED_KIE_WB_COMMON_REPO/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-standalone/target/wildfly-10.1.0.Final
         -Derrai.server.classOutput=$PATH_OF_YOUR_CLONED_KIE_WB_COMMON_REPO/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-standalone/target
         -Djava.util.prefs.syncInterval=2000000
         -Dorg.uberfire.async.executor.safemode=true
@@ -51,10 +51,10 @@ Running the application
   
 3.- Once done, you can run or debug the application using this recently created configuration.                   
   
-*TIP*: While coding it's a good practice to remove application's old artifacts the GWT idea plugin working's directory. It is usually present on your home directory as `$HOME/.IntelliJIdea15/system/gwt/`. On Macs you can find this under ~//Library/Caches/IntelliJIdea15/gwt.
+*TIP*: While coding it's a good practice to remove application's old artifacts the GWT idea plugin working's directory. It is usually present on your home directory as `$HOME/.IntelliJIdeaXXX/system/gwt/`. On Macs you can find this under ~//Library/Caches/IntelliJIdeaXXX/gwt.
 
 Requirements
 ------------
 * Java8+          
-* Maven 3.2.5+       
+* Maven 3.3.9+       
 * Git 1.8+        
