@@ -43,6 +43,8 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
+import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
@@ -87,7 +89,7 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
 
     @Mock
     private GridCell uiCell;
-
+    
     @Mock
     private CellSelectionStrategy cellSelectionStrategy;
 
@@ -186,6 +188,90 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
                                    any( Integer.class ) );
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testContextMenuCellIsSelectedCell() {
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
+        final GridData uiModel = dtPresenter.getView().getModel();
+        final GridColumn uiColumn = new RowNumberColumn();
+
+        uiModel.appendColumn(uiColumn);
+
+        //Cell associated with Mock onContextMenu Event has indices (0,0)
+        uiModel.selectCells(0,0,1,1);
+
+        when(columnInformation.getColumn()).thenReturn(uiColumn);
+        when(modellerPresenter.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {
+
+            {
+                add(dtPresenter);
+            }
+        });
+
+        final ContextMenuHandler handler = contextMenuSupport.getContextMenuHandler(modellerPresenter);
+
+        handler.onContextMenu(event);
+
+        // this method is called if the handler does a selectCell, which should not occur for this test case
+        verify(cellSelectionStrategy,
+               never()).handleSelection(any(GridData.class),
+                                        any(Integer.class),
+                                        any(Integer.class),
+                                        any(Boolean.class),
+                                        any(Boolean.class));
+
+        verify( rowContextMenu,
+                times( 1 ) ).show( any( Integer.class ),
+                                any( Integer.class ) );
+        verify( cellContextMenu,
+                never() ).show( any( Integer.class ),
+                                   any( Integer.class ) );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testContextMenuCellIsNotSelectedCell() {
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
+        final GridData uiModel = dtPresenter.getView().getModel();
+        final GridColumn uiColumn = new RowNumberColumn();
+
+        uiModel.appendColumn(uiColumn);
+        uiModel.appendRow(new BaseGridRow());
+
+        //Cell associated with Mock onContextMenu Event has indices (0,0)
+        uiModel.selectCells(1,0,1,1);
+
+        when(columnInformation.getColumn()).thenReturn(uiColumn);
+        when(modellerPresenter.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {
+
+            {
+                add(dtPresenter);
+            }
+        });
+        
+        when(uiModel.getCell(any(Integer.class),
+                             any(Integer.class))).thenReturn(uiCell);
+
+        final ContextMenuHandler handler = contextMenuSupport.getContextMenuHandler(modellerPresenter);
+
+        handler.onContextMenu(event);
+
+        // this method is called if the handler does a selectCell, which should occur for this test case
+        verify(cellSelectionStrategy,
+               times(1)).handleSelection(any(GridData.class),
+                                         eq(0),
+                                         eq(0),
+                                         eq(false),
+                                         eq(false));
+        
+        verify( rowContextMenu,
+                times( 1 ) ).show( any( Integer.class ),
+                                any( Integer.class ) );
+        verify( cellContextMenu,
+                never() ).show( any( Integer.class ),
+                                   any( Integer.class ) );
+    }
+    
     @Test
     @SuppressWarnings("unchecked")
     public void onContextMenuWithCellSelectionManagerWithChangeInSelection() {
