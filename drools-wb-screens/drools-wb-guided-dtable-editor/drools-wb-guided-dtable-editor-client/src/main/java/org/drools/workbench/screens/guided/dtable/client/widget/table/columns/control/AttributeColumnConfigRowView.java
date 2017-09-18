@@ -42,7 +42,7 @@ public class AttributeColumnConfigRowView extends HorizontalPanel {
     }
 
     public void addColumnLabel(AttributeCol52 attributeColumn) {
-        SmallLabel label = new SmallLabel(attributeColumn.getAttribute());
+        final ColumnLabelWidget label = new ColumnLabelWidget(attributeColumn.getAttribute());
         ColumnUtilities.setColumnLabelStyleWhenHidden(label,
                                                       attributeColumn.isHideColumn());
         add(label);

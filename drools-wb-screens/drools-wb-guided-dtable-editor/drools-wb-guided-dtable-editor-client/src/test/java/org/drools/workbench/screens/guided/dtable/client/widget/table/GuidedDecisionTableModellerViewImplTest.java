@@ -17,7 +17,9 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.Viewport;
@@ -39,9 +41,24 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.ColumnLabelWidget;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.ColumnManagementView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.accordion.GuidedDecisionTableAccordion;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.accordion.GuidedDecisionTableAccordionItem;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.AttributeColumnConfigRowView;
@@ -66,7 +83,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-@WithClassesToStub({GridLienzoPanel.class, DefaultGridLayer.class, GridWidget.class, RestrictedMousePanMediator.class})
+@WithClassesToStub({ColumnLabelWidget.class,    GridLienzoPanel.class, DefaultGridLayer.class, GridWidget.class, RestrictedMousePanMediator.class})
 public class GuidedDecisionTableModellerViewImplTest {
 
     @Mock
@@ -107,6 +124,18 @@ public class GuidedDecisionTableModellerViewImplTest {
 
     @Mock
     private RootPanel rootPanel;
+
+    @Mock
+    private ColumnManagementView columnManagementView;
+
+    @Mock
+    private VerticalPanel actionsConfigWidget;
+
+    @Mock
+    private VerticalPanel conditionsConfigWidget;
+
+    @Captor
+    private ArgumentCaptor<Map<String, List<BaseColumn>>> capturedGroups;
 
     private GuidedDecisionTableModellerViewImpl view;
 
@@ -517,6 +546,151 @@ public class GuidedDecisionTableModellerViewImplTest {
                times(1)).disableButtonMenu();
     }
 
+    public void testRefreshActions() throws Exception {
+        final String boundName = "person",
+                factType = "Person",
+                headerWithBoundName = "[person]",
+                headerWithFactTypeAndBoundName = "Person [person]";
+
+        final List<ActionCol52> originalColumns = new ArrayList<ActionCol52>() {{
+            // insert fact columns
+            add(new ActionInsertFactCol52() {{
+                setBoundName(boundName);
+                setFactType(factType);
+            }});
+            add(new ActionWorkItemInsertFactCol52() {{
+                setBoundName(boundName);
+                setFactType(factType);
+            }});
+
+            // set field columns
+            add(new ActionSetFieldCol52() {{
+                setBoundName(boundName);
+            }});
+            add(new ActionWorkItemSetFieldCol52() {{
+                setBoundName(boundName);
+            }});
+
+            // brl columns
+            add(new BRLActionColumn() {{
+                // to assert not grouped in set field columns
+                setHeader(headerWithBoundName);
+            }});
+            add(new BRLActionColumn() {{
+                // to assert not grouped in insert fact columns
+                setHeader(headerWithFactTypeAndBoundName);
+            }});
+
+            // retract columns
+            add(new ActionRetractFactCol52() {{
+                setHeader(headerWithBoundName);
+            }});
+            add(new ActionRetractFactCol52() {{
+                setHeader(headerWithFactTypeAndBoundName);
+            }});
+
+            // execute work item columns
+            add(new ActionWorkItemCol52() {{
+                setHeader(headerWithBoundName);
+            }});
+            add(new ActionWorkItemCol52() {{
+                setHeader(headerWithFactTypeAndBoundName);
+            }});
+        }};
+
+        view.refreshActionsWidget(originalColumns);
+
+        verify(columnManagementView).renderColumns(capturedGroups.capture());
+        assertEquals(2,
+                     capturedGroups.getValue().get(headerWithFactTypeAndBoundName).size());
+        assertEquals(2,
+                     capturedGroups.getValue().get(headerWithBoundName).size());
+        assertEquals(2,
+                     capturedGroups.getValue().get(GuidedDecisionTableConstants.INSTANCE.BrlActions()).size());
+        assertEquals(2,
+                     capturedGroups.getValue().get(GuidedDecisionTableConstants.INSTANCE.RetractActions()).size());
+        assertEquals(2,
+                     capturedGroups.getValue().get(GuidedDecisionTableConstants.INSTANCE.ExecuteWorkItemActions()).size());
+    }
+
+    @Test
+    public void testRefreshConditions() throws Exception {
+        final String boundName = "person",
+                boundNameMessage = "message",
+                factType = "Person",
+                factTypeMessage = "Message",
+                headerWithFactTypeAndBoundName = "Person [person]",
+                headerWithNegatedFactType = GuidedDecisionTableConstants.INSTANCE.negatedPattern() + " Person",
+                headerWithFactTypeAndBoundNameMessage = "Message [message]";
+
+        final List<CompositeColumn<? extends BaseColumn>> originalColumns = new ArrayList<CompositeColumn<? extends BaseColumn>>() {{
+            // brl columns
+            add(new BRLConditionColumn() {{
+                setHeader(headerWithFactTypeAndBoundName);
+            }});
+
+            // patterns
+            add(new Pattern52() {{
+                setBoundName(boundName);
+                setFactType(factType);
+            }});
+
+            add(new Pattern52() {{
+                setBoundName(boundNameMessage);
+                setFactType(factTypeMessage);
+            }});
+
+            add(new Pattern52() {{
+                setNegated(true);
+                setFactType(factType);
+            }});
+        }};
+
+        view.refreshConditionsWidget(originalColumns);
+
+        verify(columnManagementView).renderColumns(capturedGroups.capture());
+        assertEquals(1,
+                     capturedGroups.getValue().get(headerWithFactTypeAndBoundName).size());
+        assertEquals(1,
+                     capturedGroups.getValue().get(headerWithFactTypeAndBoundNameMessage).size());
+        assertEquals(1,
+                     capturedGroups.getValue().get(headerWithNegatedFactType).size());
+        assertEquals(1,
+                     capturedGroups.getValue().get(GuidedDecisionTableConstants.INSTANCE.BrlConditions()).size());
+    }
+
+    @Test
+    public void testRefreshActionsEmpty() throws Exception {
+        final GuidedDecisionTableAccordionItem item = mock(GuidedDecisionTableAccordionItem.class);
+        final Label blankSlate = mock(Label.class);
+
+        doReturn(item).when(accordion).getItem(GuidedDecisionTableAccordionItem.Type.ACTION);
+        doReturn(blankSlate).when(view).blankSlate();
+
+        view.refreshActionsWidget(Collections.emptyList());
+
+        verify(item).setOpen(false);
+        verify(actionsConfigWidget).add(blankSlate);
+        verify(columnManagementView,
+               never()).renderColumns(anyMap());
+    }
+
+    @Test
+    public void testRefreshConditionsEmpty() throws Exception {
+        final GuidedDecisionTableAccordionItem item = mock(GuidedDecisionTableAccordionItem.class);
+        final Label blankSlate = mock(Label.class);
+
+        doReturn(item).when(accordion).getItem(GuidedDecisionTableAccordionItem.Type.CONDITION);
+        doReturn(blankSlate).when(view).blankSlate();
+
+        view.refreshConditionsWidget(Collections.emptyList());
+
+        verify(item).setOpen(false);
+        verify(conditionsConfigWidget).add(blankSlate);
+        verify(columnManagementView,
+               never()).renderColumns(anyMap());
+    }
+
     private AttributeCol52 attributeColumn() {
         final AttributeCol52 attributeCol52 = mock(AttributeCol52.class);
         final DTCellValue52 defaultValue = mock(DTCellValue52.class);
@@ -545,6 +719,36 @@ public class GuidedDecisionTableModellerViewImplTest {
         @Override
         RootPanel rootPanel() {
             return rootPanel;
+        }
+
+        @Override
+        Presenter getPresenter() {
+            return presenter;
+        }
+
+        @Override
+        ColumnManagementView getActionsPanel() {
+            return columnManagementView;
+        }
+
+        @Override
+        ColumnManagementView getConditionsPanel() {
+            return columnManagementView;
+        }
+
+        @Override
+        GuidedDecisionTableAccordion getAccordion() {
+            return accordion;
+        }
+
+        @Override
+        VerticalPanel getActionsConfigWidget() {
+            return actionsConfigWidget;
+        }
+
+        @Override
+        VerticalPanel getConditionsConfigWidget() {
+            return conditionsConfigWidget;
         }
     }
 }

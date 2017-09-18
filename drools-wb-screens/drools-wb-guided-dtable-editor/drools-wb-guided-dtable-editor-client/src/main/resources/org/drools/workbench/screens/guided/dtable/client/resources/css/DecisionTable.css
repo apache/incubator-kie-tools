@@ -224,8 +224,8 @@
 }
 
 .columnLabelHidden {
-    font-style: italic;
     color: grey;
+    font-style: italic;
 }
 
 /* - Guided Decision Table Modeller - */

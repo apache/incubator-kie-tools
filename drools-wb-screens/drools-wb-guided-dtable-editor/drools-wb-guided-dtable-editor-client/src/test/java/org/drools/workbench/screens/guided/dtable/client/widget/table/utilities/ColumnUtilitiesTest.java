@@ -25,6 +25,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol5
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.ColumnLabelWidget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -181,6 +183,26 @@ public class ColumnUtilitiesTest {
                      valueList[0]);
         assertEquals("-1",
                      valueList[1]);
+    }
+
+    @Test
+    public void testSetColumnLabelStyleWhenHiddenPositive() throws Exception {
+        final ColumnLabelWidget label = mock(ColumnLabelWidget.class);
+
+        ColumnUtilities.setColumnLabelStyleWhenHidden(label,
+                                                      true);
+
+        verify(label).addStyleName(GuidedDecisionTableResources.INSTANCE.css().columnLabelHidden());
+    }
+
+    @Test
+    public void testSetColumnLabelStyleWhenHiddenNegative() throws Exception {
+        final ColumnLabelWidget label = mock(ColumnLabelWidget.class);
+
+        ColumnUtilities.setColumnLabelStyleWhenHidden(label,
+                                                      false);
+
+        verify(label).removeStyleName(GuidedDecisionTableResources.INSTANCE.css().columnLabelHidden());
     }
 
     private void check() {

@@ -30,6 +30,14 @@ public interface GuidedDecisionTableConstants
     String COLON = ":";
 
     //Decision Table
+    String ExecuteWorkItemActions();
+
+    String RetractActions();
+
+    String BrlActions();
+
+    String BrlConditions();
+
     String NoPatternBindingsAvailable();
 
     String OtherwiseCellLabel();
@@ -114,8 +122,6 @@ public interface GuidedDecisionTableConstants
 
     String Options();
 
-    String EditThisActionColumnConfiguration();
-
     String DeleteActionColumnWarning(String p0);
 
     String NewColumn();
@@ -124,7 +130,9 @@ public interface GuidedDecisionTableConstants
 
     String Attribute();
 
-    String EditThisColumnsConfiguration();
+    String EditThisColumnConfiguration();
+
+    String DeleteThisColumn();
 
     String UnableToDeletePatterns();
 

@@ -17,23 +17,20 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control;
 
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.uberfire.ext.widgets.common.client.common.ImageButton;
-import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +41,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@WithClassesToStub(ColumnLabelWidget.class)
 @RunWith(GwtMockitoTestRunner.class)
 public class AttributeColumnConfigRowViewTest {
 
@@ -81,7 +79,7 @@ public class AttributeColumnConfigRowViewTest {
     public void testAddColumnLabel() throws Exception {
         view.addColumnLabel(attributeColumn);
         verify(view).add(widgetCaptor.capture());
-        assertTrue(widgetCaptor.getValue() instanceof SmallLabel);
+        assertTrue(widgetCaptor.getValue() instanceof ColumnLabelWidget);
     }
 
     @Test

@@ -16,8 +16,20 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 
@@ -58,6 +70,45 @@ public class DecisionTableColumnViewUtils {
         clean(container);
         append(widget,
                container);
+    }
+
+    public static String getColumnManagementGroupTitle(final BaseColumn column) {
+        String managementSectionHeader = null;
+        if (column instanceof ActionInsertFactCol52) {
+            managementSectionHeader = concatenateFactTypeAndBoundName(((ActionInsertFactCol52) column).getFactType(),
+                                                                      ((ActionInsertFactCol52) column).getBoundName());
+        } else if (column instanceof ActionSetFieldCol52) {
+            managementSectionHeader = concatenateFactTypeAndBoundName(null,
+                                                                      ((ActionSetFieldCol52) column).getBoundName());
+        } else if (column instanceof Pattern52) {
+            managementSectionHeader = concatenateFactTypeAndBoundName(((Pattern52) column).getFactType(),
+                                                                      ((Pattern52) column).getBoundName());
+            if (((Pattern52) column).isNegated()) {
+                managementSectionHeader = GuidedDecisionTableConstants.INSTANCE.negatedPattern() + " " + managementSectionHeader;
+            }
+        } else if (column instanceof ActionRetractFactCol52) {
+            managementSectionHeader = GuidedDecisionTableConstants.INSTANCE.RetractActions();
+        } else if (column instanceof ActionWorkItemCol52) {
+            managementSectionHeader = GuidedDecisionTableConstants.INSTANCE.ExecuteWorkItemActions();
+        } else if (column instanceof BRLActionColumn) {
+            managementSectionHeader = GuidedDecisionTableConstants.INSTANCE.BrlActions();
+        } else if (column instanceof BRLConditionColumn) {
+            managementSectionHeader = GuidedDecisionTableConstants.INSTANCE.BrlConditions();
+        }
+
+        if (managementSectionHeader == null || managementSectionHeader.isEmpty()) {
+            return column.getHeader();
+        } else {
+            return managementSectionHeader;
+        }
+    }
+
+    private static String concatenateFactTypeAndBoundName(final String factType,
+                                                          final String boundName) {
+        return Stream.of(factType,
+                         boundName != null && !boundName.isEmpty() ? "[" + boundName + "]" : boundName)
+                .filter(text -> text != null && !text.isEmpty())
+                .collect(Collectors.joining(" "));
     }
 
     private static void append(final IsWidget widget,

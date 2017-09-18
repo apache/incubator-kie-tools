@@ -17,15 +17,26 @@
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -34,6 +45,10 @@ public class DecisionTableColumnViewUtilsTest {
     private static final String SECOND_OPTION = "second option";
     private static final String FIRST_OPTION = "first option";
     private static final String PLEASE_CHOOSE = "please choose";
+
+    private static final String FACT_TYPE_APPLICANT = "Applicant";
+    private static final String APPLICANT_BOUND_NAME = "$a";
+    private static final String COLUMN_HEADER = "column header";
 
     @Mock
     ListBox listBox;
@@ -114,5 +129,149 @@ public class DecisionTableColumnViewUtilsTest {
         assertEquals(2,
                      DecisionTableColumnViewUtils.getCurrentIndexFromList(SECOND_OPTION,
                                                                           listBox));
+    }
+
+    @Test
+    public void testColumnManagementGroupTitleInsertFact() throws Exception {
+        final ActionInsertFactCol52 column = mock(ActionInsertFactCol52.class);
+        doReturn(FACT_TYPE_APPLICANT).when(column).getFactType();
+        doReturn(APPLICANT_BOUND_NAME).when(column).getBoundName();
+
+        assertEquals(FACT_TYPE_APPLICANT + " [" + APPLICANT_BOUND_NAME + "]",
+                     DecisionTableColumnViewUtils.getColumnManagementGroupTitle(column));
+    }
+
+    @Test
+    public void testColumnManagementGroupTitleInsertFactEmpty() throws Exception {
+        final ActionInsertFactCol52 column = mock(ActionInsertFactCol52.class);
+        doReturn(COLUMN_HEADER).when(column).getHeader();
+
+        assertEquals(COLUMN_HEADER,
+                     DecisionTableColumnViewUtils.getColumnManagementGroupTitle(column));
+    }
+
+    @Test
+    public void testColumnManagementGroupTitleSetField() throws Exception {
+        final ActionSetFieldCol52 column = mock(ActionSetFieldCol52.class);
+        doReturn(APPLICANT_BOUND_NAME).when(column).getBoundName();
+
+        assertEquals("[" + APPLICANT_BOUND_NAME + "]",
+                     DecisionTableColumnViewUtils.getColumnManagementGroupTitle(column));
+    }
+
+    @Test
+    public void testColumnManagementGroupTitleSetFieldEmpty() throws Exception {
+        final ActionSetFieldCol52 column = mock(ActionSetFieldCol52.class);
+        doReturn(COLUMN_HEADER).when(column).getHeader();
+
+        assertEquals(COLUMN_HEADER,
+                     DecisionTableColumnViewUtils.getColumnManagementGroupTitle(column));
+    }
+
+    @Test
+    public void testColumnManagementGroupTitleWorkItemInsertFact() throws Exception {
+        final ActionWorkItemInsertFactCol52 column = mock(ActionWorkItemInsertFactCol52.class);
+        doReturn(FACT_TYPE_APPLICANT).when(column).getFactType();
+        doReturn(APPLICANT_BOUND_NAME).when(column).getBoundName();
+
+        assertEquals(FACT_TYPE_APPLICANT + " [" + APPLICANT_BOUND_NAME + "]",
+                     DecisionTableColumnViewUtils.getColumnManagementGroupTitle(column));
+    }
+
+    @Test
+    public void testColumnManagementGroupTitleWorkItemInsertFactEmpty() throws Exception {
+        final ActionWorkItemInsertFactCol52 column = mock(ActionWorkItemInsertFactCol52.class);
+        doReturn(COLUMN_HEADER).when(column).getHeader();
+
+        assertEquals(COLUMN_HEADER,
+                     DecisionTableColumnViewUtils.getColumnManagementGroupTitle(column));
+    }
+
+    @Test
+    public void testColumnManagementGroupTitleWorkItemSetField() throws Exception {
+        final ActionWorkItemSetFieldCol52 column = mock(ActionWorkItemSetFieldCol52.class);
+        doReturn(APPLICANT_BOUND_NAME).when(column).getBoundName();
+
+        assertEquals("[" + APPLICANT_BOUND_NAME + "]",
+                     DecisionTableColumnViewUtils.getColumnManagementGroupTitle(column));
+    }
+
+    @Test
+    public void testColumnManagementGroupTitleWorkItemSetFieldEmpty() throws Exception {
+        final ActionWorkItemSetFieldCol52 column = mock(ActionWorkItemSetFieldCol52.class);
+        doReturn(COLUMN_HEADER).when(column).getHeader();
+
+        assertEquals(COLUMN_HEADER,
+                     DecisionTableColumnViewUtils.getColumnManagementGroupTitle(column));
+    }
+
+    @Test
+    public void testColumnManagementGroupTitlePattern() throws Exception {
+        final Pattern52 column = mock(Pattern52.class);
+        doReturn(FACT_TYPE_APPLICANT).when(column).getFactType();
+        doReturn(APPLICANT_BOUND_NAME).when(column).getBoundName();
+
+        assertEquals(FACT_TYPE_APPLICANT + " [" + APPLICANT_BOUND_NAME + "]",
+                     DecisionTableColumnViewUtils.getColumnManagementGroupTitle(column));
+    }
+
+    @Test
+    public void testColumnManagementGroupTitlePatternNegated() throws Exception {
+        final Pattern52 column = mock(Pattern52.class);
+        doReturn(FACT_TYPE_APPLICANT).when(column).getFactType();
+        doReturn(true).when(column).isNegated();
+
+        assertEquals(GuidedDecisionTableConstants.INSTANCE.negatedPattern() + " " + FACT_TYPE_APPLICANT,
+                     DecisionTableColumnViewUtils.getColumnManagementGroupTitle(column));
+    }
+
+    @Test
+    public void testColumnManagementGroupTitlePatternEmpty() throws Exception {
+        final Pattern52 column = mock(Pattern52.class);
+        doReturn(COLUMN_HEADER).when(column).getHeader();
+
+        assertEquals(COLUMN_HEADER,
+                     DecisionTableColumnViewUtils.getColumnManagementGroupTitle(column));
+    }
+
+    @Test
+    public void testColumnManagementGroupTitleRetractAction() throws Exception {
+        final ActionRetractFactCol52 column = mock(ActionRetractFactCol52.class);
+
+        assertEquals(GuidedDecisionTableConstants.INSTANCE.RetractActions(),
+                     DecisionTableColumnViewUtils.getColumnManagementGroupTitle(column));
+    }
+
+    @Test
+    public void testColumnManagementGroupTitleWorkItemAction() throws Exception {
+        final ActionWorkItemCol52 column = mock(ActionWorkItemCol52.class);
+
+        assertEquals(GuidedDecisionTableConstants.INSTANCE.ExecuteWorkItemActions(),
+                     DecisionTableColumnViewUtils.getColumnManagementGroupTitle(column));
+    }
+
+    @Test
+    public void testColumnManagementGroupTitleBrlAction() throws Exception {
+        final BRLActionColumn column = mock(BRLActionColumn.class);
+
+        assertEquals(GuidedDecisionTableConstants.INSTANCE.BrlActions(),
+                     DecisionTableColumnViewUtils.getColumnManagementGroupTitle(column));
+    }
+
+    @Test
+    public void testColumnManagementGroupTitleBrlCondition() throws Exception {
+        final BRLConditionColumn column = mock(BRLConditionColumn.class);
+
+        assertEquals(GuidedDecisionTableConstants.INSTANCE.BrlConditions(),
+                     DecisionTableColumnViewUtils.getColumnManagementGroupTitle(column));
+    }
+
+    @Test
+    public void testColumnManagementGroupTitle() throws Exception {
+        final ActionCol52 column = mock(ActionCol52.class);
+        doReturn(COLUMN_HEADER).when(column).getHeader();
+
+        assertEquals(COLUMN_HEADER,
+                     DecisionTableColumnViewUtils.getColumnManagementGroupTitle(column));
     }
 }
