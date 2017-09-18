@@ -107,6 +107,7 @@ public class ColumnWithComponents implements Column {
         row.init(createDropCommand(),
                  createRowRemoveCommand(),
                  createComponentRemoveCommand(),
+                 this,
                  currentLayoutTemplateSupplier,
                  Row.ROW_DEFAULT_HEIGHT);
     }

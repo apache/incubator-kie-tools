@@ -913,6 +913,10 @@ public class Row {
         view.setupResize();
     }
 
+    public ColumnWithComponents getParentColumnWithComponents() {
+        return parentColumnWithComponents;
+    }
+
     public interface View extends UberElement<Row> {
 
         void addColumn(UberElement<ComponentColumn> view);

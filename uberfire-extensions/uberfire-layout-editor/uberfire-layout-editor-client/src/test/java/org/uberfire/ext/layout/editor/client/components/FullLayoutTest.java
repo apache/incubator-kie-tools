@@ -108,6 +108,8 @@ public class FullLayoutTest extends AbstractLayoutEditorTest {
 
         ColumnWithComponents columnWithComponents = (ColumnWithComponents) getColumnByIndex(row,
                                                                                             SECOND_COLUMN);
+
+        assertNotNull(columnWithComponents.getRow().getParentColumnWithComponents());
         Column newColumn = getColumnByIndex(columnWithComponents.getRow(),
                                             1);
         newColumn.getLayoutComponent().addProperty("c",
