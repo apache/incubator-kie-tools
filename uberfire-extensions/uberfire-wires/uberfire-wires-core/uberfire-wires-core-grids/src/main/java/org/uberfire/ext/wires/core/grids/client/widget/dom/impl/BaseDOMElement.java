@@ -23,6 +23,7 @@ import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Transform;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -53,7 +54,7 @@ public abstract class BaseDOMElement<T, W extends Widget> {
     private static final NumberFormat FORMAT = NumberFormat.getFormat("0.0");
 
     protected final W widget;
-    protected final SimplePanel widgetContainer = new SimplePanel();
+    protected final SimplePanel widgetContainer = GWT.create(SimplePanel.class);
 
     protected final GridLayer gridLayer;
     protected final GridWidget gridWidget;
@@ -75,6 +76,13 @@ public abstract class BaseDOMElement<T, W extends Widget> {
         //MouseEvents over absolutely positioned elements do not bubble through the DOM.
         //Consequentially Event Handlers on GridLayer do not receive notification of MouseMove
         //Events used during column resizing. Therefore we manually bubble events to GridLayer.
+        setupDelegatingMouseDownHandler();
+        setupDelegatingMouseMoveHandler();
+        setupDelegatingMouseUpHandler();
+        setupDelegatingClickHandler();
+    }
+
+    protected void setupDelegatingMouseDownHandler() {
         widgetContainer.addDomHandler(new MouseDownHandler() {
                                           @Override
                                           public void onMouseDown(final MouseDownEvent event) {
@@ -95,6 +103,10 @@ public abstract class BaseDOMElement<T, W extends Widget> {
                                           }
                                       },
                                       MouseDownEvent.getType());
+    }
+
+    protected void setupDelegatingMouseMoveHandler() {
+        final Style style = widgetContainer.getElement().getStyle();
         widgetContainer.addDomHandler(new MouseMoveHandler() {
                                           @Override
                                           public void onMouseMove(final MouseMoveEvent event) {
@@ -118,6 +130,9 @@ public abstract class BaseDOMElement<T, W extends Widget> {
                                           }
                                       },
                                       MouseMoveEvent.getType());
+    }
+
+    protected void setupDelegatingMouseUpHandler() {
         widgetContainer.addDomHandler(new MouseUpHandler() {
                                           @Override
                                           public void onMouseUp(final MouseUpEvent event) {
@@ -138,6 +153,9 @@ public abstract class BaseDOMElement<T, W extends Widget> {
                                           }
                                       },
                                       MouseUpEvent.getType());
+    }
+
+    protected void setupDelegatingClickHandler() {
         widgetContainer.addDomHandler(new ClickHandler() {
                                           @Override
                                           public void onClick(final ClickEvent event) {
