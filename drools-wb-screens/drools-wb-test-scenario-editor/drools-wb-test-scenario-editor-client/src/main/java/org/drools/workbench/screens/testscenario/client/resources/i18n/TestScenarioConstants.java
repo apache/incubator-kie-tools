@@ -212,6 +212,8 @@ public interface
 
     String BuildingAndRunningScenario();
 
+    String BuildingAndRunningScenarios();
+
     String Results();
 
     String SummaryColon();

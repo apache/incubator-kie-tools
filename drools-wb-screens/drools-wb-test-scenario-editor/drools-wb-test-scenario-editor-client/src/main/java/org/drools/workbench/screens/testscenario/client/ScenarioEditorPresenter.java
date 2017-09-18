@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
+import java.util.Optional;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -62,6 +63,8 @@ public class ScenarioEditorPresenter
     private User user;
     private Scenario scenario;
     private AsyncPackageDataModelOracle dmo;
+
+    private TestRunFailedErrorCallback testRunFailedErrorCallback;
 
     @Inject
     public ScenarioEditorPresenter(final ScenarioEditorView view,
@@ -131,6 +134,7 @@ public class ScenarioEditorPresenter
 
     @Override
     public void onRunScenario() {
+        view.showBusyIndicator(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
         service.call(new RemoteCallback<TestScenarioResult>() {
                          @Override
                          public void callback(TestScenarioResult result) {
@@ -141,12 +145,14 @@ public class ScenarioEditorPresenter
 
                              view.showAuditView(result.getLog());
 
+                             view.hideBusyIndicator();
+
                              redraw();
                          }
                      },
-                     new HasBusyIndicatorDefaultErrorCallback(view)).runScenario(user.getIdentifier(),
-                                                                                 versionRecordManager.getCurrentPath(),
-                                                                                 scenario);
+                     getTestRunFailedCallback()).runScenario(user.getIdentifier(),
+                                                             versionRecordManager.getCurrentPath(),
+                                                             scenario);
     }
 
     private void redraw() {
@@ -166,16 +172,15 @@ public class ScenarioEditorPresenter
 
     @Override
     public void onRunAllScenarios() {
-        baseView.showBusyIndicator(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
+        view.showBusyIndicator(TestScenarioConstants.INSTANCE.BuildingAndRunningScenarios());
         testService.call(new RemoteCallback<Void>() {
                              @Override
                              public void callback(Void v) {
                                  view.hideBusyIndicator();
                              }
                          },
-                         new TestRunFailedErrorCallback(view)
-        ).runAllTests(user.getIdentifier(),
-                      versionRecordManager.getCurrentPath());
+                         getTestRunFailedCallback()).runAllTests(user.getIdentifier(),
+                                                                 versionRecordManager.getCurrentPath());
     }
 
     @Override
@@ -252,5 +257,11 @@ public class ScenarioEditorPresenter
     public void onClose() {
         versionRecordManager.clear();
         this.oracleFactory.destroy(dmo);
+    }
+
+    TestRunFailedErrorCallback getTestRunFailedCallback() {
+        testRunFailedErrorCallback = Optional.ofNullable(testRunFailedErrorCallback)
+                .orElse(new TestRunFailedErrorCallback(view));
+        return testRunFailedErrorCallback;
     }
 }

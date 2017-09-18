@@ -23,6 +23,7 @@ import javax.enterprise.event.Event;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.appformer.project.datamodel.imports.HasImports;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.type.TestScenarioResourceType;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
@@ -33,6 +34,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.test.TestService;
+import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -115,7 +117,6 @@ public class ScenarioEditorPresenterTest {
     private ProjectContext workbenchContext;
 
     private ScenarioEditorPresenter editor;
-    private ScenarioEditorView.Presenter presenter;
     private Scenario scenario;
     private Overview overview;
     private Scenario scenarioRunResult = null;
@@ -125,13 +126,13 @@ public class ScenarioEditorPresenterTest {
 
         final AsyncPackageDataModelOracleFactory modelOracleFactory = mock(AsyncPackageDataModelOracleFactory.class);
 
-        editor = new ScenarioEditorPresenter(view,
-                                             user,
-                                             importsWidget,
-                                             new CallerMock<>(service),
-                                             new CallerMock<>(testService),
-                                             new TestScenarioResourceType(),
-                                             modelOracleFactory) {
+        editor = spy(new ScenarioEditorPresenter(view,
+                                                 user,
+                                                 importsWidget,
+                                                 new CallerMock<>(service),
+                                                 new CallerMock<>(testService),
+                                                 new TestScenarioResourceType(),
+                                                 modelOracleFactory) {
             {
                 kieView = ScenarioEditorPresenterTest.this.kieView;
                 versionRecordManager = ScenarioEditorPresenterTest.this.versionRecordManager;
@@ -142,8 +143,7 @@ public class ScenarioEditorPresenterTest {
                 workbenchContext = ScenarioEditorPresenterTest.this.workbenchContext;
                 versionRecordManager = ScenarioEditorPresenterTest.this.versionRecordManager;
             }
-        };
-        presenter = editor;
+        });
 
         scenarioRunResult = new Scenario();
         scenario = new Scenario();
@@ -173,7 +173,7 @@ public class ScenarioEditorPresenterTest {
 
     @Test
     public void testSimple() throws Exception {
-        verify(view).setPresenter(presenter);
+        verify(view).setPresenter(any(ScenarioEditorPresenter.class));
     }
 
     @Test
@@ -190,7 +190,7 @@ public class ScenarioEditorPresenterTest {
         reset(view);
         reset(importsWidget);
 
-        presenter.onRunScenario();
+        editor.onRunScenario();
 
         // Make sure imports are updated
         verify(view).initKSessionSelector(path,
@@ -241,16 +241,65 @@ public class ScenarioEditorPresenterTest {
 
         reset(view);
 
-        presenter.onRunScenario();
+        editor.onRunScenario();
 
         InOrder inOrder = inOrder(view);
-        inOrder.verify(view)
-                .showResults();
-        inOrder.verify(view)
-                .showAuditView(anySet());
-        inOrder.verify(view)
-                .initKSessionSelector(eq(path),
-                                      any(Scenario.class));
+        inOrder.verify(view).showBusyIndicator(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
+        inOrder.verify(view).showResults();
+        inOrder.verify(view).showAuditView(anySet());
+        inOrder.verify(view).hideBusyIndicator();
+        inOrder.verify(view).initKSessionSelector(eq(path),
+                                                  any(Scenario.class));
+    }
+
+    @Test
+    public void testRunScenarioFail() throws Exception {
+        final TestRunFailedErrorCallback callback = mock(TestRunFailedErrorCallback.class);
+
+        doReturn(true)
+                .when(callback)
+                .error(any(Message.class),
+                       any(RuntimeException.class));
+        doReturn(callback).when(editor).getTestRunFailedCallback();
+        doThrow(new RuntimeException("some problem")).when(service).runScenario(anyString(),
+                                                                                any(Path.class),
+                                                                                any(Scenario.class));
+        editor.onRunScenario();
+
+        verify(callback).error(any(Message.class),
+                               any(RuntimeException.class));
+        verify(view).showBusyIndicator(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
+    }
+
+    @Test
+    public void testRunAllScenarios() throws Exception {
+        final ObservablePath path = mock(ObservablePath.class);
+
+        when(versionRecordManager.getCurrentPath()).thenReturn(path);
+
+        editor.onRunAllScenarios();
+
+        InOrder inOrder = inOrder(view);
+        inOrder.verify(view).showBusyIndicator(TestScenarioConstants.INSTANCE.BuildingAndRunningScenarios());
+        inOrder.verify(view).hideBusyIndicator();
+    }
+
+    @Test
+    public void testRunAllScenariosFail() throws Exception {
+        final TestRunFailedErrorCallback callback = mock(TestRunFailedErrorCallback.class);
+
+        doReturn(true)
+                .when(callback)
+                .error(any(Message.class),
+                       any(RuntimeException.class));
+        doReturn(callback).when(editor).getTestRunFailedCallback();
+        doThrow(new RuntimeException("some problem")).when(testService).runAllTests(anyString(),
+                                                                                    any(Path.class));
+        editor.onRunAllScenarios();
+
+        verify(callback).error(any(Message.class),
+                               any(RuntimeException.class));
+        verify(view).showBusyIndicator(TestScenarioConstants.INSTANCE.BuildingAndRunningScenarios());
     }
 
     @Test

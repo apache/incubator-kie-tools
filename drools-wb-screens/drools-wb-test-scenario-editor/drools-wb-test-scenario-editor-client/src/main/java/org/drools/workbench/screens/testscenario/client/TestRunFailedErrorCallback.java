@@ -29,17 +29,19 @@ public class TestRunFailedErrorCallback
         super(view);
     }
 
-    public boolean error(Message message, Throwable throwable) {
+    public boolean error(Message message,
+                         Throwable throwable) {
 
         this.view.hideBusyIndicator();
 
-        if (throwable.getMessage().equals("Cannot find a default KieBase")) {
+        if (throwable.getMessage() != null && throwable.getMessage().equals("Cannot find a default KieBase")) {
 
             ErrorPopup.showMessage(TestScenarioConstants.INSTANCE.ErrorCannotFindADefaultKieBase());
 
             return false;
         } else {
-            return super.error(message, throwable);
+            return super.error(message,
+                               throwable);
         }
     }
 }
