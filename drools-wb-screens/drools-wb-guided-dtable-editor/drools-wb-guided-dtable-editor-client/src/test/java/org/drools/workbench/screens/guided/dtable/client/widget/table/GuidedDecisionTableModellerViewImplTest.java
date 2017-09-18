@@ -29,6 +29,7 @@ import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -52,10 +53,12 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
@@ -91,10 +94,16 @@ public class GuidedDecisionTableModellerViewImplTest {
     private GuidedDecisionTableModellerView.Presenter presenter;
 
     @Mock
-    private GuidedDecisionTableView.Presenter viewPresenter;
+    private GuidedDecisionTableView.Presenter dtablePresenter;
+
+    @Mock
+    private GuidedDecisionTableView dtableView;
 
     @Mock
     private Icon pinnedModeIndicator;
+
+    @Captor
+    private ArgumentCaptor<Command> commandArgumentCaptor;
 
     @Mock
     private RootPanel rootPanel;
@@ -464,6 +473,48 @@ public class GuidedDecisionTableModellerViewImplTest {
         view.setPinnedModeIndicatorVisibility(false);
 
         verify(pinnedModeIndicator).setVisible(false);
+    }
+
+    @Test
+    public void testRemoveDecisionTableWhenPinned() {
+        final Command callback = mock(Command.class);
+        final GridPinnedModeManager.PinnedContext context = mock(GridPinnedModeManager.PinnedContext.class);
+
+        when(defaultGridLayer.isGridPinned()).thenReturn(true);
+        when(defaultGridLayer.getPinnedContext()).thenReturn(context);
+        when(context.getGridWidget()).thenReturn(dtableView);
+
+        view.removeDecisionTable(dtableView,
+                                 callback);
+
+        verify(defaultGridLayer,
+               times(1)).exitPinnedMode(commandArgumentCaptor.capture());
+
+        final Command command = commandArgumentCaptor.getValue();
+        assertNotNull(command);
+        command.execute();
+
+        verify(defaultGridLayer,
+               times(1)).remove(dtableView);
+        verify(callback,
+               times(1)).execute();
+        verify(view,
+               times(1)).disableButtonMenu();
+        verify(defaultGridLayer,
+               times(1)).batch();
+    }
+
+    @Test
+    public void testRemoveDecisionTableWhenNotPinned() {
+        final Command callback = mock(Command.class);
+
+        view.removeDecisionTable(dtableView,
+                                 callback);
+
+        verify(callback,
+               times(1)).execute();
+        verify(view,
+               times(1)).disableButtonMenu();
     }
 
     private AttributeCol52 attributeColumn() {

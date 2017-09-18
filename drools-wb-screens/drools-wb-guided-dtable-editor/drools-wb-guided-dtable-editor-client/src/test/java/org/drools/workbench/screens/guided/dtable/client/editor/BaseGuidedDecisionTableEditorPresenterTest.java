@@ -364,19 +364,18 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
 
         presenter.openOtherDecisionTable();
 
-        verify(decisionTableSelectedEvent,
-               times(1)).fire(dtSelectedEventCaptor.capture());
-
-        final DecisionTableSelectedEvent dtSelectedEvent = dtSelectedEventCaptor.getValue();
-        assertNotNull(dtSelectedEvent);
-        assertFalse(dtSelectedEvent.getPresenter().isPresent());
-
         verify(presenter,
                never()).activateDocument(any(GuidedDecisionTableView.Presenter.class));
         verify(placeManager,
                never()).forceClosePlace(any(String.class));
         verify(placeManager,
                never()).forceClosePlace(any(PlaceRequest.class));
+        verify(decisionTableSelectedEvent,
+               times(1)).fire(dtSelectedEventCaptor.capture());
+
+        final DecisionTableSelectedEvent dtSelectedEvent = dtSelectedEventCaptor.getValue();
+        assertNotNull(dtSelectedEvent);
+        assertFalse(dtSelectedEvent.getPresenter().isPresent());
     }
 
     @Test
@@ -394,8 +393,14 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                never()).forceClosePlace(any(String.class));
         verify(placeManager,
                never()).forceClosePlace(any(PlaceRequest.class));
-        verify(presenter,
-               times(1)).activateDocument(remainingDtPresenter);
+        verify(decisionTableSelectedEvent,
+               times(1)).fire(dtSelectedEventCaptor.capture());
+
+        final DecisionTableSelectedEvent dtSelectedEvent = dtSelectedEventCaptor.getValue();
+        assertNotNull(dtSelectedEvent);
+        assertTrue(dtSelectedEvent.getPresenter().isPresent());
+        assertEquals(dtSelectedEvent.getPresenter().get(),
+                     remainingDtPresenter);
     }
 
     @Test

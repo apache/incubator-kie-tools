@@ -341,8 +341,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                         parent.getView().asWidget(),
                                         placeRequest,
                                         () -> currentPath.getFileName() + " - " + resourceType.getDescription(),
-                                        () -> {
-                                            /*nothing*/}),
+                                        () -> {/*Nothing*/}),
                          parent);
     }
 
@@ -492,12 +491,10 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         view.registerNodeMouseDoubleClickHandler((event) -> {
             if (view.isNodeMouseEventOverCaption(event)) {
                 if (isGridPinned()) {
-                    exitPinnedMode(() -> {
-                        /*Nothing*/});
+                    exitPinnedMode(() -> {/*Nothing*/});
                 } else {
                     enterPinnedMode(view,
-                                    () -> {
-                                        /*Nothing*/});
+                                    () -> {/*Nothing*/});
                 }
             }
         });

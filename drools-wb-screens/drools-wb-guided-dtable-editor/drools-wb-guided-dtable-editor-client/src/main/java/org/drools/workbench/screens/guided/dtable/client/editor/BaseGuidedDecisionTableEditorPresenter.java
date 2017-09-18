@@ -323,7 +323,7 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
             decisionTableSelectedEvent.fire(DecisionTableSelectedEvent.NONE);
         } else {
             final GuidedDecisionTableView.Presenter dtPresenter = availableDecisionTables.iterator().next();
-            activateDocument(dtPresenter);
+            decisionTableSelectedEvent.fire(new DecisionTableSelectedEvent(dtPresenter));
         }
     }
 
