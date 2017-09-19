@@ -54,6 +54,7 @@ public abstract class AbstractLayoutEditorTest {
     public static final String SINGLE_ROW_TWO_COMPONENTS_LAYOUT = "org/uberfire/ext/layout/editor/client/singleRowTwoComponentsLayout.txt";
     public static final String FULL_LAYOUT_FLUID = "org/uberfire/ext/layout/editor/client/fullLayoutFluid.txt";
     public static final String FULL_LAYOUT_PAGE = "org/uberfire/ext/layout/editor/client/fullLayoutPage.txt";
+    public static final String SAMPLE_COLUMN_WITH_COMPONENTS_LAYOUT = "org/uberfire/ext/layout/editor/client/columnWithComponentsLayout.txt";
     public static final int EMPTY_ROW = 0;
     public static final int FIRST_ROW = 0;
     public static final int SECOND_ROW = 1;

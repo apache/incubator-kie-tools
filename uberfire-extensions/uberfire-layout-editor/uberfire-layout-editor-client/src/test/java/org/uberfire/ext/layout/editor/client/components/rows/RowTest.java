@@ -23,9 +23,11 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.AbstractLayoutEditorTest;
 import org.uberfire.ext.layout.editor.client.components.columns.Column;
 import org.uberfire.ext.layout.editor.client.components.columns.ColumnWithComponents;
+import org.uberfire.ext.layout.editor.client.components.columns.ComponentColumn;
 import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
 import org.uberfire.ext.layout.editor.client.infra.ColumnResizeEvent;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.jgroups.util.Util.assertEquals;
 
 public class RowTest extends AbstractLayoutEditorTest {
@@ -191,5 +193,53 @@ public class RowTest extends AbstractLayoutEditorTest {
                      first.getColumnWidth());
         assertEquals(originalSecondSize + 1,
                      second.getColumnWidth());
+    }
+
+    @Test
+    public void testRemoveElementInColumnWithComponents() throws Exception {
+
+        loadLayout(SAMPLE_COLUMN_WITH_COMPONENTS_LAYOUT);
+
+        Row row = getRowByIndex(FIRST_ROW);
+        assertThat(row.getColumns()).hasSize(1);
+
+        Column rowColumn = row.getColumns().get(0);
+        assertThat(rowColumn).isNotNull().isInstanceOf(ColumnWithComponents.class);
+
+        ColumnWithComponents columnWithComponents = (ColumnWithComponents) rowColumn;
+        assertThat(columnWithComponents.getRow().getColumns()).hasSize(3);
+
+        Column firstColumn = columnWithComponents.getRow().getColumns().get(0);
+        assertThat(firstColumn).isNotNull().isInstanceOf(ComponentColumn.class);
+
+        Column secondColumn = columnWithComponents.getRow().getColumns().get(1);
+        assertThat(secondColumn).isNotNull().isInstanceOf(ComponentColumn.class);
+
+        Column thirdColumn = columnWithComponents.getRow().getColumns().get(2);
+        assertThat(thirdColumn).isNotNull().isInstanceOf(ComponentColumn.class);
+
+        // Remove thirdColumn -> the expected result is that rowColumn will be a ColumnWithComponents with two columns (firstColumn & secondColumn)
+        row.removeColumn(thirdColumn);
+        rowColumn = row.getColumns().get(0);
+        assertThat(rowColumn).isNotNull().isInstanceOf(ColumnWithComponents.class);
+
+        columnWithComponents = (ColumnWithComponents) rowColumn;
+        assertThat(columnWithComponents.getRow().getColumns()).hasSize(2).contains(firstColumn,
+                                                                                   secondColumn);
+
+        // Remove firstColumn -> since rowColumn will have onlye one ComponentColumn the expected result is that
+        // rowColumn will be a ComponentColumn copy of secondColumn
+        row.removeColumn(firstColumn);
+
+        assertThat(row.getColumns()).hasSize(1);
+
+        rowColumn = row.getColumns().get(0);
+
+        assertThat(rowColumn).isNotNull().isInstanceOf(ComponentColumn.class);
+
+        assertThat(rowColumn).isEqualToComparingOnlyGivenFields(secondColumn,
+                                                                "columnWidth",
+                                                                "columnHeight",
+                                                                "layoutComponent");
     }
 }

@@ -18,6 +18,7 @@ package org.uberfire.ext.layout.editor.client.components.rows;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -28,6 +29,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.uberfire.client.mvp.UberElement;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
@@ -362,14 +364,63 @@ public class Row {
     }
 
     private void lookupAndRemoveFromColumnsWithComponents(Column targetColumn) {
-        for (Column column : columns) {
-            if (column instanceof ColumnWithComponents) {
-                ColumnWithComponents c = (ColumnWithComponents) column;
-                if (c.hasComponent(targetColumn)) {
-                    c.remove(targetColumn);
-                    destroy(targetColumn);
-                }
+
+        // find the ColumnWithComponents that contains the targetColumn
+        Optional<Column> optional = columns.stream()
+                .filter(column -> column instanceof ColumnWithComponents && ((ColumnWithComponents) column).hasComponent(targetColumn))
+                .findAny();
+
+        // If present let's remove it!
+        optional.ifPresent(column -> removeComponentFromColumnWihtComponents((ColumnWithComponents) column, targetColumn));
+    }
+
+    private void removeComponentFromColumnWihtComponents(ColumnWithComponents parent,
+                                                         Column targetColumn) {
+        PortablePreconditions.checkNotNull("parent",
+                                           parent);
+        PortablePreconditions.checkNotNull("targetColumn",
+                                           targetColumn);
+
+        // if parent contains targetColumn remove & destroy targetColumn
+        if (parent.hasComponent(targetColumn)) {
+            parent.remove(targetColumn);
+            destroy(targetColumn);
+        }
+
+        // if parent has only one child remaining we'll remove parent and promote the remaining child on the layout.
+        if (parent.getRow().getColumns().size() == 1) {
+            replaceColumnWithComponents(parent);
+        }
+    }
+
+    private void replaceColumnWithComponents(ColumnWithComponents columnToReplace) {
+        PortablePreconditions.checkNotNull("columnToReplace",
+                                           columnToReplace);
+
+        // check again if parent has only one child remaining
+        if (columnToReplace.getRow().getColumns().size() == 1) {
+
+            // getting the remaining column
+            Column column = columnToReplace.getRow().getColumns().remove(0);
+
+            int index = columns.indexOf(columnToReplace);
+
+            if (column instanceof ComponentColumn) {
+                // if it is a ComponentColumn we must regenerate to reload all the styling
+                ComponentColumn originalColumn = (ComponentColumn) column;
+                column = createNewComponentColumn(originalColumn.getLayoutComponent(),
+                                                  columnToReplace.getColumnWidth(),
+                                                  false);
             }
+
+            // promoting the remaining child on the actual row
+            columns.set(index,
+                        column);
+
+            // destroy current column & update view
+            columnToReplace.preDestroy();
+
+            updateView();
         }
     }
 
