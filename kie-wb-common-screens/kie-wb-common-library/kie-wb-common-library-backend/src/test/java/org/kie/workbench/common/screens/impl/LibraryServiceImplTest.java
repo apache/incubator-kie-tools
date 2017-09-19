@@ -495,11 +495,12 @@ public class LibraryServiceImplTest {
     }
 
     @Test
-    public void getExampleProjectsImportUrlDefinedTest() {
+    public void getCustomExampleProjectsTest() {
+        System.setProperty("org.kie.project.examples.repository.url",
+                           "importProjectsUrl");
+
         final Set<ExampleProject> exampleProjects = new HashSet<>();
         exampleProjects.add(mock(ExampleProject.class));
-
-        when(preferences.getImportProjectsUrl()).thenReturn("importProjectsUrl");
         doReturn(exampleProjects).when(examplesService).getProjects(new ExampleRepository("importProjectsUrl"));
 
         final Set<ExampleProject> loadedExampleProjects = libraryService.getExampleProjects();
@@ -509,16 +510,21 @@ public class LibraryServiceImplTest {
     }
 
     @Test
-    public void getExampleProjectsImportUrlNotDefinedTest() {
-        final ExampleRepository playgroundRepository = new ExampleRepository("playgroundRepositoryUrl");
+    public void getDefaultExampleProjectsTest() {
+        System.setProperty("org.kie.project.examples.repository.url",
+                           "");
 
-        when(preferences.getImportProjectsUrl()).thenReturn("");
+        final ExampleRepository playgroundRepository = new ExampleRepository("playgroundRepositoryUrl");
         doReturn(playgroundRepository).when(examplesService).getPlaygroundRepository();
 
-        libraryService.getExampleProjects();
+        final Set<ExampleProject> exampleProjects = new HashSet<>();
+        exampleProjects.add(mock(ExampleProject.class));
+        doReturn(exampleProjects).when(examplesService).getProjects(playgroundRepository);
 
-        verify(examplesService,
-               times(1)).getProjects(playgroundRepository);
+        final Set<ExampleProject> loadedExampleProjects = libraryService.getExampleProjects();
+
+        assertEquals(exampleProjects,
+                     loadedExampleProjects);
     }
 
     @Test

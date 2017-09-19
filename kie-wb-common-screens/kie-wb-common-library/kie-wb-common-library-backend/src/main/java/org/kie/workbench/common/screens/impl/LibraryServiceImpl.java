@@ -277,7 +277,7 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     public Set<ExampleProject> getExampleProjects() {
-        final String importProjectsUrl = getPreferences().getImportProjectsUrl();
+        final String importProjectsUrl = getCustomImportProjectsUrl();
         final ExampleRepository repository = importProjectsUrl == null || importProjectsUrl.isEmpty()
                 ? examplesService.getPlaygroundRepository()
                 : new ExampleRepository(importProjectsUrl);
@@ -324,6 +324,10 @@ public class LibraryServiceImpl implements LibraryService {
                        projectName.replace(" ",
                                            ""),
                        preferences.getProjectPreferences().getVersion());
+    }
+
+    String getCustomImportProjectsUrl() {
+        return System.getProperty("org.kie.project.examples.repository.url");
     }
 
     LibraryPreferences getPreferences() {

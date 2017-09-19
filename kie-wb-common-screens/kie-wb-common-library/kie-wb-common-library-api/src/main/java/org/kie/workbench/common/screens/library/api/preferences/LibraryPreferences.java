@@ -33,10 +33,6 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
     @Property(bundleKey = "LibraryPreferences.ProjectPreferences")
     LibraryProjectPreferences projectPreferences;
 
-    @Property(bundleKey = "LibraryPreferences.ImportProjectsUrl",
-            helpBundleKey = "LibraryPreferences.ImportProjectsUrl.Help")
-    String importProjectsUrl;
-
     @Override
     public LibraryPreferences defaultValue(final LibraryPreferences defaultValue) {
         defaultValue.organizationalUnitPreferences.name = "myteam";
@@ -52,13 +48,7 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
         defaultValue.projectPreferences.description = "";
         defaultValue.projectPreferences.branch = "master";
 
-        defaultValue.importProjectsUrl = "";
-
         return defaultValue;
-    }
-
-    public String getImportProjectsUrl() {
-        return importProjectsUrl;
     }
 
     public LibraryOrganizationalUnitPreferences getOrganizationalUnitPreferences() {
