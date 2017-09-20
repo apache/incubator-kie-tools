@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.testscenario.backend.server;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,9 +25,11 @@ import org.appformer.project.datamodel.imports.Import;
 import org.appformer.project.datamodel.imports.Imports;
 import org.appformer.project.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.guvnor.common.services.project.model.Package;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,10 +38,17 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.io.IOService;
+import org.uberfire.io.impl.IOServiceDotFileImpl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -61,6 +71,9 @@ public class ScenarioTestEditorServiceImplTest {
 
     @Mock
     KieProjectService projectService;
+
+    @Spy
+    IOService ioService = new IOServiceDotFileImpl("testIoService");
 
     @InjectMocks
     ScenarioTestEditorServiceImpl testEditorService = new ScenarioTestEditorServiceImpl();
@@ -184,6 +197,39 @@ public class ScenarioTestEditorServiceImplTest {
 
         assertEquals(1,
                      scenario.getImports().getImports().size());
+    }
+
+    @Test
+    public void loadEmptyScenario() throws
+            Exception {
+        final URL scenarioResource = getClass().getResource("empty.scenario");
+        final Path scenarioPath = PathFactory.newPath(scenarioResource.getFile(),
+                                                      scenarioResource.toURI().toString());
+
+        final Scenario loadedScenario = testEditorService.load(scenarioPath);
+
+        assertNotNull(loadedScenario);
+    }
+
+    @Test
+    public void loadScenario() throws
+            Exception {
+        final URL scenarioResource = getClass().getResource("Are they old enough.scenario");
+        final Path scenarioPath = PathFactory.newPath(scenarioResource.getFile(),
+                                                      scenarioResource.toURI().toString());
+
+        final Scenario loadedScenario = testEditorService.load(scenarioPath);
+
+        assertNotNull(loadedScenario);
+        assertEquals("mortgages.mortgages",
+                     loadedScenario.getPackageName());
+        assertEquals(5,
+                     loadedScenario.getFixtures().size());
+        assertTrue(loadedScenario.getFixtures().get(0) instanceof FactData);
+        assertTrue(loadedScenario.getFixtures().get(1) instanceof FactData);
+        assertTrue(loadedScenario.getFixtures().get(2) instanceof FactData);
+        assertTrue(loadedScenario.getFixtures().get(3) instanceof ExecutionTrace);
+        assertTrue(loadedScenario.getFixtures().get(4) instanceof VerifyFact);
     }
 
     @Test
