@@ -17,7 +17,6 @@
 package org.kie.workbench.common.screens.examples.client.wizard.pages.project;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Element;
@@ -55,63 +54,63 @@ public class ProjectItemViewImpl extends Composite implements ProjectItemView {
     SpanElement projectName = DOM.createSpan().cast();
 
     @DataField("tagList")
-    Element tagList = DOM.createElement( "ul" );
+    Element tagList = DOM.createElement("ul");
 
     @Inject
     private ManagedInstance<TagItemView> tagItemViewInstance;
 
     @Override
-    public HandlerRegistration addMouseOutHandler( MouseOutHandler mouseOutHandler ) {
-        return addHandler( mouseOutHandler,
-                           MouseOutEvent.getType() );
+    public HandlerRegistration addMouseOutHandler(MouseOutHandler mouseOutHandler) {
+        return addHandler(mouseOutHandler,
+                          MouseOutEvent.getType());
     }
 
     @Override
-    public HandlerRegistration addMouseOverHandler( MouseOverHandler mouseOverHandler ) {
-        return addHandler( mouseOverHandler,
-                           MouseOverEvent.getType() );
+    public HandlerRegistration addMouseOverHandler(MouseOverHandler mouseOverHandler) {
+        return addHandler(mouseOverHandler,
+                          MouseOverEvent.getType());
     }
 
     @Override
-    public HandlerRegistration addValueChangeHandler( final ValueChangeHandler<Boolean> handler ) {
-        return addHandler( handler,
-                           ValueChangeEvent.getType() );
+    public HandlerRegistration addValueChangeHandler(final ValueChangeHandler<Boolean> handler) {
+        return addHandler(handler,
+                          ValueChangeEvent.getType());
     }
 
     @Override
-    public void setProject( final ExampleProject project, boolean selected ) {
+    public void setProject(final ExampleProject project,
+                           boolean selected) {
         final SafeHtmlBuilder shb = new SafeHtmlBuilder();
-        shb.appendEscaped( project.getName() );
-        projectName.setInnerSafeHtml( shb.toSafeHtml() );
+        shb.appendEscaped(project.getName());
+        projectName.setInnerSafeHtml(shb.toSafeHtml());
 
-        projectSelected.setChecked( selected );
+        projectSelected.setChecked(selected);
 
-        if ( project.getTags() != null ) {
-            for ( String tagName : project.getTags() ) {
+        if (project.getTags() != null) {
+            for (String tagName : project.getTags()) {
                 TagItemView tagItemView = tagItemViewInstance.get();
-                tagItemView.setName( tagName );
+                tagItemView.setName(tagName);
                 tagItemView.hideCloseIcon();
 
                 Node tagNode = tagItemView.asWidget().getElement();
-                tagList.appendChild( tagNode );
+                tagList.appendChild(tagNode);
             }
         }
     }
 
     @EventHandler("project")
-    public void onProjectMouseOver( final MouseOverEvent event ) {
-        fireEvent( event );
+    public void onProjectMouseOver(final MouseOverEvent event) {
+        fireEvent(event);
     }
 
     @EventHandler("project")
-    public void onProjectMouseOut( final MouseOutEvent event ) {
-        fireEvent( event );
+    public void onProjectMouseOut(final MouseOutEvent event) {
+        fireEvent(event);
     }
 
     @EventHandler("project-selected")
-    public void onSelectProject( final ClickEvent event ) {
-        ValueChangeEvent.fire( this,
-                               projectSelected.isChecked() );
+    public void onSelectProject(final ClickEvent event) {
+        ValueChangeEvent.fire(this,
+                              projectSelected.isChecked());
     }
-
 }

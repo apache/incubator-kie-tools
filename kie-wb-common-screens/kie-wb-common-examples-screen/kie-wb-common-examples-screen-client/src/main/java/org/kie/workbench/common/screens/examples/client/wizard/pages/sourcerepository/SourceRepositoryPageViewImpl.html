@@ -15,16 +15,13 @@
   ~ limitations under the License.
   -->
 <div class="container-fluid">
-  <form>
     <div id="repository-type" class="form-group row">
       <label class="control-label col-md-3" data-i18n-key="RepositoryType"></label>
       <div class="col-md-9">
         <input id="stockRadio" type="radio" name="repositoryType" value="stock" checked>
-          <span data-i18n-key="StockExamples"></span>
-        </input>
+        <label for="stockRadio" data-i18n-key="StockExamples"></label>
         <input id="customRadio" type="radio" name="repositoryType" value="custom">
-          <span data-i18n-key="Custom"></span>
-        </input>
+        <label for="customRadio" data-i18n-key="Custom"></label>
       </div>
     </div>
     <div id="repository-form" class="form-group row">
@@ -34,5 +31,4 @@
         <span id="repository-help" class="help-block" style="visibility: hidden;"></span>
       </div>
     </div>
-  </form>
 </div>
