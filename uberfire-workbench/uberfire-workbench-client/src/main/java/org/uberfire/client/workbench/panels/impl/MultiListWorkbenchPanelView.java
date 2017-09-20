@@ -63,14 +63,22 @@ public class MultiListWorkbenchPanelView
 
     @Override
     public void maximize() {
-        super.maximize();
-        listBar.getMaximizeButton().setMaximized(true);
+        final MaximizeToggleButtonPresenter maximizeButton = listBar.getMaximizeButton();
+
+        maximizeButton.disable();
+        layoutSelection.get().maximize(getPartViewContainer(),
+                                       () -> maximizeButton.enable());
+        maximizeButton.setMaximized(true);
     }
 
     @Override
     public void unmaximize() {
-        super.unmaximize();
-        listBar.getMaximizeButton().setMaximized(false);
+        final MaximizeToggleButtonPresenter maximizeButton = listBar.getMaximizeButton();
+
+        maximizeButton.disable();
+        layoutSelection.get().unmaximize(getPartViewContainer(),
+                                         () -> maximizeButton.enable());
+        maximizeButton.setMaximized(false);
     }
 
     @Override

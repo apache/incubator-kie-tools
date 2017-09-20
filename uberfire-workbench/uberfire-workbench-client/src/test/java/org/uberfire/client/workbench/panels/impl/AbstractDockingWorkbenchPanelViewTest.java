@@ -18,11 +18,17 @@ package org.uberfire.client.workbench.panels.impl;
 
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.BeanFactory;
+import org.uberfire.client.workbench.LayoutSelection;
+import org.uberfire.client.workbench.WorkbenchLayout;
+import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
+
+import static org.mockito.Mockito.*;
 
 /**
  * Contains the setup necessary for testing subclasses of {@link AbstractDockingWorkbenchPanelView} with GWTMockito.
@@ -41,9 +47,19 @@ public abstract class AbstractDockingWorkbenchPanelViewTest {
     @Mock
     BeanFactory factory;
 
+    @Mock
+    LayoutSelection layoutSelection;
+
+    @Mock
+    WorkbenchLayout workbenchLayout;
+
+    @Mock
+    MaximizeToggleButtonPresenter maximizeButton;
+
     @Before
     public void setupAbstractDockingSuperclass() {
         getViewToTest().setupDockingPanel(); // PostConstruct method
+        doReturn(workbenchLayout).when(layoutSelection).get();
     }
 
     /**
@@ -51,4 +67,24 @@ public abstract class AbstractDockingWorkbenchPanelViewTest {
      * {@code @Setup} method of the subclass has been invoked.
      */
     protected abstract AbstractDockingWorkbenchPanelView<?> getViewToTest();
+
+    @Test
+    public void maximizeTest() {
+        getViewToTest().maximize();
+
+        verify(maximizeButton).disable();
+        verify(workbenchLayout).maximize(any(),
+                                         any());
+        verify(maximizeButton).setMaximized(true);
+    }
+
+    @Test
+    public void unmaximizeTest() {
+        getViewToTest().unmaximize();
+
+        verify(maximizeButton).disable();
+        verify(workbenchLayout).unmaximize(any(),
+                                           any());
+        verify(maximizeButton).setMaximized(false);
+    }
 }

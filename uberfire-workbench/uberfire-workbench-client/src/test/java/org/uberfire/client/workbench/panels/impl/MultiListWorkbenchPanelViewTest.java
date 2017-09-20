@@ -28,7 +28,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.mvp.Command;
@@ -42,8 +41,6 @@ public class MultiListWorkbenchPanelViewTest extends AbstractDockingWorkbenchPan
 
     @Mock
     ListBarWidget listBar;
-    @Mock
-    MaximizeToggleButtonPresenter maximizeButton;
     @Mock
     MultiListWorkbenchPanelPresenter presenter;
 

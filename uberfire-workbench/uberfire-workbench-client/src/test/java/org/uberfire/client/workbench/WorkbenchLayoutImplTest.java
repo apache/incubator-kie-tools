@@ -44,6 +44,7 @@ import org.mockito.Mock;
 import org.uberfire.client.workbench.docks.UberfireDocksContainer;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
+import org.uberfire.mvp.Command;
 
 import static org.mockito.Mockito.*;
 
@@ -116,11 +117,26 @@ public class WorkbenchLayoutImplTest {
     public void testExpandAnimation() {
         final WorkbenchLayoutImpl.ExpandAnimation expandAnimation = new WorkbenchLayoutImpl.ExpandAnimation(widget,
                                                                                                             Maps.<Widget, WorkbenchLayoutImpl.OriginalStyleInfo>newHashMap(),
-                                                                                                            mock(SimpleLayoutPanel.class));
+                                                                                                            mock(SimpleLayoutPanel.class),
+                                                                                                            null);
 
         expandAnimation.onComplete();
 
         verify(((RequiresResize) widget)).onResize();
+    }
+
+    @Test
+    public void testExpandAnimationWithCallback() {
+        final Command callback = mock(Command.class);
+        final WorkbenchLayoutImpl.ExpandAnimation expandAnimation = new WorkbenchLayoutImpl.ExpandAnimation(widget,
+                                                                                                            Maps.<Widget, WorkbenchLayoutImpl.OriginalStyleInfo>newHashMap(),
+                                                                                                            mock(SimpleLayoutPanel.class),
+                                                                                                            callback);
+
+        expandAnimation.onComplete();
+
+        verify(((RequiresResize) widget)).onResize();
+        verify(callback).execute();
     }
 
     @Test
@@ -142,11 +158,29 @@ public class WorkbenchLayoutImplTest {
                                           new WorkbenchLayoutImpl.OriginalStyleInfo(widget));
         final WorkbenchLayoutImpl.CollapseAnimation collapseAnimation = new WorkbenchLayoutImpl.CollapseAnimation(
                 widget,
-                maximizedWidgetOriginalStyles);
+                maximizedWidgetOriginalStyles,
+                null);
 
         collapseAnimation.onComplete();
 
         verify(((RequiresResize) widget)).onResize();
+    }
+
+    @Test
+    public void testCollapseAnimationWithCallback() {
+        final HashMap<Widget, WorkbenchLayoutImpl.OriginalStyleInfo> maximizedWidgetOriginalStyles = Maps.newHashMap();
+        maximizedWidgetOriginalStyles.put(widget,
+                                          new WorkbenchLayoutImpl.OriginalStyleInfo(widget));
+        final Command callback = mock(Command.class);
+        final WorkbenchLayoutImpl.CollapseAnimation collapseAnimation = new WorkbenchLayoutImpl.CollapseAnimation(
+                widget,
+                maximizedWidgetOriginalStyles,
+                callback);
+
+        collapseAnimation.onComplete();
+
+        verify(((RequiresResize) widget)).onResize();
+        verify(callback).execute();
     }
 
     @Test

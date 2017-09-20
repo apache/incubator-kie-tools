@@ -51,6 +51,7 @@ import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.docks.UberfireDocksContainer;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
 import static java.util.Collections.sort;
@@ -240,6 +241,13 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
     @Override
     public void maximize(final Widget w) {
+        maximize(w,
+                 null);
+    }
+
+    @Override
+    public void maximize(final Widget w,
+                         final Command callback) {
         if (maximizedWidgetOriginalStyles.get(w) != null) {
             return;
         }
@@ -249,16 +257,24 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
         new ExpandAnimation(w,
                             maximizedWidgetOriginalStyles,
-                            perspectiveRootContainer).run();
+                            perspectiveRootContainer,
+                            callback).run();
     }
 
     @Override
-    public void unmaximize(Widget w) {
+    public void unmaximize(final Widget w) {
+        unmaximize(w,
+                   null);
+    }
 
+    @Override
+    public void unmaximize(final Widget w,
+                           final Command callback) {
         w.removeStyleName(UF_MAXIMIZED_PANEL);
 
         new CollapseAnimation(w,
-                              maximizedWidgetOriginalStyles).run();
+                              maximizedWidgetOriginalStyles,
+                              callback).run();
     }
 
     @Override
@@ -321,11 +337,14 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         protected final Style style;
         protected final Widget w;
         protected final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles;
+        protected final Command onCompleteCallback;
 
         public AbstractResizeAnimation(final Widget w,
-                                       final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles) {
+                                       final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles,
+                                       final Command onCompleteCallback) {
             this.w = w;
             this.maximizedWidgetOriginalStyles = maximizedWidgetOriginalStyles;
+            this.onCompleteCallback = onCompleteCallback;
             style = w.getElement().getStyle();
         }
 
@@ -365,6 +384,14 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
             super.run(1000);
         }
 
+        @Override
+        protected void onComplete() {
+            super.onComplete();
+            if (onCompleteCallback != null) {
+                onCompleteCallback.execute();
+            }
+        }
+
         private double newTarget(int current,
                                  int target,
                                  double progress) {
@@ -385,9 +412,11 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         public ExpandAnimation(
                 final Widget w,
                 final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles,
-                final SimpleLayoutPanel perspectiveRootContainer) {
+                final SimpleLayoutPanel perspectiveRootContainer,
+                final Command onCompleteCallback) {
             super(w,
-                  maximizedWidgetOriginalStyles);
+                  maximizedWidgetOriginalStyles,
+                  onCompleteCallback);
             this.perspectiveRootContainer = perspectiveRootContainer;
         }
 
@@ -439,9 +468,11 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         private final OriginalStyleInfo originalStyleInfo;
 
         public CollapseAnimation(final Widget w,
-                                 final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles) {
+                                 final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles,
+                                 final Command onCompleteCallback) {
             super(w,
-                  maximizedWidgetOriginalStyles);
+                  maximizedWidgetOriginalStyles,
+                  onCompleteCallback);
             originalStyleInfo = maximizedWidgetOriginalStyles.remove(w);
         }
 
@@ -469,6 +500,9 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         protected void onComplete() {
             originalStyleInfo.restore(w);
             onResize();
+            if (onCompleteCallback != null) {
+                onCompleteCallback.execute();
+            }
         }
     }
 

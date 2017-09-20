@@ -28,7 +28,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.workbench.model.PartDefinition;
@@ -46,9 +45,6 @@ public abstract class AbstractSimpleWorkbenchPanelViewTest extends AbstractDocki
 
     @Mock
     Style listBarElementStyle;
-
-    @Mock
-    MaximizeToggleButtonPresenter maximizeButton;
 
     @Before
     public void setup() {

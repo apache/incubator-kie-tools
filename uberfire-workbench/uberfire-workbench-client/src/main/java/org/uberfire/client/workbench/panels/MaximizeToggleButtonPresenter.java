@@ -114,6 +114,14 @@ public class MaximizeToggleButtonPresenter {
         view.setVisible(b);
     }
 
+    public void enable() {
+        view.setEnabled(true);
+    }
+
+    public void disable() {
+        view.setEnabled(false);
+    }
+
     public interface View extends UberView<MaximizeToggleButtonPresenter> {
 
         /**
@@ -126,5 +134,10 @@ public class MaximizeToggleButtonPresenter {
          * Shows or hides this view's widget.
          */
         void setVisible(boolean b);
+
+        /**
+         * Enables or disables this view's widget.
+         */
+        void setEnabled(boolean enabled);
     }
 }
