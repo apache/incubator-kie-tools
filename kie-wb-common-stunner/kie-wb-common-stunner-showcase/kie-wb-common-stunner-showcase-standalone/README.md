@@ -32,6 +32,7 @@ Running the application
         -Djava.util.prefs.syncInterval=2000000
         -Dorg.uberfire.async.executor.safemode=true
         -Dorg.uberfire.nio.git.dir=/tmp/dir
+        -Derrai.dynamic_validation.enabled=true
 
                       
   - *Dev mode parameters*: 
