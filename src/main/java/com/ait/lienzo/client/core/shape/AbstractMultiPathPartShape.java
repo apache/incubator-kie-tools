@@ -238,9 +238,9 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             {
                 IPrimitive<?> prim = handle.getControl();
 
-                prim.setX(m_startPoints[i] + event.getDragContext().getDx());
+                prim.setX(m_startPoints[i] + event.getDragContext().getDistanceAdjusted().getX());
 
-                prim.setY(m_startPoints[i + 1] + event.getDragContext().getDy());
+                prim.setY(m_startPoints[i + 1] + event.getDragContext().getDistanceAdjusted().getY());
 
                 i = i + 2;
             }
@@ -548,9 +548,9 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         {
             if ((m_handle.isActive()) && (m_chlist.isActive()))
             {
-                double dx = event.getDragContext().getDx();
+                double dx = event.getDragContext().getDistanceAdjusted().getX();
 
-                double dy = event.getDragContext().getDy();
+                double dy = event.getDragContext().getDistanceAdjusted().getY();
 
                 PathPartList list = m_listOfPaths.get(m_handle.getPathIndex());
 
@@ -1001,9 +1001,9 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         {
             if ((m_handle.isActive()) && (m_chlist.isActive()))
             {
-                double dx = event.getDragContext().getDx();
+                double dx = event.getDragContext().getDistanceAdjusted().getX();
 
-                double dy = event.getDragContext().getDy();
+                double dy = event.getDragContext().getDistanceAdjusted().getY();
 
                 for (PathPartList list : m_listOfPaths)
                 {

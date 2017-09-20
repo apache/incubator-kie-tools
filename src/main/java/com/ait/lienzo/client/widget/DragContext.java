@@ -57,6 +57,8 @@ public class DragContext
 
     private final Transform              m_ltog;
 
+    private final Transform m_vtog;
+
     private final IPrimitive<?>          m_prim;
 
     private final double                 m_prmx;
@@ -79,9 +81,21 @@ public class DragContext
      * @param event the first drag event
      * @param prim the node that is being dragged
      */
-    public DragContext(final INodeXYEvent event, final IPrimitive<?> prim)
+    public DragContext(final INodeXYEvent event, final IPrimitive<?> prim) {
+        this(event, prim, new Transform());
+    }
+
+    /**
+     * Starts a drap operation for the specified node, using viewport coordiants
+     * @param event the first drag event
+     * @param prim the node that is being dragged
+     * @param viewportToGlobalTransform The Transform of the Viewport
+     */
+    public DragContext(final INodeXYEvent event, final IPrimitive<?> prim, final Transform viewportToGlobalTransform)
     {
         m_prim = prim;
+
+        m_vtog = viewportToGlobalTransform;
 
         m_lstx = m_prmx = m_prim.getX();
 
@@ -313,6 +327,10 @@ public class DragContext
         return m_ltog;
     }
 
+    public Transform getViewportToGlobal() {
+        return m_vtog;
+    }
+
     /**
      * Returns (dx,dy) in local coordinates, adjusted by the 
      * {@link DragConstraintEnforcer}
@@ -322,6 +340,37 @@ public class DragContext
     public Point2D getLocalAdjusted()
     {
         return m_lclp;
+    }
+
+    /**
+     * Returns the start in viewport coordinates - i.e. viewport.transform.inverse(event(x,y)) of drag start
+     *
+     * @return
+     */
+    public Point2D getStartAdjusted() {
+        Point2D viewportLoc = new Point2D(getDragStartX(), getDragStartY());
+        m_vtog.transform(viewportLoc, viewportLoc);
+        return viewportLoc;
+    }
+
+    /**
+     * Returns the event in viewport coordinates - i.e. viewport.transform.inverse(event(x,y)) of last drag move
+     *
+     * @return
+     */
+    public Point2D getEventAdjusted() {
+        Point2D viewportLoc = new Point2D(getEventX(), getEventY());
+        m_vtog.transform(viewportLoc, viewportLoc);
+        return viewportLoc;
+    }
+
+    /**
+     * Returns the distance between the start and end in viewport coordinates
+     *
+     * @return
+     */
+    public Point2D getDistanceAdjusted() {
+        return getEventAdjusted().minus(getStartAdjusted());
     }
 
     /**
