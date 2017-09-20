@@ -17,81 +17,49 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.d
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.BaseDTDOMElement;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 /**
  * A DOMElement that can contain single values; e.g. a TextBox.
  */
-public abstract class SingleValueDOMElement<T, W extends Widget> extends BaseDOMElement<T, W> {
+public abstract class SingleValueDOMElement<T, W extends Widget> extends BaseDTDOMElement<T, W> {
 
-    private static final int HEIGHT = 16;
+    public SingleValueDOMElement(final W widget,
+                                 final GridLayer gridLayer,
+                                 final GridWidget gridWidget) {
+        super(widget,
+              gridLayer,
+              gridWidget);
+        style(widget).setWidth(100,
+                               Style.Unit.PCT);
+        style(widget).setHeight(100,
+                                Style.Unit.PCT);
+        style(widgetContainer).setPadding(2,
+                                          Style.Unit.PX);
 
-    public SingleValueDOMElement( final W widget,
-                                  final GridLayer gridLayer,
-                                  final GridWidget gridWidget ) {
-        super( widget,
-               gridLayer,
-               gridWidget );
-        final Style style = widget.getElement().getStyle();
-        style.setWidth( 100,
-                        Style.Unit.PCT );
-        style.setHeight( HEIGHT,
-                         Style.Unit.PX );
-        style.setPaddingLeft( 2,
-                              Style.Unit.PX );
-        style.setPaddingRight( 2,
-                               Style.Unit.PX );
-        style.setFontSize( 10,
-                           Style.Unit.PX );
-
-        // --- Workaround for BS2 ---
-        style.setPosition( Style.Position.RELATIVE );
-        style.setPaddingTop( 0,
-                             Style.Unit.PX );
-        style.setPaddingBottom( 0,
-                                Style.Unit.PX );
-        style.setProperty( "WebkitBoxSizing",
-                           "border-box" );
-        style.setProperty( "MozBoxSizing",
-                           "border-box" );
-        style.setProperty( "boxSizing",
-                           "border-box" );
-        style.setProperty( "lineHeight",
-                           "normal" );
-        // --- End workaround ---
-
-        getContainer().getElement().getStyle().setPaddingLeft( 5,
-                                                               Style.Unit.PX );
-        getContainer().getElement().getStyle().setPaddingRight( 5,
-                                                                Style.Unit.PX );
-        getContainer().setWidget( widget );
+        getContainer().setWidget(widget);
     }
 
     @Override
-    public void initialise( final GridBodyCellRenderContext context ) {
-        final Style style = widget.getElement().getStyle();
-        style.setMarginTop( ( context.getCellHeight() - HEIGHT ) / 2,
-                            Style.Unit.PX );
-        transform( context );
+    public void initialise(final GridBodyCellRenderContext context) {
+        transform(context);
     }
 
     @Override
-    public void flush( final T value ) {
+    public void flush(final T value) {
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
-        if ( value == null ) {
-            gridWidget.getModel().deleteCell( rowIndex,
-                                              columnIndex );
-
+        if (value == null) {
+            gridWidget.getModel().deleteCell(rowIndex,
+                                             columnIndex);
         } else {
-            gridWidget.getModel().setCell( rowIndex,
-                                           columnIndex,
-                                           new GuidedDecisionTableUiCell<T>( value ) );
+            gridWidget.getModel().setCell(rowIndex,
+                                          columnIndex,
+                                          new GuidedDecisionTableUiCell<T>(value));
         }
     }
-
 }

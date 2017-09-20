@@ -17,8 +17,8 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.d
 
 import java.math.BigInteger;
 
-import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
@@ -49,7 +49,6 @@ public class ListBoxBigIntegerSingletonDOMElementFactory extends ListBoxSingleto
         } catch ( NumberFormatException nfe ) {
             return new BigInteger( "0" );
         }
-
     }
 
 }

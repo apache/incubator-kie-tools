@@ -15,12 +15,12 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox;
 
-import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
-public class ListBoxStringSingletonDOMElementFactory<T> extends ListBoxSingletonDOMElementFactory<String, ListBox> {
+public class ListBoxStringSingletonDOMElementFactory extends ListBoxSingletonDOMElementFactory<String, ListBox> {
 
     public ListBoxStringSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
                                                     final GridLayer gridLayer,

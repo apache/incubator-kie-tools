@@ -19,11 +19,11 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 import java.util.Date;
 import java.util.Map;
 
-import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.MultiValueDOMElement;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.MultiValueSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.SingleValueDOMElement;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.SingleValueSingletonDOMElementFactory;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.DatePicker;
@@ -34,19 +34,21 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
  */
 public class CallbackFactory {
 
+    static final int MAX_VISIBLE_ROWS = 10;
+
     /**
      * Callback to set the value of a TextBox based on the Cells value.
      * @param factory Factory that can convert Cells' values to String.
      * @param cell The Cell to be rendered.
      * @return
      */
-    public static <T, W extends TextBox, E extends SingleValueDOMElement<T, W>, F extends SingleValueSingletonDOMElementFactory<T, W, E>> Callback<E> makeOnCreationCallback( final F factory,
-                                                                                                                                                                              final GridCell<T> cell ) {
-        return ( e ) -> {
-            if ( hasValue( cell ) ) {
-                e.getWidget().setValue( factory.convert( cell.getValue().getValue() ) );
+    public static <T, W extends TextBox, E extends SingleValueDOMElement<T, W>, F extends SingleValueSingletonDOMElementFactory<T, W, E>> Callback<E> makeOnCreationCallback(final F factory,
+                                                                                                                                                                             final GridCell<T> cell) {
+        return (e) -> {
+            if (hasValue(cell)) {
+                e.getWidget().setValue(factory.convert(cell.getValue().getValue()));
             } else {
-                e.getWidget().setValue( "" );
+                e.getWidget().setValue("");
             }
         };
     }
@@ -56,7 +58,7 @@ public class CallbackFactory {
      * @return
      */
     public static <T, W extends TextBox, E extends SingleValueDOMElement<T, W>> Callback<E> makeOnDisplayTextBoxCallback() {
-        return ( e ) -> e.getWidget().setFocus( true );
+        return (e) -> e.getWidget().setFocus(true);
     }
 
     /**
@@ -65,17 +67,23 @@ public class CallbackFactory {
      * @param cell The Cell to be rendered.
      * @return
      */
-    public static <T, W extends ListBox, E extends MultiValueDOMElement<T, W>, F extends MultiValueSingletonDOMElementFactory<T, W, E>> Callback<E> makeOnCreationCallback( final F factory,
-                                                                                                                                                                            final GridCell<T> cell,
-                                                                                                                                                                            final Map<String, String> enumLookups ) {
-        return ( e ) -> {
+    public static <T, W extends ListBox, E extends MultiValueDOMElement<T, W>, F extends MultiValueSingletonDOMElementFactory<T, W, E>> Callback<E> makeOnCreationCallback(final F factory,
+                                                                                                                                                                           final GridCell<T> cell,
+                                                                                                                                                                           final Map<String, String> enumLookups) {
+        return (e) -> {
             final W widget = e.getWidget();
-            for ( Map.Entry<String, String> lookup : enumLookups.entrySet() ) {
-                widget.addItem( lookup.getValue(),
-                                lookup.getKey() );
+
+            if (widget.isMultipleSelect()) {
+                widget.setVisibleItemCount(Math.min(MAX_VISIBLE_ROWS,
+                                                    enumLookups.size()));
             }
-            factory.toWidget( cell,
-                              widget );
+
+            for (Map.Entry<String, String> lookup : enumLookups.entrySet()) {
+                widget.addItem(lookup.getValue(),
+                               lookup.getKey());
+            }
+            factory.toWidget(cell,
+                             widget);
         };
     }
 
@@ -84,7 +92,7 @@ public class CallbackFactory {
      * @return
      */
     public static <T, W extends ListBox, E extends MultiValueDOMElement<T, W>> Callback<E> makeOnDisplayListBoxCallback() {
-        return ( e ) -> e.getWidget().setFocus( true );
+        return (e) -> e.getWidget().setFocus(true);
     }
 
     /**
@@ -92,13 +100,13 @@ public class CallbackFactory {
      * @param cell The Cell to be rendered.
      * @return
      */
-    public static <E extends SingleValueDOMElement<Date, DatePicker>> Callback<E> makeOnCreationCallback( final GridCell<Date> cell ) {
-        return ( e ) -> {
+    public static <E extends SingleValueDOMElement<Date, DatePicker>> Callback<E> makeOnCreationCallback(final GridCell<Date> cell) {
+        return (e) -> {
             final DatePicker widget = e.getWidget();
-            if ( hasValue( cell ) ) {
-                widget.setValue( cell.getValue().getValue() );
+            if (hasValue(cell)) {
+                widget.setValue(cell.getValue().getValue());
             } else {
-                widget.setValue( new Date() );
+                widget.setValue(new Date());
             }
         };
     }
@@ -108,14 +116,13 @@ public class CallbackFactory {
      * @return
      */
     public static <E extends SingleValueDOMElement<Date, DatePicker>> Callback<E> makeOnDisplayDatePickerCallback() {
-        return ( e ) -> e.getWidget().setFocus( true );
+        return (e) -> e.getWidget().setFocus(true);
     }
 
-    private static <T> boolean hasValue( final GridCell<T> cell ) {
-        if ( cell == null || cell.getValue() == null || cell.getValue().getValue() == null ) {
+    private static <T> boolean hasValue(final GridCell<T> cell) {
+        if (cell == null || cell.getValue() == null || cell.getValue().getValue() == null) {
             return false;
         }
         return true;
     }
-
 }

@@ -18,8 +18,8 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.d
 import java.util.Date;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;

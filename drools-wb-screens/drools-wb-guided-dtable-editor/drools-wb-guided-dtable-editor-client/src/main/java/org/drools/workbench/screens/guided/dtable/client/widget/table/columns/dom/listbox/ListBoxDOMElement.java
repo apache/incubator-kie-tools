@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox;
 
-import com.google.gwt.user.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
@@ -24,12 +24,14 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
  */
 public class ListBoxDOMElement<T, W extends ListBox> extends MultiValueDOMElement<T, W> {
 
-    public ListBoxDOMElement( final W widget,
-                              final GridLayer gridLayer,
-                              final GridWidget gridWidget ) {
-        super( widget,
-               gridLayer,
-               gridWidget );
+    public ListBoxDOMElement(final W widget,
+                             final GridLayer gridLayer,
+                             final GridWidget gridWidget,
+                             final boolean isMultipleSelect) {
+        super(widget,
+              gridLayer,
+              gridWidget,
+              true,
+              !isMultipleSelect);
     }
-
 }

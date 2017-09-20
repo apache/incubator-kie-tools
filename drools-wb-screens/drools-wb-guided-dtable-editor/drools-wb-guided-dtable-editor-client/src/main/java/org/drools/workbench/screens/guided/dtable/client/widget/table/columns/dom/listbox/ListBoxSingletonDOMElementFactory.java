@@ -15,9 +15,10 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox;
 
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.event.dom.client.MouseDownEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.KeyDownHandlerCommon;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
@@ -41,7 +42,7 @@ public abstract class ListBoxSingletonDOMElementFactory<T, W extends ListBox> ex
                                                     final GridWidget gridWidget,
                                                     final GridBodyCellRenderContext context) {
         this.widget = createWidget();
-        this.widget.addMouseDownHandler((e) -> e.stopPropagation());
+        this.widget.addMouseDownHandler(MouseDownEvent::stopPropagation);
         this.widget.addKeyDownHandler(new KeyDownHandlerCommon(gridPanel,
                                                                gridLayer,
                                                                gridWidget,
@@ -56,7 +57,8 @@ public abstract class ListBoxSingletonDOMElementFactory<T, W extends ListBox> ex
 
         this.e = new ListBoxDOMElement<>(widget,
                                          gridLayer,
-                                         gridWidget);
+                                         gridWidget,
+                                         widget.isMultipleSelect());
 
         return e;
     }

@@ -17,11 +17,9 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.con
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import com.google.gwt.user.client.ui.ListBox;
 import org.appformer.project.datamodel.oracle.DataType;
 import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
@@ -80,6 +78,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.do
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -257,50 +256,15 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                          @Override
                                          public void toWidget(final GridCell<String> cell,
                                                               final ListBox widget) {
-                                             if (cell == null || cell.getValue() == null || cell.getValue().getValue() == null) {
-                                                 if (widget.getItemCount() > 0) {
-                                                     widget.setSelectedIndex(0);
-                                                 }
-                                             } else {
-                                                 final String value = cell.getValue().getValue();
-                                                 if (isMultipleSelect) {
-                                                     final List<String> values = Arrays.asList(value.split(","));
-                                                     for (int i = 0; i < widget.getItemCount(); i++) {
-                                                         widget.setItemSelected(i,
-                                                                                values.contains(widget.getValue(i)));
-                                                     }
-                                                 } else {
-                                                     for (int i = 0; i < widget.getItemCount(); i++) {
-                                                         if (widget.getValue(i).equals(value)) {
-                                                             widget.setSelectedIndex(i);
-                                                             break;
-                                                         }
-                                                     }
-                                                 }
-                                             }
+                                             BaseColumnConverterUtilities.toWidget(isMultipleSelect,
+                                                                                   cell,
+                                                                                   widget);
                                          }
 
                                          @Override
                                          public String fromWidget(final ListBox widget) {
-                                             final StringBuilder sb = new StringBuilder();
-                                             if (isMultipleSelect) {
-                                                 for (int i = 0; i < widget.getItemCount(); i++) {
-                                                     if (widget.isItemSelected(i)) {
-                                                         if (i == 0) {
-                                                             sb.append(widget.getValue(i));
-                                                         } else {
-                                                             sb.append(",").append(widget.getValue(i));
-                                                         }
-                                                     }
-                                                 }
-                                             } else {
-                                                 int selectedIndex = widget.getSelectedIndex();
-                                                 if (selectedIndex >= 0) {
-                                                     sb.append(widget.getValue(selectedIndex));
-                                                 }
-                                             }
-
-                                             return sb.toString();
+                                             return BaseColumnConverterUtilities.fromWidget(isMultipleSelect,
+                                                                                            widget);
                                          }
 
                                          @Override
@@ -321,9 +285,9 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                      true,
                                      !column.isHideColumn(),
                                      access,
-                                     new ListBoxStringSingletonDOMElementFactory<String>(gridPanel,
-                                                                                         gridLayer,
-                                                                                         gridWidget),
+                                     new ListBoxStringSingletonDOMElementFactory(gridPanel,
+                                                                                 gridLayer,
+                                                                                 gridWidget),
                                      presenter.getValueListLookups(column));
     }
 
@@ -357,30 +321,15 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                @Override
                                                public void toWidget(final GridCell<String> cell,
                                                                     final ListBox widget) {
-                                                   final String value = cell.getValue().getValue();
-                                                   if (value == null) {
-                                                       return;
-                                                   }
-                                                   final List<String> values = Arrays.asList(value.split(","));
-                                                   for (int i = 0; i < widget.getItemCount(); i++) {
-                                                       widget.setItemSelected(i,
-                                                                              values.contains(widget.getValue(i)));
-                                                   }
+                                                   BaseColumnConverterUtilities.toWidget(true,
+                                                                                         cell,
+                                                                                         widget);
                                                }
 
                                                @Override
                                                public String fromWidget(final ListBox widget) {
-                                                   final StringBuilder sb = new StringBuilder();
-                                                   for (int i = 0; i < widget.getItemCount(); i++) {
-                                                       if (widget.isItemSelected(i)) {
-                                                           if (i == 0) {
-                                                               sb.append(widget.getValue(i));
-                                                           } else {
-                                                               sb.append(",").append(widget.getValue(i));
-                                                           }
-                                                       }
-                                                   }
-                                                   return sb.toString();
+                                                   return BaseColumnConverterUtilities.fromWidget(true,
+                                                                                                  widget);
                                                }
                                            },
                                            presenter,
@@ -570,9 +519,9 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                       true,
                                                       !column.isHideColumn(),
                                                       access,
-                                                      new ListBoxStringSingletonDOMElementFactory<String>(gridPanel,
-                                                                                                          gridLayer,
-                                                                                                          gridWidget),
+                                                      new ListBoxStringSingletonDOMElementFactory(gridPanel,
+                                                                                                  gridLayer,
+                                                                                                  gridWidget),
                                                       new TextBoxStringSingletonDOMElementFactory(gridPanel,
                                                                                                   gridLayer,
                                                                                                   gridWidget),
