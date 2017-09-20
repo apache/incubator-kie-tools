@@ -15,12 +15,13 @@
  */
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.dom.client.Element;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.Popover;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Placement;
 import org.gwtbootstrap3.client.ui.constants.Trigger;
+
+import com.google.gwt.dom.client.Element;
 
 /**
  * This is handy for in-place context help.
@@ -28,15 +29,16 @@ import org.gwtbootstrap3.client.ui.constants.Trigger;
 public class InfoPopup extends Popover {
 
     public InfoPopup(final String text) {
+        super(text);
         configure();
-        setContent(text);
+        recreate();
     }
 
     public InfoPopup(final String heading,
                      final String text) {
+        super(heading, text);
         configure();
-        setTitle(heading);
-        setContent(text);
+        recreate();
     }
 
     private void configure() {
@@ -47,13 +49,13 @@ public class InfoPopup extends Popover {
         icon.addStyleName("help-inline");
         setWidget(icon);
 
-        configurePopoverContainer(this.getWidget().getElement());
+        configurePopoverContainer(getWidget().getElement());
         getWidget().getElement().getStyle().setZIndex(Integer.MAX_VALUE);
     }
 
     private native void configurePopoverContainer(Element e) /*-{
-        $wnd.jQuery(e).popover({
-            container: 'body'
-        });
-    }-*/;
+                                                             $wnd.jQuery(e).popover({
+                                                             container: 'body'
+                                                             });
+                                                             }-*/;
 }
