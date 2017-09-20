@@ -16,8 +16,10 @@
 
 package org.drools.workbench.screens.testscenario.backend.server;
 
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +32,11 @@ import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
+import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.shared.exceptions.GenericPortableException;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -40,10 +46,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.ext.editor.commons.service.CopyService;
+import org.uberfire.ext.editor.commons.service.DeleteService;
+import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
+import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -53,6 +65,10 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ScenarioTestEditorServiceImplTest {
+
+    private static final String COMMENT = "comment";
+    public static final String EMPTY_SCENARIO_FILENAME = "empty.scenario";
+    public static final String NEW_FILE_NAME = "new" + EMPTY_SCENARIO_FILENAME;
 
     @Mock
     Scenario scenario;
@@ -72,11 +88,230 @@ public class ScenarioTestEditorServiceImplTest {
     @Mock
     KieProjectService projectService;
 
+    @Mock
+    CommentedOptionFactory commentedOptionFactory;
+
+    @Mock
+    MetadataServerSideService metadataService;
+
+    @Mock
+    CommentedOption commentedOption;
+
+    @Mock
+    DeleteService deleteService;
+
+    @Mock
+    RenameService renameService;
+
+    @Mock
+    CopyService copyService;
+
     @Spy
     IOService ioService = new IOServiceDotFileImpl("testIoService");
 
     @InjectMocks
     ScenarioTestEditorServiceImpl testEditorService = new ScenarioTestEditorServiceImpl();
+
+    @Test
+    public void testCreate() throws Exception {
+        final Path scenarioPath = getEmptyScenarioPath();
+
+        doReturn(commentedOption).when(commentedOptionFactory).makeCommentedOption(COMMENT);
+        doReturn(null).when(ioService).write(any(),
+                                             anyString(),
+                                             any());
+
+        testEditorService.create(scenarioPath,
+                                 EMPTY_SCENARIO_FILENAME,
+                                 scenario,
+                                 COMMENT);
+
+        verify(ioService).write(any(),
+                                anyString(),
+                                eq(commentedOption));
+    }
+
+    @Test
+    public void testCreateAlreadyExists() throws Exception {
+        final Path scenarioPath = getEmptyScenarioPath();
+
+        doReturn(true).when(ioService).exists(Paths.convert(scenarioPath).resolve(EMPTY_SCENARIO_FILENAME));
+
+        try {
+            testEditorService.create(scenarioPath,
+                                     EMPTY_SCENARIO_FILENAME,
+                                     scenario,
+                                     COMMENT);
+        } catch (FileAlreadyExistsException e) {
+            // ok
+            verify(ioService,
+                   never()).write(any(),
+                                  anyString(),
+                                  any());
+        }
+    }
+
+    @Test(expected = GenericPortableException.class)
+    public void testCreateExceptionThrown() throws Exception {
+        final Path scenarioPath = getEmptyScenarioPath();
+
+        doReturn(null).when(commentedOptionFactory).makeCommentedOption(COMMENT);
+        doThrow(new IllegalArgumentException("error")).when(ioService).write(any(),
+                                                                             anyString(),
+                                                                             any());
+        testEditorService.create(scenarioPath,
+                                 EMPTY_SCENARIO_FILENAME,
+                                 scenario,
+                                 COMMENT);
+    }
+
+    @Test
+    public void testSave() throws Exception {
+        final Metadata metadata = mock(Metadata.class);
+        final Path scenarioPath = getEmptyScenarioPath();
+        final Map<String, Object> emptyMap = Collections.emptyMap();
+
+        doReturn(metadata).when(metadataService).getMetadata(scenarioPath);
+        doReturn(emptyMap).when(metadataService).setUpAttributes(scenarioPath,
+                                                                 metadata);
+        doReturn(commentedOption).when(commentedOptionFactory).makeCommentedOption(COMMENT);
+
+        testEditorService.save(scenarioPath,
+                               scenario,
+                               metadata,
+                               COMMENT);
+
+        verify(ioService).write(any(org.uberfire.java.nio.file.Path.class),
+                                anyString(),
+                                eq(emptyMap),
+                                eq(commentedOption));
+    }
+
+    @Test(expected = GenericPortableException.class)
+    public void testSaveThrowException() throws Exception {
+        final Metadata metadata = mock(Metadata.class);
+        final Path scenarioPath = getEmptyScenarioPath();
+        final Map<String, Object> emptyMap = Collections.emptyMap();
+
+        doReturn(metadata).when(metadataService).getMetadata(scenarioPath);
+        doReturn(emptyMap).when(metadataService).setUpAttributes(scenarioPath,
+                                                                 metadata);
+        doReturn(commentedOption).when(commentedOptionFactory).makeCommentedOption(COMMENT);
+        doThrow(new IllegalArgumentException("error")).when(ioService).write(any(org.uberfire.java.nio.file.Path.class),
+                                                                             anyString(),
+                                                                             eq(emptyMap),
+                                                                             eq(commentedOption));
+
+        testEditorService.save(scenarioPath,
+                               scenario,
+                               metadata,
+                               COMMENT);
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+        final Path scenarioPath = getEmptyScenarioPath();
+        testEditorService.delete(scenarioPath,
+                                 COMMENT);
+
+        verify(deleteService).delete(scenarioPath,
+                                     COMMENT);
+    }
+
+    @Test(expected = GenericPortableException.class)
+    public void testDeleteThrowException() throws Exception {
+        final Path scenarioPath = getEmptyScenarioPath();
+        doThrow(new IllegalArgumentException("error")).when(deleteService).delete(scenarioPath,
+                                                                                  COMMENT);
+
+        testEditorService.delete(scenarioPath,
+                                 COMMENT);
+    }
+
+    @Test
+    public void testRename() throws Exception {
+        final Path scenarioPath = getEmptyScenarioPath();
+        final String newFileName = NEW_FILE_NAME;
+
+        testEditorService.rename(scenarioPath,
+                                 newFileName,
+                                 COMMENT);
+
+        verify(renameService).rename(scenarioPath,
+                                     newFileName,
+                                     COMMENT);
+    }
+
+    @Test(expected = GenericPortableException.class)
+    public void testRenameThrowException() throws Exception {
+        final Path scenarioPath = getEmptyScenarioPath();
+        final String newFileName = NEW_FILE_NAME;
+
+        doThrow(new IllegalArgumentException("error")).when(renameService).rename(scenarioPath,
+                                                                                  newFileName,
+                                                                                  COMMENT);
+        testEditorService.rename(scenarioPath,
+                                 newFileName,
+                                 COMMENT);
+    }
+
+    @Test
+    public void testCopy() throws Exception {
+        final Path scenarioPath = getEmptyScenarioPath();
+        final String newFileName = NEW_FILE_NAME;
+
+        testEditorService.copy(scenarioPath,
+                               newFileName,
+                               COMMENT);
+
+        verify(copyService).copy(scenarioPath,
+                                 newFileName,
+                                 COMMENT);
+    }
+
+    @Test
+    public void testCopyWithTarget() throws Exception {
+        final Path scenarioPath = getEmptyScenarioPath();
+        final String newFileName = NEW_FILE_NAME;
+
+        testEditorService.copy(scenarioPath,
+                               newFileName,
+                               path,
+                               COMMENT);
+
+        verify(copyService).copy(scenarioPath,
+                                 newFileName,
+                                 path,
+                                 COMMENT);
+    }
+
+    @Test(expected = GenericPortableException.class)
+    public void testCopyThrowException() throws Exception {
+        final Path scenarioPath = getEmptyScenarioPath();
+        final String newFileName = NEW_FILE_NAME;
+
+        doThrow(new IllegalArgumentException("error")).when(copyService).copy(scenarioPath,
+                                                                              newFileName,
+                                                                              COMMENT);
+        testEditorService.copy(scenarioPath,
+                               newFileName,
+                               COMMENT);
+    }
+
+    @Test(expected = GenericPortableException.class)
+    public void testCopyWithTargetThrowException() throws Exception {
+        final Path scenarioPath = getEmptyScenarioPath();
+        final String newFileName = NEW_FILE_NAME;
+
+        doThrow(new IllegalArgumentException("error")).when(copyService).copy(scenarioPath,
+                                                                              newFileName,
+                                                                              path,
+                                                                              COMMENT);
+        testEditorService.copy(scenarioPath,
+                               newFileName,
+                               path,
+                               COMMENT);
+    }
 
     @Test
     public void runScenarioWithoutDependentImports() throws Exception {
@@ -202,9 +437,7 @@ public class ScenarioTestEditorServiceImplTest {
     @Test
     public void loadEmptyScenario() throws
             Exception {
-        final URL scenarioResource = getClass().getResource("empty.scenario");
-        final Path scenarioPath = PathFactory.newPath(scenarioResource.getFile(),
-                                                      scenarioResource.toURI().toString());
+        final Path scenarioPath = getEmptyScenarioPath();
 
         final Scenario loadedScenario = testEditorService.load(scenarioPath);
 
@@ -300,5 +533,11 @@ public class ScenarioTestEditorServiceImplTest {
                               null,
                               null,
                               null);
+    }
+
+    private Path getEmptyScenarioPath() throws URISyntaxException {
+        final URL scenarioResource = getClass().getResource(EMPTY_SCENARIO_FILENAME);
+        return PathFactory.newPath(scenarioResource.getFile(),
+                                   scenarioResource.toURI().toString());
     }
 }
