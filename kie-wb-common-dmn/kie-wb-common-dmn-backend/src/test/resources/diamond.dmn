@@ -19,8 +19,8 @@
         <dc:BgColor red="0" green="253" blue="25"></dc:BgColor>
         <dc:BorderColor red="253" green="0" blue="0"></dc:BorderColor>
         <dmndi:BorderSize value="1.0"></dmndi:BorderSize>
-        <dmndi:DMNFontStyle fontName="Open Sans" fontSize="10.0" fontBorderSize="0.0">
-          <dc:FontColor red="0" green="0" blue="0"></dc:FontColor>
+        <dmndi:DMNFontStyle fontName="Times New Roman" fontSize="8.0" fontBorderSize="2.5">
+          <dc:FontColor red="70" green="60" blue="50"></dc:FontColor>
         </dmndi:DMNFontStyle>
       </dmndi:DMNShape>
       <dmndi:DMNShape id="dmnshape-_4cd17e52-6253-41d6-820d-5824bf5197f3" dmnElementRef="_4cd17e52-6253-41d6-820d-5824bf5197f3">
@@ -37,8 +37,8 @@
         <dc:BgColor red="255" green="255" blue="255"></dc:BgColor>
         <dc:BorderColor red="0" green="0" blue="0"></dc:BorderColor>
         <dmndi:BorderSize value="0.5"></dmndi:BorderSize>
-        <dmndi:DMNFontStyle fontName="Open Sans" fontSize="10.0" fontBorderSize="0.0">
-          <dc:FontColor red="0" green="0" blue="0"></dc:FontColor>
+        <dmndi:DMNFontStyle fontName="Monospaced" fontSize="32.0" fontBorderSize="3.5">
+          <dc:FontColor red="55" green="66" blue="77"></dc:FontColor>
         </dmndi:DMNFontStyle>
       </dmndi:DMNShape>
       <dmndi:DMNShape id="dmnshape-_f49f9c34-29d5-4e72-91d2-f4f92117c8da" dmnElementRef="_f49f9c34-29d5-4e72-91d2-f4f92117c8da">
@@ -46,8 +46,8 @@
         <dc:BgColor red="247" green="255" blue="0"></dc:BgColor>
         <dc:BorderColor red="0" green="51" blue="255"></dc:BorderColor>
         <dmndi:BorderSize value="2.0"></dmndi:BorderSize>
-        <dmndi:DMNFontStyle fontName="Open Sans" fontSize="10.0" fontBorderSize="0.0">
-          <dc:FontColor red="0" green="0" blue="0"></dc:FontColor>
+        <dmndi:DMNFontStyle fontName="Arial" fontSize="10.0" fontBorderSize="1.5">
+          <dc:FontColor red="50" green="60" blue="70"></dc:FontColor>
         </dmndi:DMNFontStyle>
       </dmndi:DMNShape>
     </dmndi:DMNDiagram>
