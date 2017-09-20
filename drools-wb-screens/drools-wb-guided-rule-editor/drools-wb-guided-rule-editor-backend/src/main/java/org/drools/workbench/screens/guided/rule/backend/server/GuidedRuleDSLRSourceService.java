@@ -31,7 +31,6 @@ import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
-import org.drools.workbench.models.commons.backend.rule.RuleModelIActionPersistenceExtension;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
@@ -70,13 +69,6 @@ public class GuidedRuleDSLRSourceService
     @Inject
     private KieProjectService projectService;
 
-    private Collection<RuleModelIActionPersistenceExtension> persistenceExtensions = new ArrayList<>();
-
-    @Inject
-    public GuidedRuleDSLRSourceService(final Instance<RuleModelIActionPersistenceExtension> persistenceExtensionInstance) {
-        persistenceExtensionInstance.forEach(persistenceExtensions::add);
-    }
-
     @Override
     public String getPattern() {
         return resourceType.getSuffix();
@@ -86,8 +78,7 @@ public class GuidedRuleDSLRSourceService
     public String getSource(final Path path,
                             final RuleModel model) throws SourceGenerationFailedException {
         try {
-            final String dslr = RuleModelDRLPersistenceImpl.getInstance().marshal(model,
-                                                                                  persistenceExtensions);
+            final String dslr = RuleModelDRLPersistenceImpl.getInstance().marshal(model);
             final Expander expander = getDSLExpander(path);
             final String drl = expander.expand(dslr);
             return drl;

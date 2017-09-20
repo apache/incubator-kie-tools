@@ -110,8 +110,7 @@ public class GuidedRuleEditorRenameHelper implements RenameHelper {
             //Save file
             model.name = ruleName;
             ioService.write(_destination,
-                            RuleModelDRLPersistenceImpl.getInstance().marshal(model,
-                                                                              persistenceExtensions),
+                            RuleModelDRLPersistenceImpl.getInstance().marshal(model),
                             commentedOptionFactory.makeCommentedOption("File [" + source.toURI() + "] renamed to [" + destination.toURI() + "]."));
         }
     }

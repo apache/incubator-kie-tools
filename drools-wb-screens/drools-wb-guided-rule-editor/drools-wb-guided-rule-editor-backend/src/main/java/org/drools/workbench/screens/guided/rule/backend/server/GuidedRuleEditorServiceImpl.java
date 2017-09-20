@@ -331,8 +331,7 @@ public class GuidedRuleEditorServiceImpl
         //by drools to expand it, by forcing the Model->DRL persistence into believing the model has DSLs.
         final RuleModelWrapper model = new RuleModelWrapper(content,
                                                             dslrResourceType.accept(path));
-        final String source = RuleModelDRLPersistenceImpl.getInstance().marshal(model,
-                                                                                persistenceExtensions);
+        final String source = RuleModelDRLPersistenceImpl.getInstance().marshal(model);
         return source;
     }
 }

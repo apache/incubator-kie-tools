@@ -110,8 +110,7 @@ public class GuidedRuleEditorCopyHelper implements CopyHelper {
             //Save file
             model.name = ruleName;
             ioService.write(_destination,
-                            RuleModelDRLPersistenceImpl.getInstance().marshal(model,
-                                                                              persistenceExtensions),
+                            RuleModelDRLPersistenceImpl.getInstance().marshal(model),
                             commentedOptionFactory.makeCommentedOption("File [" + source.toURI() + "] copied to [" + destination.toURI() + "]."));
         }
     }

@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -30,7 +29,6 @@ import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.compiler.lang.dsl.DefaultExpander;
-import org.drools.workbench.models.commons.backend.rule.RuleModelIActionPersistenceExtension;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTDRLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
@@ -64,22 +62,17 @@ public class GuidedDecisionTableSourceService
 
     private KieProjectService projectService;
 
-    private Collection<RuleModelIActionPersistenceExtension> persistenceExtensions = new ArrayList<>();
-
     @Inject
     public GuidedDecisionTableSourceService(final GuidedDTableResourceTypeDefinition resourceType,
                                             final GuidedDecisionTableEditorService guidedDecisionTableEditorService,
                                             final @Named("ioStrategy") IOService ioService,
                                             final FileDiscoveryService fileDiscoveryService,
-                                            final KieProjectService projectService,
-                                            final Instance<RuleModelIActionPersistenceExtension> persistenceExtensionInstance) {
+                                            final KieProjectService projectService) {
         this.resourceType = resourceType;
         this.guidedDecisionTableEditorService = guidedDecisionTableEditorService;
         this.ioService = ioService;
         this.fileDiscoveryService = fileDiscoveryService;
         this.projectService = projectService;
-
-        persistenceExtensionInstance.iterator().forEachRemaining(persistenceExtensions::add);
     }
 
     @Override
@@ -92,8 +85,7 @@ public class GuidedDecisionTableSourceService
                             final GuidedDecisionTable52 model) throws SourceGenerationFailedException {
 
         try {
-            final String dslr = GuidedDTDRLPersistence.getInstance().marshal(model,
-                                                                             persistenceExtensions);
+            final String dslr = GuidedDTDRLPersistence.getInstance().marshal(model);
             final Expander expander = getDSLExpander(path);
             final String drl = expander.expand(dslr);
             return drl;
