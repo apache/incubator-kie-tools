@@ -313,6 +313,7 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     public void addUserMenuItemTest() {
         menusHelper.addUserMenuItems();
 
+        verify(userMenu).clear();
         ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass(Menus.class);
         verify(userMenu,
                times(1)).addMenus(menusCaptor.capture());

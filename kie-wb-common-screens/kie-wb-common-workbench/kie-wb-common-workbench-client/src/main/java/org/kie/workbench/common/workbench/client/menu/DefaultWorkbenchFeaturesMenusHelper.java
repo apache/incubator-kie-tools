@@ -224,6 +224,8 @@ public class DefaultWorkbenchFeaturesMenusHelper {
     }
 
     public void addUserMenuItems() {
+        userMenu.clear();
+
         final Menus userMenus = MenuFactory
                 .newTopLevelMenu(constants.LogOut())
                 .respondsWith(new LogoutCommand())
