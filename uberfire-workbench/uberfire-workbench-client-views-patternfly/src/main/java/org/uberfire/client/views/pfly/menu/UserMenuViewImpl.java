@@ -62,6 +62,11 @@ public class UserMenuViewImpl extends AnchorListItem implements UserMenu.UserMen
     }
 
     @Override
+    public void clearMenuItems() {
+        menu.clear();
+    }
+
+    @Override
     public void addMenuItem(final MenuPosition position,
                             final Widget menuContent) {
         //Always add new option on top

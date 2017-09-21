@@ -74,4 +74,10 @@ public class UserMenuTest {
         userMenu.setup();
         verify(userMenuView).setUserName(lastName);
     }
+
+    @Test
+    public void testClear() {
+        userMenu.clear();
+        verify(userMenuView).clearMenuItems();
+    }
 }

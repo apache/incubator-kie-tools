@@ -103,8 +103,14 @@ public class UserMenu implements MenuFactory.CustomMenuBuilder,
         };
     }
 
+    public void clear() {
+        userMenuView.clearMenuItems();
+    }
+
     public interface UserMenuView extends HasMenuItems {
 
         void setUserName(String userName);
+
+        void clearMenuItems();
     }
 }
