@@ -259,8 +259,6 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     public String getFQCNByFactName(final String factName) {
         if (factNameToFQCNHandleRegistry.contains(factName)) {
             return factNameToFQCNHandleRegistry.get(factName);
-        } else if (factName.contains(".")) {
-            return factName;
         } else {
             return factName;
         }

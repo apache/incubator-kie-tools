@@ -385,12 +385,34 @@ public class AsyncPackageDataModelOracleImplTest {
     }
 
     @Test
-    public void testName() throws Exception {
-        assertEquals("org.test.Person",
-                     oracle.getFQCNByFactName("Person"));
+    public void testGetFieldClassName() throws Exception {
         assertEquals("Person",
                      oracle.getFieldClassName("Person",
                                               "this"));
+    }
+
+    @Test
+    public void testGetFQCNByFactNameInRegistry() throws Exception {
+        assertEquals("org.test.Person",
+                     oracle.getFQCNByFactName("Person"));
+    }
+
+    @Test
+    public void testGetFQCNByFactNameInRegistryWithPackage() throws Exception {
+        assertEquals("org.test.Person",
+                     oracle.getFQCNByFactName("org.test.Person"));
+    }
+
+    @Test
+    public void testGetFQCNByFactNameUnknown() throws Exception {
+        assertEquals("UnknownPerson",
+                     oracle.getFQCNByFactName("UnknownPerson"));
+    }
+
+    @Test
+    public void testGetFQCNByFactNameUnknownWithPackage() throws Exception {
+        assertEquals("org.test.UnknownPerson",
+                     oracle.getFQCNByFactName("org.test.UnknownPerson"));
     }
 
     @Test
