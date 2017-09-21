@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -37,7 +38,6 @@ import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorField
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
-import org.kie.workbench.common.forms.model.DynamicModel;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FieldType;
 import org.kie.workbench.common.forms.model.FormDefinition;
@@ -136,9 +136,8 @@ public class FormEditorHelper {
         if (result == null) {
 
             result = availableFields.get(fieldId);
-            if (result != null) {
-                availableFields.remove(fieldId);
-            } else {
+
+            if (result == null) {
                 if (unbindedFields.containsKey(fieldId)) {
                     Pair<EditorFieldLayoutComponent, FieldDefinition> pair = unbindedFields.get(fieldId);
 
@@ -163,9 +162,6 @@ public class FormEditorHelper {
                                        new Pair<>(component,
                                                   newField));
                 }
-            }
-            if (result != null) {
-                content.getDefinition().getFields().add(result);
             }
         }
         return result;
@@ -218,45 +214,51 @@ public class FormEditorHelper {
     }
 
     public FieldDefinition switchToField(FieldDefinition originalField,
-                                         String bindingExpression) {
+                                         String newBinding) {
 
-        FieldDefinition resultField = fieldManager.getDefinitionByFieldTypeName(originalField.getFieldType().getTypeName());
+        if (newBinding != null && !"".equals(newBinding)) {
+            Optional<FieldDefinition> availableFieldOptional = availableFields.values()
+                    .stream()
+                    .filter(availableField -> availableField.getBinding().equals(newBinding)).findFirst();
 
-        if (bindingExpression == null || bindingExpression.equals("") || content.getDefinition().getFieldByBinding(bindingExpression) != null) {
-            resultField.setName(generateUnboundFieldName(resultField));
-            resultField.setBinding("");
-        } else {
-            // Search if there's an available field with the specified binding
-            for (Iterator<FieldDefinition> it = availableFields.values().iterator(); it.hasNext(); ) {
-                FieldDefinition availableField = it.next();
-                if (availableField.getBinding().equals(bindingExpression)) {
+            if (availableFieldOptional.isPresent()) {
+                FieldDefinition availableField = availableFieldOptional.get();
 
-                    // Check types if we are binding a fields on dynamicModel && change field type if needed
-                    if (content.getDefinition().getModel() instanceof DynamicModel && !resultField.getFieldType().equals(availableField.getFieldType())) {
-                        resultField = fieldManager.getFieldFromProvider(availableField.getFieldType().getTypeName(),
-                                                                        availableField.getFieldTypeInfo());
-                    }
+                FieldDefinition resultField = fieldManager.getFieldFromProvider(originalField.getFieldType().getTypeName(),
+                                                                                availableField.getFieldTypeInfo());
 
-                    resultField.setId(availableField.getId());
-                    resultField.setName(availableField.getName());
-
-                    resultField.copyFrom(availableField);
-
-                    return resultField;
+                if (resultField == null) {
+                    // this happens when trying to bind to a property which is of an unsupported type for the current FieldFefintion
+                    resultField = fieldManager.getFieldFromProvider(availableField.getFieldType().getTypeName(),
+                                                                    availableField.getFieldTypeInfo());
                 }
+
+                resultField.copyFrom(originalField);
+
+                resultField.setId(availableField.getId());
+                resultField.setName(availableField.getName());
+                resultField.setStandaloneClassName(availableField.getStandaloneClassName());
+                resultField.setBinding(newBinding);
+
+                return resultField;
             }
         }
 
         // If we arrive here is because we have a dynamic binding or we are unbinding a field
+        FieldDefinition resultField = fieldManager.getDefinitionByFieldTypeName(originalField.getFieldType().getTypeName());
+
+        if (newBinding == null || newBinding.equals("")) {
+            // unbinding a field
+            resultField.setName(generateUnboundFieldName(resultField));
+            resultField.setBinding("");
+        }
+
         resultField.copyFrom(originalField);
-        resultField.setBinding(bindingExpression);
+        resultField.setBinding(newBinding);
 
         if (resultField.getName() == null) {
-            String name = bindingExpression;
-            if (name == null || name.isEmpty()) {
-                name = generateUnboundFieldName(resultField);
-            }
-            resultField.setName(name);
+            // edge case we only get here with dynamic bindings
+            resultField.setName(newBinding);
         }
 
         return resultField;
@@ -275,6 +277,18 @@ public class FormEditorHelper {
                     false);
 
         return resultDefinition;
+    }
+
+    public void saveFormField(FieldDefinition originalField,
+                              FieldDefinition fieldCopy) {
+        if (originalField.getBinding() != null && !originalField.getBinding().equals(fieldCopy.getBinding())) {
+            addAvailableField(originalField);
+        }
+        if (fieldCopy.getBinding() != null && !fieldCopy.getBinding().isEmpty()) {
+            removeAvailableField(fieldCopy);
+        }
+        content.getDefinition().getFields().remove(originalField);
+        content.getDefinition().getFields().add(fieldCopy);
     }
 
     public String generateUnboundFieldName(FieldDefinition field) {

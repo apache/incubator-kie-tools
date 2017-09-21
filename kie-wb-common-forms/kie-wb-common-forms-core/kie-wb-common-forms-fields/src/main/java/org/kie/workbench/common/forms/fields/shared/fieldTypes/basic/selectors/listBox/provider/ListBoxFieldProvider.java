@@ -42,6 +42,8 @@ public class ListBoxFieldProvider extends SelectorFieldProvider<ListBoxBaseDefin
     @Override
     protected void doRegisterFields() {
         registerPropertyType(String.class);
+        registerPropertyType(char.class);
+        registerPropertyType(Character.class);
     }
 
     @Override

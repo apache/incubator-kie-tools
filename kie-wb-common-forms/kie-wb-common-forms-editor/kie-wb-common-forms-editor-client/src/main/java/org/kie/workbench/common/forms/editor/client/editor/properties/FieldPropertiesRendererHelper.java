@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.editor.client.editor.properties;
 
 import java.util.List;
+import java.util.Set;
 
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
@@ -28,7 +29,7 @@ public interface FieldPropertiesRendererHelper {
 
     FieldDefinition getCurrentField();
 
-    List<String> getAvailableModelFields(FieldDefinition fieldDefinition);
+    Set<String> getAvailableModelFields(FieldDefinition fieldDefinition);
 
     List<String> getCompatibleFieldTypes(FieldDefinition fieldDefinition);
 

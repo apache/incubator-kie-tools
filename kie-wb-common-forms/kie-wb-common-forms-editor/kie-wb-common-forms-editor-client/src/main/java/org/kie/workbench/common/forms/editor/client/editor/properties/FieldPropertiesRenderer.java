@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.forms.editor.client.editor.properties;
 
+import java.util.Collection;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -57,6 +58,8 @@ public class FieldPropertiesRenderer implements IsWidget {
 
     private DataBindingEditor dynamicDataBindingEditor;
 
+    protected FieldDefinition originalField;
+
     protected FieldDefinition fieldCopy;
 
     protected FieldPropertiesRendererHelper helper;
@@ -85,7 +88,8 @@ public class FieldPropertiesRenderer implements IsWidget {
 
     public void render(final FieldPropertiesRendererHelper helper) {
         this.helper = helper;
-        this.fieldCopy = resetFieldCopy(helper.getCurrentField());
+        this.originalField = helper.getCurrentField();
+        this.fieldCopy = resetFieldCopy(originalField);
         this.acceptChanges = false;
         render();
     }
@@ -103,7 +107,8 @@ public class FieldPropertiesRenderer implements IsWidget {
     }
 
     public FieldDefinition resetFieldCopy(final FieldDefinition originalField) {
-        fieldCopy = fieldManager.getFieldFromProvider(originalField.getFieldType().getTypeName(), originalField.getFieldTypeInfo());
+        fieldCopy = fieldManager.getFieldFromProvider(originalField.getFieldType().getTypeName(),
+                                                      originalField.getFieldTypeInfo());
         fieldCopy.copyFrom(originalField);
         fieldCopy.setId(originalField.getId());
         fieldCopy.setName(originalField.getName());
@@ -151,12 +156,24 @@ public class FieldPropertiesRenderer implements IsWidget {
                             FormEditorRenderingContext context) {
         FormModel roodFormModel = helper.getCurrentRenderingContext().getRootForm().getModel();
         final DataBindingEditor editor = roodFormModel instanceof DynamicModel ? dynamicDataBindingEditor : staticDataBindingEditor;
+
         editor.init(fieldCopy,
-                    helper,
-                    () -> onFieldBindingChange(editor.getBinding()));
+                    this::getAvailableBindings,
+                    this::onFieldBindingChange);
+
         view.render(helper,
                     context,
                     editor);
+    }
+
+    private Collection<String> getAvailableBindings() {
+        Collection result = helper.getAvailableModelFields(fieldCopy);
+
+        if (originalField.getBinding() != null && !originalField.getBinding().isEmpty()) {
+            result.add(originalField.getBinding());
+        }
+
+        return result;
     }
 
     public FieldPropertiesRendererView getView() {

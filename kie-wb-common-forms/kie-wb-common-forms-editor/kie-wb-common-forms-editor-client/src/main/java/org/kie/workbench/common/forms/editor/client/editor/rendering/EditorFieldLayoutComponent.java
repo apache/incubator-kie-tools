@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Specializes;
@@ -103,8 +105,8 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
             }
 
             @Override
-            public List<String> getAvailableModelFields(final FieldDefinition fieldDefinition) {
-                return editorHelper.getCompatibleModelFields(fieldDefinition);
+            public Set<String> getAvailableModelFields(final FieldDefinition fieldDefinition) {
+                return new TreeSet<>(editorHelper.getCompatibleModelFields(fieldDefinition));
             }
 
             @Override
@@ -150,28 +152,9 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
         };
     }
 
-    protected boolean isBindingChange(FieldDefinition oldField,
-                                      FieldDefinition fieldCopy) {
-        if (oldField.getBinding() == null || oldField.getBinding().equals("")) {
-            return fieldCopy.getBinding() != null && !fieldCopy.getBinding().equals("");
-        }
-        return true;
-    }
-
     protected void onPressOk(FieldDefinition fieldCopy) {
 
-        boolean isBindingChange = isBindingChange(this.field,
-                                                  fieldCopy);
-
-        if (isBindingChange) {
-            if (field.getBinding() != null && !field.getBinding().equals(fieldCopy.getBinding()) &&
-                    !field.getBinding().isEmpty()) {
-                editorHelper.addAvailableField(field);
-            }
-            if (fieldCopy.getBinding() != null && !fieldCopy.getBinding().isEmpty()) {
-                editorHelper.removeAvailableField(fieldCopy);
-            }
-        }
+        editorHelper.saveFormField(field, fieldCopy);
 
         this.field = fieldCopy;
         this.fieldId = Optional.of(fieldCopy.getId());
@@ -187,9 +170,7 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
             configContext = null;
         }
 
-        if (isBindingChange) {
-            syncPaletteEvent.fire(new FormEditorSyncPaletteEvent(getFormId()));
-        }
+        syncPaletteEvent.fire(new FormEditorSyncPaletteEvent(getFormId()));
     }
 
     @Override

@@ -17,12 +17,18 @@
 package org.kie.workbench.common.forms.editor.client.editor.properties.binding;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.junit.Before;
 import org.kie.workbench.common.forms.editor.client.editor.properties.FieldPropertiesRendererHelper;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.mockito.Mock;
+import org.mockito.Spy;
 
 import static org.mockito.Mockito.*;
 
@@ -35,13 +41,14 @@ public abstract class DataBinderEditorTest<EDITOR extends DataBindingEditor> {
     public static final String CITY = "city";
     public static final String CP = "cp";
 
-    protected List<String> fields = new ArrayList<>();
-
-    @Mock
-    protected FieldPropertiesRendererHelper helper;
+    protected Set<String> fields = new TreeSet<>();
 
     @Mock
     protected FieldDefinition fieldDefinition;
+
+    protected Consumer<String> bindingChangeConsumer;
+
+    protected Supplier<Collection<String>> bindingsSupplier;
 
     protected EDITOR editor;
 
@@ -55,8 +62,19 @@ public abstract class DataBinderEditorTest<EDITOR extends DataBindingEditor> {
         fields.add(CITY);
         fields.add(CP);
 
-        when(helper.getCurrentField()).thenReturn(fieldDefinition);
-        when(helper.getAvailableModelFields(fieldDefinition)).thenReturn(fields);
+        bindingsSupplier = spy(new Supplier<Collection<String>>() {
+            @Override
+            public Collection<String> get() {
+                return fields;
+            }
+        });
+
+        bindingChangeConsumer = spy(new Consumer<String>() {
+            @Override
+            public void accept(String s) {
+
+            }
+        });
 
         when(fieldDefinition.getBinding()).thenReturn(FIELD_BINDING);
     }
