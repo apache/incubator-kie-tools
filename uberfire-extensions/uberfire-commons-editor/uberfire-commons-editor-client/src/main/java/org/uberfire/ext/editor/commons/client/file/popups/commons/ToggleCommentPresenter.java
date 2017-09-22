@@ -46,6 +46,10 @@ public class ToggleCommentPresenter {
         return view.getComment();
     }
 
+    public void setHidden(final boolean hidden) {
+        view.getElement().setHidden(hidden);
+    }
+
     public interface View extends UberElement<ToggleCommentPresenter> {
 
         String getComment();

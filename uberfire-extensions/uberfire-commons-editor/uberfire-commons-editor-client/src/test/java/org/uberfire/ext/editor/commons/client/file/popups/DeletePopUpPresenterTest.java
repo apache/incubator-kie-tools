@@ -85,4 +85,24 @@ public class DeletePopUpPresenterTest {
 
         verify(view).hide();
     }
+
+    @Test
+    public void testPrompt() throws Exception {
+        final String prompt = "any text";
+        presenter.setPrompt(prompt);
+
+        verify(view).setPrompt(prompt);
+    }
+
+    @Test
+    public void testHiddenComment() throws Exception {
+        presenter.setCommentIsHidden(true);
+        verify(toggleCommentPresenter).setHidden(true);
+    }
+
+    @Test
+    public void testVisibleComment() throws Exception {
+        presenter.setCommentIsHidden(false);
+        verify(toggleCommentPresenter).setHidden(false);
+    }
 }

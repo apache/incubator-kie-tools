@@ -65,6 +65,14 @@ public class DeletePopUpPresenter {
         view.hide();
     }
 
+    public void setPrompt(final String prompt) {
+        view.setPrompt(prompt);
+    }
+
+    public void setCommentIsHidden(final boolean hidden) {
+        toggleCommentPresenter.setHidden(hidden);
+    }
+
     public ToggleCommentPresenter getToggleCommentPresenter() {
         return toggleCommentPresenter;
     }
@@ -74,5 +82,7 @@ public class DeletePopUpPresenter {
         void show();
 
         void hide();
+
+        void setPrompt(final String prompt);
     }
 }

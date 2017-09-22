@@ -23,6 +23,7 @@ import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Paragraph;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -41,6 +42,10 @@ public class DeletePopUpView implements DeletePopUpPresenter.View,
     @Inject
     @DataField("body")
     Div body;
+
+    @Inject
+    @DataField("bodyText")
+    Paragraph bodyText;
 
     @Inject
     private TranslationService translationService;
@@ -64,6 +69,11 @@ public class DeletePopUpView implements DeletePopUpPresenter.View,
     @Override
     public void hide() {
         modal.hide();
+    }
+
+    @Override
+    public void setPrompt(final String prompt) {
+        bodyText.setTextContent(prompt);
     }
 
     private void modalSetup() {
