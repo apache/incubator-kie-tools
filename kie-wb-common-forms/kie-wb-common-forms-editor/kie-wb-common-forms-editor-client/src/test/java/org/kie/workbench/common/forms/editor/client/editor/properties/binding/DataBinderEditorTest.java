@@ -16,21 +16,18 @@
 
 package org.kie.workbench.common.forms.editor.client.editor.properties.binding;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.junit.Before;
-import org.kie.workbench.common.forms.editor.client.editor.properties.FieldPropertiesRendererHelper;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.mockito.Mock;
-import org.mockito.Spy;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 public abstract class DataBinderEditorTest<EDITOR extends DataBindingEditor> {
 

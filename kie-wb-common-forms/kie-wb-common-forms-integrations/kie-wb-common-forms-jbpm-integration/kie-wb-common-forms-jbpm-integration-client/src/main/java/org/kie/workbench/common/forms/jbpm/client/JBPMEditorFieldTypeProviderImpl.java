@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.jbpm.client;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.forms.editor.client.EditorFieldTypesProvider;

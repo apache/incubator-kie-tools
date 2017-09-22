@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.editor.backend.indexing;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;

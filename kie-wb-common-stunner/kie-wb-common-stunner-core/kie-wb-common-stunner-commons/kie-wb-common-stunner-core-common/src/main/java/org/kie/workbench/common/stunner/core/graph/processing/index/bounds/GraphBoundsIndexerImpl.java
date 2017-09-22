@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.graph.processing.index.bounds;
 
 import java.util.List;
 import java.util.Optional;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

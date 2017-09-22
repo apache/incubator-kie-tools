@@ -16,21 +16,16 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
-import java.lang.reflect.Field;
-
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresScalableContainer;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.mockito.Mock;
-import org.mockito.verification.VerificationMode;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class DecoratedShapeViewTest {

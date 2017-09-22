@@ -19,7 +19,6 @@ package org.kie.workbench.common.forms.dynamic.test.util;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.test.model.Address;
 import org.kie.workbench.common.forms.dynamic.test.model.Employee;

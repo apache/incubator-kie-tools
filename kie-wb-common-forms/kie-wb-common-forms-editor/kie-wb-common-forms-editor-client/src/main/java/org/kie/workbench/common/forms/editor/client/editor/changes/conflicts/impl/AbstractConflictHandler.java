@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.editor.client.editor.changes.conflicts.im
 
 import java.util.Optional;
 import java.util.function.Consumer;
+
 import javax.annotation.PreDestroy;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;

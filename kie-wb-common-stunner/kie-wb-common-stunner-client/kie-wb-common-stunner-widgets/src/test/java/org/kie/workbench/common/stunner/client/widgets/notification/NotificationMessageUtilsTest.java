@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.notification;
 
 import java.util.Collections;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Path;
 
@@ -35,14 +36,15 @@ import org.kie.workbench.common.stunner.core.validation.impl.ModelBeanViolationI
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.client.widgets.notification.NotificationMessageUtils.CLOSE_BRA;
 import static org.kie.workbench.common.stunner.client.widgets.notification.NotificationMessageUtils.CLOSE_COMMENT;
 import static org.kie.workbench.common.stunner.client.widgets.notification.NotificationMessageUtils.COLON;
 import static org.kie.workbench.common.stunner.client.widgets.notification.NotificationMessageUtils.OPEN_BRA;
 import static org.kie.workbench.common.stunner.client.widgets.notification.NotificationMessageUtils.OPEN_COMMENT;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NotificationMessageUtilsTest {

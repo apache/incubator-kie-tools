@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEdi
 
 import java.io.IOException;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;

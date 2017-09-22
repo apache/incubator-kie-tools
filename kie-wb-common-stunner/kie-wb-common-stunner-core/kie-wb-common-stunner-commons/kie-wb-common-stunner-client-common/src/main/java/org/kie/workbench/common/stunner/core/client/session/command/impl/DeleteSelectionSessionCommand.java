@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

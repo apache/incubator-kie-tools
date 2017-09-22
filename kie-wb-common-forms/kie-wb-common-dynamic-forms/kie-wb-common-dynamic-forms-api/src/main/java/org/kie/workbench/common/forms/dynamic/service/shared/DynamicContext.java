@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.dynamic.service.shared;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.RetentionPolicy;
+
 import javax.inject.Qualifier;
 
 @Qualifier

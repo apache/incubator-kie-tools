@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox;
 
 import java.util.Iterator;
 import java.util.List;
+
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 

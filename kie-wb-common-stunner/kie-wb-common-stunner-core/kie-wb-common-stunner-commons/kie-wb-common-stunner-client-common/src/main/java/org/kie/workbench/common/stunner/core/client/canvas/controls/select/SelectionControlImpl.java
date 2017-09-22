@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.select;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;

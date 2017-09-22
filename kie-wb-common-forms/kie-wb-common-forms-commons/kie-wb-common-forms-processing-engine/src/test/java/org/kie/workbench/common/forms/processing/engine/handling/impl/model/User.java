@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.processing.engine.handling.impl.model;
 
 import java.util.Date;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 

@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.widgets.palette.bs3.factory
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;

@@ -21,7 +21,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.model.impl.TypeConflictImpl;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class FormEditorPresenterFieldSynchronizationTest extends FormEditorPresenterAbstractTest {

@@ -48,9 +48,13 @@ import org.kie.workbench.common.stunner.bpmn.resource.BPMNDefinitionSetResourceT
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.paging.PageResponse;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class BpmnFileIndexerTest extends BaseIndexingTest<BPMNDefinitionSetResourceType> {
 

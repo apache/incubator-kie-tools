@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.processing.Messager;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.AbstractDefinitionSetRuleAdapter;

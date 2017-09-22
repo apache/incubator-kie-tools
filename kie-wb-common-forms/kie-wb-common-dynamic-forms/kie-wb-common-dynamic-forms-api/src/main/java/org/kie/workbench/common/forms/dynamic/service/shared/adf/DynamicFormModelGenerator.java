@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.dynamic.service.shared.adf;
 
 import java.util.ArrayList;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

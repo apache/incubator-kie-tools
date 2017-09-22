@@ -16,12 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.components.glyph;
 
-import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 /**

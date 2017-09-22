@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.model;
 
 import java.util.Date;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;

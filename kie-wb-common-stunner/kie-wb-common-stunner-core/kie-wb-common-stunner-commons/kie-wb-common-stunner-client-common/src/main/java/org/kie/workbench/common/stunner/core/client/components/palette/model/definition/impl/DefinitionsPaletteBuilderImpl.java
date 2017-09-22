@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.components.palette.model.de
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

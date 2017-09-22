@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.data.modeller.service.dataProvider;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

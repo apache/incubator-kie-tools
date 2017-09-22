@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.cm.client.canvas.controls.builder;
 
 import java.util.Optional;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;

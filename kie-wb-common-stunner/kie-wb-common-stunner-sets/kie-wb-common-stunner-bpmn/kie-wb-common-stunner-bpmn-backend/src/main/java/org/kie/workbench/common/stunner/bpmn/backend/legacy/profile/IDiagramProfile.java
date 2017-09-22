@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.bpmn.backend.legacy.profile;
 
 import java.util.Collection;
+
 import javax.servlet.ServletContext;
 
 import org.eclipse.bpmn2.Definitions;

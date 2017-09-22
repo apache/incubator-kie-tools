@@ -21,7 +21,7 @@ import java.util.Optional;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 public class AbstractGraphDefinitionTypesTest {
 

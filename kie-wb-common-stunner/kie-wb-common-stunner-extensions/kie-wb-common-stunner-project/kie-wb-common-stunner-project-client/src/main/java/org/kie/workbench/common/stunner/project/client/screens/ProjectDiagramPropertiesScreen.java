@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.project.client.screens;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;

@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.regexp.shared.MatchResult;

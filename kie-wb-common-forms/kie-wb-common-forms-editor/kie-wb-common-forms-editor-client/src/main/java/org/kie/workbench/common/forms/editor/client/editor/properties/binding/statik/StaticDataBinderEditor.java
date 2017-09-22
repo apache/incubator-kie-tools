@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.editor.client.editor.properties.binding.s
 import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;

@@ -34,8 +34,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.property.Type
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.definition.property.type.StringType;
-import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStore;
 
 @Portable
 @Bindable

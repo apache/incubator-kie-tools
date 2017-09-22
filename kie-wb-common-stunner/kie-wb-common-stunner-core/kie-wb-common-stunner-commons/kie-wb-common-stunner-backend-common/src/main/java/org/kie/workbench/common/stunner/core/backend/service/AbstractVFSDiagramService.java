@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
+
 import javax.enterprise.inject.Instance;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;

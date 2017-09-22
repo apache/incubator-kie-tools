@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.wires;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.enterprise.event.Event;
 
 import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;

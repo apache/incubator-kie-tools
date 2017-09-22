@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition;
 
 import java.util.Set;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -24,7 +25,7 @@ import javax.validation.Validator;
 import org.junit.Test;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.AbstractFieldDefinitionTest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class SubFormFieldDefinitionTest extends AbstractFieldDefinitionTest<SubFormFieldDefinition> {
 

@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.graph.command;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;

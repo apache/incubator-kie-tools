@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.client.widgets.menu.dev;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 

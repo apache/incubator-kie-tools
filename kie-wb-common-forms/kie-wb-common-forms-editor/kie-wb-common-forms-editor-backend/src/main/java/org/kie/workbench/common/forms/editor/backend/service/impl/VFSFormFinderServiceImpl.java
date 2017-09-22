@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.editor.backend.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;

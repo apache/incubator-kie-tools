@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.processors.definition;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import javax.annotation.processing.Messager;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterFactory;

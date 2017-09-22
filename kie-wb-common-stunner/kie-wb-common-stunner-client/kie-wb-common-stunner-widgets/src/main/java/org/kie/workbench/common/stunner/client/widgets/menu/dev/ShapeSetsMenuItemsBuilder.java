@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.menu.dev;
 
 import java.util.Collection;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 

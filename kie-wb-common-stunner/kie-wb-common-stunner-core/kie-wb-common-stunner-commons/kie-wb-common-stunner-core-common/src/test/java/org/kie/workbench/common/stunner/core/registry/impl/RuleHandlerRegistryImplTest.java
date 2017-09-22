@@ -30,7 +30,9 @@ import org.kie.workbench.common.stunner.core.rule.ext.RuleExtensionHandler;
 import org.kie.workbench.common.stunner.core.rule.impl.CanContain;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class RuleHandlerRegistryImplTest {
 

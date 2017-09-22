@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.adf.engine.shared.formGeneration.layout;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.adf.definitions.settings.ColSpan;

@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;

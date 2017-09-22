@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.forms.client.widgets;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;

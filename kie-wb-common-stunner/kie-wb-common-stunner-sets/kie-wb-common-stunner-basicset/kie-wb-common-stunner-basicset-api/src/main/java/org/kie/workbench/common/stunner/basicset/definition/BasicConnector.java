@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.basicset.definition;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;

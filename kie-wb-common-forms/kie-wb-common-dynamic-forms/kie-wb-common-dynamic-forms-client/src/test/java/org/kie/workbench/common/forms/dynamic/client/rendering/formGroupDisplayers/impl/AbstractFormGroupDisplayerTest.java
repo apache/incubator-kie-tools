@@ -24,7 +24,8 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplaye
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public abstract class AbstractFormGroupDisplayerTest<D extends AbstractFormGroupDisplayer, V extends FormGroupDisplayerView> {
 

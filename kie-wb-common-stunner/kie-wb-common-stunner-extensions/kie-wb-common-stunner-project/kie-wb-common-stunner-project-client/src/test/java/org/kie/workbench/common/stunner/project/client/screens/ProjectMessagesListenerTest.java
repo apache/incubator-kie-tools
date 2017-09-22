@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.project.client.screens;
 
 import java.util.List;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.shared.message.Level;
@@ -42,8 +43,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectMessagesListenerTest {

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.cm.backend.marshall.json.oryx;
 
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

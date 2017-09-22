@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 

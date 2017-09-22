@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.api;
 
 import java.util.Collection;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

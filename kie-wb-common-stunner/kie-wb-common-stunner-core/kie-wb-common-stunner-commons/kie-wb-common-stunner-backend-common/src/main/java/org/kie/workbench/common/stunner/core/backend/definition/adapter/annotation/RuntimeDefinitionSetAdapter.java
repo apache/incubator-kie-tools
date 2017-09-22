@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.core.backend.definition.adapter.annotat
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
 import java.util.function.Function;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.forms.adf.engine.backend.formGeneration.util;
 
+import java.io.Serializable;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.Serializable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;

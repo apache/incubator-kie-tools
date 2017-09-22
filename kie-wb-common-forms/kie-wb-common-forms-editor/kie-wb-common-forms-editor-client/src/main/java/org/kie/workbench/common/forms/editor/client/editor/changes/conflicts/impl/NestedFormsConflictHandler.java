@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.editor.client.editor.changes.conflicts.im
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

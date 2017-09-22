@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.api;
 
 import java.lang.annotation.Annotation;
+
 import javax.enterprise.inject.Default;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;

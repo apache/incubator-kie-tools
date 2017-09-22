@@ -27,7 +27,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.shape.util.LienzoPictureUtils;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @WithClassesToStub({ImageElement.class})
 @RunWith(LienzoMockitoTestRunner.class)

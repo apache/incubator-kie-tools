@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.common.rendering.client.widgets.integerBox;
 
 import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

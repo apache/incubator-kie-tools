@@ -28,8 +28,10 @@ import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLos
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class StunnerDocksHandlerTest {

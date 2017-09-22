@@ -17,6 +17,7 @@ package org.kie.workbench.common.forms.data.modeller.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

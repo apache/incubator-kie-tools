@@ -21,7 +21,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.FormDisplayer;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class CrudComponentTest<MODEL, FORM_MODEL> extends AbstractCrudComponentTest<MODEL, FORM_MODEL> {

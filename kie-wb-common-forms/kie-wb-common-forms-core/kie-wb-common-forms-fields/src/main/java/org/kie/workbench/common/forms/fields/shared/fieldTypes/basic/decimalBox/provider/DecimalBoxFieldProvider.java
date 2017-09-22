@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.provider;
 
 import java.math.BigDecimal;
+
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;

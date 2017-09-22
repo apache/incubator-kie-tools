@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.project.client.api;
 
 import java.util.logging.Logger;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;

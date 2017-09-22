@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.cm.client.canvas.controls.containment;
 
 import java.util.Optional;
 import java.util.function.Function;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

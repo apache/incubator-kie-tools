@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.cm.client.palette;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;

@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 
 import org.jboss.errai.common.client.api.Assert;

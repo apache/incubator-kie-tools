@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.definition.property.connectors;
 
 import java.util.Set;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -26,7 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SequenceFlowPriorityTest {
 

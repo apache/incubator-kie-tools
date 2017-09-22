@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.client.widgets.menu.dev.impl;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

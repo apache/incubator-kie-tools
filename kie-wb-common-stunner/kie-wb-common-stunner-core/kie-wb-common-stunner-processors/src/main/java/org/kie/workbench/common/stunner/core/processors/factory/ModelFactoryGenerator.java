@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.processors.factory;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.processing.Messager;
 
 import org.kie.workbench.common.stunner.core.factory.definition.AbstractTypeDefinitionFactory;

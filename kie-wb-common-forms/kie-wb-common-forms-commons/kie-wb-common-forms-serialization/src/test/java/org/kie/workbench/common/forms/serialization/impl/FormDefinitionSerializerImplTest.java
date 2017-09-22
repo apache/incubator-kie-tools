@@ -32,7 +32,7 @@ import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotEquals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FormDefinitionSerializerImplTest extends TestCase {

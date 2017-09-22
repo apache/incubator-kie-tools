@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.components.glyph;
 
 import java.util.function.Function;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;

@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.actions;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 

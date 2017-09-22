@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.rule.ext.impl;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 

@@ -33,7 +33,15 @@ import org.kie.workbench.common.forms.processing.engine.handling.impl.model.Mode
 import org.kie.workbench.common.forms.processing.engine.handling.impl.test.TestFormHandler;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyObject;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class FormHandlerImplTest extends AbstractFormEngineTest {

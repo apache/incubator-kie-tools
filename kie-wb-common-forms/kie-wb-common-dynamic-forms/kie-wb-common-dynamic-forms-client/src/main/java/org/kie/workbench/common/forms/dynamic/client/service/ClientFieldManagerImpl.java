@@ -16,6 +16,7 @@
 package org.kie.workbench.common.forms.dynamic.client.service;
 
 import java.util.Collection;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 

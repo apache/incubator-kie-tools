@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.views;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 

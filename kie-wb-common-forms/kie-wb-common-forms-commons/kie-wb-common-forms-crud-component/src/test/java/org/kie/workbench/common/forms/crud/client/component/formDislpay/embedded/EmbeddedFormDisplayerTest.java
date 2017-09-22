@@ -28,7 +28,9 @@ import org.kie.workbench.common.forms.crud.client.component.formDisplay.embedded
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.embedded.EmbeddedFormDisplayerViewImpl;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class EmbeddedFormDisplayerTest extends TestCase {

@@ -32,8 +32,14 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 import org.mockito.Mock;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class FieldStateValidatorImplTest extends AbstractFormEngineTest {

@@ -24,7 +24,7 @@ import org.kie.workbench.common.forms.editor.client.handler.formModel.SelectMode
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class FormModelCreationContainerTest {

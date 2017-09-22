@@ -34,11 +34,15 @@ import org.uberfire.ext.editor.commons.file.exports.FileExportsPreferences;
 import org.uberfire.ext.editor.commons.file.exports.PdfExportPreferences;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CanvasFileExportTest {

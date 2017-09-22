@@ -24,7 +24,7 @@ import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.L
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NestedFormsBPMNRuntimeFormDefinitionGeneratorServiceTest extends BPMNRuntimeFormDefinitionGeneratorServiceTest {

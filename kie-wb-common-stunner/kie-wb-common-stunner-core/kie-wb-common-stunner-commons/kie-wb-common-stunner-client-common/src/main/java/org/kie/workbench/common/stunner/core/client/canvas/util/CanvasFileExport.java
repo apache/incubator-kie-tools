@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.util;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 

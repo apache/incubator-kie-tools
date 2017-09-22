@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEdi
 
 import java.util.List;
 import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

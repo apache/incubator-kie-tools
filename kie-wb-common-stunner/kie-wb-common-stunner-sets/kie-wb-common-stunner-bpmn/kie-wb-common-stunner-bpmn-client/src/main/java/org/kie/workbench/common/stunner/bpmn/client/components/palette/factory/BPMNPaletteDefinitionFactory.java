@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.components.palette.factory;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;

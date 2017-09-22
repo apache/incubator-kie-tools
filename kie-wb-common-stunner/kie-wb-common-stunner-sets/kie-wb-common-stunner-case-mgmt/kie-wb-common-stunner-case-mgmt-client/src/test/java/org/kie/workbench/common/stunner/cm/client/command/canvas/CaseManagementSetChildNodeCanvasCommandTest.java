@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseManagementSetChildNodeCanvasCommandTest extends AbstractCanvasCommandTest {

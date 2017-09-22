@@ -22,7 +22,6 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFi
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.definition.DocumentFieldDefinition;
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.type.DocumentFieldType;
 import org.kie.workbench.common.forms.model.TypeInfo;
-import org.kie.workbench.common.forms.model.util.ModelPropertiesUtil;
 
 @Dependent
 public class DocumentFieldProvider extends BasicTypeFieldProvider<DocumentFieldDefinition> {

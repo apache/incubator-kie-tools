@@ -32,7 +32,10 @@ import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.mockito.Mock;
 
 import static org.mockito.AdditionalMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyDouble;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public abstract class BaseCaseManagementBuilderControlTest {
 

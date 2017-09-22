@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.svg.gen.translator.impl;
 
 import java.io.InputStream;
 import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -40,7 +41,10 @@ import org.kie.workbench.common.stunner.svg.gen.translator.SVGDocumentTranslator
 import org.mockito.runners.MockitoJUnitRunner;
 import org.w3c.dom.Document;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SVGDocumentTranslatorTest {

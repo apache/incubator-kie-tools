@@ -24,7 +24,8 @@ import org.kie.workbench.common.stunner.svg.gen.model.impl.GroupDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.MultiPathDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.RectDefinition;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Helper class for testing SVG translators.

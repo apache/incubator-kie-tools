@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.explorer.navigator.diagr
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;

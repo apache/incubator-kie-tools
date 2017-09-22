@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
 import java.util.Optional;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;

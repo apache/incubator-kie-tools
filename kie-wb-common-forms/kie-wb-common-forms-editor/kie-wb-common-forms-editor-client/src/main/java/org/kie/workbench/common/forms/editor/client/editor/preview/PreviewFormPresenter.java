@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.editor.client.editor.preview;
 
 import java.util.HashMap;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

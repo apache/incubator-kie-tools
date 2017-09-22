@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.explorer.tree;
 
 import java.util.List;
 import java.util.function.Predicate;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;

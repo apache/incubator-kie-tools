@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.inject.Instance;
 
 import org.junit.Test;
@@ -49,8 +50,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.paging.PageResponse;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FormDefinitionIndexerTest extends BaseIndexingTest<FormResourceTypeDefinition> {

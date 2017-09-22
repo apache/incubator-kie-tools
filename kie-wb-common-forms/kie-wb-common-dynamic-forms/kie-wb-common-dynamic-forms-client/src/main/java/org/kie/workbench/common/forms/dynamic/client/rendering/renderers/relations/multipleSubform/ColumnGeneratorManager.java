@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relati
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;

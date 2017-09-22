@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.jbpm.client.formModel;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 

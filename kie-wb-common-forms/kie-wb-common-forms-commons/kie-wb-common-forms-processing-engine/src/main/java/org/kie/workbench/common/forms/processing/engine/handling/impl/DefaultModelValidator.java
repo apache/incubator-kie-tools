@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.processing.engine.handling.impl;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;

@@ -20,7 +20,9 @@ import org.jboss.errai.databinding.client.api.Converter;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public abstract class AbstractConverterTest<MODEL_VALUE, WIDGET_VALUE> {
 

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.provider;
 
 import java.math.BigInteger;
+
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;

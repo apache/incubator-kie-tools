@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.widgets;
 
 import java.util.List;
+
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.TextBox;

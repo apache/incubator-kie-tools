@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.definition.adapter.binding;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.logging.Logger;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.exception.NotPojoTypeException;

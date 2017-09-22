@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.svg.gen.codegen.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class GeneratorAssertions {
 

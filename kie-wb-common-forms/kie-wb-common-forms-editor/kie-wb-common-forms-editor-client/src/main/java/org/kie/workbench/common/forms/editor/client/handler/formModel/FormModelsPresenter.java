@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.editor.client.handler.formModel;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;

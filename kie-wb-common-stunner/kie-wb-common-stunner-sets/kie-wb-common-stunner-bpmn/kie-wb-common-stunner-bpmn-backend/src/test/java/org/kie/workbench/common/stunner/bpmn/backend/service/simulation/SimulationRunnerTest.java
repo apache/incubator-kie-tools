@@ -22,10 +22,10 @@ import java.nio.file.Paths;
 import org.jbpm.simulation.SimulationRepository;
 import org.jbpm.simulation.SimulationRunner;
 import org.jbpm.simulation.impl.WorkingMemorySimulationRepository;
-
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class SimulationRunnerTest {
 

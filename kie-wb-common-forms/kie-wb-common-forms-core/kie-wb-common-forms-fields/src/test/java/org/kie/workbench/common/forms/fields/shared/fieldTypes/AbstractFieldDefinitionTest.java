@@ -22,7 +22,8 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHol
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasRows;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractFieldDefinitionTest<FIELD extends FieldDefinition> {
 

@@ -25,7 +25,8 @@ import org.kie.workbench.common.stunner.cm.client.shape.view.DiagramView;
 import org.kie.workbench.common.stunner.cm.client.shape.view.NullView;
 import org.kie.workbench.common.stunner.cm.client.shape.view.StageView;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class CaseManagementShapeViewFactoryTest {

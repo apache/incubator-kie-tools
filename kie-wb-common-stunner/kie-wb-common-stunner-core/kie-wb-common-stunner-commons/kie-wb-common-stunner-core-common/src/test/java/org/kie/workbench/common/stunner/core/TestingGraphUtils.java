@@ -32,7 +32,8 @@ import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext
 import org.kie.workbench.common.stunner.core.rule.context.NodeContainmentContext;
 import org.kie.workbench.common.stunner.core.rule.context.NodeDockingContext;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Some testing utils for graph stuff.

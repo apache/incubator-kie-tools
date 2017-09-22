@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.configError;
 
 import java.util.List;
+
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Document;

@@ -35,10 +35,13 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.mockito.Mock;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {

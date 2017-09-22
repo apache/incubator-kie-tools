@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.dynamic.backend.server.context.generation
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 

@@ -54,9 +54,13 @@ import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidato
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.model.menu.MenuItem;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class AbstractProjectDiagramEditorTest {

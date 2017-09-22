@@ -24,7 +24,9 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.cm.client.wires.MockCaseManagementShape;
 import org.kie.workbench.common.stunner.shapes.client.view.ConnectorView;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class CaseManagementCanvasViewTest {

@@ -27,8 +27,11 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class BS3IconTypeGlyphRendererTest {

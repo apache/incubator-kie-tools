@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.project.backend.service;
 
 import java.io.InputStream;
 import java.util.Map;
+
 import javax.enterprise.inject.Instance;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;

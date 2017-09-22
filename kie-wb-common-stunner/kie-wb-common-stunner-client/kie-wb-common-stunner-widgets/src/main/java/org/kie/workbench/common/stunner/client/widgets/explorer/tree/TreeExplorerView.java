@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.explorer.tree;
 
 import java.util.function.BiPredicate;
+
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;

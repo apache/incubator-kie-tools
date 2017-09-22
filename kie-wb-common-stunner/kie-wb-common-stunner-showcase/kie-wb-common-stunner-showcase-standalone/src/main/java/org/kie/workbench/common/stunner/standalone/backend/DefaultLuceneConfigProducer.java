@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.standalone.backend;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;

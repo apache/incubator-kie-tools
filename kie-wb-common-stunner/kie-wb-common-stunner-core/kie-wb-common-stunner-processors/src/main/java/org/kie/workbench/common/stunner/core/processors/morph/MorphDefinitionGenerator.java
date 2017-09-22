@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.processors.morph;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.processing.Messager;
 
 import org.kie.workbench.common.stunner.core.definition.morph.BindableMorphDefinition;

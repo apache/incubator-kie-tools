@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
 import java.util.Optional;
+
 import javax.enterprise.event.Event;
 
 import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;

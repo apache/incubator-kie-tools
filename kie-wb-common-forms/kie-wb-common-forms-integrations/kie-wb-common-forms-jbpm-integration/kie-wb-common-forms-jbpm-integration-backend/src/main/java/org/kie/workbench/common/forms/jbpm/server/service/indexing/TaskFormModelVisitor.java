@@ -22,9 +22,6 @@ import org.kie.workbench.common.forms.editor.backend.indexing.FormModelVisitor;
 import org.kie.workbench.common.forms.editor.backend.indexing.FormModelVisitorProvider;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.services.refactoring.ResourceReference;
-import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
-import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 
 @Dependent

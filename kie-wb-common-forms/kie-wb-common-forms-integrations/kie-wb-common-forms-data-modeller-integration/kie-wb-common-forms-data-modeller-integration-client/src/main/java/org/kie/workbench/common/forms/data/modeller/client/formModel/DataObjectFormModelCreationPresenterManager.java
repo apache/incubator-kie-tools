@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.data.modeller.client.formModel;
 
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;

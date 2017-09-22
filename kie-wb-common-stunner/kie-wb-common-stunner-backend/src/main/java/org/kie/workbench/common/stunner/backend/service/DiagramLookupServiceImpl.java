@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.backend.service;
 
 import java.util.Collection;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;

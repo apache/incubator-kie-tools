@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.imp
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

@@ -37,7 +37,12 @@ import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DynamicFormRendererTest extends TestCase {

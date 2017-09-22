@@ -17,7 +17,7 @@
 package org.kie.workbench.common.forms.editor.client.editor.changes.displayers.newProperties;
 
 import java.util.Collection;
-import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

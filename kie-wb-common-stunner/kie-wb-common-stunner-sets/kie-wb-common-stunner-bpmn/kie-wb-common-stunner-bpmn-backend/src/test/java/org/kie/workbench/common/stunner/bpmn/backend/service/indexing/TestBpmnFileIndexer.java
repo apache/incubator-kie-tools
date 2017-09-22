@@ -23,7 +23,8 @@ import org.kie.workbench.common.stunner.bpmn.resource.BPMNDefinitionSetResourceT
 import org.uberfire.io.IOService;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestBpmnFileIndexer extends BpmnFileIndexer implements TestIndexer<BPMNDefinitionSetResourceType> {
 

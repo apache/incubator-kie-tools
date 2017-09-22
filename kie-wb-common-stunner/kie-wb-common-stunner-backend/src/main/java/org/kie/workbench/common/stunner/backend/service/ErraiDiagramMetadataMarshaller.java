@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.backend.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.marshalling.server.ServerMarshalling;

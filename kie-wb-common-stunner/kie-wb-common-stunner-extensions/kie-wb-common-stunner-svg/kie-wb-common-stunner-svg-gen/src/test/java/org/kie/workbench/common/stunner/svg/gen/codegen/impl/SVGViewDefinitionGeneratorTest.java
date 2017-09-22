@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.svg.gen.model.impl.ViewFactoryImpl;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.ViewRefDefinitionImpl;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SVGViewDefinitionGeneratorTest {

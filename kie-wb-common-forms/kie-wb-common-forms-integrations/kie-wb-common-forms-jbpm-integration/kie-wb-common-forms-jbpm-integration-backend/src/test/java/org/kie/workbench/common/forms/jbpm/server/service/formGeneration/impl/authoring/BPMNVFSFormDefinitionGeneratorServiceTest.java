@@ -44,7 +44,9 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public abstract class BPMNVFSFormDefinitionGeneratorServiceTest extends AbstractBPMNFormGeneratorServiceTest<BPMNVFSFormDefinitionGeneratorService, Path> {
 

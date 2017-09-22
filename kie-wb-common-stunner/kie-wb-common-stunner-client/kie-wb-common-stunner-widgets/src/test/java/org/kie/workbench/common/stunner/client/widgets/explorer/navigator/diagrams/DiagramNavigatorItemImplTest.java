@@ -27,7 +27,10 @@ import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentatio
 import org.mockito.InOrder;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DiagramNavigatorItemImplTest {

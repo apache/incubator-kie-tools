@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.propert
 
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;

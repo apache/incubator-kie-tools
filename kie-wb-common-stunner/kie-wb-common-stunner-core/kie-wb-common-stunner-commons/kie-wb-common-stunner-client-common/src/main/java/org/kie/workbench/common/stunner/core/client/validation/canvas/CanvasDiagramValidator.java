@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.validation.canvas;
 
 import java.util.Collection;
 import java.util.function.Consumer;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;

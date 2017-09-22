@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.cm.client.shape;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementShapeDef;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
 import org.kie.workbench.common.stunner.shapes.client.BasicContainerShape;
 
 public class AbstractCMContainerShape<W extends BPMNDefinition, D extends CaseManagementShapeDef<W>, V extends ShapeView<?>>

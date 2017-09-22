@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.lienzo.grid.Grid.Point;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class GridTest {
 

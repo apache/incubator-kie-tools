@@ -16,15 +16,12 @@
 
 package org.kie.workbench.common.stunner.client.widgets.toolbar.impl;
 
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarView;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.command.AbstractToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearStatesToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.DeleteSelectionToolbarCommand;
@@ -38,15 +35,11 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.command.UndoToolb
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ValidateToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.VisitGraphToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.item.AbstractToolbarItem;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.mockito.Mock;
-import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class EditorToolbarTest {

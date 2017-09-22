@@ -30,7 +30,11 @@ import org.kie.workbench.common.forms.model.FormModel;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class FormModelsPresenterTest {

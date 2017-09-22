@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import java.util.Collection;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

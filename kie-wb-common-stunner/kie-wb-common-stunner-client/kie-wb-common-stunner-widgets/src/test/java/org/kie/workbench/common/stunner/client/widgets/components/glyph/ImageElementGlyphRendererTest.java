@@ -27,8 +27,11 @@ import org.kie.workbench.common.stunner.core.client.components.views.ImageElemen
 import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ImageElementGlyphRendererTest {

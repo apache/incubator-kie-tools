@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;

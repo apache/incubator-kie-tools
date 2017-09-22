@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.graph.processing.index.map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;

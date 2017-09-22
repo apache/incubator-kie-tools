@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class CaseManagementOryxIdMappingsTest {
 

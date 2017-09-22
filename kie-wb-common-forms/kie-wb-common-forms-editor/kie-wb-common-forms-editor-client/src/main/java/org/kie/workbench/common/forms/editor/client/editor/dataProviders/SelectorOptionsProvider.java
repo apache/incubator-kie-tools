@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.editor.client.editor.dataProviders;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;

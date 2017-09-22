@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({StringUtils.class})

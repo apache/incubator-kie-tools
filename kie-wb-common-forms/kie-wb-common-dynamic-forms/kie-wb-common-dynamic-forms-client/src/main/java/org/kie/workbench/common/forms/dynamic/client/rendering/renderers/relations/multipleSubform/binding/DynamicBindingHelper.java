@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relati
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

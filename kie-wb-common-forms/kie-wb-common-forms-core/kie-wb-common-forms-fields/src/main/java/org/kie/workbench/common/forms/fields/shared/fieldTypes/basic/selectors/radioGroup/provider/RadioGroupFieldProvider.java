@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorFieldProvider;

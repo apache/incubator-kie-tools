@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.dynamic.backend.server.context.generation
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.inject.Instance;
 
 import org.junit.After;
@@ -33,8 +34,10 @@ import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public abstract class AbstractBackendFormRenderingContextManagerTest {
 

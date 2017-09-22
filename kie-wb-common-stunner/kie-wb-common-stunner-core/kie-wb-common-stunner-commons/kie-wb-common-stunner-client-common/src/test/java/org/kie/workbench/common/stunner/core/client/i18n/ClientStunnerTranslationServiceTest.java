@@ -28,7 +28,7 @@ import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationServ
 import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.DESCRIPTION_SUFFIX;
 import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.PROPERTY_SET_NAME_SUFFIX;
 import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.TITLE_SUFFIX;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ClientStunnerTranslationServiceTest {

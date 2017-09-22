@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.palette.factory;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -37,7 +38,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.event.Canvas
 import org.kie.workbench.common.stunner.core.client.canvas.controls.event.CanvasShapeDragUpdateEvent;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.AbstractPaletteFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.DefaultDefSetPaletteDefinitionFactory;
-import org.kie.workbench.common.stunner.core.client.components.palette.factory.PaletteDefinitionFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinition;
 
 @Dependent

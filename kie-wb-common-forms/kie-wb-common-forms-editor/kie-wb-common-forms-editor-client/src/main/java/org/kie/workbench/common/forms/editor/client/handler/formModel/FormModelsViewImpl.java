@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.editor.client.handler.formModel;
 
 import java.util.List;
+
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Composite;

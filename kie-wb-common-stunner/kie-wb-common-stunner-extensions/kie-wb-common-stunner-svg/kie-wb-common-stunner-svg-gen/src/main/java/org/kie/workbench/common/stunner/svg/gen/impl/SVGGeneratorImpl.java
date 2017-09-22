@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.svg.gen.impl;
 
 import java.io.InputStream;
 import java.util.Map;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;

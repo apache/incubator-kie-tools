@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.dynamic.backend.server.shared.impl;
 
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

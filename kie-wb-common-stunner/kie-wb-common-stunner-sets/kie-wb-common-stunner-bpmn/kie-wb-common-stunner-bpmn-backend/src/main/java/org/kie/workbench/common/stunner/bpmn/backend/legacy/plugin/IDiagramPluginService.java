@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.bpmn.backend.legacy.plugin;
 
 import java.util.Collection;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**

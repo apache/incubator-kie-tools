@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.backend.definition.adapter.binding;
 
 import java.util.Collection;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;

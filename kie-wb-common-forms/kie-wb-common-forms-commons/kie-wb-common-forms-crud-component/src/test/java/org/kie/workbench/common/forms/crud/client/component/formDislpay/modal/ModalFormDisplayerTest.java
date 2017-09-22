@@ -28,7 +28,9 @@ import org.kie.workbench.common.forms.crud.client.component.formDisplay.modal.Mo
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.modal.ModalFormDisplayerViewImpl;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ModalFormDisplayerTest extends TestCase {

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.radioGroup;
 
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.safehtml.shared.SafeHtml;

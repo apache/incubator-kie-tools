@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
 import java.lang.annotation.Annotation;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;

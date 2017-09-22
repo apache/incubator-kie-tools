@@ -26,13 +26,16 @@ import org.kie.workbench.common.forms.adf.service.definitions.elements.FieldElem
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.definition.SliderBaseDefinition;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType.MAX_PARAM;
 import static org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType.MIN_PARAM;
 import static org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType.PRECISION_PARAM;
 import static org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType.STEP_PARAM;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public abstract class AbstractSliderFieldInitializerTest<INITIALIZER extends AbstractSliderFieldInitializer<FIELD, T>, FIELD extends SliderBaseDefinition<T>, T extends Number> {
 

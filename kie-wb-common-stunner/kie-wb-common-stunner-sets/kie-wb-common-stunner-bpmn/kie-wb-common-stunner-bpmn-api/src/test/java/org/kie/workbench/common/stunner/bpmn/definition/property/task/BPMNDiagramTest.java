@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
 import java.util.Set;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -31,7 +32,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Version;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class BPMNDiagramTest {
 

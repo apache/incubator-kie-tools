@@ -30,10 +30,13 @@ import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeL
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ClientReadOnlySessionTest {

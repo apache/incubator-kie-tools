@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.lookup.definition;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 

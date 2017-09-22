@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.event.screen;
 
 import java.util.HashMap;
 import java.util.stream.Stream;
+
 import javax.enterprise.event.Event;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -35,7 +36,9 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import static java.util.stream.Collectors.toSet;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static sun.reflect.annotation.AnnotationParser.annotationForMap;
 
 @RunWith(MockitoJUnitRunner.class)

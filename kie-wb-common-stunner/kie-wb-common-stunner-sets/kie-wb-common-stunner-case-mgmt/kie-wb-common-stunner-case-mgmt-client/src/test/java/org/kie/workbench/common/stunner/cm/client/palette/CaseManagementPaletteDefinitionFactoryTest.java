@@ -37,8 +37,8 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.def
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseManagementPaletteDefinitionFactoryTest {

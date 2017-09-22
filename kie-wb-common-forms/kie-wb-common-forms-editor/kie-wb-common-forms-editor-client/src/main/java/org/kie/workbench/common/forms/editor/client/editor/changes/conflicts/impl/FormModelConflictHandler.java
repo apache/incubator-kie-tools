@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.editor.client.editor.changes.conflicts.impl;
 
 import java.util.function.Consumer;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

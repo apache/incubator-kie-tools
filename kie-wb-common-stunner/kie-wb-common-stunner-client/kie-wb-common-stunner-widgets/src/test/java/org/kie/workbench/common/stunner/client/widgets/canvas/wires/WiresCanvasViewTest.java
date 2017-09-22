@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresCanvasViewTest {

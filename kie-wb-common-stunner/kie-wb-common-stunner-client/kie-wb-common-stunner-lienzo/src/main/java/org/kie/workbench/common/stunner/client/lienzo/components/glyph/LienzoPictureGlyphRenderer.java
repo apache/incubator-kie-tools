@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import com.ait.lienzo.client.core.shape.Group;

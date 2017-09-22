@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.palette;
 
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;

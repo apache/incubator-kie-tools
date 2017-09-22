@@ -26,6 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.eclipse.bpmn2.Activity;
@@ -44,7 +45,6 @@ import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl;
 import org.eclipse.emf.ecore.util.FeatureMap;
-import org.eclipse.jgit.diff.Sequence;
 import org.jboss.drools.MetaDataType;
 import org.junit.Before;
 import org.junit.Test;

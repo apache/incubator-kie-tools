@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.backend.definition.adapter.annotat
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.AbstractRuntimeAdapter;

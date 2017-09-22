@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
 import java.util.Optional;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 

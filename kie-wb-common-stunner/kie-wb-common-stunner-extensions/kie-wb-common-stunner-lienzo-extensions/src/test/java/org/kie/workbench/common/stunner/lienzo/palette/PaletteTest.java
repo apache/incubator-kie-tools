@@ -32,7 +32,14 @@ import org.kie.workbench.common.stunner.lienzo.grid.Grid.Point;
 import org.kie.workbench.common.stunner.lienzo.palette.AbstractPalette.Callback;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyDouble;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyObject;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class PaletteTest {

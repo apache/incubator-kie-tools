@@ -25,7 +25,8 @@ import org.kie.workbench.common.stunner.svg.gen.model.impl.StyleDefinitionImpl;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.TransformDefinitionImpl;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CircleDefinitionGeneratorTest {

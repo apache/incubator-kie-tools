@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.shape.factory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.stunner.core.client.shape.Shape;

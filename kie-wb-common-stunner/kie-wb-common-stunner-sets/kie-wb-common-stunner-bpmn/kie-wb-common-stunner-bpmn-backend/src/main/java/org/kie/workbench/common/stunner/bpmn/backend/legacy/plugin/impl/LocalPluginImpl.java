@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.legacy.plugin.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.servlet.ServletContext;
 
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.plugin.IDiagramPlugin;

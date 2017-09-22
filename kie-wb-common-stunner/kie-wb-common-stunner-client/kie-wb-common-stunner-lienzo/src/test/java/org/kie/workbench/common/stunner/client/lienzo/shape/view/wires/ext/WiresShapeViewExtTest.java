@@ -26,8 +26,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.mockito.Mock;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresShapeViewExtTest {

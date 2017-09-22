@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.cm.backend.marshall.json.oryx;
 
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

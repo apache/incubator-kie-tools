@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.editor.client.editor.dataProviders;
 
 import java.util.Map;
 import java.util.TreeMap;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;

@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.svg.gen.apt;
 
 import java.util.List;
 import java.util.Set;
+
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;

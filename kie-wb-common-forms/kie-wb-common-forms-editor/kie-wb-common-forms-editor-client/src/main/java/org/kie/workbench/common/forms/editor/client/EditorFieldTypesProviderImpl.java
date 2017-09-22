@@ -18,7 +18,7 @@ package org.kie.workbench.common.forms.editor.client;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import javax.annotation.Priority;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.type.CheckBoxFieldType;

@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.cm.client.wires;
 
 import java.util.Optional;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;

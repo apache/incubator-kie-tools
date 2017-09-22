@@ -17,6 +17,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relati
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

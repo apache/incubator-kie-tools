@@ -19,7 +19,7 @@ package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.r
 import org.junit.Before;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.AbstractBPMNFormGeneratorServiceTest;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 public abstract class BPMNRuntimeFormDefinitionGeneratorServiceTest extends AbstractBPMNFormGeneratorServiceTest<BPMNRuntimeFormGeneratorService, ClassLoader> {
 

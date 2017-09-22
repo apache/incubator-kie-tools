@@ -26,7 +26,8 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DiagramFactoryImplTest {

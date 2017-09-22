@@ -22,9 +22,12 @@ import org.kie.workbench.common.forms.editor.client.editor.properties.binding.Da
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StaticDataBinderEditorTest extends DataBinderEditorTest<StaticDataBinderEditor> {
@@ -50,7 +53,6 @@ public class StaticDataBinderEditorTest extends DataBinderEditorTest<StaticDataB
         editor.init(fieldDefinition,
                     bindingsSupplier,
                     bindingChangeConsumer);
-        ;
 
         verify(view).clear();
 

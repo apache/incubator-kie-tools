@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.editor.client.editor;
 
 import java.util.Collection;
 import java.util.Iterator;
+
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;

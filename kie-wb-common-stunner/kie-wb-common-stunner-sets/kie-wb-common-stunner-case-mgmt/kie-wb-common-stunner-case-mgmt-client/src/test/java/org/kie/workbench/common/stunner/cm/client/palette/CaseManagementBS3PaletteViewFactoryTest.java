@@ -23,7 +23,8 @@ import org.kie.workbench.common.stunner.client.widgets.components.glyph.BS3IconT
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseManagementBS3PaletteViewFactoryTest {

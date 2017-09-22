@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.project.client.screens;
 
 import java.util.ArrayList;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
