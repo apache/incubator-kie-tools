@@ -54,6 +54,15 @@ public class BackendFormRenderingContextManagerImpl implements BackendFormRender
                                                        Map<String, Object> formData,
                                                        ClassLoader classLoader,
                                                        FormDefinition... nestedForms) {
+        return registerContext(rootForm, formData, classLoader, new HashMap<String, String>(), nestedForms);
+    }
+
+    @Override
+    public BackendFormRenderingContext registerContext(FormDefinition rootForm,
+                                                       Map<String, Object> formData,
+                                                       ClassLoader classLoader,
+                                                       Map<String, String> params,
+                                                       FormDefinition... nestedForms) {
 
         MapModelRenderingContext clientRenderingContext = new MapModelRenderingContext();
 
@@ -65,7 +74,8 @@ public class BackendFormRenderingContextManagerImpl implements BackendFormRender
         BackendFormRenderingContextImpl context = new BackendFormRenderingContextImpl(System.currentTimeMillis(),
                                                                                       clientRenderingContext,
                                                                                       formData,
-                                                                                      classLoader);
+                                                                                      classLoader,
+                                                                                      params);
 
         Map<String, Object> clienFormData = valuesProcessor.readFormValues(rootForm,
                                                                            formData,

@@ -44,6 +44,16 @@ public class DocumentData {
         this.link = link;
     }
 
+    public DocumentData(String contentId,
+                        String fileName,
+                        long size,
+                        String link) {
+        this.contentId = contentId;
+        this.fileName = fileName;
+        this.size = size;
+        this.link = link;
+    }
+
     public String getFileName() {
         return fileName;
     }

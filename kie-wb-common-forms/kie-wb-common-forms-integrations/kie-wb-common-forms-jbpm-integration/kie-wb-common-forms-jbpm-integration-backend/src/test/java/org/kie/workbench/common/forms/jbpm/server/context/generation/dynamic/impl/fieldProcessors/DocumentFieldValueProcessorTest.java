@@ -18,9 +18,12 @@ package org.kie.workbench.common.forms.jbpm.server.context.generation.dynamic.im
 
 import java.io.File;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jbpm.document.Document;
 import org.jbpm.document.service.impl.DocumentImpl;
+import org.jbpm.document.service.impl.util.DocumentDownloadLinkGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +43,12 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DocumentFieldValueProcessorTest {
+
+    private static final String SERVER_TEMPLATE_ID = "templateId";
+    private static final String DOCUMENT_ID = "docId";
+
+    private static final String EXPECTED_DOWNLOAD_LINK = DocumentDownloadLinkGenerator.generateDownloadLink(SERVER_TEMPLATE_ID, DOCUMENT_ID);
+
 
     @Mock
     protected UploadedDocumentManager uploadedDocumentManager;
@@ -77,26 +86,53 @@ public class DocumentFieldValueProcessorTest {
     }
 
     @Test
-    public void testDocument2FlatValue() {
-        Document doc = new DocumentImpl("id",
-                                        "docName",
-                                        1024,
-                                        new Date());
+    public void testDocument2FlatValueEmptyLinkPattern() {
+        Document doc = spy(new DocumentImpl(DOCUMENT_ID,
+                                            "docName",
+                                            1024,
+                                            new Date()));
 
         DocumentData documentData = processor.toFlatValue(field,
                                                           doc,
                                                           context);
 
-        assertNotNull("DocumentData cannot be null!",
-                      documentData);
-        assertEquals("Names are not equal",
-                     doc.getName(),
+        verify(doc).getLink();
+
+        assertNotNull(documentData);
+        assertEquals(doc.getName(),
                      documentData.getFileName());
-        assertEquals("Sizes are not equal",
-                     doc.getSize(),
+        assertEquals(doc.getSize(),
                      documentData.getSize());
-        assertEquals("Link must be empty",
-                     "",
+        assertEquals("",
+                     documentData.getLink());
+    }
+
+    @Test
+    public void testDocument2FlatValue() {
+        Document doc = spy(new DocumentImpl(DOCUMENT_ID,
+                                            "docName",
+                                            1024,
+                                            new Date()));
+
+        Map result = new HashMap();
+        result.put(DocumentFieldValueProcessor.SERVER_TEMPLATE_ID,
+                   SERVER_TEMPLATE_ID);
+
+        when(context.getAttributes()).thenReturn(result);
+
+        DocumentData documentData = processor.toFlatValue(field,
+                                                          doc,
+                                                          context);
+
+        verify(doc,
+               never()).getLink();
+
+        assertNotNull(documentData);
+        assertEquals(doc.getName(),
+                     documentData.getFileName());
+        assertEquals(doc.getSize(),
+                     documentData.getSize());
+        assertEquals(EXPECTED_DOWNLOAD_LINK,
                      documentData.getLink());
     }
 
@@ -114,7 +150,7 @@ public class DocumentFieldValueProcessorTest {
 
     @Test
     public void testNewFlatValue2Document() {
-        DocumentData data = new DocumentData("test",
+        DocumentData data = new DocumentData(DOCUMENT_ID,
                                              1024,
                                              null);
         data.setContentId("content");
@@ -139,7 +175,7 @@ public class DocumentFieldValueProcessorTest {
 
     @Test
     public void testExistingFlatValue2Document() {
-        Document doc = new DocumentImpl("id",
+        Document doc = new DocumentImpl(DOCUMENT_ID,
                                         "docName",
                                         1024,
                                         new Date(),

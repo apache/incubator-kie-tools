@@ -37,11 +37,13 @@ public class BackendFormRenderingContextImpl implements BackendFormRenderingCont
     public BackendFormRenderingContextImpl(Long timestamp,
                                            MapModelRenderingContext renderingContext,
                                            Map<String, Object> formData,
-                                           ClassLoader classLoader) {
+                                           ClassLoader classLoader,
+                                           Map<String, String> params) {
         this.timestamp = timestamp;
         this.renderingContext = renderingContext;
         this.formData = formData;
         this.classLoader = classLoader;
+        this.attributes.putAll(params);
     }
 
     @Override
