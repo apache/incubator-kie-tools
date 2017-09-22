@@ -25,21 +25,19 @@ import org.kie.workbench.common.services.datamodeller.core.Import;
 import org.kie.workbench.common.services.datamodeller.core.JavaClass;
 import org.kie.workbench.common.services.datamodeller.core.JavaTypeKind;
 import org.kie.workbench.common.services.datamodeller.core.Method;
-import org.kie.workbench.common.services.datamodeller.core.Parameter;
-import org.kie.workbench.common.services.datamodeller.core.Type;
 import org.kie.workbench.common.services.datamodeller.core.Visibility;
 
 public class JavaClassImpl extends AbstractJavaType implements JavaClass {
 
     private String superClassName;
 
-    private List<String> interfaces = new ArrayList<String>(  );
+    private List<String> interfaces = new ArrayList<String>();
 
-    private List<JavaClass> nestedClasses = new ArrayList<>(  );
+    private List<JavaClass> nestedClasses = new ArrayList<>();
 
-    private List<Method> methods = new ArrayList<>(  );
+    private List<Method> methods = new ArrayList<>();
 
-    private List<Import> imports = new ArrayList<>(  );
+    private List<Import> imports = new ArrayList<>();
 
     boolean _static = false;
 
@@ -51,16 +49,30 @@ public class JavaClassImpl extends AbstractJavaType implements JavaClass {
         //errai marshalling
     }
 
-    public JavaClassImpl( String packageName, String name ) {
-        this( packageName, name, Visibility.PUBLIC );
+    public JavaClassImpl(String packageName,
+                         String name) {
+        this(packageName,
+             name,
+             Visibility.PUBLIC);
     }
 
-    public JavaClassImpl( String packageName, String name, Visibility visibility ) {
-        super( packageName, name, JavaTypeKind.CLASS,  visibility );
+    public JavaClassImpl(String packageName,
+                         String name,
+                         Visibility visibility) {
+        super(packageName,
+              name,
+              JavaTypeKind.CLASS,
+              visibility);
     }
 
-    public JavaClassImpl( String packageName, String name, Visibility visibility, boolean isAbstract, boolean isFinal ) {
-        this( packageName, name, visibility );
+    public JavaClassImpl(String packageName,
+                         String name,
+                         Visibility visibility,
+                         boolean isAbstract,
+                         boolean isFinal) {
+        this(packageName,
+             name,
+             visibility);
         this._abstract = isAbstract;
         this._final = isFinal;
     }
@@ -86,25 +98,25 @@ public class JavaClassImpl extends AbstractJavaType implements JavaClass {
     }
 
     @Override
-    public JavaClass addNestedClass( JavaClass javaClass ) {
+    public JavaClass addNestedClass(JavaClass javaClass) {
         if (javaClass == null) {
             return null;
         }
         Iterator<JavaClass> iterator = nestedClasses.listIterator();
-        while ( iterator.hasNext() ) {
+        while (iterator.hasNext()) {
             JavaClass nestedClass = iterator.next();
-            if (nestedClass.getName().equals( javaClass.getName() )) {
+            if (nestedClass.getName().equals(javaClass.getName())) {
                 iterator.remove();
                 break;
             }
         }
-        nestedClasses.add( javaClass );
+        nestedClasses.add(javaClass);
         return javaClass;
     }
 
     @Override
-    public JavaClass removeNestedClass( JavaClass javaClass ) {
-        boolean removed = nestedClasses.remove( javaClass );
+    public JavaClass removeNestedClass(JavaClass javaClass) {
+        boolean removed = nestedClasses.remove(javaClass);
         return removed ? javaClass : null;
     }
 
@@ -114,27 +126,28 @@ public class JavaClassImpl extends AbstractJavaType implements JavaClass {
     }
 
     @Override
-    public Method addMethod( Method method ) {
+    public Method addMethod(Method method) {
         Iterator<Method> iterator = methods.listIterator();
-        while ( iterator.hasNext() ) {
+        while (iterator.hasNext()) {
             Method existingMethod = iterator.next();
-            if ( existingMethod.getName().equals( method.getName() ) && existingMethod.getParameters().equals( method.getParameters() ) ) {
+            if (existingMethod.getName().equals(method.getName()) && existingMethod.getParameters().equals(method.getParameters())) {
                 iterator.remove();
                 break;
             }
         }
-        methods.add( method );
+        methods.add(method);
 
         return method;
     }
 
     @Override
-    public Method getMethod( String name, List<String> parameterTypes ) {
-        for ( Method method : methods ) {
-            if ( method.getName().equals( name ) ) {
-                if ( method.getParameters() == null && parameterTypes == null ) {
+    public Method getMethod(String name,
+                            List<String> parameterTypes) {
+        for (Method method : methods) {
+            if (method.getName().equals(name)) {
+                if (method.getParameters() == null && parameterTypes == null) {
                     return method;
-                } else if ( method.getParameters().stream().map( p -> p.getType().getName() ).collect( Collectors.toList() ).equals( parameterTypes ) ) {
+                } else if (method.getParameters().stream().map(p -> p.getType().getName()).collect(Collectors.toList()).equals(parameterTypes)) {
                     return method;
                 }
             }
@@ -143,8 +156,8 @@ public class JavaClassImpl extends AbstractJavaType implements JavaClass {
     }
 
     @Override
-    public Method removeMethod( Method method ) {
-        return methods.remove( method ) ? null : method;
+    public Method removeMethod(Method method) {
+        return methods.remove(method) ? method : null;
     }
 
     @Override
@@ -167,13 +180,18 @@ public class JavaClassImpl extends AbstractJavaType implements JavaClass {
     }
 
     @Override
-    public void addInterface( String interfaceDefinition ) {
-        interfaces.add( interfaceDefinition );
+    public void addInterface(String interfaceDefinition) {
+        interfaces.add(interfaceDefinition);
     }
 
     @Override
-    public void addImport( Import _import ) {
-        imports.add( _import );
+    public String removeInterface(String interfaceDefinition) {
+        return interfaces.remove(interfaceDefinition) ? interfaceDefinition : null;
+    }
+
+    @Override
+    public void addImport(Import _import) {
+        imports.add(_import);
     }
 
     @Override
@@ -181,56 +199,58 @@ public class JavaClassImpl extends AbstractJavaType implements JavaClass {
         return imports;
     }
 
-    @Override public boolean equals( Object o ) {
-        if ( this == o ) {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        if ( !super.equals( o ) ) {
+        if (!super.equals(o)) {
             return false;
         }
 
-        JavaClassImpl javaClass = ( JavaClassImpl ) o;
+        JavaClassImpl javaClass = (JavaClassImpl) o;
 
-        if ( _static != javaClass._static ) {
+        if (_static != javaClass._static) {
             return false;
         }
-        if ( _final != javaClass._final ) {
+        if (_final != javaClass._final) {
             return false;
         }
-        if ( _abstract != javaClass._abstract ) {
+        if (_abstract != javaClass._abstract) {
             return false;
         }
-        if ( superClassName != null ? !superClassName.equals( javaClass.superClassName ) : javaClass.superClassName != null ) {
+        if (superClassName != null ? !superClassName.equals(javaClass.superClassName) : javaClass.superClassName != null) {
             return false;
         }
-        if ( interfaces != null ? !interfaces.equals( javaClass.interfaces ) : javaClass.interfaces != null ) {
+        if (interfaces != null ? !interfaces.equals(javaClass.interfaces) : javaClass.interfaces != null) {
             return false;
         }
-        if ( nestedClasses != null ? !nestedClasses.equals( javaClass.nestedClasses ) : javaClass.nestedClasses != null ) {
+        if (nestedClasses != null ? !nestedClasses.equals(javaClass.nestedClasses) : javaClass.nestedClasses != null) {
             return false;
         }
-        return !( methods != null ? !methods.equals( javaClass.methods) : javaClass.methods != null );
+        return !(methods != null ? !methods.equals(javaClass.methods) : javaClass.methods != null);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int result = super.hashCode();
         result = ~~result;
-        result = 31 * result + ( superClassName != null ? superClassName.hashCode() : 0 );
+        result = 31 * result + (superClassName != null ? superClassName.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( interfaces != null ? interfaces.hashCode() : 0 );
+        result = 31 * result + (interfaces != null ? interfaces.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( nestedClasses != null ? nestedClasses.hashCode() : 0 );
+        result = 31 * result + (nestedClasses != null ? nestedClasses.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( methods != null ? methods.hashCode() : 0 );
+        result = 31 * result + (methods != null ? methods.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( _static ? 1 : 0 );
+        result = 31 * result + (_static ? 1 : 0);
         result = ~~result;
-        result = 31 * result + ( _final ? 1 : 0 );
+        result = 31 * result + (_final ? 1 : 0);
         result = ~~result;
-        result = 31 * result + ( _abstract ? 1 : 0 );
+        result = 31 * result + (_abstract ? 1 : 0);
         result = ~~result;
         return result;
     }

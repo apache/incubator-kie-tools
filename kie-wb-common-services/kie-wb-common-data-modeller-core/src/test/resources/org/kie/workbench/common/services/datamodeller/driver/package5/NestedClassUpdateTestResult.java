@@ -25,7 +25,8 @@ public class NestedClassUpdateTestResult
     }
 
     @Generated("foo.bar.Generator")
-    public static class UpdatedNestedClass
+    public static class UpdatedNestedClass implements java.io.Serializable,
+                                                      ParametrizedInterface<Double>
     {
 
         @Generated("foo.bar.Generator")

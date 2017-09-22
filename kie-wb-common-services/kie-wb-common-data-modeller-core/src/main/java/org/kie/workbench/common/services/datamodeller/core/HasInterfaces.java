@@ -20,8 +20,9 @@ import java.util.List;
 
 public interface HasInterfaces {
 
-    public List<String> getInterfaces();
+    List<String> getInterfaces();
 
-    void addInterface( String interfaceDefinition );
+    void addInterface(String interfaceDefinition);
 
+    String removeInterface(String interfaceDefinition);
 }

@@ -25,23 +25,36 @@ import org.kie.workbench.common.services.datamodeller.core.Visibility;
 
 public class JavaEnumImpl extends AbstractJavaType implements JavaEnum {
 
-    private List<String> interfaces = new ArrayList<String>( );
+    private List<String> interfaces = new ArrayList<String>();
 
     public JavaEnumImpl() {
         //errai marshalling
     }
 
-    public JavaEnumImpl( String packageName, String name ) {
-        super( packageName, name, JavaTypeKind.ENUM );
+    public JavaEnumImpl(String packageName,
+                        String name) {
+        super(packageName,
+              name,
+              JavaTypeKind.ENUM);
     }
 
-    public JavaEnumImpl( String packageName, String name, Visibility visibility ) {
-        super( packageName, name, JavaTypeKind.ENUM, visibility );
+    public JavaEnumImpl(String packageName,
+                        String name,
+                        Visibility visibility) {
+        super(packageName,
+              name,
+              JavaTypeKind.ENUM,
+              visibility);
     }
 
     @Override
-    public void addInterface( String interfaceDefinition ) {
-        interfaces.add( interfaceDefinition );
+    public void addInterface(String interfaceDefinition) {
+        interfaces.add(interfaceDefinition);
+    }
+
+    @Override
+    public String removeInterface(String interfaceDefinition) {
+        return interfaces.remove(interfaceDefinition) ? interfaceDefinition : null;
     }
 
     @Override
@@ -50,27 +63,27 @@ public class JavaEnumImpl extends AbstractJavaType implements JavaEnum {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass( ) != o.getClass( ) ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        if ( !super.equals( o ) ) {
+        if (!super.equals(o)) {
             return false;
         }
 
-        JavaEnumImpl javaEnum = ( JavaEnumImpl ) o;
+        JavaEnumImpl javaEnum = (JavaEnumImpl) o;
 
-        return interfaces != null ? interfaces.equals( javaEnum.interfaces ) : javaEnum.interfaces == null;
+        return interfaces != null ? interfaces.equals(javaEnum.interfaces) : javaEnum.interfaces == null;
     }
 
     @Override
-    public int hashCode( ) {
-        int result = super.hashCode( );
+    public int hashCode() {
+        int result = super.hashCode();
         result = ~~result;
-        result = 31 * result + ( interfaces != null ? interfaces.hashCode( ) : 0 );
+        result = 31 * result + (interfaces != null ? interfaces.hashCode() : 0);
         result = ~~result;
         return result;
     }

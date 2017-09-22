@@ -17,31 +17,7 @@ package org.kie.workbench.common.services.datamodeller.driver.package5;
 
 import javax.annotation.Generated;
 
-public class NestedClassUpdateTest
+public interface ParametrizedInterface<T>
 {
-
-    public NestedClassUpdateTest()
-    {
-    }
-
-    @Generated("foo.bar.Generator")
-    public static class NestedClass implements java.io.Serializable,
-                                               ParametrizedInterface<Integer>
-    {
-
-        @Generated("foo.bar.Generator")
-        public void method()
-        {
-        }
-
-        public void ignoredMethod()
-        {
-        }
-
-    }
-
-    public static class IgnoredNestedClass
-    {
-    }
 
 }
