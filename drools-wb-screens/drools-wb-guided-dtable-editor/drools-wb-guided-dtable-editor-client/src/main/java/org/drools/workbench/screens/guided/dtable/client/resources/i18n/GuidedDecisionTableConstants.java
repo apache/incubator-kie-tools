@@ -122,7 +122,7 @@ public interface GuidedDecisionTableConstants
 
     String Options();
 
-    String DeleteActionColumnWarning(String p0);
+    String DeleteColumnWarning(String p0);
 
     String NewColumn();
 
@@ -139,8 +139,6 @@ public interface GuidedDecisionTableConstants
     String UnableToDeleteConditionColumns();
 
     String UnableToDeleteConditionColumn0(String p0);
-
-    String DeleteConditionColumnWarning0(String p0);
 
     String UseRowNumber();
 

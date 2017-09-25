@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -36,15 +38,25 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
-import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
-import org.uberfire.mvp.ParameterizedCommand;
 
+@Dependent
 public class ColumnManagementView extends VerticalPanel {
+
+    private ManagedInstance<DeleteColumnManagementAnchorWidget> deleteColumnManagementAnchorWidgets;
 
     private GuidedDecisionTableModellerView.Presenter presenter;
 
-    public ColumnManagementView(GuidedDecisionTableModellerView.Presenter presenter) {
+    public ColumnManagementView() {
+    }
+
+    @Inject
+    public ColumnManagementView(final ManagedInstance<DeleteColumnManagementAnchorWidget> deleteColumnManagementAnchorWidgets) {
+        this.deleteColumnManagementAnchorWidgets = deleteColumnManagementAnchorWidgets;
+    }
+
+    public void init(final GuidedDecisionTableModellerView.Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -79,17 +91,11 @@ public class ColumnManagementView extends VerticalPanel {
         action.add(actionLabel);
 
         final FlowPanel buttons = new FlowPanel() {{
-            add(editAction(actionColumn));
+            add(editAnchor((clickEvent) -> presenter.getActiveDecisionTable().editAction(actionColumn)));
 
             if (presenter.isActiveDecisionTableEditable()) {
-                add(deleteAnchor((e) -> {
-                    final String cm = GuidedDecisionTableConstants.INSTANCE.DeleteActionColumnWarning(actionColumn.getHeader());
-                    YesNoCancelPopup.newYesNoCancelPopup(GuidedDecisionTableConstants.INSTANCE.Delete(),
-                                                         cm,
-                                                         () -> presenter.getActiveDecisionTable().deleteColumn(actionColumn),
-                                                         null,
-                                                         null).show();
-                }));
+                add(deleteAnchor(actionColumn.getHeader(),
+                                 () -> presenter.getActiveDecisionTable().deleteColumn(actionColumn)));
             }
         }};
 
@@ -108,8 +114,9 @@ public class ColumnManagementView extends VerticalPanel {
             condition.add(conditionLabel);
 
             final FlowPanel buttons = new FlowPanel() {{
-                add(editCondition(pattern,
-                                  conditionColumn));
+                add(editAnchor((clickEvent) -> presenter.getActiveDecisionTable().editCondition(pattern,
+                                                                                                conditionColumn))
+                );
 
                 if (presenter.isActiveDecisionTableEditable()) {
                     add(removeCondition(conditionColumn));
@@ -130,7 +137,7 @@ public class ColumnManagementView extends VerticalPanel {
         condition.add(columnLabel);
 
         final FlowPanel buttons = new FlowPanel() {{
-            add(editCondition(conditionColumn));
+            add(editAnchor((clickEvent) -> presenter.getActiveDecisionTable().editCondition(conditionColumn)));
 
             if (presenter.isActiveDecisionTableEditable()) {
                 add(removeCondition(conditionColumn));
@@ -162,82 +169,23 @@ public class ColumnManagementView extends VerticalPanel {
         return label;
     }
 
-    private Widget editAction(final ActionCol52 actionColumn) {
-        return makeEditColumnWidget(() -> presenter.getActiveDecisionTable().editAction(actionColumn));
-    }
-
-    private Widget makeEditColumnWidget(final Command command) {
-        return editAnchor((e) -> command.execute());
-    }
-
-    private Widget editAnchor(final ClickHandler clickHandler) {
-        return anchor(GuidedDecisionTableConstants.INSTANCE.Edit(),
-                      GuidedDecisionTableConstants.INSTANCE.EditThisColumnConfiguration(),
-                      clickHandler);
-    }
-
-    private Widget deleteAnchor(final ClickHandler clickHandler) {
-        return anchor(GuidedDecisionTableConstants.INSTANCE.Delete(),
-                      GuidedDecisionTableConstants.INSTANCE.DeleteThisColumn(),
-                      clickHandler);
-    }
-
-    Anchor anchor(final String text,
-                  final String title,
-                  final ClickHandler clickHandler) {
-        return new Anchor() {{
-            setText(text);
-            setTitle(title);
-            addClickHandler(clickHandler);
-        }};
+    EditColumnManagementAnchorWidget editAnchor(final ClickHandler clickHandler) {
+        return new EditColumnManagementAnchorWidget(clickHandler);
     }
 
     Widget removeCondition(final ConditionCol52 column) {
-        return makeRemoveConditionWidget(column,
-                                         (command) -> {
-                                             if (!presenter.getActiveDecisionTable().canConditionBeDeleted(column)) {
-                                                 showUnableToDeleteColumnMessage(column);
-                                             } else {
-                                                 command.execute();
-                                             }
-                                         });
-    }
-
-    Widget makeRemoveConditionWidget(final ConditionCol52 column,
-                                     final ParameterizedCommand<Command> command) {
-
-        final ClickHandler clickHandler = (e) ->
-                command.execute(() ->
-                                        showConfirmDeleteColumnMessage(column,
-                                                                       () -> presenter.getActiveDecisionTable().deleteColumn(column))
-                );
-
-        return deleteAnchor(clickHandler);
+        return deleteAnchor(column.getHeader(),
+                            () -> {
+                                if (!presenter.getActiveDecisionTable().canConditionBeDeleted(column)) {
+                                    showUnableToDeleteColumnMessage(column);
+                                } else {
+                                    presenter.getActiveDecisionTable().deleteColumn(column);
+                                }
+                            });
     }
 
     void showUnableToDeleteColumnMessage(final ConditionCol52 column) {
         ErrorPopup.showMessage(GuidedDecisionTableConstants.INSTANCE.UnableToDeleteConditionColumn0(column.getHeader()));
-    }
-
-    void showConfirmDeleteColumnMessage(final ConditionCol52 column,
-                                        final org.uberfire.mvp.Command yesCommand) {
-        String messageToConfirm = GuidedDecisionTableConstants.INSTANCE.DeleteConditionColumnWarning0(column.getHeader());
-        YesNoCancelPopup.newYesNoCancelPopup(GuidedDecisionTableConstants.INSTANCE.Delete(),
-                                             messageToConfirm,
-                                             yesCommand,
-                                             null,
-                                             () -> {
-                                             }).show();
-    }
-
-    private Widget editCondition(final Pattern52 origPattern,
-                                 final ConditionCol52 origCol) {
-        return makeEditColumnWidget(() -> presenter.getActiveDecisionTable().editCondition(origPattern,
-                                                                                           origCol));
-    }
-
-    private Widget editCondition(final BRLConditionColumn origCol) {
-        return makeEditColumnWidget(() -> presenter.getActiveDecisionTable().editCondition(origCol));
     }
 
     HorizontalPanel newHorizontalPanel() {
@@ -246,5 +194,13 @@ public class ColumnManagementView extends VerticalPanel {
 
     ColumnLabelWidget newColumnLabelWidget(final String text) {
         return new ColumnLabelWidget(text);
+    }
+
+    DeleteColumnManagementAnchorWidget deleteAnchor(final String columnHeader,
+                                                    final Command command) {
+        final DeleteColumnManagementAnchorWidget widget = deleteColumnManagementAnchorWidgets.get();
+        widget.init(columnHeader,
+                    command);
+        return widget;
     }
 }

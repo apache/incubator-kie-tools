@@ -57,6 +57,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.AttributeColumnConfigRow;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.ColumnLabelWidget;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.ColumnManagementView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.accordion.GuidedDecisionTableAccordion;
@@ -64,6 +65,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.accordion.
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.AttributeColumnConfigRowView;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Icon;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -78,12 +80,13 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPane
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
+import org.uberfire.mocks.MockInstanceImpl;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-@WithClassesToStub({ColumnLabelWidget.class,    GridLienzoPanel.class, DefaultGridLayer.class, GridWidget.class, RestrictedMousePanMediator.class})
+@WithClassesToStub({ColumnLabelWidget.class, GridLienzoPanel.class, DefaultGridLayer.class, GridWidget.class, RestrictedMousePanMediator.class})
 public class GuidedDecisionTableModellerViewImplTest {
 
     @Mock
@@ -137,6 +140,9 @@ public class GuidedDecisionTableModellerViewImplTest {
     @Captor
     private ArgumentCaptor<Map<String, List<BaseColumn>>> capturedGroups;
 
+    @Mock
+    private ManagedInstance<AttributeColumnConfigRow> attributeColumnConfigRows;
+
     private GuidedDecisionTableModellerViewImpl view;
 
     @Before
@@ -155,6 +161,8 @@ public class GuidedDecisionTableModellerViewImplTest {
 
         view.init(presenter);
 
+        verify(columnManagementView,
+               times(2)).init(presenter);
         verify(view).setupAccordion(presenter);
     }
 
@@ -706,6 +714,7 @@ public class GuidedDecisionTableModellerViewImplTest {
         public GuidedDecisionTableModellerViewImplFake() {
             this.gridPanel = mockGridPanel;
             this.pinnedModeIndicator = GuidedDecisionTableModellerViewImplTest.this.pinnedModeIndicator;
+            doReturn(mock(AttributeColumnConfigRow.class)).when(attributeColumnConfigRows).get();
         }
 
         DefaultGridLayer defaultGridLayer() {
@@ -749,6 +758,11 @@ public class GuidedDecisionTableModellerViewImplTest {
         @Override
         VerticalPanel getConditionsConfigWidget() {
             return conditionsConfigWidget;
+        }
+
+        @Override
+        ManagedInstance<AttributeColumnConfigRow> getAttributeColumnConfigRows() {
+            return attributeColumnConfigRows;
         }
     }
 }

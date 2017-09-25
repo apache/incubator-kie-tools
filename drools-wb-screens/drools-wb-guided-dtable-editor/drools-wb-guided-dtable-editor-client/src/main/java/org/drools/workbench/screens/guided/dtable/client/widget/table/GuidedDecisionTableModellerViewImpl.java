@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
@@ -28,7 +27,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -50,6 +48,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.co
 import org.drools.workbench.screens.guided.dtable.client.widget.table.accordion.GuidedDecisionTableAccordion;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.accordion.GuidedDecisionTableAccordionItem;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.AttributeColumnConfigRow;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.DeleteColumnManagementAnchorWidget;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils;
 import org.gwtbootstrap3.client.ui.Button;
@@ -57,8 +56,8 @@ import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
-import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -133,9 +132,17 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     private final RestrictedMousePanMediator mousePanMediator = restrictedMousePanMediator();
 
+    @Inject
     private ColumnManagementView actionsPanel;
 
+    @Inject
     private ColumnManagementView conditionsPanel;
+
+    @Inject
+    private ManagedInstance<AttributeColumnConfigRow> attributeColumnConfigRows;
+
+    @Inject
+    private ManagedInstance<DeleteColumnManagementAnchorWidget> deleteColumnManagementAnchorWidgets;
 
     public GuidedDecisionTableModellerViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -193,6 +200,8 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     public void init(final GuidedDecisionTableModellerView.Presenter presenter) {
         this.presenter = presenter;
 
+        getActionsPanel().init(presenter);
+        getConditionsPanel().init(presenter);
         setupAccordion(presenter);
     }
 
@@ -416,7 +425,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
         }
 
         for (AttributeCol52 attributeColumn : attributeColumns) {
-            AttributeColumnConfigRow attributeColumnConfigRow = new AttributeColumnConfigRow();
+            AttributeColumnConfigRow attributeColumnConfigRow = getAttributeColumnConfigRows().get();
             attributeColumnConfigRow.init(attributeColumn,
                                           getPresenter());
             getAttributeConfigWidget().add(attributeColumnConfigRow.getView());
@@ -458,12 +467,10 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
             hp.add(chkHideColumn);
 
             if (isEditable) {
-                hp.add(deleteAnchor((e) -> {
-                    String ms = GuidedDecisionTableConstants.INSTANCE.DeleteActionColumnWarning(metaDataColumn.getMetadata());
-                    if (Window.confirm(ms)) {
-                        presenter.getActiveDecisionTable().deleteColumn(metaDataColumn);
-                    }
-                }));
+                final DeleteColumnManagementAnchorWidget deleteWidget = deleteColumnManagementAnchorWidgets.get();
+                deleteWidget.init(metaDataColumn.getMetadata(),
+                                  () -> presenter.getActiveDecisionTable().deleteColumn(metaDataColumn));
+                hp.add(deleteWidget);
             }
 
             metaDataConfigWidget.add(hp);
@@ -691,13 +698,15 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     }
 
     ColumnManagementView getActionsPanel() {
-        actionsPanel = Optional.ofNullable(actionsPanel).orElse(new ColumnManagementView(getPresenter()));
         return actionsPanel;
     }
 
     ColumnManagementView getConditionsPanel() {
-        conditionsPanel = Optional.ofNullable(conditionsPanel).orElse(new ColumnManagementView(getPresenter()));
         return conditionsPanel;
+    }
+
+    ManagedInstance<AttributeColumnConfigRow> getAttributeColumnConfigRows() {
+        return attributeColumnConfigRows;
     }
 
     interface GuidedDecisionTableModellerViewImplUiBinder extends UiBinder<Widget, GuidedDecisionTableModellerViewImpl> {

@@ -16,27 +16,30 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.DefaultValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.html.Span;
 
+@Dependent
 public class AttributeColumnConfigRow {
 
+    @Inject
     protected AttributeColumnConfigRowView view;
     private CheckBox useRowNumberCheckBox;
     private CheckBox reverseOrderCheckBox;
     private CheckBox hideColumnCheckBox;
 
     public AttributeColumnConfigRow() {
-        view = new AttributeColumnConfigRowView();
     }
 
     public void init(AttributeCol52 attributeColumn,
@@ -106,16 +109,9 @@ public class AttributeColumnConfigRow {
 
     private void addRemoveAttributeButton(final AttributeCol52 attributeColumn,
                                           final GuidedDecisionTableModellerView.Presenter presenter) {
-        final ClickHandler handler = event -> {
-            final String confirmationMessage = GuidedDecisionTableConstants.INSTANCE.DeleteActionColumnWarning(attributeColumn.getAttribute());
-
-            if (view.confirmDeleteColumnActionDialogue(confirmationMessage)) {
-                presenter.getActiveDecisionTable().deleteColumn(attributeColumn);
-            }
-        };
         final boolean isEditable = presenter.isActiveDecisionTableEditable();
 
-        view.addRemoveAttributeButton(handler,
+        view.addRemoveAttributeButton(() -> presenter.getActiveDecisionTable().deleteColumn(attributeColumn),
                                       isEditable);
     }
 

@@ -53,12 +53,15 @@ public class AttributeColumnConfigRowViewTest {
     @Mock
     DTCellValue52 defaultValue;
 
+    @Mock
+    DeleteColumnManagementAnchorWidget deleteWidget;
+
     @Captor
     ArgumentCaptor<Widget> widgetCaptor;
 
     @Before
     public void setUp() throws Exception {
-        view = spy(new AttributeColumnConfigRowView());
+        view = spy(new AttributeColumnConfigRowView(deleteWidget));
 
         when(attributeColumn.getAttribute()).thenReturn(RuleAttributeWidget.SALIENCE_ATTR);
         when(attributeColumn.getDefaultValue()).thenReturn(defaultValue);
