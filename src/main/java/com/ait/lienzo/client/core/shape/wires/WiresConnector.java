@@ -112,6 +112,15 @@ public class WiresConnector
     public WiresConnector(AbstractDirectionalMultiPointShape<?> line, MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator)
     {
         m_line = line;
+
+        if (m_line instanceof OrthogonalPolyLine) {
+
+            OrthogonalPolyLine polyline = (OrthogonalPolyLine)m_line;
+            BoundingBox headBB = headDecorator.getPath().getBoundingBox();
+            double breakDistance = Math.min(headBB.getWidth(), headBB.getHeight());
+            polyline.setBreakDistance(breakDistance);
+        }
+
         m_headDecorator = headDecorator;
         m_tailDecorator = tailDecorator;
 
