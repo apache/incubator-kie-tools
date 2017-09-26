@@ -125,11 +125,11 @@ public class Connectives {
                                                                        new Callback<String[]>() {
                                                                            @Override
                                                                            public void callback(final String[] operators) {
-                                                                               final CEPOperatorsDropdown w = new CEPOperatorsDropdown(operators,
-                                                                                                                                       cc);
-                                                                               w.addPlaceholder(GuidedRuleEditorResources.CONSTANTS.pleaseChoose(),
+                                                                               final CEPOperatorsDropdown dropdown = getDropdown(operators,
+                                                                                                                                 cc);
+                                                                               dropdown.addPlaceholder(GuidedRuleEditorResources.CONSTANTS.pleaseChoose(),
                                                                                                 "");
-                                                                               w.addValueChangeHandler(new ValueChangeHandler<OperatorSelection>() {
+                                                                               dropdown.addValueChangeHandler(new ValueChangeHandler<OperatorSelection>() {
 
                                                                                    public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
                                                                                        OperatorSelection selection = event.getValue();
@@ -137,13 +137,19 @@ public class Connectives {
                                                                                        cc.setOperator(selected);
                                                                                    }
                                                                                });
-                                                                               callback.callback(w);
+                                                                               callback.callback(dropdown);
                                                                            }
                                                                        });
         } else {
             final SmallLabel w = new SmallLabel("<b>" + (cc.getOperator() == null ? GuidedRuleEditorResources.CONSTANTS.pleaseChoose() : HumanReadable.getOperatorDisplayName(cc.getOperator())) + "</b>");
             callback.callback(w);
         }
+    }
+
+    CEPOperatorsDropdown getDropdown(String[] operators,
+                                     ConnectiveConstraint connectiveConstraint) {
+        return new CEPOperatorsDropdown(operators,
+                                        connectiveConstraint);
     }
 
     private ClickHandler createClickHandlerForClearImageButton(final SingleFieldConstraint sfc,

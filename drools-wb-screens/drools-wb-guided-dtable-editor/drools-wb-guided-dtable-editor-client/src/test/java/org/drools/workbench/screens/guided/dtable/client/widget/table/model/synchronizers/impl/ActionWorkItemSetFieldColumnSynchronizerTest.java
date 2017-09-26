@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.appformer.project.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
@@ -37,6 +36,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.drools.workbench.screens.guided.rule.client.util.ModelFieldUtil.modelField;
 
 public class ActionWorkItemSetFieldColumnSynchronizerTest extends BaseSynchronizerTest {
 
@@ -47,24 +47,12 @@ public class ActionWorkItemSetFieldColumnSynchronizerTest extends BaseSynchroniz
                                   {
                                       put("Applicant",
                                           new ModelField[]{
-                                                  new ModelField("this",
-                                                                 "Applicant",
-                                                                 ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                                 ModelField.FIELD_ORIGIN.SELF,
-                                                                 FieldAccessorsAndMutators.ACCESSOR,
-                                                                 "Applicant"),
-                                                  new ModelField("age",
-                                                                 Integer.class.getName(),
-                                                                 ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                                 ModelField.FIELD_ORIGIN.SELF,
-                                                                 FieldAccessorsAndMutators.ACCESSOR,
-                                                                 DataType.TYPE_NUMERIC_INTEGER),
-                                                  new ModelField("name",
-                                                                 String.class.getName(),
-                                                                 ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                                 ModelField.FIELD_ORIGIN.SELF,
-                                                                 FieldAccessorsAndMutators.ACCESSOR,
-                                                                 DataType.TYPE_STRING)});
+                                                  modelField("this",
+                                                             "Applicant"),
+                                                  modelField("age",
+                                                             DataType.TYPE_NUMERIC_INTEGER),
+                                                  modelField("name",
+                                                             DataType.TYPE_STRING)});
                                   }
                               }
 

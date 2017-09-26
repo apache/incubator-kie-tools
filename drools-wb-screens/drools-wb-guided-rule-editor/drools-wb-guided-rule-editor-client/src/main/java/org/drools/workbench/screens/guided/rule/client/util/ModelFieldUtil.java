@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.appformer.project.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.ActionFieldList;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
@@ -52,5 +53,26 @@ public final class ModelFieldUtil {
             availableModelFields.removeAll(usedModelFields);
         }
         return availableModelFields.toArray(new ModelField[availableModelFields.size()]);
+    }
+
+    /**
+     * Constructs model field with given name and data type
+     *
+     * Other three values are hardcoded as
+     *  - ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+     *  - ModelField.FIELD_ORIGIN.DECLARED,
+     *  - FieldAccessorsAndMutators.BOTH,
+     * @param fieldName name of the field
+     * @param fieldDataType data type of the field
+     * @return constructed new model field
+     */
+    public static ModelField modelField(final String fieldName,
+                                        final String fieldDataType) {
+        return new ModelField(fieldName,
+                              fieldDataType,
+                              ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                              ModelField.FIELD_ORIGIN.DECLARED,
+                              FieldAccessorsAndMutators.BOTH,
+                              fieldDataType);
     }
 }

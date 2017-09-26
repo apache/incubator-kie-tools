@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.appformer.project.datamodel.oracle.ModelField;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
@@ -40,6 +39,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.drools.workbench.screens.guided.rule.client.util.ModelFieldUtil.modelField;
 
 public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
@@ -50,44 +50,20 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                                   {
                                       put("Applicant",
                                           new ModelField[]{
-                                                  new ModelField("this",
-                                                                 "Applicant",
-                                                                 ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                                 ModelField.FIELD_ORIGIN.SELF,
-                                                                 FieldAccessorsAndMutators.ACCESSOR,
-                                                                 "Applicant"),
-                                                  new ModelField("age",
-                                                                 Integer.class.getName(),
-                                                                 ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                                 ModelField.FIELD_ORIGIN.SELF,
-                                                                 FieldAccessorsAndMutators.ACCESSOR,
-                                                                 DataType.TYPE_NUMERIC_INTEGER),
-                                                  new ModelField("salary",
-                                                                 Long.class.getName(),
-                                                                 ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                                 ModelField.FIELD_ORIGIN.SELF,
-                                                                 FieldAccessorsAndMutators.ACCESSOR,
-                                                                 DataType.TYPE_NUMERIC_LONG),
-                                                  new ModelField("name",
-                                                                 String.class.getName(),
-                                                                 ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                                 ModelField.FIELD_ORIGIN.SELF,
-                                                                 FieldAccessorsAndMutators.ACCESSOR,
-                                                                 DataType.TYPE_STRING)});
+                                                  modelField("this",
+                                                             "Applicant"),
+                                                  modelField("age",
+                                                             DataType.TYPE_NUMERIC_INTEGER),
+                                                  modelField("salary",
+                                                             DataType.TYPE_NUMERIC_LONG),
+                                                  modelField("name",
+                                                             DataType.TYPE_STRING)});
                                       put("Address",
                                           new ModelField[]{
-                                                  new ModelField("this",
-                                                                 "Address",
-                                                                 ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                                 ModelField.FIELD_ORIGIN.SELF,
-                                                                 FieldAccessorsAndMutators.ACCESSOR,
-                                                                 "Address"),
-                                                  new ModelField("country",
-                                                                 String.class.getName(),
-                                                                 ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                                 ModelField.FIELD_ORIGIN.SELF,
-                                                                 FieldAccessorsAndMutators.ACCESSOR,
-                                                                 DataType.TYPE_STRING)});
+                                                  modelField("this",
+                                                             "Address"),
+                                                  modelField("country",
+                                                             DataType.TYPE_STRING)});
                                   }
                               }
 

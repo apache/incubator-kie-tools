@@ -21,7 +21,6 @@ import java.util.List;
 import javax.enterprise.inject.Instance;
 
 import org.appformer.project.datamodel.oracle.DropDownData;
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.appformer.project.datamodel.oracle.ModelField;
 import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -43,6 +42,7 @@ import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.drools.workbench.screens.guided.rule.client.util.ModelFieldUtil.modelField;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConstraintValueEditorHelperTest {
@@ -148,19 +148,11 @@ public class ConstraintValueEditorHelperTest {
 
         oracle.addModelFields(new HashMap<String, ModelField[]>() {{
             put("org.test.Event1",
-                new ModelField[]{new ModelField("this",
-                                                "org.test.Event1",
-                                                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                ModelField.FIELD_ORIGIN.SELF,
-                                                FieldAccessorsAndMutators.ACCESSOR,
-                                                "org.test.Event1")});
+                new ModelField[]{modelField("this",
+                                            "org.test.Event1")});
             put("org.test.Event2",
-                new ModelField[]{new ModelField("this",
-                                                "org.test.Event2",
-                                                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                ModelField.FIELD_ORIGIN.SELF,
-                                                FieldAccessorsAndMutators.ACCESSOR,
-                                                "org.test.Event2")});
+                new ModelField[]{modelField("this",
+                                            "org.test.Event2")});
         }});
 
         oracle.addEventTypes(new HashMap<String, Boolean>() {{
@@ -209,19 +201,11 @@ public class ConstraintValueEditorHelperTest {
 
         oracle.addModelFields(new HashMap<String, ModelField[]>() {{
             put("org.test.Event1",
-                new ModelField[]{new ModelField("this",
-                                                "org.test.Event1",
-                                                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                ModelField.FIELD_ORIGIN.SELF,
-                                                FieldAccessorsAndMutators.ACCESSOR,
-                                                "org.test.Event1")});
+                new ModelField[]{modelField("this",
+                                            "org.test.Event1")});
             put("org.test.Event2",
-                new ModelField[]{new ModelField("this",
-                                                "org.test.Event2",
-                                                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                ModelField.FIELD_ORIGIN.SELF,
-                                                FieldAccessorsAndMutators.ACCESSOR,
-                                                "org.test.Event2")});
+                new ModelField[]{modelField("this",
+                                            "org.test.Event2")});
         }});
 
         oracle.addEventTypes(new HashMap<String, Boolean>() {{
@@ -276,19 +260,11 @@ public class ConstraintValueEditorHelperTest {
 
         oracle.addModelFields(new HashMap<String, ModelField[]>() {{
             put("org.test.Event1",
-                new ModelField[]{new ModelField("this",
-                                                "org.test.Event1",
-                                                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                ModelField.FIELD_ORIGIN.SELF,
-                                                FieldAccessorsAndMutators.ACCESSOR,
-                                                "org.test.Event1")});
+                new ModelField[]{modelField("this",
+                                            "org.test.Event1")});
             put("org.test.Event2",
-                new ModelField[]{new ModelField("this",
-                                                "org.test.Event2",
-                                                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                ModelField.FIELD_ORIGIN.SELF,
-                                                FieldAccessorsAndMutators.ACCESSOR,
-                                                "org.test.Event2")});
+                new ModelField[]{modelField("this",
+                                            "org.test.Event2")});
         }});
 
         oracle.addEventTypes(new HashMap<String, Boolean>() {{

@@ -48,6 +48,7 @@ import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.HasCEPWindow;
 import org.drools.workbench.models.datamodel.rule.HasConstraints;
+import org.drools.workbench.models.datamodel.rule.HasParameterizedOperator;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
@@ -190,8 +191,8 @@ public class FactPatternWidget extends RuleModellerWidget {
      * NerOption.types contains "arzt" )
      * @param sortedConst a sorted list of constraints to display.
      */
-    private void drawConstraints(List<FieldConstraint> sortedConst,
-                                 HasConstraints hasConstraints) {
+    protected void drawConstraints(List<FieldConstraint> sortedConst,
+                                   HasConstraints hasConstraints) {
         final FlexTable table = new FlexTable();
         layout.setWidget(1,
                          0,
@@ -465,7 +466,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                             createValueEditor(constraint));
             inner.setWidget(row,
                             3 + col,
-                            connectives.connectives(constraint));
+                            getConnectives().connectives(constraint));
 
             if (ebContainer != null && ebContainer.getWidgetCount() > 0) {
                 if (ebContainer.getWidget(0) instanceof ExpressionBuilder) {
@@ -733,31 +734,31 @@ public class FactPatternWidget extends RuleModellerWidget {
                                         final Callback<CEPOperatorsDropdown> callback,
                                         String fieldName,
                                         String factType) {
-        connectives.getDataModelOracle().getOperatorCompletions(factType,
-                                                                fieldName,
-                                                                new Callback<String[]>() {
-                                                                    @Override
-                                                                    public void callback(final String[] operators) {
-                                                                        CEPOperatorsDropdown dropdown = new CEPOperatorsDropdown(operators,
-                                                                                                                                 constraint);
+        getConnectives().getDataModelOracle().getOperatorCompletions(factType,
+                                                                     fieldName,
+                                                                     new Callback<String[]>() {
+                                                                         @Override
+                                                                         public void callback(final String[] operators) {
+                                                                             CEPOperatorsDropdown dropdown = getNewOperatorDropdown(operators,
+                                                                                                                                    constraint);
 
-                                                                        dropdown.addPlaceholder(GuidedRuleEditorResources.CONSTANTS.pleaseChoose(),
-                                                                                                "");
+                                                                             dropdown.addPlaceholder(GuidedRuleEditorResources.CONSTANTS.pleaseChoose(),
+                                                                                                     "");
 
-                                                                        callback.callback(dropdown);
+                                                                             callback.callback(dropdown);
 
-                                                                        dropdown.addValueChangeHandler(new ValueChangeHandler<OperatorSelection>() {
+                                                                             dropdown.addValueChangeHandler(new ValueChangeHandler<OperatorSelection>() {
 
-                                                                            public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
-                                                                                onDropDownValueChanged(event,
-                                                                                                       constraint,
-                                                                                                       inner,
-                                                                                                       row,
-                                                                                                       col);
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                });
+                                                                                 public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
+                                                                                     onDropDownValueChanged(event,
+                                                                                                            constraint,
+                                                                                                            inner,
+                                                                                                            row,
+                                                                                                            col);
+                                                                                 }
+                                                                             });
+                                                                         }
+                                                                     });
     }
 
     private void onDropDownValueChanged(ValueChangeEvent<OperatorSelection> event,
@@ -867,27 +868,27 @@ public class FactPatternWidget extends RuleModellerWidget {
                     //If field name is "this" use parent FactPattern type otherwise we can use the Constraint's field type
                     String fieldName = con.getFieldName();
                     if (DataType.TYPE_THIS.equals(fieldName)) {
-                        connectives.getDataModelOracle().getFieldCompletions(pattern.getFactType(),
-                                                                             new Callback<ModelField[]>() {
-                                                                                 @Override
-                                                                                 public void callback(final ModelField[] fields) {
-                                                                                     popupCreator.showBindFieldPopup(pattern,
-                                                                                                                     con,
-                                                                                                                     fields,
-                                                                                                                     popupCreator);
-                                                                                 }
-                                                                             });
+                        getConnectives().getDataModelOracle().getFieldCompletions(pattern.getFactType(),
+                                                                                  new Callback<ModelField[]>() {
+                                                                                      @Override
+                                                                                      public void callback(final ModelField[] fields) {
+                                                                                          popupCreator.showBindFieldPopup(pattern,
+                                                                                                                          con,
+                                                                                                                          fields,
+                                                                                                                          popupCreator);
+                                                                                      }
+                                                                                  });
                     } else {
-                        connectives.getDataModelOracle().getFieldCompletions(con.getFieldType(),
-                                                                             new Callback<ModelField[]>() {
-                                                                                 @Override
-                                                                                 public void callback(final ModelField[] fields) {
-                                                                                     popupCreator.showBindFieldPopup(pattern,
-                                                                                                                     con,
-                                                                                                                     fields,
-                                                                                                                     popupCreator);
-                                                                                 }
-                                                                             });
+                        getConnectives().getDataModelOracle().getFieldCompletions(con.getFieldType(),
+                                                                                  new Callback<ModelField[]>() {
+                                                                                      @Override
+                                                                                      public void callback(final ModelField[] fields) {
+                                                                                          popupCreator.showBindFieldPopup(pattern,
+                                                                                                                          con,
+                                                                                                                          fields,
+                                                                                                                          popupCreator);
+                                                                                      }
+                                                                                  });
                     }
                 }
             };
@@ -935,5 +936,15 @@ public class FactPatternWidget extends RuleModellerWidget {
             }
         }
         return DRLConstraintValueBuilder.DEFAULT_DIALECT;
+    }
+
+    Connectives getConnectives() {
+        return connectives;
+    }
+
+    CEPOperatorsDropdown getNewOperatorDropdown(String[] operators,
+                                                SingleFieldConstraint constraint) {
+        return new CEPOperatorsDropdown(operators,
+                                        constraint);
     }
 }

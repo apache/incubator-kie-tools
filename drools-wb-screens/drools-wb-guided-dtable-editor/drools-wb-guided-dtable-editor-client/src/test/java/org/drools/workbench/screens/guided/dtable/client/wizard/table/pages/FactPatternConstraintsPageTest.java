@@ -25,7 +25,6 @@ import javax.enterprise.event.Event;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.appformer.project.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
@@ -51,6 +50,7 @@ import org.uberfire.mocks.EventSourceMock;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
+import static org.drools.workbench.screens.guided.rule.client.util.ModelFieldUtil.modelField;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class FactPatternConstraintsPageTest {
@@ -115,30 +115,14 @@ public class FactPatternConstraintsPageTest {
                                                            secondPattern));
 
         modelFields = new ModelField[]{
-                new ModelField("this",
-                               "org.Address",
-                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                               ModelField.FIELD_ORIGIN.SELF,
-                               FieldAccessorsAndMutators.ACCESSOR,
-                               DataType.TYPE_THIS),
-                new ModelField("street",
-                               String.class.getName(),
-                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                               ModelField.FIELD_ORIGIN.DECLARED,
-                               FieldAccessorsAndMutators.BOTH,
-                               DataType.TYPE_STRING),
-                new ModelField("homeAddress",
-                               Boolean.class.getName(),
-                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                               ModelField.FIELD_ORIGIN.DECLARED,
-                               FieldAccessorsAndMutators.BOTH,
-                               DataType.TYPE_BOOLEAN),
-                new ModelField("number",
-                               Integer.class.getName(),
-                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                               ModelField.FIELD_ORIGIN.DECLARED,
-                               FieldAccessorsAndMutators.BOTH,
-                               DataType.TYPE_NUMERIC_INTEGER)};
+                modelField("this",
+                           DataType.TYPE_THIS),
+                modelField("street",
+                           DataType.TYPE_STRING),
+                modelField("homeAddress",
+                           DataType.TYPE_BOOLEAN),
+                modelField("number",
+                           DataType.TYPE_NUMERIC_INTEGER)};
 
         Map<String, ModelField[]> fields = new HashMap<>();
         fields.put("org.Address",

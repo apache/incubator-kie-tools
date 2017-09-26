@@ -33,6 +33,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ConditionColumnPlugin;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.PatternWrapper;
+import org.drools.workbench.services.verifier.api.client.index.DataType;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -50,6 +51,7 @@ import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.drools.workbench.screens.guided.rule.client.util.ModelFieldUtil.modelField;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class FieldPageTest {
@@ -221,9 +223,12 @@ public class FieldPageTest {
         final List<String> result = new ArrayList<>();
 
         final ModelField[] modelFields = new ModelField[]{
-                modelField("modelField1"),
-                modelField("modelField2"),
-                modelField("modelField3")
+                modelField("modelField1",
+                           DataType.TYPE_OBJECT),
+                modelField("modelField2",
+                           DataType.TYPE_OBJECT),
+                modelField("modelField3",
+                           DataType.TYPE_OBJECT)
         };
 
         final Callback<ModelField[]> fieldsCallback = page.fieldsCallback(result::add);
@@ -253,9 +258,12 @@ public class FieldPageTest {
         final List<String> result = new ArrayList<>();
 
         final ModelField[] modelFields = new ModelField[]{
-                modelField("modelField1"),
-                modelField("modelField2"),
-                modelField("modelField3")
+                modelField("modelField1",
+                           DataType.TYPE_OBJECT),
+                modelField("modelField2",
+                           DataType.TYPE_OBJECT),
+                modelField("modelField3",
+                           DataType.TYPE_OBJECT)
         };
 
         final Callback<ModelField[]> fieldsCallback = page.fieldsCallback(result::add);
@@ -285,9 +293,12 @@ public class FieldPageTest {
         final List<String> result = new ArrayList<>();
 
         final ModelField[] modelFields = new ModelField[]{
-                modelField("modelField1"),
-                modelField("modelField2"),
-                modelField("modelField3")
+                modelField("modelField1",
+                           DataType.TYPE_OBJECT),
+                modelField("modelField2",
+                           DataType.TYPE_OBJECT),
+                modelField("modelField3",
+                           DataType.TYPE_OBJECT)
         };
 
         final Callback<ModelField[]> fieldsCallback = page.fieldsCallback(result::add);
@@ -380,14 +391,5 @@ public class FieldPageTest {
                              factField);
         verify(view).setupFieldList();
         verify(view).selectField(factField);
-    }
-
-    private ModelField modelField(final String name) {
-        return new ModelField(name,
-                              null,
-                              null,
-                              null,
-                              null,
-                              null);
     }
 }
