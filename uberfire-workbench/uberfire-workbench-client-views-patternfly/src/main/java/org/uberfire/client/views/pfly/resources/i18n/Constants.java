@@ -103,4 +103,10 @@ public interface Constants {
 
     @TranslationKey(defaultValue = "")
     String Home = "Home";
+
+    @TranslationKey(defaultValue = "")
+    String ErrorPopupView_ShowDetailLabel = "ErrorPopupView.ShowDetailLabel";
+
+    @TranslationKey(defaultValue = "")
+    String ErrorPopupView_CloseDetailLabel = "ErrorPopupView.CloseDetailLabel";
 }

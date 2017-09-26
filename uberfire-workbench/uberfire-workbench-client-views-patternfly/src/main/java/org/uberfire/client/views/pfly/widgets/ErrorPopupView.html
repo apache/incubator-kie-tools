@@ -1,0 +1,31 @@
+<div class="modal fade" data-field="modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-field="close-button" data-dismiss="modal" aria-hidden="true">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" data-i18n-key="PopupTitle">Error</h4>
+            </div>
+            <div class="modal-body">
+                <div data-field="message-container">
+                    <div data-field="inline-notification"></div>
+                    <span style="word-wrap:break-word; padding-bottom: 10px; display:block;" data-field="standard-notification"></span>
+                </div>
+
+                <div data-field="detail-container" style="display: none;">
+                    <p>
+                        <span data-field="detail-anchor-icon" class="fa fa-angle-right">&nbsp;</span>
+                        <a data-field="detail-anchor" data-toggle="collapse" class="collapsed" href="#detail-area-container" aria-expanded="false" aria-controls="detail-area">Show Details</a>
+                    </p>
+                    <div class="collapse" id="detail-area-container" aria-expanded="false">
+                        <textarea data-field="detail-area" style="width:100%; height: 200px;" readonly="readonly"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-field="ok-button" data-i18n-key="Close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -21,49 +21,126 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.MouseEvent;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.ForEvent;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.client.mvp.UberElement;
 
 @Dependent
-@Templated
 public class ErrorPopup {
 
-    @Inject
-    @DataField("alert")
-    private InlineNotification notification;
+    public interface View
+            extends UberElement<ErrorPopup> {
+
+        HTMLElement getInlineNotification();
+
+        HTMLElement getStandardNotification();
+
+        void setInlineNotificationValue(final String message);
+
+        void setStandardNotificationValue(final String message);
+
+        void setNotification(final HTMLElement notification);
+
+        void showDetailPanel(final boolean show);
+
+        void setDetailValue(final String message);
+
+        boolean isDetailCollapsed();
+
+        void setCollapseDetailIcon(final boolean collapsed);
+
+        void setCollapseDetailPanel(final boolean collapsed);
+
+        void setDetailLabel(final String label);
+
+        String getShowDetailLabel();
+
+        String getCloseDetailLabel();
+
+        void show();
+
+        void hide();
+    }
+
+    public enum DisplayMode {
+        STANDARD,
+        PATTERN_FLY
+    }
+
+    private final View view;
 
     @Inject
-    @DataField("modal")
-    private Modal modal;
+    public ErrorPopup(final View view) {
+        this.view = view;
+    }
 
     @PostConstruct
     public void init() {
-        notification.setType(InlineNotification.InlineNotificationType.DANGER);
+        view.init(this);
     }
 
     public void showError(final String message) {
-        notification.setMessage(message);
-        modal.show();
+        showError(message,
+                  DisplayMode.PATTERN_FLY);
     }
 
-    public void hide() {
-        modal.hide();
+    public void showError(final String message,
+                          final DisplayMode displayMode) {
+        setMessage(message,
+                   displayMode);
+        view.setDetailValue("");
+        showDetailPanel(false);
+        view.show();
     }
 
-    public HTMLElement getElement() {
-        return modal.getElement();
+    public void showError(final String message,
+                          final String detail) {
+        showError(message,
+                  detail,
+                  DisplayMode.PATTERN_FLY);
     }
 
-    @EventHandler("confirm-ok")
-    public void onOkClick(final @ForEvent("click") MouseEvent event) {
-        hide();
+    public void showError(final String message,
+                          final String detail,
+                          final DisplayMode displayMode) {
+        setMessage(message,
+                   displayMode);
+        view.setDetailValue(detail);
+        showDetailPanel(true);
+        view.show();
     }
 
-    @EventHandler("confirm-close")
-    public void onCloseClick(final @ForEvent("click") MouseEvent event) {
-        hide();
+    private void setMessage(final String message,
+                            final DisplayMode displayMode) {
+        if (displayMode == DisplayMode.STANDARD) {
+            view.setNotification(view.getStandardNotification());
+            view.setStandardNotificationValue(message);
+        } else {
+            view.setNotification(view.getInlineNotification());
+            view.setInlineNotificationValue(message);
+        }
+    }
+
+    private void showDetailPanel(boolean show) {
+        view.setCollapseDetailIcon(true);
+        view.setCollapseDetailPanel(true);
+        view.setDetailLabel(view.getShowDetailLabel());
+        view.showDetailPanel(show);
+    }
+
+    protected void onOk() {
+        view.hide();
+    }
+
+    protected void onClose() {
+        view.hide();
+    }
+
+    protected void onDetail() {
+        boolean detailCollapsed = view.isDetailCollapsed();
+        view.setCollapseDetailIcon(!detailCollapsed);
+        if (detailCollapsed) {
+            view.setDetailLabel(view.getCloseDetailLabel());
+        } else {
+            view.setDetailLabel(view.getShowDetailLabel());
+        }
     }
 }
