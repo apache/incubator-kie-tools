@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
+import java.util.stream.IntStream;
 
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -90,7 +92,8 @@ public class BaseGridData implements GridData {
         if (column.getColumnRenderer() instanceof HasDOMElementResources) {
             ((HasDOMElementResources) column.getColumnRenderer()).destroyResources();
         }
-        columns.remove(column);
+
+        removeColumn(column);
 
         //Destroy column data
         for (GridRow row : rows) {
@@ -106,6 +109,18 @@ public class BaseGridData implements GridData {
         }
 
         selectionsManager.onDeleteColumn(index);
+    }
+
+    void removeColumn(final GridColumn<?> column) {
+
+        final IntStream indexes = IntStream.range(0, columns.size());
+        final OptionalInt columnIndex = indexes.filter(i -> column == columns.get(i)).findFirst();
+
+        if (columnIndex.isPresent()) {
+            columns.remove(columnIndex.getAsInt());
+        } else {
+            columns.remove(column);
+        }
     }
 
     @Override
