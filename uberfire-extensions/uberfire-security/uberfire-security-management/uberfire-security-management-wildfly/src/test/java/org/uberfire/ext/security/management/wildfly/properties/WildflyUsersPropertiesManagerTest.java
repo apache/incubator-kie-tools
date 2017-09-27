@@ -142,15 +142,16 @@ public class WildflyUsersPropertiesManagerTest extends BaseTest {
         int total = response.getTotal();
         boolean hasNextPage = response.hasNextPage();
         assertEquals(total,
-                     4);
+                     5);
         assertTrue(!hasNextPage);
         assertEquals(users.size(),
-                     4);
+                     5);
         Set<User> expectedUsers = new HashSet<User>(4);
         expectedUsers.add(create(ADMIN));
         expectedUsers.add(create("user1"));
         expectedUsers.add(create("user2"));
         expectedUsers.add(create("user3"));
+        expectedUsers.add(create("user4"));
         assertThat(new HashSet<User>(users),
                    is(expectedUsers));
     }
@@ -199,6 +200,18 @@ public class WildflyUsersPropertiesManagerTest extends BaseTest {
         try {
             verify(groupPropertiesManager,
                    times(1)).removeEntry("user1");
+        } catch (IOException e) {
+            fail();
+        }
+    }
+
+    @Test(expected = UserNotFoundException.class)
+    public void testDeleteUserWithEmptyPassword() {
+        usersPropertiesManager.delete("user4");
+        usersPropertiesManager.get("user4");
+        try {
+            verify(groupPropertiesManager,
+                   times(1)).removeEntry("user4");
         } catch (IOException e) {
             fail();
         }

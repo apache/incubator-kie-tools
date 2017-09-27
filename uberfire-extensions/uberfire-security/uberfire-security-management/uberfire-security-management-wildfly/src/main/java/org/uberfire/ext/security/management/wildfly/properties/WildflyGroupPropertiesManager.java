@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.security.management.wildfly.properties;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -30,6 +31,7 @@ import org.jboss.as.domain.management.security.PropertiesFileLoader;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.GroupImpl;
 import org.jboss.errai.security.shared.api.Role;
+import org.jboss.msc.service.StartException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.config.ConfigProperties;
@@ -60,7 +62,7 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
 
     protected final IdentifierRuntimeSearchEngine<Group> groupsSearchEngine = new GroupsIdentifierRuntimeSearchEngine();
     protected String groupsFilePath;
-    protected PropertiesFileLoader groupsPropertiesFileLoader;
+    protected WildflyGroupsPropertiesFileLoader groupsPropertiesFileLoader;
 
     public WildflyGroupPropertiesManager() {
         this(new ConfigProperties(System.getProperties()));
@@ -106,7 +108,7 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
 
     @Override
     public void destroy() throws Exception {
-        this.groupsPropertiesFileLoader.stop(null);
+        this.groupsPropertiesFileLoader.stop();
     }
 
     @Override
@@ -381,17 +383,16 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
         return false;
     }
 
-    protected PropertiesFileLoader getFileLoader(String filePath) {
+    protected WildflyGroupsPropertiesFileLoader getFileLoader(String filePath) {
         File propertiesFile = new File(filePath);
         if (!propertiesFile.exists()) {
             throw new RuntimeException("Cannot load roles/groups properties file from '" + filePath + "'.");
         }
 
-        PropertiesFileLoader propertiesLoad = null;
+        WildflyGroupsPropertiesFileLoader propertiesLoad = null;
         try {
-            propertiesLoad = new PropertiesFileLoader(propertiesFile.getCanonicalPath(),
-                                                      null);
-            propertiesLoad.start(null);
+            propertiesLoad = new WildflyGroupsPropertiesFileLoader(propertiesFile.getCanonicalPath());
+            propertiesLoad.start();
         } catch (Exception e) {
             LOG.error("Error getting properties file.",
                       e);
@@ -399,5 +400,54 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
         }
 
         return propertiesLoad;
+    }
+
+    /**
+     * An extension of the default Wildfly's groups properties file loader,
+     * but this one supports deleting groups.
+     */
+    public static class WildflyGroupsPropertiesFileLoader extends PropertiesFileLoader {
+
+        private final PropertiesLineWriterPredicate lineWriterPredicate;
+
+        public WildflyGroupsPropertiesFileLoader(final String path) {
+            this(path, null);
+        }
+
+        public WildflyGroupsPropertiesFileLoader(final String path,
+                                                 final String relativeTo) {
+            super(path, relativeTo);
+            this.lineWriterPredicate = new PropertiesLineWriterPredicate(WildflyGroupsPropertiesFileLoader.this::cleanKey,
+                                                                         false);
+        }
+
+        public void start() throws StartException {
+            super.start(null);
+        }
+
+        public void stop() {
+            super.stop(null);
+        }
+
+        @Override
+        protected void beginPersistence() throws IOException {
+            lineWriterPredicate.begin(getProperties());
+            super.beginPersistence();
+        }
+
+        @Override
+        protected void endPersistence(final BufferedWriter writer) throws IOException {
+            super.endPersistence(writer);
+            lineWriterPredicate.end();
+        }
+
+        @Override
+        protected void write(final BufferedWriter writer,
+                             final String line,
+                             final boolean newLine) throws IOException {
+            if (lineWriterPredicate.test(line)) {
+                super.write(writer, line, newLine);
+            }
+        }
     }
 }
