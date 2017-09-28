@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.jboss.as.domain.management.security.PropertiesFileLoader;
 import org.jboss.as.domain.management.security.UserPropertiesFileLoader;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
@@ -42,6 +43,7 @@ import org.uberfire.ext.security.management.api.ContextualManager;
 import org.uberfire.ext.security.management.api.UserManager;
 import org.uberfire.ext.security.management.api.UserManagerSettings;
 import org.uberfire.ext.security.management.api.UserSystemManager;
+import org.uberfire.ext.security.management.api.exception.InvalidEntityIdentifierException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 import org.uberfire.ext.security.management.impl.UserManagerSettingsImpl;
@@ -60,6 +62,7 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
 
     public static final String DEFAULT_USERS_FILE = "./standalone/configuration/application-users.properties";
     public static final String DEFAULT_PASSWORD = "";
+    public static final String VALID_USERNAME_SYMBOLS = "\",\", \"-\", \".\", \"/\", \"=\", \"@\", \"\\\"";
     private static final Logger LOG = LoggerFactory.getLogger(WildflyUserPropertiesManager.class);
 
     protected final IdentifierRuntimeSearchEngine<User> usersSearchEngine = new UsersIdentifierRuntimeSearchEngine();
@@ -111,6 +114,7 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
 
     @Override
     public User get(String identifier) throws SecurityManagementException {
+        validateUserIdentifier(identifier);
         List<String> userNames = getUserNames();
         if (userNames != null && userNames.contains(identifier)) {
             Set<Group> userGroups = null;
@@ -140,8 +144,9 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
         final String username = entity.getIdentifier();
         try {
             if (null == username || 0 == username.trim().length()) {
-                throw new IllegalArgumentException("No username specified for updating password.");
+                throw new IllegalArgumentException("No username specified.");
             }
+            validateUserIdentifier(username);
             usersFileLoader.getProperties().put(username,
                                                 DEFAULT_PASSWORD);
             usersFileLoader.persistProperties();
@@ -329,7 +334,6 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
      * An extension of the default Wildfly's users properties file loader,
      * but this one supports deleting users and using empty passwords.
      */
-
     public static final class WildflyUsersPropertiesFileLoader
             extends UserPropertiesFileLoader {
 
@@ -373,6 +377,25 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
             if (lineWriterPredicate.test(line)) {
                 super.write(writer, line, newLine);
             }
+        }
+    }
+
+    /**
+     * Validates the candidate user identifier by following same Wildfly's patterns for usernames in properties realms,
+     * and by following the behavior for the <code>add-user.sh</code> script as well,
+     * here is the actual username validation constraints:
+     * <code>
+     * WFLYDM0028: Username must be alphanumeric with the exception of
+     * the following accepted symbols (",", "-", ".", "/", "=", "@", "\")
+     * </code>
+     * @param identifier The identifier to validate.
+     */
+    private void validateUserIdentifier(String identifier) {
+        if (!PropertiesFileLoader.PROPERTY_PATTERN
+                .matcher(identifier + "=0")
+                .matches()) {
+            throw new InvalidEntityIdentifierException(identifier,
+                                                       VALID_USERNAME_SYMBOLS);
         }
     }
 }

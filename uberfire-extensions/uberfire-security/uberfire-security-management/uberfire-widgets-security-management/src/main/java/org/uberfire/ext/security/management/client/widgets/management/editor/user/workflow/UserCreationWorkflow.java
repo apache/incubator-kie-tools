@@ -26,6 +26,7 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.uberfire.ext.security.management.api.exception.InvalidEntityIdentifierException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.exception.UserAlreadyExistsException;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
@@ -267,12 +268,22 @@ public class UserCreationWorkflow extends BaseUserEditorWorkflow {
                                         if (throwable instanceof UserNotFoundException) {
                                             // User not found, so identifier is valid.
                                             callback.valid();
+                                        } else  if (throwable instanceof InvalidEntityIdentifierException) {
+                                            callback.invalid(new SecurityManagementException(getUserNameNotValidMessage((InvalidEntityIdentifierException) throwable),
+                                                                                             throwable));
                                         } else {
                                             callback.error(throwable);
                                         }
                                         return false;
                                     }
                                 }).get(identifier);
+    }
+
+    private String getUserNameNotValidMessage(final InvalidEntityIdentifierException e) {
+        return UsersManagementWidgetsConstants.INSTANCE.invalidUserName() +
+                " [" + e.getIdentifier() + "]. " +
+                UsersManagementWidgetsConstants.INSTANCE.patternAlphanumericSymbols() +
+                " [" + e.getSymbolsAccepted() + "]";
     }
 
     @Override

@@ -124,11 +124,17 @@ public interface UsersManagementWidgetsConstants extends Messages {
 
     String doesNotHavePrivileges();
 
+    String patternAlphanumericSymbols();
+
     String username();
+
+    String invalidUserName();
 
     String inputUserName();
 
     String groupName();
+
+    String invalidGroupName();
 
     String inputGroupName();
 

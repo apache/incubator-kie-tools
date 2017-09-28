@@ -31,6 +31,7 @@ import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.Group;
 import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
+import org.uberfire.ext.security.management.api.exception.InvalidEntityIdentifierException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementClientConstants;
@@ -198,10 +199,17 @@ public class GroupCreationWorkflow implements IsWidget {
                                              public boolean error(final Message o,
                                                                   final Throwable throwable) {
                                                  loadingBox.hide();
+                                                 Throwable error = throwable;
                                                  if (throwable instanceof GroupNotFoundException) {
                                                      // Group not found, so name is valid.
                                                      createGroup(identifier);
-                                                 } else {
+                                                     error = null;
+                                                 } else  if (throwable instanceof InvalidEntityIdentifierException) {
+                                                     error = new SecurityManagementException(getGroupIdentifierNotValidMessage((InvalidEntityIdentifierException) throwable),
+                                                                                             throwable);
+                                                 }
+                                                 // On error,
+                                                 if (null != error) {
                                                      showError(throwable);
                                                      create();
                                                  }
@@ -210,6 +218,13 @@ public class GroupCreationWorkflow implements IsWidget {
                                          }).get(identifier);
             }
         }
+    }
+
+    private String getGroupIdentifierNotValidMessage(final InvalidEntityIdentifierException e) {
+        return UsersManagementWidgetsConstants.INSTANCE.invalidGroupName() +
+                " [" + e.getIdentifier() + "]. " +
+                UsersManagementWidgetsConstants.INSTANCE.patternAlphanumericSymbols() +
+                " [" + e.getSymbolsAccepted() + "]";
     }
 
     protected void createGroup(final String name) {

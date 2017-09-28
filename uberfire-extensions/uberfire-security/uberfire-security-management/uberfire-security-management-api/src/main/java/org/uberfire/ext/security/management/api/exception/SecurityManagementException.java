@@ -35,4 +35,8 @@ public class SecurityManagementException extends RuntimeException {
     public SecurityManagementException(Throwable cause) {
         super(cause);
     }
+
+    public SecurityManagementException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

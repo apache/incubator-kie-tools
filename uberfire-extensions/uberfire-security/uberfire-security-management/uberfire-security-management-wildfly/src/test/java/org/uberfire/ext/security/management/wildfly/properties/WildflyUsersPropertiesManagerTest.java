@@ -48,12 +48,24 @@ import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.api.CapabilityStatus;
 import org.uberfire.ext.security.management.api.UserManager;
+import org.uberfire.ext.security.management.api.exception.InvalidEntityIdentifierException;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * This tests create temporary working copy of the "application-users.properties" file as the tests are run using the real wildfly admin api for realm management.
@@ -215,6 +227,30 @@ public class WildflyUsersPropertiesManagerTest extends BaseTest {
         } catch (IOException e) {
             fail();
         }
+    }
+
+    @Test(expected = InvalidEntityIdentifierException.class)
+    public void testValidUserNameWhiteSpace_get() {
+        usersPropertiesManager.get("name surname");
+    }
+
+    @Test(expected = InvalidEntityIdentifierException.class)
+    public void testValidUserNameSymbol_get() {
+        usersPropertiesManager.get("name$surname");
+    }
+
+    @Test(expected = InvalidEntityIdentifierException.class)
+    public void testValidUserNameWhiteSpace_create() {
+        User user = mock(User.class);
+        when(user.getIdentifier()).thenReturn("name surname");
+        usersPropertiesManager.create(user);
+    }
+
+    @Test(expected = InvalidEntityIdentifierException.class)
+    public void testValidUserNameSymbol_create() {
+        User user = mock(User.class);
+        when(user.getIdentifier()).thenReturn("name$surname");
+        usersPropertiesManager.create(user);
     }
 
     @Test
