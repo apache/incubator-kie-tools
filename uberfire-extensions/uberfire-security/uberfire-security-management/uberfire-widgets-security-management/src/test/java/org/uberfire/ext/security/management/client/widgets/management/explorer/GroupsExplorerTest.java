@@ -214,25 +214,55 @@ public class GroupsExplorerTest extends AbstractSecurityManagementTest {
     @Test
     public void testOnDeleteGroup() throws Exception {
         final DeleteGroupEvent deleteGroupEvent = mock(DeleteGroupEvent.class);
+        presenter.context = mock(ExplorerViewContext.class);
         presenter.onGroupDeleted(deleteGroupEvent);
         verify(groupsManagerService,
                times(1)).search(any(AbstractEntityManager.SearchRequest.class));
     }
 
     @Test
+    public void testOnDeleteGroupButNoContext() throws Exception {
+        final DeleteGroupEvent deleteGroupEvent = mock(DeleteGroupEvent.class);
+        presenter.context = null;
+        presenter.onGroupDeleted(deleteGroupEvent);
+        verify(groupsManagerService,
+               never()).search(any(AbstractEntityManager.SearchRequest.class));
+    }
+
+    @Test
     public void testOnCreateGroup() throws Exception {
         final CreateGroupEvent createGroupEvent = mock(CreateGroupEvent.class);
+        presenter.context = mock(ExplorerViewContext.class);
         presenter.onGroupCreated(createGroupEvent);
         verify(groupsManagerService,
                times(1)).search(any(AbstractEntityManager.SearchRequest.class));
     }
 
     @Test
+    public void testOnCreateGroupButNoContext() throws Exception {
+        final CreateGroupEvent createGroupEvent = mock(CreateGroupEvent.class);
+        presenter.context = null;
+        presenter.onGroupCreated(createGroupEvent);
+        verify(groupsManagerService,
+               never()).search(any(AbstractEntityManager.SearchRequest.class));
+    }
+
+    @Test
     public void testOnAddUsersToGroupEvent() throws Exception {
         final AddUsersToGroupEvent addUsersToGroupEvent = mock(AddUsersToGroupEvent.class);
+        presenter.context = mock(ExplorerViewContext.class);
         presenter.onAddUsersToGroup(addUsersToGroupEvent);
         verify(groupsManagerService,
                times(1)).search(any(AbstractEntityManager.SearchRequest.class));
+    }
+
+    @Test
+    public void testOnAddUsersToGroupEventButNoContext() throws Exception {
+        final AddUsersToGroupEvent addUsersToGroupEvent = mock(AddUsersToGroupEvent.class);
+        presenter.context = null;
+        presenter.onAddUsersToGroup(addUsersToGroupEvent);
+        verify(groupsManagerService,
+               never()).search(any(AbstractEntityManager.SearchRequest.class));
     }
 
     private ExplorerViewContext createContext(final boolean canCreate,

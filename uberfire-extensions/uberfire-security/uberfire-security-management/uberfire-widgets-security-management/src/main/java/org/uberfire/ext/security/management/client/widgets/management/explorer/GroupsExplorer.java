@@ -150,14 +150,15 @@ public class GroupsExplorer extends AbstractEntityExplorer<Group> {
     }
 
     void onGroupDeleted(@Observes final DeleteGroupEvent deleteGroupEvent) {
-        showSearch();
+        attemptToShowSearch();
     }
 
     void onAddUsersToGroup(@Observes final AddUsersToGroupEvent addUsersToGroupEvent) {
-        showSearch();
+        attemptToShowSearch();
     }
 
     void onGroupCreated(@Observes final CreateGroupEvent createGroupEvent) {
-        showSearch();
+        attemptToShowSearch();
     }
+
 }

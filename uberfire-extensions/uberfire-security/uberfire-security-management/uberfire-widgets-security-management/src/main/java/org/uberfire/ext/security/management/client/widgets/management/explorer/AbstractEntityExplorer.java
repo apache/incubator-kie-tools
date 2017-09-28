@@ -283,6 +283,23 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
         loadingBox.hide();
     }
 
+    protected boolean hasContext() {
+        return null != context;
+    }
+
+    /**
+     * The bean can be still present in the context, even listening CDI events,
+     * but can be not currently active, so this method just ensures to perform show
+     * in case it's active (it has context).
+     * This is due the explorer components can be/is being used by other components in different
+     * ways, main screen, inside modals, etc.
+     */
+    protected void attemptToShowSearch() {
+        if (hasContext()) {
+            showSearch();
+        }
+    }
+
     protected void showError(final Throwable throwable) {
         hideLoadingView();
         errorEvent.fire(new OnErrorEvent(AbstractEntityExplorer.this,

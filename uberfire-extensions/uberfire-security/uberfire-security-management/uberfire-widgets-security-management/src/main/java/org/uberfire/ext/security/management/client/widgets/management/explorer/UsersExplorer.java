@@ -140,14 +140,15 @@ public class UsersExplorer extends AbstractEntityExplorer<User> {
     }
 
     void onUserDeleted(@Observes final DeleteUserEvent deleteUserEvent) {
-        showSearch();
+        attemptToShowSearch();
     }
 
     void onUserCreated(@Observes final CreateUserEvent createUserEvent) {
-        showSearch();
+        attemptToShowSearch();
     }
 
     void onUserSaved(@Observes final SaveUserEvent saveUserEvent) {
-        showSearch();
+        attemptToShowSearch();
     }
+
 }

@@ -191,25 +191,55 @@ public class UsersExplorerTest extends AbstractSecurityManagementTest {
     @Test
     public void testOnUserDeleted() throws Exception {
         final DeleteUserEvent deleteUserEvent = mock(DeleteUserEvent.class);
+        presenter.context = mock(ExplorerViewContext.class);
         presenter.onUserDeleted(deleteUserEvent);
         verify(userManagerService,
                times(1)).search(any(AbstractEntityManager.SearchRequest.class));
     }
 
     @Test
+    public void testOnUserDeletedButNoContext() throws Exception {
+        final DeleteUserEvent deleteUserEvent = mock(DeleteUserEvent.class);
+        presenter.context = null;
+        presenter.onUserDeleted(deleteUserEvent);
+        verify(userManagerService,
+               never()).search(any(AbstractEntityManager.SearchRequest.class));
+    }
+
+    @Test
     public void testOnCreateUser() throws Exception {
         final CreateUserEvent createUserEvent = mock(CreateUserEvent.class);
+        presenter.context = mock(ExplorerViewContext.class);
         presenter.onUserCreated(createUserEvent);
         verify(userManagerService,
                times(1)).search(any(AbstractEntityManager.SearchRequest.class));
     }
 
     @Test
+    public void testOnCreateUserButNoContext() throws Exception {
+        final CreateUserEvent createUserEvent = mock(CreateUserEvent.class);
+        presenter.context = null;
+        presenter.onUserCreated(createUserEvent);
+        verify(userManagerService,
+               never()).search(any(AbstractEntityManager.SearchRequest.class));
+    }
+
+    @Test
     public void testOnSaveUser() throws Exception {
         final SaveUserEvent saveUserEvent = mock(SaveUserEvent.class);
+        presenter.context = mock(ExplorerViewContext.class);
         presenter.onUserSaved(saveUserEvent);
         verify(userManagerService,
                times(1)).search(any(AbstractEntityManager.SearchRequest.class));
+    }
+
+    @Test
+    public void testOnSaveUserButNoContext() throws Exception {
+        final SaveUserEvent saveUserEvent = mock(SaveUserEvent.class);
+        presenter.context = null;
+        presenter.onUserSaved(saveUserEvent);
+        verify(userManagerService,
+               never()).search(any(AbstractEntityManager.SearchRequest.class));
     }
 
     private ExplorerViewContext createContext(final boolean canCreate,
