@@ -44,10 +44,11 @@ public class FormValidatorImpl implements FormValidator {
 
         clearAllFieldErrors();
 
+        boolean isModelValid = modelValidator.validate(formFieldProvider.getAll(),
+                                                       model);
         boolean isFieldStateValid = fieldStateValidator.validate(formFieldProvider.getAll());
 
-        return modelValidator.validate(formFieldProvider.getAll(),
-                                       model) && isFieldStateValid;
+        return isFieldStateValid && isModelValid;
     }
 
     @Override
@@ -82,11 +83,11 @@ public class FormValidatorImpl implements FormValidator {
         }
     }
 
-    public void setModelValidator(ModelValidator modelValidator) {
-        this.modelValidator = modelValidator;
-    }
-
     public ModelValidator getModelValidator() {
         return this.modelValidator;
+    }
+
+    public void setModelValidator(ModelValidator modelValidator) {
+        this.modelValidator = modelValidator;
     }
 }

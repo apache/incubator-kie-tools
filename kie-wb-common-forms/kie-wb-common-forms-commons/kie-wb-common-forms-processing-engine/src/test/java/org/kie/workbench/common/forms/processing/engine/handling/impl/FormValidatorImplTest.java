@@ -32,6 +32,7 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyCollection;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -60,6 +61,36 @@ public class FormValidatorImplTest extends AbstractFormEngineTest {
 
         when(fieldStateValidator.validate(any(FormField.class))).thenReturn(true);
         when(fieldStateValidator.validate(anyCollection())).thenReturn(true);
+    }
+
+    @Test
+    public void testModelFieldStateValidationOnSuccess() {
+        testModelAndFieldStateValidatorsCalled(true, true);
+    }
+
+    @Test
+    public void testModelFieldStateValidationOnModelFailure() {
+        testModelAndFieldStateValidatorsCalled(false, true);
+    }
+
+    @Test
+    public void testModelFieldStateValidationOnFieldStateFailure() {
+        testModelAndFieldStateValidatorsCalled(true, false);
+    }
+
+    @Test
+    public void testModelFieldStateValidationOnFailure() {
+        testModelAndFieldStateValidatorsCalled(false, false);
+    }
+
+    private void testModelAndFieldStateValidatorsCalled(boolean modelSuccess, boolean fieldStateSuccess) {
+        ModelValidator modelValidator = mock(ModelValidator.class);
+        when(modelValidator.validate(anyCollection(), any())).thenReturn(modelSuccess);
+        when(fieldStateValidator.validate(anyCollection())).thenReturn(fieldStateSuccess);
+        formValidator.setModelValidator(modelValidator);
+        assertEquals(formValidator.validate(model), modelSuccess && fieldStateSuccess);
+        verify(fieldStateValidator).validate(formFieldProvider.getAll());
+        verify(modelValidator).validate(formFieldProvider.getAll(), model);
     }
 
     @Test

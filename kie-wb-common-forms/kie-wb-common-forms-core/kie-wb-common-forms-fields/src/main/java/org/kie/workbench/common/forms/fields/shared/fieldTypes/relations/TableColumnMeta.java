@@ -47,7 +47,8 @@ public class TableColumnMeta {
     @FormField(
             type = ListBoxFieldType.class,
             labelKey = "property",
-            afterElement = "label"
+            afterElement = "label",
+            required = true
     )
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
