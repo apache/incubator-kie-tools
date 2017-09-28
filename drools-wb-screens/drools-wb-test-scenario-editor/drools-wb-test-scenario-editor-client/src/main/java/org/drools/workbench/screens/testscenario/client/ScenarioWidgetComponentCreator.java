@@ -220,7 +220,7 @@ public class ScenarioWidgetComponentCreator {
     }
 
     public Widget getRuleSelectionWidget(final RuleSelectionEvent selected) {
-        final HorizontalPanel horizontalPanel = new HorizontalPanel();
+        final HorizontalPanel horizontalPanel = GWT.create(HorizontalPanel.class);
         horizontalPanel.add(ruleNameSelector);
         final Button ok = createOkButton(selected);
         horizontalPanel.add(ok);
@@ -228,15 +228,23 @@ public class ScenarioWidgetComponentCreator {
     }
 
     protected Button createOkButton(final RuleSelectionEvent selected) {
-        Button ok = new Button(TestScenarioConstants.INSTANCE.OK());
+        Button ok = newOkButton();
         ok.addClickHandler((e) -> {
             final String ruleName = ruleNameSelector.getValue();
             if (ruleName == null || ruleName.trim().isEmpty()) {
-                ErrorPopup.showMessage(TestScenarioConstants.INSTANCE.PleaseSetARuleName());
+                showSelectRuleNameWarning();
             } else {
                 selected.ruleSelected(ruleName.trim());
             }
         });
         return ok;
+    }
+
+    Button newOkButton() {
+        return new Button(TestScenarioConstants.INSTANCE.OK());
+    }
+
+    void showSelectRuleNameWarning() {
+        ErrorPopup.showMessage(TestScenarioConstants.INSTANCE.PleaseSetARuleName());
     }
 }

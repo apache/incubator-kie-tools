@@ -18,10 +18,14 @@ package org.drools.workbench.screens.testscenario.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.extras.select.client.ui.Option;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.junit.Before;
@@ -29,6 +33,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
@@ -57,6 +63,18 @@ public class ScenarioWidgetComponentCreatorTest {
     @Mock
     private Scenario scenario;
 
+    @Mock
+    private HorizontalPanel horizontalPanel;
+
+    @Mock
+    private Button button;
+
+    @Mock
+    private RuleSelectionEvent ruleSelectionEvent;
+
+    @Captor
+    private ArgumentCaptor<ClickHandler> clickCaptor;
+
     @GwtMock
     private Select ruleNameSelector;
 
@@ -71,6 +89,9 @@ public class ScenarioWidgetComponentCreatorTest {
 
         when(ruleNamesService.getRuleNames(any(Path.class),
                                            anyString())).thenReturn(ruleNames);
+        doReturn(button).when(creator).newOkButton();
+        doNothing().when(creator).showSelectRuleNameWarning();
+        GwtMockito.useProviderForType(HorizontalPanel.class, fakeProvider -> horizontalPanel);
     }
 
     @Test
@@ -102,5 +123,50 @@ public class ScenarioWidgetComponentCreatorTest {
                times(1)).setEnabled(eq(false));
         verify(creator,
                never()).makeRuleNameOption(anyString());
+    }
+
+    @Test
+    public void testGetRuleSelectionWidget() throws Exception {
+        creator.getRuleSelectionWidget(ruleSelectionEvent);
+        verify(creator).createOkButton(ruleSelectionEvent);
+        verify(horizontalPanel).add(ruleNameSelector);
+        verify(horizontalPanel).add(button);
+    }
+
+    @Test
+    public void testOkButtonHandler() throws Exception {
+        testOkButtonHandler("org.rule.Rule1");
+    }
+
+    @Test
+    public void testOkButtonHandlerWhiteSpaceInRuleName() throws Exception {
+        testOkButtonHandler(" org.rule.Rule1 ");
+    }
+
+    @Test
+    public void testOkButtonHandlerEmptyRuleName() throws Exception {
+        testOkButtonHandler(" ");
+    }
+
+    @Test
+    public void testOkButtonHandlerNullRuleName() throws Exception {
+        testOkButtonHandler(null);
+    }
+
+    private void testOkButtonHandler(final String ruleName) {
+        doReturn(ruleName).when(ruleNameSelector).getValue();
+
+        creator.createOkButton(ruleSelectionEvent);
+
+        verify(button).addClickHandler(clickCaptor.capture());
+        clickCaptor.getValue().onClick(null);
+
+        if (ruleName != null && !ruleName.trim().isEmpty()) {
+            verify(creator, never()).showSelectRuleNameWarning();
+            verify(ruleSelectionEvent).ruleSelected(ruleName.trim());
+        } else {
+            verify(creator).showSelectRuleNameWarning();
+            verify(ruleSelectionEvent, never()).ruleSelected(anyString());
+        }
     }
 }
