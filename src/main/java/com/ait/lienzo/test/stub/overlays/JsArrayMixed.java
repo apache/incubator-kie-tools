@@ -26,10 +26,10 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * In-memory array implementation stub for class <code>com.google.gwt.core.client.JsArrayMixed</code>.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @StubClass("com.google.gwt.core.client.JsArrayMixed")
 public class JsArrayMixed extends JavaScriptObject
@@ -40,23 +40,23 @@ public class JsArrayMixed extends JavaScriptObject
     {
     }
 
-    public boolean getBoolean(int index)
+    public boolean getBoolean(final int index)
     {
         return (Boolean) list.get(index);
     }
 
-    public double getNumber(int index)
+    public double getNumber(final int index)
     {
         return (Double) list.get(index);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends JavaScriptObject> T getObject(int index)
+    public <T extends JavaScriptObject> T getObject(final int index)
     {
         return (T) list.get(index);
     }
 
-    public String getString(int index)
+    public String getString(final int index)
     {
         return (String) list.get(index);
     }
@@ -66,7 +66,7 @@ public class JsArrayMixed extends JavaScriptObject
         return join(",");
     }
 
-    public String join(String separator)
+    public String join(final String separator)
     {
         return StringUtils.join(list, separator);
     }
@@ -76,47 +76,47 @@ public class JsArrayMixed extends JavaScriptObject
         return list.size();
     }
 
-    public void push(boolean value)
+    public void push(final boolean value)
     {
         list.add(value);
     }
 
-    public void push(double value)
+    public void push(final double value)
     {
         list.add(value);
     }
 
-    public void push(JavaScriptObject value)
+    public void push(final JavaScriptObject value)
     {
         list.add(value);
     }
 
-    public void push(String value)
+    public void push(final String value)
     {
         list.add(value);
     }
 
-    public void set(int index, boolean value)
+    public void set(final int index, final boolean value)
     {
         list.set(index, value);
     }
 
-    public void set(int index, double value)
+    public void set(final int index, final double value)
     {
         list.set(index, value);
     }
 
-    public void set(int index, JavaScriptObject value)
+    public void set(final int index, final JavaScriptObject value)
     {
         list.set(index, value);
     }
 
-    public void set(int index, String value)
+    public void set(final int index, final String value)
     {
         list.set(index, value);
     }
 
-    public void setLength(int newLength)
+    public void setLength(final int newLength)
     {
         // Does not make sense here.
     }
@@ -141,22 +141,22 @@ public class JsArrayMixed extends JavaScriptObject
         return doShift();
     }
 
-    public void unshift(boolean value)
+    public void unshift(final boolean value)
     {
         doUnShift(value);
     }
 
-    public void unshift(double value)
+    public void unshift(final double value)
     {
         doUnShift(value);
     }
 
-    public void unshift(JavaScriptObject value)
+    public void unshift(final JavaScriptObject value)
     {
         doUnShift(value);
     }
 
-    public void unshift(String value)
+    public void unshift(final String value)
     {
         doUnShift(value);
     }
@@ -164,7 +164,7 @@ public class JsArrayMixed extends JavaScriptObject
     @SuppressWarnings("unchecked")
     private <T> T doShift()
     {
-        T t = (T) list.get(0);
+        final T t = (T) list.get(0);
 
         list.remove(0);
 

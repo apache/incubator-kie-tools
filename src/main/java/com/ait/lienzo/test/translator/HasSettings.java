@@ -20,7 +20,7 @@ import com.ait.lienzo.test.settings.Settings;
 
 /**
  * Translator interceptors that requires any of the settings values must implement this class.
- * 
+ *
  * The Settings instance is ensured to be set before any interception call is fired.
  *
  * @author Roger Martinez
@@ -29,5 +29,5 @@ import com.ait.lienzo.test.settings.Settings;
  */
 public interface HasSettings
 {
-    void useSettings(Settings settings);
+    public void useSettings(Settings settings);
 }

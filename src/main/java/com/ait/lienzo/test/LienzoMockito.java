@@ -16,39 +16,44 @@
 
 package com.ait.lienzo.test;
 
-import com.ait.lienzo.test.annotation.*;
+import com.ait.lienzo.test.annotation.JSOMocks;
+import com.ait.lienzo.test.annotation.JSOStubs;
+import com.ait.lienzo.test.annotation.Mocks;
+import com.ait.lienzo.test.annotation.Stubs;
+import com.ait.lienzo.test.annotation.Translators;
 import com.ait.lienzo.test.loader.LienzoMockitoClassLoader;
 import com.ait.lienzo.test.settings.Settings;
 import com.ait.lienzo.test.settings.SettingsBuilder;
 import com.ait.lienzo.test.util.LienzoMockitoLogger;
+
 import javassist.ClassPool;
 import javassist.LoaderClassPath;
 
 /**
  * Entry point class for loading this testing framework.
- * 
- * Initializes the test classpath for the given unit test class by loading the 
+ *
+ * Initializes the test classpath for the given unit test class by loading the
  * class loader <code>com.ait.lienzo.test.loader.LienzoMockitoClassLoader</code>.
- * 
+ *
  * It obtains the concrete custom settings for the test class as well, if any.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 public class LienzoMockito
 {
-    public static Class<?> init(Class<?> unitTestClass) throws Exception
+    public static Class<?> init(final Class<?> unitTestClass) throws Exception
     {
-        Settings settings = getSettings(unitTestClass);
+        final Settings settings = getSettings(unitTestClass);
 
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
-        ClassPool classPool = new ClassPool();
+        final ClassPool classPool = new ClassPool();
 
         classPool.appendClassPath(new LoaderClassPath(loader));
 
-        LienzoMockitoClassLoader lienzoMockitoClassLoader = new LienzoMockitoClassLoader(settings, loader, classPool);
+        final LienzoMockitoClassLoader lienzoMockitoClassLoader = new LienzoMockitoClassLoader(settings, loader, classPool);
 
         Thread.currentThread().setContextClassLoader(lienzoMockitoClassLoader);
 
@@ -109,9 +114,9 @@ public class LienzoMockito
         return SettingsBuilder.build(settingsAnn, stubsAnn, jsoStubsAnn, jsoMocksAnn, mocksAnn, translatorAnn);
     }
 
-    private static void handleLogSetting(com.ait.lienzo.test.annotation.Settings settingsAnn)
+    private static void handleLogSetting(final com.ait.lienzo.test.annotation.Settings settingsAnn)
     {
-        if (settingsAnn != null && settingsAnn.logEnabled())
+        if ((settingsAnn != null) && settingsAnn.logEnabled())
         {
             LienzoMockitoLogger.enable(System.out);
         }

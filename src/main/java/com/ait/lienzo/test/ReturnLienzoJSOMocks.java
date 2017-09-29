@@ -24,7 +24,7 @@ import org.mockito.invocation.InvocationOnMock;
  * Util class used at runtime to create mock objects for the given classes.
  *
  * @See com.ait.lienzo.test.translator.LienzoJSOMockTranslatorInterceptor
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
  *
@@ -33,13 +33,13 @@ public class ReturnLienzoJSOMocks extends ReturnsMocks
 {
     private static final long serialVersionUID = -750634041840544191L;
 
-    public static Object invoke(Class<?> returnType)
+    public static Object invoke(final Class<?> returnType)
     {
         return Mockito.mock(returnType, new ReturnLienzoJSOMocks());
     }
 
     @Override
-    public Object answer(InvocationOnMock invocation) throws Throwable
+    public Object answer(final InvocationOnMock invocation) throws Throwable
     {
         return invocation.getMock();
     }

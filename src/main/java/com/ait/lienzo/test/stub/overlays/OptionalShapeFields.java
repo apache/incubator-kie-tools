@@ -46,7 +46,7 @@ public class OptionalShapeFields extends JavaScriptObject
         return m_drag;
     }
 
-    public void setDragging(boolean drag)
+    public void setDragging(final boolean drag)
     {
         m_drag = drag;
     }
@@ -56,7 +56,7 @@ public class OptionalShapeFields extends JavaScriptObject
         return m_apsh;
     }
 
-    public void setAppliedShadow(boolean apsh)
+    public void setAppliedShadow(final boolean apsh)
     {
         m_apsh = apsh;
     }
@@ -66,7 +66,7 @@ public class OptionalShapeFields extends JavaScriptObject
         return m_denf;
     }
 
-    public void setDragConstraintEnforcer(DragConstraintEnforcer denf)
+    public void setDragConstraintEnforcer(final DragConstraintEnforcer denf)
     {
         m_denf = denf;
     }
@@ -76,7 +76,7 @@ public class OptionalShapeFields extends JavaScriptObject
         return m_hand;
     }
 
-    public void setControlHandleFactory(IControlHandleFactory hand)
+    public void setControlHandleFactory(final IControlHandleFactory hand)
     {
         m_hand = hand;
     }

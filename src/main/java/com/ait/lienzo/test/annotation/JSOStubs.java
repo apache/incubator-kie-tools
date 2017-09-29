@@ -23,17 +23,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Lienzo's JSO fully qualified class names to stub. 
- * 
+ * Lienzo's JSO fully qualified class names to stub.
+ *
  * NOTE: Use <code>$</code> as the inner class separator character on the fqcn.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface JSOStubs
 {
-    String[] value();
+    public String[] value();
 }

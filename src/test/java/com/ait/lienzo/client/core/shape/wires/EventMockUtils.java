@@ -13,7 +13,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *  
+ *
  */
 
 package com.ait.lienzo.client.core.shape.wires;
@@ -55,89 +55,89 @@ public class EventMockUtils
 {
     public static void click(final IPrimitive<?> node, final double x, final double y)
     {
-        ClickEvent clickEvent = mock(ClickEvent.class);
+        final ClickEvent clickEvent = mock(ClickEvent.class);
         setUpMouseEvent(clickEvent, x, y);
         node.fireEvent(new NodeMouseClickEvent(clickEvent));
     }
 
     public static void dblClick(final IPrimitive<?> node, final double x, final double y)
     {
-        DoubleClickEvent clickEvent = mock(DoubleClickEvent.class);
+        final DoubleClickEvent clickEvent = mock(DoubleClickEvent.class);
         setUpMouseEvent(clickEvent, x, y);
         node.fireEvent(new NodeMouseDoubleClickEvent(clickEvent));
     }
 
     public static void dragStart(final IPrimitive<?> node, final double x, final double y)
     {
-        DragContext dragContext = createDragContext(node, x, y);
+        final DragContext dragContext = createDragContext(node, x, y);
         node.fireEvent(new NodeDragStartEvent(dragContext));
     }
 
     public static void dragMove(final IPrimitive<?> node, final double x, final double y)
     {
-        DragContext dragContext = createDragContext(node, x, y);
+        final DragContext dragContext = createDragContext(node, x, y);
         node.fireEvent(new NodeDragMoveEvent(dragContext));
     }
 
     public static void dragEnd(final IPrimitive<?> node, final double x, final double y)
     {
-        DragContext dragContext = createDragContext(node, x, y);
+        final DragContext dragContext = createDragContext(node, x, y);
         node.fireEvent(new NodeDragEndEvent(dragContext));
     }
 
     public static void mouseMove(final IPrimitive<?> node, final double x, final double y)
     {
-        MouseMoveEvent event = mock(MouseMoveEvent.class);
+        final MouseMoveEvent event = mock(MouseMoveEvent.class);
         setUpMouseEvent(event, x, y);
         node.fireEvent(new NodeMouseMoveEvent(event));
     }
 
     public static void mouseEnter(final IPrimitive<?> node, final double x, final double y)
     {
-        MouseMoveEvent event = mock(MouseMoveEvent.class);
+        final MouseMoveEvent event = mock(MouseMoveEvent.class);
         setUpMouseEvent(event, x, y);
         node.fireEvent(new NodeMouseEnterEvent(event, (int) x, (int) y));
     }
 
     public static void mouseOut(final IPrimitive<?> node, final double x, final double y)
     {
-        MouseOutEvent event = mock(MouseOutEvent.class);
+        final MouseOutEvent event = mock(MouseOutEvent.class);
         setUpMouseEvent(event, x, y);
         node.fireEvent(new NodeMouseOutEvent(event));
     }
 
     public static void mouseDown(final IPrimitive<?> node, final double x, final double y)
     {
-        MouseDownEvent event = mock(MouseDownEvent.class);
+        final MouseDownEvent event = mock(MouseDownEvent.class);
         setUpMouseEvent(event, x, y);
         node.fireEvent(new NodeMouseDownEvent(event));
     }
 
     public static void mouseUp(final IPrimitive<?> node, final double x, final double y)
     {
-        MouseUpEvent event = mock(MouseUpEvent.class);
+        final MouseUpEvent event = mock(MouseUpEvent.class);
         setUpMouseEvent(event, x, y);
         node.fireEvent(new NodeMouseUpEvent(event));
     }
 
     public static void mouseOver(final IPrimitive<?> node, final double x, final double y)
     {
-        MouseOverEvent event = mock(MouseOverEvent.class);
+        final MouseOverEvent event = mock(MouseOverEvent.class);
         setUpMouseEvent(event, x, y);
         node.fireEvent(new NodeMouseOverEvent(event));
     }
 
     public static void mouseExit(final IPrimitive<?> node, final double x, final double y)
     {
-        MouseOverEvent event = mock(MouseOverEvent.class);
+        final MouseOverEvent event = mock(MouseOverEvent.class);
         setUpMouseEvent(event, x, y);
         node.fireEvent(new NodeMouseExitEvent(event, (int) x, (int) y));
     }
 
     private static void setUpMouseEvent(final MouseEvent<?> mouseEvent, final double x, final double y)
     {
-        int _x = (int) x;
-        int _y = (int) y;
+        final int _x = (int) x;
+        final int _y = (int) y;
         when(mouseEvent.getX()).thenReturn(_x);
         when(mouseEvent.getClientX()).thenReturn(_x);
         when(mouseEvent.getRelativeX(any(Element.class))).thenReturn(_x);
@@ -152,8 +152,8 @@ public class EventMockUtils
 
     private static DragContext createDragContext(final IPrimitive<?> node, final double x, final double y)
     {
-        int _x = (int) x;
-        int _y = (int) y;
+        final int _x = (int) x;
+        final int _y = (int) y;
 
         /*DragConstraintEnforcer dragConstraintEnforcer = mock(DragConstraintEnforcer.class);
         DragContext dragContext = mock(DragContext.class);
@@ -167,7 +167,7 @@ public class EventMockUtils
         when(dragContext.getDy()).thenReturn(_y);
         return dragContext;*/
 
-        INodeXYEvent iNodeXYEvent = mock(INodeXYEvent.class);
+        final INodeXYEvent iNodeXYEvent = mock(INodeXYEvent.class);
         when(iNodeXYEvent.getX()).thenReturn(_x);
         when(iNodeXYEvent.getY()).thenReturn(_y);
         when(iNodeXYEvent.isAlive()).thenReturn(true);

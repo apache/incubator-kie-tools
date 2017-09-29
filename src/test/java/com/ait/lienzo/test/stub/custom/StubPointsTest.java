@@ -13,7 +13,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *  
+ *
  */
 
 package com.ait.lienzo.test.stub.custom;
@@ -28,16 +28,16 @@ import com.ait.lienzo.test.annotation.Stubs;
 
 /**
  * Please before reading this, take a look at:
- * 
+ *
  * @See com.ait.lienzo.test.PointsTest
  * @See com.ait.lienzo.test.PointsMockTest
  *
- * This example provides a custom stub implementation for <code>toString</code> and <code>add</code> methods, as an example 
- * of an alternative for mocking it. 
- * 
- * Note that this unit test class is annotated with the <code>@Stubs</code> annotation, so here you're replacing the built-in stub 
+ * This example provides a custom stub implementation for <code>toString</code> and <code>add</code> methods, as an example
+ * of an alternative for mocking it.
+ *
+ * Note that this unit test class is annotated with the <code>@Stubs</code> annotation, so here you're replacing the built-in stub
  * by the custom <code>com.ait.lienzo.test.stub.custom.Point2D</code>.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
  *
@@ -48,14 +48,14 @@ public class StubPointsTest
 {
     public class MyLienzo
     {
-        private Point2D p;
+        private final Point2D p;
 
-        public MyLienzo(Point2D p)
+        public MyLienzo(final Point2D p)
         {
             this.p = p;
         }
 
-        public Point2D test(Point2D p)
+        public Point2D test(final Point2D p)
         {
             return this.p.add(p);
         }
@@ -72,7 +72,7 @@ public class StubPointsTest
     @Test
     public void test()
     {
-        Point2D p = myLienzo.test(new Point2D(2, 3));
+        final Point2D p = myLienzo.test(new Point2D(2, 3));
 
         Assert.assertEquals(4, p.getX(), 0);
 

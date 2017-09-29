@@ -27,14 +27,14 @@ import javassist.NotFoundException;
 
 /**
  * The implementations can provides no-op stubs or mocks for methods on the Lienzo's overlay types.
- * 
- * Delegates most of the methods stubbing to parent and takes about some concrete 
- * methods such as <code>make</code>, <code>create</code>, <code>makeXXX</code> 
+ *
+ * Delegates most of the methods stubbing to parent and takes about some concrete
+ * methods such as <code>make</code>, <code>create</code>, <code>makeXXX</code>
  * or <code>createXXX</code>.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 public abstract class AbstractLienzoJSOTranslatorInterceptor implements LienzoMockitoClassTranslator.TranslatorInterceptor
 {
@@ -47,7 +47,7 @@ public abstract class AbstractLienzoJSOTranslatorInterceptor implements LienzoMo
     protected abstract void setMakeMethodBody(String fqcn, CtClass ctClass, CtMethod ctMethod) throws NotFoundException, CannotCompileException;
 
     @Override
-    public boolean interceptBeforeParent(ClassPool classPool, String name) throws NotFoundException, CannotCompileException
+    public boolean interceptBeforeParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException
     {
         // Nothing required for now.
         // Let parent loader do the job.
@@ -55,22 +55,22 @@ public abstract class AbstractLienzoJSOTranslatorInterceptor implements LienzoMo
     }
 
     @Override
-    public void interceptAfterParent(ClassPool classPool, String name) throws NotFoundException, CannotCompileException
+    public void interceptAfterParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException
     {
         doTheJob(classPool, name);
     }
 
-    protected void doTheJob(ClassPool classPool, String name) throws NotFoundException, CannotCompileException
+    protected void doTheJob(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException
     {
-        CtClass clazz = classPool.get(name);
+        final CtClass clazz = classPool.get(name);
 
         if (getJSOClasses().contains(name))
         {
             // Get the fully qualified class name ( for inner classes as well ).
-            String fqcn = name.contains("$") ? name.replaceAll("\\$", "\\.") : name;
+            final String fqcn = name.contains("$") ? name.replaceAll("\\$", "\\.") : name;
 
             // Create stub/mock implementations for certain methods.
-            for (CtMethod method : clazz.getDeclaredMethods())
+            for (final CtMethod method : clazz.getDeclaredMethods())
             {
                 if (isMakeMethod(method, name) || isCreateMethod(method, name))
                 {
@@ -84,21 +84,21 @@ public abstract class AbstractLienzoJSOTranslatorInterceptor implements LienzoMo
         }
     }
 
-    protected boolean isMakeMethod(CtMethod method, String className) throws NotFoundException
+    protected boolean isMakeMethod(final CtMethod method, final String className) throws NotFoundException
     {
         return isMethod(method, className, METHOD_MAKE);
     }
 
-    protected boolean isCreateMethod(CtMethod method, String className) throws NotFoundException
+    protected boolean isCreateMethod(final CtMethod method, final String className) throws NotFoundException
     {
         return isMethod(method, className, METHOD_CREATE);
     }
 
-    protected boolean isMethod(CtMethod method, String className, String methodName) throws NotFoundException
+    protected boolean isMethod(final CtMethod method, final String className, final String methodName) throws NotFoundException
     {
-        String mName = method.getName();
-        
-        String rName = method.getReturnType().getName();
+        final String mName = method.getName();
+
+        final String rName = method.getReturnType().getName();
 
         return mName.startsWith(methodName) && className.equals(rName);
     }

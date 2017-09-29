@@ -23,19 +23,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Lienzo's JSO fully qualified class names to be mocked. 
- * 
+ * Lienzo's JSO fully qualified class names to be mocked.
+ *
  * NOTE: Use <code>$</code> as the inner class separator character on the fqcn.
- * 
+ *
  * @See com.ait.lienzo.test.annotation.Settings#mocks
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface Mocks
 {
-    String[] value();
+    public String[] value();
 }

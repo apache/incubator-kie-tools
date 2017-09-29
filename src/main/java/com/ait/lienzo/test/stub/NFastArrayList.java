@@ -26,18 +26,18 @@ import com.ait.lienzo.test.util.LienzoMockitoLogger;
 
 /**
  * In-memory array list implementation stub for class <code>com.ait.tooling.nativetools.client.collection.NFastArrayList</code>.
- * 
+ *
  * Results easier creating this stub class for this wrapper of FastArrayListJSO than creating concrete stubs for NFastArrayListJSO and
  * its super classes.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @StubClass("com.ait.tooling.nativetools.client.collection.NFastArrayList")
 public class NFastArrayList<M> implements Iterable<M>
 {
-    private static final class FastArrayListJSO<M>extends com.ait.tooling.nativetools.client.NArrayBaseJSO<FastArrayListJSO<M>>
+    private static final class FastArrayListJSO<M> extends com.ait.tooling.nativetools.client.NArrayBaseJSO<FastArrayListJSO<M>>
     {
     }
 
@@ -133,7 +133,7 @@ public class NFastArrayList<M> implements Iterable<M>
     {
         if (!list.isEmpty())
         {
-            int i = list.indexOf(value);
+            final int i = list.indexOf(value);
 
             list.set(i + 1, value);
         }
@@ -144,7 +144,7 @@ public class NFastArrayList<M> implements Iterable<M>
     {
         if (!list.isEmpty())
         {
-            int i = list.indexOf(value);
+            final int i = list.indexOf(value);
 
             list.set(i > 0 ? i - 1 : 0, value);
         }
@@ -183,9 +183,9 @@ public class NFastArrayList<M> implements Iterable<M>
 
         if (!list.isEmpty())
         {
-            int i = list.size() - 1;
+            final int i = list.size() - 1;
 
-            result = (M) list.get(i);
+            result = list.get(i);
 
             list.remove(i);
         }
@@ -225,7 +225,7 @@ public class NFastArrayList<M> implements Iterable<M>
 
     public NFastArrayList<M> copy()
     {
-        NFastArrayList<M> result = new NFastArrayList<M>();
+        final NFastArrayList<M> result = new NFastArrayList<M>();
 
         result.list.addAll(this.list);
 
@@ -234,7 +234,7 @@ public class NFastArrayList<M> implements Iterable<M>
 
     public NFastArrayList<M> concat(final NFastArrayList<M> value)
     {
-        NFastArrayList<M> result = copy();
+        final NFastArrayList<M> result = copy();
 
         if (null != value)
         {
@@ -271,6 +271,7 @@ public class NFastArrayList<M> implements Iterable<M>
         return Collections.unmodifiableList(list);
     }
 
+    @Override
     public Iterator<M> iterator()
     {
         return toList().iterator();
@@ -278,7 +279,7 @@ public class NFastArrayList<M> implements Iterable<M>
 
     private M doShift()
     {
-        M t = (M) list.get(0);
+        final M t = list.get(0);
 
         list.remove(0);
 

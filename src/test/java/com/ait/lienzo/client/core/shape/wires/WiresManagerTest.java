@@ -18,6 +18,24 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
@@ -33,14 +51,6 @@ import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerRegistration;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresManagerTest
@@ -62,9 +72,9 @@ public class WiresManagerTest
     @Test
     public void testGetWiresManager()
     {
-        Layer layer2 = new Layer();
+        final Layer layer2 = new Layer();
         layer2.setID("layer2");
-        WiresManager tested2 = WiresManager.get(layer2);
+        final WiresManager tested2 = WiresManager.get(layer2);
         assertEquals(tested, WiresManager.get(layer));
         assertEquals(tested2, WiresManager.get(layer2));
     }
@@ -72,34 +82,34 @@ public class WiresManagerTest
     @Test
     public void testCreateWiresManagerInstance()
     {
-        Layer layer2 = mock(Layer.class);
+        final Layer layer2 = mock(Layer.class);
         when(layer2.uuid()).thenReturn("layer2");
-        WiresManager manager = WiresManager.get(layer2);
+        final WiresManager manager = WiresManager.get(layer2);
         verify(layer2, times(1)).setOnLayerBeforeDraw(any(WiresManager.LinePreparer.class));
         assertNotNull(manager.getAlignAndDistribute());
         assertNotNull(manager.getLayer());
-        WiresLayer wiresLayer = manager.getLayer();
+        final WiresLayer wiresLayer = manager.getLayer();
         assertEquals(layer2, wiresLayer.getLayer());
     }
 
     @Test
     public void testRegisterShape()
     {
-        IContainmentAcceptor containmentAcceptor = mock(IContainmentAcceptor.class);
-        IDockingAcceptor dockingAcceptor = mock(IDockingAcceptor.class);
+        final IContainmentAcceptor containmentAcceptor = mock(IContainmentAcceptor.class);
+        final IDockingAcceptor dockingAcceptor = mock(IDockingAcceptor.class);
         tested.setContainmentAcceptor(containmentAcceptor);
         tested.setDockingAcceptor(dockingAcceptor);
-        WiresManager spied = spy(tested);
-        HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
+        final WiresManager spied = spy(tested);
+        final HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
         doReturn(handlerRegistrationManager).when(spied).createHandlerRegistrationManager();
-        WiresShape s = new WiresShape( new MultiPath().rect( 0, 0, 10, 10 ) );
-        WiresShape shape = spy( s );
-        WiresShapeControl shapeControl = spied.register(shape);
+        final WiresShape s = new WiresShape(new MultiPath().rect(0, 0, 10, 10));
+        final WiresShape shape = spy(s);
+        final WiresShapeControl shapeControl = spied.register(shape);
         assertNotNull(shapeControl);
         assertNotNull(tested.getShape(shape.uuid()));
         verify(shape, times(1)).setContainmentAcceptor(eq(containmentAcceptor));
         verify(shape, times(1)).setDockingAcceptor(eq(dockingAcceptor));
-        verify(shape, times(1)).addWiresShapeHandler(eq( handlerRegistrationManager ), any(WiresShape.WiresShapeHandler.class));
+        verify(shape, times(1)).addWiresShapeHandler(eq(handlerRegistrationManager), any(WiresShape.WiresShapeHandler.class));
         verify(layer, times(1)).add(eq(shape.getGroup()));
         verify(handlerRegistrationManager, times(4)).register(any(HandlerRegistration.class));
     }
@@ -107,34 +117,33 @@ public class WiresManagerTest
     @Test
     public void testResizeShape()
     {
-        Viewport viewport = mock(Viewport.class);
+        final Viewport viewport = mock(Viewport.class);
         when(viewport.getOverLayer()).thenReturn(mock(Layer.class));
         when(layer.getViewport()).thenReturn(viewport);
         when(layer.getLayer()).thenReturn(layer);
 
-        ScratchPad pad = mock(ScratchPad.class);
+        final ScratchPad pad = mock(ScratchPad.class);
         when(layer.getScratchPad()).thenReturn(pad);
         when(pad.getWidth()).thenReturn(10);
         when(pad.getHeight()).thenReturn(10);
 
-        Context2D context2D = mock(Context2D.class);
+        final Context2D context2D = mock(Context2D.class);
         when(pad.getContext()).thenReturn(context2D);
 
-
-        IContainmentAcceptor containmentAcceptor = mock(IContainmentAcceptor.class);
+        final IContainmentAcceptor containmentAcceptor = mock(IContainmentAcceptor.class);
         tested.setContainmentAcceptor(containmentAcceptor);
 
-        IDockingAcceptor dockingAcceptor = mock(IDockingAcceptor.class);
+        final IDockingAcceptor dockingAcceptor = mock(IDockingAcceptor.class);
         tested.setDockingAcceptor(dockingAcceptor);
 
-        WiresManager spied = spy(tested);
-        HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
+        final WiresManager spied = spy(tested);
+        final HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
         doReturn(handlerRegistrationManager).when(spied).createHandlerRegistrationManager();
-        WiresShape shape = spy(new WiresShape(new MultiPath().rect(0, 0, 10, 10)));
+        final WiresShape shape = spy(new WiresShape(new MultiPath().rect(0, 0, 10, 10)));
 
-        Group group = spy(shape.getGroup());
+        final Group group = spy(shape.getGroup());
         when(shape.getGroup()).thenReturn(group);
-        WiresShapeControl shapeControl = spied.register(shape);
+        final WiresShapeControl shapeControl = spied.register(shape);
 
         // group.getBoundingBoxAttributes are used for box calculation during shape registration and store calculated values in double primitives
         verify(group).getBoundingBoxAttributes();
@@ -150,13 +159,13 @@ public class WiresManagerTest
     @Test
     public void testDeregisterShape()
     {
-        WiresManager spied = spy(tested);
-        HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
+        final WiresManager spied = spy(tested);
+        final HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
         doReturn(handlerRegistrationManager).when(spied).createHandlerRegistrationManager();
-        Group group = new Group();
-        String gUUID = group.uuid();
-        WiresShape s = new WiresShape( new MultiPath().rect( 0, 0, 10, 10 ) );
-        WiresShape shape = spy( s );
+        final Group group = new Group();
+        final String gUUID = group.uuid();
+        final WiresShape s = new WiresShape(new MultiPath().rect(0, 0, 10, 10));
+        final WiresShape shape = spy(s);
         spied.register(shape);
         spied.deregister(shape);
         assertNull(tested.getShape(gUUID));
@@ -169,23 +178,23 @@ public class WiresManagerTest
     @Test
     public void testRegisterConnector()
     {
-        IConnectionAcceptor connectionAcceptor = mock(IConnectionAcceptor.class);
+        final IConnectionAcceptor connectionAcceptor = mock(IConnectionAcceptor.class);
         tested.setConnectionAcceptor(connectionAcceptor);
-        WiresManager spied = spy(tested);
-        HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
+        final WiresManager spied = spy(tested);
+        final HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
         doReturn(handlerRegistrationManager).when(spied).createHandlerRegistrationManager();
-        Group group = new Group();
-        Group shapeGroup = spy(group);
-        AbstractDirectionalMultiPointShape<?> line = mock(AbstractDirectionalMultiPointShape.class);
-        MultiPath head = mock(MultiPath.class);
-        MultiPath tail = mock(MultiPath.class);
-        WiresConnector connector = mock(WiresConnector.class);
+        final Group group = new Group();
+        final Group shapeGroup = spy(group);
+        final AbstractDirectionalMultiPointShape<?> line = mock(AbstractDirectionalMultiPointShape.class);
+        final MultiPath head = mock(MultiPath.class);
+        final MultiPath tail = mock(MultiPath.class);
+        final WiresConnector connector = mock(WiresConnector.class);
         doReturn(shapeGroup).when(connector).getGroup();
         doReturn(line).when(connector).getLine();
         doReturn(head).when(connector).getHead();
         doReturn(tail).when(connector).getTail();
         doReturn(group.uuid()).when(connector).uuid();
-        WiresConnectorControl connectorControl = spied.register(connector);
+        final WiresConnectorControl connectorControl = spied.register(connector);
         assertNotNull(connectorControl);
         assertFalse(spied.getConnectorList().isEmpty());
         verify(connector, times(1)).setConnectionAcceptor(eq(connectionAcceptor));
@@ -196,15 +205,15 @@ public class WiresManagerTest
     @Test
     public void testDeregisterConnector()
     {
-        WiresManager spied = spy(tested);
-        HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
+        final WiresManager spied = spy(tested);
+        final HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
         doReturn(handlerRegistrationManager).when(spied).createHandlerRegistrationManager();
-        Group group = new Group();
-        Group shapeGroup = spy(group);
-        AbstractDirectionalMultiPointShape<?> line = mock(AbstractDirectionalMultiPointShape.class);
-        MultiPath head = mock(MultiPath.class);
-        MultiPath tail = mock(MultiPath.class);
-        WiresConnector connector = mock(WiresConnector.class);
+        final Group group = new Group();
+        final Group shapeGroup = spy(group);
+        final AbstractDirectionalMultiPointShape<?> line = mock(AbstractDirectionalMultiPointShape.class);
+        final MultiPath head = mock(MultiPath.class);
+        final MultiPath tail = mock(MultiPath.class);
+        final WiresConnector connector = mock(WiresConnector.class);
         doReturn(shapeGroup).when(connector).getGroup();
         doReturn(line).when(connector).getLine();
         doReturn(head).when(connector).getHead();

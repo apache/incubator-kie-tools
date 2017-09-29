@@ -13,7 +13,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *  
+ *
  */
 
 package com.ait.lienzo.test.suite;
@@ -32,10 +32,10 @@ import com.ait.lienzo.test.stub.custom.StubPointsTest;
 
 /**
  * Lienzo testing suite.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ BasicLienzoMockTest.class, BasicLienzoStateTest.class, JSOMockTest.class, PointsTest.class, PointsMockTest.class, StubPointsTest.class })

@@ -30,13 +30,13 @@ import com.ait.lienzo.test.translator.LienzoMockitoClassTranslator;
 
 /**
  * The runtime settings builder.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
  */
 public final class SettingsBuilder
 {
-    public static com.ait.lienzo.test.settings.Settings build(Settings settingsAnnotation, Stubs stubsAnnotation, JSOStubs jsoStubsAnnotation, JSOMocks jsoMocksAnnotation, Mocks mocksAnnotation, Translators translatorAnnotation) throws Exception
+    public static com.ait.lienzo.test.settings.Settings build(Settings settingsAnnotation, final Stubs stubsAnnotation, final JSOStubs jsoStubsAnnotation, final JSOMocks jsoMocksAnnotation, final Mocks mocksAnnotation, final Translators translatorAnnotation) throws Exception
     {
         // Handle default settings if no annotation present on test class.
         if (null == settingsAnnotation)
@@ -45,27 +45,27 @@ public final class SettingsBuilder
         }
 
         // Additional interceptors.
-        Class<? extends LienzoMockitoClassTranslator.TranslatorInterceptor>[] interceptorClasses = settingsAnnotation.translators();
+        final Class<? extends LienzoMockitoClassTranslator.TranslatorInterceptor>[] interceptorClasses = settingsAnnotation.translators();
 
-        List<LienzoMockitoClassTranslator.TranslatorInterceptor> interceptors = new LinkedList<LienzoMockitoClassTranslator.TranslatorInterceptor>();
+        final List<LienzoMockitoClassTranslator.TranslatorInterceptor> interceptors = new LinkedList<LienzoMockitoClassTranslator.TranslatorInterceptor>();
 
-        if (null != interceptorClasses && interceptorClasses.length > 0)
+        if ((null != interceptorClasses) && (interceptorClasses.length > 0))
         {
-            for (Class<? extends LienzoMockitoClassTranslator.TranslatorInterceptor> interceptorClass : interceptorClasses)
+            for (final Class<? extends LienzoMockitoClassTranslator.TranslatorInterceptor> interceptorClass : interceptorClasses)
             {
                 interceptors.add(interceptorClass.newInstance());
             }
         }
         if (null != translatorAnnotation)
         {
-            for (Class<? extends LienzoMockitoClassTranslator.TranslatorInterceptor> interceptorClass : translatorAnnotation.value())
+            for (final Class<? extends LienzoMockitoClassTranslator.TranslatorInterceptor> interceptorClass : translatorAnnotation.value())
             {
                 interceptors.add(interceptorClass.newInstance());
             }
         }
 
         // Build the settings instance for this unit test run.
-        com.ait.lienzo.test.settings.Settings result = new com.ait.lienzo.test.settings.Settings(interceptors);
+        final com.ait.lienzo.test.settings.Settings result = new com.ait.lienzo.test.settings.Settings(interceptors);
 
         // Overlay stubs.
         addJSOStubs(settingsAnnotation.jsoStubs(), result);
@@ -101,50 +101,50 @@ public final class SettingsBuilder
         return result;
     }
 
-    private static void addMocks(String[] mocks, com.ait.lienzo.test.settings.Settings settings)
+    private static void addMocks(final String[] mocks, final com.ait.lienzo.test.settings.Settings settings)
     {
-        if (null != mocks && mocks.length > 0)
+        if ((null != mocks) && (mocks.length > 0))
         {
-            for (String mock : mocks)
+            for (final String mock : mocks)
             {
                 settings.getMocks().add(mock);
             }
         }
     }
 
-    private static void addJSOStubs(String[] jsoStubs, com.ait.lienzo.test.settings.Settings settings)
+    private static void addJSOStubs(final String[] jsoStubs, final com.ait.lienzo.test.settings.Settings settings)
     {
-        if (null != jsoStubs && jsoStubs.length > 0)
+        if ((null != jsoStubs) && (jsoStubs.length > 0))
         {
-            for (String jsoStub : jsoStubs)
+            for (final String jsoStub : jsoStubs)
             {
                 settings.getJSOStubs().add(jsoStub);
             }
         }
     }
 
-    private static void addJSOMocks(String[] jsoMocks, com.ait.lienzo.test.settings.Settings settings)
+    private static void addJSOMocks(final String[] jsoMocks, final com.ait.lienzo.test.settings.Settings settings)
     {
-        if (null != jsoMocks && jsoMocks.length > 0)
+        if ((null != jsoMocks) && (jsoMocks.length > 0))
         {
-            for (String jsoMock : jsoMocks)
+            for (final String jsoMock : jsoMocks)
             {
                 settings.getJSOMocks().add(jsoMock);
             }
         }
     }
 
-    private static void addStubs(Class<?>[] stubs, com.ait.lienzo.test.settings.Settings settings)
+    private static void addStubs(final Class<?>[] stubs, final com.ait.lienzo.test.settings.Settings settings)
     {
-        if (null != stubs && stubs.length > 0)
+        if ((null != stubs) && (stubs.length > 0))
         {
-            for (Class<?> stubTargetClass : stubs)
+            for (final Class<?> stubTargetClass : stubs)
             {
                 if (!stubTargetClass.isAnnotationPresent(StubClass.class))
                 {
                     throw new RuntimeException("The stub class [" + stubTargetClass.getName() + "] does not have the StubClass annotation.");
                 }
-                StubClass stubClassAnnotation = stubTargetClass.getAnnotation(StubClass.class);
+                final StubClass stubClassAnnotation = stubTargetClass.getAnnotation(StubClass.class);
 
                 settings.getStubs().put(stubClassAnnotation.value(), stubTargetClass.getName());
             }

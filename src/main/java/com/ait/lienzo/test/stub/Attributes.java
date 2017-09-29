@@ -60,14 +60,14 @@ import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
- * Due to use of inferred casting refactored. 
- * 
- * TODO: Not all "cast" method calls are still refactored. 
+ * Due to use of inferred casting refactored.
+ *
+ * TODO: Not all "cast" method calls are still refactored.
  * TODO: Refactor -> Avoid doing this cast refactoring by using javassist setGenericSignatures and handling the castings via reflection at runtime.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @StubClass("com.ait.lienzo.client.core.shape.Attributes")
 public class Attributes
@@ -801,7 +801,7 @@ public class Attributes
 
     public final Point2DArray getPoints()
     {
-        JsArray<JavaScriptObject> points = getArrayOfJSO(Attribute.POINTS.getProperty());
+        final JsArray<JavaScriptObject> points = getArrayOfJSO(Attribute.POINTS.getProperty());
 
         if (null != points)
         {
@@ -1016,7 +1016,7 @@ public class Attributes
     // Lienzo-mockito: Replaced use of "cast()" by just using java regular casting.
     public final Point2DArray getControlPoints()
     {
-        Point2DArray.Point2DArrayJSO points = (Point2DArray.Point2DArrayJSO) m_jso.getAsJSO(Attribute.CONTROL_POINTS.getProperty());
+        final Point2DArray.Point2DArrayJSO points = (Point2DArray.Point2DArrayJSO) m_jso.getAsJSO(Attribute.CONTROL_POINTS.getProperty());
 
         if (null != points)
         {
@@ -1563,7 +1563,7 @@ public class Attributes
     {
         if (isNumber(Attribute.HEAD_OFFSET.getProperty()))
         {
-            double offset = m_jso.getAsDouble(Attribute.HEAD_OFFSET.getProperty());
+            final double offset = m_jso.getAsDouble(Attribute.HEAD_OFFSET.getProperty());
 
             if (offset >= 0)
             {
@@ -1603,7 +1603,7 @@ public class Attributes
     {
         if (isNumber(Attribute.TAIL_OFFSET.getProperty()))
         {
-            double offset = m_jso.getAsDouble(Attribute.TAIL_OFFSET.getProperty());
+            final double offset = m_jso.getAsDouble(Attribute.TAIL_OFFSET.getProperty());
 
             if (offset >= 0)
             {
@@ -1643,7 +1643,7 @@ public class Attributes
     {
         if (isNumber(Attribute.CORRECTION_OFFSET.getProperty()))
         {
-            double offset = m_jso.getAsDouble(Attribute.CORRECTION_OFFSET.getProperty());
+            final double offset = m_jso.getAsDouble(Attribute.CORRECTION_OFFSET.getProperty());
 
             if (offset >= 0)
             {
@@ -1892,7 +1892,7 @@ public class Attributes
 
     public final void setMatrix(final double... matrix)
     {
-        ImageDataFilter.FilterConvolveMatrix mjso = ImageDataFilter.FilterConvolveMatrix.make().cast();
+        final ImageDataFilter.FilterConvolveMatrix mjso = ImageDataFilter.FilterConvolveMatrix.make().cast();
 
         for (int i = 0; i < matrix.length; i++)
         {

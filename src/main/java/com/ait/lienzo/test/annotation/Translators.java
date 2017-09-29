@@ -26,14 +26,14 @@ import com.ait.lienzo.test.translator.LienzoMockitoClassTranslator;
 
 /**
  * Specify custom translator interceptors. They must provide a public no-arg constructor.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface Translators
 {
-    Class<? extends LienzoMockitoClassTranslator.TranslatorInterceptor>[] value();
+    public Class<? extends LienzoMockitoClassTranslator.TranslatorInterceptor>[] value();
 }

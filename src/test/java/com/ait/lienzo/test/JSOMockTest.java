@@ -13,7 +13,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *  
+ *
  */
 
 package com.ait.lienzo.test;
@@ -31,10 +31,10 @@ import com.ait.tooling.nativetools.client.NObjectJSO;
 
 /**
  * This test just shows how Lienzo's overlay type methods can be mocked by using this library, if you need so.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @RunWith(LienzoMockitoTestRunner.class)
 public class JSOMockTest
@@ -51,7 +51,7 @@ public class JSOMockTest
     @Test
     public void test()
     {
-        String s = objectJSO.getAsString("Lienzo rocks ;)");
+        final String s = objectJSO.getAsString("Lienzo rocks ;)");
 
         Assert.assertEquals("My Custom #getAsString", s);
     }

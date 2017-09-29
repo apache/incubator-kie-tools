@@ -29,13 +29,13 @@ import javassist.NotFoundException;
 import javassist.Translator;
 
 /**
- * Custom javassist translator class that wraps the one given by GwtMockito 
+ * Custom javassist translator class that wraps the one given by GwtMockito
  * and applies different behaviors for handling the overlay types and native interfaces. Each of those
  * behaviors are given by the translator interceptor classes, so this class just orchestrates the different interceptors.
  *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 public class LienzoMockitoClassTranslator implements Translator
 {
@@ -50,23 +50,23 @@ public class LienzoMockitoClassTranslator implements Translator
 
     private final Translator              parent;
 
-    public LienzoMockitoClassTranslator(Settings settings, Translator parent)
+    public LienzoMockitoClassTranslator(final Settings settings, final Translator parent)
     {
         this.parent = parent;
 
         this.interceptors = initInterceptors(settings);
     }
 
-    private TranslatorInterceptor[] initInterceptors(Settings settings)
+    private TranslatorInterceptor[] initInterceptors(final Settings settings)
     {
-        List<TranslatorInterceptor> result = new LinkedList<TranslatorInterceptor>(settings.getAdditionalTranslators());
+        final List<TranslatorInterceptor> result = new LinkedList<TranslatorInterceptor>(settings.getAdditionalTranslators());
 
         // Configure the translator interceptor classes with the required settings.
-        for (LienzoMockitoClassTranslator.TranslatorInterceptor interceptor : result)
+        for (final LienzoMockitoClassTranslator.TranslatorInterceptor interceptor : result)
         {
             if (interceptor instanceof HasSettings)
             {
-                HasSettings hasSettings = (HasSettings) interceptor;
+                final HasSettings hasSettings = (HasSettings) interceptor;
 
                 hasSettings.useSettings(settings);
             }
@@ -75,7 +75,7 @@ public class LienzoMockitoClassTranslator implements Translator
     }
 
     @Override
-    public void onLoad(ClassPool pool, String name) throws NotFoundException, CannotCompileException
+    public void onLoad(final ClassPool pool, final String name) throws NotFoundException, CannotCompileException
     {
         log("onLoad for '" + name + "'");
 
@@ -83,20 +83,20 @@ public class LienzoMockitoClassTranslator implements Translator
 
         boolean continueLoad = true;
 
-        for (TranslatorInterceptor interceptor : interceptors)
+        for (final TranslatorInterceptor interceptor : interceptors)
         {
             if (interceptor.interceptBeforeParent(pool, name))
             {
                 continueLoad = false;
             }
         }
-        if (continueLoad && null != parent)
+        if (continueLoad && (null != parent))
         {
             ensureDefrost(pool, name);
 
             parent.onLoad(pool, name);
 
-            for (TranslatorInterceptor interceptor : interceptors)
+            for (final TranslatorInterceptor interceptor : interceptors)
             {
                 interceptor.interceptAfterParent(pool, name);
             }
@@ -104,9 +104,9 @@ public class LienzoMockitoClassTranslator implements Translator
     }
 
     // TODO: Improve use of defrost, it can be expensive.
-    private void ensureDefrost(ClassPool pool, String name) throws NotFoundException
+    private void ensureDefrost(final ClassPool pool, final String name) throws NotFoundException
     {
-        CtClass ctClass = pool.get(name);
+        final CtClass ctClass = pool.get(name);
 
         if (ctClass.isFrozen())
         {
@@ -115,7 +115,7 @@ public class LienzoMockitoClassTranslator implements Translator
     }
 
     @Override
-    public void start(ClassPool pool) throws NotFoundException, CannotCompileException
+    public void start(final ClassPool pool) throws NotFoundException, CannotCompileException
     {
         log("Start");
 
@@ -125,7 +125,7 @@ public class LienzoMockitoClassTranslator implements Translator
         }
     }
 
-    private void log(String message)
+    private void log(final String message)
     {
         LienzoMockitoLogger.log("LienzoMockitoClassTranslator", message);
     }

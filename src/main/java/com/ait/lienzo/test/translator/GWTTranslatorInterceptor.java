@@ -26,10 +26,10 @@ import javassist.NotFoundException;
 
 /**
  * Translator interceptor for changing some behaviors on <code>com.google.gwt.core.client.GWT</code>.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 public class GWTTranslatorInterceptor implements LienzoMockitoClassTranslator.TranslatorInterceptor
 {
@@ -42,13 +42,13 @@ public class GWTTranslatorInterceptor implements LienzoMockitoClassTranslator.Tr
     }
 
     @Override
-    public boolean interceptBeforeParent(ClassPool classPool, String name) throws NotFoundException, CannotCompileException
+    public boolean interceptBeforeParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException
     {
         if (name.equals(JSO_CLASS))
         {
-            CtClass clazz = classPool.get(name);
+            final CtClass clazz = classPool.get(name);
 
-            for (CtMethod method : clazz.getDeclaredMethods())
+            for (final CtMethod method : clazz.getDeclaredMethods())
             {
                 if (METHOD_IS_SCRIPT.equals(method.getName()))
                 {
@@ -61,7 +61,7 @@ public class GWTTranslatorInterceptor implements LienzoMockitoClassTranslator.Tr
     }
 
     @Override
-    public void interceptAfterParent(ClassPool classPool, String name) throws NotFoundException, CannotCompileException
+    public void interceptAfterParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException
     {
         // Nothing required for now.
     }

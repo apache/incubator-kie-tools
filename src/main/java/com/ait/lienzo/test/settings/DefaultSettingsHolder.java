@@ -16,34 +16,40 @@
 
 package com.ait.lienzo.test.settings;
 
-import com.ait.lienzo.test.translator.*;
+import com.ait.lienzo.test.translator.CanvasSupportTranslatorInterceptor;
+import com.ait.lienzo.test.translator.GWTTranslatorInterceptor;
+import com.ait.lienzo.test.translator.LienzoJSOMockTranslatorInterceptor;
+import com.ait.lienzo.test.translator.LienzoJSOStubTranslatorInterceptor;
+import com.ait.lienzo.test.translator.LienzoNodeTranslatorInterceptor;
+import com.ait.lienzo.test.translator.LienzoStubTranslatorInterceptor;
+import com.ait.lienzo.test.translator.StripFinalModifiersTranslatorInterceptor;
 
 /**
  * This class contains the default framework's settings.
- * 
- * You can add your custom settings, if necessary, by using the 
+ *
+ * You can add your custom settings, if necessary, by using the
  * annotation <code>com.ait.lienzo.test.annotation.Settings</code>
  * on your test classes.
- * 
+ *
  * @See com.ait.lienzo.test.annotation.Settings
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @com.ait.lienzo.test.annotation.Settings (
-        
-        /*  Note: Class 'com.ait.lienzo.client.core.shape.Node' is already available for being mocked due to 
+
+        /*  Note: Class 'com.ait.lienzo.client.core.shape.Node' is already available for being mocked due to
                   the use of the translator 'com.ait.lienzo.test.translator.LienzoNodeTranslatorInterceptor'.
                   No need to add it explicitly here. */
         mocks = {
                 "com.ait.lienzo.client.core.shape.Shape",
                 "com.ait.lienzo.client.core.shape.Viewport"
         },
-        
+
         stubs = {
-        		com.ait.lienzo.test.stub.overlays.BoundingBoxJSO.class,
-        		com.ait.lienzo.test.stub.overlays.TransformJSO.class,
+                com.ait.lienzo.test.stub.overlays.BoundingBoxJSO.class,
+                com.ait.lienzo.test.stub.overlays.TransformJSO.class,
                 com.ait.lienzo.test.stub.overlays.NObjectJSO.class,
                 com.ait.lienzo.test.stub.overlays.Point2DJSO.class,
                 com.ait.lienzo.test.stub.overlays.JsArray.class,
@@ -61,9 +67,9 @@ import com.ait.lienzo.test.translator.*;
                 com.ait.lienzo.test.stub.NFastArrayList.class,
                 com.ait.lienzo.test.stub.NFastStringMap.class,
         },
-        
-        jsoStubs = {        		
-        		"com.ait.lienzo.client.core.types.Shadow$ShadowJSO",                
+
+        jsoStubs = {
+                "com.ait.lienzo.client.core.types.Shadow$ShadowJSO",
                 "com.ait.lienzo.client.core.types.FillGradient$GradientJSO",
                 "com.ait.lienzo.client.core.types.ImageData",
                 "com.ait.lienzo.client.core.types.DragBounds$DragBoundsJSO",
@@ -90,9 +96,9 @@ import com.ait.lienzo.test.translator.*;
                 "com.ait.tooling.nativetools.client.usermedia.UserMediaStream",
                 "com.ait.tooling.nativetools.client.NObjectBaseJSO"
         },
-        
+
         jsoMocks = {},
-        
+
         translators = {
 
                 LienzoStubTranslatorInterceptor.class,
@@ -103,16 +109,15 @@ import com.ait.lienzo.test.translator.*;
                 LienzoNodeTranslatorInterceptor.class,
                 GWTTranslatorInterceptor.class
         },
-        
+
         logEnabled = false
 
-)
-public final class DefaultSettingsHolder {
-    
+        )
+public final class DefaultSettingsHolder
+{
     public static final DefaultSettingsHolder INSTANCE = new DefaultSettingsHolder();
-    
-    private DefaultSettingsHolder() {
-        
+
+    private DefaultSettingsHolder()
+    {
     }
-    
 }

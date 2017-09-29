@@ -1,19 +1,17 @@
 /*
+ * Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
  *
- *    Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- *  
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.ait.lienzo.test;
@@ -34,31 +32,31 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Rectangle;
 
 /**
- * Basic test that asserts the behavior of the <code>Layer</code> instead of its state. 
- * 
+ * Basic test that asserts the behavior of the <code>Layer</code> instead of its state.
+ *
  * What happens on this tests is:
- * 
- * 1.- By annotating the unit test with the <code>@RunWith( LienzoMockitoTestRunner.class )</code> the <code>Layer</code> class 
+ *
+ * 1.- By annotating the unit test with the <code>@RunWith( LienzoMockitoTestRunner.class )</code> the <code>Layer</code> class
  * is being processed and all native/final methods have been stripped, so can be mocked.
- * 
+ *
  * 2.- The Layer is mocked using regular Mockito annotations, so you can use regular Mockito API to verity it's behavior.
- * 
+ *
  * Note: You can either use gwt mocks, mockito spies and whatever other functionality, if you need so.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @RunWith(LienzoMockitoTestRunner.class)
 public class BasicLienzoMockTest
 {
     public class MyLienzo
     {
-        private Layer           layer;
+        private final Layer     layer;
 
         private final Rectangle rectangle = new Rectangle(50, 50);
 
-        public MyLienzo(Layer layer)
+        public MyLienzo(final Layer layer)
         {
             this.layer = layer;
         }
@@ -107,7 +105,7 @@ public class BasicLienzoMockTest
 
         verify(layer, times(1)).draw();
 
-        String fColor = myLienzo.getRectangle().getFillColor();
+        final String fColor = myLienzo.getRectangle().getFillColor();
 
         Assert.assertEquals("#0000FF", fColor);
     }
@@ -128,7 +126,7 @@ public class BasicLienzoMockTest
     @Test
     public void testMockFillAlhpaFinalMethod()
     {
-        Rectangle rrr = mock(Rectangle.class);
+        final Rectangle rrr = mock(Rectangle.class);
 
         when(rrr.getFillAlpha()).thenReturn(0.5d);
 
@@ -141,7 +139,7 @@ public class BasicLienzoMockTest
     @Test
     public void testMockUUIDFinalMethod()
     {
-        Rectangle rrr = mock(Rectangle.class);
+        final Rectangle rrr = mock(Rectangle.class);
 
         when(rrr.uuid()).thenReturn("mockedUUID");
 

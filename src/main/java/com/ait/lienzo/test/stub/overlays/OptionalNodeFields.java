@@ -79,7 +79,7 @@ public class OptionalNodeFields extends JavaScriptObject
         return m_user;
     }
 
-    public void setUserData(Object data)
+    public void setUserData(final Object data)
     {
         m_user = data;
     }
@@ -93,7 +93,7 @@ public class OptionalNodeFields extends JavaScriptObject
         return m_hand;
     }
 
-    public void setHandlerManager(HandlerManager hand)
+    public void setHandlerManager(final HandlerManager hand)
     {
         m_hand = hand;
     }

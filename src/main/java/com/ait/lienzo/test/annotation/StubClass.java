@@ -23,16 +23,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Used in the class declaration to specify the source full qualified class name for the Lienzo class 
+ * Used in the class declaration to specify the source full qualified class name for the Lienzo class
  * that is being stubbed by the class containing this annotation.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface StubClass
 {
-    String value();
+    public String value();
 }

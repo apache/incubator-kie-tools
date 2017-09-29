@@ -28,10 +28,10 @@ import com.ait.tooling.nativetools.client.NUtils;
 
 /**
  * In-memory Map implementation stub stub for class <code>com.ait.tooling.nativetools.client.collection.NFastStringMap</code>.
- * 
+ *
  * Results easier creating this stub class for this wrapper of NFastStringMapJSO than creating concrete stubs for NFastStringMapJSO and
  * its super classes.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
  *

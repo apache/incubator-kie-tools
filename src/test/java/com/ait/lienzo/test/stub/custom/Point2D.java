@@ -13,7 +13,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *  
+ *
  */
 
 package com.ait.lienzo.test.stub.custom;
@@ -23,15 +23,15 @@ import com.ait.lienzo.client.core.util.GeometryException;
 import com.ait.lienzo.test.annotation.StubClass;
 
 /**
- * This is an example of a custom stub for class <code>com.ait.lienzo.client.core.types.Point2D</code>. This library already provides 
- * an stub class for it, but this can be used as an example if you need to overrade the behavior from the build-in one and provide 
- * your own for a concrete unit test class. 
- * 
+ * This is an example of a custom stub for class <code>com.ait.lienzo.client.core.types.Point2D</code>. This library already provides
+ * an stub class for it, but this can be used as an example if you need to overrade the behavior from the build-in one and provide
+ * your own for a concrete unit test class.
+ *
  * This class overrides the implementation for the <code>add</code> and <code>toString</code> methods, used as an example.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @StubClass("com.ait.lienzo.client.core.types.Point2D")
 public class Point2D
@@ -286,7 +286,7 @@ public class Point2D
     }
 
     /**
-     * Returns a new Point2D perpendicular to this vector by rotating this Point2D 
+     * Returns a new Point2D perpendicular to this vector by rotating this Point2D
      * 90 degrees counterclockwise around (0,0)
      *
      * @return Point2D
@@ -294,11 +294,11 @@ public class Point2D
     {
         // TODO
         return this;
-    
+
     }
-    
+
     /**
-     * Returns a new Point2D by rotating this Point2D counterclockwise 
+     * Returns a new Point2D by rotating this Point2D counterclockwise
      * over the angle (in radians, not degrees!)
      * <p>
      * This Point2D is not modified.
@@ -319,7 +319,7 @@ public class Point2D
      */
     public Point2D unit() throws GeometryException
     {
-        double len = getLength();
+        final double len = getLength();
 
         if (len == 0)
         {
@@ -340,7 +340,7 @@ public class Point2D
     }
 
     /**
-     * Returns the angle of the vector thru (0,0) and this Point2D, 
+     * Returns the angle of the vector thru (0,0) and this Point2D,
      * and the positive x-axis. Returns 0 for the null vector (0,0).
      *
      * @return double

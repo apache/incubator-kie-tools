@@ -16,8 +16,8 @@
 
 package com.ait.lienzo.test;
 
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import java.util.Collection;
+
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
@@ -25,34 +25,35 @@ import org.junit.runner.notification.RunListener;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 
-import java.util.Collection;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 
 /**
  * The main JUnit test runner class.
- * 
+ *
  * By annotation your test class using <code>@RunWith( LienzoMockitoTestRunner.class )</code> the lienzo testing
- * framework comes into scene and its being loaded on your testing classpath.  
+ * framework comes into scene and its being loaded on your testing classpath.
  *
  * @See com.ait.lienzo.test.loader.LienzoMockitoClassLoader
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
  *
  */
 public class LienzoMockitoTestRunner extends GwtMockitoTestRunner
 {
-    public LienzoMockitoTestRunner(Class<?> unitTestClass) throws InitializationError
+    public LienzoMockitoTestRunner(final Class<?> unitTestClass) throws InitializationError
     {
         super(init(unitTestClass));
     }
 
-    private static Class<?> init(Class<?> unitTestClass)
+    private static Class<?> init(final Class<?> unitTestClass)
     {
         try
         {
             return LienzoMockito.init(unitTestClass);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             throw new RuntimeException("Error initializing Lienzo Mockito.", e);
         }
@@ -61,48 +62,48 @@ public class LienzoMockitoTestRunner extends GwtMockitoTestRunner
     @Override
     public void run(final RunNotifier notifier)
     {
-        RunNotifier wrapperNotifier = new RunNotifier();
+        final RunNotifier wrapperNotifier = new RunNotifier();
 
         wrapperNotifier.addListener(new RunListener()
         {
             @Override
-            public void testAssumptionFailure(Failure failure)
+            public void testAssumptionFailure(final Failure failure)
             {
                 notifier.fireTestAssumptionFailed(failure);
             }
 
             @Override
-            public void testFailure(Failure failure) throws Exception
+            public void testFailure(final Failure failure) throws Exception
             {
                 notifier.fireTestFailure(failure);
             }
 
             @Override
-            public void testFinished(Description description) throws Exception
+            public void testFinished(final Description description) throws Exception
             {
                 notifier.fireTestFinished(description);
             }
 
             @Override
-            public void testIgnored(Description description) throws Exception
+            public void testIgnored(final Description description) throws Exception
             {
                 notifier.fireTestIgnored(description);
             }
 
             @Override
-            public void testRunFinished(Result result) throws Exception
+            public void testRunFinished(final Result result) throws Exception
             {
                 notifier.fireTestRunFinished(result);
             }
 
             @Override
-            public void testRunStarted(Description description) throws Exception
+            public void testRunStarted(final Description description) throws Exception
             {
                 notifier.fireTestRunStarted(description);
             }
 
             @Override
-            public void testStarted(Description description) throws Exception
+            public void testStarted(final Description description) throws Exception
             {
                 //Class<?> testClass = description.getTestClass();
                 notifier.fireTestStarted(description);
@@ -117,7 +118,7 @@ public class LienzoMockitoTestRunner extends GwtMockitoTestRunner
     @Override
     protected Collection<Class<?>> getClassesToStub()
     {
-        Collection<Class<?>> toStub = super.getClassesToStub();
+        final Collection<Class<?>> toStub = super.getClassesToStub();
 
         toStub.add(RootPanel.class);
 

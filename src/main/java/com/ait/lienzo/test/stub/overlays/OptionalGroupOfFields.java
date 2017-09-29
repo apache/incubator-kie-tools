@@ -44,7 +44,7 @@ public class OptionalGroupOfFields extends JavaScriptObject
         return m_drag;
     }
 
-    public void setDragging(boolean drag)
+    public void setDragging(final boolean drag)
     {
         m_drag = drag;
     }
@@ -54,7 +54,7 @@ public class OptionalGroupOfFields extends JavaScriptObject
         return m_denf;
     }
 
-    public void setDragConstraintEnforcer(DragConstraintEnforcer denf)
+    public void setDragConstraintEnforcer(final DragConstraintEnforcer denf)
     {
         m_denf = denf;
     }
@@ -64,7 +64,7 @@ public class OptionalGroupOfFields extends JavaScriptObject
         return m_hand;
     }
 
-    public void setControlHandleFactory(IControlHandleFactory hand)
+    public void setControlHandleFactory(final IControlHandleFactory hand)
     {
         m_hand = hand;
     }

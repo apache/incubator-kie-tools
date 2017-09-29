@@ -27,14 +27,15 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class MagnetManagerTest
@@ -55,15 +56,15 @@ public class MagnetManagerTest
     public void testDrawMagnetsToBack()
     {
         // ScratchPad and it's context preparations
-        Context2D context = mock(Context2D.class);
+        final Context2D context = mock(Context2D.class);
         when(scratchPad.getContext()).thenReturn(context);
         when(scratchPad.getWidth()).thenReturn(121);
         when(scratchPad.getHeight()).thenReturn(132);
 
         // Magnets preparations. We will use them to check that all magnets are drawn
-        WiresMagnet magnet1 = mock(WiresMagnet.class);
-        WiresMagnet magnet2 = mock(WiresMagnet.class);
-        WiresMagnet magnet3 = mock(WiresMagnet.class);
+        final WiresMagnet magnet1 = mock(WiresMagnet.class);
+        final WiresMagnet magnet2 = mock(WiresMagnet.class);
+        final WiresMagnet magnet3 = mock(WiresMagnet.class);
         when(magnets.size()).thenReturn(3);
         when(magnets.getMagnet(0)).thenReturn(magnet1);
         when(magnets.getMagnet(1)).thenReturn(magnet2);
@@ -72,7 +73,7 @@ public class MagnetManagerTest
         // We are not able to mock static method, so let's prepare all staff used by
 
         // Test starts here
-        MagnetManager manager = spy(new MagnetManager());
+        final MagnetManager manager = spy(new MagnetManager());
         doNothing().when(manager).drawShapeToBacking(magnets, shapesColors, context);
         doNothing().when(manager).drawMagnet(eq(magnetsColors), eq(context), any(WiresMagnet.class));
         manager.drawMagnetsToBack(magnets, shapesColors, magnetsColors, scratchPad);
@@ -86,16 +87,17 @@ public class MagnetManagerTest
         verify(context).getImageData(0, 0, 121, 132);
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
     public void testDrawMagnet()
     {
-        Context2D context = mock(Context2D.class);
-        WiresMagnet magnet = mock(WiresMagnet.class);
-        IPrimitive primitive = mock(IPrimitive.class);
+        final Context2D context = mock(Context2D.class);
+        final WiresMagnet magnet = mock(WiresMagnet.class);
+        final IPrimitive primitive = mock(IPrimitive.class);
         when(magnet.getControl()).thenReturn(primitive);
 
         // Test starts here
-        MagnetManager manager = new MagnetManager();
+        final MagnetManager manager = new MagnetManager();
         manager.drawMagnet(magnetsColors, context, magnet);
 
         // Magnet is registered in colors map

@@ -13,7 +13,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *  
+ *
  */
 
 package com.ait.lienzo.test;
@@ -32,37 +32,36 @@ import org.mockito.Mock;
 import com.ait.lienzo.client.core.types.Point2D;
 
 /**
- * Please before reading this: 
- *   @See com.ait.lienzo.test.PointsTest 
- * 
+ * Please before reading this:
+ *   @See com.ait.lienzo.test.PointsTest
+ *
  * As the Point2D stub has no final modifiers, most of the methods can be mocked as in this example.
- * 
+ *
  * As mocking any primitive you can test its behavior instead of its state.
- * 
+ *
  * If you need to specify custom implementations:
  *   @See com.ait.lienzo.test.stub.custom.StubPointsTest
- *   
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @RunWith(LienzoMockitoTestRunner.class)
 public class PointsMockTest
 {
     public class MyLienzo
     {
-        private Point2D p;
+        private final Point2D p;
 
-        public MyLienzo(Point2D p)
+        public MyLienzo(final Point2D p)
         {
             this.p = p;
         }
 
-        public Point2D test(Point2D p)
+        public Point2D test(final Point2D p)
         {
             return this.p.add(p);
         }
-
     }
 
     @Mock
@@ -83,7 +82,7 @@ public class PointsMockTest
     @Test
     public void test()
     {
-        Point2D p2 = mock(Point2D.class);
+        final Point2D p2 = mock(Point2D.class);
 
         when(p2.toString()).thenReturn("This is the point #2");
 
@@ -91,7 +90,7 @@ public class PointsMockTest
 
         when(p.add(any(Point2D.class))).thenReturn(p2);
 
-        Point2D p = myLienzo.test(new Point2D(0, 0));
+        final Point2D p = myLienzo.test(new Point2D(0, 0));
 
         assertEquals(p.getX(), 0, 0);
 

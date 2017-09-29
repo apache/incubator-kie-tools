@@ -61,44 +61,44 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresShapeControlHandleListTest
 {
-    private WiresShapeControlHandleList tested;
+    private WiresShapeControlHandleList      tested;
 
     @Mock
-    private WiresShape shape;
+    private WiresShape                       shape;
 
     @Mock
-    private HandlerRegistrationManager handlerRegistrationManager;
+    private HandlerRegistrationManager       handlerRegistrationManager;
 
     @Mock
-    private ControlHandleList controlHandleList;
+    private ControlHandleList                controlHandleList;
 
     @Mock
-    private IControlHandle handle0;
+    private IControlHandle                   handle0;
 
-    private IPrimitive<?> primitive0;
-
-    @Mock
-    private IControlHandle handle1;
-
-    private IPrimitive<?> primitive1;
+    private IPrimitive<?>                    primitive0;
 
     @Mock
-    private IControlHandle handle2;
+    private IControlHandle                   handle1;
 
-    private IPrimitive<?> primitive2;
+    private IPrimitive<?>                    primitive1;
 
     @Mock
-    private IControlHandle handle3;
+    private IControlHandle                   handle2;
 
-    private IPrimitive<?> primitive3;
+    private IPrimitive<?>                    primitive2;
+
+    @Mock
+    private IControlHandle                   handle3;
+
+    private IPrimitive<?>                    primitive3;
 
     private final NFastArrayList<WiresShape> children = new NFastArrayList<>();
 
     @Before
     public void setup()
     {
-        Layer layer = new Layer();
-        Group group = new Group();
+        final Layer layer = new Layer();
+        final Group group = new Group();
         layer.add(group);
         doReturn(group).when(shape).getGroup();
         doReturn(children).when(shape).getChildShapes();
@@ -133,13 +133,15 @@ public class WiresShapeControlHandleListTest
         verify(shape).addWiresDragMoveHandler(any(WiresDragMoveHandler.class));
         verify(shape).addWiresDragEndHandler(any(WiresDragEndHandler.class));
 
-        IPrimitive<?>[] primitives = new IPrimitive<?>[]{primitive0, primitive1, primitive2, primitive3};
-        for (IPrimitive<?> primitive : primitives) {
+        final IPrimitive<?>[] primitives = new IPrimitive<?>[] { primitive0, primitive1, primitive2, primitive3 };
+        for (final IPrimitive<?> primitive : primitives)
+        {
             verifyNodeHandlers(primitive);
         }
     }
 
-    private void verifyNodeHandlers(IPrimitive<?> primitive) {
+    private void verifyNodeHandlers(final IPrimitive<?> primitive)
+    {
         // TODO: check correctness of Handler (probably needs pure Java realization of NFastArrayList)
         verify(primitive).addNodeDragStartHandler(any(NodeDragStartHandler.class));
         verify(primitive).addNodeDragMoveHandler(any(NodeDragMoveHandler.class));
@@ -149,7 +151,7 @@ public class WiresShapeControlHandleListTest
     @Test
     public void testCP_DragHandlers()
     {
-        WiresShape realShape = new WiresShape(new MultiPath().rect(0, 0, 10, 10));
+        final WiresShape realShape = new WiresShape(new MultiPath().rect(0, 0, 10, 10));
         tested = new WiresShapeControlHandleList(realShape, IControlHandle.ControlHandleStandardType.RESIZE, controlHandleList, handlerRegistrationManager);
 
         setCPLocations(1, 2, 11, 12, 3, 13, 14, 4);
@@ -159,7 +161,7 @@ public class WiresShapeControlHandleListTest
         realShape.setResizable(true).addWiresResizeStartHandler(new WiresResizeStartHandler()
         {
             @Override
-            public void onShapeResizeStart(WiresResizeStartEvent event)
+            public void onShapeResizeStart(final WiresResizeStartEvent event)
             {
                 c0.setX(event.getX());
                 c0.setY(event.getY());
@@ -172,7 +174,7 @@ public class WiresShapeControlHandleListTest
         realShape.addWiresResizeStepHandler(new WiresResizeStepHandler()
         {
             @Override
-            public void onShapeResizeStep(WiresResizeStepEvent event)
+            public void onShapeResizeStep(final WiresResizeStepEvent event)
             {
                 c1.setX(event.getX());
                 c1.setY(event.getY());
@@ -185,7 +187,7 @@ public class WiresShapeControlHandleListTest
         realShape.addWiresResizeEndHandler(new WiresResizeEndHandler()
         {
             @Override
-            public void onShapeResizeEnd(WiresResizeEndEvent event)
+            public void onShapeResizeEnd(final WiresResizeEndEvent event)
             {
                 c2.setX(event.getX());
                 c2.setY(event.getY());
@@ -224,10 +226,10 @@ public class WiresShapeControlHandleListTest
     @Test
     public void testShowWithChild()
     {
-        NFastArrayList<WiresShape> listOfChildren = new NFastArrayList<>();
+        final NFastArrayList<WiresShape> listOfChildren = new NFastArrayList<>();
 
-        WiresShape child = mock(WiresShape.class);
-        WiresShapeControlHandleList controls = mock(WiresShapeControlHandleList.class);
+        final WiresShape child = mock(WiresShape.class);
+        final WiresShapeControlHandleList controls = mock(WiresShapeControlHandleList.class);
         when(child.getControls()).thenReturn(controls);
         when(shape.getChildShapes()).thenReturn(listOfChildren);
 
@@ -243,18 +245,18 @@ public class WiresShapeControlHandleListTest
     @Test
     public void testShowWithChildren()
     {
-        NFastArrayList<WiresShape> listOfChildren = new NFastArrayList<>();
+        final NFastArrayList<WiresShape> listOfChildren = new NFastArrayList<>();
         when(shape.getChildShapes()).thenReturn(listOfChildren);
 
-        WiresShapeControlHandleList controls = mock(WiresShapeControlHandleList.class);
+        final WiresShapeControlHandleList controls = mock(WiresShapeControlHandleList.class);
 
-        WiresShape child = mock(WiresShape.class);
+        final WiresShape child = mock(WiresShape.class);
         when(child.getControls()).thenReturn(controls);
 
-        WiresShape child2 = mock(WiresShape.class);
+        final WiresShape child2 = mock(WiresShape.class);
         when(child2.getControls()).thenReturn(controls);
 
-        WiresShape child3 = mock(WiresShape.class);
+        final WiresShape child3 = mock(WiresShape.class);
         when(child3.getControls()).thenReturn(null);
 
         listOfChildren.add(child);
@@ -281,10 +283,10 @@ public class WiresShapeControlHandleListTest
     @Test
     public void testHideWithChild()
     {
-        NFastArrayList<WiresShape> listOfChildren = new NFastArrayList<>();
+        final NFastArrayList<WiresShape> listOfChildren = new NFastArrayList<>();
 
-        WiresShape child = mock(WiresShape.class);
-        WiresShapeControlHandleList controls = mock(WiresShapeControlHandleList.class);
+        final WiresShape child = mock(WiresShape.class);
+        final WiresShapeControlHandleList controls = mock(WiresShapeControlHandleList.class);
         when(child.getControls()).thenReturn(controls);
         when(shape.getChildShapes()).thenReturn(listOfChildren);
 
@@ -300,18 +302,18 @@ public class WiresShapeControlHandleListTest
     @Test
     public void testHideWithChildren()
     {
-        NFastArrayList<WiresShape> listOfChildren = new NFastArrayList<>();
+        final NFastArrayList<WiresShape> listOfChildren = new NFastArrayList<>();
         when(shape.getChildShapes()).thenReturn(listOfChildren);
 
-        WiresShapeControlHandleList controls = mock(WiresShapeControlHandleList.class);
+        final WiresShapeControlHandleList controls = mock(WiresShapeControlHandleList.class);
 
-        WiresShape child = mock(WiresShape.class);
+        final WiresShape child = mock(WiresShape.class);
         when(child.getControls()).thenReturn(controls);
 
-        WiresShape child2 = mock(WiresShape.class);
+        final WiresShape child2 = mock(WiresShape.class);
         when(child2.getControls()).thenReturn(controls);
 
-        WiresShape child3 = mock(WiresShape.class);
+        final WiresShape child3 = mock(WiresShape.class);
         when(child3.getControls()).thenReturn(null);
 
         listOfChildren.add(child);
@@ -330,15 +332,15 @@ public class WiresShapeControlHandleListTest
     @Test
     public void testRefresh()
     {
-        MultiPath path = mock(MultiPath.class);
-        LayoutContainer container = mock(LayoutContainer.class);
-        ILayoutHandler layoutHandler = mock(ILayoutHandler.class);
+        final MultiPath path = mock(MultiPath.class);
+        final LayoutContainer container = mock(LayoutContainer.class);
+        final ILayoutHandler layoutHandler = mock(ILayoutHandler.class);
 
         when(shape.getPath()).thenReturn(path);
         when(shape.getLayoutContainer()).thenReturn(container);
-        when(shape.getLayoutHandler()).thenReturn( layoutHandler );
+        when(shape.getLayoutHandler()).thenReturn(layoutHandler);
 
-        BoundingBox box = mock(BoundingBox.class);
+        final BoundingBox box = mock(BoundingBox.class);
         when(path.getBoundingBox()).thenReturn(box);
         when(box.getWidth()).thenReturn(10.0);
         when(box.getHeight()).thenReturn(12.0);
@@ -348,7 +350,7 @@ public class WiresShapeControlHandleListTest
         verify(tested).resize(null, null, 10.0, 12.0, true);
     }
 
-    private void setCPLocations(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3)
+    private void setCPLocations(final double x0, final double y0, final double x1, final double y1, final double x2, final double y2, final double x3, final double y3)
     {
         setLocation(primitive0, x0, y0);
         setLocation(primitive1, x1, y1);
@@ -356,7 +358,7 @@ public class WiresShapeControlHandleListTest
         setLocation(primitive3, x3, y3);
     }
 
-    private void setLocation(IPrimitive<?> primitive, double x, double y)
+    private void setLocation(final IPrimitive<?> primitive, final double x, final double y)
     {
         primitive.setX(x);
         primitive.setY(y);

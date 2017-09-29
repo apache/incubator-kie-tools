@@ -26,26 +26,26 @@ import javassist.Modifier;
 import javassist.NotFoundException;
 
 /**
- * It removes the <code>final</code> modifier class declared methods, so those can be further mocked using 
+ * It removes the <code>final</code> modifier class declared methods, so those can be further mocked using
  * regular mockito API.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 public abstract class AbstractStripFinalModifiersTranslatorInterceptor implements LienzoMockitoClassTranslator.TranslatorInterceptor
 {
     protected abstract Set<String> getClassNames();
 
     @Override
-    public boolean interceptBeforeParent(ClassPool classPool, String name) throws NotFoundException, CannotCompileException
+    public boolean interceptBeforeParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException
     {
         if (doIntercept(name))
         {
-            CtClass clazz = classPool.get(name);
+            final CtClass clazz = classPool.get(name);
 
             // Remove final modifiers for methods, so can be mocked.
-            for (CtMethod method : clazz.getDeclaredMethods())
+            for (final CtMethod method : clazz.getDeclaredMethods())
             {
                 method.setModifiers(method.getModifiers() & ~Modifier.FINAL);
             }
@@ -56,8 +56,8 @@ public abstract class AbstractStripFinalModifiersTranslatorInterceptor implement
         return false;
     }
 
-    private boolean doIntercept(String name)
+    private boolean doIntercept(final String name)
     {
-        return getClassNames() != null && getClassNames().contains(name);
+        return (getClassNames() != null) && getClassNames().contains(name);
     }
 }

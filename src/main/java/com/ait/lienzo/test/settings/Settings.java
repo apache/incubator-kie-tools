@@ -27,10 +27,10 @@ import com.ait.lienzo.test.translator.LienzoMockitoClassTranslator;
 
 /**
  * The runtime settings.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- *  
+ *
  */
 public final class Settings
 {
@@ -44,7 +44,7 @@ public final class Settings
 
     private final Collection<LienzoMockitoClassTranslator.TranslatorInterceptor> translators;
 
-    Settings(Collection<LienzoMockitoClassTranslator.TranslatorInterceptor> translators)
+    Settings(final Collection<LienzoMockitoClassTranslator.TranslatorInterceptor> translators)
     {
         this.stubs = new LinkedHashMap<String, String>();
         this.jsoStubs = new LinkedHashSet<String>();
@@ -53,7 +53,7 @@ public final class Settings
         this.translators = translators;
     }
 
-    Settings(Map<String, String> stubs, Set<String> jsoStubs, Set<String> jsoMocks, Set<String> mocks, List<LienzoMockitoClassTranslator.TranslatorInterceptor> translators)
+    Settings(final Map<String, String> stubs, final Set<String> jsoStubs, final Set<String> jsoMocks, final Set<String> mocks, final List<LienzoMockitoClassTranslator.TranslatorInterceptor> translators)
     {
         this.stubs = stubs;
         this.jsoStubs = jsoStubs;

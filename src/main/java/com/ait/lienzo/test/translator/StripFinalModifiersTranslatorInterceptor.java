@@ -26,14 +26,14 @@ import javassist.ClassPool;
 import javassist.NotFoundException;
 
 /**
- * It removes the <code>final</code> modifier class declared methods, so those can be further mocked using 
+ * It removes the <code>final</code> modifier class declared methods, so those can be further mocked using
  * regular mockito API.
- * 
+ *
  * @See com.ait.lienzo.test.annotation.Settings#mocks
  *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 public class StripFinalModifiersTranslatorInterceptor extends AbstractStripFinalModifiersTranslatorInterceptor implements HasSettings
 {
@@ -46,13 +46,13 @@ public class StripFinalModifiersTranslatorInterceptor extends AbstractStripFinal
     }
 
     @Override
-    public void useSettings(Settings settings)
+    public void useSettings(final Settings settings)
     {
         this.classNames.addAll(settings.getMocks());
     }
 
     @Override
-    public void interceptAfterParent(ClassPool classPool, String name) throws NotFoundException, CannotCompileException
+    public void interceptAfterParent(final ClassPool classPool, final String name) throws NotFoundException, CannotCompileException
     {
         // Nothing required for now.
     }

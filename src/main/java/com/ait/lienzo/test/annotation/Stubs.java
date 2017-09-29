@@ -24,14 +24,14 @@ import java.lang.annotation.Target;
 
 /**
  * Custom class stubs to be replaced at runtime on the testing scope.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface Stubs
 {
-    Class<?>[] value();
+    public Class<?>[] value();
 }

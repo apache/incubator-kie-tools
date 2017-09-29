@@ -26,13 +26,13 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * In-memory array implementation stub for class <code>com.google.gwt.core.client.JsArray</code>.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @StubClass("com.google.gwt.core.client.JsArray")
-public class JsArray<T extends JavaScriptObject>extends JavaScriptObject
+public class JsArray<T extends JavaScriptObject> extends JavaScriptObject
 {
     private final List<T> list = new ArrayList<T>();
 
@@ -40,7 +40,7 @@ public class JsArray<T extends JavaScriptObject>extends JavaScriptObject
     {
     }
 
-    public T get(int index)
+    public T get(final int index)
     {
         return list.get(index);
     }
@@ -50,7 +50,7 @@ public class JsArray<T extends JavaScriptObject>extends JavaScriptObject
         return join(",");
     }
 
-    public String join(String separator)
+    public String join(final String separator)
     {
         return StringUtils.join(list, separator);
     }
@@ -60,23 +60,26 @@ public class JsArray<T extends JavaScriptObject>extends JavaScriptObject
         return list.size();
     }
 
-    public void push(T value)
+    public void push(final T value)
     {
         list.add(value);
     }
 
-    public void set(int index, T value)
+    public void set(final int index, final T value)
     {
-        if ((list.size() - 1) < index) {
+        if ((list.size() - 1) < index)
+        {
             setLength(index + 1);
         }
         list.set(index, value);
     }
 
-    public void setLength(int newLength)
+    public void setLength(final int newLength)
     {
-        if (list.size() < newLength) {
-            for (int i = list.size(); i < newLength; i++) {
+        if (list.size() < newLength)
+        {
+            for (int i = list.size(); i < newLength; i++)
+            {
                 push(null);
             }
         }
@@ -87,17 +90,17 @@ public class JsArray<T extends JavaScriptObject>extends JavaScriptObject
         return doShift();
     }
 
-    public void unshift(T value)
+    public void unshift(final T value)
     {
         doUnShift(value);
     }
 
     private T doShift()
     {
-        T t = (T) list.get(0);
-        
+        final T t = list.get(0);
+
         list.remove(0);
-        
+
         return t;
     }
 

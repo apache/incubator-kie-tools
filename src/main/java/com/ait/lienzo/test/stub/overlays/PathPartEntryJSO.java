@@ -23,10 +23,10 @@ import com.google.gwt.json.client.JSONObject;
 
 /**
  * In-memory array implementation stub for class <code>com.ait.lienzo.client.core.types.PathPartEntryJSO</code>.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @StubClass("com.ait.lienzo.client.core.types.PathPartEntryJSO")
 public class PathPartEntryJSO extends JavaScriptObject
@@ -51,7 +51,7 @@ public class PathPartEntryJSO extends JavaScriptObject
 
     private NFastDoubleArrayJSO arrayJSO;
 
-    public static PathPartEntryJSO make(int c, NFastDoubleArrayJSO p)
+    public static PathPartEntryJSO make(final int c, final NFastDoubleArrayJSO p)
     {
         return new PathPartEntryJSO(c, p);
     }
@@ -60,7 +60,7 @@ public class PathPartEntryJSO extends JavaScriptObject
     {
     }
 
-    protected PathPartEntryJSO(int c, NFastDoubleArrayJSO p)
+    protected PathPartEntryJSO(final int c, final NFastDoubleArrayJSO p)
     {
         this.command = c;
 

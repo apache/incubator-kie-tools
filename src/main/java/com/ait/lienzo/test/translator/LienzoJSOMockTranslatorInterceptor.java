@@ -29,19 +29,19 @@ import javassist.NotFoundException;
 /**
  * Translator interceptor for overlay types.
  *
- * It provides mocked stubs for Lienzo's overlay types. Delegates most of the methods stubbing to parent and 
- * takes about some concrete methods such as <code>make</code>, <code>create</code>, <code>makeXXX</code> 
+ * It provides mocked stubs for Lienzo's overlay types. Delegates most of the methods stubbing to parent and
+ * takes about some concrete methods such as <code>make</code>, <code>create</code>, <code>makeXXX</code>
  * or <code>createXXX</code>.
- * 
- * NOTE: If the class is an inner class it cannot be mocked, Mockito does not support it. So if you're in this situation, 
- * you can use: 
- * 
+ *
+ * NOTE: If the class is an inner class it cannot be mocked, Mockito does not support it. So if you're in this situation,
+ * you can use:
+ *
  * - <code>com.ait.lienzo.test.translator.LienzoJSOStubTranslatorInterceptor</code> to generate a no-op stub for it
  * - <code>com.ait.lienzo.test.translator.LienzoStubTranslatorInterceptor</code> to provide a custom stub for it
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 public class LienzoJSOMockTranslatorInterceptor extends AbstractLienzoJSOTranslatorInterceptor implements HasSettings
 {
@@ -58,15 +58,15 @@ public class LienzoJSOMockTranslatorInterceptor extends AbstractLienzoJSOTransla
     }
 
     @Override
-    protected void setMakeMethodBody(String fqcn, CtClass ctClass, CtMethod ctMethod) throws NotFoundException, CannotCompileException
+    protected void setMakeMethodBody(final String fqcn, final CtClass ctClass, final CtMethod ctMethod) throws NotFoundException, CannotCompileException
     {
-        String rName = ctMethod.getReturnType().getName();
+        final String rName = ctMethod.getReturnType().getName();
 
         ctMethod.setBody(String.format("{ return (%s) com.ait.lienzo.test.ReturnLienzoJSOMocks.invoke(" + "Class.forName(\"%s\")); }", rName, rName));
     }
 
     @Override
-    public void useSettings(Settings settings)
+    public void useSettings(final Settings settings)
     {
         assert null != settings;
 

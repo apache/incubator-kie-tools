@@ -21,10 +21,10 @@ import com.ait.lienzo.test.annotation.StubClass;
 
 /**
  * In-memory array implementation stub for <code>com.ait.lienzo.client.core.types.PathPartList$PathPartListJSO</code>.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @StubClass("com.ait.lienzo.client.core.types.PathPartList$PathPartListJSO")
 public class PathPartListJSO extends JsArray<PathPartEntryJSO>

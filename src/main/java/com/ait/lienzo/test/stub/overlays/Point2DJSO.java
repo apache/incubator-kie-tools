@@ -21,10 +21,10 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Stub for class <code>com.ait.lienzo.client.core.types.Point2D$Point2DJSO</code>.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @StubClass("com.ait.lienzo.client.core.types.Point2D$Point2DJSO")
 public class Point2DJSO extends JavaScriptObject
@@ -37,31 +37,31 @@ public class Point2DJSO extends JavaScriptObject
     {
     }
 
-    protected Point2DJSO(double x, double y)
+    protected Point2DJSO(final double x, final double y)
     {
         this.x = x;
         this.y = y;
     }
 
-    public static Point2DJSO make(double xval, double yval)
+    public static Point2DJSO make(final double xval, final double yval)
     {
         return new Point2DJSO(xval, yval);
     }
 
-    public static double distance(Point2DJSO a, Point2DJSO b)
+    public static double distance(final Point2DJSO a, final Point2DJSO b)
     {
-        double dx = b.x - a.x;
+        final double dx = b.x - a.x;
 
-        double dy = b.y - a.y;
+        final double dy = b.y - a.y;
 
         return Math.sqrt((dx * dx) + (dy * dy));
     }
 
-    public static double length(Point2DJSO a)
+    public static double length(final Point2DJSO a)
     {
-        double dx = a.x;
+        final double dx = a.x;
 
-        double dy = a.y;
+        final double dy = a.y;
 
         return Math.sqrt((dx * dx) + (dy * dy));
     }
@@ -71,7 +71,7 @@ public class Point2DJSO extends JavaScriptObject
         return x;
     }
 
-    public void setX(double x)
+    public void setX(final double x)
     {
         this.x = x;
     }
@@ -81,18 +81,18 @@ public class Point2DJSO extends JavaScriptObject
         return y;
     }
 
-    public void setY(double y)
+    public void setY(final double y)
     {
         this.y = y;
     }
 
-    public void set(Point2DJSO o)
+    public void set(final Point2DJSO o)
     {
         this.x = o.getX();
         this.y = o.getY();
     }
 
-    public void set(double x, double y)
+    public void set(final double x, final double y)
     {
         this.x = x;
         this.y = y;
@@ -113,41 +113,41 @@ public class Point2DJSO extends JavaScriptObject
         return length(this);
     }
 
-    public Point2DJSO add(Point2DJSO jso)
+    public Point2DJSO add(final Point2DJSO jso)
     {
         return new Point2DJSO(this.x + jso.x, this.y + jso.y);
     }
 
-    public void offset(double x, double y)
+    public void offset(final double x, final double y)
     {
         this.x += x;
         this.y += y;
     }
 
-    public void offset(Point2DJSO jso)
+    public void offset(final Point2DJSO jso)
     {
         this.x += jso.x;
         this.y += jso.y;
     }
 
-    public void minus(double x, double y)
+    public void minus(final double x, final double y)
     {
         this.x -= x;
         this.y -= y;
     }
 
-    public void minus(Point2DJSO jso)
+    public void minus(final Point2DJSO jso)
     {
         this.x -= jso.x;
         this.y -= jso.y;
     }
 
-    public Point2DJSO sub(Point2DJSO jso)
+    public Point2DJSO sub(final Point2DJSO jso)
     {
         return new Point2DJSO(this.x - jso.x, this.y - jso.y);
     }
 
-    public Point2DJSO scale(double d)
+    public Point2DJSO scale(final double d)
     {
         return new Point2DJSO(this.x * d, this.y * d);
     }
@@ -155,24 +155,23 @@ public class Point2DJSO extends JavaScriptObject
     public Point2DJSO perpendicular()
     {
         return new Point2DJSO(-this.y, this.x);
-
     }
 
-    public Point2DJSO rotate(double angle)
+    public Point2DJSO rotate(final double angle)
     {
-        double s = Math.sin(angle);
-        double c = Math.cos(angle);
-        return new Point2DJSO(c * this.x - s * this.y, s * this.x + c * this.y);
+        final double s = Math.sin(angle);
+        final double c = Math.cos(angle);
+        return new Point2DJSO((c * this.x) - (s * this.y), (s * this.x) + (c * this.y));
     }
 
-    public double dot(Point2DJSO p)
+    public double dot(final Point2DJSO p)
     {
-        return this.x * p.x + this.y * p.y;
+        return (this.x * p.x) + (this.y * p.y);
     }
 
-    public double crossScalar(Point2DJSO p)
+    public double crossScalar(final Point2DJSO p)
     {
-        return this.x * p.y - this.y * p.x;
+        return (this.x * p.y) - (this.y * p.x);
     }
 
     public boolean isNullVector()
@@ -186,20 +185,19 @@ public class Point2DJSO extends JavaScriptObject
         {
             return 0.0;
         }
-        double a = Math.atan2(this.y, this.x);
+        final double a = Math.atan2(this.y, this.x);
 
-        return (a >= 0.0) ? a : (a + Math.PI * 2);
+        return (a >= 0.0) ? a : (a + (Math.PI * 2));
     }
 
-    public double thetaTo(Point2DJSO p)
+    public double thetaTo(final Point2DJSO p)
     {
         if ((this.x == p.x) && (this.y == p.y))
         {
             return 0.0;
         }
-        double a = Math.atan2(p.y, p.x) - Math.atan2(this.y, this.x);
+        final double a = Math.atan2(p.y, p.x) - Math.atan2(this.y, this.x);
 
-        return (a >= 0.0) ? a : (a + Math.PI * 2);
+        return (a >= 0.0) ? a : (a + (Math.PI * 2));
     }
-
 }

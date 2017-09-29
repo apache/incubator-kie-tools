@@ -13,10 +13,27 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *  
+ *
  */
 
 package com.ait.lienzo.client.core.shape.wires;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
 import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
@@ -39,20 +56,10 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerManager;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresContainerTest
 {
-
     private WiresShape         shape;
 
     private Group              parentContainer;
@@ -75,7 +82,7 @@ public class WiresContainerTest
     AlignAndDistribute         alignAndDistribute;
 
     @Mock
-    AlignAndDistributeControl alignAndDistributeControl;
+    AlignAndDistributeControl  alignAndDistributeControl;
 
     @Before
     public void setup()
@@ -102,7 +109,7 @@ public class WiresContainerTest
     @Test
     public void testSetDraggable()
     {
-        tested.setDraggable( true );
+        tested.setDraggable(true);
         verify(handlerRegistrationManager, times(5)).register(any(HandlerRegistrationManager.class));
         verify(parentContainer, times(1)).setAttributesChangedBatcher(eq(attributesChangedBatcher));
         verify(parentContainer, times(1)).addNodeDragStartHandler(any(NodeDragStartHandler.class));
@@ -196,10 +203,10 @@ public class WiresContainerTest
     @Test
     public void testAddWiresHandlers()
     {
-        WiresMoveHandler moveHandler = mock(WiresMoveHandler.class);
-        WiresDragStartHandler startHandler = mock(WiresDragStartHandler.class);
-        WiresDragMoveHandler dragMoveHandler = mock(WiresDragMoveHandler.class);
-        WiresDragEndHandler endHandler = mock(WiresDragEndHandler.class);
+        final WiresMoveHandler moveHandler = mock(WiresMoveHandler.class);
+        final WiresDragStartHandler startHandler = mock(WiresDragStartHandler.class);
+        final WiresDragMoveHandler dragMoveHandler = mock(WiresDragMoveHandler.class);
+        final WiresDragEndHandler endHandler = mock(WiresDragEndHandler.class);
         tested.addWiresMoveHandler(moveHandler);
         tested.addWiresDragStartHandler(startHandler);
         tested.addWiresDragMoveHandler(dragMoveHandler);
@@ -213,13 +220,13 @@ public class WiresContainerTest
     @Test
     public void testWiresDragStartHandler()
     {
-        WiresContainer handledContainer = createWithRealHandlers().setDraggable( true );
-        Group group = handledContainer.getGroup();
+        final WiresContainer handledContainer = createWithRealHandlers().setDraggable(true);
+        final Group group = handledContainer.getGroup();
         final Point2D result = new Point2D(0, 0);
         handledContainer.addWiresDragStartHandler(new WiresDragStartHandler()
         {
             @Override
-            public void onShapeDragStart(WiresDragStartEvent event)
+            public void onShapeDragStart(final WiresDragStartEvent event)
             {
                 result.setX(event.getX());
                 result.setY(event.getY());
@@ -234,13 +241,13 @@ public class WiresContainerTest
     @Test
     public void testWiresDragMoveHandler()
     {
-        WiresContainer handledContainer = createWithRealHandlers().setDraggable( true );
-        Group group = handledContainer.getGroup();
+        final WiresContainer handledContainer = createWithRealHandlers().setDraggable(true);
+        final Group group = handledContainer.getGroup();
         final Point2D result = new Point2D(0, 0);
         handledContainer.addWiresDragMoveHandler(new WiresDragMoveHandler()
         {
             @Override
-            public void onShapeDragMove(WiresDragMoveEvent event)
+            public void onShapeDragMove(final WiresDragMoveEvent event)
             {
                 result.setX(event.getX());
                 result.setY(event.getY());
@@ -255,12 +262,13 @@ public class WiresContainerTest
     @Test
     public void testWiresDragEndHandler()
     {
-        WiresContainer handledContainer = createWithRealHandlers().setDraggable( true );        Group group = handledContainer.getGroup();
+        final WiresContainer handledContainer = createWithRealHandlers().setDraggable(true);
+        final Group group = handledContainer.getGroup();
         final Point2D result = new Point2D(0, 0);
         handledContainer.addWiresDragEndHandler(new WiresDragEndHandler()
         {
             @Override
-            public void onShapeDragEnd(WiresDragEndEvent event)
+            public void onShapeDragEnd(final WiresDragEndEvent event)
             {
                 result.setX(event.getX());
                 result.setY(event.getY());
@@ -284,8 +292,8 @@ public class WiresContainerTest
 
     private static WiresContainer createWithRealHandlers()
     {
-        Layer layer = new Layer();
-        Group group = new Group();
+        final Layer layer = new Layer();
+        final Group group = new Group();
         layer.add(group);
         return new WiresContainer(group);
     }

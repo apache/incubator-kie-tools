@@ -31,7 +31,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 @StubClass("com.ait.lienzo.client.core.types.Transform$TransformJSO")
 public class TransformJSO extends JavaScriptObject
 {
-    private double[] matrix = new double[6];
+    private final double[] matrix = new double[6];
 
     protected TransformJSO()
     {
@@ -43,14 +43,14 @@ public class TransformJSO extends JavaScriptObject
         return make(1d, 0d, 0d, 1d, 0d, 0d);
     }
 
-    public static TransformJSO make(double x, double y)
+    public static TransformJSO make(final double x, final double y)
     {
         return make(1d, 0d, 0d, 1d, x, y);
     }
 
-    public static TransformJSO make(double m00, double m10, double m01, double m11, double m02, double m12)
+    public static TransformJSO make(final double m00, final double m10, final double m01, final double m11, final double m02, final double m12)
     {
-        TransformJSO jso = new TransformJSO();
+        final TransformJSO jso = new TransformJSO();
         jso.matrix[0] = m00;
         jso.matrix[1] = m10;
         jso.matrix[2] = m01;
@@ -70,13 +70,13 @@ public class TransformJSO extends JavaScriptObject
         this.matrix[5] = 0;
     }
 
-    public void translate(double x, double y)
+    public void translate(final double x, final double y)
     {
-        this.matrix[4] += this.matrix[0] * x + this.matrix[2] * y;
-        this.matrix[5] += this.matrix[1] * x + this.matrix[3] * y;
+        this.matrix[4] += (this.matrix[0] * x) + (this.matrix[2] * y);
+        this.matrix[5] += (this.matrix[1] * x) + (this.matrix[3] * y);
     }
 
-    public boolean same(TransformJSO that)
+    public boolean same(final TransformJSO that)
     {
         return (this.matrix[0] == that.matrix[0]) && (this.matrix[1] == that.matrix[1]) && (this.matrix[2] == that.matrix[2]) && (this.matrix[3] == that.matrix[3]) && (this.matrix[4] == that.matrix[4]) && (this.matrix[5] == that.matrix[5]);
     }
@@ -91,7 +91,7 @@ public class TransformJSO extends JavaScriptObject
         return make(this.matrix[0], this.matrix[1], this.matrix[2], this.matrix[3], this.matrix[4], this.matrix[5]);
     }
 
-    public void scale(double sx, double sy)
+    public void scale(final double sx, final double sy)
     {
         this.matrix[0] *= sx;
 
@@ -102,11 +102,11 @@ public class TransformJSO extends JavaScriptObject
         this.matrix[3] *= sy;
     }
 
-    public void shear(double shx, double shy)
+    public void shear(final double shx, final double shy)
     {
-        double m00 = this.matrix[0];
+        final double m00 = this.matrix[0];
 
-        double m10 = this.matrix[1];
+        final double m10 = this.matrix[1];
 
         this.matrix[0] += shy * this.matrix[2];
 
@@ -117,19 +117,19 @@ public class TransformJSO extends JavaScriptObject
         this.matrix[3] += shx * m10;
     }
 
-    public void rotate(double rad)
+    public void rotate(final double rad)
     {
-        double c = Math.cos(rad);
+        final double c = Math.cos(rad);
 
-        double s = Math.sin(rad);
+        final double s = Math.sin(rad);
 
-        double m11 = this.matrix[0] * c + this.matrix[2] * s;
+        final double m11 = (this.matrix[0] * c) + (this.matrix[2] * s);
 
-        double m12 = this.matrix[1] * c + this.matrix[3] * s;
+        final double m12 = (this.matrix[1] * c) + (this.matrix[3] * s);
 
-        double m21 = this.matrix[0] * -s + this.matrix[2] * c;
+        final double m21 = (this.matrix[0] * -s) + (this.matrix[2] * c);
 
-        double m22 = this.matrix[1] * -s + this.matrix[3] * c;
+        final double m22 = (this.matrix[1] * -s) + (this.matrix[3] * c);
 
         this.matrix[0] = m11;
 
@@ -140,19 +140,19 @@ public class TransformJSO extends JavaScriptObject
         this.matrix[3] = m22;
     }
 
-    public void multiply(TransformJSO transform)
+    public void multiply(final TransformJSO transform)
     {
-        double m11 = this.matrix[0] * transform.matrix[0] + this.matrix[2] * transform.matrix[1];
+        final double m11 = (this.matrix[0] * transform.matrix[0]) + (this.matrix[2] * transform.matrix[1]);
 
-        double m12 = this.matrix[1] * transform.matrix[0] + this.matrix[3] * transform.matrix[1];
+        final double m12 = (this.matrix[1] * transform.matrix[0]) + (this.matrix[3] * transform.matrix[1]);
 
-        double m21 = this.matrix[0] * transform.matrix[2] + this.matrix[2] * transform.matrix[3];
+        final double m21 = (this.matrix[0] * transform.matrix[2]) + (this.matrix[2] * transform.matrix[3]);
 
-        double m22 = this.matrix[1] * transform.matrix[2] + this.matrix[3] * transform.matrix[3];
+        final double m22 = (this.matrix[1] * transform.matrix[2]) + (this.matrix[3] * transform.matrix[3]);
 
-        double dx = this.matrix[0] * transform.matrix[4] + this.matrix[2] * transform.matrix[5] + this.matrix[4];
+        final double dx = (this.matrix[0] * transform.matrix[4]) + (this.matrix[2] * transform.matrix[5]) + this.matrix[4];
 
-        double dy = this.matrix[1] * transform.matrix[4] + this.matrix[3] * transform.matrix[5] + this.matrix[5];
+        final double dy = (this.matrix[1] * transform.matrix[4]) + (this.matrix[3] * transform.matrix[5]) + this.matrix[5];
 
         this.matrix[0] = m11;
 
@@ -169,33 +169,33 @@ public class TransformJSO extends JavaScriptObject
 
     public double getDeterminant()
     {
-        return this.matrix[0] * this.matrix[3] - this.matrix[2] * this.matrix[1];// m00 * m11 - m01 * m10
+        return (this.matrix[0] * this.matrix[3]) - (this.matrix[2] * this.matrix[1]);// m00 * m11 - m01 * m10
     }
 
     public TransformJSO getInverse()
     {
-        double m00 = this.matrix[0];
-        double m10 = this.matrix[1];
-        double m01 = this.matrix[2];
-        double m11 = this.matrix[3];
-        double m02 = this.matrix[4];
-        double m12 = this.matrix[5];
+        final double m00 = this.matrix[0];
+        final double m10 = this.matrix[1];
+        final double m01 = this.matrix[2];
+        final double m11 = this.matrix[3];
+        final double m02 = this.matrix[4];
+        final double m12 = this.matrix[5];
 
-        double det = m00 * m11 - m01 * m10;
+        final double det = (m00 * m11) - (m01 * m10);
 
-        return make(m11 / det, -m10 / det, -m01 / det, m00 / det, (m01 * m12 - m11 * m02) / det, (m10 * m02 - m00 * m12) / det);
+        return make(m11 / det, -m10 / det, -m01 / det, m00 / det, ((m01 * m12) - (m11 * m02)) / det, ((m10 * m02) - (m00 * m12)) / det);
     }
 
-    public double get(int i)
+    public double get(final int i)
     {
         return this.matrix[i];
     }
 
-    public void transform(Point2D.Point2DJSO src, Point2D.Point2DJSO target)
+    public void transform(final Point2D.Point2DJSO src, final Point2D.Point2DJSO target)
     {
-        double x = src.getX();
-        double y = src.getY();
-        target.setX(x * this.matrix[0] + y * this.matrix[2] + this.matrix[4]);
-        target.setY(x * this.matrix[1] + y * this.matrix[3] + this.matrix[5]);
+        final double x = src.getX();
+        final double y = src.getY();
+        target.setX((x * this.matrix[0]) + (y * this.matrix[2]) + this.matrix[4]);
+        target.setY((x * this.matrix[1]) + (y * this.matrix[3]) + this.matrix[5]);
     }
 }

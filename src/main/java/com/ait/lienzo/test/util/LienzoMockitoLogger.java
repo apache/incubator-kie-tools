@@ -20,10 +20,10 @@ import java.io.PrintStream;
 
 /**
  * Logger class. Used only for the framework's itself debugging purposes.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 public class LienzoMockitoLogger
 {
@@ -31,7 +31,7 @@ public class LienzoMockitoLogger
 
     private static boolean     enabled = false;
 
-    public static void enable(PrintStream stream)
+    public static void enable(final PrintStream stream)
     {
         LienzoMockitoLogger.stream = stream;
 
@@ -43,7 +43,7 @@ public class LienzoMockitoLogger
         LienzoMockitoLogger.enabled = false;
     }
 
-    public static void log(String context, String message)
+    public static void log(final String context, final String message)
     {
         if (enabled)
         {

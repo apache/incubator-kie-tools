@@ -27,15 +27,15 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * In-memory Map implementation sub for class <code>com.ait.tooling.nativetools.client.NObjectJSO</code>.
- * 
+ *
  * @author Roger Martinez
  * @since 1.0
- * 
+ *
  */
 @StubClass("com.ait.tooling.nativetools.client.NObjectJSO")
 public class NObjectJSO extends JavaScriptObject
 {
-    private Map<String, Object> attributes = new HashMap<String, Object>();
+    private final Map<String, Object> attributes = new HashMap<String, Object>();
 
     public static NObjectJSO make()
     {
@@ -143,27 +143,27 @@ public class NObjectJSO extends JavaScriptObject
 
     public boolean isString(final String name)
     {
-        return attributes.get(name) != null && attributes.get(name) instanceof String;
+        return (attributes.get(name) != null) && (attributes.get(name) instanceof String);
     }
 
     public boolean isNumber(final String name)
     {
-        return attributes.get(name) != null && attributes.get(name) instanceof Number;
+        return (attributes.get(name) != null) && (attributes.get(name) instanceof Number);
     }
 
     public boolean isInteger(final String name)
     {
-        return attributes.get(name) != null && attributes.get(name) instanceof Integer;
+        return (attributes.get(name) != null) && (attributes.get(name) instanceof Integer);
     }
 
     public boolean isBoolean(final String name)
     {
-        return attributes.get(name) != null && attributes.get(name) instanceof Boolean;
+        return (attributes.get(name) != null) && (attributes.get(name) instanceof Boolean);
     }
 
     public boolean isObject(final String name)
     {
-        return attributes.get(name) != null && attributes.get(name) instanceof JavaScriptObject;
+        return (attributes.get(name) != null) && (attributes.get(name) instanceof JavaScriptObject);
     }
 
     public boolean isDefined(final String name)
