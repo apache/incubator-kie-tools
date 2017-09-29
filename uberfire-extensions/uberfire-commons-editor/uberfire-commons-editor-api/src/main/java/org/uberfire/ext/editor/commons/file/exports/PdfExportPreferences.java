@@ -19,11 +19,21 @@ package org.uberfire.ext.editor.commons.file.exports;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+import static org.uberfire.preferences.shared.impl.validation.EnumValuePropertyValidator.parseString;
+
 /**
  * The pdf document's settings.
  */
 @Portable
 public final class PdfExportPreferences {
+
+    public static PdfExportPreferences create(final String orientation,
+                                              final String unit,
+                                              final String format) {
+        return create(Orientation.valueOf(parseString(orientation)),
+                      Unit.valueOf(parseString(unit)),
+                      Format.valueOf(parseString(format)));
+    }
 
     public static PdfExportPreferences create(final Orientation orientation,
                                               final Unit unit,
