@@ -34,7 +34,8 @@ public class TestFormEditorHelper extends FormEditorHelper {
         super(fieldManager,
               editorFieldLayoutComponents);
         fieldManager.getAllBasicTypeProviders().stream().forEach((provider) -> {
-            editorFieldTypes.add(provider.getDefaultField().getFieldType());
+            enabledPaletteFieldTypes.add(provider.getDefaultField().getFieldType());
+            enabledFieldPropertiesFieldTypes.add(provider.getDefaultField().getFieldType());
         });
     }
 
@@ -43,6 +44,6 @@ public class TestFormEditorHelper extends FormEditorHelper {
     }
 
     public Collection<FieldType> getEditorFieldTypes() {
-        return editorFieldTypes;
+        return enabledPaletteFieldTypes;
     }
 }

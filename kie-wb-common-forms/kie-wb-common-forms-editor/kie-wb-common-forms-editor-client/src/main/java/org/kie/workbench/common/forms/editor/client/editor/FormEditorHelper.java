@@ -34,7 +34,6 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.kie.workbench.common.forms.editor.client.EditorFieldTypesProvider;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
@@ -62,14 +61,18 @@ public class FormEditorHelper {
 
     protected Map<String, Pair<EditorFieldLayoutComponent, FieldDefinition>> unbindedFields = new HashMap<>();
 
-    protected Collection<FieldType> editorFieldTypes = new ArrayList<>();
+    protected Collection<FieldType> enabledPaletteFieldTypes = new ArrayList<>();
+    protected Collection<FieldType> enabledFieldPropertiesFieldTypes = new ArrayList<>();
 
     @PostConstruct
     public void init() {
         Collection<SyncBeanDef<EditorFieldTypesProvider>> providers = IOC.getBeanManager().lookupBeans(EditorFieldTypesProvider.class);
         providers.stream().map(SyncBeanDef::getInstance)
                 .sorted((EditorFieldTypesProvider providerA, EditorFieldTypesProvider providerB) -> providerA.getPriority() - providerB.getPriority())
-                .forEach((EditorFieldTypesProvider editorProvider) -> editorFieldTypes.addAll(editorProvider.getFieldTypes()));
+                .forEach((EditorFieldTypesProvider editorProvider) -> {
+                    enabledPaletteFieldTypes.addAll(editorProvider.getPaletteFieldTypes());
+                    enabledFieldPropertiesFieldTypes.addAll(editorProvider.getFieldPropertiesFieldTypes());
+                });
     }
 
     @Inject
@@ -90,7 +93,7 @@ public class FormEditorHelper {
             return;
         }
 
-        for (FieldType baseType : editorFieldTypes) {
+        for (FieldType baseType : enabledPaletteFieldTypes) {
             EditorFieldLayoutComponent layoutComponent = editorFieldLayoutComponents.get();
             if (layoutComponent != null) {
                 FieldDefinition field = fieldManager.getDefinitionByFieldType(baseType);
@@ -209,7 +212,7 @@ public class FormEditorHelper {
     }
 
     public List<String> getCompatibleFieldTypes(FieldDefinition field) {
-        List<String> editorFieldTypeCodes = editorFieldTypes.stream().map(FieldType::getTypeName).collect(Collectors.toList());
+        List<String> editorFieldTypeCodes = enabledFieldPropertiesFieldTypes.stream().map(FieldType::getTypeName).collect(Collectors.toList());
         return fieldManager.getCompatibleFields(field).stream().filter((fieldCode) -> editorFieldTypeCodes.contains(fieldCode))
                 .collect(Collectors.toList());
     }

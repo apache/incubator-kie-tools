@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.editor.client;
+package org.kie.workbench.common.forms.editor.client.editor;
 
 import java.util.Collection;
 
@@ -24,5 +24,7 @@ public interface EditorFieldTypesProvider {
 
     int getPriority();
 
-    Collection<FieldType> getFieldTypes();
+    Collection<FieldType> getPaletteFieldTypes();
+
+    Collection<FieldType> getFieldPropertiesFieldTypes();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.editor.client;
+package org.kie.workbench.common.forms.editor.client.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.type.CheckBoxFieldType;
@@ -31,10 +33,32 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.r
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.type.TextBoxFieldType;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.type.MultipleSubFormFieldType;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.type.SubFormFieldType;
 import org.kie.workbench.common.forms.model.FieldType;
 
 @ApplicationScoped
 public class EditorFieldTypesProviderImpl implements EditorFieldTypesProvider {
+
+    private List<FieldType> paletteFieldTypes = new ArrayList<>();
+    private List<FieldType> fieldPropertiesFieldTypes = new ArrayList<>();
+
+    @PostConstruct
+    public void init() {
+        paletteFieldTypes.add(new TextBoxFieldType());
+        paletteFieldTypes.add(new TextAreaFieldType());
+        paletteFieldTypes.add(new IntegerBoxFieldType());
+        paletteFieldTypes.add(new DecimalBoxFieldType());
+        paletteFieldTypes.add(new CheckBoxFieldType());
+        paletteFieldTypes.add(new DatePickerFieldType());
+        paletteFieldTypes.add(new SliderFieldType());
+        paletteFieldTypes.add(new ListBoxFieldType());
+        paletteFieldTypes.add(new RadioGroupFieldType());
+        paletteFieldTypes.add(new PictureFieldType());
+        fieldPropertiesFieldTypes.addAll(paletteFieldTypes);
+        fieldPropertiesFieldTypes.add(new SubFormFieldType());
+        fieldPropertiesFieldTypes.add(new MultipleSubFormFieldType());
+    }
 
     @Override
     public int getPriority() {
@@ -42,21 +66,12 @@ public class EditorFieldTypesProviderImpl implements EditorFieldTypesProvider {
     }
 
     @Override
-    public Collection<FieldType> getFieldTypes() {
+    public Collection<FieldType> getPaletteFieldTypes() {
+        return paletteFieldTypes;
+    }
 
-        ArrayList<FieldType> types = new ArrayList<>();
-
-        types.add(new TextBoxFieldType());
-        types.add(new TextAreaFieldType());
-        types.add(new IntegerBoxFieldType());
-        types.add(new DecimalBoxFieldType());
-        types.add(new CheckBoxFieldType());
-        types.add(new DatePickerFieldType());
-        types.add(new SliderFieldType());
-        types.add(new ListBoxFieldType());
-        types.add(new RadioGroupFieldType());
-        types.add(new PictureFieldType());
-
-        return types;
+    @Override
+    public Collection<FieldType> getFieldPropertiesFieldTypes() {
+        return fieldPropertiesFieldTypes;
     }
 }
