@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.canvas.util;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
@@ -24,7 +25,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -37,49 +42,109 @@ import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
+import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CanvasLayoutUtilsTest {
 
-    private final static double NEW_NODE_WIDTH = 100;
     private final static double NEW_NODE_HEIGHT = 100;
+
     private Point2D canvasMin;
     private Point2D canvasMax;
     private Point2D offset;
 
     @Mock
     private Diagram diagram;
+
     @Mock
     private Element parentCanvasRoot;
+
     @Mock
     private Element parentNotCanvasRoot;
+
     @Mock
     private DefinitionSet definitionSet;
+
     @Mock
     private Metadata metadata;
+
     @Mock
     private CanvasHandler canvasHandler;
+
     @Mock
     private Graph<DefinitionSet, Node> graph;
+
+    @Mock
+    private Canvas canvas;
+
+    @Mock
+    private GraphBoundsIndexer graphBoundsIndexer;
+
+    @Mock
+    private RuleManager ruleManager;
+
+    @Mock
+    private RuleSet ruleSet;
+
+    @Mock
+    private TypeDefinitionSetRegistry typeDefinitionSetRegistry;
+
+    @Mock
+    private Object defSet;
+
+    @Mock
+    private AdapterManager adapterManager;
+
+    @Mock
+    private Iterable<RuleViolation> ruleViolationIterable;
+
+    @Mock
+    private Iterator ruleViolationIterator;
+
+    @Mock
+    private DefinitionSetRuleAdapter definitionSetRuleAdapter;
+
+    @Mock
+    private RuleViolations ruleViolations;
+
+    @Mock
+    private DefinitionManager definitionManager;
+
     @Mock
     private Bounds canvasBounds;
+
     @Mock
     private Bounds.Bound minCanvasBound;
+
     @Mock
     private Bounds.Bound maxCanvasBound;
+
     @Mock
     private Node<DefinitionSet, ?> nodeRoot;
+
     private CanvasLayoutUtils canvasLayoutUtils;
     private TestingGraphMockHandler graphTestHandler;
-    private TestingGraphInstanceBuilder.TestGraph2 graphInstance;
+    private TestingGraphInstanceBuilder.TestGraph1 graphInstance;
+
+    private TestingGraphMockHandler graphTestHandlerParent;
+    private TestingGraphInstanceBuilder.TestGraph2 graphInstanceParent;
 
     @Before
     public void setup() throws Exception {
@@ -87,13 +152,18 @@ public class CanvasLayoutUtilsTest {
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getDiagram().getGraph()).thenReturn(graph);
         when(canvasHandler.getDiagram().getGraph().getNode("canvas_root")).thenReturn(nodeRoot);
+
         when(graph.getContent()).thenReturn(definitionSet);
         when(graph.getContent().getBounds()).thenReturn(canvasBounds);
+
         when(canvasHandler.getDiagram().getGraph().getNode("canvas_root")).thenReturn(nodeRoot);
         when(parentCanvasRoot.getUUID()).thenReturn("canvas_root");
         when(parentNotCanvasRoot.getUUID()).thenReturn("canvas_not_root");
         when(canvasBounds.getUpperLeft()).thenReturn(minCanvasBound);
         when(canvasBounds.getLowerRight()).thenReturn(maxCanvasBound);
+
+        when(canvasHandler.getCanvas()).thenReturn(canvas);
+
         canvasMin = new Point2D(0d,
                                 0d);
         when(minCanvasBound.getX()).thenReturn(canvasMin.getX());
@@ -104,7 +174,21 @@ public class CanvasLayoutUtilsTest {
         when(maxCanvasBound.getY()).thenReturn(canvasMax.getY());
         offset = new Point2D(100d,
                              100d);
-        canvasLayoutUtils = new CanvasLayoutUtils();
+        when(canvasHandler.getCanvas().getHeight()).thenReturn((int) canvasMax.getY());
+        when(canvasHandler.getCanvas().getWidth()).thenReturn((int) canvasMax.getX());
+
+        canvasLayoutUtils = new CanvasLayoutUtils(graphBoundsIndexer,
+                                                  ruleManager,
+                                                  definitionManager);
+
+        when(metadata.getDefinitionSetId()).thenReturn("definitionSetId");
+        when(definitionManager.definitionSets()).thenReturn(typeDefinitionSetRegistry);
+
+        when(typeDefinitionSetRegistry.getDefinitionSetById(eq("definitionSetId"))).thenReturn(defSet);
+        when(definitionManager.adapters()).thenReturn(adapterManager);
+        when(adapterManager.forRules()).thenReturn(definitionSetRuleAdapter);
+
+        when(definitionSetRuleAdapter.getRuleSet(defSet)).thenReturn(ruleSet);
     }
 
     @Test
@@ -140,76 +224,6 @@ public class CanvasLayoutUtilsTest {
     }
 
     @Test
-    public void getNextWidthHeightTest() {
-        Node node = mock(Node.class);
-        Bounds bounds = new BoundsImpl(new BoundImpl(100d,
-                                                     100d),
-                                       new BoundImpl(300d,
-                                                     200d));
-        List<Node> nodes = new ArrayList<Node>();
-        View view = mock(View.class);
-        when(node.getContent()).thenReturn(view);
-        when(view.getBounds()).thenReturn(bounds);
-        nodes.add(node);
-        when(graph.nodes()).thenReturn(nodes);
-        double[] next = canvasLayoutUtils.getNext(canvasHandler,
-                                                  NEW_NODE_HEIGHT);
-        double x = next[0];
-        double y = next[1];
-        assertTrue(x > NEW_NODE_WIDTH);
-        assertTrue(y > NEW_NODE_HEIGHT);
-    }
-
-    @Test
-    public void getNextOffsetTest() {
-        Node node = mock(Node.class);
-        Bounds bounds = new BoundsImpl(new BoundImpl(100d,
-                                                     100d),
-                                       new BoundImpl(300d,
-                                                     200d));
-        List<Node> nodes = new ArrayList<Node>();
-        View view = mock(View.class);
-        when(node.getContent()).thenReturn(view);
-        when(view.getBounds()).thenReturn(bounds);
-        nodes.add(node);
-        when(graph.nodes()).thenReturn(nodes);
-
-        double[] next = canvasLayoutUtils.getNext(canvasHandler,
-                                                  NEW_NODE_HEIGHT,
-                                                  offset
-        );
-        double nextX = next[0];
-        double nextY = next[1];
-        assertTrue(nextX > (NEW_NODE_WIDTH + offset.getX()));
-        assertTrue(nextY > (NEW_NODE_HEIGHT + offset.getY()));
-    }
-
-    @Test
-    public void getNextOffsetAndMin() {
-        Node node = mock(Node.class);
-        Bounds bounds = new BoundsImpl(new BoundImpl(100d,
-                                                     100d),
-                                       new BoundImpl(300d,
-                                                     200d));
-        List<Node> nodes = new ArrayList<Node>();
-        View view = mock(View.class);
-        when(node.getContent()).thenReturn(view);
-        when(view.getBounds()).thenReturn(bounds);
-        nodes.add(node);
-        when(graph.nodes()).thenReturn(nodes);
-        final Point2D min = new Point2D(canvasMin.getX(),
-                                        canvasMin.getY());
-        double[] next = canvasLayoutUtils.getNext(canvasHandler,
-                                                  NEW_NODE_HEIGHT,
-                                                  offset,
-                                                  min);
-        double nextX = next[0];
-        double nextY = next[1];
-        assertTrue(nextX > (NEW_NODE_WIDTH + offset.getX()));
-        assertTrue(nextY > (NEW_NODE_HEIGHT + offset.getY()));
-    }
-
-    @Test
     public void getNextFromRoot() {
         Node node1 = mock(Node.class);
         Bounds boundsNode1 = new BoundsImpl(new BoundImpl(100d,
@@ -240,6 +254,7 @@ public class CanvasLayoutUtilsTest {
         when(rootView.getBounds()).thenReturn(rootBounds);
         List<Node> nodes = new ArrayList<Node>();
         List<Edge> edges = new ArrayList<Edge>();
+
         Edge edge = mock(Edge.class);
         edges.add(edge);
         when(nodeRoot.getOutEdges()).thenReturn(edges);
@@ -247,19 +262,21 @@ public class CanvasLayoutUtilsTest {
         when(nodeRoot.getContent()).thenReturn(rootView);
         nodes.add(nodeRoot);
         when(graph.nodes()).thenReturn(nodes);
-        double[] next = canvasLayoutUtils.getNext(canvasHandler,
-                                                  nodeRoot,
-                                                  node2);
-        double nextX = next[0];
-        double nextY = next[1];
-        assertTrue(nextX > rootWidth);
-        assertTrue(nextY > NEW_NODE_HEIGHT);
+        when(node2.getInEdges()).thenReturn(edges);
+        when(nodeRoot.asNode()).thenReturn(nodeRoot);
+
+        Point2D next = canvasLayoutUtils.getNext(canvasHandler,
+                                                 nodeRoot,
+                                                 node2);
+
+        assertTrue(next.getX() > rootWidth);
+        assertTrue(next.getY() > NEW_NODE_HEIGHT);
     }
 
     @Test
     public void getNextFromRootWithParent() {
-        this.graphTestHandler = new TestingGraphMockHandler();
-        graphInstance = TestingGraphInstanceBuilder.newGraph2(graphTestHandler);
+        this.graphTestHandlerParent = new TestingGraphMockHandler();
+        graphInstanceParent = TestingGraphInstanceBuilder.newGraph2(graphTestHandlerParent);
         Node node = mock(Node.class);
         Bounds boundsNode = new BoundsImpl(new BoundImpl(100d,
                                                          100d),
@@ -268,15 +285,153 @@ public class CanvasLayoutUtilsTest {
         View viewNode = mock(View.class);
         when(node.getContent()).thenReturn(viewNode);
         when(viewNode.getBounds()).thenReturn(boundsNode);
+        when(canvasHandler.getDiagram().getGraph()).thenReturn(graphInstanceParent.graph);
+
+        Point2D next = canvasLayoutUtils.getNext(canvasHandler,
+                                                 graphInstanceParent.startNode,
+                                                 node);
+
+        Node<View<?>, Edge> start = (Node<View<?>, Edge>) graphInstanceParent.startNode;
+        double[] size = GraphUtils.getNodeSize((View) start.getContent());
+        assertTrue(next.getX() == CanvasLayoutUtils.getPaddingX());
+        assertTrue(next.getY() > size[1]);
+    }
+
+    @Test
+    public void getNextOutOfCanvas() {
+        when(ruleManager.evaluate(eq(ruleSet),
+                                  any(RuleEvaluationContext.class))).thenReturn(ruleViolations);
+
+        when(ruleViolations.violations(Violation.Type.ERROR)).thenReturn(ruleViolationIterable);
+        when(ruleViolations.violations(Violation.Type.ERROR).iterator()).thenReturn(ruleViolationIterator);
+        when(ruleViolations.violations(Violation.Type.ERROR).iterator().hasNext()).thenReturn(true);
+
+        this.graphTestHandler = new TestingGraphMockHandler();
+        graphInstance = TestingGraphInstanceBuilder.newGraph1(graphTestHandler);
+
+        Node node = mock(Node.class);
+
+        Bounds boundsNode = new BoundsImpl(new BoundImpl(100d,
+                                                         0d),
+                                           new BoundImpl(300d,
+                                                         1400d));
+        View viewNode = mock(View.class);
+        when(node.getContent()).thenReturn(viewNode);
+        when(viewNode.getBounds()).thenReturn(boundsNode);
+
+        Node newNode = mock(Node.class);
+
+        Bounds boundsNewNode = new BoundsImpl(new BoundImpl(100d,
+                                                            200d),
+                                              new BoundImpl(300d,
+                                                            300d));
+        View viewNewNode = mock(View.class);
+
+        when(newNode.getContent()).thenReturn(viewNewNode);
+        when(viewNewNode.getBounds()).thenReturn(boundsNewNode);
         when(canvasHandler.getDiagram().getGraph()).thenReturn(graphInstance.graph);
-        double[] next = canvasLayoutUtils.getNext(canvasHandler,
-                                                  graphInstance.startNode,
-                                                  node);
-        Node<View<?>, Edge> start = (Node<View<?>, Edge>) graphInstance.startNode;
-        final double[] size = GraphUtils.getNodeSize((View) start.getContent());
-        double nextX = next[0];
-        double nextY = next[1];
-        assertTrue(nextX > size[0]);
-        assertTrue(nextY > size[1]);
+
+        when(graphBoundsIndexer.getAt(140.0,
+                                      0.0,
+                                      200.0,
+                                      100.0,
+                                      null)).thenReturn(node);
+
+        graphInstance.startNode.getOutEdges().clear();
+
+        Point2D next = canvasLayoutUtils.getNext(canvasHandler,
+                                                 graphInstance.startNode,
+                                                 newNode);
+
+        Node<View<?>, Edge> intermNode = (Node<View<?>, Edge>) graphInstance.intermNode;
+        double[] size = GraphUtils.getNodeSize((View) intermNode.getContent());
+
+        assertTrue(next.getX() > size[0]);
+        assertTrue(next.getY() == canvasLayoutUtils.getPaddingY());
+    }
+
+    @Test
+    public void getNextFromNewTaskWithNonEmptyPositionWithParent() {
+        when(ruleManager.evaluate(eq(ruleSet),
+                                  any(RuleEvaluationContext.class))).thenReturn(ruleViolations);
+
+        when(ruleViolations.violations(Violation.Type.ERROR)).thenReturn(ruleViolationIterable);
+        when(ruleViolations.violations(Violation.Type.ERROR).iterator()).thenReturn(ruleViolationIterator);
+        when(ruleViolations.violations(Violation.Type.ERROR).iterator().hasNext()).thenReturn(false);
+        this.graphTestHandlerParent = new TestingGraphMockHandler();
+        graphInstanceParent = TestingGraphInstanceBuilder.newGraph2(graphTestHandlerParent);
+
+        Node newNode = mock(Node.class);
+
+        Bounds boundsNewNode = new BoundsImpl(new BoundImpl(100d,
+                                                            200d),
+                                              new BoundImpl(300d,
+                                                            300d));
+        View viewNewNode = mock(View.class);
+
+        when(newNode.getContent()).thenReturn(viewNewNode);
+        when(viewNewNode.getBounds()).thenReturn(boundsNewNode);
+        when(canvasHandler.getDiagram().getGraph()).thenReturn(graphInstanceParent.graph);
+        when(graphBoundsIndexer.getAt(280.0,
+                                      100.0,
+                                      100.0,
+                                      100.0,
+                                      graphInstanceParent.parentNode)).thenReturn(graphInstanceParent.intermNode);
+
+        graphInstanceParent.startNode.getOutEdges().clear();
+
+        Point2D next = canvasLayoutUtils.getNext(canvasHandler,
+                                                 graphInstanceParent.startNode,
+                                                 newNode);
+        Node<View<?>, Edge> intermNode = (Node<View<?>, Edge>) graphInstanceParent.intermNode;
+        double[] size = GraphUtils.getNodeSize((View) intermNode.getContent());
+        assertTrue(next.getX() == canvasLayoutUtils.getPaddingX());
+        assertTrue(next.getY() > size[1]);
+    }
+
+    @Test
+    public void getNextNewTaskWithNonEmptyPosition() {
+
+        when(ruleManager.evaluate(eq(ruleSet),
+                                  any(RuleEvaluationContext.class))).thenReturn(ruleViolations);
+
+        when(ruleViolations.violations(Violation.Type.ERROR)).thenReturn(ruleViolationIterable);
+        when(ruleViolations.violations(Violation.Type.ERROR).iterator()).thenReturn(ruleViolationIterator);
+        when(ruleViolations.violations(Violation.Type.ERROR).iterator().hasNext()).thenReturn(true);
+
+        this.graphTestHandler = new TestingGraphMockHandler();
+        graphInstance = TestingGraphInstanceBuilder.newGraph1(graphTestHandler);
+
+        Node newNode = mock(Node.class);
+
+        Bounds boundsNewNode = new BoundsImpl(new BoundImpl(200d,
+                                                            300d),
+                                              new BoundImpl(300d,
+                                                            400d));
+        View viewNewNode = mock(View.class);
+
+        when(newNode.getContent()).thenReturn(viewNewNode);
+        when(viewNewNode.getBounds()).thenReturn(boundsNewNode);
+
+        when(canvasHandler.getDiagram().getGraph()).thenReturn(graphInstance.graph);
+
+        when(graphBoundsIndexer.getAt(140.0,
+                                      0.0,
+                                      100.0,
+                                      100.0,
+                                      null)).thenReturn(graphInstance.intermNode);
+
+        graphInstance.startNode.getOutEdges().clear();
+
+        Point2D next = canvasLayoutUtils.getNext(canvasHandler,
+                                                 graphInstance.startNode,
+                                                 newNode);
+
+        Node<View<?>, Edge> startNode = (Node<View<?>, Edge>) graphInstance.startNode;
+        double[] sizeStartNode = GraphUtils.getNodeSize((View) startNode.getContent());
+        Node<View<?>, Edge> intermNode = (Node<View<?>, Edge>) graphInstance.intermNode;
+        double[] sizeIntermNode = GraphUtils.getNodeSize((View) intermNode.getContent());
+        assertTrue(next.getX() == sizeStartNode[0] + canvasLayoutUtils.getPaddingX());
+        assertTrue(next.getY() > sizeIntermNode[1]);
     }
 }

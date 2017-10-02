@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.index.bounds.CanvasBoundsIndexer;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.BoundsIndexer;
@@ -32,7 +33,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.Bound
 @Dependent
 public class CanvasBoundsIndexerImpl implements CanvasBoundsIndexer<AbstractCanvasHandler> {
 
-    private AbstractCanvasHandler canvasHandler;
+    AbstractCanvasHandler canvasHandler;
 
     public BoundsIndexer<AbstractCanvasHandler, Node<View<?>, Edge>> build(final AbstractCanvasHandler context) {
         this.canvasHandler = context;
@@ -54,6 +55,81 @@ public class CanvasBoundsIndexerImpl implements CanvasBoundsIndexer<AbstractCanv
                 return canvasHandler.getGraphIndex().getNode(shape.getUUID());
             }
         }
+        return null;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Node<View<?>, Edge> getAt(final double x,
+                                     final double y,
+                                     final double width,
+                                     final double height,
+                                     final Element parentNode) {
+        final AbstractCanvas canvas = canvasHandler.getAbstractCanvas();
+        final LienzoLayer lienzoLayer = (LienzoLayer) canvas.getLayer();
+        Node node;
+
+        final String viewUUID_UL = LienzoLayerUtils.getUUID_At(lienzoLayer,
+                                                               x,
+                                                               y);
+
+        final String viewUUID_UR = LienzoLayerUtils.getUUID_At(lienzoLayer,
+                                                               x + width,
+                                                               y);
+
+        final String viewUUID_CC = LienzoLayerUtils.getUUID_At(lienzoLayer,
+                                                               x + (width / 2),
+                                                               y + (height / 2));
+        final String viewUUID_LL = LienzoLayerUtils.getUUID_At(lienzoLayer,
+                                                               x,
+                                                               y + height);
+        final String viewUUID_LR = LienzoLayerUtils.getUUID_At(lienzoLayer,
+                                                               x + width,
+                                                               y + height);
+
+        if (null != viewUUID_UL && viewUUID_UL.trim().length() > 0) {
+            final Shape<?> shape = canvas.getShape(viewUUID_UL);
+            if (null != shape) {
+
+                node = canvasHandler.getGraphIndex().getNode(shape.getUUID());
+                if (node != parentNode) {
+                    return node;
+                }
+            }
+        } else if (null != viewUUID_UR && viewUUID_UR.trim().length() > 0) {
+            final Shape<?> shape = canvas.getShape(viewUUID_UR);
+            if (null != shape) {
+                node = canvasHandler.getGraphIndex().getNode(shape.getUUID());
+                if (node != parentNode) {
+                    return node;
+                }
+            }
+        } else if (null != viewUUID_CC && viewUUID_CC.trim().length() > 0) {
+            final Shape<?> shape = canvas.getShape(viewUUID_CC);
+            if (null != shape) {
+                node = canvasHandler.getGraphIndex().getNode(shape.getUUID());
+                if (node != parentNode) {
+                    return node;
+                }
+            }
+        } else if (null != viewUUID_LL && viewUUID_LL.trim().length() > 0) {
+            final Shape<?> shape = canvas.getShape(viewUUID_LL);
+            if (null != shape) {
+                node = canvasHandler.getGraphIndex().getNode(shape.getUUID());
+                if (node != parentNode) {
+                    return node;
+                }
+            }
+        } else if (null != viewUUID_LR && viewUUID_LR.trim().length() > 0) {
+            final Shape<?> shape = canvas.getShape(viewUUID_LR);
+            if (null != shape) {
+                node = canvasHandler.getGraphIndex().getNode(shape.getUUID());
+                if (node != parentNode) {
+                    return node;
+                }
+            }
+        }
+
         return null;
     }
 

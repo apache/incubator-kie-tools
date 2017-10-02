@@ -16,11 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.util;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -29,10 +28,16 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
+import org.kie.workbench.common.stunner.core.rule.context.NodeContainmentContext;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -48,7 +53,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
  * In both cases the resulting coordinates are given from the coordinates of the visible element in the graph, which
  * is position is on bottom right rather than the others, plus a given <code>PADDING</code> anb some
  * error margin given by the <code>MARGIN</code> floating point.
- * <p/>
+ * <p>
  * TODO: This has to be refactored by the use of a good impl that achieve good dynamic layouts. Probably each
  * Definition Set / Diagram will require a different layout manager as well.
  */
@@ -57,6 +62,27 @@ public class CanvasLayoutUtils {
 
     private static final int PADDING_X = 40;
     private static final int PADDING_Y = 40;
+    private static final int CANVAS_BOTTOM_MARGIN = 15;
+
+    @Inject
+    private GraphBoundsIndexer graphBoundsIndexer;
+
+    @Inject
+    private RuleManager ruleManager;
+
+    @Inject
+    private DefinitionManager definitionManager;
+
+    public CanvasLayoutUtils() {
+    }
+
+    CanvasLayoutUtils(GraphBoundsIndexer graphBoundsIndexer,
+                      RuleManager ruleManager,
+                      DefinitionManager definitionManager) {
+        this.graphBoundsIndexer = graphBoundsIndexer;
+        this.ruleManager = ruleManager;
+        this.definitionManager = definitionManager;
+    }
 
     public static boolean isCanvasRoot(final Diagram diagram,
                                        final Element parent) {
@@ -70,91 +96,18 @@ public class CanvasLayoutUtils {
         return (null != canvasRoot && null != pUUID && canvasRoot.equals(pUUID));
     }
 
-    @SuppressWarnings("unchecked")
-    public double[] getNext(final CanvasHandler canvasHandler,
-                            final double height) {
-        Point2D point2D = new Point2D(0,
-                                      0);
-        return getNext(canvasHandler,
-                       height,
-                       point2D
-        );
+    public static int getPaddingX() {
+        return PADDING_X;
+    }
+
+    public static int getPaddingY() {
+        return PADDING_Y;
     }
 
     @SuppressWarnings("unchecked")
-    public double[] getNext(final CanvasHandler canvasHandler,
-                            final double height,
-                            final Point2D offset
-    ) {
-
-        checkNotNull("canvasHandler",
-                     canvasHandler);
-        final Bounds bounds = getGraphBounds(canvasHandler);
-        final Bounds.Bound ul = bounds.getUpperLeft();
-        final String ruuid = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
-        Point2D min = new Point2D(ul.getX(),
-                                  ul.getY());
-        if (null != ruuid) {
-            Node root = canvasHandler.getDiagram().getGraph().getNode(ruuid);
-            return getNext(canvasHandler,
-                           root,
-                           height,
-                           offset,
-                           min);
-        }
-        final Iterable<Node> nodes = canvasHandler.getDiagram().getGraph().nodes();
-        if (null != nodes) {
-            final Bounds.Bound lr = bounds.getLowerRight();
-            final List<Node<View<?>, Edge>> nodeList = new LinkedList<>();
-            nodes.forEach(nodeList::add);
-            return getNext(canvasHandler,
-                           nodeList,
-                           height,
-                           offset,
-                           min,
-                           lr.getX() - PADDING_X);
-        }
-        return new double[]{ul.getX(), ul.getY()};
-    }
-
-    @SuppressWarnings("unchecked")
-    public double[] getNext(final CanvasHandler canvasHandler,
-                            final double h,
-                            final Point2D offset,
-                            final Point2D min
-    ) {
-        checkNotNull("canvasHandler",
-                     canvasHandler);
-        final String ruuid = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
-        if (null != ruuid) {
-            Node root = canvasHandler.getDiagram().getGraph().getNode(ruuid);
-            return getNext(canvasHandler,
-                           root,
-                           h,
-                           offset,
-                           min
-            );
-        }
-        final Bounds bounds = getGraphBounds(canvasHandler);
-        final Bounds.Bound lr = bounds.getLowerRight();
-        final Iterable<Node> nodes = canvasHandler.getDiagram().getGraph().nodes();
-        if (null != nodes) {
-            final List<Node<View<?>, Edge>> nodeList = new LinkedList<>();
-            nodes.forEach(nodeList::add);
-            return getNext(canvasHandler,
-                           nodeList,
-                           h,
-                           offset,
-                           min,
-                           lr.getX() - PADDING_X);
-        }
-        return new double[]{min.getX(), min.getY()};
-    }
-
-    @SuppressWarnings("unchecked")
-    public double[] getNext(final CanvasHandler canvasHandler,
-                            final Node<View<?>, Edge> root,
-                            final Node<View<?>, Edge> newNode) {
+    public Point2D getNext(final CanvasHandler canvasHandler,
+                           final Node<View<?>, Edge> root,
+                           final Node<View<?>, Edge> newNode) {
         final double[] rootBounds = getBoundCoordinates(root.getContent());
         final double[] rootSize = GraphUtils.getNodeSize(root.getContent());
         final double[] newNodeSize = GraphUtils.getNodeSize(newNode.getContent());
@@ -182,6 +135,7 @@ public class CanvasLayoutUtils {
                     offset[0].setY(maxNodeY[0] + nodeSize[1] - rootPos.getY());
                 }
             });
+
             offset[0].setY(offset[0].getY() + parentOffset[0].getY() + PADDING_Y);
         } else {
             offset[0].setY(parentOffset[0].getY() - (newNodeSize[1] - rootSize[1]) / 2);
@@ -195,85 +149,264 @@ public class CanvasLayoutUtils {
 
         return getNext(canvasHandler,
                        root,
+                       rootSize[0],
                        rootSize[1],
+                       newNodeSize[0],
+                       newNodeSize[1],
                        offsetCoordinates,
                        rootBoundsCoordinates
         );
     }
 
-    public double[] getNext(final CanvasHandler canvasHandler,
-                            final Node<View<?>, Edge> root,
-                            final double h,
-                            final Point2D offset,
-                            final Point2D min
+    public Point2D getNext(final CanvasHandler canvasHandler,
+                           final Node<View<?>, Edge> root,
+                           final double w,
+                           final double h,
+                           final double newNodeWidth,
+                           final double newNodeHeight,
+                           Point2D offset,
+                           Point2D min
     ) {
         checkNotNull("canvasHandler",
                      canvasHandler);
         checkNotNull("root",
                      root);
-        final List<Edge> outEdges = root.getOutEdges();
-        final double[] totHeight = new double[1];
-        totHeight[0] = 0;
-        if (null != outEdges) {
-            final List<Node<View<?>, Edge>> nodes = new LinkedList<>();
-            outEdges.stream().forEach(edge -> {
-                if (edge instanceof Child
-                        && edge.getTargetNode().getContent() instanceof View) {
-                    nodes.add(edge.getTargetNode());
-                }
-            });
-            if (!nodes.isEmpty()) {
-                final double[] rootBounds = getBoundCoordinates(root.getContent());
-                final double[] n = getNext(canvasHandler,
-                                           nodes,
-                                           h,
-                                           offset,
-                                           min,
-                                           rootBounds[0] - PADDING_X);
-                return new double[]{n[0] + PADDING_X, n[1]};
+
+        final int canvasHeight = canvasHandler.getCanvas().getHeight();
+        final int canvasWidth = canvasHandler.getCanvas().getWidth();
+
+        Point2D newPositionUL = getNextPositionWithOffset(min,
+                                                          offset);
+
+        graphBoundsIndexer.build(canvasHandler.getDiagram().getGraph());
+
+        boolean canContain = false;
+
+        Element parentNode = GraphUtils.getParent(root.asNode());
+
+        boolean checkParent = false;
+
+        if (parentNode != null) {
+            if (!(isCanvasRoot(canvasHandler.getDiagram(),
+                               parentNode.getUUID()))) {
+                checkParent = true;
             }
         }
-        double[] nextPosition = getNextPositionWithOffset(min,
-                                                          offset
-        );
+
+        Node targetNodeContainer = graphBoundsIndexer.getAt(newPositionUL.getX(),
+                                                            newPositionUL.getY(),
+                                                            newNodeWidth,
+                                                            newNodeHeight,
+                                                            parentNode);
+        if (targetNodeContainer != null) {
+
+            canContain = canContain(canvasHandler,
+                                    targetNodeContainer,
+                                    root);
+        }
+        if ((!canContain) || isOutOfCanvas(newPositionUL,
+                                           newNodeHeight,
+                                           canvasHeight) || checkParent) {
+
+            if (checkParent) {
+                newPositionUL = getNextPositionFromParent(min,
+                                                          offset,
+                                                          parentNode,
+                                                          h);
+            }
+            while
+                    (((!isCanvasPositionAvailable(graphBoundsIndexer,
+                                                  newPositionUL,
+                                                  newNodeWidth,
+                                                  newNodeHeight,
+                                                  parentNode)) &&
+                    !canContain)
+                    &&
+                    (newPositionUL.getY() < canvasHeight) && (newPositionUL.getX() < canvasWidth)
+                    ||
+                    isOutOfCanvas(newPositionUL,
+                                  newNodeHeight,
+                                  canvasHeight)) {
+
+                parentNode = GraphUtils.getParent(root.asNode());
+                checkParent = false;
+
+                if (parentNode != null) {
+                    if (!(isCanvasRoot(canvasHandler.getDiagram(),
+                                       parentNode.getUUID()))) {
+                        checkParent = true;
+                    }
+                }
+
+                double[] nodeAtPositionSize;
+
+                nodeAtPositionSize = getNodeSizeAt(graphBoundsIndexer,
+                                                   newPositionUL,
+                                                   newNodeWidth,
+                                                   newNodeHeight,
+                                                   parentNode);
+
+                if (checkParent) {
+                    final Node targetNodeNewPos = graphBoundsIndexer.getAt(newPositionUL.getX(),
+                                                                           newPositionUL.getY(),
+                                                                           newNodeWidth,
+                                                                           newNodeHeight,
+                                                                           parentNode);
+                    if (parentNode != targetNodeNewPos) {
+                        offset.setY(offset.getY() + PADDING_Y);
+                    }
+                } else {
+
+                    if ((nodeAtPositionSize == null) && (!checkParent)) {
+                        nodeAtPositionSize = new double[1];
+                        nodeAtPositionSize[1] = 0;
+                        offset.setY(offset.getY() + PADDING_Y);
+                    } else {
+                        offset.setY(offset.getY() + nodeAtPositionSize[1] + PADDING_Y);
+                    }
+                }
+                newPositionUL = getNextPositionWithOffset(min,
+                                                          offset);
+
+                if (isOutOfCanvas(newPositionUL,
+                                  newNodeHeight,
+                                  canvasHeight)) {
+                    min.setY(0);
+                    offset.setY(PADDING_Y);
+                    offset.setX(offset.getX() + nodeAtPositionSize[0] + PADDING_X);
+                    newPositionUL = getNextPositionWithOffset(min,
+                                                              offset);
+                }
+
+                if (checkParent) {
+                    newPositionUL = getNextPositionFromParent(min,
+                                                              offset,
+                                                              parentNode,
+                                                              h);
+                }
+
+                targetNodeContainer = graphBoundsIndexer.getAt(newPositionUL.getX(),
+                                                               newPositionUL.getY(),
+                                                               newNodeWidth,
+                                                               newNodeHeight,
+                                                               parentNode);
+
+                if (targetNodeContainer != null) {
+                    canContain = canContain(canvasHandler,
+                                            targetNodeContainer,
+                                            root);
+                } else {
+                    canContain = true;
+                }
+            }
+        } else {
+            if (checkParent) {
+                newPositionUL = getNextPositionFromParent(min,
+                                                          offset,
+                                                          parentNode,
+                                                          h);
+            } else {
+                newPositionUL = getNextPositionWithOffset(min,
+                                                          offset);
+            }
+        }
+
+        return newPositionUL;
+    }
+
+    private Point2D getNextPositionFromParent(final Point2D position,
+                                              final Point2D offset,
+                                              final Element parentNode,
+                                              final double height) {
+
+        final Point2D nextPosition = getNextPositionWithOffset(position,
+                                                               offset);
+        final double[] parentNodeSize = GraphUtils.getNodeSize((View) parentNode.getContent());
+        final Point2D parentPosition = GraphUtils.getPosition((View) parentNode.getContent());
+
+        if (nextPosition.getX() > (parentNodeSize[0] + parentPosition.getX())) {
+            nextPosition.setX(parentPosition.getX() + PADDING_X);
+            nextPosition.setY(position.getY() + offset.getY() + height);
+        }
+
         return nextPosition;
     }
 
-    private double[] getNext(final CanvasHandler canvasHandler,
-                             final List<Node<View<?>, Edge>> nodes,
-                             final double width,
-                             final Point2D offset,
-                             final Point2D min,
-                             final double maxX) {
-        checkNotNull("canvasHandler",
-                     canvasHandler);
-        checkNotNull("nodes",
-                     nodes);
-        final double[] result = new double[]{min.getX(), min.getY()};
-        nodes.stream().forEach(node -> {
-            final double[] coordinates = getAbsolute(node);
-            result[0] = coordinates[0] >= result[0] ? coordinates[0] : result[0];
-            result[1] = coordinates[1] >= result[1] ? coordinates[1] : result[1];
-            result[0] = result[0] + offset.getX();
-            result[1] = result[1] + offset.getY() + PADDING_Y;
-            final Point2D coordinatesPoint = new Point2D(coordinates[0],
-                                                         coordinates[1]);
-            final double[] r = getNextPositionWithOffset(coordinatesPoint,
-                                                         offset
-            );
-            if ((coordinates[0] + width) >= maxX) {
-                result[0] = r[0];
-                result[1] = r[1];
-            }
-        });
-        return result;
+    private boolean canContain(final CanvasHandler canvasHandler,
+                               final Node container,
+                               final Node candidate) {
+        boolean canContain = true;
+        NodeContainmentContext containmentContext = RuleContextBuilder.GraphContexts.containment(canvasHandler.getDiagram().getGraph(),
+                                                                                                 container,
+                                                                                                 candidate);
+        String definitionSetId = canvasHandler.getDiagram().getMetadata().getDefinitionSetId();
+        Object definitionSet = definitionManager.definitionSets().getDefinitionSetById(definitionSetId);
+        RuleSet ruleSet = definitionManager.adapters().forRules().getRuleSet(definitionSet);
+
+        RuleViolations violations = ruleManager.evaluate(ruleSet,
+                                                         containmentContext);
+
+        if (violations.violations(Violation.Type.ERROR).iterator().hasNext()) {
+            canContain = false;
+        }
+
+        return canContain;
     }
 
-    private double[] getNextPositionWithOffset(final Point2D nextPosition,
-                                               final Point2D offset) {
-        final double[] result = new double[]{nextPosition.getX(), nextPosition.getY()};
-        double[] res = new double[]{result[0] + offset.getX(), result[1] + offset.getY()};
-        return res;
+    private boolean isOutOfCanvas(Point2D newPositionUL,
+                                  double newNodeHeight,
+                                  double canvasHeight) {
+
+        if (newPositionUL.getY() + newNodeHeight > canvasHeight - CANVAS_BOTTOM_MARGIN) {
+            return true;
+        }
+        return false;
+    }
+
+    private Point2D getNextPositionWithOffset(final Point2D nextPosition,
+                                              final Point2D offset) {
+        return new Point2D(nextPosition.getX() + offset.getX(),
+                           nextPosition.getY() + offset.getY());
+    }
+
+    private double[] getNodeSizeAt(final GraphBoundsIndexer graphBoundsIndexer,
+                                   final Point2D position,
+                                   final double w,
+                                   final double h,
+                                   final Element parentNode) {
+
+        final Node targetNode = graphBoundsIndexer.getAt(position.getX(),
+                                                         position.getY(),
+                                                         w,
+                                                         h,
+                                                         parentNode);
+        if (targetNode != null) {
+            final double[] nodeSize = GraphUtils.getNodeSize((View) targetNode.getContent());
+
+            return nodeSize;
+        } else {
+            return null;
+        }
+    }
+
+    private boolean isCanvasPositionAvailable(final GraphBoundsIndexer graphBoundsIndexer,
+                                              final Point2D positionUL,
+                                              final double width,
+                                              final double height,
+                                              final Element parentNode
+
+    ) {
+
+        final Node targetNode = graphBoundsIndexer.getAt(positionUL.getX(),
+                                                         positionUL.getY(),
+                                                         width,
+                                                         height,
+                                                         parentNode);
+
+        if ((targetNode == null)) {
+            return true;
+        }
+        return false;
     }
 
     @SuppressWarnings("unchecked")

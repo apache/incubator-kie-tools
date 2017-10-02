@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -51,9 +52,8 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 @Dependent
 public class CreateNodeAction extends AbstractToolboxAction {
 
-    private static Logger LOGGER = Logger.getLogger(CreateNodeAction.class.getName());
     static final String KEY_TITLE = "org.kie.workbench.common.stunner.core.client.toolbox.createNewNode";
-
+    private static Logger LOGGER = Logger.getLogger(CreateNodeAction.class.getName());
     private final ClientFactoryManager clientFactoryManager;
     private final NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl;
     private final CanvasLayoutUtils canvasLayoutUtils;
@@ -80,22 +80,22 @@ public class CreateNodeAction extends AbstractToolboxAction {
         this.sessionCommandManager = sessionCommandManager;
     }
 
+    public String getNodeId() {
+        return nodeId;
+    }
+
     public CreateNodeAction setNodeId(final String nodeId) {
         this.nodeId = nodeId;
         return this;
     }
 
+    public String getEdgeId() {
+        return edgeId;
+    }
+
     public CreateNodeAction setEdgeId(final String edgeId) {
         this.edgeId = edgeId;
         return this;
-    }
-
-    public String getNodeId() {
-        return nodeId;
-    }
-
-    public String getEdgeId() {
-        return edgeId;
     }
 
     @Override
@@ -142,16 +142,16 @@ public class CreateNodeAction extends AbstractToolboxAction {
         connector.setTargetNode(targetNode);
 
         // Obtain the candidate locatrions for the target node.
-        final double[] location = canvasLayoutUtils.getNext(canvasHandler,
-                                                            sourceNode,
-                                                            targetNode);
+        final Point2D location = canvasLayoutUtils.getNext(canvasHandler,
+                                                           sourceNode,
+                                                           targetNode);
 
         // Build both node and connector elements, shapes, etc etc.
         final MagnetConnection sourceConnection = MagnetConnection.Builder.forElement(element);
         final MagnetConnection targetConnection = MagnetConnection.Builder.forElement(targetNode);
         final NodeBuildRequestImpl buildRequest =
-                new NodeBuildRequestImpl(location[0],
-                                         location[1],
+                new NodeBuildRequestImpl(location.getX(),
+                                         location.getY(),
                                          targetNode,
                                          connector,
                                          sourceConnection,

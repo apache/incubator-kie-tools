@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.graph.processing.index.bounds;
 
+import org.kie.workbench.common.stunner.core.graph.Element;
+
 public interface BoundsIndexer<C, T> {
 
     /**
@@ -28,6 +30,15 @@ public interface BoundsIndexer<C, T> {
      */
     T getAt(final double x,
             final double y);
+
+    /**
+     * Return the graph element at the given area starting from x,y cartesian coordinate, checking 5 points.
+     */
+    T getAt(final double x,
+            final double y,
+            final double width,
+            final double height,
+            final Element parentNode);
 
     /**
      * Determines a rectangle area which area is given as:
