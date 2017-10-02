@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.components.glyph;
+package org.kie.workbench.common.stunner.core.client.canvas.event;
 
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
-import org.kie.workbench.common.stunner.core.client.components.drag.DragProxy;
-import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
-import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
-public interface ShapeGlyphDragHandler<C extends Canvas> extends DragProxy<C, ShapeGlyphDragHandler.Item, DragProxyCallback> {
+public class CancelCanvasAction extends AbstractCanvasEvent {
 
-    interface Item {
-
-        Glyph getShape();
-
-        int getWidth();
-
-        int getHeight();
+    public CancelCanvasAction(final Canvas canvas) {
+        super(canvas);
     }
 }

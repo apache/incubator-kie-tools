@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.canvas.controls.select;
 
 import java.util.Collections;
+import java.util.Objects;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeViewExtStub;
@@ -48,6 +50,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -231,5 +234,16 @@ public class SelectionControlImplTest {
         tested.disable();
         verify(layer,
                times(1)).removeHandler(any(ViewHandler.class));
+    }
+
+    @Test
+    public void onKeyDownEventTest(){
+        tested.enable(canvasHandler);
+        testSelect();
+        tested.onKeyDownEvent(KeyboardEvent.Key.ESC);
+
+        assertTrue(tested.getSelectedItems().stream().allMatch(Objects::isNull));
+        verify(shape, times(1)).applyState(ShapeState.NONE);
+        verify(canvas, atLeastOnce()).draw();
     }
 }

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.drag;
 
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,14 +26,18 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
+import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.DragContext;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.DragEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.DragHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseEnterEvent;
@@ -65,6 +70,10 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
 
     protected final double[] dragShapeSize = new double[]{0, 0};
 
+    protected DragContext dragContext;
+
+    protected Element selectedElement;
+
     protected DragControlImpl() {
         this(null);
     }
@@ -72,6 +81,32 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
     @Inject
     public DragControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
         this.canvasCommandFactory = canvasCommandFactory;
+    }
+
+    @Override
+    public void bind(ClientFullSession session) {
+        session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
+    }
+
+    void onKeyDownEvent(final KeyboardEvent.Key... keys) {
+        if (KeysMatcher.doKeysMatch(keys,
+                                    KeyboardEvent.Key.ESC)) {
+            if (Objects.nonNull(dragContext) && Objects.nonNull(selectedElement)) {
+                dragContext.reset();
+                deregister(selectedElement);
+                clear();
+            }
+        }
+    }
+
+    private void clear() {
+        dragContext = null;
+        selectedElement = null;
+    }
+
+    @Override
+    public void unbind() {
+        //nothing to unbind on KeyboardControl
     }
 
     @Override
@@ -94,6 +129,8 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
                         @Override
                         public void start(final DragEvent event) {
                             doDragStart(element);
+                            dragContext = event.getDragContext();
+                            selectedElement = element;
                         }
 
                         @Override
@@ -108,6 +145,7 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
                                            "Update element's position command failed [result=" + result + "]");
                                 event.getDragContext().reset();
                             }
+                            clear();
                         }
                     };
                     hasEventHandlers.addHandler(ViewEventType.DRAG,
@@ -212,6 +250,12 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
     protected void doDisable() {
         super.doDisable();
         commandManagerProvider = null;
+    }
+
+    @Override
+    public void disable() {
+        super.disable();
+        clear();
     }
 
     @SuppressWarnings("unchecked")

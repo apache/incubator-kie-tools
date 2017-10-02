@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.select;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -29,9 +30,12 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
+import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
@@ -58,6 +62,25 @@ public final class SelectionControlImpl<H extends AbstractCanvasHandler>
                                 final Event<CanvasClearSelectionEvent> clearSelectionEvent) {
         this.elementSelectedEvent = elementSelectedEvent;
         this.clearSelectionEvent = clearSelectionEvent;
+    }
+
+    @Override
+    public void bind(ClientFullSession session) {
+        session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
+    }
+
+    void onKeyDownEvent(final KeyboardEvent.Key... keys) {
+        if (KeysMatcher.doKeysMatch(keys,
+                                    KeyboardEvent.Key.ESC)) {
+            if (Objects.nonNull(selectedElementUUID)) {
+                clearSelection();
+            }
+        }
+    }
+
+    @Override
+    public void unbind() {
+        //nothing to unbind on KeyboardControl
     }
 
     @Override

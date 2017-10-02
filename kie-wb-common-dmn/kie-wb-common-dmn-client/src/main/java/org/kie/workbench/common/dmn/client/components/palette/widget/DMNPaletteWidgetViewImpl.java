@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.components.palette.widget;
 
+import java.util.Objects;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -26,6 +27,8 @@ import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidget;
+import org.kie.workbench.common.stunner.core.client.components.drag.DragProxy;
+import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPalette;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
@@ -48,6 +51,8 @@ public class DMNPaletteWidgetViewImpl implements DMNPaletteWidgetView,
     @DataField("list-group")
     private UnorderedList ul;
 
+    private DragProxy itemDragProxy;
+
     public DMNPaletteWidgetViewImpl() {
         //CDI proxy
     }
@@ -69,33 +74,49 @@ public class DMNPaletteWidgetViewImpl implements DMNPaletteWidgetView,
                               final double width,
                               final double height) {
         final Glyph glyph = presenter.getShapeGlyph(itemId);
-        presenter.onDragStart(itemId,
-                              x,
-                              y);
+        itemDragProxy = shapeGlyphDragHandler.show(new ShapeGlyphDragHandler.Item() {
+                                                       @Override
+                                                       public Glyph getShape() {
+                                                           return glyph;
+                                                       }
 
-        shapeGlyphDragHandler.show(glyph,
-                                   x,
-                                   y,
-                                   width,
-                                   height,
-                                   new ShapeGlyphDragHandler.Callback() {
+                                                       @Override
+                                                       public int getWidth() {
+                                                           return (int) width;
+                                                       }
 
-                                       @Override
-                                       public void onMove(final double x,
-                                                          final double y) {
-                                           presenter.onDragProxyMove(itemId,
-                                                                     x,
-                                                                     y);
-                                       }
+                                                       @Override
+                                                       public int getHeight() {
+                                                           return (int) height;
+                                                       }
+                                                   },
+                                                   (int) x,
+                                                   (int) y,
+                                                   new DragProxyCallback() {
+                                                       @Override
+                                                       public void onStart(int x,
+                                                                           int y) {
+                                                           presenter.onDragStart(itemId,
+                                                                                 x,
+                                                                                 y);
+                                                       }
 
-                                       @Override
-                                       public void onComplete(final double x,
-                                                              final double y) {
-                                           presenter.onDragProxyComplete(itemId,
-                                                                         x,
-                                                                         y);
-                                       }
-                                   });
+                                                       @Override
+                                                       public void onMove(int x,
+                                                                          int y) {
+                                                           presenter.onDragProxyMove(itemId,
+                                                                                     (double) x,
+                                                                                     (double) y);
+                                                       }
+
+                                                       @Override
+                                                       public void onComplete(int x,
+                                                                              int y) {
+                                                           presenter.onDragProxyComplete(itemId,
+                                                                                         (double) x,
+                                                                                         (double) y);
+                                                       }
+                                                   });
     }
 
     @Override
@@ -108,11 +129,17 @@ public class DMNPaletteWidgetViewImpl implements DMNPaletteWidgetView,
     @Override
     public void clear() {
         DOMUtil.removeAllChildren(ul);
+        if (Objects.nonNull(itemDragProxy)) {
+            itemDragProxy.clear();
+        }
     }
 
     @Override
     public void destroy() {
         clear();
+        if (Objects.nonNull(itemDragProxy)) {
+            itemDragProxy.destroy();
+        }
     }
 
     @Override

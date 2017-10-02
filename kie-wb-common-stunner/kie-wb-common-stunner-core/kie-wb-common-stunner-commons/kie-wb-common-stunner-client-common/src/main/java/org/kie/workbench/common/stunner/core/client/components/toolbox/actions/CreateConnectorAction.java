@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
@@ -28,9 +30,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.BuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.EdgeBuildRequestImpl;
+import org.kie.workbench.common.stunner.core.client.canvas.event.CancelCanvasAction;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasHighlight;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.drag.ConnectorDragProxy;
+import org.kie.workbench.common.stunner.core.client.components.drag.DragProxy;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -64,6 +68,7 @@ public class CreateConnectorAction extends AbstractToolboxAction {
 
     private String edgeId;
     private CanvasHighlight canvasHighlight;
+    private DragProxy<AbstractCanvasHandler, ConnectorDragProxy.Item, DragProxyCallback> dragProxy;
 
     @Inject
     public CreateConnectorAction(final DefinitionUtils definitionUtils,
@@ -132,13 +137,19 @@ public class CreateConnectorAction extends AbstractToolboxAction {
         // candidate the target node.
         final double x = event.getX();
         final double y = event.getY();
-        showDragProxy(canvasHandler,
-                      connector,
-                      sourceNode,
-                      (int) x,
-                      (int) y);
-
+        dragProxy = showDragProxy(canvasHandler,
+                                  connector,
+                                  sourceNode,
+                                  (int) x,
+                                  (int) y);
         return this;
+    }
+
+    protected void cancelConnector(@Observes CancelCanvasAction cancelCanvasAction) {
+        if (Objects.nonNull(dragProxy)) {
+            dragProxy.clear();
+            dragProxy = null;
+        }
     }
 
     @Override
@@ -160,11 +171,11 @@ public class CreateConnectorAction extends AbstractToolboxAction {
     }
 
     @SuppressWarnings("unchecked")
-    private void showDragProxy(final AbstractCanvasHandler canvasHandler,
-                               final Edge<View<?>, Node> connector,
-                               final Node<View<?>, Edge> sourceNode,
-                               final int x,
-                               final int y) {
+    private DragProxy<AbstractCanvasHandler, ConnectorDragProxy.Item, DragProxyCallback> showDragProxy(final AbstractCanvasHandler canvasHandler,
+                                                                                                       final Edge<View<?>, Node> connector,
+                                                                                                       final Node<View<?>, Edge> sourceNode,
+                                                                                                       final int x,
+                                                                                                       final int y) {
 
         // Built and show the drag proxy.
         final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
@@ -186,7 +197,7 @@ public class CreateConnectorAction extends AbstractToolboxAction {
                 return shapeFactory;
             }
         };
-        connectorDragProxyFactory
+        return connectorDragProxyFactory
                 .proxyFor(canvasHandler)
                 .show(connectorDragItem,
                       x,
@@ -299,6 +310,10 @@ public class CreateConnectorAction extends AbstractToolboxAction {
 
     CanvasHighlight getCanvasHighlight() {
         return canvasHighlight;
+    }
+
+    protected DragProxy<AbstractCanvasHandler, ConnectorDragProxy.Item, DragProxyCallback> getDragProxy() {
+        return dragProxy;
     }
 
     @Override

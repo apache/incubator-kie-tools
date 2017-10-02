@@ -16,16 +16,21 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette;
 
+import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Node;
 import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.DefinitionPaletteCategoryWidget;
+import org.kie.workbench.common.stunner.core.client.components.drag.DragProxy;
+import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -37,8 +42,6 @@ public class BS3PaletteWidgetViewImpl implements BS3PaletteWidgetView,
 
     private ShapeGlyphDragHandler shapeGlyphDragHandler;
 
-    private BS3PaletteWidget presenter;
-
     @Inject
     @DataField("kie-palette")
     private Div palette;
@@ -46,6 +49,10 @@ public class BS3PaletteWidgetViewImpl implements BS3PaletteWidgetView,
     @Inject
     @DataField("list-group")
     private UnorderedList ul;
+
+    private BS3PaletteWidget presenter;
+
+    private DragProxy itemDragProxy;
 
     @Override
     public void init(BS3PaletteWidget presenter) {
@@ -61,53 +68,79 @@ public class BS3PaletteWidgetViewImpl implements BS3PaletteWidgetView,
     public void showDragProxy(String itemId,
                               double x,
                               double y,
-                              double witdth,
+                              double width,
                               double height) {
         final Glyph glyph = presenter.getShapeGlyph(itemId);
-        presenter.onDragStart(itemId,
-                              x,
-                              y);
+        itemDragProxy = shapeGlyphDragHandler.show(new ShapeGlyphDragHandler.Item() {
+                                                       @Override
+                                                       public Glyph getShape() {
+                                                           return glyph;
+                                                       }
 
-        shapeGlyphDragHandler.show(glyph,
-                                   x,
-                                   y,
-                                   witdth,
-                                   height,
-                                   new ShapeGlyphDragHandler.Callback() {
+                                                       @Override
+                                                       public int getWidth() {
+                                                           return (int) width;
+                                                       }
 
-                                       @Override
-                                       public void onMove(final double x,
-                                                          final double y) {
-                                           presenter.onDragProxyMove(itemId,
-                                                                     x,
-                                                                     y);
-                                       }
+                                                       @Override
+                                                       public int getHeight() {
+                                                           return (int) height;
+                                                       }
+                                                   },
+                                                   (int) x,
+                                                   (int) y,
+                                                   new DragProxyCallback() {
+                                                       @Override
+                                                       public void onStart(int x,
+                                                                           int y) {
+                                                           presenter.onDragStart(itemId,
+                                                                                 x,
+                                                                                 y);
+                                                       }
 
-                                       @Override
-                                       public void onComplete(final double x,
-                                                              final double y) {
-                                           presenter.onDragProxyComplete(itemId,
-                                                                         x,
-                                                                         y);
-                                       }
-                                   });
+                                                       @Override
+                                                       public void onMove(int x,
+                                                                          int y) {
+                                                           presenter.onDragProxyMove(itemId,
+                                                                                     (double) x,
+                                                                                     (double) y);
+                                                       }
+
+                                                       @Override
+                                                       public void onComplete(int x,
+                                                                              int y) {
+                                                           presenter.onDragProxyComplete(itemId,
+                                                                                         (double) x,
+                                                                                         (double) y);
+                                                       }
+                                                   });
     }
 
     @Override
     public void add(DefinitionPaletteCategoryWidget widget) {
         PortablePreconditions.checkNotNull("widget",
                                            widget);
-        ul.appendChild(widget.getElement());
+        addElement(widget.getElement());
+    }
+
+    public final void addElement(Node widget) {
+        ul.appendChild(widget);
     }
 
     @Override
     public void clear() {
         DOMUtil.removeAllChildren(ul);
+        if (Objects.nonNull(itemDragProxy)) {
+            itemDragProxy.clear();
+        }
     }
 
     @Override
     public void destroy() {
         clear();
+        if (Objects.nonNull(itemDragProxy)) {
+            itemDragProxy.destroy();
+        }
     }
 
     @Override

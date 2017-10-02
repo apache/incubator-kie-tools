@@ -27,10 +27,12 @@ import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.BuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.EdgeBuildRequest;
+import org.kie.workbench.common.stunner.core.client.canvas.event.CancelCanvasAction;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasHighlight;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.drag.ConnectorDragProxy;
+import org.kie.workbench.common.stunner.core.client.components.drag.DragProxy;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -50,6 +52,8 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
@@ -126,6 +130,12 @@ public class CreateConnectorActionTest {
     @Mock
     private Index<?, ?> graphIndex;
 
+    @Mock
+    private CancelCanvasAction cancelCanvasAction;
+
+    @Mock
+    private DragProxy<AbstractCanvasHandler, ConnectorDragProxy.Item, DragProxyCallback> dragProxy;
+
     private CreateConnectorAction tested;
 
     @Before
@@ -157,6 +167,11 @@ public class CreateConnectorActionTest {
         when(clientFactoryManager.newElement(anyString(),
                                              eq(EDGE_ID)))
                 .thenReturn((Element) edge);
+        when(connectorDragProxyFactory.show(any(ConnectorDragProxy.Item.class),
+                                            eq(100),
+                                            eq(500),
+                                            any(DragProxyCallback.class))).thenReturn(dragProxy);
+
         this.tested = new CreateConnectorAction(definitionUtils,
                                                 clientFactoryManager,
                                                 graphBoundsIndexer,
@@ -189,6 +204,59 @@ public class CreateConnectorActionTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testAction() {
+        final DragProxyCallback callback = testStartDrag();
+        testMoveDrag(callback);
+        testCompleteDrag(callback);
+    }
+
+    private void testCompleteDrag(DragProxyCallback callback) {
+        // Verify drag proxy complete.
+        callback.onComplete(100,
+                            500);
+        final ArgumentCaptor<EdgeBuildRequest> edgeBuildRequestArgumentCaptor =
+                ArgumentCaptor.forClass(EdgeBuildRequest.class);
+        final ArgumentCaptor<BuilderControl.BuildCallback> completeCallbackCaptor =
+                ArgumentCaptor.forClass(BuilderControl.BuildCallback.class);
+        verify(edgeBuilderControl,
+               times(1)).build(edgeBuildRequestArgumentCaptor.capture(),
+                               completeCallbackCaptor.capture());
+        final EdgeBuildRequest edgeBuildRequest = edgeBuildRequestArgumentCaptor.getValue();
+        assertEquals(edge,
+                     edgeBuildRequest.getEdge());
+        assertEquals(element,
+                     edgeBuildRequest.getInNode());
+        assertEquals(targetNode,
+                     edgeBuildRequest.getOutNode());
+        final BuilderControl.BuildCallback completeCallback = completeCallbackCaptor.getValue();
+        completeCallback.onSuccess(TARGET_NODE_UUID);
+        verify(edgeBuilderControl,
+               times(1)).disable();
+        verify(edgeBuilderControl,
+               times(1)).setCommandManagerProvider(eq(null));
+        verify(canvasHighlight,
+               times(1)).destroy();
+    }
+
+    private void testMoveDrag(DragProxyCallback callback) {
+        // Verify drag proxy move.
+        doAnswer(invocationOnMock -> {
+            final EdgeBuildRequest request = (EdgeBuildRequest) invocationOnMock.getArguments()[0];
+            return edge == request.getEdge()
+                    && element == request.getInNode()
+                    && targetNode == request.getOutNode();
+        }).when(edgeBuilderControl)
+                .allows(any(EdgeBuildRequest.class));
+        callback.onMove(100,
+                        500);
+        verify(edgeBuilderControl,
+               times(1)).allows(any(EdgeBuildRequest.class));
+        verify(canvasHighlight,
+               times(1)).unhighLight();
+        verify(canvasHighlight,
+               times(1)).highLight(eq(targetNode));
+    }
+
+    private DragProxyCallback testStartDrag() {
         final MouseClickEvent event = mock(MouseClickEvent.class);
         when(event.getX()).thenReturn(100d);
         when(event.getY()).thenReturn(500d);
@@ -232,48 +300,19 @@ public class CreateConnectorActionTest {
         RequiresCommandManager.CommandManagerProvider cmProvider = providerArgumentCaptor.getValue();
         assertEquals(sessionCommandManager,
                      cmProvider.getCommandManager());
+        return callback;
+    }
 
-        // Verify drag proxy move.
-        doAnswer(invocationOnMock -> {
-            final EdgeBuildRequest request = (EdgeBuildRequest) invocationOnMock.getArguments()[0];
-            return edge == request.getEdge()
-                    && element == request.getInNode()
-                    && targetNode == request.getOutNode();
-        }).when(edgeBuilderControl)
-                .allows(any(EdgeBuildRequest.class));
-        callback.onMove(100,
-                        500);
-        verify(edgeBuilderControl,
-               times(1)).allows(any(EdgeBuildRequest.class));
-        verify(canvasHighlight,
-               times(1)).unhighLight();
-        verify(canvasHighlight,
-               times(1)).highLight(eq(targetNode));
+    @Test
+    public void testCancelConnector(){
+        DragProxyCallback callback = testStartDrag();
 
-        // Verify drag proxy complete.
-        callback.onComplete(100,
-                            500);
-        final ArgumentCaptor<EdgeBuildRequest> edgeBuildRequestArgumentCaptor =
-                ArgumentCaptor.forClass(EdgeBuildRequest.class);
-        final ArgumentCaptor<BuilderControl.BuildCallback> completeCallbackCaptor =
-                ArgumentCaptor.forClass(BuilderControl.BuildCallback.class);
-        verify(edgeBuilderControl,
-               times(1)).build(edgeBuildRequestArgumentCaptor.capture(),
-                               completeCallbackCaptor.capture());
-        final EdgeBuildRequest edgeBuildRequest = edgeBuildRequestArgumentCaptor.getValue();
-        assertEquals(edge,
-                     edgeBuildRequest.getEdge());
-        assertEquals(element,
-                     edgeBuildRequest.getInNode());
-        assertEquals(targetNode,
-                     edgeBuildRequest.getOutNode());
-        final BuilderControl.BuildCallback completeCallback = completeCallbackCaptor.getValue();
-        completeCallback.onSuccess(TARGET_NODE_UUID);
-        verify(edgeBuilderControl,
-               times(1)).disable();
-        verify(edgeBuilderControl,
-               times(1)).setCommandManagerProvider(eq(null));
-        verify(canvasHighlight,
-               times(1)).destroy();
+        assertTrue(dragProxy == tested.getDragProxy());
+
+        testMoveDrag(callback);
+        tested.cancelConnector(cancelCanvasAction);
+
+        verify(dragProxy, times(1)).clear();
+        assertNull(tested.getDragProxy());
     }
 }
