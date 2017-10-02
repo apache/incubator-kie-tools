@@ -1,9 +1,7 @@
 .kie-palette {
     background: #fff;
     border-collapse: collapse;
-    overflow: visible;
     width: calc(48px);
-    position: absolute;
     z-index: 1;
 }
 

@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.client.commands;
 
 import java.util.Optional;
 
-import com.google.gwt.dom.client.Style;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -111,9 +110,7 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
     }
 
     protected void hidePaletteWidget(final boolean hidden) {
-        final com.google.gwt.dom.client.Element palette = presenter.getView().getPaletteWidget().asWidget().getElement();
-        palette.getStyle().setVisibility(hidden ? Style.Visibility.HIDDEN : Style.Visibility.VISIBLE);
-        palette.getStyle().setDisplay(hidden ? Style.Display.NONE : Style.Display.INITIAL);
+        presenter.getPalette().setVisible(!hidden);
     }
 
     private CanvasHandler getCanvasHandler() {

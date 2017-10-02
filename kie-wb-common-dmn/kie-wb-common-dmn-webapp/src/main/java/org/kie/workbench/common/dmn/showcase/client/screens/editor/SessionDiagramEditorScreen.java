@@ -18,12 +18,12 @@ package org.kie.workbench.common.dmn.showcase.client.screens.editor;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
@@ -296,9 +296,6 @@ public class SessionDiagramEditorScreen {
                       session,
                       new ScreenPresenterCallback(callback));
         expressionEditor.init(presenter);
-        final com.google.gwt.dom.client.Element palette = presenter.getView().getPaletteWidget().asWidget().getElement();
-        palette.getStyle().setVisibility(Style.Visibility.VISIBLE);
-        palette.getStyle().setDisplay(Style.Display.INITIAL);
     }
 
     @OnOpen

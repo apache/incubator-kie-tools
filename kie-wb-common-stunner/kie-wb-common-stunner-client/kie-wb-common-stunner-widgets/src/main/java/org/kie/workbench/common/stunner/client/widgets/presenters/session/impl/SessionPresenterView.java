@@ -20,7 +20,9 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -31,8 +33,11 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.gwtbootstrap3.extras.notify.client.constants.NotifyType;
 import org.gwtbootstrap3.extras.notify.client.ui.Notify;
 import org.gwtbootstrap3.extras.notify.client.ui.NotifySettings;
+import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -63,7 +68,15 @@ public class SessionPresenterView extends Composite
     @DataField
     private FlowPanel palettePanel;
 
+    @Inject
+    @DataField
+    private Div sessionContainer;
+
     private final NotifySettings settings = NotifySettings.newSettings();
+
+    private double paletteInitialTop;
+
+    private double paletteInitialLeft;
 
     @PostConstruct
     public void init() {
@@ -78,6 +91,19 @@ public class SessionPresenterView extends Composite
                       },
                       ContextMenuEvent.getType());
         showLoading(false);
+
+        //getting initial palette position
+        paletteInitialTop = palettePanel.getAbsoluteTop();
+        paletteInitialLeft = palettePanel.getAbsoluteLeft();
+    }
+
+    @EventHandler("sessionContainer")
+    protected void onScroll(@ForEvent("scroll") ScrollEvent e) {
+        // on the editor scroll recalculate palette position to be fixed on the screen
+        palettePanel.getElement().getStyle().setTop(paletteInitialTop + e.getRelativeElement().getScrollTop(), Style.Unit.PX);
+        palettePanel.getElement().getStyle().setLeft(paletteInitialLeft + e.getRelativeElement().getScrollLeft(), Style.Unit.PX);
+
+        e.preventDefault();
     }
 
     @Override

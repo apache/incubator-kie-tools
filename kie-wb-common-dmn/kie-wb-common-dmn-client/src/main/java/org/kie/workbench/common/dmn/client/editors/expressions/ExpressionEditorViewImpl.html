@@ -23,20 +23,40 @@
         .kie-dmn-container {
             width: 1415px;
             height: 500px;
-            padding: 10px;
+            position: relative;
+            top: 0;
+            overflow: hidden;
         }
+
+        .select-expression-editor {
+            position: relative;
+            top:0;
+            z-index: 1000;
+        }
+
+        .expression-editor {
+            position: absolute;
+            z-index: 1;
+        }
+
+        .exit-button{
+            position: absolute;
+            bottom: 0;
+            z-index: 1000;
+        }
+
     </style>
 
     <div class="kie-dmn-container">
-        <select class="bootstrap-select" data-field="expressionEditorDefinition"></select>
+        <div class="select-expression-editor">
+            <select class="bootstrap-select" data-field="expressionEditorDefinition"></select>
+        </div>
 
-        <hr/>
+        <div class="expression-editor">
+            <div data-field="expressionEditor"></div>
+        </div>
 
-        <div data-field="expressionEditor"></div>
-
-        <hr/>
-
-        <div>
+        <div class="exit-button">
             <button class="btn btn-danger" type="button" data-field="exitButton" data-i18n-key="exitButton"></button>
         </div>
     </div>
