@@ -448,7 +448,6 @@ public class LibraryPlacesTest {
         verify(placeManager).goTo(eq(part),
                                   any(PanelDefinition.class));
         verify(libraryPlaces).setupLibraryBreadCrumbsForOrganizationUnits();
-        verify(projectContextChangeEvent).fire(any(ProjectContextChangeEvent.class));
     }
 
     @Test

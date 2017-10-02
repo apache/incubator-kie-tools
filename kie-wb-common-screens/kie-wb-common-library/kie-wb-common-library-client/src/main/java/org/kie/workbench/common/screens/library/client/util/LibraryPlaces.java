@@ -549,7 +549,6 @@ public class LibraryPlaces {
             placeManager.goTo(part,
                               libraryPerspective.getRootPanel());
             setupLibraryBreadCrumbsForOrganizationUnits();
-            projectContextChangeEvent.fire(new ProjectContextChangeEvent(getSelectedOrganizationalUnit()));
         }
     }
 
