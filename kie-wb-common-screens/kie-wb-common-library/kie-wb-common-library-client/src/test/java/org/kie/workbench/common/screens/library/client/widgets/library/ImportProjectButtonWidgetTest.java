@@ -28,6 +28,7 @@ import org.kie.workbench.common.screens.library.client.util.ExamplesUtils;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.mockito.Matchers.any;
@@ -61,8 +62,10 @@ public class ImportProjectButtonWidgetTest {
 
         exampleProject1 = mock(ExampleProject.class);
         doReturn("exampleProject1").when(exampleProject1).getName();
+        doReturn("exampleProject1Description").when(exampleProject1).getDescription();
         exampleProject2 = mock(ExampleProject.class);
         doReturn("exampleProject2").when(exampleProject2).getName();
+        doReturn("exampleProject2Description").when(exampleProject2).getDescription();
 
         final Set<ExampleProject> exampleProjects = new HashSet<>();
         exampleProjects.add(exampleProject1);
@@ -93,14 +96,27 @@ public class ImportProjectButtonWidgetTest {
                times(1)).addSeparator();
 
         verify(view,
-               times(3)).addOption(anyString(),
+               times(1)).addOption(anyString(),
                                    any());
+        verify(view,
+               times(2)).addOption(anyString(),
+                                   anyString(),
+                                   any());
+
         verify(view).addOption(eq(view.getAdvancedImportDescription()),
-                               any());
-        verify(view).addOption(eq(exampleProject1.getName()),
-                               any());
-        verify(view).addOption(eq(exampleProject2.getName()),
-                               any());
+                               any(Command.class));
+
+        String projectName = exampleProject1.getName();
+        String projectDescription = exampleProject1.getDescription();
+        verify(view).addOption(eq(projectName),
+                               eq(projectDescription),
+                               any(Command.class));
+
+        projectName = exampleProject2.getName();
+        projectDescription = exampleProject2.getDescription();
+        verify(view).addOption(eq(projectName),
+                               eq(projectDescription),
+                               any(Command.class));
     }
 
     @Test

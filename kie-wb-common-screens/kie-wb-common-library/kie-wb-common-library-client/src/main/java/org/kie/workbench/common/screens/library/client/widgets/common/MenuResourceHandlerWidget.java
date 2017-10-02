@@ -31,9 +31,20 @@ public class MenuResourceHandlerWidget implements IsElement {
     @DataField
     Anchor link;
 
-    public void init(final String title,
+    public void init(final String text,
+                     final String tooltip,
                      final Command onClick) {
-        link.setTextContent(title);
+        if (tooltip != null) {
+            link.setTitle(tooltip);
+        }
+
+        this.init(text,
+                  onClick);
+    }
+
+    public void init(final String text,
+                     final Command onClick) {
+        link.setTextContent(text);
 
         if (onClick != null) {
             link.setOnclick(e -> onClick.execute());

@@ -35,8 +35,7 @@ public class ImportExampleButtonWidget implements IsElement {
                      final String description,
                      final Command onClick) {
         importExample.setTextContent(name);
-        importExample.setAttribute("title",
-                                   description);
+        importExample.setTitle(description);
         importExample.setOnclick(event -> onClick.execute());
     }
 }

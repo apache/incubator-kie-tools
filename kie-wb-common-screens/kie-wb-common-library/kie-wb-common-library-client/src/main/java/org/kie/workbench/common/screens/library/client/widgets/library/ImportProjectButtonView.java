@@ -18,8 +18,6 @@ package org.kie.workbench.common.screens.library.client.widgets.library;
 
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.DOM;
-import org.jboss.errai.common.client.dom.ListItem;
 import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
@@ -67,7 +65,17 @@ public class ImportProjectButtonView implements ImportProjectButtonWidget.View,
     @Override
     public void addOption(final String description,
                           final Command command) {
+        addOption(description,
+                  null,
+                  command);
+    }
+
+    @Override
+    public void addOption(final String description,
+                          final String tooltip,
+                          final Command command) {
         final MenuResourceHandlerWidget menuResourceHandlerWidget = createMenuResourceHandlerWidget(description,
+                                                                                                    tooltip,
                                                                                                     command);
         importProjectDropdownContainer.appendChild(menuResourceHandlerWidget.getElement());
     }
@@ -86,9 +94,11 @@ public class ImportProjectButtonView implements ImportProjectButtonWidget.View,
     }
 
     private MenuResourceHandlerWidget createMenuResourceHandlerWidget(final String description,
+                                                                      final String tooltip,
                                                                       final Command command) {
         final MenuResourceHandlerWidget menuResourceHandlerWidget = menuResourceHandlerWidgets.get();
         menuResourceHandlerWidget.init(description,
+                                       tooltip,
                                        command);
         return menuResourceHandlerWidget;
     }

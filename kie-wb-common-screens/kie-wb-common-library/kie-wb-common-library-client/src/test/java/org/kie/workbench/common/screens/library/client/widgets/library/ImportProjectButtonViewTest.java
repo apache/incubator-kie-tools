@@ -73,13 +73,30 @@ public class ImportProjectButtonViewTest {
 
     @Test
     public void addOptionTest() {
+        final String text = "text";
+        final Command command = mock(Command.class);
+
+        view.addOption(text,
+                       command);
+
+        verify(menuResourceHandlerWidget).init(text,
+                                               null,
+                                               command);
+        verify(view.importProjectDropdownContainer).appendChild(menuResourceHandlerWidget.getElement());
+    }
+
+    @Test
+    public void addOptionWithDescriptionTest() {
+        final String text = "text";
         final String description = "description";
         final Command command = mock(Command.class);
 
-        view.addOption(description,
+        view.addOption(text,
+                       description,
                        command);
 
-        verify(menuResourceHandlerWidget).init(description,
+        verify(menuResourceHandlerWidget).init(text,
+                                               description,
                                                command);
         verify(view.importProjectDropdownContainer).appendChild(menuResourceHandlerWidget.getElement());
     }

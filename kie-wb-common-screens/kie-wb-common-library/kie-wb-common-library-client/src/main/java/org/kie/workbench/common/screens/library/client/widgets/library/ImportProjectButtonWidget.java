@@ -35,6 +35,10 @@ public class ImportProjectButtonWidget {
         void addOption(String description,
                        Command command);
 
+        void addOption(String description,
+                       String tooltip,
+                       Command command);
+
         void addHeader(String title);
 
         void addSeparator();
@@ -87,6 +91,7 @@ public class ImportProjectButtonWidget {
 
                     for (ExampleProject exampleProject : exampleProjects) {
                         view.addOption(exampleProject.getName(),
+                                       exampleProject.getDescription(),
                                        () -> examplesUtils.importProject(exampleProject));
                     }
                 }

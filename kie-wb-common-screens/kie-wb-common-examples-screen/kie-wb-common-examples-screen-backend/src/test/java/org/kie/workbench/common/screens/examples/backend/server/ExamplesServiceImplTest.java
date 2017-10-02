@@ -248,7 +248,7 @@ public class ExamplesServiceImplTest {
         when(project.getProjectName()).thenReturn("project1");
         when(projectRoot.toURI()).thenReturn("default:///project1");
         when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(true);
-        when(ioService.readAllString(any(org.uberfire.java.nio.file.Path.class))).thenReturn("custom description");
+        when(ioService.readAllString(any(org.uberfire.java.nio.file.Path.class))).thenReturn("This is custom description.\n\n This is a new line.");
         when(metadataService.getTags(any(Path.class))).thenReturn(Arrays.asList("tag1",
                                                                                 "tag2"));
 
@@ -265,7 +265,7 @@ public class ExamplesServiceImplTest {
                      projects.size());
         assertTrue(projects.contains(new ExampleProject(projectRoot,
                                                         "project1",
-                                                        "custom description",
+                                                        "This is custom description. This is a new line.",
                                                         Arrays.asList("tag1",
                                                                       "tag2"))));
     }
