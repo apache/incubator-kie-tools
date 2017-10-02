@@ -45,20 +45,36 @@ public abstract class AbstractEdgeBuilder<W, T extends Edge<View<W>, Node>>
         return definitionClass;
     }
 
+    public boolean isSourceAutoConnection() {
+        return isAutoConnection(Bpmn2OryxManager.SOURCE);
+    }
+
+    public boolean isTargetAutoConnection() {
+        return isAutoConnection(Bpmn2OryxManager.TARGET);
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder(super.toString()).append(" [defClass=").append(definitionClass.getName()).append("] ").toString();
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     protected T doBuild(final BuilderContext context) {
-        FactoryManager factoryManager = context.getFactoryManager();
-        String definitionId = context.getOryxManager().getMappingsManager().getDefinitionId(definitionClass);
-        T result = (T) factoryManager.newElement(this.nodeId,
-                                                 definitionId);
-        setProperties(context,
-                      (BPMNDefinition) result.getContent().getDefinition());
-        addEdgeIntoIndex(context,
-                         result);
-        afterEdgeBuild(context,
-                       result);
-        return result;
+        if (context.getIndex().getEdge(this.nodeId) == null) {
+            FactoryManager factoryManager = context.getFactoryManager();
+            String definitionId = context.getOryxManager().getMappingsManager().getDefinitionId(definitionClass);
+            T result = (T) factoryManager.newElement(this.nodeId,
+                                                     definitionId);
+            setProperties(context,
+                          (BPMNDefinition) result.getContent().getDefinition());
+            addEdgeIntoIndex(context,
+                             result);
+            afterEdgeBuild(context,
+                           result);
+            return result;
+        }
+        return null;
     }
 
     @SuppressWarnings("unchecked")
@@ -104,19 +120,6 @@ public abstract class AbstractEdgeBuilder<W, T extends Edge<View<W>, Node>>
         }
     }
 
-    public boolean isSourceAutoConnection() {
-        return isAutoConnection(Bpmn2OryxManager.SOURCE);
-    }
-
-    public boolean isTargetAutoConnection() {
-        return isAutoConnection(Bpmn2OryxManager.TARGET);
-    }
-
-    private boolean isAutoConnection(String type) {
-        String autoRaw = properties.get(Bpmn2OryxManager.MAGNET_AUTO_CONNECTION + type);
-        return null != autoRaw && Boolean.TRUE.equals(Boolean.parseBoolean(autoRaw));
-    }
-
     @SuppressWarnings("unchecked")
     protected void addEdgeIntoIndex(final BuilderContext context,
                                     final T edge) {
@@ -124,8 +127,8 @@ public abstract class AbstractEdgeBuilder<W, T extends Edge<View<W>, Node>>
         index.addEdge(edge);
     }
 
-    @Override
-    public String toString() {
-        return new StringBuilder(super.toString()).append(" [defClass=").append(definitionClass.getName()).append("] ").toString();
+    private boolean isAutoConnection(String type) {
+        String autoRaw = properties.get(Bpmn2OryxManager.MAGNET_AUTO_CONNECTION + type);
+        return null != autoRaw && Boolean.TRUE.equals(Boolean.parseBoolean(autoRaw));
     }
 }

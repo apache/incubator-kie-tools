@@ -49,6 +49,7 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
     protected Set<String> childNodeIds;
 
     public AbstractNodeBuilder(final Class<?> definitionClass) {
+
         this.definitionClass = definitionClass;
         this.childNodeIds = new LinkedHashSet<String>();
     }
@@ -65,29 +66,38 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
     }
 
     @Override
+    public String toString() {
+        return super.toString() + " [defClass=" + definitionClass.getName() + "] [childrenIds=" + childNodeIds + "] ";
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     protected T doBuild(final BuilderContext context) {
-        FactoryManager factoryManager = context.getFactoryManager();
-        // Build the graph node for the definition.
-        String definitionId = getDefinitionToBuild(context);
-        T result = (T) factoryManager.newElement(this.nodeId,
-                                                 definitionId);
-        // Set the def properties.
-        setProperties(context,
-                      (BPMNDefinition) result.getContent().getDefinition());
-        // View Bounds.
-        setBounds(context,
-                  result);
-        AddNodeCommand addNodeCommand = context.getCommandFactory().addNode(result);
-        if (doExecuteCommand(context,
-                             addNodeCommand)) {
-            // Post processing.
-            afterNodeBuild(context,
-                           result);
+        if (context.getIndex().getNode(this.nodeId) == null) {
+            FactoryManager factoryManager = context.getFactoryManager();
+            // Build the graph node for the definition.
+            String definitionId = getDefinitionToBuild(context);
+            T result = (T) factoryManager.newElement(this.nodeId,
+                                                     definitionId);
+            // Set the def properties.
+            setProperties(context,
+                          (BPMNDefinition) result.getContent().getDefinition());
+            // View Bounds.
+            setBounds(context,
+                      result);
+            AddNodeCommand addNodeCommand = context.getCommandFactory().addNode(result);
+            if (doExecuteCommand(context,
+                                 addNodeCommand)) {
+                // Post processing.
+                afterNodeBuild(context,
+                               result);
+            } else {
+                // TODO: throw an exception and handle the error.
+            }
+            return result;
         } else {
-            // TODO: throw an exception and handle the error.
+            return (T) context.getIndex().getNode(this.nodeId);
         }
-        return result;
     }
 
     protected String getDefinitionToBuild(final BuilderContext context) {
@@ -153,11 +163,6 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
         }
     }
 
-    private double getRadius(final double width,
-                             final double height) {
-        return width / 2;
-    }
-
     @SuppressWarnings("unchecked")
     protected void afterNodeBuild(final BuilderContext context,
                                   final T node) {
@@ -192,25 +197,25 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
 
                     AbstractEdgeBuilder edgeBuilder = (AbstractEdgeBuilder) outgoingBuilder;
                     Edge edge = (Edge) edgeBuilder.build(context);
-                    // Command - Execute the graph command to set the node as the edge connection's source..
-                    Double sourceDocker[] = null;
-                    final List<Double[]> dockers = ((AbstractEdgeBuilder) outgoingBuilder).dockers;
-                    if (dockers != null && dockers.size() > 1) {
-                        sourceDocker = dockers.get(0);
-                    }
+                    if (edge != null) {
+                        // Command - Execute the graph command to set the node as the edge connection's source..
+                        Double sourceDocker[] = null;
+                        final List<Double[]> dockers = ((AbstractEdgeBuilder) outgoingBuilder).dockers;
+                        if (dockers != null && dockers.size() > 1) {
+                            sourceDocker = dockers.get(0);
+                        }
 
-                    Connection sourceConnection = null;
-                    if (null != sourceDocker) {
-                        sourceConnection = MagnetConnection.Builder
-                                .at(sourceDocker[0],
-                                    sourceDocker[1])
-                                .setAuto(edgeBuilder.isSourceAutoConnection());
+                        Connection sourceConnection = null;
+                        if (null != sourceDocker) {
+                            sourceConnection = MagnetConnection.Builder
+                                    .at(sourceDocker[0],
+                                        sourceDocker[1])
+                                    .setAuto(edgeBuilder.isSourceAutoConnection());
+                        }
+                        commands.add(context.getCommandFactory().setSourceNode(node,
+                                                                               edge,
+                                                                               sourceConnection));
                     }
-
-                    commands.add(context.getCommandFactory().setSourceNode(node,
-                                                                           edge,
-                                                                           sourceConnection));
-                    ;
                 }
                 if (!commands.isEmpty()) {
                     for (Command<GraphCommandExecutionContext, RuleViolation> command : commands) {
@@ -246,6 +251,7 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
     private boolean doExecuteCommand(final BuilderContext context,
                                      final Command<GraphCommandExecutionContext, RuleViolation> command) {
         CommandResult<RuleViolation> results = context.execute(command);
+
         if (hasErrors(results)) {
             throw new RuntimeException("Error building BPMN graph. " +
                                                "Command = [" + command.toString() + "] " +
@@ -254,8 +260,8 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
         return true;
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " [defClass=" + definitionClass.getName() + "] [childrenIds=" + childNodeIds + "] ";
+    private double getRadius(final double width,
+                             final double height) {
+        return width / 2;
     }
 }
