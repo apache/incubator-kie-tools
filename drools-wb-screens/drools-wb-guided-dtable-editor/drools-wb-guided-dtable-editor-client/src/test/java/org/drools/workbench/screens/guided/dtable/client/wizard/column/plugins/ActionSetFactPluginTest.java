@@ -733,6 +733,27 @@ public class ActionSetFactPluginTest {
                      patterns.size());
     }
 
+    @Test
+    public void testIsHideColumn() {
+        final ActionWrapper actionWrapper = mock(ActionWrapper.class);
+        doReturn(actionWrapper).when(plugin).editingWrapper();
+
+        plugin.isHideColumn();
+
+        verify(actionWrapper).isHideColumn();
+    }
+
+    @Test
+    public void testSetHideColumn() {
+        final boolean hideColumn = false;
+        final ActionWrapper actionWrapper = mock(ActionWrapper.class);
+        doReturn(actionWrapper).when(plugin).editingWrapper();
+
+        plugin.setHideColumn(hideColumn);
+
+        verify(actionWrapper).setHideColumn(hideColumn);
+    }
+
     private void mockPatterns() {
         final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
 

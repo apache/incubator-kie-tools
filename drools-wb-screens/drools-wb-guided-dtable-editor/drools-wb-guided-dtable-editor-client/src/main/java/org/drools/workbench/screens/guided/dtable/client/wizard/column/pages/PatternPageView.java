@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -27,6 +28,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasPatternPage;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -72,6 +74,12 @@ public class PatternPageView implements IsElement,
         this.createANewFactPattern = createANewFactPattern;
         this.entryPointContainer = entryPointContainer;
         this.translationService = translationService;
+    }
+
+    @PostConstruct
+    public void initPopovers() {
+        DecisionTableColumnViewUtils.setupPopover(entryPointName.getElement(),
+                                                  translate(GuidedDecisionTableErraiConstants.PatternPageView_EntryPointDescription));
     }
 
     @Override

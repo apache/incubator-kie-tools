@@ -338,6 +338,16 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
     }
 
     @Override
+    public boolean isHideColumn() {
+        return editingWrapper().isHideColumn();
+    }
+
+    @Override
+    public void setHideColumn(boolean hideColumn) {
+        editingWrapper().setHideColumn(hideColumn);
+    }
+
+    @Override
     public void setInsertLogical(final Boolean value) {
         editingWrapper().setInsertLogical(value);
     }
@@ -359,12 +369,12 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
 
     @Override
     public boolean isLogicallyInsert() {
-        return editingWrapper.isInsertLogical();
+        return editingWrapper().isInsertLogical();
     }
 
     @Override
     public boolean isUpdateEngine() {
-        return editingWrapper.isUpdateEngine();
+        return editingWrapper().isUpdateEngine();
     }
 
     @Override

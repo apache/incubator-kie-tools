@@ -56,7 +56,7 @@ public class AttributeColumnPluginTest {
 
     @Test
     public void testGetTitle() {
-        final String errorKey = GuidedDecisionTableErraiConstants.AttributeColumnPlugin_AddNewAttributeColumn;
+        final String errorKey = GuidedDecisionTableErraiConstants.AttributeColumnPlugin_AddAttributeColumn;
         final String errorMessage = "Title";
 
         when(translationService.format(errorKey)).thenReturn(errorMessage);

@@ -56,7 +56,7 @@ public class MetaDataColumnPluginTest {
 
     @Test
     public void testGetTitle() {
-        final String errorKey = GuidedDecisionTableErraiConstants.MetaDataColumnPlugin_AddNewMetadata;
+        final String errorKey = GuidedDecisionTableErraiConstants.MetaDataColumnPlugin_AddMetadataColumn;
         final String errorMessage = "Title";
 
         when(translationService.format(errorKey)).thenReturn(errorMessage);

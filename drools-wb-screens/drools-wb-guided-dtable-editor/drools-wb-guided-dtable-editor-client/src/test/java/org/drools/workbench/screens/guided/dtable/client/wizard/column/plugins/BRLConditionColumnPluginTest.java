@@ -355,6 +355,22 @@ public class BRLConditionColumnPluginTest {
                       clone);
     }
 
+    @Test
+    public void testIsHideColumn() {
+        plugin.isHideColumn();
+
+        verify(editingCol).isHideColumn();
+    }
+
+    @Test
+    public void testSetHideColumn() throws Exception {
+        final boolean hideColumn = false;
+
+        plugin.setHideColumn(hideColumn);
+
+        verify(editingCol).setHideColumn(hideColumn);
+    }
+
     private LimitedEntryBRLConditionColumn makeLimitedEntryBRLConditionColumn(final String header,
                                                                               final boolean hideColumn,
                                                                               final List<IPattern> definition) {

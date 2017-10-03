@@ -31,6 +31,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.ext.widgets.common.client.menu.MenuItemFactory;
@@ -98,6 +99,15 @@ public class EditMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuB
                                                                     this::onDeleteSelectedRows);
         miOtherwiseCell = menuItemFactory.makeMenuItemWithIcon(ts.getTranslation(GuidedDecisionTableErraiConstants.EditMenu_otherwise),
                                                                this::onOtherwiseCell);
+
+        setupOtherwisePopover();
+    }
+
+    private void setupOtherwisePopover() {
+        miOtherwiseCell.getMenuItemView().getElement().setAttribute("data-toggle",
+                                                                    "popover");
+        DecisionTableColumnViewUtils.setupPopover(miOtherwiseCell.getMenuItemView().getElement(),
+                                                  ts.getTranslation(GuidedDecisionTableErraiConstants.EditMenu_otherwiseDescription));
     }
 
     @Override
@@ -202,6 +212,8 @@ public class EditMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuB
         miDeleteSelectedColumns.getMenuItem().setEnabled(false);
         miDeleteSelectedRows.getMenuItem().setEnabled(false);
         miOtherwiseCell.getMenuItem().setEnabled(false);
+        DecisionTableColumnViewUtils.enableOtherwisePopover(miOtherwiseCell.getMenuItemView().getElement(),
+                                                            false);
     }
 
     private void enableMenuItems(final List<GridData.SelectedCell> selections) {
@@ -216,6 +228,8 @@ public class EditMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuB
         miDeleteSelectedColumns.getMenuItem().setEnabled(enabled && !isOnlyMandatoryColumnSelected);
         miDeleteSelectedRows.getMenuItem().setEnabled(enabled);
         miOtherwiseCell.getMenuItem().setEnabled(isOtherwiseEnabled);
+        DecisionTableColumnViewUtils.enableOtherwisePopover(miOtherwiseCell.getMenuItemView().getElement(),
+                                                            isOtherwiseEnabled);
     }
 
     private void setupOtherwiseCellEntry(final List<GridData.SelectedCell> selections) {

@@ -15,9 +15,11 @@
   -->
 
 <div>
-    <div class="form-group">
-        <h5 class="label label-default" data-i18n-key="InsertInfo"></h5>
+    <div class="alert alert-info">
+        <span class="pficon pficon-info"></span>
+        <b><span data-i18n-key="InsertInfo"></span></b>
         <hr/>
+        <span data-i18n-key="ValueOptionsPageDescription"></span>
     </div>
 
     <div class="form-horizontal">
@@ -34,7 +36,7 @@
             </label>
 
             <div class="col-sm-8">
-                <div class="cep-operators-container" data-field="cepWindowOperatorsContainer"></div>
+                <div class="cep-operators-container" data-field="cepWindowOperatorsContainer" data-toggle="popover"></div>
             </div>
         </div>
 
@@ -43,7 +45,7 @@
             </label>
 
             <div class="col-sm-8">
-                <div data-field="defaultValueContainer"></div>
+                <div data-field="defaultValueContainer" data-toggle="popover"></div>
             </div>
         </div>
 
@@ -61,7 +63,7 @@
             </label>
 
             <div class="col-sm-8">
-                <div data-field="bindingContainer"></div>
+                <div data-field="bindingContainer" data-toggle="popover"></div>
             </div>
         </div>
     </div>

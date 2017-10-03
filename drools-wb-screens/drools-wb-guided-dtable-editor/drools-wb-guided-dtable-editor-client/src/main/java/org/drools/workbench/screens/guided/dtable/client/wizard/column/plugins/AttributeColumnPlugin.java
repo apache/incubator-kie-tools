@@ -49,7 +49,7 @@ public class AttributeColumnPlugin extends BaseDecisionTableColumnPlugin {
 
     @Override
     public String getTitle() {
-        return translate(GuidedDecisionTableErraiConstants.AttributeColumnPlugin_AddNewAttributeColumn);
+        return translate(GuidedDecisionTableErraiConstants.AttributeColumnPlugin_AddAttributeColumn);
     }
 
     @Override

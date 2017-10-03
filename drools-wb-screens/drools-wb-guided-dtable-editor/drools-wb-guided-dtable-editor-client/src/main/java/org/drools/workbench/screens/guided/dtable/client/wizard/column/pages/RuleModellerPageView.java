@@ -18,12 +18,10 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.BRLActionColumnPlugin;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Heading;
+import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -39,13 +37,13 @@ public class RuleModellerPageView implements IsElement,
     private Div ruleModellerContainer;
 
     @DataField("description-heading")
-    private Heading descriptionHeading;
+    private Span descriptionHeading;
 
     private RuleModellerPage page;
 
     @Inject
     public RuleModellerPageView(final Div ruleModellerContainer,
-                                final @Named("h5") Heading descriptionHeading) {
+                                final Span descriptionHeading) {
         this.ruleModellerContainer = ruleModellerContainer;
         this.descriptionHeading = descriptionHeading;
     }

@@ -33,6 +33,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -218,6 +219,9 @@ public class GuidedDecisionTableEditorMenusTest {
     @Mock
     protected PlaceManager placeManager;
 
+    @Mock
+    protected MenuItemWithIconView menuItemWithIconView;
+
     private GuidedDecisionTableEditorPresenter presenter;
     private GuidedDTableResourceType resourceType = new GuidedDTableResourceType();
 
@@ -268,8 +272,9 @@ public class GuidedDecisionTableEditorMenusTest {
             throw new IllegalArgumentException("Unexpected MenuItemView");
         });
         when(menuItemViewHeaderProducer.get()).thenReturn(mock(MenuItemHeaderView.class));
-        when(menuItemViewWithIconProducer.get()).thenReturn(mock(MenuItemWithIconView.class));
         when(menuItemViewDividerProducer.get()).thenReturn(mock(MenuItemDividerView.class));
+        when(menuItemViewWithIconProducer.get()).thenReturn(menuItemWithIconView);
+        when(menuItemWithIconView.getElement()).thenReturn(mock(HTMLElement.class));
 
         this.dtServiceCaller = new CallerMock<>(dtService);
         this.versionServiceCaller = new CallerMock<>(versionService);

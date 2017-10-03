@@ -327,6 +327,16 @@ public class ActionWorkItemSetFieldPlugin extends BaseDecisionTableColumnPlugin 
     }
 
     @Override
+    public boolean isHideColumn() {
+        return editingWrapper().isHideColumn();
+    }
+
+    @Override
+    public void setHideColumn(boolean hideColumn) {
+        editingWrapper().setHideColumn(hideColumn);
+    }
+
+    @Override
     public void setInsertLogical(final Boolean isInsertLogical) {
         editingWrapper().setInsertLogical(isInsertLogical);
     }

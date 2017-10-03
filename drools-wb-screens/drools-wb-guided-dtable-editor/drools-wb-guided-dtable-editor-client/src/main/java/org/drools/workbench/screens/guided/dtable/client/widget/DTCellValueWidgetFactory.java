@@ -45,7 +45,6 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DefaultValueDropDownManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.LimitedEntryDropDownManager;
-import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
@@ -659,16 +658,5 @@ public class DTCellValueWidgetFactory {
         datePicker.setValue(value.getDateValue());
 
         return datePicker;
-    }
-
-    /**
-     * An editor for whether the column is hidden or not
-     * @param col
-     * @return
-     */
-    public static CheckBox getHideColumnIndicator(final DTColumnConfig52 col) {
-        final HideColumnCheckBox chkHide = new HideColumnCheckBox();
-        chkHide.init(col);
-        return chkHide;
     }
 }

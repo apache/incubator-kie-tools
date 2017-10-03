@@ -121,7 +121,7 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
 
     @Override
     public String getTitle() {
-        return translate(GuidedDecisionTableErraiConstants.ConditionColumnPlugin_AddNewConditionSimpleColumn);
+        return translate(GuidedDecisionTableErraiConstants.ConditionColumnPlugin_AddConditionColumn);
     }
 
     @Override
@@ -307,6 +307,16 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
         }
 
         return columnNames;
+    }
+
+    @Override
+    public boolean isHideColumn() {
+        return editingCol().isHideColumn();
+    }
+
+    @Override
+    public void setHideColumn(boolean hideColumn) {
+        editingCol().setHideColumn(hideColumn);
     }
 
     @Override

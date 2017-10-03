@@ -49,7 +49,7 @@ public class MetaDataColumnPlugin extends BaseDecisionTableColumnPlugin {
 
     @Override
     public String getTitle() {
-        return translate(GuidedDecisionTableErraiConstants.MetaDataColumnPlugin_AddNewMetadata);
+        return translate(GuidedDecisionTableErraiConstants.MetaDataColumnPlugin_AddMetadataColumn);
     }
 
     @Override

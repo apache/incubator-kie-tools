@@ -16,21 +16,23 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
-import org.gwtbootstrap3.client.ui.CheckBox;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Input;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-
-import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils.addWidgetToContainer;
 
 @Dependent
 @Templated
@@ -66,32 +68,71 @@ public class AdditionalInfoPageView implements IsElement,
     private TextBox header;
 
     @Inject
-    @DataField("hideColumnContainer")
-    private Div hideColumnContainer;
+    @DataField("hideColumn")
+    private Input hideColumn;
 
     @Inject
     @DataField("updateEngineWithChanges")
-    private CheckBox updateEngineWithChanges;
+    private Input updateEngineWithChanges;
 
     @Inject
     @DataField("logicallyInsert")
-    private CheckBox logicallyInsert;
+    private Input logicallyInsert;
 
     private AdditionalInfoPage page;
+
+    private TranslationService translationService;
+
+    public AdditionalInfoPageView() {
+        //CDI proxy
+    }
+
+    @Inject
+    public AdditionalInfoPageView(final TranslationService translationService) {
+        this.translationService = translationService;
+    }
+
+    @PostConstruct
+    public void initPopovers() {
+        hideColumn.setAttribute("type",
+                                "checkbox");
+        hideColumn.setAttribute("data-toggle",
+                                "popover");
+        logicallyInsert.setAttribute("type",
+                                     "checkbox");
+        logicallyInsert.setAttribute("data-toggle",
+                                     "popover");
+        updateEngineWithChanges.setAttribute("type",
+                                             "checkbox");
+        updateEngineWithChanges.setAttribute("data-toggle",
+                                             "popover");
+
+        DecisionTableColumnViewUtils.setupPopover(hideColumn,
+                                                  translate(GuidedDecisionTableErraiConstants.AdditionalInfoPage_HideColumnDescription));
+        DecisionTableColumnViewUtils.setupPopover(logicallyInsert,
+                                                  translate(GuidedDecisionTableErraiConstants.AdditionalInfoPage_LogicalInsertDescription));
+        DecisionTableColumnViewUtils.setupPopover(updateEngineWithChanges,
+                                                  translate(GuidedDecisionTableErraiConstants.AdditionalInfoPage_UpdateEngineDescription));
+    }
 
     @EventHandler("header")
     public void onSelectHeader(final KeyUpEvent event) {
         page.setHeader(header.getText());
     }
 
+    @EventHandler("hideColumn")
+    public void onSelectHideColumn(final ChangeEvent event) {
+        page.setHideColumn(hideColumn.getChecked());
+    }
+
     @EventHandler("logicallyInsert")
     public void onSelectLogicallyInsert(final ChangeEvent event) {
-        page.setInsertLogical(logicallyInsert.getValue());
+        page.setInsertLogical(logicallyInsert.getChecked());
     }
 
     @EventHandler("updateEngineWithChanges")
     public void onSelectUpdateEngineWithChanges(final ChangeEvent event) {
-        page.setUpdate(updateEngineWithChanges.getValue());
+        page.setUpdate(updateEngineWithChanges.getChecked());
     }
 
     @Override
@@ -100,11 +141,10 @@ public class AdditionalInfoPageView implements IsElement,
     }
 
     @Override
-    public void showHideColumn(final CheckBox checkBox) {
-        addWidgetToContainer(checkBox,
-                             hideColumnContainer);
-
+    public void showHideColumn(final boolean isHidden) {
         hideColumnFormItem.setHidden(false);
+
+        hideColumn.setChecked(isHidden);
     }
 
     @Override
@@ -118,14 +158,14 @@ public class AdditionalInfoPageView implements IsElement,
     public void showLogicallyInsert(final boolean isLogicallyInsert) {
         logicallyInsertFormItem.setHidden(false);
 
-        logicallyInsert.setValue(isLogicallyInsert);
+        logicallyInsert.setChecked(isLogicallyInsert);
     }
 
     @Override
     public void showUpdateEngineWithChanges(final boolean isUpdateEngine) {
         updateEngineWithChangesFormItem.setHidden(false);
 
-        updateEngineWithChanges.setValue(isUpdateEngine);
+        updateEngineWithChanges.setChecked(isUpdateEngine);
     }
 
     @Override
@@ -146,5 +186,11 @@ public class AdditionalInfoPageView implements IsElement,
         hideColumnFormItem.setHidden(true);
         logicallyInsertFormItem.setHidden(true);
         updateEngineWithChangesFormItem.setHidden(true);
+    }
+
+    private String translate(final String key,
+                             final Object... args) {
+        return translationService.format(key,
+                                         args);
     }
 }

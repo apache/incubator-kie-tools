@@ -212,12 +212,12 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
 
     @Override
     public String getHeader() {
-        return editingCol.getHeader();
+        return editingCol().getHeader();
     }
 
     @Override
     public void setHeader(final String header) {
-        editingCol.setHeader(header);
+        editingCol().setHeader(header);
 
         fireChangeEvent(additionalInfoPage);
     }
@@ -230,6 +230,16 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
                 .stream()
                 .map(DTColumnConfig52::getHeader)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public boolean isHideColumn() {
+        return editingCol().isHideColumn();
+    }
+
+    @Override
+    public void setHideColumn(boolean hideColumn) {
+        editingCol().setHideColumn(hideColumn);
     }
 
     @Override

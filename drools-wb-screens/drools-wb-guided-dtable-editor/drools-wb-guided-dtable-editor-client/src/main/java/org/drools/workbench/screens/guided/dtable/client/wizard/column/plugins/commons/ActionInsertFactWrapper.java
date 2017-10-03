@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons;
 
-import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionInsertFactCol52;
@@ -49,6 +48,16 @@ public class ActionInsertFactWrapper implements ActionWrapper {
             default:
                 throw new UnsupportedOperationException("Unsupported table format: " + tableFormat());
         }
+    }
+
+    @Override
+    public boolean isHideColumn() {
+        return getActionCol52().isHideColumn();
+    }
+
+    @Override
+    public void setHideColumn(final boolean hideColumn) {
+        getActionCol52().setHideColumn(hideColumn);
     }
 
     @Override

@@ -28,6 +28,15 @@ public interface ActionWorkItemWrapper extends ActionWrapper {
     ActionWorkItemWrapper EMPTY_COLUMN = new ActionWorkItemWrapper() {
 
         @Override
+        public boolean isHideColumn() {
+            return false;
+        }
+
+        @Override
+        public void setHideColumn(final boolean hideColumn) {
+        }
+
+        @Override
         public boolean isInsertLogical() {
             return false;
         }

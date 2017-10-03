@@ -616,6 +616,22 @@ public class ActionWorkItemSetFieldPluginTest {
         verify(plugin).fireChangeEvent(additionalInfoPage);
     }
 
+    @Test
+    public void testIsHideColumn() {
+        plugin.isHideColumn();
+
+        verify(editingWrapper).isHideColumn();
+    }
+
+    @Test
+    public void testSetHideColumn() throws Exception {
+        final boolean hideColumn = false;
+
+        plugin.setHideColumn(hideColumn);
+
+        verify(editingWrapper).setHideColumn(hideColumn);
+    }
+
     private ActionWorkItemWrapper mockActionWrapper(final String boundName,
                                                     final String factType) {
         final ActionWorkItemWrapper wrapper = mock(ActionWorkItemWrapper.class);

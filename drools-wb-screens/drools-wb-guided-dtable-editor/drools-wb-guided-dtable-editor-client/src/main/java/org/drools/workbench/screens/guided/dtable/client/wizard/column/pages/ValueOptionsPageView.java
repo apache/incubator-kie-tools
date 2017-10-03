@@ -16,14 +16,18 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -67,6 +71,8 @@ public class ValueOptionsPageView implements IsElement,
 
     private ValueOptionsPage<?> page;
 
+    private TranslationService translationService;
+
     @Inject
     public ValueOptionsPageView(final Div valueListGroupContainer,
                                 final Div cepWindowOperatorsGroupContainer,
@@ -77,7 +83,8 @@ public class ValueOptionsPageView implements IsElement,
                                 final Div cepWindowOperatorsContainer,
                                 final Div defaultValueContainer,
                                 final Div limitedValueContainer,
-                                final Div bindingContainer) {
+                                final Div bindingContainer,
+                                final TranslationService translationService) {
         this.valueListGroupContainer = valueListGroupContainer;
         this.cepWindowOperatorsGroupContainer = cepWindowOperatorsGroupContainer;
         this.defaultValueGroupContainer = defaultValueGroupContainer;
@@ -88,6 +95,17 @@ public class ValueOptionsPageView implements IsElement,
         this.defaultValueContainer = defaultValueContainer;
         this.limitedValueContainer = limitedValueContainer;
         this.bindingContainer = bindingContainer;
+        this.translationService = translationService;
+    }
+
+    @PostConstruct
+    public void initPopovers() {
+        DecisionTableColumnViewUtils.setupPopover(cepWindowOperatorsContainer,
+                                                  translate(GuidedDecisionTableErraiConstants.ValueOptionsPage_CEPWindowDescription));
+        DecisionTableColumnViewUtils.setupPopover(defaultValueContainer,
+                                                  translate(GuidedDecisionTableErraiConstants.ValueOptionsPage_DefaultValueDescription));
+        DecisionTableColumnViewUtils.setupPopover(bindingContainer,
+                                                  translate(GuidedDecisionTableErraiConstants.ValueOptionsPage_BindingDescription));
     }
 
     @Override
@@ -163,5 +181,11 @@ public class ValueOptionsPageView implements IsElement,
     @Override
     public void hideCepOperators() {
         cepWindowOperatorsGroupContainer.setHidden(true);
+    }
+
+    private String translate(final String key,
+                             final Object... args) {
+        return translationService.format(key,
+                                         args);
     }
 }

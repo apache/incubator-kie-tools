@@ -21,11 +21,9 @@ import javax.inject.Inject;
 
 import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasAdditionalInfoPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.BaseDecisionTableColumnPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.DecisionTableColumnPlugin;
-import org.gwtbootstrap3.client.ui.CheckBox;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.UberElement;
@@ -114,10 +112,6 @@ public class AdditionalInfoPage<T extends HasAdditionalInfoPage & DecisionTableC
         plugin().setHeader(header);
     }
 
-    CheckBox newHideColumnCheckBox() {
-        return DTCellValueWidgetFactory.getHideColumnIndicator(plugin().editingCol());
-    }
-
     private void setup() {
         setupHeader();
         setupHideColumn();
@@ -133,7 +127,7 @@ public class AdditionalInfoPage<T extends HasAdditionalInfoPage & DecisionTableC
 
     void setupHideColumn() {
         if (hideColumnEnabled) {
-            view.showHideColumn(newHideColumnCheckBox());
+            view.showHideColumn(plugin().isHideColumn());
         }
     }
 
@@ -167,6 +161,10 @@ public class AdditionalInfoPage<T extends HasAdditionalInfoPage & DecisionTableC
         return originalCol.getHeader();
     }
 
+    void setHideColumn(final Boolean isHidden) {
+        plugin().setHideColumn(isHidden);
+    }
+
     void setInsertLogical(final Boolean insertLogical) {
         plugin().setInsertLogical(insertLogical);
     }
@@ -177,7 +175,7 @@ public class AdditionalInfoPage<T extends HasAdditionalInfoPage & DecisionTableC
 
     public interface View extends UberElement<AdditionalInfoPage> {
 
-        void showHideColumn(final CheckBox checkBox);
+        void showHideColumn(final boolean isHidden);
 
         void showHeader();
 

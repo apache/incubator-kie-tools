@@ -63,7 +63,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
-import static org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.TableFormat.*;
+import static org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.TableFormat.LIMITED_ENTRY;
 
 @Dependent
 public class BRLConditionColumnPlugin extends BaseDecisionTableColumnPlugin implements HasRuleModellerPage,
@@ -200,12 +200,12 @@ public class BRLConditionColumnPlugin extends BaseDecisionTableColumnPlugin impl
 
     @Override
     public String getHeader() {
-        return editingCol.getHeader();
+        return editingCol().getHeader();
     }
 
     @Override
     public void setHeader(String header) {
-        editingCol.setHeader(header);
+        editingCol().setHeader(header);
 
         fireChangeEvent(additionalInfoPage);
     }
@@ -230,6 +230,16 @@ public class BRLConditionColumnPlugin extends BaseDecisionTableColumnPlugin impl
 
     private GuidedDecisionTable52 getModel() {
         return getPresenter().getModel();
+    }
+
+    @Override
+    public boolean isHideColumn() {
+        return editingCol().isHideColumn();
+    }
+
+    @Override
+    public void setHideColumn(boolean hideColumn) {
+        editingCol().setHideColumn(hideColumn);
     }
 
     @Override

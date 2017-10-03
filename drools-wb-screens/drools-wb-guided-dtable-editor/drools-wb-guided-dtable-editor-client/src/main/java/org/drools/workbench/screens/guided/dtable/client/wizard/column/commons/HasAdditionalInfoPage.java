@@ -30,6 +30,8 @@ public interface HasAdditionalInfoPage {
 
     Set<String> getAlreadyUsedColumnHeaders();
 
+    void setHideColumn(final boolean hideColumn);
+
     void setInsertLogical(final Boolean value);
 
     void setUpdate(final Boolean value);
@@ -37,6 +39,8 @@ public interface HasAdditionalInfoPage {
     boolean showUpdateEngineWithChanges();
 
     boolean showLogicallyInsert();
+
+    boolean isHideColumn();
 
     boolean isLogicallyInsert();
 

@@ -298,4 +298,20 @@ public class BRLActionColumnPluginTest {
         verify(translationService,
                never()).format(GuidedDecisionTableErraiConstants.RuleModellerPage_InsertAConditionBRLFragment);
     }
+
+    @Test
+    public void testIsHideColumn() {
+        plugin.isHideColumn();
+
+        verify(editingCol).isHideColumn();
+    }
+
+    @Test
+    public void testSetHideColumn() throws Exception {
+        final boolean hideColumn = false;
+
+        plugin.setHideColumn(hideColumn);
+
+        verify(editingCol).setHideColumn(hideColumn);
+    }
 }

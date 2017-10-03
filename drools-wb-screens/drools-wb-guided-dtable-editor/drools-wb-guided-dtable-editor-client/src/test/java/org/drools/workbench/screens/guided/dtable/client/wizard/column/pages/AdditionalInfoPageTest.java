@@ -32,7 +32,6 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ConditionColumnPlugin;
-import org.gwtbootstrap3.client.ui.CheckBox;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -187,18 +186,6 @@ public class AdditionalInfoPageTest {
     }
 
     @Test
-    public void testNewHideColumnCheckBox() throws Exception {
-        when(plugin.editingCol()).thenReturn(editingCol);
-        when(editingCol.isHideColumn()).thenReturn(true);
-
-        final CheckBox checkBox = page.newHideColumnCheckBox();
-
-        verify(editingCol).isHideColumn();
-
-        assertNotNull(checkBox);
-    }
-
-    @Test
     public void testSetupHeaderWhenItIsEnabled() throws Exception {
         page.enableHeader();
 
@@ -222,7 +209,7 @@ public class AdditionalInfoPageTest {
         page.enableHideColumn();
         page.setupHideColumn();
 
-        verify(view).showHideColumn(any(CheckBox.class));
+        verify(view).showHideColumn(any(Boolean.class));
     }
 
     @Test
@@ -230,7 +217,7 @@ public class AdditionalInfoPageTest {
         page.setupHideColumn();
 
         verify(view,
-               never()).showHideColumn(any(CheckBox.class));
+               never()).showHideColumn(any(Boolean.class));
     }
 
     @Test

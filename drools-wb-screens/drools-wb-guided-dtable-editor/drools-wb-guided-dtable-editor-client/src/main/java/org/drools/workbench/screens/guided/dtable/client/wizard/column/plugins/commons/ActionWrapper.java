@@ -24,6 +24,15 @@ public interface ActionWrapper {
     ActionWrapper EMPTY_COLUMN = new ActionWrapper() {
 
         @Override
+        public boolean isHideColumn() {
+            return false;
+        }
+
+        @Override
+        public void setHideColumn(final boolean hideColumn) {
+        }
+
+        @Override
         public boolean isInsertLogical() {
             return false;
         }
@@ -109,6 +118,10 @@ public interface ActionWrapper {
             return new ActionCol52();
         }
     };
+
+    boolean isHideColumn();
+
+    void setHideColumn(final boolean hideColumn);
 
     boolean isInsertLogical();
 

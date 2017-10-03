@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
@@ -35,13 +36,13 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.widgets.common.client.menu.MenuItemFactory;
 import org.uberfire.ext.widgets.common.client.menu.MenuItemView;
 import org.uberfire.ext.widgets.common.client.menu.MenuItemWithIconView;
@@ -53,7 +54,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.Gr
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class EditMenuBuilderTest {
 
     private EditMenuBuilder builder;
@@ -67,6 +68,9 @@ public class EditMenuBuilderTest {
     @Mock
     private ManagedInstance<MenuItemView> menuItemViewProducer;
     private MenuItemFactory menuItemFactory;
+
+    @Mock
+    private MenuItemWithIconView menuItemWithIconView;
 
     @Mock
     private GuidedDecisionTableView.Presenter dtPresenter;
@@ -89,7 +93,8 @@ public class EditMenuBuilderTest {
         when(dtPresenterView.getModel()).thenReturn(uiModel);
         when(ts.getTranslation(any(String.class))).thenReturn("i18n");
         when(menuItemViewProducer.select(any(Annotation.class))).thenReturn(menuItemViewProducer);
-        when(menuItemViewProducer.get()).thenReturn(mock(MenuItemWithIconView.class));
+        when(menuItemViewProducer.get()).thenReturn(menuItemWithIconView);
+        when(menuItemWithIconView.getElement()).thenReturn(mock(HTMLElement.class));
 
         uiModel.appendColumn(new BaseGridColumn<String>(mock(GridColumn.HeaderMetaData.class),
                                                         mock(GridColumnRenderer.class),

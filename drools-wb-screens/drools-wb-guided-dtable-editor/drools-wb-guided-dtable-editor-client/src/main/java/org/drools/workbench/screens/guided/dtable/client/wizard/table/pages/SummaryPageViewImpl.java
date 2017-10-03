@@ -33,6 +33,7 @@ import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.gwtbootstrap3.client.ui.html.Paragraph;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -63,6 +64,9 @@ public class SummaryPageViewImpl extends Composite
     @UiField
     FormControlStatic lblHitPolicy;
 
+    @UiField
+    Paragraph hitPolicyDescriptionText;
+
     private String baseFileName;
 
     interface SummaryPageWidgetBinder
@@ -71,21 +75,21 @@ public class SummaryPageViewImpl extends Composite
 
     }
 
-    private static SummaryPageWidgetBinder uiBinder = GWT.create( SummaryPageWidgetBinder.class );
+    private static SummaryPageWidgetBinder uiBinder = GWT.create(SummaryPageWidgetBinder.class);
 
     public SummaryPageViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
         initialiseBaseFileName();
     }
 
     private void initialiseBaseFileName() {
-        txtBaseFileName.addKeyUpHandler( new KeyUpHandler() {
+        txtBaseFileName.addKeyUpHandler(new KeyUpHandler() {
 
             @Override
-            public void onKeyUp( KeyUpEvent event ) {
+            public void onKeyUp(KeyUpEvent event) {
                 handleFileNameInputKeyUp();
             }
-        } );
+        });
     }
 
     void handleFileNameInputKeyUp() {
@@ -94,7 +98,7 @@ public class SummaryPageViewImpl extends Composite
     }
 
     @Override
-    public void init( final SummaryPageView.Presenter presenter ) {
+    public void init(final SummaryPageView.Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -104,42 +108,42 @@ public class SummaryPageViewImpl extends Composite
     }
 
     @Override
-    public void setBaseFileName( final String baseFileName ) {
+    public void setBaseFileName(final String baseFileName) {
         this.baseFileName = baseFileName;
-        txtBaseFileName.setText( baseFileName );
+        txtBaseFileName.setText(baseFileName);
     }
 
     @Override
-    public void setValidBaseFileName( final boolean isValid ) {
-        if ( isValid ) {
-            baseFileNameHelp.setVisible( false );
-            baseFileNameContainer.removeStyleName( ValidationState.ERROR.getCssName() );
+    public void setValidBaseFileName(final boolean isValid) {
+        if (isValid) {
+            baseFileNameHelp.setVisible(false);
+            baseFileNameContainer.removeStyleName(ValidationState.ERROR.getCssName());
         } else {
-            baseFileNameHelp.setVisible( true );
-            baseFileNameContainer.addStyleName( ValidationState.ERROR.getCssName() );
+            baseFileNameHelp.setVisible(true);
+            baseFileNameContainer.addStyleName(ValidationState.ERROR.getCssName());
         }
     }
 
     @Override
-    public void setContextPath( final Path contextPath ) {
-        lblContextPath.setText( contextPath.toURI() );
+    public void setContextPath(final Path contextPath) {
+        lblContextPath.setText(contextPath.toURI());
     }
 
     @Override
-    public void setTableFormat( final GuidedDecisionTable52.TableFormat tableFormat ) {
-        switch ( tableFormat ) {
+    public void setTableFormat(final GuidedDecisionTable52.TableFormat tableFormat) {
+        switch (tableFormat) {
             case EXTENDED_ENTRY:
-                lblTableFormat.setText( GuidedDecisionTableConstants.INSTANCE.TableFormatExtendedEntry() );
+                lblTableFormat.setText(GuidedDecisionTableConstants.INSTANCE.TableFormatExtendedEntry());
                 break;
             case LIMITED_ENTRY:
-                lblTableFormat.setText( GuidedDecisionTableConstants.INSTANCE.TableFormatLimitedEntry() );
+                lblTableFormat.setText(GuidedDecisionTableConstants.INSTANCE.TableFormatLimitedEntry());
                 break;
         }
     }
 
     @Override
-    public void setHitPolicy( final GuidedDecisionTable52.HitPolicy hitPolicy ) {
-        lblHitPolicy.setText( HitPolicyInternationalizer.internationalize( hitPolicy ) );
+    public void setHitPolicy(final GuidedDecisionTable52.HitPolicy hitPolicy) {
+        lblHitPolicy.setText(HitPolicyInternationalizer.internationalize(hitPolicy));
+        hitPolicyDescriptionText.setText(HitPolicyInternationalizer.internationalizeDescription(hitPolicy));
     }
-
 }

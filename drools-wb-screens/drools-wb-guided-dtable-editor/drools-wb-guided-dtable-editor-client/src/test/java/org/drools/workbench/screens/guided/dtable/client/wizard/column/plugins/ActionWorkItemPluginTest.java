@@ -390,6 +390,27 @@ public class ActionWorkItemPluginTest {
                                        editingCol);
     }
 
+    @Test
+    public void testIsHideColumn() {
+        final ActionWorkItemCol52 actionCol52 = mock(ActionWorkItemCol52.class);
+        doReturn(actionCol52).when(plugin).editingCol();
+
+        plugin.isHideColumn();
+
+        verify(actionCol52).isHideColumn();
+    }
+
+    @Test
+    public void testSetHideColumn() {
+        final boolean hideColumn = false;
+        final ActionWorkItemCol52 actionCol52 = mock(ActionWorkItemCol52.class);
+        doReturn(actionCol52).when(plugin).editingCol();
+
+        plugin.setHideColumn(hideColumn);
+
+        verify(actionCol52).setHideColumn(hideColumn);
+    }
+
     private PortableWorkDefinition getMock(final String name) {
         final PortableWorkDefinition mock = mock(PortableWorkDefinition.class);
 

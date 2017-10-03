@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget;
 
+import java.util.HashMap;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
@@ -30,10 +32,8 @@ import org.kie.workbench.common.services.shared.preferences.ApplicationPreferenc
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.Mock;
 
-import java.util.HashMap;
-
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DTCellValueWidgetFactoryTest {
@@ -69,11 +69,6 @@ public class DTCellValueWidgetFactoryTest {
 
         insertFactCol52 = new ActionInsertFactCol52();
         cellValue = new DTCellValue52();
-    }
-
-    @Test
-    public void testGetHideColumnIndicatorChecked() throws Exception {
-        assertTrue(DTCellValueWidgetFactory.getHideColumnIndicator(column) instanceof HideColumnCheckBox);
     }
 
     @Test

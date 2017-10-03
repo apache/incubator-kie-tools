@@ -131,6 +131,16 @@ public class ActionRetractFactPlugin extends BaseDecisionTableColumnPlugin imple
     }
 
     @Override
+    public boolean isHideColumn() {
+        return editingCol().isHideColumn();
+    }
+
+    @Override
+    public void setHideColumn(boolean hideColumn) {
+        editingCol().setHideColumn(hideColumn);
+    }
+
+    @Override
     public void setInsertLogical(final Boolean value) {
         // empty
     }

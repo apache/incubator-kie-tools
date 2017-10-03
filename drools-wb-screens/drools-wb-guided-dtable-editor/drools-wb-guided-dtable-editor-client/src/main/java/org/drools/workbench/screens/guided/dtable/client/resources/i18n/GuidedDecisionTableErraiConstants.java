@@ -51,6 +51,9 @@ public class GuidedDecisionTableErraiConstants {
     public static final String EditMenu_otherwise = "EditMenu.otherwise";
 
     @TranslationKey(defaultValue = "")
+    public static final String EditMenu_otherwiseDescription = "EditMenu.otherwiseDescription";
+
+    @TranslationKey(defaultValue = "")
     public static final String InsertMenu_title = "InsertMenu.title";
 
     @TranslationKey(defaultValue = "")
@@ -79,6 +82,15 @@ public class GuidedDecisionTableErraiConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String AdditionalInfoPage_AdditionalInfo = "AdditionalInfoPage.AdditionalInfo";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AdditionalInfoPage_HideColumnDescription = "AdditionalInfoPage.HideColumnDescription";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AdditionalInfoPage_LogicalInsertDescription = "AdditionalInfoPage.LogicalInsertDescription";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AdditionalInfoPage_UpdateEngineDescription = "AdditionalInfoPage.UpdateEngineDescription";
 
     @TranslationKey(defaultValue = "")
     public static final String AttributeColumnPage_AddNewAttribute = "AttributeColumnPage.AddNewAttribute";
@@ -123,6 +135,15 @@ public class GuidedDecisionTableErraiConstants {
     public static final String ValueOptionsPage_ValueOptions = "ValueOptionsPage.ValueOptions";
 
     @TranslationKey(defaultValue = "")
+    public static final String ValueOptionsPage_CEPWindowDescription = "ValueOptionsPage.CEPWindowDescription";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ValueOptionsPage_DefaultValueDescription = "ValueOptionsPage.DefaultValueDescription";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ValueOptionsPage_BindingDescription = "ValueOptionsPage.BindingDescription";
+
+    @TranslationKey(defaultValue = "")
     public static final String WorkItemPage_WorkItem = "WorkItemPage.WorkItem";
 
     @TranslationKey(defaultValue = "")
@@ -130,6 +151,9 @@ public class GuidedDecisionTableErraiConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String PatternPageView_SelectPattern = "PatternPageView.SelectPattern";
+
+    @TranslationKey(defaultValue = "")
+    public static final String PatternPageView_EntryPointDescription = "PatternPageView.EntryPointDescription";
 
     @TranslationKey(defaultValue = "")
     public static final String WorkItemPageView_NoWorkItemsAvailable = "WorkItemPageView.NoWorkItemsAvailable";
@@ -156,7 +180,7 @@ public class GuidedDecisionTableErraiConstants {
     public static final String ActionWorkItemSetFieldPlugin_SetValue = "ActionWorkItemSetFieldPlugin.SetValue";
 
     @TranslationKey(defaultValue = "")
-    public static final String AttributeColumnPlugin_AddNewAttributeColumn = "AttributeColumnPlugin.AddNewAttributeColumn";
+    public static final String AttributeColumnPlugin_AddAttributeColumn = "AttributeColumnPlugin.AddAttributeColumn";
 
     @TranslationKey(defaultValue = "")
     public static final String BRLConditionColumnPlugin_AddConditionBRL = "BRLConditionColumnPlugin.AddConditionBRL";
@@ -165,10 +189,10 @@ public class GuidedDecisionTableErraiConstants {
     public static final String BRLActionColumnPlugin_AddActionBRL = "BRLActionColumnPlugin.AddActionBRL";
 
     @TranslationKey(defaultValue = "")
-    public static final String ConditionColumnPlugin_AddNewConditionSimpleColumn = "ConditionColumnPlugin.AddNewConditionSimpleColumn";
+    public static final String ConditionColumnPlugin_AddConditionColumn = "ConditionColumnPlugin.AddConditionColumn";
 
     @TranslationKey(defaultValue = "")
-    public static final String MetaDataColumnPlugin_AddNewMetadata = "MetaDataColumnPlugin.AddNewMetadata";
+    public static final String MetaDataColumnPlugin_AddMetadataColumn = "MetaDataColumnPlugin.AddMetadataColumn";
 
     @TranslationKey(defaultValue = "")
     public static final String NewGuidedDecisionTableColumnWizard_AddNewColumn = "NewGuidedDecisionTableColumnWizard.AddNewColumn";

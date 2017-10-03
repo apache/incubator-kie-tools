@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.co
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
@@ -32,6 +33,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
 
 public class DecisionTableColumnViewUtils {
 
@@ -120,4 +122,61 @@ public class DecisionTableColumnViewUtils {
     private static void clean(final Div container) {
         DOMUtil.removeAllChildren(container);
     }
+
+    public static void setupPopover(final Element e,
+                                    final String content) {
+        doSetupPopover(e,
+                       content);
+    }
+
+    private static native void doSetupPopover(final Element e,
+                                              final String content) /*-{
+        $wnd.jQuery(e).popover({
+            container: 'body',
+            placement: 'bottom',
+            content: content,
+            html: true,
+            trigger: 'hover'
+        }).on("show.bs.popover",
+                function () {
+                    $wnd.jQuery(e).data("bs.popover").tip().css("max-width", "600px");
+                });
+    }-*/;
+
+    public static void setupPopover(final HTMLElement e,
+                                    final String content) {
+        doSetupPopover(e,
+                       content);
+    }
+
+    private static native void doSetupPopover(final HTMLElement e,
+                                              final String content) /*-{
+        $wnd.jQuery(e).popover({
+            container: 'body',
+            placement: 'bottom',
+            content: content,
+            html: true,
+            trigger: 'hover'
+        }).on("show.bs.popover",
+                function () {
+                    $wnd.jQuery(e).data("bs.popover").tip().css("max-width", "600px");
+                });
+    }-*/;
+
+    public static void enableOtherwisePopover(final HTMLElement e,
+                                              final boolean enabled) {
+        if (enabled) {
+            doEnablePopover(e);
+        } else {
+            doDisablePopover(e);
+        }
+    }
+
+    private static native void doEnablePopover(final HTMLElement e) /*-{
+        $wnd.jQuery(e).popover('enable');
+    }-*/;
+
+    private static native void doDisablePopover(final HTMLElement e) /*-{
+        $wnd.jQuery(e).popover('disable');
+    }-*/;
 }

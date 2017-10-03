@@ -465,7 +465,7 @@ public class ConditionColumnPluginTest {
 
     @Test
     public void testGetTitle() {
-        final String errorKey = GuidedDecisionTableErraiConstants.ConditionColumnPlugin_AddNewConditionSimpleColumn;
+        final String errorKey = GuidedDecisionTableErraiConstants.ConditionColumnPlugin_AddConditionColumn;
         final String errorMessage = "Title";
 
         when(translationService.format(errorKey)).thenReturn(errorMessage);
@@ -681,6 +681,22 @@ public class ConditionColumnPluginTest {
                      "EntryPointName");
         assertEquals(patternWrapper.isNegated(),
                      true);
+    }
+
+    @Test
+    public void testIsHideColumn() {
+        plugin.isHideColumn();
+
+        verify(editingCol).isHideColumn();
+    }
+
+    @Test
+    public void testSetHideColumn() throws Exception {
+        final boolean hideColumn = false;
+
+        plugin.setHideColumn(hideColumn);
+
+        verify(editingCol).setHideColumn(hideColumn);
     }
 
     private ConditionCol52 makeConditionCol52(final int constraintValueType,
