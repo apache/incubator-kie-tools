@@ -32,7 +32,6 @@
   <description>Uberfire Security Management - Provider Implementation for Wildfly</description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
@@ -83,6 +82,11 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.wildfly.security</groupId>
+      <artifactId>wildfly-elytron</artifactId>
+    </dependency>
+
     <!-- 
       NOTE:
       If deploying into a JBoss Wildfly or EAP, there is no need to include these dependencies, 
@@ -91,7 +95,13 @@
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-controller-client</artifactId>
-      <optional>true</optional>  
+      <optional>true</optional>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.sasl</groupId>
+          <artifactId>jboss-sasl</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

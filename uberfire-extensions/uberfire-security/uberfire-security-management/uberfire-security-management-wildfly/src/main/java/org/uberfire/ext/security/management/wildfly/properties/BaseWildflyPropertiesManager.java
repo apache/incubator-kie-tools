@@ -18,10 +18,10 @@ package org.uberfire.ext.security.management.wildfly.properties;
 
 import java.security.NoSuchAlgorithmException;
 
-import org.jboss.sasl.util.UsernamePasswordHashUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.config.ConfigProperties;
+import org.wildfly.security.sasl.util.UsernamePasswordHashUtil;
 
 /**
  * <p>Base class for JBoss Wildfly security management when using realms based on properties files.</p>
