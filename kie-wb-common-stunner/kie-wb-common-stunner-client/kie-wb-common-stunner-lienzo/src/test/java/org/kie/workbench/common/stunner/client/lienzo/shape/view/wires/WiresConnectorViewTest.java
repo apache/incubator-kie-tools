@@ -28,6 +28,7 @@ import com.ait.lienzo.client.core.shape.wires.MagnetManager;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.IColor;
@@ -95,6 +96,10 @@ public class WiresConnectorViewTest {
         when(tailDecorator.getPath()).thenReturn(tailPath);
         when(headPath.asNode()).thenReturn(headPathNode);
         when(tailPath.asNode()).thenReturn(tailPathNode);
+        when(headPath.getBoundingBox()).thenReturn(new BoundingBox(0,
+                                                                   0,
+                                                                   10,
+                                                                   10));
         this.tested = new WiresConnectorView(line,
                                              headDecorator,
                                              tailDecorator);

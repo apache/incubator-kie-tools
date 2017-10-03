@@ -18,6 +18,8 @@ package org.kie.workbench.common.dmn.client.widgets.grid.columns.renderers;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.shape.TextLineBreakWrap;
+import com.ait.lienzo.shared.core.types.TextAlign;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
@@ -47,8 +49,10 @@ public class TextAreaColumnDOMElementSingletonRenderer extends BaseGridColumnSin
         final Text t = theme.getBodyText()
                 .setText(cell.getValue().getValue())
                 .setListening(false)
-                .setX(context.getCellWidth() / 2)
-                .setY(context.getCellHeight() / 2);
+                .setX(5)
+                .setY(5)
+                .setTextAlign(TextAlign.LEFT);
+        t.setWrapper(new TextLineBreakWrap(t));
         g.add(t);
         return g;
     }

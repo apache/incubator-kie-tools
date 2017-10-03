@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.shape.TextBoundsWrap;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ColorName;
@@ -36,10 +37,10 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler
 /**
  * A helper class for handling the wires shapes' text primitive
  * that is used to display the shape's name.
- * <p>
+ * <p/>
  * It handles common logic for ShapeViews that implement <code>HasText</code>
  * type, can be reused for shapes or connectors.
- * <p>
+ * <p/>
  */
 public class WiresTextDecorator {
 
@@ -50,6 +51,7 @@ public class WiresTextDecorator {
     private ViewHandler<TextClickEvent> textClickEventViewHandler;
     private ViewHandler<TextDoubleClickEvent> textDblClickEventViewHandler;
     private Text text;
+    private TextBoundsWrap textWrapper;
     private LayoutContainer.Layout currentTextLayout;
 
     public WiresTextDecorator(final ViewEventHandlerManager eventHandlerManager) {
@@ -81,6 +83,12 @@ public class WiresTextDecorator {
                 .setDraggable(false)
                 .setAlpha(0)
                 .setTextAlign(TextAlign.CENTER);
+        this.textWrapper = new TextBoundsWrap(text,
+                                              new BoundingBox(0,
+                                                              0,
+                                                              100,
+                                                              100));
+        this.text.setWrapper(textWrapper);
         this.currentTextLayout = LayoutContainer.Layout.CENTER;
         textContainer.add(text);
         // Ensure path bounds are available on the selection context.
@@ -183,7 +191,7 @@ public class WiresTextDecorator {
         }
         final boolean changed = !currentTextLayout.equals(layout);
         this.currentTextLayout = layout;
-        setTextBoundaries(text.getWrapBoundaries());
+        setTextBoundaries(textWrapper.getWrapBoundaries());
         return changed;
     }
 
@@ -262,19 +270,19 @@ public class WiresTextDecorator {
         switch (getLayout()) {
             case LEFT:
                 if (null != boundaries) {
-                    text.setWrapBoundaries(new BoundingBox(boundaries.getMinY(),
-                                                           boundaries.getMaxX(),
-                                                           boundaries.getMaxY(),
-                                                           boundaries.getMaxX()));
+                    textWrapper.setWrapBoundaries(new BoundingBox(boundaries.getMinY(),
+                                                                  boundaries.getMaxX(),
+                                                                  boundaries.getMaxY(),
+                                                                  boundaries.getMaxX()));
                 }
                 break;
 
             case RIGHT:
                 if (null != boundaries) {
-                    text.setWrapBoundaries(new BoundingBox(boundaries.getMinY(),
-                                                           boundaries.getMaxX(),
-                                                           boundaries.getMaxY(),
-                                                           boundaries.getMaxX()));
+                    textWrapper.setWrapBoundaries(new BoundingBox(boundaries.getMinY(),
+                                                                  boundaries.getMaxX(),
+                                                                  boundaries.getMaxY(),
+                                                                  boundaries.getMaxX()));
                 }
                 break;
 
@@ -282,7 +290,7 @@ public class WiresTextDecorator {
             case CENTER:
             case BOTTOM:
             default:
-                text.setWrapBoundaries(boundaries);
+                textWrapper.setWrapBoundaries(boundaries);
                 break;
         }
     }
