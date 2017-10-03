@@ -397,7 +397,7 @@ public class ProjectExplorerContentResolver {
                                                                    userContent ) );
                     content.setSelectedBranch( loadBranch( content.getSelectedOrganizationalUnit(),
                                                            content.getSelectedRepository(),
-                                                           lastContent.getLastPackage().getBranch() ) );
+                                                           lastContent.getLastFolderItem().getBranch() ) );
                     content.setSelectedProject( loadProject( content.getSelectedOrganizationalUnit(),
                                                              content.getSelectedRepository(),
                                                              lastContent.getLastFolderItem().getProject(),

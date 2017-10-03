@@ -21,6 +21,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
+import org.kie.workbench.common.screens.explorer.service.Option;
 import org.mockito.ArgumentCaptor;
 
 import static org.mockito.Matchers.*;
@@ -35,6 +36,7 @@ public class HelperWrapper {
     private ArgumentCaptor<Project> projectArgumentCaptor;
     private ArgumentCaptor<FolderListing> folderListingArgumentCaptor;
     private ArgumentCaptor<Package> packageArgumentCaptor;
+    private ArgumentCaptor<ActiveOptions> activeOptionsArgumentCaptor;
     private ExplorerServiceHelper helper;
     private boolean includePackage = true;
 
@@ -49,6 +51,10 @@ public class HelperWrapper {
 
     public UserExplorerLastData getUserExplorerLastData() {
         UserExplorerLastData userExplorerLastData = new UserExplorerLastData();
+
+        if (activeOptionsArgumentCaptor != null) {
+            userExplorerLastData.setOptions(activeOptionsArgumentCaptor.getValue());
+        }
 
         if (packageArgumentCaptor == null) {
             return userExplorerLastData;
@@ -91,6 +97,7 @@ public class HelperWrapper {
         projectArgumentCaptor = ArgumentCaptor.forClass(Project.class);
         folderListingArgumentCaptor = ArgumentCaptor.forClass(FolderListing.class);
         packageArgumentCaptor = ArgumentCaptor.forClass(Package.class);
+        activeOptionsArgumentCaptor = ArgumentCaptor.forClass(ActiveOptions.class);
 
         verify(
                 helper,
@@ -101,7 +108,7 @@ public class HelperWrapper {
                 projectArgumentCaptor.capture(),
                 folderListingArgumentCaptor.capture(),
                 packageArgumentCaptor.capture(),
-                any( ActiveOptions.class));
+                activeOptionsArgumentCaptor.capture());
 
     }
 

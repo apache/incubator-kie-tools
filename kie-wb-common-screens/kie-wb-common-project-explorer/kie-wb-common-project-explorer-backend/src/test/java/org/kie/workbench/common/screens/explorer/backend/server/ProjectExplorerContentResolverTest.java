@@ -280,6 +280,20 @@ public class ProjectExplorerContentResolverTest {
         assertNull( content.getSelectedPackage() );
     }
 
+    @Test
+    public void testChangeFromBusinessToTechnicalView() {
+        resolver.resolve( getContentQuery( "master", createProject( "master", "project 1" ), Option.BUSINESS_CONTENT ) );
+        helperWrapper.reset();
+
+        Content content = resolver.setupSelectedItems( getContentQuery( "master", createProject( "master", "project 1" ), Option.TECHNICAL_CONTENT, null, getFileItem() ) );
+
+        assertEquals( "demo", content.getSelectedOrganizationalUnit().getName() );
+        assertEquals( "master", content.getSelectedBranch() );
+        assertEquals( "master@project 1", content.getSelectedProject().getRootPath().toURI() );
+        assertNull( content.getSelectedItem() );
+        assertNull( content.getSelectedPackage() );
+    }
+
     private Project createProject( final String branch,
                                    final String projectName ) {
         return new Project( createMockPath( branch, projectName ), createMockPath( branch, projectName ), projectName );
