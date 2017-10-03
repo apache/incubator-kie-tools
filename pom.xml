@@ -83,8 +83,8 @@
     <version.org.wildfly.gwt.sdm>10.1.0.Final</version.org.wildfly.gwt.sdm>
 
     <!-- Lienzo core upgrade required by Stunner. Can be removed once IP BOM is upgraded.-->
-    <version.com.ahome-it.lienzo-core>2.0.287-RELEASE</version.com.ahome-it.lienzo-core>
-    <version.com.ahome-it.lienzo-tests>2.0.287-RELEASE</version.com.ahome-it.lienzo-tests>
+    <version.com.ahome-it.lienzo-core>2.0.292-RELEASE</version.com.ahome-it.lienzo-core>
+    <version.com.ahome-it.lienzo-tests>2.0.292-RELEASE</version.com.ahome-it.lienzo-tests>
 
     <version.org.jboss.spec.javax.enterprise.concurrent>1.0.0.Final</version.org.jboss.spec.javax.enterprise.concurrent>
     <version.bundle.plugin>3.3.0</version.bundle.plugin><!-- 3.2.0 sometimes fails with NPE during parallel build-->
