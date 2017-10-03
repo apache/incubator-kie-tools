@@ -174,10 +174,9 @@ public class FixtureLayout
         layoutRow++;
 
         // global section
-        HorizontalPanel horizontalPanel = scenarioWidgetComponentCreator.createHorizontalPanel();
         setWidget(layoutRow,
                   0,
-                  horizontalPanel);
+                  scenarioWidgetComponentCreator.createGlobalButton());
 
         setWidget(layoutRow,
                   1,

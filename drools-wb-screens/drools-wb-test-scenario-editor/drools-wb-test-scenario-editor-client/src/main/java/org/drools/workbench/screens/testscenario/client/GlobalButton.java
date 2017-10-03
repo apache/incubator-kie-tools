@@ -28,13 +28,13 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.resources.ItemAltedImages;
-import org.uberfire.ext.widgets.common.client.common.ImageButton;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
 class GlobalButton
-        extends ImageButton {
+        extends Button {
 
     private final Scenario scenario;
     private final ScenarioParentWidget parent;
@@ -44,8 +44,10 @@ class GlobalButton
     public GlobalButton( final Scenario scenario,
                          final ScenarioParentWidget parent,
                          final AsyncPackageDataModelOracle oracle ) {
-        super( ItemAltedImages.INSTANCE.NewItem(),
-               TestScenarioConstants.INSTANCE.AddANewGlobalToThisScenario() );
+        setIcon(IconType.PLUS);
+        setType(ButtonType.PRIMARY);
+        setText(TestScenarioConstants.INSTANCE.globals());
+        setTitle(TestScenarioConstants.INSTANCE.AddANewGlobalToThisScenario());
 
         this.scenario = scenario;
         this.parent = parent;

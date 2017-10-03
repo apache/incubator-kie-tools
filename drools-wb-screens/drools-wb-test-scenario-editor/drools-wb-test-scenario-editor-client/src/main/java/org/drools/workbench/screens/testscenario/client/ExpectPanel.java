@@ -27,7 +27,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.common.client.common.ImageButton;
-import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 public class ExpectPanel extends HorizontalPanel {
 
@@ -49,7 +48,6 @@ public class ExpectPanel extends HorizontalPanel {
                                     parent,
                                     scenarioWidgetComponentCreator,
                                     oracle ) );
-        add( new SmallLabel( TestScenarioConstants.INSTANCE.EXPECT() ) );
         add( new DeleteButton() );
     }
 

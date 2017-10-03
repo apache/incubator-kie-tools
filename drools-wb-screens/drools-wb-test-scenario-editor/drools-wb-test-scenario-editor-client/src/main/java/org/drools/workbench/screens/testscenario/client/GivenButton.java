@@ -34,23 +34,22 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.resources.ItemAltedImages;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 /**
  * This button gives a choice of modifying data, based on the positional
  * context.
  */
-public class NewDataButton extends TestScenarioButton {
+public class GivenButton extends TestScenarioButton {
 
     private final ExecutionTrace currentEx;
 
-    public NewDataButton( final ExecutionTrace previousEx,
-                          final Scenario scenario,
-                          final ExecutionTrace currentEx,
-                          final ScenarioParentWidget scenarioWidget,
-                          final AsyncPackageDataModelOracle oracle ) {
-        super( ItemAltedImages.INSTANCE.NewItem(),
+    public GivenButton(final ExecutionTrace previousEx,
+                       final Scenario scenario,
+                       final ExecutionTrace currentEx,
+                       final ScenarioParentWidget scenarioWidget,
+                       final AsyncPackageDataModelOracle oracle ) {
+        super( TestScenarioConstants.INSTANCE.GIVEN(),
                TestScenarioConstants.INSTANCE.AddANewDataInputToThisScenario(),
                previousEx,
                scenario,

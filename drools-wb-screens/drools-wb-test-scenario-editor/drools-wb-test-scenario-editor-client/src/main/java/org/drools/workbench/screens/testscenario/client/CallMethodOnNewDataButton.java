@@ -25,7 +25,6 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.resources.ItemAltedImages;
 
 /**
  * This button gives a choice of modifying data, based on the positional
@@ -40,7 +39,7 @@ public class CallMethodOnNewDataButton extends TestScenarioButton {
                                       final ExecutionTrace currentEx,
                                       final ScenarioParentWidget scenarioWidget,
                                       final AsyncPackageDataModelOracle oracle ) {
-        super( ItemAltedImages.INSTANCE.NewItem(),
+        super( TestScenarioConstants.INSTANCE.CALL(),
                TestScenarioConstants.INSTANCE.AddANewDataInputToThisScenario(),
                previousEx,
                scenario,

@@ -28,7 +28,6 @@ import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.resources.ItemAltedImages;
 
 public class ExpectationButton
         extends TestScenarioButton {
@@ -40,7 +39,7 @@ public class ExpectationButton
                               final ScenarioParentWidget scenarioWidget,
                               final ScenarioWidgetComponentCreator scenarioWidgetComponentCreator,
                               final AsyncPackageDataModelOracle dmo ) {
-        super( ItemAltedImages.INSTANCE.NewItem(),
+        super( TestScenarioConstants.INSTANCE.EXPECT(),
                TestScenarioConstants.INSTANCE.AddANewExpectation(),
                previousEx,
                scenario,

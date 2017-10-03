@@ -30,25 +30,28 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.uberfire.ext.widgets.common.client.common.ImageButton;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
-abstract class TestScenarioButton extends ImageButton {
+abstract class TestScenarioButton extends Button {
 
     protected final Scenario scenario;
     protected final ScenarioParentWidget parent;
     protected final AsyncPackageDataModelOracle oracle;
     protected final ExecutionTrace previousEx;
 
-    public TestScenarioButton( final Image img,
+    public TestScenarioButton( final String text,
                                final String tooltip,
                                final ExecutionTrace previousEx,
                                final Scenario scenario,
                                final ScenarioParentWidget scenarioWidget,
                                final AsyncPackageDataModelOracle oracle ) {
-        super( img,
-               tooltip );
+        setIcon(IconType.PLUS);
+        setType(ButtonType.PRIMARY);
+        setText(text);
+        setTitle(tooltip);
         this.previousEx = previousEx;
         this.scenario = scenario;
         this.parent = scenarioWidget;
