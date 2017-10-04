@@ -173,7 +173,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
 
         FormDefinition form = editorHelper.getFormDefinition();
 
-        addField(editorHelper.getAvailableFields().get(fieldId));
+        addField(editorHelper.getAvailableFields().values().stream().filter(fieldDefinition -> fieldDefinition.getBinding().equals(fieldId)).findFirst().get());
 
         checkExpectedFields(editorHelper.getAvailableFields().size(),
                             1,
@@ -370,8 +370,6 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
     @Test
     public void testLoadAvailableFieldsNoContent() {
         loadContent();
-        when(content.getAvailableFields()).thenReturn(null);
-        FormEditorPresenter presenterSpy = spy(presenter);
 
         presenter.doLoadContent(content);
     }
@@ -379,7 +377,6 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
     @Test
     public void testGetFormTemplate() {
         loadContent();
-        when(content.getAvailableFields()).thenReturn(null);
 
         presenter.getFormTemplate();
 

@@ -34,6 +34,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm
 public class TestFieldManager extends AbstractFieldManager {
 
     public TestFieldManager() {
+        super(new TestMetaDataEntryManager());
         registerFieldProvider(new TextBoxFieldProvider() {
             {
                 doRegisterFields();

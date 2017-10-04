@@ -20,7 +20,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.forms.model.FormModel;
 
 @Portable
-public class DefaultFormModel implements FormModel {
+public class DefaultFormModel extends AbstractFormModel {
 
     @Override
     public String getName() {

@@ -18,13 +18,13 @@ package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.a
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
-import org.kie.workbench.common.forms.commons.shared.layout.FormLayoutTemplateGenerator;
 import org.kie.workbench.common.forms.editor.model.FormModelSynchronizationResult;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerManager;
@@ -36,7 +36,6 @@ import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.Ab
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.GenerationContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.HasFormModelProperties;
 import org.kie.workbench.common.forms.model.JavaFormModel;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
@@ -66,15 +65,13 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
 
     @Inject
     public BPMNVFSFormDefinitionGeneratorService(FieldManager fieldManager,
-                                                 FormLayoutTemplateGenerator layoutTemplateGenerator,
                                                  FormModelHandlerManager formModelHandlerManager,
                                                  VFSFormFinderService formFinderService,
                                                  FormDefinitionSerializer formSerializer,
                                                  @Named("ioStrategy") IOService ioService,
                                                  CommentedOptionFactory commentedOptionFactory,
                                                  FormModelSynchronizationUtil formModelSynchronizationUtil) {
-        super(fieldManager,
-              layoutTemplateGenerator);
+        super(fieldManager);
         this.formModelHandlerManager = formModelHandlerManager;
         this.formFinderService = formFinderService;
         this.formSerializer = formSerializer;
@@ -104,7 +101,7 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
                         kiePath);
 
             // If the form exists on the VFS let's synchronize form fields
-            FormModelSynchronizationResult synchronizationResult = modelHandler.synchronizeFormModelProperties((HasFormModelProperties) form.getModel(),
+            FormModelSynchronizationResult synchronizationResult = modelHandler.synchronizeFormModelProperties(form.getModel(),
                                                                                                                context.getFormModel().getProperties());
 
             formModelSynchronizationUtil.init(form,
@@ -122,7 +119,7 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
 
             if (synchronizationResult.hasNewProperties()) {
                 logger.warn("Process/Task has new variables. Adding them to form:");
-                formModelSynchronizationUtil.addNewFields(modelHandler::createFieldDefinition);
+                formModelSynchronizationUtil.addNewFields(fieldManager::getDefinitionByModelProperty);
             }
 
             form.setModel(context.getFormModel());
@@ -133,9 +130,7 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
 
             form.setName(context.getSource().getFileName());
 
-            form.getFields().addAll(modelHandler.getAllFormModelFields());
-
-            layoutTemplateGenerator.generateLayoutTemplate(form);
+            form.getFields().addAll(context.getFormModel().getProperties().stream().map(fieldManager::getDefinitionByModelProperty).collect(Collectors.toList()));
         }
 
         form.setModel(context.getFormModel());
@@ -163,16 +158,19 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
     protected List<FieldDefinition> extractModelFields(JavaFormModel formModel,
                                                        GenerationContext<Path> context) {
         FormModelHandler handler = formModelHandlerManager.getFormModelHandler(formModel.getClass());
+
         handler.init(formModel,
                      context.getSource());
         handler.synchronizeFormModel();
-        return handler.getAllFormModelFields();
+
+        return formModel.getProperties().stream().map(fieldManager::getDefinitionByModelProperty).collect(Collectors.toList());
     }
 
     @Override
     protected FormDefinition findFormDefinitionForModelType(String modelType,
                                                             GenerationContext<Path> context) {
-        FormDefinition form =  super.findFormDefinitionForModelType(modelType, context);
+        FormDefinition form = super.findFormDefinitionForModelType(modelType,
+                                                                   context);
 
         if (form != null) {
             return form;

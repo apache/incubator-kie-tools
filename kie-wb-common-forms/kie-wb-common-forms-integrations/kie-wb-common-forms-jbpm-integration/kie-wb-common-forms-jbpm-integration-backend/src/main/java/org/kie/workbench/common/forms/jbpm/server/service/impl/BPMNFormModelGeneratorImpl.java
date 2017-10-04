@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
@@ -40,12 +39,15 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.UserTask;
 import org.jsoup.parser.Parser;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.jbpm.server.service.BPMNFormModelGenerator;
 import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
 import org.kie.workbench.common.forms.model.ModelProperty;
-import org.kie.workbench.common.forms.model.util.ModelPropertiesUtil;
+import org.kie.workbench.common.forms.model.impl.meta.entries.FieldReadOnlyEntry;
+import org.kie.workbench.common.forms.model.impl.meta.entries.FieldTypeEntry;
+import org.kie.workbench.common.forms.model.util.formModel.FormModelPropertiesUtil;
 import org.kie.workbench.common.forms.service.backend.util.ModelPropertiesGenerator;
 import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -80,10 +82,14 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
             List<ModelProperty> properties = process.getProperties().stream().map(property -> {
                 String varName = property.getId();
                 String varType = BPMNVariableUtils.getRealTypeForInput(property.getItemSubjectRef().getStructureRef());
-                return createModelProperty(varName,
-                                           varType,
+
+                Variable variable = new Variable(varName, varType);
+                variable.setInput(true);
+                variable.setOutput(true);
+
+                return createModelProperty(variable,
                                            projectClassLoader);
-            }).collect(Collectors.toList());
+            }).sorted((property1, property2) -> property1.getName().compareToIgnoreCase(property2.getName())).collect(Collectors.toList());
 
             return new BusinessProcessFormModel(process.getId(),
                                                 process.getName(),
@@ -109,20 +115,27 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
                     return false;
                 }
                 return true;
-            }).map(taskFormVariables -> taskFormVariables.toFormModel((BiFunction<String, String, ModelProperty>) (name, type) -> createModelProperty(name,
-                                                                                                                                                      type,
-                                                                                                                                                      projectClassLoader))).collect(Collectors.toList());
+            }).map(taskFormVariables -> taskFormVariables.toFormModel(variable -> createModelProperty(variable,
+                                                                                                          projectClassLoader))).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
 
-    protected ModelProperty createModelProperty(String name,
-                                                String type,
+    protected ModelProperty createModelProperty(Variable variable,
                                                 ClassLoader classLoader) {
-        return ModelPropertiesGenerator.createModelProperty(name,
-                                                            type,
-                                                            ModelPropertiesUtil.isListType(type),
-                                                            classLoader);
+        ModelProperty property = ModelPropertiesGenerator.createModelProperty(variable.getName(),
+                                                                              variable.getType(),
+                                                                              FormModelPropertiesUtil.isListType(variable.getType()),
+                                                                              classLoader);
+
+
+        property.getMetaData().addEntry(new FieldReadOnlyEntry(variable.isInput() && !variable.isOutput()));
+
+        if(!property.getTypeInfo().isMultiple() && property.getTypeInfo().getClassName().equals(Object.class.getName())) {
+            property.getMetaData().addEntry(new FieldTypeEntry(TextAreaFieldDefinition.FIELD_TYPE.getTypeName()));
+        }
+
+        return property;
     }
 
     @Override
@@ -146,8 +159,7 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
 
                 final ClassLoader projectClassLoader = projectClassLoaderHelper.getProjectClassLoader(projectService.resolveProject(path));
 
-                return formVariables.toFormModel((name, type) -> createModelProperty(name,
-                                                                                     type,
+                return formVariables.toFormModel(variable -> createModelProperty(variable,
                                                                                      projectClassLoader));
             }
         }
@@ -205,8 +217,12 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
 
                         type = BPMNVariableUtils.getRealTypeForInput(type);
 
-                        formVariables.addVariable(name,
-                                                  type);
+                        Variable variable = new Variable(name, type);
+
+                        variable.setInput(true);
+
+                        formVariables.addVariable(variable);
+
                     } else if (BPMNVariableUtils.TASK_FORM_VARIABLE.equals(name)) {
                         List<Assignment> assignments = inputAssociation.getAssignment();
 
@@ -245,8 +261,11 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
 
                     type = BPMNVariableUtils.getRealTypeForInput(type);
 
-                    formVariables.addVariable(name,
-                                              type);
+                    Variable variable = new Variable(name, type);
+
+                    variable.setOutput(true);
+
+                    formVariables.addVariable(variable);
                 }
             });
         }

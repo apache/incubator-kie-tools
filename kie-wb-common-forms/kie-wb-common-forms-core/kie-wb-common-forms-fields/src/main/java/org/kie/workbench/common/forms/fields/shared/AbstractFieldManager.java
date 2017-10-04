@@ -34,10 +34,14 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipl
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FieldType;
+import org.kie.workbench.common.forms.model.MetaDataEntry;
 import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.model.TypeInfo;
 import org.kie.workbench.common.forms.model.TypeKind;
+import org.kie.workbench.common.forms.model.impl.meta.entries.FieldTypeEntry;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
+import org.kie.workbench.common.forms.service.shared.meta.processing.MetaDataEntryManager;
+import org.kie.workbench.common.forms.service.shared.meta.processing.MetaDataEntryProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +61,12 @@ public abstract class AbstractFieldManager implements FieldManager {
 
     protected String defaultSingleEntity = SubFormFieldDefinition.FIELD_TYPE.getTypeName();
     protected String defaultMultipleEntity = MultipleSubFormFieldDefinition.FIELD_TYPE.getTypeName();
+
+    private MetaDataEntryManager metaDataEntryManager;
+
+    public AbstractFieldManager(MetaDataEntryManager metaDataEntryManager) {
+        this.metaDataEntryManager = metaDataEntryManager;
+    }
 
     protected void registerFieldProvider(FieldProvider provider) {
 
@@ -143,15 +153,43 @@ public abstract class AbstractFieldManager implements FieldManager {
 
     @Override
     public FieldDefinition getDefinitionByModelProperty(ModelProperty modelProperty) {
-        Optional<FieldDefinition> optional = Optional.ofNullable(getDefinitionByDataType(modelProperty.getTypeInfo()));
 
-        if(optional.isPresent()) {
-            FieldDefinition fieldDefinition = optional.get();
+        FieldTypeEntry fieldTypeEntry = (FieldTypeEntry) modelProperty.getMetaData().getEntry(FieldTypeEntry.NAME);
+
+        FieldDefinition fieldDefinition = null;
+
+        if (fieldTypeEntry != null) {
+            fieldDefinition = getFieldFromProvider(fieldTypeEntry.getValue(),
+                                                   modelProperty.getTypeInfo());
+        }
+
+        if (fieldDefinition == null) {
+            Optional<FieldDefinition> optional = Optional.ofNullable(getDefinitionByDataType(modelProperty.getTypeInfo()));
+            if (optional.isPresent()) {
+                fieldDefinition = optional.get();
+            }
+        }
+
+        if (fieldDefinition != null) {
             fieldDefinition.setName(modelProperty.getName());
             fieldDefinition.setBinding(modelProperty.getName());
-            fieldDefinition.setLabel(modelProperty.getName());
+
+            String label = modelProperty.getName();
+            label = label.substring(0, 1).toUpperCase() + label.substring(1);
+
+            fieldDefinition.setLabel(label);
+            fieldDefinition.setStandaloneClassName(modelProperty.getTypeInfo().getClassName());
+
             if (fieldDefinition instanceof HasPlaceHolder) {
-                ((HasPlaceHolder)fieldDefinition).setPlaceHolder(modelProperty.getName());
+                ((HasPlaceHolder) fieldDefinition).setPlaceHolder(label);
+            }
+
+            for (MetaDataEntry entry : modelProperty.getMetaData().getEntries()) {
+                MetaDataEntryProcessor processor = metaDataEntryManager.getProcessorForEntry(entry);
+                if (processor != null && processor.supports(fieldDefinition)) {
+                    processor.process(entry,
+                                      fieldDefinition);
+                }
             }
             return fieldDefinition;
         }
@@ -198,12 +236,12 @@ public abstract class AbstractFieldManager implements FieldManager {
     public Collection<String> getCompatibleTypes(FieldDefinition fieldDefinition) {
         FieldProvider provider = providersByFieldCode.get(fieldDefinition.getFieldType().getTypeName());
 
-        if(provider == null) {
+        if (provider == null) {
             throw new IllegalArgumentException("Unexpected field type '" + fieldDefinition.getFieldType().getTypeName() + "'");
         }
 
         if (provider instanceof BasicTypeFieldProvider) {
-            return Arrays.asList(((BasicTypeFieldProvider)provider).getSupportedTypes());
+            return Arrays.asList(((BasicTypeFieldProvider) provider).getSupportedTypes());
         }
         return Arrays.asList(fieldDefinition.getStandaloneClassName());
     }

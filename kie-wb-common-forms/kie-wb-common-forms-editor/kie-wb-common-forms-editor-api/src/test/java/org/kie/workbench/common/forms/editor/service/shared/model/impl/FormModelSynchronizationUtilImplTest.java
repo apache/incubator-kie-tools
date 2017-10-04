@@ -34,7 +34,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.HasFormModelProperties;
+import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 import org.kie.workbench.common.forms.service.backend.util.ModelPropertiesGenerator;
@@ -48,13 +48,13 @@ import static org.junit.Assert.assertNull;
 @RunWith(MockitoJUnitRunner.class)
 public class FormModelSynchronizationUtilImplTest {
 
-    FormModelSynchronizationUtilImpl synchronizationUtil;
+    private FormModelSynchronizationUtilImpl synchronizationUtil;
 
-    FormDefinition form;
+    private FormDefinition form;
 
-    HasFormModelProperties formModel;
+    private FormModel formModel;
 
-    FormModelSynchronizationResultImpl formModelSynchronizationResult = new FormModelSynchronizationResultImpl();
+    private FormModelSynchronizationResultImpl formModelSynchronizationResult = new FormModelSynchronizationResultImpl();
 
     @Before
     public void init() {
@@ -62,7 +62,7 @@ public class FormModelSynchronizationUtilImplTest {
                                                                    new StaticFormLayoutTemplateGenerator());
         form = TestFormGenerator.getEmployeeForm();
 
-        formModel = (HasFormModelProperties) form.getModel();
+        formModel = form.getModel();
     }
 
     @Test

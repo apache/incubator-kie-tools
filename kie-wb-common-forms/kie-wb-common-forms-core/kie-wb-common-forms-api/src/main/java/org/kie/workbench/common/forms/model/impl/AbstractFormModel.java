@@ -20,12 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.workbench.common.forms.model.FormModel;
-import org.kie.workbench.common.forms.model.HasFormModelProperties;
 import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.model.TypeKind;
 
-public abstract class AbstractFormModel implements FormModel,
-                                                   HasFormModelProperties {
+public abstract class AbstractFormModel implements FormModel {
 
     protected String name;
 

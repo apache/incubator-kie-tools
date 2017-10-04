@@ -19,7 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.type.DocumentFieldType;
-import org.kie.workbench.common.forms.model.util.ModelPropertiesUtil;
+import org.kie.workbench.common.forms.model.util.formModel.FormModelPropertiesUtil;
 import org.uberfire.commons.services.cdi.Startup;
 
 @ApplicationScoped
@@ -29,7 +29,7 @@ public class FormsJBPMIntegrationBackendEntryPoint {
     @PostConstruct
     public void init() {
         // registering Document Types to ModelPropertiesUtil
-        ModelPropertiesUtil.registerBaseType(DocumentFieldType.DOCUMENT_TYPE);
-        ModelPropertiesUtil.registerBaseType(DocumentFieldType.DOCUMENT_IMPL_TYPE);
+        FormModelPropertiesUtil.registerBaseType(DocumentFieldType.DOCUMENT_TYPE);
+        FormModelPropertiesUtil.registerBaseType(DocumentFieldType.DOCUMENT_IMPL_TYPE);
     }
 }

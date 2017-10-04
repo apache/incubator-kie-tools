@@ -22,21 +22,42 @@ import java.util.Collection;
 import java.util.Date;
 
 import junit.framework.TestCase;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.model.meta.entries.FieldPlaceHolderEntry;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.model.TypeInfo;
 import org.kie.workbench.common.forms.model.TypeKind;
+import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
 import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
+import org.kie.workbench.common.forms.model.impl.meta.entries.FieldLabelEntry;
+import org.kie.workbench.common.forms.model.impl.meta.entries.FieldReadOnlyEntry;
+import org.kie.workbench.common.forms.model.impl.meta.entries.FieldRequiredEntry;
+import org.kie.workbench.common.forms.model.impl.meta.entries.FieldTypeEntry;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FieldManagerTest extends TestCase {
+public class FieldManagerTest {
+
+    private static final String METADATA_LABEL = "Name label";
+    private static final String METADATA_PLACEHOLDER = "Name placeholder";
+    private static final Boolean METADATA_READONLY= Boolean.TRUE;
+    private static final Boolean METADATA_REQUIRED = Boolean.TRUE;
+
+    private static final String PROPERTY_NAME = "name";
+    private static final String PROPERTY_LABEL = "Name";
 
     protected TestFieldManager fieldManager;
+
+    protected ModelProperty property;
 
     protected final Class[] basicTypesSupported = new Class[]{
             String.class,
@@ -65,18 +86,19 @@ public class FieldManagerTest extends TestCase {
     @Before
     public void initTest() {
         fieldManager = new TestFieldManager();
-        assertNotNull(fieldManager.getBaseFieldTypes());
-        assertNotSame(0,
-                      fieldManager.getBaseFieldTypes().size());
+        Assertions.assertThat(fieldManager.getBaseFieldTypes())
+                .isNotNull()
+                .isNotEmpty();
+
+        property = new ModelPropertyImpl("name", new TypeInfoImpl(String.class.getName()));
     }
 
     @Test
     public void testGetDefaultFieldTypes() {
         for (String typeCode : fieldManager.getBaseFieldTypes()) {
             FieldDefinition fieldDefinition = fieldManager.getDefinitionByFieldTypeName(typeCode);
-            assertNotNull(fieldDefinition);
-            assertEquals(typeCode,
-                         fieldDefinition.getFieldType().getTypeName());
+            Assertions.assertThat(fieldDefinition).isNotNull();
+            Assertions.assertThat(fieldDefinition.getFieldType().getTypeName()).isEqualTo(typeCode);
         }
     }
 
@@ -104,7 +126,7 @@ public class FieldManagerTest extends TestCase {
 
     protected void checkFieldExists(TypeInfo typeInfo) {
         FieldDefinition fieldDefinition = fieldManager.getDefinitionByDataType(typeInfo);
-        assertNotNull(fieldDefinition);
+        Assertions.assertThat(fieldDefinition).isNotNull();
     }
 
     @Test
@@ -122,7 +144,7 @@ public class FieldManagerTest extends TestCase {
 
             FieldDefinition fieldDefinition = fieldManager.getDefinitionByDataType(typeInfo);
 
-            assertNotNull(fieldDefinition);
+            Assertions.assertThat(fieldDefinition).isNotNull();
 
             if (addFieldType) {
                 fieldDefinition.setStandaloneClassName(typeInfo.getClassName());
@@ -130,9 +152,8 @@ public class FieldManagerTest extends TestCase {
 
             Collection<String> compatibles = fieldManager.getCompatibleFields(fieldDefinition);
 
-            assertNotNull(compatibles);
-            assertNotSame(0,
-                          compatibles.size());
+            Assertions.assertThat(compatibles).isNotNull()
+                    .isNotEmpty();
         }
     }
 
@@ -148,11 +169,47 @@ public class FieldManagerTest extends TestCase {
 
                     FieldDefinition fieldDefinition = fieldManager.getFieldFromProvider(provider.getFieldTypeName(),
                                                                                         typeInfo);
-                    assertNotNull(fieldDefinition);
+                    Assertions.assertThat(fieldDefinition).isNotNull();
                 } catch (ClassNotFoundException e) {
                     // swallow error caused by looking up simple types
                 }
             }
         }
+    }
+
+    @Test
+    public void testGetDefinitionByModelPropertyWithoutMetaData() {
+        FieldDefinition fieldDefinition = fieldManager.getDefinitionByModelProperty(property);
+
+        Assertions.assertThat(fieldDefinition)
+                .isNotNull()
+                .isInstanceOf(TextBoxFieldDefinition.class)
+                .hasFieldOrPropertyWithValue("name", PROPERTY_NAME)
+                .hasFieldOrPropertyWithValue("label", PROPERTY_LABEL)
+                .hasFieldOrPropertyWithValue("placeHolder", PROPERTY_LABEL)
+                .hasFieldOrPropertyWithValue("required", Boolean.FALSE)
+                .hasFieldOrPropertyWithValue("readOnly", Boolean.FALSE)
+                .hasFieldOrPropertyWithValue("binding", PROPERTY_NAME);
+    }
+
+    @Test
+    public void testGetDefinitionByModelPropertyWithMetaData() {
+        property.getMetaData().addEntry(new FieldTypeEntry(TextAreaFieldType.NAME));
+        property.getMetaData().addEntry(new FieldLabelEntry(METADATA_LABEL));
+        property.getMetaData().addEntry(new FieldPlaceHolderEntry(METADATA_PLACEHOLDER));
+        property.getMetaData().addEntry(new FieldReadOnlyEntry(METADATA_READONLY));
+        property.getMetaData().addEntry(new FieldRequiredEntry(METADATA_REQUIRED));
+
+        FieldDefinition fieldDefinition = fieldManager.getDefinitionByModelProperty(property);
+
+        Assertions.assertThat(fieldDefinition)
+                .isNotNull()
+                .isInstanceOf(TextAreaFieldDefinition.class)
+                .hasFieldOrPropertyWithValue("name", PROPERTY_NAME)
+                .hasFieldOrPropertyWithValue("label", METADATA_LABEL)
+                .hasFieldOrPropertyWithValue("placeHolder", METADATA_PLACEHOLDER)
+                .hasFieldOrPropertyWithValue("required", METADATA_REQUIRED)
+                .hasFieldOrPropertyWithValue("readOnly", METADATA_READONLY)
+                .hasFieldOrPropertyWithValue("binding", PROPERTY_NAME);
     }
 }

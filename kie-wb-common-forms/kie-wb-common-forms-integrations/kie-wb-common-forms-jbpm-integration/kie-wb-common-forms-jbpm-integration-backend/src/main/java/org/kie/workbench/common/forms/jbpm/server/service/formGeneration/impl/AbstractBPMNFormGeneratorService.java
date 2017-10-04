@@ -19,7 +19,11 @@ package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.workbench.common.forms.commons.shared.layout.FormLayoutTemplateGenerator;
+import org.kie.workbench.common.forms.adf.definitions.settings.ColSpan;
+import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.layout.LayoutGenerator;
+import org.kie.workbench.common.forms.adf.service.definitions.layout.LayoutColumnDefinition;
+import org.kie.workbench.common.forms.adf.service.definitions.layout.LayoutSettings;
+import org.kie.workbench.common.forms.commons.shared.layout.impl.StaticFormLayoutTemplateGenerator;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.editor.service.backend.util.UIDGenerator;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.EntityRelationField;
@@ -27,23 +31,28 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.HasNest
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.IsCRUDDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableColumnMeta;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
+import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.BPMNFormGeneratorService;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.FormGenerationResult;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.model.FormLayoutComponent;
 import org.kie.workbench.common.forms.model.JavaFormModel;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
+import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 
 public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFormGeneratorService<SOURCE> {
 
+    private static final String HTML_COMPONENT = "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent";
+    private static final String HTML_CODE_PARAMETER = "HTML_CODE";
+
+    private static final String INPUTS = "<h3>Inputs:</h3>";
+    private static final String OUTPUTS = "<h3>Outputs:</h3>";
+
     protected FieldManager fieldManager;
 
-    protected FormLayoutTemplateGenerator layoutTemplateGenerator;
-
-    public AbstractBPMNFormGeneratorService(FieldManager fieldManager,
-                                            FormLayoutTemplateGenerator layoutTemplateGenerator) {
+    public AbstractBPMNFormGeneratorService(FieldManager fieldManager) {
         this.fieldManager = fieldManager;
-        this.layoutTemplateGenerator = layoutTemplateGenerator;
     }
 
     @Override
@@ -63,6 +72,10 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
             throw new IllegalStateException("Impossible to generate form for: " + formModel.getFormName());
         }
 
+        if (rootForm.getLayoutTemplate() == null) {
+            createFormLayout(rootForm);
+        }
+
         context.setRootForm(rootForm);
 
         processFormDefinition(rootForm,
@@ -70,6 +83,54 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
 
         return new FormGenerationResult(context.getRootForm(),
                                         new ArrayList<>(context.getContextForms().values()));
+    }
+
+    protected void createFormLayout(FormDefinition form) {
+        LayoutGenerator layoutGenerator = new LayoutGenerator();
+
+        layoutGenerator.init(new LayoutColumnDefinition[]{new LayoutColumnDefinition(ColSpan.SPAN_12)});
+
+        if (form.getFields().size() > 0) {
+            boolean separeateInputsAndOutputs = form.getModel() instanceof TaskFormModel;
+
+            boolean mightAddOtuputsLabel = form.getFields().get(0).getReadOnly();
+
+            if (separeateInputsAndOutputs) {
+                if (mightAddOtuputsLabel) {
+                    layoutGenerator.addComponent(generateHTMLElement(INPUTS),
+                                                 new LayoutSettings());
+                } else {
+                    layoutGenerator.addComponent(generateHTMLElement(OUTPUTS),
+                                                 new LayoutSettings());
+                }
+            }
+
+            for (FieldDefinition fieldDefinition : form.getFields()) {
+
+                if (separeateInputsAndOutputs && mightAddOtuputsLabel && !fieldDefinition.getReadOnly()) {
+                    mightAddOtuputsLabel = false;
+                    layoutGenerator.addComponent(generateHTMLElement(OUTPUTS),
+                                                 new LayoutSettings());
+                }
+
+                LayoutComponent fieldComponent = new LayoutComponent(StaticFormLayoutTemplateGenerator.DRAGGABLE_TYPE);
+                fieldComponent.addProperty(FormLayoutComponent.FORM_ID,
+                                           form.getId());
+                fieldComponent.addProperty(FormLayoutComponent.FIELD_ID,
+                                           fieldDefinition.getId());
+                layoutGenerator.addComponent(fieldComponent,
+                                             new LayoutSettings());
+            }
+        }
+
+        form.setLayoutTemplate(layoutGenerator.build());
+    }
+
+    protected LayoutComponent generateHTMLElement(String content) {
+        LayoutComponent htmlComponent = new LayoutComponent(HTML_COMPONENT);
+        htmlComponent.addProperty(HTML_CODE_PARAMETER,
+                                  content);
+        return htmlComponent;
     }
 
     protected void processFormDefinition(final FormDefinition formDefinition,
@@ -150,7 +211,7 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
 
             form.getFields().addAll(fields);
 
-            layoutTemplateGenerator.generateLayoutTemplate(form);
+            createFormLayout(form);
 
             processFormDefinition(form,
                                   context);

@@ -19,7 +19,7 @@ import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.model.TypeKind;
 import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
 import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
-import org.kie.workbench.common.forms.model.util.ModelPropertiesUtil;
+import org.kie.workbench.common.forms.model.util.formModel.FormModelPropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +40,7 @@ public class ModelPropertiesGenerator {
                                                     String className,
                                                     ClassLoader classLoader) {
 
-        if (ModelPropertiesUtil.isListType(className)) {
+        if (FormModelPropertiesUtil.isListType(className)) {
             return createModelProperty(name,
                                        Object.class.getName(),
                                        true,
@@ -56,14 +56,14 @@ public class ModelPropertiesGenerator {
                                                     String className,
                                                     boolean isMultiple,
                                                     ClassLoader classLoader) {
-        if (ModelPropertiesUtil.isBaseType(className)) {
+        if (FormModelPropertiesUtil.isBaseType(className)) {
             // Dealing with basic type properties (String, Integer...)
             return new ModelPropertyImpl(name,
                                          new TypeInfoImpl(className,
                                                           isMultiple));
         } else {
             // Dealing with complex types.
-            if (ModelPropertiesUtil.isListType(className)) {
+            if (FormModelPropertiesUtil.isListType(className)) {
                 // If className is a List let's create a model for Object...
                 return createModelProperty(name,
                                            Object.class.getName(),

@@ -25,14 +25,14 @@ import org.kie.workbench.common.forms.editor.model.impl.FormModelSynchronization
 import org.kie.workbench.common.forms.editor.model.impl.TypeConflictImpl;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.HasFormModelProperties;
+import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.service.backend.util.ModelPropertiesGenerator;
 import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
 
-public abstract class AbstractFormModelHandler<F extends HasFormModelProperties> implements FormModelHandler<F> {
+public abstract class AbstractFormModelHandler<F extends FormModel> implements FormModelHandler<F> {
 
     protected F formModel;
     protected Path path;
@@ -59,18 +59,6 @@ public abstract class AbstractFormModelHandler<F extends HasFormModelProperties>
 
     protected void initClassLoader() {
         this.projectClassLoader = classLoaderHelper.getProjectClassLoader(projectService.resolveProject(path));
-    }
-
-    @Override
-    public List<FieldDefinition> getAllFormModelFields() {
-        checkInitialized();
-        return doGenerateModelFields();
-    }
-
-    @Override
-    public FieldDefinition createFieldDefinition(ModelProperty property) {
-        checkInitialized();
-        return doCreateFieldDefinition(property);
     }
 
     protected abstract void initialize();
@@ -138,10 +126,6 @@ public abstract class AbstractFormModelHandler<F extends HasFormModelProperties>
                                 Exception e);
 
     protected abstract List<ModelProperty> getCurrentModelProperties();
-
-    protected abstract List<FieldDefinition> doGenerateModelFields();
-
-    protected abstract FieldDefinition doCreateFieldDefinition(ModelProperty property);
 
     public void checkInitialized() {
         if (path == null || formModel == null || projectClassLoader == null) {

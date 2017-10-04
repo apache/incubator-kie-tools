@@ -27,6 +27,7 @@ import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerMan
 import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
 import org.kie.workbench.common.forms.editor.service.shared.model.impl.FormModelSynchronizationUtilImpl;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
+import org.kie.workbench.common.forms.fields.test.TestMetaDataEntryManager;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.AbstractBPMNFormGeneratorServiceTest;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.test.TestFormModelHandlerManager;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
@@ -63,7 +64,8 @@ public abstract class BPMNVFSFormDefinitionGeneratorServiceTest extends Abstract
     protected DataObjectFinderService dataObjectFinderService;
     protected FormModelHandlerManager formModelHandlerManager;
     protected FormDefinitionSerializer formSerializer = new FormDefinitionSerializerImpl(new FieldSerializer(),
-                                                                                         new FormModelSerializer());
+                                                                                         new FormModelSerializer(),
+                                                                                         new TestMetaDataEntryManager());
     protected SimpleFileSystemProvider simpleFileSystemProvider = null;
     @Mock
     protected CommentedOptionFactory commentedOptionFactory;
@@ -99,7 +101,6 @@ public abstract class BPMNVFSFormDefinitionGeneratorServiceTest extends Abstract
                                                                   dataObjectFinderService);
 
         service = new BPMNVFSFormDefinitionGeneratorService(fieldManager,
-                                                            templateGenerator,
                                                             formModelHandlerManager,
                                                             formFinderService,
                                                             formSerializer,

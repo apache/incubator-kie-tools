@@ -30,4 +30,6 @@ public interface ModelProperty {
      * Retrieves the info about the type of the property
      */
     TypeInfo getTypeInfo();
+
+    ModelMetaData getMetaData();
 }

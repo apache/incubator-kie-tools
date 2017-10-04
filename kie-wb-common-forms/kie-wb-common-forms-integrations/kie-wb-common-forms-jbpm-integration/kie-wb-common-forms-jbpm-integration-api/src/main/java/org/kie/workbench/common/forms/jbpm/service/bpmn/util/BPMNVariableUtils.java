@@ -50,7 +50,7 @@ public class BPMNVariableUtils {
 
         if (!type.contains(".")) {
             if ("Object".equals(type)) {
-                return String.class.getName();
+                return Object.class.getName();
             }
             if ("String".equals(type)) {
                 return String.class.getName();

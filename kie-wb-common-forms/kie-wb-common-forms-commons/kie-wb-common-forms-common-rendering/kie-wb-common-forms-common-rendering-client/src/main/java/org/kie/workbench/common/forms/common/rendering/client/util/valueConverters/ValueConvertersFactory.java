@@ -40,6 +40,7 @@ public class ValueConvertersFactory {
         converters.put(Float.class.getName(), new FloatToDoubleConverter());
         converters.put(float.class.getName(), new FloatToDoubleConverter());
         converters.put(BigDecimal.class.getName(), new BigDecimalToDoubleConverter());
+        converters.put(Object.class.getName(), new ObjectToStringConverter());
     }
 
     public static Converter getConverterForType(String type) {

@@ -23,12 +23,15 @@ import javax.inject.Inject;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldManager;
 import org.kie.workbench.common.forms.fields.shared.FieldProvider;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.service.shared.meta.processing.MetaDataEntryManager;
 
 @ApplicationScoped
 public class BackendFieldManagerImpl extends AbstractFieldManager {
 
     @Inject
-    public BackendFieldManagerImpl(Instance<FieldProvider<? extends FieldDefinition>> providers) {
+    public BackendFieldManagerImpl(MetaDataEntryManager metaDataEntryManager,
+                                   Instance<FieldProvider<? extends FieldDefinition>> providers) {
+        super(metaDataEntryManager);
         for (FieldProvider provider : providers) {
             registerFieldProvider(provider);
         }

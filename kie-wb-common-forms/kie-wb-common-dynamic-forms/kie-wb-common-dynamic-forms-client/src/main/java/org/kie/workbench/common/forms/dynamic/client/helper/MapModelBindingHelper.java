@@ -47,6 +47,8 @@ public class MapModelBindingHelper {
     @PostConstruct
     public void initialize() {
 
+        basicProperties.put(Object.class.getName(),
+                            Object.class);
         basicProperties.put(String.class.getName(),
                             String.class);
         basicProperties.put(Byte.class.getName(),

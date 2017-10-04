@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.editor.backend.indexing.query.FindFormDefinitionIdsQuery;
 import org.kie.workbench.common.forms.editor.type.FormResourceTypeDefinition;
+import org.kie.workbench.common.forms.fields.test.TestMetaDataEntryManager;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.serialization.impl.FieldSerializer;
 import org.kie.workbench.common.forms.serialization.impl.FormDefinitionSerializerImpl;
@@ -90,9 +91,10 @@ public class FormDefinitionIndexerTest extends BaseIndexingTest<FormResourceType
         when(providersInstance.iterator()).thenReturn(providers.iterator());
 
         indexer = spy(new TestFormDefinitionIndexer(new FormResourceTypeDefinition(),
-                                                new FormDefinitionSerializerImpl(new FieldSerializer(),
-                                                                                 new FormModelSerializer()),
-                                                providersInstance));
+                                                    new FormDefinitionSerializerImpl(new FieldSerializer(),
+                                                                                     new FormModelSerializer(),
+                                                                                     new TestMetaDataEntryManager()),
+                                                    providersInstance));
 
         when(indexer.getProviderForModel(any())).thenReturn(provider);
 

@@ -63,8 +63,6 @@ public abstract class AbstractBPMNFormGeneratorServiceTest<SERVICE extends Abstr
 
     protected FieldManager fieldManager = new TestFieldManager();
 
-    protected FormLayoutTemplateGenerator templateGenerator = new StaticFormLayoutTemplateGenerator();
-
     protected SERVICE service;
 
     protected SOURCE source;
@@ -123,8 +121,7 @@ public abstract class AbstractBPMNFormGeneratorServiceTest<SERVICE extends Abstr
         });
 
         assertNotNull(form.getLayoutTemplate());
-        assertEquals(form.getFields().size(),
-                     form.getLayoutTemplate().getRows().size());
+        assertFalse(form.getLayoutTemplate().getRows().isEmpty());
     }
 
     protected FormGenerationResult launchNestedFormsTest() {

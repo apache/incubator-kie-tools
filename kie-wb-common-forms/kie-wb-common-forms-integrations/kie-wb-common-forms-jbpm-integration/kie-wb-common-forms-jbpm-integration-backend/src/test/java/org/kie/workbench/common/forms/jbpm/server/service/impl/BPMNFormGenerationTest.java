@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.forms.commons.shared.layout.impl.DynamicFormLayoutTemplateGenerator;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.EnumListBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
@@ -70,8 +69,7 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
 
     @Before
     public void initTest() {
-        generatorService = new BPMNRuntimeFormGeneratorService(new TestFieldManager(),
-                                                               new DynamicFormLayoutTemplateGenerator());
+        generatorService = new BPMNRuntimeFormGeneratorService(new TestFieldManager());
 
         generator = new DynamicBPMNFormGeneratorImpl(generatorService);
     }

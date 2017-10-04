@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -34,6 +35,7 @@ import org.kie.workbench.common.forms.editor.model.FormModelSynchronizationResul
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
+import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
 
@@ -45,6 +47,8 @@ public class ChangesNotificationDisplayer implements ChangesNotificationDisplaye
     private NewPropertiesDisplayer newPropertiesDisplayer;
 
     private ConflictsDisplayer conflictsDisplayer;
+
+    private FieldManager fieldManager;
 
     private FormModelerContent content;
 
@@ -59,10 +63,12 @@ public class ChangesNotificationDisplayer implements ChangesNotificationDisplaye
     @Inject
     public ChangesNotificationDisplayer(ChangesNotificationDisplayerView view,
                                         ConflictsDisplayer conflictsDisplayer,
-                                        NewPropertiesDisplayer newPropertiesDisplayer) {
+                                        NewPropertiesDisplayer newPropertiesDisplayer,
+                                        FieldManager fieldManager) {
         this.view = view;
         this.newPropertiesDisplayer = newPropertiesDisplayer;
         this.conflictsDisplayer = conflictsDisplayer;
+        this.fieldManager = fieldManager;
         this.view.init(this);
     }
 
@@ -101,9 +107,11 @@ public class ChangesNotificationDisplayer implements ChangesNotificationDisplaye
         FormModelSynchronizationResult synchronizationResult = content.getSynchronizationResult();
 
         if (synchronizationResult != null && synchronizationResult.hasNewProperties()) {
-            Set<FieldDefinition> modelFields = new HashSet<>(content.getAvailableFields());
 
-            modelFields.removeIf(fieldDefinition -> !synchronizationResult.getNewProperties().stream().filter(property -> property.getName().equals(fieldDefinition.getBinding())).findAny().isPresent());
+            Set<FieldDefinition> modelFields = synchronizationResult.getNewProperties().stream()
+                    .filter(modelProperty -> content.getDefinition().getFieldByBinding(modelProperty.getName()) == null)
+                    .map(fieldManager::getDefinitionByModelProperty)
+                    .collect(Collectors.toSet());
 
             if (!modelFields.isEmpty()) {
                 this.canDisplay = true;

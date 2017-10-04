@@ -40,6 +40,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.def
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.model.TypeInfo;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.mockito.Mock;
@@ -106,6 +107,9 @@ public class EditorFieldLayoutComponentTest {
     @Mock
     private FormDefinition formDefinition;
 
+    @Mock
+    private FormModel formModel;
+
     private FieldDefinition fieldDefinition;
 
     private LayoutComponent layoutComponent = new LayoutComponent(EditorFieldLayoutComponent.class.getName());
@@ -138,6 +142,7 @@ public class EditorFieldLayoutComponentTest {
 
         when(formDefinition.getId()).thenReturn(EditorFieldLayoutComponent.FORM_ID);
         when(formDefinition.getFieldById(anyString())).thenReturn(fieldDefinition);
+        when(formDefinition.getModel()).thenReturn(formModel);
         when(context.getRootForm()).thenReturn(formDefinition);
 
         content = new FormModelerContent();

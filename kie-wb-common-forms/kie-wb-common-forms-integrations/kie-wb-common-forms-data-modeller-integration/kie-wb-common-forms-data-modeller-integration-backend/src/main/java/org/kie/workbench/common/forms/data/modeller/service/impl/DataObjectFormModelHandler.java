@@ -19,7 +19,6 @@ package org.kie.workbench.common.forms.data.modeller.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -29,9 +28,9 @@ import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
 import org.kie.workbench.common.forms.editor.backend.service.impl.AbstractFormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
-import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.model.meta.entries.FieldPlaceHolderEntry;
 import org.kie.workbench.common.forms.model.ModelProperty;
+import org.kie.workbench.common.forms.model.impl.meta.entries.FieldLabelEntry;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
@@ -122,7 +121,12 @@ public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObj
                                                                        property.isMultiple());
 
                 if (optional.isPresent()) {
-                    properties.add(optional.get());
+                    ModelProperty modelProperty = optional.get();
+
+                    extractMetaData(property,
+                                    modelProperty);
+
+                    properties.add(modelProperty);
                 }
             }
         });
@@ -137,51 +141,14 @@ public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObj
                                               fieldManager);
     }
 
-    @Override
-    protected List<FieldDefinition> doGenerateModelFields() {
-        return formModel.getProperties().stream().map(this::doCreateFieldDefinition).collect(Collectors.toList());
-    }
-
-    @Override
-    protected FieldDefinition doCreateFieldDefinition(ModelProperty property) {
-
-        Optional<ObjectProperty> objectPropertyOptional = Optional.ofNullable(dataObject.getProperty(property.getName()));
-
-        if (!objectPropertyOptional.isPresent()) {
-            return null;
-        }
-
-        ObjectProperty objectProperty = objectPropertyOptional.get();
-
-        if (!isValidDataObjectProperty(objectProperty)) {
-            return null;
-        }
-
-        Optional<FieldDefinition> fieldOptional = Optional.ofNullable(fieldManager.getDefinitionByDataType(property.getTypeInfo()));
-
-        if (!fieldOptional.isPresent()) {
-            return null;
-        }
-
-        FieldDefinition field = fieldOptional.get();
-        field.setName(property.getName());
-        String label = getPropertyLabel(objectProperty);
-        field.setLabel(label);
-        field.setBinding(property.getName());
-
-        if (field instanceof HasPlaceHolder) {
-            ((HasPlaceHolder) field).setPlaceHolder(label);
-        }
-        return field;
-    }
-
-    private String getPropertyLabel(ObjectProperty property) {
+    private void extractMetaData(ObjectProperty property,
+                                 ModelProperty modelProperty) {
         Annotation labelAnnotation = property.getAnnotation(MainDomainAnnotations.LABEL_ANNOTATION);
         if (labelAnnotation != null) {
-            return labelAnnotation.getValue(MainDomainAnnotations.VALUE_PARAM).toString();
+            String label = labelAnnotation.getValue(MainDomainAnnotations.VALUE_PARAM).toString();
+            modelProperty.getMetaData().addEntry(new FieldLabelEntry(label));
+            modelProperty.getMetaData().addEntry(new FieldPlaceHolderEntry(label));
         }
-
-        return property.getName();
     }
 
     public static boolean isValidDataObjectProperty(ObjectProperty property) {

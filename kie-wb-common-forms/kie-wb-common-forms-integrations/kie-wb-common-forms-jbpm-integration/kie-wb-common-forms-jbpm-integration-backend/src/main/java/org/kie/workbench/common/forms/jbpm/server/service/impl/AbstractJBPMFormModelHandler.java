@@ -16,17 +16,9 @@
 
 package org.kie.workbench.common.forms.jbpm.server.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.forms.editor.backend.service.impl.AbstractFormModelHandler;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.service.shared.BPMFinderService;
-import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -50,48 +42,5 @@ public abstract class AbstractJBPMFormModelHandler<M extends JBPMFormModel> exte
     @Override
     protected void initialize() {
         super.checkInitialized();
-    }
-
-    @Override
-    protected List<FieldDefinition> doGenerateModelFields() {
-        List<FieldDefinition> fields = new ArrayList<>();
-
-        formModel.getProperties().forEach(property -> {
-            FieldDefinition field = fieldManager.getDefinitionByDataType(property.getTypeInfo());
-
-            if (field != null) {
-                initFieldDefinition(field,
-                                    property);
-                fields.add(field);
-            }
-        });
-
-        return fields;
-    }
-
-    @Override
-    protected FieldDefinition doCreateFieldDefinition(ModelProperty property) {
-        Optional<ModelProperty> optional = formModel.getProperties().stream().filter(modelProperty -> modelProperty.getName().equals(property.getName())).findFirst();
-
-        if (optional.isPresent()) {
-            FieldDefinition field = fieldManager.getDefinitionByDataType(property.getTypeInfo());
-            initFieldDefinition(field,
-                                property);
-            return field;
-        }
-
-        return null;
-    }
-
-    protected void initFieldDefinition(FieldDefinition field,
-                                       ModelProperty property) {
-        String label = StringUtils.capitalize(property.getName());
-        field.setId(property.getName());
-        field.setName(property.getName());
-        field.setLabel(label);
-        field.setBinding(property.getName());
-        if (field instanceof HasPlaceHolder) {
-            ((HasPlaceHolder) field).setPlaceHolder(label);
-        }
     }
 }

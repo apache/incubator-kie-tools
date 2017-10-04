@@ -21,7 +21,7 @@ import javax.annotation.PostConstruct;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.type.DocumentFieldType;
-import org.kie.workbench.common.forms.model.util.ModelPropertiesUtil;
+import org.kie.workbench.common.forms.model.util.formModel.FormModelPropertiesUtil;
 
 @EntryPoint
 @Bundle("resources/i18n/Constants.properties")
@@ -30,7 +30,7 @@ public class FormsJBPMIntegrationEntryPoint {
     @PostConstruct
     public void init() {
         // registering Document Types to ModelPropertiesUtil
-        ModelPropertiesUtil.registerBaseType(DocumentFieldType.DOCUMENT_TYPE);
-        ModelPropertiesUtil.registerBaseType(DocumentFieldType.DOCUMENT_IMPL_TYPE);
+        FormModelPropertiesUtil.registerBaseType(DocumentFieldType.DOCUMENT_TYPE);
+        FormModelPropertiesUtil.registerBaseType(DocumentFieldType.DOCUMENT_IMPL_TYPE);
     }
 }

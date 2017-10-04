@@ -139,8 +139,6 @@ public class FormEditorHelperTest {
 
             content = new FormModelerContent();
 
-            content.getModelProperties().addAll(modelProperties);
-
             PortableJavaModel model = new PortableJavaModel("com.test.Employee");
 
             model.getProperties().addAll(modelProperties);
@@ -149,7 +147,6 @@ public class FormEditorHelperTest {
 
             content.setDefinition(form);
             content.setOverview(new Overview());
-            content.setAvailableFields(employeeFields);
 
             return content;
         });
@@ -220,11 +217,14 @@ public class FormEditorHelperTest {
 
     @Test
     public void testGetFormFieldAvailable() {
-        FieldDefinition resultField = formEditorHelper.getFormField(nameField.getId());
+        FieldDefinition resultField = formEditorHelper.getAvailableFields().values().stream().filter( fieldDefinition -> fieldDefinition.getBinding().equals(nameField.getBinding())).findFirst().get();
+
         formEditorHelper.saveFormField(nameField,
                                        resultField);
 
-        Assertions.assertThat(resultField).isNotNull().isEqualTo(nameField);
+        Assertions.assertThat(resultField)
+                .isNotNull()
+                .isEqualToComparingOnlyGivenFields(nameField, "name", "binding", "standaloneClassName");
 
         Assertions.assertThat(content.getDefinition().getFieldById(resultField.getId())).isNotNull();
 
@@ -267,17 +267,8 @@ public class FormEditorHelperTest {
         formEditorHelper.addAvailableField(employeeFields.get(0));
         Map<String, FieldDefinition> availableFields = formEditorHelper.getAvailableFields();
         assertEquals("The added field should be returned in available fields",
-                     availableFields.size(),
-                     employeeFields.size());
-    }
-
-    @Test
-    public void testAddAvailableFields() {
-        formEditorHelper.addAvailableFields(employeeFields);
-        Map<String, FieldDefinition> availableFields = formEditorHelper.getAvailableFields();
-        assertEquals("The added field should be returned in available fields",
-                     availableFields.size(),
-                     employeeFields.size());
+                     employeeFields.size() + 1,
+                     availableFields.size());
     }
 
     @Test
@@ -397,10 +388,9 @@ public class FormEditorHelperTest {
         FieldDefinition result = formEditorHelper.switchToField(originalField,
                                                                 expectedField.getBinding());
 
-        Assertions.assertThat(result.getId()).isEqualTo(expectedField.getId());
-        Assertions.assertThat(result.getName()).isEqualTo(expectedField.getName());
-        Assertions.assertThat(result.getBinding()).isEqualTo(expectedField.getBinding());
-        Assertions.assertThat(result.getStandaloneClassName()).isEqualTo(expectedField.getStandaloneClassName());
+        Assertions.assertThat(result)
+                .isNotNull()
+                .isEqualToComparingOnlyGivenFields(expectedField, "name", "binding", "standaloneClassName");
     }
 
     @Test
@@ -422,7 +412,7 @@ public class FormEditorHelperTest {
     private void initFields() {
         TextBoxFieldDefinition name = new TextBoxFieldDefinition();
         name.setId("name");
-        name.setName("employee_name");
+        name.setName("name");
         name.setLabel("Name");
         name.setPlaceHolder("Name");
         name.setBinding("name");
@@ -432,7 +422,7 @@ public class FormEditorHelperTest {
 
         TextBoxFieldDefinition lastName = new TextBoxFieldDefinition();
         lastName.setId("lastName");
-        lastName.setName("employee_lastName");
+        lastName.setName("lastName");
         lastName.setLabel("Last Name");
         lastName.setPlaceHolder("Last Name");
         lastName.setBinding("lastName");
@@ -441,14 +431,14 @@ public class FormEditorHelperTest {
 
         DatePickerFieldDefinition birthday = new DatePickerFieldDefinition();
         birthday.setId("birthday");
-        birthday.setName("employee_birthday");
+        birthday.setName("birthday");
         birthday.setLabel("Birthday");
         birthday.setBinding("birthday");
         birthday.setStandaloneClassName(Date.class.getName());
 
         CheckBoxFieldDefinition married = new CheckBoxFieldDefinition();
         married.setId("married");
-        married.setName("employee_married");
+        married.setName("married");
         married.setLabel("Married");
         married.setBinding("married");
         married.setStandaloneClassName(Boolean.class.getName());
@@ -456,14 +446,14 @@ public class FormEditorHelperTest {
 
         IntegerBoxFieldDefinition age = new IntegerBoxFieldDefinition();
         age.setId("age");
-        age.setName("employee_age");
+        age.setName("age");
         age.setLabel("Age");
         age.setBinding("age");
         ageField = age;
 
         DecimalBoxFieldDefinition weight = new DecimalBoxFieldDefinition();
         weight.setId("weight");
-        weight.setName("employee_weight");
+        weight.setName("weight");
         weight.setLabel("Weight");
         weight.setBinding("weight");
         weightField = weight;

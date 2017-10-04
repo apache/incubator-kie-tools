@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.model;
+package org.kie.workbench.common.forms.model.impl.meta.entries;
 
-import java.util.List;
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-public interface HasFormModelProperties extends FormModel {
+@Portable
+public class FieldRequiredEntry extends AbstractMetaDataEntry<Boolean> {
 
-    public List<ModelProperty> getProperties();
+    public static final String NAME = "field-required";
 
-    public ModelProperty getProperty(String name);
+    public FieldRequiredEntry(@MapsTo("value") Boolean value) {
+        super(NAME,
+              value);
+    }
 }

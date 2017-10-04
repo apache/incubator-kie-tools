@@ -18,8 +18,10 @@ package org.kie.workbench.common.forms.model.impl;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.forms.model.ModelMetaData;
 import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.model.TypeInfo;
+import org.kie.workbench.common.forms.model.impl.meta.ModelMetaDataImpl;
 
 @Portable
 public class ModelPropertyImpl implements ModelProperty {
@@ -28,10 +30,13 @@ public class ModelPropertyImpl implements ModelProperty {
 
     private TypeInfo typeInfo;
 
+    private ModelMetaData metaData;
+
     public ModelPropertyImpl(@MapsTo("name") String name,
                              @MapsTo("typeInfo") TypeInfo typeInfo) {
         this.name = name;
         this.typeInfo = typeInfo;
+        this.metaData = new ModelMetaDataImpl();
     }
 
     @Override
@@ -42,6 +47,11 @@ public class ModelPropertyImpl implements ModelProperty {
     @Override
     public TypeInfo getTypeInfo() {
         return typeInfo;
+    }
+
+    @Override
+    public ModelMetaData getMetaData() {
+        return metaData;
     }
 
     @Override
@@ -66,6 +76,8 @@ public class ModelPropertyImpl implements ModelProperty {
         int result = name.hashCode();
         result = ~~result;
         result = 31 * result + typeInfo.hashCode();
+        result = ~~result;
+        result = 31 * result + metaData.hashCode();
         result = ~~result;
         return result;
     }

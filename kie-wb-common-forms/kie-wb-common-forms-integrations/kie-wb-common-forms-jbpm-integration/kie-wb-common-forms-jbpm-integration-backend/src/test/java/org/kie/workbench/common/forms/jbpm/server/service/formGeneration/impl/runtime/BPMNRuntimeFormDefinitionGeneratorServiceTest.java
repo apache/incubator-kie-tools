@@ -28,7 +28,6 @@ public abstract class BPMNRuntimeFormDefinitionGeneratorServiceTest extends Abst
 
         source = mock(ClassLoader.class);
 
-        service = new BPMNRuntimeFormGeneratorService(fieldManager,
-                                                      templateGenerator);
+        service = new BPMNRuntimeFormGeneratorService(fieldManager);
     }
 }

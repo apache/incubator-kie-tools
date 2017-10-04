@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.model;
 
-public interface JavaFormModel extends HasFormModelProperties {
+public interface JavaFormModel extends FormModel {
 
     String getType();
 }

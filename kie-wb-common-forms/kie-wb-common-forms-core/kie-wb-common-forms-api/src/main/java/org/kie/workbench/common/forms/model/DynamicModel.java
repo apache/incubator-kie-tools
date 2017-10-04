@@ -16,6 +16,6 @@
 
 package org.kie.workbench.common.forms.model;
 
-public interface DynamicModel extends HasFormModelProperties {
+public interface DynamicModel extends FormModel {
 
 }

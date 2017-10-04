@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -61,6 +62,7 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.assertEquals;
@@ -103,11 +105,15 @@ public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
     @Mock
     private ProjectClassLoaderHelper projectClassLoaderHelper;
 
+    @Mock
+    private ClassLoader classLoader;
+
     @Before
     public void setUp() throws Exception {
 
         when(projectService.resolveProject(any())).thenReturn(project);
-        when(projectClassLoaderHelper.getProjectClassLoader(project)).thenReturn(this.getClass().getClassLoader());
+        when(projectClassLoaderHelper.getProjectClassLoader(project)).thenReturn(classLoader);
+        when(classLoader.loadClass(any())).thenAnswer((Answer<Class>) invocation -> String.class);
 
         createModel();
 
@@ -165,7 +171,9 @@ public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
         expectedFieldTypes.put(MultipleSubFormFieldDefinition.class.getSimpleName(),
                                Collections.singletonList(NESTED_CLASSNAME));
 
-        List<FieldDefinition> formModelFields = handler.getAllFormModelFields();
+        formModel = handler.createFormModel(dataObject, path);
+
+        List<FieldDefinition> formModelFields = formModel.getProperties().stream().map(fieldManager::getDefinitionByModelProperty).collect(Collectors.toList());
         formFieldsShouldNotBeGeneratedForPersistenceId(formModelFields);
         listsOfBasicDataTypesShouldBeExcludedFromTheFormFields(formModelFields);
 
@@ -222,12 +230,16 @@ public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
 
     @Test
     public void datePickerHasCorrectProperties() {
+        formModel = handler.createFormModel(dataObject, path);
+
         DatePickerFieldDefinition datePicker = (DatePickerFieldDefinition) checkCommonProperties("Date");
         assertTrue(datePicker.getShowTime());
     }
 
     @Test
     public void subformHasCorrectProperties() {
+        formModel = handler.createFormModel(dataObject, path);
+
         SubFormFieldDefinition subForm = (SubFormFieldDefinition) checkCommonProperties("address");
         assertEquals("",
                      subForm.getNestedForm());
@@ -235,6 +247,8 @@ public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
 
     @Test
     public void multipleSubformHasCorrectProperties() {
+        formModel = handler.createFormModel(dataObject, path);
+
         MultipleSubFormFieldDefinition multipleSubform = (MultipleSubFormFieldDefinition) checkCommonProperties("address_list");
         assertEquals("",
                      multipleSubform.getCreationForm());
@@ -245,8 +259,10 @@ public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
     }
 
     private FieldDefinition checkCommonProperties(String dataFieldName) {
+
         ObjectProperty dataField = dataObject.getProperty(dataFieldName);
-        FieldDefinition formField = handler.createFieldDefinition(formModel.getProperty(dataFieldName));
+
+        FieldDefinition formField = fieldManager.getDefinitionByModelProperty(formModel.getProperty(dataFieldName));
         String dataFieldClassName = dataField.getClassName();
         TypeInfo fieldTypeInfo = formField.getFieldTypeInfo();
 
@@ -257,8 +273,8 @@ public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
                         fieldTypeInfo.getType());
         assertEquals(dataField.isMultiple(),
                      fieldTypeInfo.isMultiple());
-        assertEquals(dataField.getName(),
-                     formField.getLabel());
+        assertEquals(dataField.getName().toLowerCase(),
+                     formField.getLabel().toLowerCase());
         assertEquals(dataField.getName(),
                      formField.getBinding());
         assertEquals(dataFieldClassName,
@@ -269,8 +285,8 @@ public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
 
         //test interface specific properties
         if (formField instanceof HasPlaceHolder) {
-            assertEquals(dataField.getName(),
-                         ((HasPlaceHolder) formField).getPlaceHolder());
+            assertEquals(dataField.getName().toLowerCase(),
+                         ((HasPlaceHolder) formField).getPlaceHolder().toLowerCase());
         }
         if (formField instanceof HasMaxLength) {
             long maxLength = ((HasMaxLength) formField).getMaxLength();

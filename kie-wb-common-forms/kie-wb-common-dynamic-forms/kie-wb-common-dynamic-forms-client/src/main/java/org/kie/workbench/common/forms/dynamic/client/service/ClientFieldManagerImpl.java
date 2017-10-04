@@ -19,14 +19,21 @@ import java.util.Collection;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldManager;
 import org.kie.workbench.common.forms.fields.shared.FieldProvider;
+import org.kie.workbench.common.forms.service.shared.meta.processing.MetaDataEntryManager;
 
 @ApplicationScoped
 public class ClientFieldManagerImpl extends AbstractFieldManager {
+
+    @Inject
+    public ClientFieldManagerImpl(MetaDataEntryManager metaDataEntryManager) {
+        super(metaDataEntryManager);
+    }
 
     @PostConstruct
     protected void init() {

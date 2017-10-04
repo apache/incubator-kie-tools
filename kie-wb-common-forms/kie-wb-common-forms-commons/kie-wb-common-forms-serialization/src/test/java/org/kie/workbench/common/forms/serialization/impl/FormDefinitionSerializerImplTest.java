@@ -26,8 +26,13 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.l
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
+import org.kie.workbench.common.forms.fields.test.TestMetaDataEntryManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.model.JavaFormModel;
+import org.kie.workbench.common.forms.model.TypeKind;
+import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
+import org.kie.workbench.common.forms.model.impl.PortableJavaModel;
 import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -48,9 +53,12 @@ public class FormDefinitionSerializerImplTest extends TestCase {
         fieldManager = new TestFieldManager();
 
         definitionSerializer = new FormDefinitionSerializerImpl(new FieldSerializer(),
-                                                                new FormModelSerializer());
+                                                                new FormModelSerializer(),
+                                                                new TestMetaDataEntryManager());
 
-        formDefinition = new FormDefinition();
+        JavaFormModel model = new PortableJavaModel("org.test.MyParentModel");
+
+        formDefinition = new FormDefinition(model);
         formDefinition.setId("testForm");
         formDefinition.setName("testForm");
 
@@ -71,6 +79,8 @@ public class FormDefinitionSerializerImplTest extends TestCase {
 
                 field.setBinding(fieldDescription);
 
+                model.getProperties().add(new ModelPropertyImpl(fieldDescription, new TypeInfoImpl(type)));
+
                 formDefinition.getFields().add(field);
             }
         }
@@ -84,6 +94,7 @@ public class FormDefinitionSerializerImplTest extends TestCase {
         subForm.setBinding("SubForm");
 
         formDefinition.getFields().add(subForm);
+        model.getProperties().add(new ModelPropertyImpl(subForm.getBinding(), new TypeInfoImpl(TypeKind.OBJECT, subForm.getStandaloneClassName(), false)));
 
         MultipleSubFormFieldDefinition multipleSubForm = new MultipleSubFormFieldDefinition();
 
@@ -94,6 +105,8 @@ public class FormDefinitionSerializerImplTest extends TestCase {
         multipleSubForm.setBinding("MultipleSubForm");
 
         formDefinition.getFields().add(multipleSubForm);
+        model.getProperties().add(new ModelPropertyImpl(multipleSubForm.getBinding(), new TypeInfoImpl(TypeKind.OBJECT, multipleSubForm.getStandaloneClassName(), true)));
+
 
         EnumListBoxFieldDefinition enumListBox = new EnumListBoxFieldDefinition();
 
@@ -102,6 +115,7 @@ public class FormDefinitionSerializerImplTest extends TestCase {
         enumListBox.setStandaloneClassName("org.test.MyTestModel");
 
         formDefinition.getFields().add(enumListBox);
+        model.getProperties().add(new ModelPropertyImpl(enumListBox.getBinding(), new TypeInfoImpl(TypeKind.ENUM, enumListBox.getStandaloneClassName(), false)));
     }
 
     @Test

@@ -28,6 +28,7 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
@@ -62,29 +63,32 @@ public class BPMFinderServiceImplTest {
 
     private SimpleFileSystemProvider simpleFileSystemProvider = null;
 
-    Path rootPath;
+    private Path rootPath;
 
     @Mock
-    IOService ioService;
+    private IOService ioService;
 
     @Mock
-    KieProject project;
+    private KieProject project;
 
     @Mock
-    KieProjectService projectService;
+    private KieProjectService projectService;
 
     @Mock
-    ProjectClassLoaderHelper projectClassLoaderHelper;
-
-    BPMNFormModelGeneratorImpl bpmnFormModelGenerator;
-
-    BPMFinderServiceImpl finderService;
+    private ProjectClassLoaderHelper projectClassLoaderHelper;
 
     @Mock
-    org.uberfire.backend.vfs.Path testPath;
+    private ClassLoader classLoader;
+
+    private BPMNFormModelGeneratorImpl bpmnFormModelGenerator;
+
+    private BPMFinderServiceImpl finderService;
+
+    @Mock
+    private org.uberfire.backend.vfs.Path testPath;
 
     @Before
-    public void initialize() throws URISyntaxException {
+    public void initialize() throws URISyntaxException, ClassNotFoundException {
 
         when(ioService.newDirectoryStream(any(),
                                           any())).thenAnswer(invocationOnMock -> Files.newDirectoryStream((Path) invocationOnMock.getArguments()[0],
@@ -99,7 +103,9 @@ public class BPMFinderServiceImplTest {
         when(projectService.resolveProject(any())).thenReturn(project);
         when(project.getRootPath()).thenReturn(Paths.convert(rootPath));
 
-        when(projectClassLoaderHelper.getProjectClassLoader(any())).thenReturn(getClass().getClassLoader());
+        when(classLoader.loadClass(any())).thenAnswer((Answer<Class>) invocation -> String.class);
+
+        when(projectClassLoaderHelper.getProjectClassLoader(any())).thenReturn(classLoader);
 
         bpmnFormModelGenerator = new BPMNFormModelGeneratorImpl(projectService,
                                                                 projectClassLoaderHelper);

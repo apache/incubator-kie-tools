@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.model.util;
+package org.kie.workbench.common.forms.model.util.formModel;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ModelPropertiesUtil {
+public class FormModelPropertiesUtil {
 
     private static final List<String> simplePropertyTypes = new ArrayList<>();
 

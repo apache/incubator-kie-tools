@@ -21,14 +21,13 @@ import java.util.List;
 import org.kie.workbench.common.forms.editor.model.FormModelSynchronizationResult;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
-import org.kie.workbench.common.forms.model.HasFormModelProperties;
 import org.kie.workbench.common.forms.model.ModelProperty;
 import org.uberfire.backend.vfs.Path;
 
 /**
  * Handler class that is able to get {@link FieldDefinition} for a especific {@link FormModel}
  */
-public interface FormModelHandler<F extends HasFormModelProperties> {
+public interface FormModelHandler<F extends FormModel> {
 
     /**
      * Retrieves the supported {@link FormModel} type.
@@ -51,16 +50,6 @@ public interface FormModelHandler<F extends HasFormModelProperties> {
      */
     FormModelSynchronizationResult synchronizeFormModelProperties(F formModel,
                                                                   List<ModelProperty> newProperties);
-
-    /**
-     * Retrieves the available {@link FieldDefinition} for the {@link FormModel} which it's been initialized
-     */
-    List<FieldDefinition> getAllFormModelFields();
-
-    /**
-     * Creates a {@link FieldDefinition} for the given fieldName if the {@link FormModel} allows it.
-     */
-    FieldDefinition createFieldDefinition(ModelProperty property);
 
     /**
      * Creates a new {@link FormModelHandler} instance.

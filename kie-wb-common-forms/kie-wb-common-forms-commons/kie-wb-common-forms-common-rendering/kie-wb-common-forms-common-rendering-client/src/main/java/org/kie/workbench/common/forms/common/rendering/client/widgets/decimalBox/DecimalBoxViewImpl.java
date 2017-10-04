@@ -48,7 +48,7 @@ public class DecimalBoxViewImpl extends Composite implements DecimalBoxView {
 
     @Override
     public void setEnabled(boolean enabled) {
-        input.setReadOnly(!enabled);
+        input.setDisabled(!enabled);
     }
 
     public void updateValue(Event event) {

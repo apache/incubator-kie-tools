@@ -15,15 +15,10 @@
  */
 package org.kie.workbench.common.forms.editor.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
-import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.ModelProperty;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
@@ -33,8 +28,6 @@ public class FormModelerContent {
     private Overview overview;
     private FormDefinition definition;
     private FormModelSynchronizationResult synchronizationResult;
-    private List<ModelProperty> modelProperties = new ArrayList<>();
-    private List<FieldDefinition> availableFields = new ArrayList<>();
     private FormEditorRenderingContext renderingContext;
 
     public Path getPath() {
@@ -75,18 +68,6 @@ public class FormModelerContent {
 
     public void setSynchronizationResult(FormModelSynchronizationResult synchronizationResult) {
         this.synchronizationResult = synchronizationResult;
-    }
-
-    public void setAvailableFields(List<FieldDefinition> availableFields) {
-        this.availableFields = availableFields;
-    }
-
-    public List<FieldDefinition> getAvailableFields() {
-        return availableFields;
-    }
-
-    public List<ModelProperty> getModelProperties() {
-        return modelProperties;
     }
 
     @Override

@@ -22,14 +22,20 @@ import javax.inject.Inject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
+import org.kie.workbench.common.forms.model.MetaDataEntry;
+import org.kie.workbench.common.forms.model.ModelMetaData;
 import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.model.TypeInfo;
 import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
 import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
+import org.kie.workbench.common.forms.model.impl.meta.ModelMetaDataImpl;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
+import org.kie.workbench.common.forms.service.shared.meta.processing.MetaDataEntryManager;
 
 @Dependent
 public class FormDefinitionSerializerImpl implements FormDefinitionSerializer {
@@ -38,11 +44,15 @@ public class FormDefinitionSerializerImpl implements FormDefinitionSerializer {
 
     private FormModelSerializer formModelSerializer;
 
+    private MetaDataEntryManager metaDataEntryManager;
+
     @Inject
     public FormDefinitionSerializerImpl(FieldSerializer fieldSerializer,
-                                        FormModelSerializer formModelSerializer) {
+                                        FormModelSerializer formModelSerializer,
+                                        MetaDataEntryManager metaDataEntryManager) {
         this.fieldSerializer = fieldSerializer;
         this.formModelSerializer = formModelSerializer;
+        this.metaDataEntryManager = metaDataEntryManager;
     }
 
     @Override
@@ -72,6 +82,18 @@ public class FormDefinitionSerializerImpl implements FormDefinitionSerializer {
         builder.registerTypeAdapter(TypeInfo.class,
                                     (JsonDeserializer<TypeInfo>) (json, typeOfT, context) -> context.deserialize(json,
                                                                                                                  TypeInfoImpl.class));
+
+        builder.registerTypeAdapter(ModelMetaData.class,
+                                    (JsonDeserializer<ModelMetaData>) (json, typeOfT, context) -> context.deserialize(json,
+                                                                                                                 ModelMetaDataImpl.class));
+
+        builder.registerTypeAdapter(MetaDataEntry.class,
+                                    (JsonDeserializer<MetaDataEntry>) (json, typeOfT, context) -> {
+                                        JsonObject jsonField = json.getAsJsonObject();
+                                        JsonElement jsonName = jsonField.get("name");
+                                        return context.deserialize(json,
+                                                                   metaDataEntryManager.getMetaDataEntryClass(jsonName.getAsString()));
+                                    });
 
         Gson gson = builder.create();
 

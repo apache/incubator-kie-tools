@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.forms.model;
 
+import java.util.List;
+
 /**
  * Defines the FormModel that the form is going to handle
  */
@@ -24,5 +26,15 @@ public interface FormModel {
     /**
      * Returns the name of the FormModel
      */
-    public String getName();
+    String getName();
+
+    /**
+     * Returns a {@link List} containing all the model {@link ModelProperty}
+     */
+    List<ModelProperty> getProperties();
+
+    /**
+     * Returns {@link ModelProperty} identified by the name parameter
+     */
+    ModelProperty getProperty(String name);
 }

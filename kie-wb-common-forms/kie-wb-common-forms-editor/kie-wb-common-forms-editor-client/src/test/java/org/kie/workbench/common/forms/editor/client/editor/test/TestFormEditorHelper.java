@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.editor.client.editor.test;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -45,5 +46,9 @@ public class TestFormEditorHelper extends FormEditorHelper {
 
     public Collection<FieldType> getEditorFieldTypes() {
         return enabledPaletteFieldTypes;
+    }
+
+    public void addAvailableFields(List<FieldDefinition> availableFields) {
+        availableFields.forEach(this::addAvailableField);
     }
 }

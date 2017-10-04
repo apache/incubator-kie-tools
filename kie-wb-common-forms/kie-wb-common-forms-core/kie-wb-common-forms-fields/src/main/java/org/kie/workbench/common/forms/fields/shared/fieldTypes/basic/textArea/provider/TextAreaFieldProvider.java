@@ -39,6 +39,7 @@ public class TextAreaFieldProvider extends BasicTypeFieldProvider<TextAreaFieldD
     @Override
     protected void doRegisterFields() {
         registerPropertyType(String.class);
+        registerPropertyType(Object.class);
     }
 
     @Override

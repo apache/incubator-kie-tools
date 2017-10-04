@@ -39,7 +39,6 @@ import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
-import org.kie.workbench.common.forms.model.HasFormModelProperties;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.services.backend.service.KieService;
@@ -186,29 +185,26 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
 
             formModelConent.setRenderingContext(context);
 
-            if (Optional.ofNullable(form.getModel()).isPresent() && form.getModel() instanceof HasFormModelProperties) {
+            if (Optional.ofNullable(form.getModel()).isPresent()) {
 
-                HasFormModelProperties formModel = (HasFormModelProperties) form.getModel();
+                FormModel formModel = form.getModel();
 
-                Optional<FormModelHandler> modelOptional = getHandlerForForm(form,
+                Optional<FormModelHandler> modelHandlerOptional = getHandlerForForm(form,
                                                                              path);
-                if (modelOptional.isPresent()) {
+                if (modelHandlerOptional.isPresent()) {
 
-                    FormModelHandler formModelHandler = modelOptional.get();
+                    FormModelHandler formModelHandler = modelHandlerOptional.get();
 
                     FormModelSynchronizationResult synchronizationResult = formModelHandler.synchronizeFormModel();
 
                     formModel.getProperties().forEach(property -> {
                         Optional<FieldDefinition> fieldOptional = Optional.ofNullable(form.getFieldByBinding(property.getName()));
                         if (!fieldOptional.isPresent()) {
-                            formModelConent.getAvailableFields().add(formModelHandler.createFieldDefinition(property));
                             synchronizationResult.resolveConflict(property.getName());
                         }
                     });
 
                     formModelConent.setSynchronizationResult(synchronizationResult);
-
-                    formModelConent.getModelProperties().addAll(formModel.getProperties());
                 }
             }
 
@@ -254,14 +250,10 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
     protected Optional<FormModelHandler> getHandlerForForm(FormDefinition form,
                                                            Path path) {
 
-        if (!(form.getModel() instanceof HasFormModelProperties)) {
-            return Optional.empty();
-        }
-
         Optional<FormModelHandler> optional = Optional.ofNullable(modelHandlerManager.getFormModelHandler(form.getModel().getClass()));
 
         if (optional.isPresent()) {
-            optional.get().init((HasFormModelProperties) form.getModel(),
+            optional.get().init(form.getModel(),
                                 path);
         }
         return optional;

@@ -38,6 +38,9 @@ import org.kie.workbench.common.forms.editor.model.impl.FormModelSynchronization
 import org.kie.workbench.common.forms.editor.model.impl.TypeConflictImpl;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.editor.service.shared.model.FormModelSynchronizationUtil;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.EntityRelationField;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.ModelProperty;
@@ -135,7 +138,8 @@ public class ChangesNotificationDisplayerTest {
 
         presenter = new ChangesNotificationDisplayer(view,
                                                      conflictsDisplayer,
-                                                     newPropertiesDisplayer) {
+                                                     newPropertiesDisplayer,
+                                                     new TestFieldManager()) {
             {
                 register(nestedFormsConflictHandler);
                 register(formModelConflictHandler);
@@ -155,7 +159,6 @@ public class ChangesNotificationDisplayerTest {
 
     @Test
     public void testShowNewFields() {
-        content.setAvailableFields(fields);
 
         synchronizationResult.getNewProperties().addAll(getModelProperties());
 
@@ -168,7 +171,7 @@ public class ChangesNotificationDisplayerTest {
         verify(formModelConflictHandler).checkConflicts(any(),
                                                         any());
 
-        verify(newPropertiesDisplayer).showAvailableFields(new HashSet<FieldDefinition>(fields));
+        verify(newPropertiesDisplayer).showAvailableFields(any());
 
         verify(conflictsDisplayer,
                never()).showConflict(any());
@@ -312,6 +315,6 @@ public class ChangesNotificationDisplayerTest {
 
     public List<ModelProperty> getModelProperties() {
         return fields.stream().map(fieldDefinition -> new ModelPropertyImpl(fieldDefinition.getBinding(),
-                                                                            new TypeInfoImpl(fieldDefinition.getStandaloneClassName()))).collect(Collectors.toList());
+                                                                            new TypeInfoImpl(fieldDefinition instanceof EntityRelationField ? TypeKind.OBJECT : TypeKind.BASE, fieldDefinition.getStandaloneClassName(), fieldDefinition instanceof MultipleSubFormFieldDefinition))).collect(Collectors.toList());
     }
 }
