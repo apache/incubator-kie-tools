@@ -1035,6 +1035,12 @@ public class Bpmn2JsonUnmarshaller {
         for (RootElement root : rootElements) {
             if (root instanceof Process) {
                 Process process = (Process) root;
+                if (process.getId() != null) {
+                    String processId = process.getId().trim();
+                    processId = processId.replaceAll("\\s",
+                                           "");
+                    process.setId(processId);
+                }
                 List<FlowElement> flowElements = process.getFlowElements();
                 for (FlowElement fe : flowElements) {
                     if (fe instanceof DataObject) {
