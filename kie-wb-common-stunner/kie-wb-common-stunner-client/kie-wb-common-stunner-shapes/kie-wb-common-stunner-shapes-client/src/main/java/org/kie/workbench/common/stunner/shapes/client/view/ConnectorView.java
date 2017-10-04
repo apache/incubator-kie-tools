@@ -41,18 +41,9 @@ public class ConnectorView extends WiresConnectorViewExt<ConnectorView> {
               (MultiPathDecorator) line[2]);
     }
 
-    private static Object[] createLine(final double... points) {
+    static Object[] createLine(final double... points) {
         // The head decorator must be not visible, as connectors are unidirectional.
-        final MultiPath head = new MultiPath()
-                .M(1,
-                   2)
-                .L(0,
-                   2)
-                .L(1 / 2,
-                   0)
-                .Z()
-                .setFillAlpha(0)
-                .setStrokeAlpha(0);
+        final MultiPath head = new MultiPath();
         final MultiPath tail = new MultiPath()
                 .M(DECORATOR_WIDTH,
                    DECORATOR_HEIGHT)
