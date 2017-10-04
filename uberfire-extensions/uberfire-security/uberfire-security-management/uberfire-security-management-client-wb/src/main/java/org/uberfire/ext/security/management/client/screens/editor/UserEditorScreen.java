@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.dom.Window;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -33,6 +34,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
+import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWorkbenchConstants;
 import org.uberfire.ext.security.management.client.screens.BaseScreen;
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.workflow.UserCreationWorkflow;
@@ -42,6 +44,7 @@ import org.uberfire.ext.security.management.client.widgets.management.events.Del
 import org.uberfire.ext.security.management.client.widgets.management.events.OnEditEvent;
 import org.uberfire.ext.security.management.client.widgets.management.events.OnShowEvent;
 import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
@@ -99,6 +102,12 @@ public class UserEditorScreen {
     @OnOpen
     public void onOpen() {
 
+    }
+
+    @OnMayClose
+    public boolean onMayClose() {
+        return !isDirty() ||
+                Window.confirm(UsersManagementWidgetsConstants.INSTANCE.userIsDirty());
     }
 
     @OnClose
@@ -175,6 +184,10 @@ public class UserEditorScreen {
     private boolean checkEventContext(final ContextualEvent contextualEvent,
                                       final Object context) {
         return contextualEvent != null && contextualEvent.getContext() != null && contextualEvent.getContext().equals(context);
+    }
+
+    private boolean isDirty() {
+        return userEditorWorkflow.isDirty() || userCreationWorkflow.isDirty();
     }
 
     void closeEditor() {

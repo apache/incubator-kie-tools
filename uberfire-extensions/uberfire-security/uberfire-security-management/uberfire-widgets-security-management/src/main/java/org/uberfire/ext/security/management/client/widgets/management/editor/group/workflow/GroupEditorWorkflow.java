@@ -152,6 +152,10 @@ public class GroupEditorWorkflow implements IsWidget {
         group = null;
     }
 
+    public boolean isDirty() {
+        return isDirty;
+    }
+
     /*  ******************************************************************************************************
                                  PROTECTED PRESENTER API
      ****************************************************************************************************** */

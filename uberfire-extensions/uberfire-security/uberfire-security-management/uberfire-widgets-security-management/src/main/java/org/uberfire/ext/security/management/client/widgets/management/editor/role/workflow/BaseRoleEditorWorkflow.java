@@ -112,7 +112,14 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
          ****************************************************************************************************** */
 
     public void clear() {
-        checkDirty(this::doClear);
+        view.clearNotification();
+        roleEditor.clear();
+        isDirty = false;
+        role = null;
+    }
+
+    public boolean isDirty() {
+        return isDirty;
     }
 
     protected void doShow(final String roleName) {
@@ -126,7 +133,7 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
     }
 
     protected void doLoad(String roleName) {
-        clear();
+        checkDirty(this::clear);
 
         // Call backend service.
         showLoadingBox();
@@ -230,12 +237,6 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
         } else {
             throw new RuntimeException("Role must be valid before updating it.");
         }
-    }
-
-    protected void doClear() {
-        view.clearNotification();
-        roleEditor.clear();
-        role = null;
     }
 
     protected boolean checkEventContext(final ContextualEvent contextualEvent,

@@ -120,7 +120,7 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
         checkDirty(new Command() {
             @Override
             public void execute() {
-                clear();
+                checkClear();
                 // Call backend service.
                 showLoadingBox();
                 userSystemManager.users(new RemoteCallback<User>() {
@@ -142,16 +142,18 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
     }
 
     public void clear() {
-        checkDirty(new Command() {
-            @Override
-            public void execute() {
-                doClear();
-            }
-        });
+        view.clearNotification();
+        userEditor.clear();
+        user = null;
+        setDirty(false);
     }
 
     public UserEditor getUserEditor() {
         return userEditor;
+    }
+
+    public boolean isDirty() {
+        return isDirty;
     }
 
     protected void onSave() {
@@ -298,7 +300,7 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
                                                                     deleteUserEvent.fire(new DeleteUserEvent(id));
                                                                     workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.userRemoved(id),
                                                                                                                      SUCCESS));
-                                                                    clear();
+                                                                    checkClear();
                                                                 }
                                                             },
                                                             errorCallback).delete(id);
@@ -338,13 +340,6 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
         return result;
     }
 
-    protected void doClear() {
-        view.clearNotification();
-        userEditor.clear();
-        user = null;
-        setDirty(false);
-    }
-
     protected boolean checkEventContext(final ContextualEvent contextualEvent,
                                         final Object context) {
         return contextualEvent != null && contextualEvent.getContext() != null && contextualEvent.getContext().equals(context);
@@ -353,6 +348,10 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
     protected void showError(final Throwable throwable) {
         errorEvent.fire(new OnErrorEvent(BaseUserEditorWorkflow.this,
                                          throwable));
+    }
+
+    protected void checkClear() {
+        checkDirty(this::clear);
     }
 
     protected void checkDirty(final Command callback) {

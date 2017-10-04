@@ -23,6 +23,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.dom.Window;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -31,12 +32,14 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
+import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWorkbenchConstants;
 import org.uberfire.ext.security.management.client.screens.BaseScreen;
 import org.uberfire.ext.security.management.client.widgets.management.editor.group.workflow.GroupCreationWorkflow;
 import org.uberfire.ext.security.management.client.widgets.management.editor.group.workflow.GroupEditorWorkflow;
 import org.uberfire.ext.security.management.client.widgets.management.events.DeleteGroupEvent;
 import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
@@ -94,6 +97,12 @@ public class GroupEditorScreen {
     @OnOpen
     public void onOpen() {
 
+    }
+
+    @OnMayClose
+    public boolean onMayClose() {
+        return !groupEditorWorkflow.isDirty() ||
+                Window.confirm(UsersManagementWidgetsConstants.INSTANCE.groupIsDirty());
     }
 
     @OnClose

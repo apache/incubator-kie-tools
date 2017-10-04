@@ -109,7 +109,7 @@ public class UserCreationWorkflow extends BaseUserEditorWorkflow {
          ****************************************************************************************************** */
 
     public void create() {
-        clear();
+        checkClear();
 
         // Permissions can not be shown until the user is created
         getUserEditor().setPermissionsVisible(false);
@@ -287,8 +287,8 @@ public class UserCreationWorkflow extends BaseUserEditorWorkflow {
     }
 
     @Override
-    protected void doClear() {
-        super.doClear();
+    public void clear() {
+        super.clear();
         createEntity.clear();
     }
 

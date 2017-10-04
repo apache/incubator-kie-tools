@@ -100,6 +100,26 @@ public class UserEditorScreenTest {
     }
 
     @Test
+    public void testOnMayCloseSuccess() {
+        when(userEditorWorkflow.isDirty()).thenReturn(false);
+        when(userCreationWorkflow.isDirty()).thenReturn(false);
+        assertTrue(tested.onMayClose());
+    }
+
+    @Test
+    public void testOnMayCloseFailed() {
+        when(userEditorWorkflow.isDirty()).thenReturn(true);
+        when(userCreationWorkflow.isDirty()).thenReturn(true);
+        assertFalse(tested.onMayClose());
+        when(userEditorWorkflow.isDirty()).thenReturn(false);
+        when(userCreationWorkflow.isDirty()).thenReturn(true);
+        assertFalse(tested.onMayClose());
+        when(userEditorWorkflow.isDirty()).thenReturn(true);
+        when(userCreationWorkflow.isDirty()).thenReturn(false);
+        assertFalse(tested.onMayClose());
+    }
+
+    @Test
     public void testOnClose() {
         tested.userId = "user1";
         tested.onClose();

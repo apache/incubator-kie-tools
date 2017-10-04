@@ -53,7 +53,7 @@ public class GroupEditorScreenTest {
     @Mock
     ClientUserSystemManager clientUserSystemManager;
     @Mock
-    GroupEditorWorkflow groupViewerWorkflow;
+    GroupEditorWorkflow groupEditorWorkflow;
     @Mock
     GroupCreationWorkflow groupCreationWorkflow;
     @Mock
@@ -87,9 +87,21 @@ public class GroupEditorScreenTest {
                                        isNull(String.class))).thenReturn("group1");
         tested.onStartup(placeRequest);
         verify(baseScreen,
-               times(1)).init(groupViewerWorkflow);
-        verify(groupViewerWorkflow,
+               times(1)).init(groupEditorWorkflow);
+        verify(groupEditorWorkflow,
                times(1)).show("group1");
+    }
+
+    @Test
+    public void testOnMayCloseSuccess() {
+        when(groupEditorWorkflow.isDirty()).thenReturn(false);
+        assertTrue(tested.onMayClose());
+    }
+
+    @Test
+    public void testOnMayCloseFailed() {
+        when(groupEditorWorkflow.isDirty()).thenReturn(true);
+        assertFalse(tested.onMayClose());
     }
 
     @Test
@@ -97,7 +109,7 @@ public class GroupEditorScreenTest {
         tested.groupName = "group1";
         tested.onClose();
         assertNull(tested.groupName);
-        verify(groupViewerWorkflow,
+        verify(groupEditorWorkflow,
                times(1)).clear();
         verify(groupCreationWorkflow,
                times(1)).clear();
