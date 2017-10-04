@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,33 +60,22 @@ public class ShapeGlyphDragHandlerImpl implements ShapeGlyphDragHandler<Abstract
     }
 
     @Override
-    public DragProxy<AbstractCanvas, Item, DragProxyCallback> show(Item item,
-                                                                   int x,
-                                                                   int y,
-                                                                   DragProxyCallback dragProxyCallback) {
+    public DragProxy<AbstractCanvas, Item, DragProxyCallback> show(Item item, int x, int y, DragProxyCallback dragProxyCallback) {
 
         int width = item.getWidth();
         int height = item.getHeight();
 
-        final Group dragShape = glyphLienzoGlyphRenderer.render(item.getShape(),
-                                                                width,
-                                                                height);
-        dragShape.setX(width / 2);
-        dragShape.setY(height / 2);
-        this.dragProxyPanel = new LienzoPanel((width * 2),
-                                              (height * 2));
-        dragProxyPanel.getElement().getStyle().setCursor(Style.Cursor.MOVE);
+        final Group dragShape = glyphLienzoGlyphRenderer.render(item.getShape(), width, height);
+        dragShape.setX(0);
+        dragShape.setY(0);
+        this.dragProxyPanel = new LienzoPanel((width * 2), (height * 2));
+        dragProxyPanel.getElement().getStyle().setCursor(Style.Cursor.AUTO);
         final Layer dragProxyLayer = new Layer();
         dragProxyLayer.add(dragShape);
         dragProxyPanel.add(dragProxyLayer);
         dragProxyLayer.batch();
-        setDragProxyPosition(dragProxyPanel,
-                             width,
-                             height,
-                             x,
-                             y);
-        attachDragProxyHandlers(dragProxyPanel,
-                                dragProxyCallback);
+        setDragProxyPosition(dragProxyPanel, width, height, x, y);
+        attachDragProxyHandlers(dragProxyPanel, dragProxyCallback);
 
         addKeyboardEscHandler();
         RootPanel.get().add(dragProxyPanel);
@@ -109,66 +98,45 @@ public class ShapeGlyphDragHandlerImpl implements ShapeGlyphDragHandler<Abstract
         clear();
     }
 
-    private void setDragProxyPosition(final LienzoPanel dragProxyPanel,
-                                      final double proxyWidth,
-                                      final double proxyHeight,
-                                      final double x,
-                                      final double y) {
+    private void setDragProxyPosition(final LienzoPanel dragProxyPanel, final double proxyWidth, final double proxyHeight, final double x, final double y) {
         Style style = dragProxyPanel.getElement().getStyle();
         style.setPosition(Style.Position.ABSOLUTE);
-        style.setLeft(x - (proxyWidth / 2),
-                      Style.Unit.PX);
-        style.setTop(y - (proxyHeight / 2),
-                     Style.Unit.PX);
+        style.setLeft(x, Style.Unit.PX);
+        style.setTop(y, Style.Unit.PX);
         style.setZIndex(ZINDEX);
     }
 
-    private void attachDragProxyHandlers(final LienzoPanel floatingPanel,
-                                         final DragProxyCallback callback) {
+    private void attachDragProxyHandlers(final LienzoPanel floatingPanel, final DragProxyCallback callback) {
         final Style style = floatingPanel.getElement().getStyle();
 
         //MouseMoveEvents
-        addMouseMoveEvents(floatingPanel,
-                           callback,
-                           style);
+        addMouseMoveEvents(floatingPanel, callback, style);
         //MouseUpEvent
-        addMouseUpEvent(floatingPanel,
-                        callback);
+        addMouseUpEvent(floatingPanel, callback);
     }
 
-    private void addMouseMoveEvents(LienzoPanel floatingPanel,
-                                    DragProxyCallback callback,
-                                    Style style) {
+    private void addMouseMoveEvents(LienzoPanel floatingPanel, DragProxyCallback callback, Style style) {
         handlerRegistrations.add(RootPanel.get().addDomHandler(mouseMoveEvent -> {
-                                                                   style.setLeft(mouseMoveEvent.getX() - (floatingPanel.getWidth() / 2),
-                                                                                 Style.Unit.PX);
-                                                                   style.setTop(mouseMoveEvent.getY() - (floatingPanel.getHeight() / 2),
-                                                                                Style.Unit.PX);
-                                                                   final int x = mouseMoveEvent.getX();
-                                                                   final int y = mouseMoveEvent.getY();
-                                                                   callback.onMove(x,
-                                                                                   y);
-                                                               },
-                                                               MouseMoveEvent.getType()));
+            style.setLeft(mouseMoveEvent.getX(), Style.Unit.PX);
+            style.setTop(mouseMoveEvent.getY(), Style.Unit.PX);
+            final int x = mouseMoveEvent.getX();
+            final int y = mouseMoveEvent.getY();
+            callback.onMove(x, y);
+        }, MouseMoveEvent.getType()));
     }
 
-    private void addMouseUpEvent(LienzoPanel floatingPanel,
-                                 DragProxyCallback callback) {
+    private void addMouseUpEvent(LienzoPanel floatingPanel, DragProxyCallback callback) {
         handlerRegistrations.add(RootPanel.get().addDomHandler(mouseUpEvent -> {
-                                                                   clearHandlers();
-                                                                   RootPanel.get().remove(floatingPanel);
-                                                                   final int x = mouseUpEvent.getX();
-                                                                   final int y = mouseUpEvent.getY();
-                                                                   callback.onComplete(x,
-                                                                                       y);
-                                                               },
-                                                               MouseUpEvent.getType()));
+            clearHandlers();
+            RootPanel.get().remove(floatingPanel);
+            final int x = mouseUpEvent.getX();
+            final int y = mouseUpEvent.getY();
+            callback.onComplete(x, y);
+        }, MouseUpEvent.getType()));
     }
 
     private void addKeyboardEscHandler() {
-        handlerRegistrations.add(RootPanel.get().addDomHandler(k -> clear(),
-                                                               KeyDownEvent
-                                                                       .getType()));
+        handlerRegistrations.add(RootPanel.get().addDomHandler(k -> clear(), KeyDownEvent.getType()));
     }
 
     private void clearHandlers() {
