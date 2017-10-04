@@ -75,19 +75,11 @@ public class FormPropertiesWidget implements IsWidget {
     private final DynamicFormModelGenerator modelGenerator;
 
     protected FormPropertiesWidget() {
-        this(null,
-             null,
-             null,
-             null,
-             null);
+        this(null, null, null, null, null);
     }
 
     @Inject
-    public FormPropertiesWidget(final DefinitionUtils definitionUtils,
-                                final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
-                                final DynamicFormRenderer formRenderer,
-                                final DynamicFormModelGenerator modelGenerator,
-                                final Event<FormPropertiesOpened> propertiesOpenedEvent) {
+    public FormPropertiesWidget(final DefinitionUtils definitionUtils, final CanvasCommandFactory<AbstractCanvasHandler> commandFactory, final DynamicFormRenderer formRenderer, final DynamicFormModelGenerator modelGenerator, final Event<FormPropertiesOpened> propertiesOpenedEvent) {
         this.definitionUtils = definitionUtils;
         this.commandFactory = commandFactory;
         this.formRenderer = formRenderer;
@@ -97,8 +89,7 @@ public class FormPropertiesWidget implements IsWidget {
 
     @PostConstruct
     public void init() {
-        log(Level.INFO,
-            "FormPropertiesWidget instance build.");
+        log(Level.INFO, "FormPropertiesWidget instance build.");
     }
 
     /**
@@ -123,11 +114,11 @@ public class FormPropertiesWidget implements IsWidget {
     }
 
     /**
-     * Shows properties of elements in current session as:
-     * 1.- If any element selected on session control, show properties for it.
-     * 2.- If no element selected on session control:
-     * 2.1- If no canvas root fot the diagram, show the diagram's graph properties.
-     * 2.2- If diagram has a canvas root, show the properties for that element.
+     * Shows properties of elements in current session as: 1.- If any element
+     * selected on session control, show properties for it. 2.- If no element
+     * selected on session control: 2.1- If no canvas root fot the diagram, show the
+     * diagram's graph properties. 2.2- If diagram has a canvas root, show the
+     * properties for that element.
      */
     public void show() {
         this.show(null);
@@ -146,9 +137,7 @@ public class FormPropertiesWidget implements IsWidget {
                     selectedItemUUID = selectedItems.iterator().next();
                 }
             } else {
-                LOGGER.log(Level.WARNING,
-                           "Cannot show properties as session type does not provides " +
-                                   "selection control's support.");
+                LOGGER.log(Level.WARNING, "Cannot show properties as session type does not provides " + "selection control's support.");
             }
             if (null == selectedItemUUID) {
                 final Diagram<?, ?> diagram = getDiagram();
@@ -161,9 +150,7 @@ public class FormPropertiesWidget implements IsWidget {
                 }
             }
             if (null != selectedItemUUID) {
-                showByUUID(selectedItemUUID,
-                           getSessionRenderMode(),
-                           callback);
+                showByUUID(selectedItemUUID, getSessionRenderMode(), callback);
                 done = true;
             }
         }
@@ -175,38 +162,27 @@ public class FormPropertiesWidget implements IsWidget {
     /**
      * Show properties for the element with the given identifier.
      */
-    public void showByUUID(final String uuid,
-                           final RenderMode renderMode) {
-        this.showByUUID(uuid,
-                        renderMode,
-                        null);
+    public void showByUUID(final String uuid, final RenderMode renderMode) {
+        this.showByUUID(uuid, renderMode, null);
     }
 
     @SuppressWarnings("unchecked")
-    public void showByUUID(final String uuid,
-                           final RenderMode renderMode,
-                           final Command callback) {
-        final Element<? extends Definition<?>> element = (null != uuid && null != getCanvasHandler()) ?
-                getCanvasHandler().getGraphIndex().get(uuid) : null;
+    public void showByUUID(final String uuid, final RenderMode renderMode, final Command callback) {
+        final Element<? extends Definition<?>> element = (null != uuid && null != getCanvasHandler()) ? getCanvasHandler().getGraphIndex().get(uuid) : null;
         if (null != element) {
             final Object definition = element.getContent().getDefinition();
             final BindableProxy<?> proxy = (BindableProxy<?>) BindableProxyFactory.getBindableProxy(definition);
             final Path diagramPath = session.getCanvasHandler().getDiagram().getMetadata().getPath();
             final StaticModelFormRenderingContext generatedCtx = modelGenerator.getContextForModel(proxy.deepUnwrap());
-            final FormRenderingContext<?> pathAwareCtx = new PathAwareFormContext<>(generatedCtx,
-                                                                                    diagramPath);
+            final FormRenderingContext<?> pathAwareCtx = new PathAwareFormContext<>(generatedCtx, diagramPath);
             formRenderer.render(pathAwareCtx);
             formRenderer.addFieldChangeHandler((fieldName, newValue) -> {
                 try {
                     final HasProperties hasProperties = (HasProperties) DataBinder.forModel(definition).getModel();
-                    final String pId = getModifiedPropertyId(hasProperties,
-                                                             fieldName);
-                    FormPropertiesWidget.this.executeUpdateProperty(element,
-                                                                    pId,
-                                                                    newValue);
+                    final String pId = getModifiedPropertyId(hasProperties, fieldName);
+                    FormPropertiesWidget.this.executeUpdateProperty(element, pId, newValue);
                 } catch (final Exception ex) {
-                    log(Level.SEVERE,
-                        "Something wrong happened refreshing the canvas for field '" + fieldName + "': " + ex.getCause());
+                    log(Level.SEVERE, "Something wrong happened refreshing the canvas for field '" + fieldName + "': " + ex.getCause());
                 } finally {
                     if (null != callback) {
                         callback.execute();
@@ -215,9 +191,7 @@ public class FormPropertiesWidget implements IsWidget {
             });
 
             final String name = definitionUtils.getName(definition);
-            propertiesOpenedEvent.fire(new FormPropertiesOpened(session,
-                                                                uuid,
-                                                                name));
+            propertiesOpenedEvent.fire(new FormPropertiesOpened(session, uuid, name));
         } else {
             doClear();
             if (null != callback) {
@@ -249,30 +223,25 @@ public class FormPropertiesWidget implements IsWidget {
 
     @SuppressWarnings("unchecked")
     void onCanvasElementSelectedEvent(@Observes CanvasElementSelectedEvent event) {
-        checkNotNull("event",
-                     event);
+        checkNotNull("event", event);
         if (null != getCanvasHandler()) {
             final String uuid = event.getElementUUID();
-            showByUUID(uuid,
-                       getSessionRenderMode());
+            showByUUID(uuid, getSessionRenderMode());
         }
     }
 
     void CanvasClearSelectionEvent(@Observes CanvasClearSelectionEvent clearSelectionEvent) {
-        checkNotNull("clearSelectionEvent",
-                     clearSelectionEvent);
+        checkNotNull("clearSelectionEvent", clearSelectionEvent);
         doClear();
     }
 
     void onCanvasSessionOpened(@Observes SessionOpenedEvent sessionOpenedEvent) {
-        checkNotNull("sessionOpenedEvent",
-                     sessionOpenedEvent);
+        checkNotNull("sessionOpenedEvent", sessionOpenedEvent);
         doOpenSession(sessionOpenedEvent.getSession());
     }
 
     void onCanvasSessionDestroyed(@Observes SessionDestroyedEvent sessionDestroyedEvent) {
-        checkNotNull("sessionDestroyedEvent",
-                     sessionDestroyedEvent);
+        checkNotNull("sessionDestroyedEvent", sessionDestroyedEvent);
         unbind();
     }
 
@@ -281,50 +250,40 @@ public class FormPropertiesWidget implements IsWidget {
             bind(session).show();
         } catch (ClassCastException e) {
             // No writteable session. Do not show properties until read mode available.
-            log(Level.INFO,
-                "Session discarded for opening as not instance of full session.");
+            log(Level.INFO, "Session discarded for opening as not instance of full session.");
         }
     }
 
     private void doClear() {
+        if (formRenderer.isValid()) {
+            formRenderer.forceModelSynchronization();
+        }
         formRenderer.unBind();
     }
 
     @SuppressWarnings("unchecked")
-    private void executeUpdateProperty(final Element<? extends Definition<?>> element,
-                                       final String propertyId,
-                                       final Object value) {
+    private void executeUpdateProperty(final Element<? extends Definition<?>> element, final String propertyId, final Object value) {
         final CanvasCommandManager<AbstractCanvasHandler> commandManager = featuresSessionProvider.getCommandManager(session);
         if (null != commandManager) {
-            commandManager.execute(getCanvasHandler(),
-                                   commandFactory.updatePropertyValue(element,
-                                                                      propertyId,
-                                                                      value));
+            commandManager.execute(getCanvasHandler(), commandFactory.updatePropertyValue(element, propertyId, value));
         } else {
-            LOGGER.log(Level.WARNING,
-                       "Cannot update property [" + propertyId + "] as session type is not supported.");
+            LOGGER.log(Level.WARNING, "Cannot update property [" + propertyId + "] as session type is not supported.");
         }
     }
 
-    private String getModifiedPropertyId(HasProperties model,
-                                         String fieldName) {
+    private String getModifiedPropertyId(HasProperties model, String fieldName) {
         int separatorIndex = fieldName.indexOf(".");
-        // Check if it is a nested property, if it is we must obtain the nested property instead of the root one.
+        // Check if it is a nested property, if it is we must obtain the nested property
+        // instead of the root one.
         if (separatorIndex != -1) {
-            String rootProperty = fieldName.substring(0,
-                                                      separatorIndex);
+            String rootProperty = fieldName.substring(0, separatorIndex);
             fieldName = fieldName.substring(separatorIndex + 1);
             Object property = model.get(rootProperty);
             model = (HasProperties) DataBinder.forModel(property).getModel();
-            return getModifiedPropertyId(model,
-                                         fieldName);
+            return getModifiedPropertyId(model, fieldName);
         }
         Object property = model.get(fieldName);
-        return definitionUtils
-                .getDefinitionManager()
-                .adapters()
-                .forProperty()
-                .getId(property);
+        return definitionUtils.getDefinitionManager().adapters().forProperty().getId(property);
     }
 
     private FormFeaturesSessionProvider getFeaturesSessionProvider(final ClientSession session) {
@@ -339,13 +298,11 @@ public class FormPropertiesWidget implements IsWidget {
     /**
      * An ORDERED array of feature providers supported.
      */
-    private static final FormFeaturesSessionProvider[] FEATURE_SESSION_PROVIDERS =
-            new FormFeaturesSessionProvider[]{
-                    new FormFeaturesFullSessionProvider(),
-                    new FormFeaturesReadOnlySessionProvider()};
+    private static final FormFeaturesSessionProvider[] FEATURE_SESSION_PROVIDERS = new FormFeaturesSessionProvider[]{new FormFeaturesFullSessionProvider(), new FormFeaturesReadOnlySessionProvider()};
 
     /**
-     * This type provides required features that are specific for concrete client session types.
+     * This type provides required features that are specific for concrete client
+     * session types.
      */
     private interface FormFeaturesSessionProvider<S extends ClientSession> {
 
@@ -355,12 +312,14 @@ public class FormPropertiesWidget implements IsWidget {
         boolean supports(ClientSession type);
 
         /**
-         * Returns the session's selection control instance, if not available, it returns <code>null</code>.
+         * Returns the session's selection control instance, if not available, it
+         * returns <code>null</code>.
          */
         SelectionControl getSelectionControl(S session);
 
         /**
-         * Returns the session's command manager instance, if not available, it returns <code>null</code>.
+         * Returns the session's command manager instance, if not available, it returns
+         * <code>null</code>.
          */
         CanvasCommandManager<AbstractCanvasHandler> getCommandManager(S session);
     }
@@ -413,11 +372,9 @@ public class FormPropertiesWidget implements IsWidget {
         return s == null || s.trim().length() == 0;
     }
 
-    private void log(final Level level,
-                     final String message) {
+    private void log(final Level level, final String message) {
         if (LogConfiguration.loggingIsEnabled()) {
-            LOGGER.log(level,
-                       message);
+            LOGGER.log(level, message);
         }
     }
 }

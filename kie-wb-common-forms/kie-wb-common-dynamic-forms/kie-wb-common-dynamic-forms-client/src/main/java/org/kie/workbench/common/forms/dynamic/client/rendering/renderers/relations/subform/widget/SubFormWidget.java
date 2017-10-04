@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,7 @@ import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHand
 import org.kie.workbench.common.forms.processing.engine.handling.IsNestedModel;
 
 @Templated
-public class SubFormWidget extends Composite implements TakesValue<Object>,
-                                                        IsNestedModel {
+public class SubFormWidget extends Composite implements TakesValue<Object>, IsNestedModel {
 
     @Inject
     private DynamicFormRenderer formRenderer;
@@ -70,6 +69,11 @@ public class SubFormWidget extends Composite implements TakesValue<Object>,
     @Override
     public void addFieldChangeHandler(FieldChangeHandler handler) {
         formRenderer.addFieldChangeHandler(handler);
+    }
+
+    @Override
+    public void forceModelSynchronization() {
+        formRenderer.forceModelSynchronization();
     }
 
     public void unBind() {

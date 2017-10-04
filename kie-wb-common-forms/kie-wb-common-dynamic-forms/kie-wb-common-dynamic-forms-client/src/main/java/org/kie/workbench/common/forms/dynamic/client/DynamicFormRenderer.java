@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,8 +41,7 @@ import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
 
 @Dependent
-public class DynamicFormRenderer implements IsWidget,
-                                            IsFormView {
+public class DynamicFormRenderer implements IsWidget, IsFormView {
 
     public interface DynamicFormRendererView extends IsWidget {
 
@@ -68,9 +67,7 @@ public class DynamicFormRenderer implements IsWidget,
     private DynamicFormModelGenerator dynamicFormModelGenerator;
 
     @Inject
-    public DynamicFormRenderer(DynamicFormRendererView view,
-                               FormHandlerGeneratorManager formHandlerGenerator,
-                               DynamicFormModelGenerator dynamicFormModelGenerator) {
+    public DynamicFormRenderer(DynamicFormRendererView view, FormHandlerGeneratorManager formHandlerGenerator, DynamicFormModelGenerator dynamicFormModelGenerator) {
         this.view = view;
         this.formHandlerGenerator = formHandlerGenerator;
         this.dynamicFormModelGenerator = dynamicFormModelGenerator;
@@ -82,43 +79,26 @@ public class DynamicFormRenderer implements IsWidget,
     }
 
     public void renderDefaultForm(final Object model) {
-        renderDefaultForm(model,
-                          RenderMode.EDIT_MODE,
-                          null);
+        renderDefaultForm(model, RenderMode.EDIT_MODE, null);
     }
 
-    public void renderDefaultForm(final Object model,
-                                  RenderMode renderMode) {
-        renderDefaultForm(model,
-                          renderMode,
-                          null);
+    public void renderDefaultForm(final Object model, RenderMode renderMode) {
+        renderDefaultForm(model, renderMode, null);
     }
 
-    public void renderDefaultForm(final Object model,
-                                  final Command callback) {
-        renderDefaultForm(model,
-                          RenderMode.EDIT_MODE,
-                          callback);
+    public void renderDefaultForm(final Object model, final Command callback) {
+        renderDefaultForm(model, RenderMode.EDIT_MODE, callback);
     }
 
-    public void renderDefaultForm(final Object model,
-                                  final RenderMode renderMode,
-                                  final Command callback) {
-        PortablePreconditions.checkNotNull("model",
-                                           model);
+    public void renderDefaultForm(final Object model, final RenderMode renderMode, final Command callback) {
+        PortablePreconditions.checkNotNull("model", model);
         FormRenderingContext context = dynamicFormModelGenerator.getContextForModel(model);
         if (context != null) {
-            doRenderDefaultForm(context,
-                                model,
-                                renderMode,
-                                callback);
+            doRenderDefaultForm(context, model, renderMode, callback);
         }
     }
 
-    protected void doRenderDefaultForm(FormRenderingContext context,
-                                       final Object model,
-                                       final RenderMode renderMode,
-                                       final Command callback) {
+    protected void doRenderDefaultForm(FormRenderingContext context, final Object model, final RenderMode renderMode, final Command callback) {
         if (renderMode != null) {
             context.setRenderMode(renderMode);
         }
@@ -132,8 +112,7 @@ public class DynamicFormRenderer implements IsWidget,
     }
 
     public void render(FormRenderingContext context) {
-        Assert.notNull("FormRenderingContext must not be null",
-                       context);
+        Assert.notNull("FormRenderingContext must not be null", context);
 
         this.context = context;
 
@@ -161,8 +140,7 @@ public class DynamicFormRenderer implements IsWidget,
         if (isInitialized() && renderer.getFormField() != null) {
             if (renderer instanceof RequiresValueConverter) {
                 Converter valueConverter = ((RequiresValueConverter) renderer).getConverter();
-                formHandler.registerInput(renderer.getFormField(),
-                                          valueConverter);
+                formHandler.registerInput(renderer.getFormField(), valueConverter);
             } else {
                 formHandler.registerInput(renderer.getFormField());
             }
@@ -170,20 +148,17 @@ public class DynamicFormRenderer implements IsWidget,
     }
 
     public void addFieldChangeHandler(FieldChangeHandler handler) {
-        addFieldChangeHandler(null,
-                              handler);
+        addFieldChangeHandler(null, handler);
     }
 
-    public void addFieldChangeHandler(String fieldName,
-                                      FieldChangeHandler handler) {
+    public void addFieldChangeHandler(String fieldName, FieldChangeHandler handler) {
         if (context != null && isInitialized()) {
             if (fieldName != null) {
                 FieldDefinition field = context.getRootForm().getFieldByName(fieldName);
                 if (field == null) {
                     throw new IllegalArgumentException("Form doesn't contain any field identified by: '" + fieldName + "'");
                 } else {
-                    formHandler.addFieldChangeHandler(fieldName,
-                                                      handler);
+                    formHandler.addFieldChangeHandler(fieldName, handler);
                 }
             } else {
                 formHandler.addFieldChangeHandler(handler);
@@ -217,8 +192,7 @@ public class DynamicFormRenderer implements IsWidget,
     }
 
     public void switchToMode(RenderMode renderMode) {
-        Assert.notNull("RenderMode cannot be null",
-                       renderMode);
+        Assert.notNull("RenderMode cannot be null", renderMode);
         RenderMode currentMode = context.getRenderMode();
         if (context != null && isInitialized() && !currentMode.equals(renderMode)) {
 
@@ -236,6 +210,12 @@ public class DynamicFormRenderer implements IsWidget,
 
     public boolean isValid() {
         return formHandler.validate();
+    }
+
+    public void forceModelSynchronization() {
+        if (context != null && RenderMode.EDIT_MODE.equals(context.getRenderMode())) {
+            formHandler.forceModelSynchronization();
+        }
     }
 
     @Override
