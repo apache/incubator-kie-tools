@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 /**
  * Event for requesting the canvas builder control to add a new shape.
@@ -32,9 +33,7 @@ public final class BuildCanvasShapeEvent extends AbstractCanvasHandlerEvent<Abst
     private double x;
     private double y;
 
-    public BuildCanvasShapeEvent(final AbstractCanvasHandler abstractCanvasHandler,
-                                 final Object definition,
-                                 final ShapeFactory<?, ? extends Shape> shapeFactory) {
+    public BuildCanvasShapeEvent(final AbstractCanvasHandler abstractCanvasHandler, final Object definition, final ShapeFactory<?, ? extends Shape> shapeFactory) {
         super(abstractCanvasHandler);
         this.definition = definition;
         this.shapeFactory = shapeFactory;
@@ -42,16 +41,13 @@ public final class BuildCanvasShapeEvent extends AbstractCanvasHandlerEvent<Abst
         this.y = -1;
     }
 
-    public BuildCanvasShapeEvent(final AbstractCanvasHandler abstractCanvasHandler,
-                                 final Object definition,
-                                 final ShapeFactory<?, ? extends Shape> shapeFactory,
-                                 final double x,
-                                 final double y) {
+    public BuildCanvasShapeEvent(final AbstractCanvasHandler abstractCanvasHandler, final Object definition, final ShapeFactory<?, ? extends Shape> shapeFactory, final double x, final double y) {
         super(abstractCanvasHandler);
         this.definition = definition;
         this.shapeFactory = shapeFactory;
-        this.x = x;
-        this.y = y;
+        final Point2D transformed = abstractCanvasHandler.getAbstractCanvas().getLayer().getTransform().inverse(x, y);
+        this.x = transformed.getX();
+        this.y = transformed.getY();
     }
 
     public Object getDefinition() {
@@ -72,7 +68,6 @@ public final class BuildCanvasShapeEvent extends AbstractCanvasHandlerEvent<Abst
 
     @Override
     public String toString() {
-        return "BuildCanvasShapeEvent [definition=" + definition + ", factory=" + shapeFactory.toString() +
-                ", x=" + x + ", y=" + y + "]";
+        return "BuildCanvasShapeEvent [definition=" + definition + ", factory=" + shapeFactory.toString() + ", x=" + x + ", y=" + y + "]";
     }
 }

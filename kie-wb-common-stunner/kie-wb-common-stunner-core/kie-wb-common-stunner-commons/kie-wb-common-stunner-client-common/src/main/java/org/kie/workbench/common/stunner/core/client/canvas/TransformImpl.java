@@ -22,13 +22,9 @@ public class TransformImpl implements Transform {
     private final Point2D translate;
     private final Point2D scale;
 
-    public static final TransformImpl NO_TRANSFORM = new TransformImpl(new Point2D(0,
-                                                                                   0),
-                                                                       new Point2D(1,
-                                                                                   1));
+    public static final TransformImpl NO_TRANSFORM = new TransformImpl(new Point2D(0, 0), new Point2D(1, 1));
 
-    TransformImpl(final Point2D translate,
-                  final Point2D scale) {
+    TransformImpl(final Point2D translate, final Point2D scale) {
         this.translate = translate;
         this.scale = scale;
     }
@@ -44,11 +40,12 @@ public class TransformImpl implements Transform {
     }
 
     @Override
-    public Point2D transform(final double x,
-                             final double y) {
-        return new Point2D(
-                (x * scale.getX()) + translate.getX(),
-                (y * scale.getY()) + translate.getY()
-        );
+    public Point2D transform(final double x, final double y) {
+        return new Point2D((x * scale.getX()) + translate.getX(), (y * scale.getY()) + translate.getY());
+    }
+
+    @Override
+    public Point2D inverse(final double x, final double y) {
+        return new Point2D((x - translate.getX()) / scale.getX(), (y - translate.getY()) / scale.getY());
     }
 }

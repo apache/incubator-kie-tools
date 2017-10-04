@@ -18,9 +18,10 @@ package org.kie.workbench.common.stunner.core.client.canvas;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 /**
- * The current transforms that are supported for canvas layers.
- * See <a>org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl</a>
- * See <a>org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl</a>
+ * The current transforms that are supported for canvas layers. See
+ * <a>org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl</a>
+ * See
+ * <a>org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl</a>
  */
 public interface Transform {
 
@@ -35,9 +36,14 @@ public interface Transform {
     Point2D getScale();
 
     /**
-     * Returns the cartesian coordinates resulting after applying this
-     * instance' transforms.
+     * Returns the cartesian coordinates resulting after applying this instance's
+     * transforms.
      */
-    Point2D transform(final double x,
-                      final double y);
+    Point2D transform(final double x, final double y);
+
+    /**
+     * Returns the cartesian coordinates resulting after applying this instance's
+     * transform inverses.
+     */
+    Point2D inverse(final double x, final double y);
 }
