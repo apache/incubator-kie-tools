@@ -16,11 +16,12 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup;
 
-import com.google.gwt.text.shared.testing.PassthroughParser;
+import com.google.gwt.text.client.LongParser;
 
-public class StringRadioGroup extends RadioGroupBase<String> {
+public class IntegerRadioGroup extends RadioGroupBase<Long> {
 
-    public StringRadioGroup(String name) {
-        super(name, PassthroughParser.instance());
+    public IntegerRadioGroup(String name) {
+
+        super(name, LongParser.instance());
     }
 }

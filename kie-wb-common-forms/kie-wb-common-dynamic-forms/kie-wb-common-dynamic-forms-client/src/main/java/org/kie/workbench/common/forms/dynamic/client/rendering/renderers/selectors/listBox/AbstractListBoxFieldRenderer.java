@@ -22,13 +22,18 @@ import java.util.Set;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.ValueListBox;
+import org.jboss.errai.databinding.client.api.Converter;
+import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ValueConvertersFactory;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.util.DefaultValueListBoxRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.RequiresValueConverter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.SelectorFieldRenderer;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.ListBoxBaseDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 
-public abstract class AbstractListBoxFieldRenderer<FIELD extends ListBoxBaseDefinition<OPTION, TYPE>, OPTION extends SelectorOption<TYPE>, TYPE> extends SelectorFieldRenderer<FIELD, OPTION, TYPE> {
+public abstract class AbstractListBoxFieldRenderer<FIELD extends ListBoxBaseDefinition<OPTION, TYPE>, OPTION extends SelectorOption<TYPE>, TYPE>
+        extends SelectorFieldRenderer<FIELD, OPTION, TYPE>
+        implements RequiresValueConverter {
 
     protected DefaultValueListBoxRenderer<TYPE> optionsRenderer = new DefaultValueListBoxRenderer();
 
@@ -85,5 +90,10 @@ public abstract class AbstractListBoxFieldRenderer<FIELD extends ListBoxBaseDefi
     @Override
     protected void setReadOnly(boolean readOnly) {
         widgetList.setEnabled(!readOnly);
+    }
+
+    @Override
+    public Converter getConverter() {
+        return ValueConvertersFactory.getConverterForType(field.getStandaloneClassName());
     }
 }

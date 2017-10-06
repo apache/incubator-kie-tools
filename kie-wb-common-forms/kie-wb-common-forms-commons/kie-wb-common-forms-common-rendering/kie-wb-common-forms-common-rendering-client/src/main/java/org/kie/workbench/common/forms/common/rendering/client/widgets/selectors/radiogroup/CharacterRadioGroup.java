@@ -16,11 +16,18 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup;
 
-import com.google.gwt.text.shared.testing.PassthroughParser;
+import java.text.ParseException;
 
-public class StringRadioGroup extends RadioGroupBase<String> {
+public class CharacterRadioGroup extends RadioGroupBase<Character> {
 
-    public StringRadioGroup(String name) {
-        super(name, PassthroughParser.instance());
+    public CharacterRadioGroup(String name) {
+
+        super(name, charSequence -> {
+
+            if (charSequence == null || charSequence.length() != 1) {
+                throw new ParseException("Error parsing Character: " + charSequence.toString(), 0);
+            }
+            return charSequence.charAt(0);
+        });
     }
 }

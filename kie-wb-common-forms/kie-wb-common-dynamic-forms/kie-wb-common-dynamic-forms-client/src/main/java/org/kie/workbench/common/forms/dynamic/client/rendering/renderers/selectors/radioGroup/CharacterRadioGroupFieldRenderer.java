@@ -18,22 +18,28 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.select
 
 import javax.enterprise.context.Dependent;
 
+import org.jboss.errai.databinding.client.api.Converter;
+import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.CharacterRadioGroup;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.RadioGroupBase;
-import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.StringRadioGroup;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.StringSelectorOption;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.StringRadioGroupFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.CharacterSelectorOption;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.CharacterRadioGroupFieldDefinition;
 
 @Dependent
-public class StringRadioGroupFieldRenderer
-        extends RadioGroupFieldRendererBase<StringRadioGroupFieldDefinition, StringSelectorOption, String> {
+public class CharacterRadioGroupFieldRenderer
+        extends RadioGroupFieldRendererBase<CharacterRadioGroupFieldDefinition, CharacterSelectorOption, Character> {
 
     @Override
-    public Class<StringRadioGroupFieldDefinition> getSupportedFieldDefinition() {
-        return StringRadioGroupFieldDefinition.class;
+    public Class<CharacterRadioGroupFieldDefinition> getSupportedFieldDefinition() {
+        return CharacterRadioGroupFieldDefinition.class;
     }
 
     @Override
-    protected RadioGroupBase<String> getRadioGroup() {
-        return new StringRadioGroup(field.getName());
+    protected RadioGroupBase<Character> getRadioGroup() {
+        return new CharacterRadioGroup(field.getName());
+    }
+
+    @Override
+    public Converter getConverter() {
+        return null;
     }
 }

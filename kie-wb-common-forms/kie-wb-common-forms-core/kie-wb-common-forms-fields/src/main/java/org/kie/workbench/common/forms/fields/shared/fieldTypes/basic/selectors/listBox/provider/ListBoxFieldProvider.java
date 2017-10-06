@@ -16,10 +16,16 @@
 
 package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.provider;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.CharacterListBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.DecimalListBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.EnumListBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.IntegerListBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.ListBoxBaseDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.StringListBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
@@ -42,8 +48,22 @@ public class ListBoxFieldProvider extends SelectorFieldProvider<ListBoxBaseDefin
     @Override
     protected void doRegisterFields() {
         registerPropertyType(String.class);
-        registerPropertyType(char.class);
+        registerPropertyType(Integer.class);
+        registerPropertyType(int.class);
+        registerPropertyType(Long.class);
+        registerPropertyType(long.class);
+        registerPropertyType(BigInteger.class);
+        registerPropertyType(Double.class);
+        registerPropertyType(double.class);
+        registerPropertyType(Float.class);
+        registerPropertyType(float.class);
+        registerPropertyType(BigDecimal.class);
+        registerPropertyType(Short.class);
+        registerPropertyType(short.class);
+        registerPropertyType(Byte.class);
+        registerPropertyType(byte.class);
         registerPropertyType(Character.class);
+        registerPropertyType(char.class);
     }
 
     @Override
@@ -62,7 +82,32 @@ public class ListBoxFieldProvider extends SelectorFieldProvider<ListBoxBaseDefin
             return new EnumListBoxFieldDefinition();
         }
 
-        for (String type : supportedTypes) {
+        String className = typeInfo.getClassName();
+
+        if (Byte.class.getName().equals(className) ||
+                byte.class.getName().equals(className) ||
+                Short.class.getName().equals(className) ||
+                short.class.getName().equals(className) ||
+                Integer.class.getName().equals(className) ||
+                int.class.getName().equals(className) ||
+                Long.class.getName().equals(className) ||
+                long.class.getName().equals(className) ||
+                BigInteger.class.getName().equals(className)) {
+            return new IntegerListBoxFieldDefinition();
+        }
+        if (Float.class.getName().equals(className) ||
+                float.class.getName().equals(className) ||
+                Double.class.getName().equals(className) ||
+                double.class.getName().equals(className) ||
+                BigDecimal.class.getName().equals(className)) {
+            return new DecimalListBoxFieldDefinition();
+        }
+        if (Character.class.getName().equals(className) ||
+                char.class.getName().equals(className)) {
+            return new CharacterListBoxFieldDefinition();
+        }
+
+        for (String type : getSupportedTypes()) {
             if (type.equals(typeInfo.getClassName())) {
                 return new StringListBoxFieldDefinition();
             }

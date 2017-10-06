@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup;
 
-import com.google.gwt.text.shared.testing.PassthroughParser;
+import com.google.gwt.text.client.DoubleParser;
 
-public class StringRadioGroup extends RadioGroupBase<String> {
+public class DecimalRadioGroup extends RadioGroupBase<Double> {
 
-    public StringRadioGroup(String name) {
-        super(name, PassthroughParser.instance());
+    public DecimalRadioGroup(String name) {
+
+        super(name, DoubleParser.instance());
     }
 }
+

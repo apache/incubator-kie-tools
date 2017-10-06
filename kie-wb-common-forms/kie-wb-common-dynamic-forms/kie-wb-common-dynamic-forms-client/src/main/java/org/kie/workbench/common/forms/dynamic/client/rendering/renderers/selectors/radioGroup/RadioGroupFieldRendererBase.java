@@ -16,11 +16,95 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.radioGroup;
 
+import java.util.Map;
+
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtbootstrap3.client.ui.InlineRadio;
+import org.gwtbootstrap3.client.ui.Radio;
+import org.jboss.errai.databinding.client.api.Converter;
+import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ValueConvertersFactory;
+import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.RadioGroupBase;
+import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.RequiresValueConverter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.SelectorFieldRenderer;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.RadioGroupBaseDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.StringRadioGroupFieldDefinition;
 
 public abstract class RadioGroupFieldRendererBase<FIELD extends RadioGroupBaseDefinition<OPTION, TYPE>, OPTION extends SelectorOption<TYPE>, TYPE>
-        extends SelectorFieldRenderer<FIELD, OPTION, TYPE> {
+        extends SelectorFieldRenderer<FIELD, OPTION, TYPE>
+        implements RequiresValueConverter {
 
+    private RadioGroupBase<TYPE> input;
+
+    abstract protected RadioGroupBase<TYPE> getRadioGroup();
+
+    protected void refreshInput(Map<TYPE, String> optionsValues,
+                                TYPE selectedValue) {
+        input.clear();
+        for (TYPE key : optionsValues.keySet()) {
+            Radio radio;
+            SafeHtml text = getOptionLabel(optionsValues.get(key));
+            if (field.getInline()) {
+                radio = new InlineRadio(field.getId(),
+                                        text);
+            } else {
+                radio = new Radio(field.getId(),
+                                  text);
+            }
+            radio.setFormValue(key.toString());
+            radio.setEnabled(!field.getReadOnly());
+            input.add(radio);
+        }
+
+        if (optionsValues.containsKey(selectedValue)) {
+            input.setValue(selectedValue,
+                           true);
+        }
+    }
+
+    protected SafeHtml getOptionLabel(String text) {
+        if (text == null || text.isEmpty()) {
+            return SafeHtmlUtils.fromTrustedString("&nbsp;");
+        }
+        return SafeHtmlUtils.fromString(text);
+    }
+
+    @Override
+    public String getName() {
+        return "RadioGroup";
+    }
+
+    @Override
+    public void initInputWidget() {
+        input = getRadioGroup();
+        refreshSelectorOptions();
+    }
+
+    @Override
+    public IsWidget getInputWidget() {
+        return input;
+    }
+
+    @Override
+    public IsWidget getPrettyViewWidget() {
+        return new HTML();
+    }
+
+    @Override
+    public String getSupportedCode() {
+        return StringRadioGroupFieldDefinition.FIELD_TYPE.getTypeName();
+    }
+
+    @Override
+    protected void setReadOnly(boolean readOnly) {
+        input.getRadioChildren().forEach(radio -> radio.setEnabled(!readOnly));
+    }
+
+    @Override
+    public Converter getConverter() {
+        return ValueConvertersFactory.getConverterForType(field.getStandaloneClassName());
+    }
 }

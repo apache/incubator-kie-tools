@@ -18,22 +18,22 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.select
 
 import javax.enterprise.context.Dependent;
 
+import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.DecimalRadioGroup;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.RadioGroupBase;
-import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.StringRadioGroup;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.StringSelectorOption;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.StringRadioGroupFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DecimalSelectorOption;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.DecimalRadioGroupFieldDefinition;
 
 @Dependent
-public class StringRadioGroupFieldRenderer
-        extends RadioGroupFieldRendererBase<StringRadioGroupFieldDefinition, StringSelectorOption, String> {
+public class DecimalRadioGroupFieldRenderer
+        extends RadioGroupFieldRendererBase<DecimalRadioGroupFieldDefinition, DecimalSelectorOption, Double> {
 
     @Override
-    public Class<StringRadioGroupFieldDefinition> getSupportedFieldDefinition() {
-        return StringRadioGroupFieldDefinition.class;
+    public Class<DecimalRadioGroupFieldDefinition> getSupportedFieldDefinition() {
+        return DecimalRadioGroupFieldDefinition.class;
     }
 
     @Override
-    protected RadioGroupBase<String> getRadioGroup() {
-        return new StringRadioGroup(field.getName());
+    protected RadioGroupBase<Double> getRadioGroup() {
+        return new DecimalRadioGroup(field.getName());
     }
 }

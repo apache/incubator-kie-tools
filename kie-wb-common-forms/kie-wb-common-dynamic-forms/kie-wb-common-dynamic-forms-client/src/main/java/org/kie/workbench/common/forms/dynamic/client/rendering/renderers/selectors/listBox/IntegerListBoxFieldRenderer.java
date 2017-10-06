@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,20 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.select
 
 import javax.enterprise.context.Dependent;
 
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.EnumSelectorOption;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.EnumListBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.IntegerSelectorOption;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.IntegerListBoxFieldDefinition;
 
 @Dependent
-public class EnumListBoxFieldRenderer
-        extends AbstractListBoxFieldRenderer<EnumListBoxFieldDefinition, EnumSelectorOption, Enum> {
+public class IntegerListBoxFieldRenderer
+        extends AbstractListBoxFieldRenderer<IntegerListBoxFieldDefinition, IntegerSelectorOption, Long> {
 
     @Override
-    public Class<EnumListBoxFieldDefinition> getSupportedFieldDefinition() {
-        return EnumListBoxFieldDefinition.class;
+    public Class<IntegerListBoxFieldDefinition> getSupportedFieldDefinition() {
+        return IntegerListBoxFieldDefinition.class;
     }
 
     @Override
-    public Enum getEmptyValue() {
-        return null;
+    public Long getEmptyValue() {
+        return 0l;
     }
 }

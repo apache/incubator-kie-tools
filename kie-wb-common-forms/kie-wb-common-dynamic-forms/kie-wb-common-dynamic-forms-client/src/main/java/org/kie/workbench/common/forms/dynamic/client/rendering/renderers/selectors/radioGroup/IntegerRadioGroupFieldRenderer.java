@@ -18,22 +18,22 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.select
 
 import javax.enterprise.context.Dependent;
 
+import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.IntegerRadioGroup;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.RadioGroupBase;
-import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.StringRadioGroup;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.StringSelectorOption;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.StringRadioGroupFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.IntegerSelectorOption;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.IntegerRadioGroupFieldDefinition;
 
 @Dependent
-public class StringRadioGroupFieldRenderer
-        extends RadioGroupFieldRendererBase<StringRadioGroupFieldDefinition, StringSelectorOption, String> {
+public class IntegerRadioGroupFieldRenderer
+        extends RadioGroupFieldRendererBase<IntegerRadioGroupFieldDefinition, IntegerSelectorOption, Long> {
 
     @Override
-    public Class<StringRadioGroupFieldDefinition> getSupportedFieldDefinition() {
-        return StringRadioGroupFieldDefinition.class;
+    public Class<IntegerRadioGroupFieldDefinition> getSupportedFieldDefinition() {
+        return IntegerRadioGroupFieldDefinition.class;
     }
 
     @Override
-    protected RadioGroupBase<String> getRadioGroup() {
-        return new StringRadioGroup(field.getName());
+    protected RadioGroupBase<Long> getRadioGroup() {
+        return new IntegerRadioGroup(field.getName());
     }
 }
