@@ -20,7 +20,9 @@ import java.util.Collections;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 
+import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiffImpl;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
@@ -35,23 +37,34 @@ public class ActionRetractFactColumnSynchronizer extends ActionColumnSynchronize
     }
 
     @Override
-    public boolean handlesAppend( final MetaData metaData ) throws ModelSynchronizer.MoveColumnVetoException {
-        return handlesUpdate( metaData );
+    public boolean handlesAppend(final MetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
+        return handlesUpdate(metaData);
     }
 
     @Override
-    public boolean handlesUpdate( final MetaData metaData ) throws ModelSynchronizer.MoveColumnVetoException {
-        if ( !( metaData instanceof ColumnMetaData ) ) {
+    public void append(final ColumnMetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
+        if (!handlesAppend(metaData)) {
+            return;
+        }
+
+        final ActionCol52 column = (ActionCol52) metaData.getColumn();
+        model.getActionCols().add(column);
+        synchroniseAppendColumn(column);
+    }
+
+    @Override
+    public boolean handlesUpdate(final MetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
+        if (!(metaData instanceof ColumnMetaData)) {
             return false;
         }
-        return ( (ColumnMetaData) metaData ).getColumn() instanceof ActionRetractFactCol52;
+        return ((ColumnMetaData) metaData).getColumn() instanceof ActionRetractFactCol52;
     }
 
     @Override
-    public List<BaseColumnFieldDiff> update( final ColumnMetaData originalMetaData,
-                                             final ColumnMetaData editedMetaData ) throws ModelSynchronizer.MoveColumnVetoException {
+    public List<BaseColumnFieldDiff> update(final ColumnMetaData originalMetaData,
+                                            final ColumnMetaData editedMetaData) throws ModelSynchronizer.MoveColumnVetoException {
         //Check operation is supported
-        if ( !( handlesUpdate( originalMetaData ) && handlesUpdate( editedMetaData ) ) ) {
+        if (!(handlesUpdate(originalMetaData) && handlesUpdate(editedMetaData))) {
             return Collections.emptyList();
         }
 
@@ -59,38 +72,51 @@ public class ActionRetractFactColumnSynchronizer extends ActionColumnSynchronize
         final ActionRetractFactCol52 originalColumn = (ActionRetractFactCol52) originalMetaData.getColumn();
         final ActionRetractFactCol52 editedColumn = (ActionRetractFactCol52) editedMetaData.getColumn();
 
-        final List<BaseColumnFieldDiff> diffs = originalColumn.diff( editedColumn );
+        final List<BaseColumnFieldDiff> diffs = originalColumn.diff(editedColumn);
 
-        update( originalColumn,
-                editedColumn );
+        update(originalColumn,
+               editedColumn);
 
-        final boolean isHideUpdated = BaseColumnFieldDiffImpl.hasChanged( ActionRetractFactCol52.FIELD_HIDE_COLUMN,
-                                                                          diffs );
-        final boolean isHeaderUpdated = BaseColumnFieldDiffImpl.hasChanged( ActionRetractFactCol52.FIELD_HEADER,
-                                                                            diffs );
+        final boolean isHideUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionRetractFactCol52.FIELD_HIDE_COLUMN,
+                                                                         diffs);
+        final boolean isHeaderUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionRetractFactCol52.FIELD_HEADER,
+                                                                           diffs);
 
-        synchroniseUpdateColumn( originalColumn );
+        synchroniseUpdateColumn(originalColumn);
 
-        if ( isHideUpdated ) {
-            setColumnVisibility( originalColumn,
-                                 originalColumn.isHideColumn() );
+        if (isHideUpdated) {
+            setColumnVisibility(originalColumn,
+                                originalColumn.isHideColumn());
         }
-        if ( isHeaderUpdated ) {
-            setColumnHeader( originalColumn,
-                             originalColumn.getHeader() );
+        if (isHeaderUpdated) {
+            setColumnHeader(originalColumn,
+                            originalColumn.getHeader());
         }
 
         return diffs;
     }
 
-    private void update( final ActionRetractFactCol52 originalColumn,
-                         final ActionRetractFactCol52 editedColumn ) {
-        originalColumn.setHeader( editedColumn.getHeader() );
-        originalColumn.setDefaultValue( editedColumn.getDefaultValue() );
-        originalColumn.setHideColumn( editedColumn.isHideColumn() );
-        if ( originalColumn instanceof LimitedEntryCol && editedColumn instanceof LimitedEntryCol ) {
-            ( (LimitedEntryCol) originalColumn ).setValue( ( (LimitedEntryCol) editedColumn ).getValue() );
+    private void update(final ActionRetractFactCol52 originalColumn,
+                        final ActionRetractFactCol52 editedColumn) {
+        originalColumn.setHeader(editedColumn.getHeader());
+        originalColumn.setDefaultValue(editedColumn.getDefaultValue());
+        originalColumn.setHideColumn(editedColumn.isHideColumn());
+        if (originalColumn instanceof LimitedEntryCol && editedColumn instanceof LimitedEntryCol) {
+            ((LimitedEntryCol) originalColumn).setValue(((LimitedEntryCol) editedColumn).getValue());
         }
     }
 
+    @Override
+    public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+        for (MetaData md : metaData) {
+            if (!(md instanceof MoveColumnToMetaData)) {
+                return false;
+            }
+            final BaseColumn column = ((MoveColumnToMetaData) md).getColumn();
+            if (!(column instanceof ActionRetractFactCol52)) {
+                return false;
+            }
+        }
+        return metaData.size() == 1;
+    }
 }

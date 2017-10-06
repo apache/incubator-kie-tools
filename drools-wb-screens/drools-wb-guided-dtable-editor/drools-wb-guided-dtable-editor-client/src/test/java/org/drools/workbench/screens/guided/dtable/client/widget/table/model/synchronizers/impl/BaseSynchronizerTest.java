@@ -41,7 +41,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.conv
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionInsertFactColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionRetractFactColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionSetFieldColumnConverter;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionWorkItemColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionWorkItemExecuteColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionWorkItemInsertFactColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionWorkItemSetFieldColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.AttributeColumnConverter;
@@ -172,7 +172,7 @@ public abstract class BaseSynchronizerTest {
         converters.add(new ActionInsertFactColumnConverter());
         converters.add(new ActionRetractFactColumnConverter());
         converters.add(new ActionSetFieldColumnConverter());
-        converters.add(new ActionWorkItemColumnConverter());
+        converters.add(new ActionWorkItemExecuteColumnConverter());
         converters.add(new ActionWorkItemInsertFactColumnConverter());
         converters.add(new ActionWorkItemSetFieldColumnConverter());
         converters.add(new AttributeColumnConverter());
@@ -192,7 +192,7 @@ public abstract class BaseSynchronizerTest {
         synchronizers.add(new ActionInsertFactColumnSynchronizer());
         synchronizers.add(new ActionRetractFactColumnSynchronizer());
         synchronizers.add(new ActionSetFieldColumnSynchronizer());
-        synchronizers.add(new ActionWorkItemColumnSynchronizer());
+        synchronizers.add(new ActionWorkItemExecuteColumnSynchronizer());
         synchronizers.add(new ActionWorkItemInsertFactColumnSynchronizer());
         synchronizers.add(new ActionWorkItemSetFieldColumnSynchronizer());
         synchronizers.add(new AttributeColumnSynchronizer());

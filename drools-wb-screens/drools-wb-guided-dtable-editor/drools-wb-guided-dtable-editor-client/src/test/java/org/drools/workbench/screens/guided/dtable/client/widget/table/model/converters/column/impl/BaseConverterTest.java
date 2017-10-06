@@ -67,7 +67,7 @@ public abstract class BaseConverterTest {
         converters.add( new ActionInsertFactColumnConverter() );
         converters.add( new ActionRetractFactColumnConverter() );
         converters.add( new ActionSetFieldColumnConverter() );
-        converters.add( new ActionWorkItemColumnConverter() );
+        converters.add( new ActionWorkItemExecuteColumnConverter() );
         converters.add( new ActionWorkItemInsertFactColumnConverter() );
         converters.add( new ActionWorkItemSetFieldColumnConverter() );
         converters.add( new AttributeColumnConverter() );

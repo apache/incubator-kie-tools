@@ -208,6 +208,9 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
             if (!(md instanceof MoveColumnToMetaData)) {
                 return false;
             }
+            if (((MoveColumnToMetaData) md).getColumn() instanceof BRLConditionColumn) {
+                return false;
+            }
             if (!(((MoveColumnToMetaData) md).getColumn() instanceof ConditionCol52)) {
                 return false;
             }
@@ -221,25 +224,13 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
         if (!handlesMoveColumnsTo(metaData)) {
             return;
         }
-        if (isBRLFragment(metaData)) {
-            doMoveBRLFragment(metaData);
-        } else if (isPattern(metaData)) {
+        if (isPattern(metaData)) {
             doMovePattern(metaData);
         } else if (isSingleCondition(metaData)) {
             doMoveSingleCondition(metaData.get(0));
         } else {
             throw new ModelSynchronizer.MoveColumnVetoException();
         }
-    }
-
-    private boolean isBRLFragment(final List<MoveColumnToMetaData> metaData) {
-        if (!metaData.stream().allMatch((c) -> c.getColumn() instanceof BRLConditionVariableColumn)) {
-            return false;
-        }
-        final MoveColumnToMetaData md = metaData.get(0);
-        final BRLConditionVariableColumn srcModelColumn = (BRLConditionVariableColumn) md.getColumn();
-        final BRLConditionColumn srcModelPattern = model.getBRLColumn(srcModelColumn);
-        return srcModelPattern.getChildColumns().size() == metaData.size();
     }
 
     private boolean isPattern(final List<MoveColumnToMetaData> metaData) {
@@ -260,35 +251,6 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
             return false;
         }
         return metaData.get(0).getColumn() instanceof ConditionCol52;
-    }
-
-    private void doMoveBRLFragment(final List<MoveColumnToMetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
-        final MoveColumnToMetaData md = metaData.get(0);
-        final BRLConditionVariableColumn srcModelColumn = (BRLConditionVariableColumn) md.getColumn();
-        final BRLConditionColumn srcModelBRLFragment = model.getBRLColumn(srcModelColumn);
-        if (srcModelBRLFragment == null) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
-        }
-        final List<BRLConditionVariableColumn> srcModelBRLFragmentColumns = srcModelBRLFragment.getChildColumns();
-        final int srcModelPatternConditionColumnCount = srcModelBRLFragmentColumns.size();
-        if (srcModelPatternConditionColumnCount == 0) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
-        }
-        if (srcModelPatternConditionColumnCount != metaData.size()) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
-        }
-
-        final int tgtColumnIndex = md.getTargetColumnIndex();
-        final int tgtPatternIndex = findTargetPatternIndex(md);
-        final List<BaseColumn> allModelColumns = model.getExpandedColumns();
-
-        moveModelData(tgtColumnIndex,
-                      allModelColumns.indexOf(srcModelBRLFragmentColumns.get(0)),
-                      allModelColumns.indexOf(srcModelBRLFragmentColumns.get(0)) + srcModelPatternConditionColumnCount - 1);
-
-        model.getConditions().remove(srcModelBRLFragment);
-        model.getConditions().add(tgtPatternIndex,
-                                  srcModelBRLFragment);
     }
 
     private void doMovePattern(final List<MoveColumnToMetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
@@ -351,33 +313,6 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
         modelPatternConditionColumns.remove(modelColumn);
         modelPatternConditionColumns.add(targetColumnIndex - minColumnIndex,
                                          modelColumn);
-    }
-
-    private int findTargetPatternIndex(final MoveColumnToMetaData md) throws ModelSynchronizer.MoveColumnVetoException {
-        int tgtPatternIndex = -1;
-        final int tgtColumnIndex = md.getTargetColumnIndex();
-        final List<BaseColumn> allModelColumns = model.getExpandedColumns();
-        final List<CompositeColumn<? extends BaseColumn>> allModelConditions = model.getConditions();
-        for (int patternIndex = 0; patternIndex < allModelConditions.size(); patternIndex++) {
-            final CompositeColumn<? extends BaseColumn> cc = allModelConditions.get(patternIndex);
-            final List<? extends BaseColumn> children = cc.getChildColumns();
-            if (children == null || children.isEmpty()) {
-                continue;
-            }
-            final BaseColumn firstChild = children.get(0);
-            final BaseColumn lastChild = children.get(children.size() - 1);
-            final int firstChildIndex = allModelColumns.indexOf(firstChild);
-            final int lastChildIndex = allModelColumns.indexOf(lastChild);
-            if (tgtColumnIndex >= firstChildIndex && tgtColumnIndex <= lastChildIndex) {
-                tgtPatternIndex = patternIndex;
-                break;
-            }
-        }
-
-        if (tgtPatternIndex < 0) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
-        }
-        return tgtPatternIndex;
     }
 
     private boolean isNewPattern(final Pattern52 editedPattern) {

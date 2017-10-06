@@ -28,7 +28,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLConditionColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 
-import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.BaseColumnSynchronizer.*;
+import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.BaseColumnSynchronizer.ColumnMetaData;
 
 @Dependent
 public class LimitedEntryBRLConditionColumnSynchronizer extends BaseColumnSynchronizer<ColumnMetaData, ColumnMetaData, ColumnMetaData> {
@@ -39,35 +39,35 @@ public class LimitedEntryBRLConditionColumnSynchronizer extends BaseColumnSynchr
     }
 
     @Override
-    public boolean handlesAppend( final MetaData metaData ) {
-        return handlesUpdate( metaData );
+    public boolean handlesAppend(final MetaData metaData) {
+        return handlesUpdate(metaData);
     }
 
     @Override
-    public void append( final ColumnMetaData metaData ) {
+    public void append(final ColumnMetaData metaData) {
         //Check operation is supported
-        if ( !handlesAppend( metaData ) ) {
+        if (!handlesAppend(metaData)) {
             return;
         }
 
         final LimitedEntryBRLConditionColumn column = (LimitedEntryBRLConditionColumn) metaData.getColumn();
-        model.getConditions().add( column );
-        synchroniseAppendColumn( column );
+        model.getConditions().add(column);
+        synchroniseAppendColumn(column);
     }
 
     @Override
-    public boolean handlesUpdate( final MetaData metaData ) {
-        if ( !( metaData instanceof ColumnMetaData ) ) {
+    public boolean handlesUpdate(final MetaData metaData) {
+        if (!(metaData instanceof ColumnMetaData)) {
             return false;
         }
-        return ( (ColumnMetaData) metaData ).getColumn() instanceof LimitedEntryBRLConditionColumn;
+        return ((ColumnMetaData) metaData).getColumn() instanceof LimitedEntryBRLConditionColumn;
     }
 
     @Override
-    public List<BaseColumnFieldDiff> update( final ColumnMetaData originalMetaData,
-                                             final ColumnMetaData editedMetaData ) {
+    public List<BaseColumnFieldDiff> update(final ColumnMetaData originalMetaData,
+                                            final ColumnMetaData editedMetaData) {
         //Check operation is supported
-        if ( !( handlesUpdate( originalMetaData ) && handlesUpdate( editedMetaData ) ) ) {
+        if (!(handlesUpdate(originalMetaData) && handlesUpdate(editedMetaData))) {
             return Collections.emptyList();
         }
 
@@ -75,108 +75,104 @@ public class LimitedEntryBRLConditionColumnSynchronizer extends BaseColumnSynchr
         final LimitedEntryBRLConditionColumn originalColumn = (LimitedEntryBRLConditionColumn) originalMetaData.getColumn();
         final LimitedEntryBRLConditionColumn editedColumn = (LimitedEntryBRLConditionColumn) editedMetaData.getColumn();
 
-        final List<BaseColumnFieldDiff> diffs = originalColumn.diff( editedColumn );
+        final List<BaseColumnFieldDiff> diffs = originalColumn.diff(editedColumn);
 
-        update( originalColumn,
-                editedColumn );
+        update(originalColumn,
+               editedColumn);
 
         //LimitedEntry columns are always represented with a BooleanUiColumn
-        final boolean isHideUpdated = BaseColumnFieldDiffImpl.hasChanged( ConditionCol52.FIELD_HIDE_COLUMN,
-                                                                          diffs );
-        final boolean isHeaderUpdated = BaseColumnFieldDiffImpl.hasChanged( ConditionCol52.FIELD_HIDE_COLUMN,
-                                                                            diffs );
+        final boolean isHideUpdated = BaseColumnFieldDiffImpl.hasChanged(ConditionCol52.FIELD_HIDE_COLUMN,
+                                                                         diffs);
+        final boolean isHeaderUpdated = BaseColumnFieldDiffImpl.hasChanged(ConditionCol52.FIELD_HIDE_COLUMN,
+                                                                           diffs);
 
-        if ( isHideUpdated ) {
-            setColumnVisibility( originalColumn,
-                                 originalColumn.isHideColumn() );
+        if (isHideUpdated) {
+            setColumnVisibility(originalColumn,
+                                originalColumn.isHideColumn());
         }
-        if ( isHeaderUpdated ) {
-            setColumnHeader( originalColumn,
-                             originalColumn.getHeader() );
+        if (isHeaderUpdated) {
+            setColumnHeader(originalColumn,
+                            originalColumn.getHeader());
         }
 
         return diffs;
     }
 
     @Override
-    public boolean handlesDelete( final MetaData metaData ) {
-        if ( !( metaData instanceof ColumnMetaData ) ) {
+    public boolean handlesDelete(final MetaData metaData) {
+        if (!(metaData instanceof ColumnMetaData)) {
             return false;
         }
-        return ( (ColumnMetaData) metaData ).getColumn() instanceof LimitedEntryBRLConditionColumn;
+        return ((ColumnMetaData) metaData).getColumn() instanceof LimitedEntryBRLConditionColumn;
     }
 
     @Override
-    public void delete( final ColumnMetaData metaData ) {
+    public void delete(final ColumnMetaData metaData) {
         //Check operation is supported
-        if ( !handlesDelete( metaData ) ) {
+        if (!handlesDelete(metaData)) {
             return;
         }
 
         final LimitedEntryBRLConditionColumn column = (LimitedEntryBRLConditionColumn) metaData.getColumn();
-        final int columnIndex = model.getExpandedColumns().indexOf( column );
-        model.getConditions().remove( column );
-        synchroniseDeleteColumn( columnIndex );
+        final int columnIndex = model.getExpandedColumns().indexOf(column);
+        model.getConditions().remove(column);
+        synchroniseDeleteColumn(columnIndex);
     }
 
     @Override
-    public boolean handlesMoveColumnsTo( final List<? extends MetaData> metaData ) throws ModelSynchronizer.MoveColumnVetoException {
-        for ( MetaData md : metaData ) {
-            if ( !( md instanceof MoveColumnToMetaData ) ) {
+    public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+        for (MetaData md : metaData) {
+            if (!(md instanceof MoveColumnToMetaData)) {
                 return false;
             }
-            final BaseColumn column = ( (MoveColumnToMetaData) md ).getColumn();
-            if ( !( column instanceof LimitedEntryBRLConditionColumn ) ) {
+            final BaseColumn column = ((MoveColumnToMetaData) md).getColumn();
+            if (!(column instanceof LimitedEntryBRLConditionColumn)) {
                 return false;
             }
         }
-        if ( metaData.size() > 1 ) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
-        }
-        return true;
+        return metaData.size() == 1;
     }
 
     @Override
-    public void moveColumnsTo( final List<MoveColumnToMetaData> metaData ) throws ModelSynchronizer.MoveColumnVetoException {
+    public void moveColumnsTo(final List<MoveColumnToMetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
         //Check operation is supported
-        if ( !handlesMoveColumnsTo( metaData ) ) {
+        if (!handlesMoveColumnsTo(metaData)) {
             return;
         }
 
-        final MoveColumnToMetaData md = metaData.get( 0 );
+        final MoveColumnToMetaData md = metaData.get(0);
         final LimitedEntryBRLConditionColumn modelColumn = (LimitedEntryBRLConditionColumn) md.getColumn();
 
         final List<CompositeColumn<? extends BaseColumn>> modelConditionColumns = model.getConditions();
         final int modelConditionColumnCount = modelConditionColumns.size();
-        if ( modelConditionColumnCount == 0 ) {
+        if (modelConditionColumnCount == 0) {
             throw new ModelSynchronizer.MoveColumnVetoException();
         }
 
         final List<BaseColumn> allModelColumns = model.getExpandedColumns();
-        final int minColumnIndex = allModelColumns.indexOf( modelConditionColumns.get( 0 ) );
-        final int maxColumnIndex = allModelColumns.indexOf( modelConditionColumns.get( modelConditionColumnCount - 1 ) );
+        final int minColumnIndex = allModelColumns.indexOf(modelConditionColumns.get(0));
+        final int maxColumnIndex = allModelColumns.indexOf(modelConditionColumns.get(modelConditionColumnCount - 1));
 
         final int targetColumnIndex = md.getTargetColumnIndex();
         final int sourceColumnIndex = md.getSourceColumnIndex();
-        if ( targetColumnIndex < minColumnIndex || targetColumnIndex > maxColumnIndex ) {
+        if (targetColumnIndex < minColumnIndex || targetColumnIndex > maxColumnIndex) {
             throw new ModelSynchronizer.MoveColumnVetoException();
         }
 
-        moveModelData( targetColumnIndex,
-                       sourceColumnIndex,
-                       sourceColumnIndex );
+        moveModelData(targetColumnIndex,
+                      sourceColumnIndex,
+                      sourceColumnIndex);
 
-        modelConditionColumns.remove( modelColumn );
-        modelConditionColumns.add( targetColumnIndex - minColumnIndex,
-                                   modelColumn );
+        modelConditionColumns.remove(modelColumn);
+        modelConditionColumns.add(targetColumnIndex - minColumnIndex,
+                                  modelColumn);
     }
 
-    private void update( final LimitedEntryBRLConditionColumn originalColumn,
-                         final LimitedEntryBRLConditionColumn editedColumn ) {
-        originalColumn.setHeader( editedColumn.getHeader() );
-        originalColumn.setDefaultValue( editedColumn.getDefaultValue() );
-        originalColumn.setHideColumn( editedColumn.isHideColumn() );
-        originalColumn.setDefinition( editedColumn.getDefinition() );
+    private void update(final LimitedEntryBRLConditionColumn originalColumn,
+                        final LimitedEntryBRLConditionColumn editedColumn) {
+        originalColumn.setHeader(editedColumn.getHeader());
+        originalColumn.setDefaultValue(editedColumn.getDefaultValue());
+        originalColumn.setHideColumn(editedColumn.isHideColumn());
+        originalColumn.setDefinition(editedColumn.getDefinition());
     }
-
 }

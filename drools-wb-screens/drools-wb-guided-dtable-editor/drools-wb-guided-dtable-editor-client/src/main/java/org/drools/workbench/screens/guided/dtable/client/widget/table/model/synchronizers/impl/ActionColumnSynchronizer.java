@@ -19,11 +19,19 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.syn
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.OptionalInt;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
@@ -35,22 +43,13 @@ public class ActionColumnSynchronizer extends BaseColumnSynchronizer<ColumnMetaD
 
     @Override
     public boolean handlesAppend(final MetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
-        if (!(metaData instanceof ColumnMetaData)) {
-            return false;
-        }
-        return ((ColumnMetaData) metaData).getColumn() instanceof ActionCol52;
+        //All sub-classes of ActionCol52 have their appends synchronized by specialised synchronizers
+        return false;
     }
 
     @Override
     public void append(final ColumnMetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
-        //Check operation is supported
-        if (!handlesAppend(metaData)) {
-            return;
-        }
-
-        final ActionCol52 column = (ActionCol52) metaData.getColumn();
-        model.getActionCols().add(column);
-        synchroniseAppendColumn(column);
+        //All sub-classes of ActionCol52 have their appends synchronized by specialised synchronizers
     }
 
     @Override
@@ -89,21 +88,8 @@ public class ActionColumnSynchronizer extends BaseColumnSynchronizer<ColumnMetaD
 
     @Override
     public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
-        for (MetaData md : metaData) {
-            if (!(md instanceof MoveColumnToMetaData)) {
-                return false;
-            }
-            final BaseColumn column = ((MoveColumnToMetaData) md).getColumn();
-            if (!(column instanceof ActionCol52)) {
-                return false;
-            }
-        }
-        if (isBRLFragment(metaData)) {
-            return true;
-        } else if (metaData.size() > 1) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
-        }
-        return true;
+        //All sub-classes of ActionCol52 have their updates synchronized by specialised synchronizers
+        return false;
     }
 
     @Override
@@ -112,51 +98,83 @@ public class ActionColumnSynchronizer extends BaseColumnSynchronizer<ColumnMetaD
         if (!handlesMoveColumnsTo(metaData)) {
             return;
         }
-        if (isBRLFragment(metaData)) {
-            doMoveBRLFragment(metaData);
-        } else if (isSingleAction(metaData)) {
-            doMoveSingleAction(metaData.get(0));
-        } else {
-            throw new ModelSynchronizer.MoveColumnVetoException();
-        }
+        doMoveActionFragment(metaData);
     }
 
-    private boolean isBRLFragment(final List<? extends MetaData> metaData) {
+    protected boolean isWorkItemFragment(final List<? extends MetaData> metaData) {
         if (!metaData.stream().allMatch((c) -> (c instanceof MoveColumnToMetaData))) {
             return false;
         }
-        if (!metaData.stream().allMatch((c) -> ((MoveColumnToMetaData) c).getColumn() instanceof BRLActionVariableColumn)) {
+        if (!metaData.stream().map(c -> (MoveColumnToMetaData) c).allMatch(this::isWorkItemActionColumn)) {
             return false;
         }
-        final MoveColumnToMetaData md = (MoveColumnToMetaData) metaData.get(0);
-        final BRLActionVariableColumn srcModelColumn = (BRLActionVariableColumn) md.getColumn();
-        final BRLActionColumn srcModelPattern = model.getBRLColumn(srcModelColumn);
-        return srcModelPattern.getChildColumns().size() == metaData.size();
+        final BaseColumn firstColumnInFragment = ((MoveColumnToMetaData) metaData.get(0)).getColumn();
+        final BaseColumn lastColumnInFragment = ((MoveColumnToMetaData) metaData.get(metaData.size() - 1)).getColumn();
+        final int firstColumnIndex = model.getExpandedColumns().indexOf(firstColumnInFragment);
+        final int lastColumnIndex = model.getExpandedColumns().indexOf(lastColumnInFragment);
+        return lastColumnIndex - firstColumnIndex == metaData.size() - 1;
     }
 
-    private boolean isSingleAction(final List<MoveColumnToMetaData> metaData) {
-        if (metaData.size() != 1) {
-            return false;
-        }
-        if (metaData.get(0).getColumn() instanceof BRLActionVariableColumn) {
-            return false;
-        }
-        return metaData.get(0).getColumn() instanceof ActionCol52;
+    protected boolean isWorkItemActionColumn(final MoveColumnToMetaData metaData) {
+        final BaseColumn column = metaData.getColumn();
+        return column instanceof ActionWorkItemCol52
+                || column instanceof ActionWorkItemInsertFactCol52
+                || column instanceof ActionWorkItemSetFieldCol52;
     }
 
-    private void doMoveBRLFragment(final List<MoveColumnToMetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    protected boolean isWorkItemFragmentBeforeInsertFactCol(final List<? extends MetaData> metaData) {
+        final List<ActionCol52> columnsToMove = metaData.stream()
+                .map(c -> (MoveColumnToMetaData) c)
+                .map(MoveColumnToMetaData::getColumn)
+                .map(c -> (ActionCol52) c)
+                .collect(Collectors.toList());
+
+        final List<String> bindingsUsedByWID = new ArrayList<>();
+        bindingsUsedByWID.addAll(columnsToMove.stream()
+                                         .filter(c -> c instanceof ActionWorkItemInsertFactCol52)
+                                         .map(c -> (ActionWorkItemInsertFactCol52) c)
+                                         .map(ActionWorkItemInsertFactCol52::getBoundName)
+                                         .collect(Collectors.toList()));
+
+        final AtomicBoolean result = new AtomicBoolean(true);
+        final int tgtIndex = ((MoveColumnToMetaData) metaData.get(0)).getTargetColumnIndex();
+        final List<BaseColumn> modelColumns = model.getExpandedColumns();
+
+        //Cannot move "Insert and Set field" created by the WID to after other "Insert and Set field"
+        for (String binding : bindingsUsedByWID) {
+            model.getActionCols().stream()
+                    .filter(c -> !columnsToMove.contains(c))
+                    .filter(c -> c instanceof ActionInsertFactCol52)
+                    .filter(c -> !(c instanceof ActionWorkItemInsertFactCol52))
+                    .map(c -> (ActionInsertFactCol52) c)
+                    .filter(c -> c.getBoundName().equals(binding))
+                    .map(modelColumns::indexOf)
+                    .filter(i -> tgtIndex >= i)
+                    .findFirst()
+                    .ifPresent(i -> result.set(false));
+        }
+
+        return result.get();
+    }
+
+    protected void doMoveActionFragment(final List<MoveColumnToMetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
         final MoveColumnToMetaData md = metaData.get(0);
-        final BRLActionVariableColumn srcModelColumn = (BRLActionVariableColumn) md.getColumn();
-        final BRLActionColumn srcModelBRLFragment = model.getBRLColumn(srcModelColumn);
-        if (srcModelBRLFragment == null) {
+        final BaseColumn firstColumnInFragment = md.getColumn();
+        final BaseColumn lastColumnInFragment = metaData.get(metaData.size() - 1).getColumn();
+        final int srcColumnFirstIndex = model.getExpandedColumns().indexOf(firstColumnInFragment);
+        final int srcColumnLastIndex = model.getExpandedColumns().indexOf(lastColumnInFragment);
+
+        final List<ActionCol52> srcModelFragmentColumns = IntStream.rangeClosed(srcColumnFirstIndex,
+                                                                                srcColumnLastIndex)
+                .mapToObj(i -> model.getExpandedColumns().get(i))
+                .map(column -> (ActionCol52) column)
+                .collect(Collectors.toList());
+
+        final int srcModelFragmentColumnsCount = srcModelFragmentColumns.size();
+        if (srcModelFragmentColumnsCount == 0) {
             throw new ModelSynchronizer.MoveColumnVetoException();
         }
-        final List<BRLActionVariableColumn> srcModelBRLFragmentColumns = srcModelBRLFragment.getChildColumns();
-        final int srcModelBRLFragmentColumnsCount = srcModelBRLFragmentColumns.size();
-        if (srcModelBRLFragmentColumnsCount == 0) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
-        }
-        if (srcModelBRLFragmentColumnsCount != metaData.size()) {
+        if (srcModelFragmentColumnsCount != metaData.size()) {
             throw new ModelSynchronizer.MoveColumnVetoException();
         }
 
@@ -165,101 +183,70 @@ public class ActionColumnSynchronizer extends BaseColumnSynchronizer<ColumnMetaD
         final List<BaseColumn> allModelColumns = model.getExpandedColumns();
 
         moveModelData(tgtColumnIndex,
-                      allModelColumns.indexOf(srcModelBRLFragmentColumns.get(0)),
-                      allModelColumns.indexOf(srcModelBRLFragmentColumns.get(0)) + srcModelBRLFragmentColumnsCount - 1);
+                      allModelColumns.indexOf(srcModelFragmentColumns.get(0)),
+                      allModelColumns.indexOf(srcModelFragmentColumns.get(0)) + srcModelFragmentColumnsCount - 1);
 
-        model.getActionCols().remove(srcModelBRLFragment);
-        model.getActionCols().add(tgtActionIndex,
-                                  srcModelBRLFragment);
+        //Moving left
+        if (tgtColumnIndex < srcColumnFirstIndex) {
+            final AtomicInteger offset = new AtomicInteger(0);
+            srcModelFragmentColumns.forEach(column -> {
+                model.getActionCols().remove(column);
+                model.getActionCols().add(tgtActionIndex + offset.getAndIncrement(),
+                                          column);
+            });
+        }
+
+        //Moving right
+        if (tgtColumnIndex > srcColumnFirstIndex) {
+            srcModelFragmentColumns.forEach(column -> {
+                model.getActionCols().remove(column);
+                model.getActionCols().add(tgtActionIndex,
+                                          column);
+            });
+        }
     }
 
-    private void doMoveSingleAction(final MoveColumnToMetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
-        final ActionCol52 srcModelColumn = (ActionCol52) metaData.getColumn();
-        final List<ActionCol52> srcModelActionColumns = model.getActionCols();
-        final int srcModelActionColumnCount = srcModelActionColumns.size();
-        if (srcModelActionColumnCount == 0) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
-        }
+    protected OptionalInt findLastIndexOfActionInsertFactColumn(final ActionInsertFactCol52 column) {
+        final String binding = column.getBoundName();
+        final List<ActionCol52> relatedColumns = new ArrayList<>();
+        relatedColumns.addAll(model.getActionCols().stream()
+                                      .filter(c -> c instanceof ActionInsertFactCol52)
+                                      .map(c -> (ActionInsertFactCol52) c)
+                                      .filter(c -> c.getBoundName().equals(binding))
+                                      .collect(Collectors.toList()));
 
-        final int minColumnIndex = getMinActionColumnIndex();
-        final int maxColumnIndex = getMaxActionColumnIndex();
-        final int tgtColumnIndex = metaData.getTargetColumnIndex();
-        final int tgtActionIndex = findTargetActionIndex(metaData);
-        final int srcColumnIndex = metaData.getSourceColumnIndex();
-
-        if (tgtColumnIndex < minColumnIndex || tgtColumnIndex > maxColumnIndex) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
-        }
-
-        moveModelData(tgtColumnIndex,
-                      srcColumnIndex,
-                      srcColumnIndex);
-
-        srcModelActionColumns.remove(srcModelColumn);
-        srcModelActionColumns.add(tgtActionIndex,
-                                  srcModelColumn);
+        return relatedColumns.stream().mapToInt(c -> model.getActionCols().indexOf(c)).max();
     }
 
-    private int getMinActionColumnIndex() {
-        final List<BaseColumn> allModelColumns = model.getExpandedColumns();
-        final List<ActionCol52> modelActionColumns = model.getActionCols();
-        final ActionCol52 actionCol = modelActionColumns.get(0);
+    protected OptionalInt findLastIndexOfActionSetFieldColumn(final ActionSetFieldCol52 column) {
+        final String binding = column.getBoundName();
+        final List<ActionCol52> relatedColumns = new ArrayList<>();
+        relatedColumns.addAll(model.getActionCols().stream()
+                                      .filter(c -> c instanceof ActionSetFieldCol52)
+                                      .map(c -> (ActionSetFieldCol52) c)
+                                      .filter(c -> c.getBoundName().equals(binding))
+                                      .collect(Collectors.toList()));
 
-        if (actionCol instanceof BRLActionColumn) {
-            final BRLActionColumn brlActionCol = (BRLActionColumn) actionCol;
-            final List<BRLActionVariableColumn> brlActionColChildren = brlActionCol.getChildColumns();
-            return allModelColumns.indexOf(brlActionColChildren.get(0));
-        }
-        return allModelColumns.indexOf(actionCol);
+        return relatedColumns.stream().mapToInt(c -> model.getActionCols().indexOf(c)).max();
     }
 
-    private int getMaxActionColumnIndex() {
-        final List<BaseColumn> allModelColumns = model.getExpandedColumns();
-        final List<ActionCol52> modelActionColumns = model.getActionCols();
-        final ActionCol52 actionCol = modelActionColumns.get(modelActionColumns.size() - 1);
+    protected OptionalInt findLastIndexOfWorkItemColumn(final ActionWorkItemCol52 column) {
+        final String workItemName = column.getWorkItemDefinition().getName();
+        final List<ActionCol52> relatedColumns = new ArrayList<>();
+        relatedColumns.add(column);
 
-        if (actionCol instanceof BRLActionColumn) {
-            final BRLActionColumn brlActionCol = (BRLActionColumn) actionCol;
-            final List<BRLActionVariableColumn> brlActionColChildren = brlActionCol.getChildColumns();
-            return allModelColumns.indexOf(brlActionColChildren.get(brlActionColChildren.size() - 1));
-        }
-        return allModelColumns.indexOf(actionCol);
-    }
+        relatedColumns.addAll(model.getActionCols().stream()
+                                      .filter(c -> c instanceof ActionWorkItemInsertFactCol52)
+                                      .map(c -> (ActionWorkItemInsertFactCol52) c)
+                                      .filter(c -> c.getWorkItemName().equals(workItemName))
+                                      .collect(Collectors.toList()));
 
-    private int findTargetActionIndex(final MoveColumnToMetaData md) throws ModelSynchronizer.MoveColumnVetoException {
-        int tgtActionIndex = -1;
-        final int tgtColumnIndex = md.getTargetColumnIndex();
-        final List<BaseColumn> allModelColumns = model.getExpandedColumns();
-        final List<ActionCol52> allModelActions = model.getActionCols();
-        for (int actionIndex = 0; actionIndex < allModelActions.size(); actionIndex++) {
-            final ActionCol52 ac = allModelActions.get(actionIndex);
-            final List<ActionCol52> children = getChildren(ac);
-            if (children == null || children.isEmpty()) {
-                continue;
-            }
-            final BaseColumn firstChild = children.get(0);
-            final BaseColumn lastChild = children.get(children.size() - 1);
-            final int firstChildIndex = allModelColumns.indexOf(firstChild);
-            final int lastChildIndex = allModelColumns.indexOf(lastChild);
-            if (tgtColumnIndex >= firstChildIndex && tgtColumnIndex <= lastChildIndex) {
-                tgtActionIndex = actionIndex;
-                break;
-            }
-        }
+        relatedColumns.addAll(model.getActionCols().stream()
+                                      .filter(c -> c instanceof ActionWorkItemSetFieldCol52)
+                                      .map(c -> (ActionWorkItemSetFieldCol52) c)
+                                      .filter(c -> c.getWorkItemName().equals(workItemName))
+                                      .collect(Collectors.toList()));
 
-        if (tgtActionIndex < 0) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
-        }
-        return tgtActionIndex;
-    }
-
-    private List<ActionCol52> getChildren(final ActionCol52 ac) {
-        final List<ActionCol52> children = new ArrayList<>();
-        if (ac instanceof BRLActionColumn) {
-            children.addAll(((BRLActionColumn) ac).getChildColumns());
-        } else {
-            children.add(ac);
-        }
-        return children;
+        return relatedColumns.stream().mapToInt(c -> model.getActionCols().indexOf(c)).max();
     }
 }

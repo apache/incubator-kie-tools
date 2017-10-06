@@ -48,7 +48,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.conv
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionInsertFactColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionRetractFactColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionSetFieldColumnConverter;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionWorkItemColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionWorkItemExecuteColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionWorkItemInsertFactColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionWorkItemSetFieldColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.AttributeColumnConverter;
@@ -66,7 +66,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.sync
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ActionInsertFactColumnSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ActionRetractFactColumnSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ActionSetFieldColumnSynchronizer;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ActionWorkItemColumnSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ActionWorkItemExecuteColumnSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ActionWorkItemInsertFactColumnSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ActionWorkItemSetFieldColumnSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.AttributeColumnSynchronizer;
@@ -337,7 +337,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
                 converters.add(new ActionInsertFactColumnConverter());
                 converters.add(new ActionRetractFactColumnConverter());
                 converters.add(new ActionSetFieldColumnConverter());
-                converters.add(new ActionWorkItemColumnConverter());
+                converters.add(new ActionWorkItemExecuteColumnConverter());
                 converters.add(new ActionWorkItemInsertFactColumnConverter());
                 converters.add(new ActionWorkItemSetFieldColumnConverter());
                 converters.add(new AttributeColumnConverter());
@@ -358,7 +358,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
                 synchronizers.add(new ActionInsertFactColumnSynchronizer());
                 synchronizers.add(new ActionRetractFactColumnSynchronizer());
                 synchronizers.add(new ActionSetFieldColumnSynchronizer());
-                synchronizers.add(new ActionWorkItemColumnSynchronizer());
+                synchronizers.add(new ActionWorkItemExecuteColumnSynchronizer());
                 synchronizers.add(new ActionWorkItemInsertFactColumnSynchronizer());
                 synchronizers.add(new ActionWorkItemSetFieldColumnSynchronizer());
                 synchronizers.add(new AttributeColumnSynchronizer());

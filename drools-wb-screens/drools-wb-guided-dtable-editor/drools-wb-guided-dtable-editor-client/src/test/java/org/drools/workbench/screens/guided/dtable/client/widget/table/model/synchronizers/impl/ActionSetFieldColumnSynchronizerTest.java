@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 
 import org.appformer.project.datamodel.oracle.DataType;
@@ -36,31 +36,29 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 import static org.drools.workbench.screens.guided.rule.client.util.ModelFieldUtil.modelField;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 public class ActionSetFieldColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Override
     protected AsyncPackageDataModelOracle getOracle() {
         final AsyncPackageDataModelOracle oracle = super.getOracle();
-        oracle.addModelFields(new HashMap<String, ModelField[]>() {
-                                  {
-                                      put("Applicant",
-                                          new ModelField[]{
-                                                  modelField("this",
-                                                             "Applicant"),
-                                                  modelField("age",
-                                                             DataType.TYPE_NUMERIC_INTEGER),
-                                                  modelField("name",
-                                                             DataType.TYPE_STRING),
-                                                  modelField("approved",
-                                                             DataType.TYPE_BOOLEAN)});
-                                  }
-                              }
+        oracle.addModelFields(Collections.singletonMap("Applicant",
+                                                       new ModelField[]{
+                                                               modelField("this",
+                                                                          "Applicant"),
+                                                               modelField("age",
+                                                                          DataType.TYPE_NUMERIC_INTEGER),
+                                                               modelField("name",
+                                                                          DataType.TYPE_STRING),
+                                                               modelField("approved",
+                                                                          DataType.TYPE_BOOLEAN)}));
 
-        );
         return oracle;
     }
 
@@ -186,7 +184,7 @@ public class ActionSetFieldColumnSynchronizerTest extends BaseSynchronizerTest {
                      uiModel.getColumns().size());
         assertTrue(uiModel.getColumns().get(3) instanceof StringUiColumn);
         assertEquals("updated",
-                     uiModel.getColumns().get(3).getHeaderMetaData().get(0).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(1).getTitle());
         assertEquals(false,
                      uiModel.getColumns().get(3).isVisible());
     }

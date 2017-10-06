@@ -36,29 +36,31 @@ public class ActionWorkItemInsertFactColumnConverter extends BaseColumnConverter
     }
 
     @Override
-    public boolean handles( final BaseColumn column ) {
+    public boolean handles(final BaseColumn column) {
         return column instanceof ActionWorkItemInsertFactCol52;
     }
 
     @Override
-    public GridColumn<?> convertColumn( final BaseColumn column,
-                                        final GuidedDecisionTablePresenter.Access access,
-                                        final GuidedDecisionTableView gridWidget ) {
-        return newBooleanColumn( makeHeaderMetaData( column ),
-                                 Math.max( column.getWidth(),
-                                           DEFAULT_COLUMN_WIDTH ),
-                                 true,
-                                 !column.isHideColumn(),
-                                 access,
-                                 gridWidget );
+    public GridColumn<?> convertColumn(final BaseColumn column,
+                                       final GuidedDecisionTablePresenter.Access access,
+                                       final GuidedDecisionTableView gridWidget) {
+        return newBooleanColumn(makeHeaderMetaData(column),
+                                Math.max(column.getWidth(),
+                                         DEFAULT_COLUMN_WIDTH),
+                                true,
+                                !column.isHideColumn(),
+                                access,
+                                gridWidget);
     }
 
     @Override
-    public List<GridColumn.HeaderMetaData> makeHeaderMetaData( final BaseColumn column ) {
+    public List<GridColumn.HeaderMetaData> makeHeaderMetaData(final BaseColumn column) {
+        final String workItemName = ((ActionWorkItemInsertFactCol52) column).getWorkItemName();
         return new ArrayList<GridColumn.HeaderMetaData>() {{
-            add( new BaseHeaderMetaData( column.getHeader(),
-                                         ActionCol52.class.getName() ) );
+            add(new BaseHeaderMetaData(workItemName,
+                                       ActionCol52.class.getName()));
+            add(new BaseHeaderMetaData(column.getHeader(),
+                                       workItemName + "-set"));
         }};
     }
-
 }

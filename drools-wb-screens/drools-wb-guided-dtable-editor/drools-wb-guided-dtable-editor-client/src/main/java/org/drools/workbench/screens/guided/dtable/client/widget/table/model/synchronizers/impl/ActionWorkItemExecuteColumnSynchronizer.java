@@ -20,19 +20,19 @@ import java.util.Collections;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 
+import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiffImpl;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 
 @Dependent
-public class ActionWorkItemSetFieldColumnSynchronizer extends ActionColumnSynchronizer {
+public class ActionWorkItemExecuteColumnSynchronizer extends ActionColumnSynchronizer {
 
     @Override
     public int priority() {
-        return 2;
+        return 1;
     }
 
     @Override
@@ -42,25 +42,13 @@ public class ActionWorkItemSetFieldColumnSynchronizer extends ActionColumnSynchr
 
     @Override
     public void append(final ColumnMetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
-        //Check operation is supported
         if (!handlesAppend(metaData)) {
             return;
         }
 
-        final ActionWorkItemSetFieldCol52 column = (ActionWorkItemSetFieldCol52) metaData.getColumn();
-        final String workItemName = column.getWorkItemName();
-
-        model.getActionCols()
-                .stream()
-                .filter(c -> c instanceof ActionWorkItemCol52)
-                .map(c -> ((ActionWorkItemCol52) c))
-                .filter(c -> c.getWorkItemDefinition().getName().equals(workItemName))
-                .findFirst()
-                .ifPresent(p -> findLastIndexOfWorkItemColumn(p).ifPresent(index -> {
-                    model.getActionCols().add(index + 1,
-                                              column);
-                    synchroniseAppendColumn(column);
-                }));
+        final ActionCol52 column = (ActionCol52) metaData.getColumn();
+        model.getActionCols().add(column);
+        synchroniseAppendColumn(column);
     }
 
     @Override
@@ -68,7 +56,7 @@ public class ActionWorkItemSetFieldColumnSynchronizer extends ActionColumnSynchr
         if (!(metaData instanceof ColumnMetaData)) {
             return false;
         }
-        return ((ColumnMetaData) metaData).getColumn() instanceof ActionWorkItemSetFieldCol52;
+        return ((ColumnMetaData) metaData).getColumn() instanceof ActionWorkItemCol52;
     }
 
     @Override
@@ -80,8 +68,8 @@ public class ActionWorkItemSetFieldColumnSynchronizer extends ActionColumnSynchr
         }
 
         //Get differences between original and edited column
-        final ActionWorkItemSetFieldCol52 originalColumn = (ActionWorkItemSetFieldCol52) originalMetaData.getColumn();
-        final ActionWorkItemSetFieldCol52 editedColumn = (ActionWorkItemSetFieldCol52) editedMetaData.getColumn();
+        final ActionWorkItemCol52 originalColumn = (ActionWorkItemCol52) originalMetaData.getColumn();
+        final ActionWorkItemCol52 editedColumn = (ActionWorkItemCol52) editedMetaData.getColumn();
 
         final List<BaseColumnFieldDiff> diffs = originalColumn.diff(editedColumn);
 
@@ -89,9 +77,9 @@ public class ActionWorkItemSetFieldColumnSynchronizer extends ActionColumnSynchr
                editedColumn);
 
         //ActionWorkItem columns are always represented with a BooleanUiColumn
-        final boolean isHideUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionWorkItemSetFieldCol52.FIELD_HIDE_COLUMN,
+        final boolean isHideUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionWorkItemCol52.FIELD_HIDE_COLUMN,
                                                                          diffs);
-        final boolean isHeaderUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionWorkItemSetFieldCol52.FIELD_HEADER,
+        final boolean isHeaderUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionWorkItemCol52.FIELD_HEADER,
                                                                            diffs);
 
         if (isHideUpdated) {
@@ -106,17 +94,12 @@ public class ActionWorkItemSetFieldColumnSynchronizer extends ActionColumnSynchr
         return diffs;
     }
 
-    private void update(final ActionWorkItemSetFieldCol52 originalColumn,
-                        final ActionWorkItemSetFieldCol52 editedColumn) {
-        originalColumn.setBoundName(editedColumn.getBoundName());
-        originalColumn.setType(editedColumn.getType());
-        originalColumn.setFactField(editedColumn.getFactField());
+    private void update(final ActionWorkItemCol52 originalColumn,
+                        final ActionWorkItemCol52 editedColumn) {
         originalColumn.setHeader(editedColumn.getHeader());
+        originalColumn.setDefaultValue(editedColumn.getDefaultValue());
         originalColumn.setHideColumn(editedColumn.isHideColumn());
-        originalColumn.setUpdate(editedColumn.isUpdate());
-        originalColumn.setWorkItemName(editedColumn.getWorkItemName());
-        originalColumn.setWorkItemResultParameterName(editedColumn.getWorkItemResultParameterName());
-        originalColumn.setParameterClassName(editedColumn.getParameterClassName());
+        originalColumn.setWorkItemDefinition(editedColumn.getWorkItemDefinition());
     }
 
     @Override

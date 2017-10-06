@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
@@ -480,6 +481,36 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
                                 uiModelColumn1_2,
                                 uiModelColumn2_2,
                                 uiModelColumn3_2);
+    }
+
+    @Test
+    public void checkHandlesMoveColumnsToWithEmptyMetadata() throws ModelSynchronizer.MoveColumnVetoException {
+        final MetaDataColumnSynchronizer synchronizer = new MetaDataColumnSynchronizer();
+
+        assertFalse(synchronizer.handlesMoveColumnsTo(Collections.emptyList()));
+    }
+
+    @Test
+    public void checkHandlesMoveColumnsToWithMultipleMetadata() throws ModelSynchronizer.MoveColumnVetoException {
+        final BaseSynchronizer.MoveColumnToMetaData md0 = mock(BaseSynchronizer.MoveColumnToMetaData.class);
+        final BaseSynchronizer.MoveColumnToMetaData md1 = mock(BaseSynchronizer.MoveColumnToMetaData.class);
+        final MetaDataColumnSynchronizer synchronizer = new MetaDataColumnSynchronizer();
+        when(md0.getColumn()).thenReturn(mock(MetadataCol52.class));
+        when(md1.getColumn()).thenReturn(mock(MetadataCol52.class));
+
+        assertFalse(synchronizer.handlesMoveColumnsTo(new ArrayList<BaseSynchronizer.MoveColumnToMetaData>() {{
+            add(md0);
+            add(md1);
+        }}));
+    }
+
+    @Test
+    public void checkHandlesMoveColumnsToWithSingleMetadata() throws ModelSynchronizer.MoveColumnVetoException {
+        final BaseSynchronizer.MoveColumnToMetaData md0 = mock(BaseSynchronizer.MoveColumnToMetaData.class);
+        final MetaDataColumnSynchronizer synchronizer = new MetaDataColumnSynchronizer();
+        when(md0.getColumn()).thenReturn(mock(MetadataCol52.class));
+
+        assertTrue(synchronizer.handlesMoveColumnsTo(Collections.singletonList(md0)));
     }
 
     private void assertTestMoveColumnsTo(final MetadataCol52 column1,

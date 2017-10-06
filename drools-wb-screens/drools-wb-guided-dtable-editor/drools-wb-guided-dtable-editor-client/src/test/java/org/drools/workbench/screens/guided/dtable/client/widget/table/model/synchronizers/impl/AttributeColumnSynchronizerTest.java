@@ -17,6 +17,8 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
@@ -27,13 +29,19 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.In
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.SalienceUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.BaseSynchronizer.MoveColumnToMetaData;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
 
@@ -557,6 +565,34 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
                                 uiModelColumn1_2,
                                 uiModelColumn2_2,
                                 uiModelColumn3_2);
+    }
+
+    @Test
+    public void checkHandlesMoveColumnsToWithEmptyMetadata() throws ModelSynchronizer.MoveColumnVetoException {
+        final AttributeColumnSynchronizer synchronizer = new AttributeColumnSynchronizer();
+
+        assertFalse(synchronizer.handlesMoveColumnsTo(Collections.emptyList()));
+    }
+
+    @Test
+    public void checkHandlesMoveColumnsToWithMultipleMetadata() throws ModelSynchronizer.MoveColumnVetoException {
+        final MoveColumnToMetaData md0 = mock(MoveColumnToMetaData.class);
+        final MoveColumnToMetaData md1 = mock(MoveColumnToMetaData.class);
+        final AttributeColumnSynchronizer synchronizer = new AttributeColumnSynchronizer();
+        when(md0.getColumn()).thenReturn(mock(AttributeCol52.class));
+        when(md1.getColumn()).thenReturn(mock(AttributeCol52.class));
+
+        assertFalse(synchronizer.handlesMoveColumnsTo(Arrays.asList(md0,
+                                                                    md1)));
+    }
+
+    @Test
+    public void checkHandlesMoveColumnsToWithSingleMetadata() throws ModelSynchronizer.MoveColumnVetoException {
+        final MoveColumnToMetaData md0 = mock(MoveColumnToMetaData.class);
+        final AttributeColumnSynchronizer synchronizer = new AttributeColumnSynchronizer();
+        when(md0.getColumn()).thenReturn(mock(AttributeCol52.class));
+
+        assertTrue(synchronizer.handlesMoveColumnsTo(Collections.singletonList(md0)));
     }
 
     private void assertTestMoveColumnsTo(final AttributeCol52 column1,

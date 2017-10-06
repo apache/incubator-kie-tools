@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 
+import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
@@ -28,32 +29,35 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 
 @Dependent
-public class ActionWorkItemColumnConverter extends BaseColumnConverterImpl {
+public class ActionWorkItemExecuteColumnConverter extends BaseColumnConverterImpl {
 
     @Override
-    public boolean handles( final BaseColumn column ) {
+    public boolean handles(final BaseColumn column) {
         return column instanceof ActionWorkItemCol52;
     }
 
     @Override
-    public GridColumn<?> convertColumn( final BaseColumn column,
-                                        final GuidedDecisionTablePresenter.Access access,
-                                        final GuidedDecisionTableView gridWidget ) {
-        return newBooleanColumn( makeHeaderMetaData( column ),
-                                 Math.max( column.getWidth(),
-                                           DEFAULT_COLUMN_WIDTH ),
-                                 true,
-                                 !column.isHideColumn(),
-                                 access,
-                                 gridWidget );
+    public GridColumn<?> convertColumn(final BaseColumn column,
+                                       final GuidedDecisionTablePresenter.Access access,
+                                       final GuidedDecisionTableView gridWidget) {
+        return newBooleanColumn(makeHeaderMetaData(column),
+                                Math.max(column.getWidth(),
+                                         DEFAULT_COLUMN_WIDTH),
+                                true,
+                                !column.isHideColumn(),
+                                access,
+                                gridWidget);
     }
 
     @Override
-    public List<GridColumn.HeaderMetaData> makeHeaderMetaData( final BaseColumn column ) {
+    public List<GridColumn.HeaderMetaData> makeHeaderMetaData(final BaseColumn column) {
+        final PortableWorkDefinition pwd = ((ActionWorkItemCol52) column).getWorkItemDefinition();
+        final String workItemName = pwd == null ? column.getHeader() : pwd.getName();
         return new ArrayList<GridColumn.HeaderMetaData>() {{
-            add( new BaseHeaderMetaData( column.getHeader(),
-                                         ActionCol52.class.getName() ) );
+            add(new BaseHeaderMetaData(workItemName,
+                                       ActionCol52.class.getName()));
+            add(new BaseHeaderMetaData(column.getHeader(),
+                                       workItemName + "-exec"));
         }};
     }
-
 }
