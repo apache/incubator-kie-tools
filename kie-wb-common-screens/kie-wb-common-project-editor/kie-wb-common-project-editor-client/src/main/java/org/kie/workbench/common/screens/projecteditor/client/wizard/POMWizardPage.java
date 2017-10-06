@@ -29,6 +29,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
+import org.kie.workbench.common.screens.projecteditor.util.NewProjectUtils;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
@@ -48,11 +49,11 @@ public class POMWizardPage
     }
 
     @Inject
-    public POMWizardPage( final POMEditorPanel pomEditor,
-                          final POMWizardPageView view,
-                          final Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent,
-                          final Caller<ProjectScreenService> projectScreenService,
-                          final Caller<ValidationService> validationService ) {
+    public POMWizardPage(final POMEditorPanel pomEditor,
+                         final POMWizardPageView view,
+                         final Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent,
+                         final Caller<ProjectScreenService> projectScreenService,
+                         final Caller<ValidationService> validationService) {
         this.pomEditor = pomEditor;
         this.view = view;
         this.wizardPageStatusChangeEvent = wizardPageStatusChangeEvent;
@@ -64,109 +65,100 @@ public class POMWizardPage
     }
 
     private void addChangeHandlers() {
-        this.pomEditor.addNameChangeHandler( new NameChangeHandler() {
+        this.pomEditor.addNameChangeHandler(new NameChangeHandler() {
             @Override
-            public void onChange( String newName ) {
-                validateName( pomEditor.getPom().getName() );
-                if ( pomEditor.getPom().getGav().getArtifactId() == null || pomEditor.getPom().getGav().getArtifactId().isEmpty() ) {
+            public void onChange(String newName) {
+                validateName(pomEditor.getPom().getName());
+                if (pomEditor.getPom().getGav().getArtifactId() == null || pomEditor.getPom().getGav().getArtifactId().isEmpty()) {
                     userModifiedArtifactId = false;
                 }
 
                 // TODO Move to PomBuilder
-                final String sanitizedProjectName = sanitizeProjectName( pomEditor.getPom().getName() );
-                if ( !userModifiedArtifactId ) {
-                    pomEditor.setArtifactID( sanitizedProjectName );
-                    validateArtifactId( sanitizedProjectName );
+                final String sanitizedProjectName = NewProjectUtils.sanitizeProjectName(pomEditor.getPom().getName());
+                if (!userModifiedArtifactId) {
+                    pomEditor.setArtifactID(sanitizedProjectName);
+                    validateArtifactId(sanitizedProjectName);
                 }
 
-                final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( POMWizardPage.this );
-                POMWizardPage.this.wizardPageStatusChangeEvent.fire( event );
+                final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent(POMWizardPage.this);
+                POMWizardPage.this.wizardPageStatusChangeEvent.fire(event);
             }
-
-            //The projectName has been validated as a FileSystem folder name, which may not be consistent with Maven ArtifactID
-            //naming restrictions (see org.apache.maven.model.validation.DefaultModelValidator.java::ID_REGEX). Therefore we'd
-            //best sanitize the projectName
-            private String sanitizeProjectName( final String projectName ) {
-                //Only [A-Za-z0-9_\-.] are valid so strip everything else out
-                return projectName != null ? projectName.replaceAll( "[^A-Za-z0-9_\\-.]", "" ) : projectName;
-            }
-
-        } );
-        this.pomEditor.addGroupIdChangeHandler( new GroupIdChangeHandler() {
+        });
+        this.pomEditor.addGroupIdChangeHandler(new GroupIdChangeHandler() {
             @Override
-            public void onChange( String newGroupId ) {
-                validateGroupId( pomEditor.getPom().getGav().getGroupId() );
-                final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( POMWizardPage.this );
-                POMWizardPage.this.wizardPageStatusChangeEvent.fire( event );
+            public void onChange(String newGroupId) {
+                validateGroupId(pomEditor.getPom().getGav().getGroupId());
+                final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent(POMWizardPage.this);
+                POMWizardPage.this.wizardPageStatusChangeEvent.fire(event);
             }
-        } );
-        this.pomEditor.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
+        });
+        this.pomEditor.addArtifactIdChangeHandler(new ArtifactIdChangeHandler() {
             @Override
-            public void onChange( String newArtifactId ) {
+            public void onChange(String newArtifactId) {
                 userModifiedArtifactId = true;
-                validateArtifactId( pomEditor.getPom().getGav().getArtifactId() );
-                final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( POMWizardPage.this );
-                POMWizardPage.this.wizardPageStatusChangeEvent.fire( event );
+                validateArtifactId(pomEditor.getPom().getGav().getArtifactId());
+                final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent(POMWizardPage.this);
+                POMWizardPage.this.wizardPageStatusChangeEvent.fire(event);
             }
-        } );
-        this.pomEditor.addVersionChangeHandler( new VersionChangeHandler() {
+        });
+        this.pomEditor.addVersionChangeHandler(new VersionChangeHandler() {
             @Override
-            public void onChange( String newVersion ) {
-                validateVersion( pomEditor.getPom().getGav().getVersion() );
-                final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( POMWizardPage.this );
-                POMWizardPage.this.wizardPageStatusChangeEvent.fire( event );
+            public void onChange(String newVersion) {
+                validateVersion(pomEditor.getPom().getGav().getVersion());
+                final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent(POMWizardPage.this);
+                POMWizardPage.this.wizardPageStatusChangeEvent.fire(event);
             }
-        } );
+        });
     }
 
-    public void setPom( final POM pom ) {
-        this.pomEditor.setPOM( pom,
-                               false );
+    public void setPom(final POM pom) {
+        this.pomEditor.setPOM(pom,
+                              false);
 
-        validateName( pom.getName() );
-        validateArtifactId( pom.getGav().getArtifactId() );
-        validateGroupId( pom.getGav().getGroupId() );
-        validateVersion( pom.getGav().getVersion() );
+        validateName(pom.getName());
+        validateArtifactId(pom.getGav().getArtifactId());
+        validateGroupId(pom.getGav().getGroupId());
+        validateVersion(pom.getGav().getVersion());
     }
 
     public POM getPom() {
         return pomEditor.getPom();
     }
 
-    void validateName( final String projectName ) {
-        validationService.call( new RemoteCallback<Boolean>() {
+    void validateName(final String projectName) {
+        validationService.call(new RemoteCallback<Boolean>() {
             @Override
-            public void callback( final Boolean response ) {
-                pomEditor.setValidName( Boolean.TRUE.equals( response ) );
+            public void callback(final Boolean response) {
+                pomEditor.setValidName(Boolean.TRUE.equals(response));
             }
-        } ).isProjectNameValid( projectName );
+        }).isProjectNameValid(projectName);
     }
 
-    void validateGroupId( final String groupId ) {
-        validationService.call( new RemoteCallback<Boolean>() {
+    void validateGroupId(final String groupId) {
+        validationService.call(new RemoteCallback<Boolean>() {
             @Override
-            public void callback( final Boolean result ) {
-                pomEditor.setValidGroupID( Boolean.TRUE.equals( result ) );
+            public void callback(final Boolean result) {
+                pomEditor.setValidGroupID(Boolean.TRUE.equals(result));
             }
-        } ).validateGroupId( groupId );
+        }).validateGroupId(groupId);
     }
 
-    void validateArtifactId( final String artifactId ) {
-        validationService.call( new RemoteCallback<Boolean>() {
+    void validateArtifactId(final String artifactId) {
+        validationService.call(new RemoteCallback<Boolean>() {
             @Override
-            public void callback( final Boolean result ) {
-                pomEditor.setValidArtifactID( Boolean.TRUE.equals( result ) );
+            public void callback(final Boolean result) {
+                pomEditor.setValidArtifactID(Boolean.TRUE.equals(result));
             }
-        } ).validateArtifactId( artifactId );
+        }).validateArtifactId(artifactId);
     }
 
-    void validateVersion( final String version ) {
-        validationService.call( new RemoteCallback<Boolean>() {
+    void validateVersion(final String version) {
+        validationService.call(new RemoteCallback<Boolean>() {
             @Override
-            public void callback( final Boolean result ) {
-                pomEditor.setValidVersion( Boolean.TRUE.equals( result ) );
+            public void callback(final Boolean result) {
+                pomEditor.setValidVersion(Boolean.TRUE.equals(result));
             }
-        } ).validateGAVVersion( version );
+        }).validateGAVVersion(version);
     }
 
     @Override
@@ -175,13 +167,13 @@ public class POMWizardPage
     }
 
     @Override
-    public void isComplete( final Callback<Boolean> callback ) {
-        validationService.call( new RemoteCallback<Boolean>() {
+    public void isComplete(final Callback<Boolean> callback) {
+        validationService.call(new RemoteCallback<Boolean>() {
             @Override
-            public void callback( final Boolean result ) {
-                callback.callback( Boolean.TRUE.equals( result ) );
+            public void callback(final Boolean result) {
+                callback.callback(Boolean.TRUE.equals(result));
             }
-        } ).validate( pomEditor.getPom() );
+        }).validate(pomEditor.getPom());
     }
 
     @Override

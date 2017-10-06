@@ -276,7 +276,7 @@ public class LibraryServiceImplTest {
         final Path projectRootPath = mock(Path.class);
         when(repository.getRoot()).thenReturn(projectRootPath);
 
-        libraryService.createProject("Project Name",
+        libraryService.createProject("Project Name!",
                                      organizationalUnit,
                                      repository,
                                      "baseURL",
@@ -289,6 +289,8 @@ public class LibraryServiceImplTest {
                                              eq(DeploymentMode.VALIDATED));
 
         final POM pom = pomArgumentCaptor.getValue();
+        assertEquals("Project Name!",
+                     pom.getName());
         assertEquals("ouGroupID",
                      pom.getGav().getGroupId());
         assertEquals("ProjectName",

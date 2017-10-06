@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import org.guvnor.common.services.project.model.Build;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Plugin;
+import org.kie.workbench.common.screens.projecteditor.util.NewProjectUtils;
 
 /**
  * The Project Name is used to generate the folder name and hence is only checked to be a valid file name.
@@ -32,69 +33,59 @@ public class POMBuilder {
     private final POM pom;
 
     public POMBuilder() {
-        this( new POM() );
+        this(new POM());
     }
 
-    public POMBuilder( final POM pom ) {
+    public POMBuilder(final POM pom) {
         this.pom = pom;
-        setDefaultPackaging( pom );
-        setDefaultVersion( pom );
+        setDefaultPackaging(pom);
+        setDefaultVersion(pom);
     }
 
-    private void setDefaultVersion( POM pom ) {
-        if ( pom.getGav().getVersion() == null ) {
-            this.pom.getGav().setVersion( "1.0" );
+    private void setDefaultVersion(POM pom) {
+        if (pom.getGav().getVersion() == null) {
+            this.pom.getGav().setVersion("1.0");
         }
     }
 
-    private void setDefaultPackaging( POM pom ) {
-        if ( pom.getPackaging() == null ) {
-            this.pom.setPackaging( "kjar" );
+    private void setDefaultPackaging(POM pom) {
+        if (pom.getPackaging() == null) {
+            this.pom.setPackaging("kjar");
         }
     }
 
-    public POMBuilder setProjectName( final String projectName ) {
-        pom.setName( projectName );
-        if ( projectName != null ) {
-            pom.getGav().setArtifactId( sanitizeProjectName( projectName ) );
+    public POMBuilder setProjectName(final String projectName) {
+        pom.setName(projectName);
+        if (projectName != null) {
+            pom.getGav().setArtifactId(NewProjectUtils.sanitizeProjectName(projectName));
         }
         return this;
     }
 
-    public POMBuilder setGroupId( final String groupId ) {
-        pom.getGav().setGroupId( groupId );
+    public POMBuilder setGroupId(final String groupId) {
+        pom.getGav().setGroupId(groupId);
         return this;
     }
 
-    public POMBuilder setVersion( final String version ) {
-        pom.getGav().setVersion( version );
+    public POMBuilder setVersion(final String version) {
+        pom.getGav().setVersion(version);
         return this;
     }
 
-    public POMBuilder setPackaging( final String packaging ) {
-        pom.setPackaging( packaging );
+    public POMBuilder setPackaging(final String packaging) {
+        pom.setPackaging(packaging);
         return this;
     }
 
-    public POMBuilder setBuildPlugins( ArrayList<Plugin> plugins ) {
-        if ( pom.getBuild() == null ) {
-            pom.setBuild( new Build() );
+    public POMBuilder setBuildPlugins(ArrayList<Plugin> plugins) {
+        if (pom.getBuild() == null) {
+            pom.setBuild(new Build());
         }
-        pom.getBuild().setPlugins( plugins );
+        pom.getBuild().setPlugins(plugins);
         return this;
     }
 
     public POM build() {
         return pom;
-    }
-
-    /**
-     * The projectName has been validated as a FileSystem folder name, which may not be consistent with Maven ArtifactID
-     * naming restrictions (see org.apache.maven.model.validation.DefaultModelValidator.java::ID_REGEX). Therefore we'd
-     * best sanitize the projectName
-     */
-    private String sanitizeProjectName( final String projectName ) {
-        //Only [A-Za-z0-9_\-.] are valid so strip everything else out
-        return projectName != null ? projectName.replaceAll( "[^A-Za-z0-9_\\-.]", "" ) : projectName;
     }
 }

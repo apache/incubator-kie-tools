@@ -60,6 +60,7 @@ import org.kie.workbench.common.screens.library.api.index.LibraryValueFileNameIn
 import org.kie.workbench.common.screens.library.api.index.LibraryValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
+import org.kie.workbench.common.screens.projecteditor.util.NewProjectUtils;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
@@ -320,9 +321,9 @@ public class LibraryServiceImpl implements LibraryService {
     public GAV createGAV(final String projectName,
                          final OrganizationalUnit selectedOrganizationalUnit) {
         final LibraryPreferences preferences = getPreferences();
+        final String artifactId = NewProjectUtils.sanitizeProjectName(projectName);
         return new GAV(selectedOrganizationalUnit.getDefaultGroupId(),
-                       projectName.replace(" ",
-                                           ""),
+                       artifactId,
                        preferences.getProjectPreferences().getVersion());
     }
 

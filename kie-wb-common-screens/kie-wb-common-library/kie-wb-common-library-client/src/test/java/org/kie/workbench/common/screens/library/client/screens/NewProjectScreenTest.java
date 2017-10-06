@@ -23,7 +23,6 @@ import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
-import org.jboss.errai.common.client.api.ErrorCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +31,7 @@ import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
@@ -78,6 +78,10 @@ public class NewProjectScreenTest {
     @Mock
     private ConflictingRepositoriesPopup conflictingRepositoriesPopup;
 
+    @Mock
+    private ValidationService validationService;
+    private CallerMock<ValidationService> validationServiceCaller;
+
     private NewProjectScreen newProjectScreen;
 
     private LibraryInfo libraryInfo;
@@ -85,6 +89,7 @@ public class NewProjectScreenTest {
     @Before
     public void setup() {
         libraryServiceCaller = new CallerMock<>(libraryService);
+        validationServiceCaller = new CallerMock<>(validationService);
         sessionInfo = new SessionInfoMock();
 
         final OrganizationalUnit selectedOrganizationalUnit = mock(OrganizationalUnit.class);
@@ -100,7 +105,8 @@ public class NewProjectScreenTest {
                                                     sessionInfo,
                                                     newProjectEvent,
                                                     libraryPreferences,
-                                                    conflictingRepositoriesPopup));
+                                                    conflictingRepositoriesPopup,
+                                                    validationServiceCaller));
 
         doReturn("baseUrl").when(newProjectScreen).getBaseURL();
 
@@ -112,6 +118,8 @@ public class NewProjectScreenTest {
                                       new ArrayList<>());
         doReturn(libraryInfo).when(libraryService).getLibraryInfo(any(Repository.class),
                                                                   anyString());
+
+        doReturn(true).when(validationService).isProjectNameValid(any());
 
         newProjectScreen.load();
     }
@@ -127,7 +135,6 @@ public class NewProjectScreenTest {
         newProjectScreen.cancel();
 
         verify(libraryPlaces).goToLibrary();
-        verify(placeManager).closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
     }
 
     @Test
@@ -159,7 +166,6 @@ public class NewProjectScreenTest {
         verify(busyIndicatorView).hideBusyIndicator();
         verify(notificationEvent).fire(any(NotificationEvent.class));
         verify(libraryPlaces).goToProject(any(ProjectInfo.class));
-        verify(placeManager).closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
     }
 
     @Test
@@ -198,6 +204,42 @@ public class NewProjectScreenTest {
                never()).fire(any(NewProjectEvent.class));
         verify(busyIndicatorView).hideBusyIndicator();
         verify(notificationEvent).fire(new NotificationEvent(view.getDuplicatedProjectMessage(),
+                                                             NotificationEvent.NotificationType.ERROR));
+        verify(libraryPlaces,
+               never()).goToProject(any(ProjectInfo.class));
+        verify(placeManager,
+               never()).closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
+    }
+
+    @Test
+    public void createProjectWithInvalidNameFailedTest() {
+        doReturn(false).when(validationService).isProjectNameValid(any());
+
+        newProjectScreen.createProject("name!",
+                                       "description");
+
+        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(newProjectEvent,
+               never()).fire(any(NewProjectEvent.class));
+        verify(busyIndicatorView).hideBusyIndicator();
+        verify(notificationEvent).fire(new NotificationEvent(view.getInvalidNameMessage(),
+                                                             NotificationEvent.NotificationType.ERROR));
+        verify(libraryPlaces,
+               never()).goToProject(any(ProjectInfo.class));
+        verify(placeManager,
+               never()).closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
+    }
+
+    @Test
+    public void createProjectWithInvalidArtifactIdFailedTest() {
+        newProjectScreen.createProject("!",
+                                       "description");
+
+        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(newProjectEvent,
+               never()).fire(any(NewProjectEvent.class));
+        verify(busyIndicatorView).hideBusyIndicator();
+        verify(notificationEvent).fire(new NotificationEvent(view.getInvalidNameMessage(),
                                                              NotificationEvent.NotificationType.ERROR));
         verify(libraryPlaces,
                never()).goToProject(any(ProjectInfo.class));

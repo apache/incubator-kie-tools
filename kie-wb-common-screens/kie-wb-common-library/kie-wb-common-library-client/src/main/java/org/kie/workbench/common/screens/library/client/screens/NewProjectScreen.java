@@ -35,7 +35,9 @@ import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.kie.workbench.common.screens.projecteditor.util.NewProjectUtils;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandWithThrowableDrivenErrorCallback;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -87,6 +89,8 @@ public class NewProjectScreen {
 
     private ConflictingRepositoriesPopup conflictingRepositoriesPopup;
 
+    private Caller<ValidationService> validationService;
+
     LibraryInfo libraryInfo;
 
     @Inject
@@ -99,7 +103,8 @@ public class NewProjectScreen {
                             final SessionInfo sessionInfo,
                             final Event<NewProjectEvent> newProjectEvent,
                             final LibraryPreferences libraryPreferences,
-                            final ConflictingRepositoriesPopup conflictingRepositoriesPopup) {
+                            final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
+                            final Caller<ValidationService> validationService) {
         this.libraryService = libraryService;
         this.placeManager = placeManager;
         this.busyIndicatorView = busyIndicatorView;
@@ -110,6 +115,7 @@ public class NewProjectScreen {
         this.newProjectEvent = newProjectEvent;
         this.libraryPreferences = libraryPreferences;
         this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;
+        this.validationService = validationService;
     }
 
     @OnStartup
@@ -132,7 +138,6 @@ public class NewProjectScreen {
 
     public void cancel() {
         libraryPlaces.goToLibrary();
-        placeManager.closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
     }
 
     public void createProject(final String projectName,
@@ -171,9 +176,18 @@ public class NewProjectScreen {
             return;
         }
 
-        if (successCallback != null) {
-            successCallback.execute();
-        }
+        validationService.call((Boolean isValid) -> {
+            final String sanitizeProjectName = NewProjectUtils.sanitizeProjectName(projectName);
+            if (Boolean.TRUE.equals(isValid) && !sanitizeProjectName.isEmpty()) {
+                if (successCallback != null) {
+                    successCallback.execute();
+                }
+            } else {
+                hideLoadingBox();
+                notificationEvent.fire(new NotificationEvent(view.getInvalidNameMessage(),
+                                                             NotificationEvent.NotificationType.ERROR));
+            }
+        }).isProjectNameValid(projectName);
     }
 
     private RemoteCallback<KieProject> getSuccessCallback() {
@@ -184,7 +198,6 @@ public class NewProjectScreen {
             hideLoadingBox();
             notifySuccess();
             goToProject(project);
-            placeManager.closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
         };
     }
 
