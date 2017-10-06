@@ -29,17 +29,15 @@ public class GuidedDTreeResourceType
         extends GuidedDTreeResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( GuidedDecisionTreeResources.INSTANCE.images().typeGuidedDecisionTree() );
-
     @Override
     public IsWidget getIcon() {
-        return IMAGE;
+        return new Image(GuidedDecisionTreeResources.INSTANCE.images().typeGuidedDecisionTree());
     }
 
     @Override
     public String getDescription() {
         String desc = GuidedDecisionTreeConstants.INSTANCE.guidedDecisionTreeResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) {
+        if (desc == null || desc.isEmpty()) {
             return super.getDescription();
         }
         return desc;

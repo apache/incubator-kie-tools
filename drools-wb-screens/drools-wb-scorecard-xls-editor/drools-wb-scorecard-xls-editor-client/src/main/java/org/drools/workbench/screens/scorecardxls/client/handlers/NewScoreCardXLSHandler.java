@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scorecardxls.client.handlers;
 
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -30,16 +31,21 @@ import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCard
 import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
-import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
+import org.kie.workbench.common.workbench.client.EditorIds;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.ResourceAction;
+import org.uberfire.security.ResourceRef;
+import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
@@ -52,6 +58,8 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
     private ScoreCardXLSResourceType resourceType;
     private BusyIndicatorView busyIndicatorView;
     private ClientMessageBus clientMessageBus;
+    private AuthorizationManager authorizationManager;
+    private SessionInfo sessionInfo;
 
     private AttachmentFileWidget uploadWidget;
 
@@ -59,25 +67,29 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
     }
 
     @Inject
-    public NewScoreCardXLSHandler( final PlaceManager placeManager,
-                                   final ScoreCardXLSResourceType resourceType,
-                                   final BusyIndicatorView busyIndicatorView,
-                                   final ClientMessageBus clientMessageBus ) {
+    public NewScoreCardXLSHandler(final PlaceManager placeManager,
+                                  final ScoreCardXLSResourceType resourceType,
+                                  final BusyIndicatorView busyIndicatorView,
+                                  final ClientMessageBus clientMessageBus,
+                                  final AuthorizationManager authorizationManager,
+                                  final SessionInfo sessionInfo) {
         this.placeManager = placeManager;
         this.resourceType = resourceType;
         this.busyIndicatorView = busyIndicatorView;
         this.clientMessageBus = clientMessageBus;
+        this.authorizationManager = authorizationManager;
+        this.sessionInfo = sessionInfo;
     }
 
-    void setUploadWidget( final AttachmentFileWidget uploadWidget ) {
+    void setUploadWidget(final AttachmentFileWidget uploadWidget) {
         this.uploadWidget = uploadWidget;
     }
 
     @PostConstruct
     private void setupExtensions() {
-        uploadWidget = new AttachmentFileWidget( new String[]{ resourceType.getSuffix() } );
-        extensions.add( new Pair<String, AttachmentFileWidget>( ScoreCardXLSEditorConstants.INSTANCE.Upload(),
-                                                                uploadWidget ) );
+        uploadWidget = new AttachmentFileWidget(new String[]{resourceType.getSuffix()});
+        extensions.add(new Pair<String, AttachmentFileWidget>(ScoreCardXLSEditorConstants.INSTANCE.Upload(),
+                                                              uploadWidget));
     }
 
     @Override
@@ -93,7 +105,7 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ScoreCardXLSEditorResources.INSTANCE.images().typeXLSScoreCard() );
+        return new Image(ScoreCardXLSEditorResources.INSTANCE.images().typeXLSScoreCard());
     }
 
     @Override
@@ -102,54 +114,59 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final Package pkg,
-                        final String baseFileName,
-                        final NewResourcePresenter presenter ) {
-        busyIndicatorView.showBusyIndicator( ScoreCardXLSEditorConstants.INSTANCE.Uploading() );
+    public boolean canCreate() {
+        return authorizationManager.authorize(new ResourceRef(EditorIds.XLS_SCORE_CARD,
+                                                              ActivityResourceType.EDITOR),
+                                              ResourceAction.READ,
+                                              sessionInfo.getIdentity());
+    }
+
+    @Override
+    public void create(final Package pkg,
+                       final String baseFileName,
+                       final NewResourcePresenter presenter) {
+        busyIndicatorView.showBusyIndicator(ScoreCardXLSEditorConstants.INSTANCE.Uploading());
 
         final Path path = pkg.getPackageMainResourcesPath();
-        final String fileName = buildFileName( baseFileName,
-                                               resourceType );
+        final String fileName = buildFileName(baseFileName,
+                                              resourceType);
         //Package Path is already encoded, fileName needs to be encoded
-        final Path newPath = PathFactory.newPathBasedOn( fileName,
-                                                         path.toURI() + "/" + encode( fileName ),
-                                                         path );
-        uploadWidget.submit( path,
-                             fileName,
-                             getServletUrl(),
-                             new Command() {
+        final Path newPath = PathFactory.newPathBasedOn(fileName,
+                                                        path.toURI() + "/" + encode(fileName),
+                                                        path);
+        uploadWidget.submit(path,
+                            fileName,
+                            getServletUrl(),
+                            new Command() {
 
-                                 @Override
-                                 public void execute() {
-                                     busyIndicatorView.hideBusyIndicator();
-                                     presenter.complete();
-                                     notifySuccess();
-                                     newResourceSuccessEvent.fire( new NewResourceSuccessEvent( path ) );
-                                     placeManager.goTo( newPath );
-                                 }
+                                @Override
+                                public void execute() {
+                                    busyIndicatorView.hideBusyIndicator();
+                                    presenter.complete();
+                                    notifySuccess();
+                                    newResourceSuccessEvent.fire(new NewResourceSuccessEvent(path));
+                                    placeManager.goTo(newPath);
+                                }
+                            },
+                            new Command() {
 
-                             },
-                             new Command() {
-
-                                 @Override
-                                 public void execute() {
-                                     busyIndicatorView.hideBusyIndicator();
-                                 }
-                             }
-                           );
-
+                                @Override
+                                public void execute() {
+                                    busyIndicatorView.hideBusyIndicator();
+                                }
+                            }
+        );
     }
 
     protected String getServletUrl() {
-        return URLHelper.getServletUrl( getClientId() );
+        return URLHelper.getServletUrl(getClientId());
     }
 
     protected String getClientId() {
         return clientMessageBus.getClientId();
     }
 
-    protected String encode( final String fileName ) {
-        return URL.encode( fileName );
+    protected String encode(final String fileName) {
+        return URL.encode(fileName);
     }
-
 }

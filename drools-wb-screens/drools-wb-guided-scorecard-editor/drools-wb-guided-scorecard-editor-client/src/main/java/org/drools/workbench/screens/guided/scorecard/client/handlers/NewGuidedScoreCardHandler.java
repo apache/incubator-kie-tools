@@ -30,8 +30,14 @@ import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.workbench.client.EditorIds;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.ResourceAction;
+import org.uberfire.security.ResourceRef;
+import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
@@ -40,14 +46,28 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 @ApplicationScoped
 public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
 
-    @Inject
     private Caller<GuidedScoreCardEditorService> scoreCardService;
-
-    @Inject
     private GuidedScoreCardResourceType resourceType;
+    private BusyIndicatorView busyIndicatorView;
+    private AuthorizationManager authorizationManager;
+    private SessionInfo sessionInfo;
+
+    public NewGuidedScoreCardHandler() {
+        //CDI proxy
+    }
 
     @Inject
-    private BusyIndicatorView busyIndicatorView;
+    public NewGuidedScoreCardHandler(final Caller<GuidedScoreCardEditorService> scoreCardService,
+                                     final GuidedScoreCardResourceType resourceType,
+                                     final BusyIndicatorView busyIndicatorView,
+                                     final AuthorizationManager authorizationManager,
+                                     final SessionInfo sessionInfo) {
+        this.scoreCardService = scoreCardService;
+        this.resourceType = resourceType;
+        this.busyIndicatorView = busyIndicatorView;
+        this.authorizationManager = authorizationManager;
+        this.sessionInfo = sessionInfo;
+    }
 
     @Override
     public String getDescription() {
@@ -56,7 +76,7 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( GuidedScoreCardResources.INSTANCE.images().typeGuidedScoreCard() );
+        return new Image(GuidedScoreCardResources.INSTANCE.images().typeGuidedScoreCard());
     }
 
     @Override
@@ -65,19 +85,26 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final Package pkg,
-                        final String baseFileName,
-                        final NewResourcePresenter presenter ) {
-        final ScoreCardModel model = new ScoreCardModel();
-        model.setName( baseFileName );
-        model.setPackageName( pkg.getPackageName() );
-        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-        scoreCardService.call( getSuccessCallback( presenter ),
-                               new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( pkg.getPackageMainResourcesPath(),
-                                                                                                       buildFileName( baseFileName,
-                                                                                                                      resourceType ),
-                                                                                                       model,
-                                                                                                       "" );
+    public boolean canCreate() {
+        return authorizationManager.authorize(new ResourceRef(EditorIds.GUIDED_SCORE_CARD,
+                                                              ActivityResourceType.EDITOR),
+                                              ResourceAction.READ,
+                                              sessionInfo.getIdentity());
     }
 
+    @Override
+    public void create(final Package pkg,
+                       final String baseFileName,
+                       final NewResourcePresenter presenter) {
+        final ScoreCardModel model = new ScoreCardModel();
+        model.setName(baseFileName);
+        model.setPackageName(pkg.getPackageName());
+        busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+        scoreCardService.call(getSuccessCallback(presenter),
+                              new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).create(pkg.getPackageMainResourcesPath(),
+                                                                                                  buildFileName(baseFileName,
+                                                                                                                resourceType),
+                                                                                                  model,
+                                                                                                  "");
+    }
 }

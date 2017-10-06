@@ -29,17 +29,17 @@ public class GuidedScoreCardResourceType
         extends GuidedScoreCardResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( GuidedScoreCardResources.INSTANCE.images().typeGuidedScoreCard() );
-
     @Override
     public IsWidget getIcon() {
-        return IMAGE;
+        return new Image(GuidedScoreCardResources.INSTANCE.images().typeGuidedScoreCard());
     }
 
     @Override
     public String getDescription() {
         String desc = GuidedScoreCardConstants.INSTANCE.guidedScoreCardResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) return super.getDescription();
+        if (desc == null || desc.isEmpty()) {
+            return super.getDescription();
+        }
         return desc;
     }
 }
