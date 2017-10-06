@@ -26,12 +26,22 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.project.client.handlers.AbstractProjectDiagramNewResourceHandler;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.ResourceAction;
+import org.uberfire.security.ResourceRef;
+import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.workbench.model.ActivityResourceType;
 
 @ApplicationScoped
 public class BPMNDiagramNewResourceHandler extends AbstractProjectDiagramNewResourceHandler<BPMNDiagramResourceType> {
 
+    private final AuthorizationManager authorizationManager;
+    private final SessionInfo sessionInfo;
+
     protected BPMNDiagramNewResourceHandler() {
         this(null,
+             null,
+             null,
              null,
              null,
              null);
@@ -41,11 +51,15 @@ public class BPMNDiagramNewResourceHandler extends AbstractProjectDiagramNewReso
     public BPMNDiagramNewResourceHandler(final DefinitionManager definitionManager,
                                          final ClientProjectDiagramService projectDiagramServices,
                                          final BusyIndicatorView indicatorView,
-                                         final BPMNDiagramResourceType projectDiagramResourceType) {
+                                         final BPMNDiagramResourceType projectDiagramResourceType,
+                                         final AuthorizationManager authorizationManager,
+                                         final SessionInfo sessionInfo) {
         super(definitionManager,
               projectDiagramServices,
               indicatorView,
               projectDiagramResourceType);
+        this.authorizationManager = authorizationManager;
+        this.sessionInfo = sessionInfo;
     }
 
     @Override
@@ -66,6 +80,14 @@ public class BPMNDiagramNewResourceHandler extends AbstractProjectDiagramNewReso
     @Override
     public IsWidget getIcon() {
         return getBPMNDiagramResourceType().getIcon();
+    }
+
+    @Override
+    public boolean canCreate() {
+        return authorizationManager.authorize(new ResourceRef(BPMNDiagramEditor.EDITOR_ID,
+                                                              ActivityResourceType.EDITOR),
+                                              ResourceAction.READ,
+                                              sessionInfo.getIdentity());
     }
 
     private BPMNDiagramResourceType getBPMNDiagramResourceType() {

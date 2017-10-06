@@ -24,8 +24,13 @@ import org.guvnor.common.services.project.client.security.ProjectTreeProvider;
 import org.guvnor.structure.client.security.OrganizationalUnitTreeProvider;
 import org.guvnor.structure.client.security.RepositoryTreeProvider;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
+import org.uberfire.client.authz.EditorTreeProvider;
 import org.uberfire.client.authz.PerspectiveTreeProvider;
 
+import static org.kie.workbench.common.workbench.client.EditorIds.GUIDED_DECISION_TREE;
+import static org.kie.workbench.common.workbench.client.EditorIds.GUIDED_SCORE_CARD;
+import static org.kie.workbench.common.workbench.client.EditorIds.STUNNER_DESIGNER;
+import static org.kie.workbench.common.workbench.client.EditorIds.XLS_SCORE_CARD;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMIN;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMINISTRATION;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.APPS;
@@ -56,24 +61,32 @@ import static org.kie.workbench.common.workbench.client.PerspectiveIds.TASKS_ADM
 @ApplicationScoped
 public class PermissionTreeSetup {
 
-    @Inject
     private WorkbenchTreeProvider workbenchTreeProvider;
-
-    @Inject
     private PerspectiveTreeProvider perspectiveTreeProvider;
-
-    @Inject
+    private EditorTreeProvider editorTreeProvider;
     private Instance<OrganizationalUnitTreeProvider> orgUnitTreeProvider;
-
-    @Inject
     private Instance<RepositoryTreeProvider> repositoryTreeProvider;
-
-    @Inject
     private Instance<ProjectTreeProvider> projectTreeProvider;
 
     private DefaultWorkbenchConstants i18n = DefaultWorkbenchConstants.INSTANCE;
 
     public PermissionTreeSetup() {
+        //CDI proxy
+    }
+
+    @Inject
+    public PermissionTreeSetup(final WorkbenchTreeProvider workbenchTreeProvider,
+                               final PerspectiveTreeProvider perspectiveTreeProvider,
+                               final EditorTreeProvider editorTreeProvider,
+                               final Instance<OrganizationalUnitTreeProvider> orgUnitTreeProvider,
+                               final Instance<RepositoryTreeProvider> repositoryTreeProvider,
+                               final Instance<ProjectTreeProvider> projectTreeProvider) {
+        this.workbenchTreeProvider = workbenchTreeProvider;
+        this.perspectiveTreeProvider = perspectiveTreeProvider;
+        this.editorTreeProvider = editorTreeProvider;
+        this.orgUnitTreeProvider = orgUnitTreeProvider;
+        this.repositoryTreeProvider = repositoryTreeProvider;
+        this.projectTreeProvider = projectTreeProvider;
     }
 
     public void configureTree() {
@@ -129,19 +142,29 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.excludePerspectiveId(SOCIAL_HOME); /* uberfire */
         perspectiveTreeProvider.excludePerspectiveId(SOCIAL_USER_HOME); /* uberfire */
         perspectiveTreeProvider.excludePerspectiveId("Asset Management"); /* guvnor */
-        perspectiveTreeProvider.excludePerspectiveId(SOCIAL_USER_HOME); /* uberfire */
+
+        // Include optional editors
+        editorTreeProvider.registerEditor(GUIDED_DECISION_TREE,
+                                          i18n.GuidedDecisionTree());
+        editorTreeProvider.registerEditor(GUIDED_SCORE_CARD,
+                                          i18n.GuidedScoreCard());
+        editorTreeProvider.registerEditor(XLS_SCORE_CARD,
+                                          i18n.XLSScoreCard());
+        editorTreeProvider.registerEditor(STUNNER_DESIGNER,
+                                          i18n.StunnerDesigner());
 
         // Set the desired display order
         workbenchTreeProvider.setRootNodePosition(0);
         perspectiveTreeProvider.setRootNodePosition(1);
-        if(orgUnitTreeProvider.isUnsatisfied() == false) {
-            orgUnitTreeProvider.get().setRootNodePosition(2);
+        editorTreeProvider.setRootNodePosition(2);
+        if (!orgUnitTreeProvider.isUnsatisfied()) {
+            orgUnitTreeProvider.get().setRootNodePosition(3);
         }
-        if(repositoryTreeProvider.isUnsatisfied() == false) {
-            repositoryTreeProvider.get().setRootNodePosition(3);
+        if (!repositoryTreeProvider.isUnsatisfied()) {
+            repositoryTreeProvider.get().setRootNodePosition(4);
         }
-        if(projectTreeProvider.isUnsatisfied() == false) {
-            projectTreeProvider.get().setRootNodePosition(4);
+        if (!projectTreeProvider.isUnsatisfied()) {
+            projectTreeProvider.get().setRootNodePosition(5);
         }
     }
 }

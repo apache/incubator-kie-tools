@@ -152,4 +152,12 @@ public interface DefaultWorkbenchConstants
     String Languages();
 
     String Tasks_Admin();
+
+    String GuidedDecisionTree();
+
+    String GuidedScoreCard();
+
+    String XLSScoreCard();
+
+    String StunnerDesigner();
 }
