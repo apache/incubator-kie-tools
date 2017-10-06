@@ -31,4 +31,12 @@ public interface PermissionTreeI18n {
     String perspectiveUpdate();
 
     String perspectiveDelete();
+
+    String editorsNodeName();
+
+    String editorsNodeHelp();
+
+    String editorResourceName();
+
+    String editorRead();
 }

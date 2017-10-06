@@ -55,4 +55,24 @@ public class PermissionTreeI18NImpl implements PermissionTreeI18n {
     public String perspectiveDelete() {
         return PermissionTreeConstants.INSTANCE.perspectiveDelete();
     }
+
+    @Override
+    public String editorsNodeName() {
+        return PermissionTreeConstants.INSTANCE.editorsNodeName();
+    }
+
+    @Override
+    public String editorsNodeHelp() {
+        return PermissionTreeConstants.INSTANCE.editorsNodeHelp();
+    }
+
+    @Override
+    public String editorResourceName() {
+        return PermissionTreeConstants.INSTANCE.editorResourceName();
+    }
+
+    @Override
+    public String editorRead() {
+        return PermissionTreeConstants.INSTANCE.editorRead();
+    }
 }
