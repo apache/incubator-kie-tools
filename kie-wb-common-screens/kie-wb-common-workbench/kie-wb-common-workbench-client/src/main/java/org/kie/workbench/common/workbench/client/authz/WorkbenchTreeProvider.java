@@ -33,7 +33,10 @@ import org.uberfire.security.client.authz.tree.impl.PermissionGroupNode;
 import org.uberfire.security.client.authz.tree.impl.PermissionLeafNode;
 
 import static org.guvnor.m2repo.security.MavenRepositoryPagedJarTableFeatures.JAR_DOWNLOAD;
-import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.*;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_SOURCES;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.GUIDED_DECISION_TABLE_EDIT_COLUMNS;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.PLANNER_AVAILABLE;
 
 /**
  * A tree permission provider which add general workbench permissions non tied to any specific resource.
@@ -43,9 +46,9 @@ public class WorkbenchTreeProvider implements PermissionTreeProvider {
 
     public static final String NODE_TYPE = "type";
     public static final String NODE_ROOT = "root";
+    protected DefaultWorkbenchConstants i18n = DefaultWorkbenchConstants.INSTANCE;
     private PermissionManager permissionManager;
     private int rootNodePosition = 0;
-    protected DefaultWorkbenchConstants i18n = DefaultWorkbenchConstants.INSTANCE;
 
     public WorkbenchTreeProvider() {
     }
@@ -103,12 +106,16 @@ public class WorkbenchTreeProvider implements PermissionTreeProvider {
         PermissionLeafNode node5 = createPermissionLeafNode(EDIT_GLOBAL_PREFERENCES,
                                                             i18n.EditGlobalPreferences(),
                                                             i18n.EditGlobalPreferencesHelp());
+        PermissionLeafNode node6 = createPermissionLeafNode(GUIDED_DECISION_TABLE_EDIT_COLUMNS,
+                                                            i18n.GuidedDecisionTableEditColumns(),
+                                                            i18n.GuidedDecisionTableEditColumnsHelp());
 
         permissions.add(node1);
         permissions.add(node2);
         permissions.add(node3);
         permissions.add(node4);
         permissions.add(node5);
+        permissions.add(node6);
 
         return permissions;
     }

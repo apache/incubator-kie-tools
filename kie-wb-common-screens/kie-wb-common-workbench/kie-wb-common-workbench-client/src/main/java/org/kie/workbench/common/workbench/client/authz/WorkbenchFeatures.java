@@ -26,4 +26,6 @@ public interface WorkbenchFeatures extends DataModelerFeatures {
     String PLANNER_AVAILABLE = "planner.available";
 
     String EDIT_GLOBAL_PREFERENCES = "globalpreferences.edit";
+
+    String GUIDED_DECISION_TABLE_EDIT_COLUMNS = "guideddecisiontable.edit.columns";
 }

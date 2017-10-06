@@ -31,6 +31,7 @@ import org.uberfire.security.impl.authz.DefaultPermissionManager;
 import static org.guvnor.m2repo.security.MavenRepositoryPagedJarTableFeatures.JAR_DOWNLOAD;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_SOURCES;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.GUIDED_DECISION_TABLE_EDIT_COLUMNS;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.PLANNER_AVAILABLE;
 import static org.mockito.Mockito.*;
 
@@ -43,7 +44,8 @@ public class WorkbenchTreeProviderTest {
             EDIT_SOURCES,
             PLANNER_AVAILABLE,
             JAR_DOWNLOAD,
-            EDIT_GLOBAL_PREFERENCES
+            EDIT_GLOBAL_PREFERENCES,
+            GUIDED_DECISION_TABLE_EDIT_COLUMNS
     };
 
     private DefaultPermissionManager permissionManager;

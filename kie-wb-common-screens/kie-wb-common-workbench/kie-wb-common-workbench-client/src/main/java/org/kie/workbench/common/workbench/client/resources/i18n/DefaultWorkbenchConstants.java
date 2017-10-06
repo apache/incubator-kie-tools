@@ -145,6 +145,10 @@ public interface DefaultWorkbenchConstants
 
     String EditGlobalPreferencesHelp();
 
+    String GuidedDecisionTableEditColumns();
+
+    String GuidedDecisionTableEditColumnsHelp();
+
     String Languages();
 
     String Tasks_Admin();
