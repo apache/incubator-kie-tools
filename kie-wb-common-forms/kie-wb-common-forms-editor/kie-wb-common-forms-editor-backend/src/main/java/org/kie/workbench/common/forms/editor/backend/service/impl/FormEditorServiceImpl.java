@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.DeleteService;
+import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
@@ -59,24 +60,16 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 @ApplicationScoped
 public class FormEditorServiceImpl extends KieService<FormModelerContent> implements FormEditorService {
 
-    private Logger log = LoggerFactory.getLogger(FormEditorServiceImpl.class);
-
-    private IOService ioService;
-
-    private SessionInfo sessionInfo;
-
-    private Event<ResourceOpenedEvent> resourceOpenedEvent;
-
     protected FieldManager fieldManager;
-
     protected FormModelHandlerManager modelHandlerManager;
-
     protected FormDefinitionSerializer formDefinitionSerializer;
-
     protected VFSFormFinderService vfsFormFinderService;
-
     protected DeleteService deleteService;
-
+    protected RenameService renameService;
+    private Logger log = LoggerFactory.getLogger(FormEditorServiceImpl.class);
+    private IOService ioService;
+    private SessionInfo sessionInfo;
+    private Event<ResourceOpenedEvent> resourceOpenedEvent;
     private CommentedOptionFactory commentedOptionFactory;
 
     @Inject
@@ -89,7 +82,8 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
                                  FormDefinitionSerializer formDefinitionSerializer,
                                  VFSFormFinderService vfsFormFinderService,
                                  DeleteService deleteService,
-                                 CommentedOptionFactory commentedOptionFactory) {
+                                 CommentedOptionFactory commentedOptionFactory,
+                                 RenameService renameService) {
         this.ioService = ioService;
         this.sessionInfo = sessionInfo;
         this.resourceOpenedEvent = resourceOpenedEvent;
@@ -100,6 +94,7 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
         this.vfsFormFinderService = vfsFormFinderService;
         this.commentedOptionFactory = commentedOptionFactory;
         this.deleteService = deleteService;
+        this.renameService = renameService;
     }
 
     @Override
@@ -165,6 +160,34 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
                         commentedOptionFactory.makeCommentedOption(comment));
 
         return path;
+    }
+
+    @Override
+    public FormModelerContent rename(Path path,
+                                     String newFileName,
+                                     String commitMessage,
+                                     boolean saveBeforeRenaming,
+                                     FormModelerContent content,
+                                     Metadata metadata) {
+
+        FormModelerContent contentToSave = content;
+        if (!saveBeforeRenaming) {
+            contentToSave = constructContent(path,
+                                             content.getOverview());
+        }
+
+        contentToSave.getDefinition().setName(newFileName);
+
+        save(path,
+             contentToSave,
+             metadata,
+             commitMessage);
+
+        renameService.rename(path,
+                             newFileName,
+                             commitMessage);
+
+        return contentToSave;
     }
 
     @Override

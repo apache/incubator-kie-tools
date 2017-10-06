@@ -26,6 +26,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -46,15 +47,20 @@ import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditor;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent;
+import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnMayClose;
@@ -69,32 +75,18 @@ import org.uberfire.workbench.type.FileNameUtil;
 @WorkbenchEditor(identifier = "FormEditor", supportedTypes = {FormDefinitionResourceType.class})
 public class FormEditorPresenter extends KieEditor {
 
-    public interface FormEditorView extends KieEditorView {
-
-        public void init(FormEditorPresenter presenter);
-
-        public void setupLayoutEditor(LayoutEditor layoutEditor);
-    }
-
     @Inject
     protected LayoutEditor layoutEditor;
-
     @Inject
     protected HTMLLayoutDragComponent htmlLayoutDragComponent;
-
-    @Inject
-    private Caller<MetadataService> metadataService;
-
     @Inject
     protected BusyIndicatorView busyIndicatorView;
-
     @Inject
     protected FormEditorHelper editorHelper;
-
-    private ShowAssetUsagesDisplayer showAssetUsagesDisplayer;
-
     protected ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents;
-
+    @Inject
+    private Caller<MetadataService> metadataService;
+    private ShowAssetUsagesDisplayer showAssetUsagesDisplayer;
     private FormEditorView view;
     private ChangesNotificationDisplayer changesNotificationDisplayer;
     private FormDefinitionResourceType resourceType;
@@ -245,16 +237,10 @@ public class FormEditorPresenter extends KieEditor {
     protected void makeMenuBar() {
         if (canUpdateProject()) {
             fileMenuBuilder
-                    .addSave(versionRecordManager.newSaveMenuItem(new Command() {
-                        @Override
-                        public void execute() {
-                            onSave();
-                        }
-                    }))
+                    .addSave(versionRecordManager.newSaveMenuItem(() -> onSave()))
                     .addCopy(versionRecordManager.getCurrentPath(),
                              fileNameValidator)
-                    .addRename(versionRecordManager.getPathToLatest(),
-                               fileNameValidator)
+                    .addRename(this::safeRename)
                     .addDelete(this::safeDelete);
         }
 
@@ -265,6 +251,66 @@ public class FormEditorPresenter extends KieEditor {
                                  synchronizeFormLayout();
                                  IOC.getBeanManager().lookupBean( PreviewFormPresenter.class ).newInstance().preview( getRenderingContext() );
                              } )*/
+    }
+
+    protected void safeRename() {
+
+        if (this.isDirty(editorHelper.getContent().getDefinition().hashCode())) {
+
+            view.showSavePopup(versionRecordManager.getCurrentPath(),
+                               () -> rename(true),
+                               () -> rename(false));
+        } else {
+            rename(false);
+        }
+    }
+
+    public void rename(boolean save) {
+        if(save) {
+            synchronizeFormLayout();
+        }
+        renamePopUpPresenter.show(versionRecordManager.getPathToLatest(),
+                                  fileNameValidator,
+                                  getRenameCommand(save));
+    }
+
+    protected CommandWithFileNameAndCommitMessage getRenameCommand(boolean save) {
+        return details -> renameCommand(details, save);
+    }
+
+    protected void renameCommand(FileNameAndCommitMessage details, boolean save) {
+        view.showBusyIndicator(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Renaming());
+
+        editorService.call(getRenameSuccessCallback(renamePopUpPresenter.getView()),
+                           getRenameErrorCallback(renamePopUpPresenter.getView())).rename(versionRecordManager.getPathToLatest(),
+                                                                                          details.getNewFileName(),
+                                                                                          details.getCommitMessage(),
+                                                                                          save,
+                                                                                          editorHelper.getContent(),
+                                                                                          metadata);
+    }
+
+    protected RemoteCallback<FormModelerContent> getRenameSuccessCallback(final RenamePopUpPresenter.View renamePopupView) {
+        return content -> {
+            renamePopupView.hide();
+            view.hideBusyIndicator();
+            notification.fire(new NotificationEvent(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemRenamedSuccessfully(),
+                                                    NotificationEvent.NotificationType.SUCCESS));
+            doLoadContent(content);
+        };
+    }
+
+    protected HasBusyIndicatorDefaultErrorCallback getRenameErrorCallback(final RenamePopUpPresenter.View renamePopupView) {
+        return new HasBusyIndicatorDefaultErrorCallback(view) {
+
+            @Override
+            public boolean error(final Message message,
+                                 final Throwable throwable) {
+                renamePopupView.hide();
+                return super.error(message,
+                                   throwable);
+            }
+        };
     }
 
     public LayoutTemplate getFormTemplate() {
@@ -383,5 +429,16 @@ public class FormEditorPresenter extends KieEditor {
     @PreDestroy
     public void destroy() {
         editorFieldLayoutComponents.destroyAll();
+    }
+
+    public interface FormEditorView extends KieEditorView {
+
+        public void init(FormEditorPresenter presenter);
+
+        public void setupLayoutEditor(LayoutEditor layoutEditor);
+
+        void showSavePopup(Path path,
+                           Command saveCommand,
+                           Command cancelCommand);
     }
 }

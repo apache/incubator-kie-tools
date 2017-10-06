@@ -57,6 +57,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpView;
+import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
@@ -66,6 +67,7 @@ import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayou
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -142,6 +144,9 @@ public class FormEditorPresenterAbstractTest {
     @Mock
     protected ToggleCommentPresenter toggleCommentPresenter;
 
+    @Mock
+    protected RenamePopUpPresenter renamePopUpPresenter;
+
     protected DeletePopUpPresenter deletePopUpPresenter;
 
     @Mock
@@ -210,6 +215,7 @@ public class FormEditorPresenterAbstractTest {
                                      any(DefaultFileNameValidator.class))).thenReturn(menuBuilderMock);
         when(menuBuilderMock.addRename(any(ObservablePath.class),
                                        any(DefaultFileNameValidator.class))).thenReturn(menuBuilderMock);
+        when(menuBuilderMock.addRename(any(Command.class))).thenReturn(menuBuilderMock);
         when(menuBuilderMock.addDelete(any(ObservablePath.class))).thenReturn(menuBuilderMock);
         when(menuBuilderMock.addNewTopLevelMenu(any(MenuItem.class))).thenReturn(menuBuilderMock);
         when(menuBuilderMock.build()).thenReturn(mock(Menus.class));
@@ -251,6 +257,7 @@ public class FormEditorPresenterAbstractTest {
                 workbenchContext = FormEditorPresenterAbstractTest.this.workbenchContext;
                 projectController = FormEditorPresenterAbstractTest.this.projectController;
                 deletePopUpPresenter = FormEditorPresenterAbstractTest.this.deletePopUpPresenter;
+                renamePopUpPresenter = FormEditorPresenterAbstractTest.this.renamePopUpPresenter;
             }
 
             @Override

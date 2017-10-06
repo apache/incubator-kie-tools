@@ -26,8 +26,13 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditor;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
+import org.uberfire.mvp.Command;
 
 @Dependent
 @Templated
@@ -59,6 +64,21 @@ public class FormEditorViewImpl extends KieEditorViewImpl implements FormEditorP
     public void setupLayoutEditor(LayoutEditor layoutEditor) {
         editorContent.clear();
         editorContent.add(layoutEditor.asWidget());
+    }
+
+    @Override
+    public void showSavePopup(Path path,
+                              Command saveCommand,
+                              Command cancelCommand) {
+        YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup(org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.Information(),
+                                                                      translationService.getTranslation(FormEditorConstants.FormEditorViewImplSaveBeforeRename),
+                                                                      saveCommand,
+                                                                      CommonConstants.INSTANCE.Save(),
+                                                                      null,
+                                                                      null,
+                                                                      cancelCommand,
+                                                                      translationService.getTranslation(FormEditorConstants.FormEditorViewImplDontSave));
+        popup.show();
     }
 
     @Override

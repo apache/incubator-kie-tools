@@ -49,7 +49,13 @@ public interface FormEditorConstants {
     String FormEditorViewImplDataObjects = "FormEditorViewImpl.dataObjects";
 
     @TranslationKey(defaultValue = "")
+    String FormEditorViewImplDontSave = "FormEditorViewImpl.dontSave";
+
+    @TranslationKey(defaultValue = "")
     String FormEditorViewImplPreview = "FormEditorViewImpl.preview";
+
+    @TranslationKey(defaultValue = "")
+    String FormEditorViewImplSaveBeforeRename = "FormEditorViewImpl.saveBeforeRename";
 
     @TranslationKey(defaultValue = "")
     String FormEditorPresenterLayoutTitle = "FormEditorPresenter.layoutTitle";

@@ -37,4 +37,11 @@ public interface FormEditorService {
               FormModelerContent content,
               Metadata metadata,
               String comment);
+
+    FormModelerContent rename(Path path,
+                              String newFileName,
+                              String commitMessage,
+                              boolean saveBeforeRenaming,
+                              FormModelerContent content,
+                              Metadata metadata);
 }
