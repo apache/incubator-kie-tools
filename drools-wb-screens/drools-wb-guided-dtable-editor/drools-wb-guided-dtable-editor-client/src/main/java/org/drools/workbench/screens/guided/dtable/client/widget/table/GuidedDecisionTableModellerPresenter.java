@@ -413,16 +413,45 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
         if (isGridPinned()) {
             view.getGridLayerView().flipToGridWidget(dtPresenter.getView());
         }
+
+        handlePermissions(dtPresenter);
+    }
+
+    void handlePermissions(final GuidedDecisionTableView.Presenter dtPresenter) {
+        if (dtPresenter.hasEditableColumns()) {
+            view.enableColumnOperationsMenu();
+        }
     }
 
     void refreshDefinitionsPanel(final GuidedDecisionTableView.Presenter dtPresenter) {
         final GuidedDecisionTable52 model = dtPresenter.getModel();
-        view.setEnableColumnCreation(dtPresenter.getAccess().isEditable());
+
+        view.setEnableColumnCreation(isColumnCreationEnabled(dtPresenter));
         view.refreshAttributeWidget(model.getAttributeCols());
         view.refreshMetaDataWidget(model.getMetadataCols());
         view.refreshConditionsWidget(model.getConditions());
         view.refreshActionsWidget(model.getActionCols());
         view.refreshColumnsNote(dtPresenter.hasColumnDefinitions());
+    }
+
+    boolean isColumnCreationEnabled(final GuidedDecisionTableView.Presenter dtPresenter) {
+
+        final boolean decisionTableIsEditable = !dtPresenter.isReadOnly();
+        final boolean decisionTableHasEditableColumns = dtPresenter.hasEditableColumns();
+
+        return decisionTableHasEditableColumns && decisionTableIsEditable;
+    }
+
+    @Override
+    public boolean isColumnCreationEnabledToActiveDecisionTable() {
+
+        final Optional<GuidedDecisionTableView.Presenter> decisionTable = Optional.ofNullable(getActiveDecisionTable());
+
+        if (!decisionTable.isPresent()) {
+            return false;
+        }
+
+        return isColumnCreationEnabled(decisionTable.get());
     }
 
     @Override

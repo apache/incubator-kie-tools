@@ -102,6 +102,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLay
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.mockito.Mockito.*;
@@ -146,6 +148,12 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
 
     @Mock
     protected GuidedDecisionTableLockManager lockManager;
+
+    @Mock
+    protected AuthorizationManager authorizationManager;
+
+    @Mock
+    protected SessionInfo sessionInfo;
 
     protected GuidedDecisionTableLinkManager linkManager;
 
@@ -310,7 +318,9 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
                                                                                       clipboard,
                                                                                       decisionTableAnalyzerProvider,
                                                                                       enumLoaderUtilities,
-                                                                                      pluginHandler) {
+                                                                                      pluginHandler,
+                                                                                      authorizationManager,
+                                                                                      sessionInfo) {
             @Override
             void initialiseLockManager() {
                 //Do nothing for tests

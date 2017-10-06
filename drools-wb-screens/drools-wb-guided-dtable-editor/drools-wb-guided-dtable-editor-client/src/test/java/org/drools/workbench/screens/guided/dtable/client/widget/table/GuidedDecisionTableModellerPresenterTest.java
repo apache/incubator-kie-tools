@@ -111,6 +111,9 @@ public class GuidedDecisionTableModellerPresenterTest {
     private GuidedDecisionTableView.Presenter dtablePresenter;
 
     @Mock
+    private GuidedDecisionTable52 model;
+
+    @Mock
     private GuidedDecisionTableView dtableView;
 
     @Mock
@@ -827,5 +830,111 @@ public class GuidedDecisionTableModellerPresenterTest {
                times(1)).setLink(eq(null));
         verify(dtPresenter2Column2,
                never()).setLink(any());
+    }
+
+    @Test
+    public void testHandlePermissionsWhenGuidedDecisionTableHasEditableColumns() {
+
+        doReturn(true).when(dtablePresenter).hasEditableColumns();
+
+        presenter.handlePermissions(dtablePresenter);
+
+        verify(view).enableColumnOperationsMenu();
+    }
+
+    @Test
+    public void testHandlePermissionsWhenGuidedDecisionTableDoesNotHaveEditableColumns() {
+
+        doReturn(false).when(dtablePresenter).hasEditableColumns();
+
+        presenter.handlePermissions(dtablePresenter);
+
+        verify(view, never()).enableColumnOperationsMenu();
+    }
+
+    @Test
+    public void testIsColumnCreationEnabledWhenGuidedDecisionTableIsEditableAndHasEditableColumns() {
+
+        doReturn(model).when(dtablePresenter).getModel();
+        doReturn(false).when(dtablePresenter).isReadOnly();
+        doReturn(true).when(dtablePresenter).hasEditableColumns();
+
+        final boolean isEnabled = presenter.isColumnCreationEnabled(dtablePresenter);
+
+        assertTrue(isEnabled);
+    }
+
+    @Test
+    public void testIsColumnCreationEnabledWhenGuidedDecisionTableDoesNotHaveEditableColumns() {
+
+        doReturn(model).when(dtablePresenter).getModel();
+        doReturn(false).when(dtablePresenter).isReadOnly();
+        doReturn(false).when(dtablePresenter).hasEditableColumns();
+
+        final boolean isEnabled = presenter.isColumnCreationEnabled(dtablePresenter);
+
+        assertFalse(isEnabled);
+    }
+
+    @Test
+    public void testIsColumnCreationEnabledWhenGuidedDecisionTableIsNotEditable() {
+
+        doReturn(model).when(dtablePresenter).getModel();
+        doReturn(true).when(dtablePresenter).isReadOnly();
+        doReturn(true).when(dtablePresenter).hasEditableColumns();
+
+        final boolean isEnabled = presenter.isColumnCreationEnabled(dtablePresenter);
+
+        assertFalse(isEnabled);
+    }
+
+    @Test
+    public void testIsColumnCreationEnabledWhenGuidedDecisionTableIsNotEditableNeitherHasEditableColumns() {
+
+        doReturn(model).when(dtablePresenter).getModel();
+        doReturn(true).when(dtablePresenter).isReadOnly();
+        doReturn(false).when(dtablePresenter).hasEditableColumns();
+
+        final boolean isEnabled = presenter.isColumnCreationEnabled(dtablePresenter);
+
+        assertFalse(isEnabled);
+    }
+
+    @Test
+    public void testRefreshDefinitionsPanel() {
+
+        doReturn(model).when(dtablePresenter).getModel();
+        doReturn(true).when(presenter).isColumnCreationEnabled(dtablePresenter);
+
+        presenter.refreshDefinitionsPanel(dtablePresenter);
+
+        verify(view).setEnableColumnCreation(true);
+        verify(view).refreshAttributeWidget(model.getAttributeCols());
+        verify(view).refreshMetaDataWidget(model.getMetadataCols());
+        verify(view).refreshConditionsWidget(model.getConditions());
+        verify(view).refreshActionsWidget(model.getActionCols());
+        verify(view).refreshColumnsNote(dtablePresenter.hasColumnDefinitions());
+    }
+
+    @Test
+    public void testIsColumnCreationEnabledToActiveDecisionTableWhenActiveDecisionTableIsNull() {
+
+        doReturn(null).when(presenter).getActiveDecisionTable();
+        doReturn(true).when(presenter).isColumnCreationEnabled(any());
+
+        final boolean isEnabled = presenter.isColumnCreationEnabledToActiveDecisionTable();
+
+        assertFalse(isEnabled);
+    }
+
+    @Test
+    public void testIsColumnCreationEnabledToActiveDecisionTableWhenActiveDecisionTableIsNotNull() {
+
+        doReturn(dtablePresenter).when(presenter).getActiveDecisionTable();
+        doReturn(true).when(presenter).isColumnCreationEnabled(dtablePresenter);
+
+        final boolean isEnabled = presenter.isColumnCreationEnabledToActiveDecisionTable();
+
+        assertTrue(isEnabled);
     }
 }

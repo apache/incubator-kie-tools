@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
@@ -27,6 +28,7 @@ import javax.inject.Inject;
 
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -128,15 +130,20 @@ public class InsertMenuBuilder extends BaseMenu implements MenuFactory.CustomMen
 
     @Override
     public void initialise() {
-        if (activeDecisionTable == null || !activeDecisionTable.getAccess().isEditable()) {
-            enableMenuItemsForAppending(false);
+
+        if (this.activeDecisionTable == null || !activeDecisionTable.getAccess().isEditable()) {
+            enableMenuItemsForAppendingRows(false);
+            enableMenuItemsForAppendingColumns(false);
             enableMenuItemsForInsertingRows(false);
             return;
         }
+
         final List<GridData.SelectedCell> selections = activeDecisionTable.getView().getModel().getSelectedCells();
+
         if (selections == null || selections.isEmpty()) {
-            enableMenuItemsForAppending(true);
+            enableMenuItemsForAppendingRows(true);
             enableMenuItemsForInsertingRows(false);
+            enableMenuItemsForAppendingColumns(activeDecisionTable.hasEditableColumns());
             return;
         }
         final Map<Integer, Boolean> rowUsage = new HashMap<>();
@@ -144,7 +151,8 @@ public class InsertMenuBuilder extends BaseMenu implements MenuFactory.CustomMen
             rowUsage.put(sc.getRowIndex(),
                          true);
         }
-        enableMenuItemsForAppending(true);
+        enableMenuItemsForAppendingRows(true);
+        enableMenuItemsForAppendingColumns(activeDecisionTable.hasEditableColumns());
         enableMenuItemsForInsertingRows(rowUsage.keySet().size() == 1);
     }
 
@@ -172,8 +180,11 @@ public class InsertMenuBuilder extends BaseMenu implements MenuFactory.CustomMen
         }
     }
 
-    private void enableMenuItemsForAppending(final boolean enabled) {
+    private void enableMenuItemsForAppendingRows(final boolean enabled) {
         miAppendRow.getMenuItem().setEnabled(enabled);
+    }
+
+    private void enableMenuItemsForAppendingColumns(final boolean enabled) {
         miInsertColumn.getMenuItem().setEnabled(enabled);
     }
 

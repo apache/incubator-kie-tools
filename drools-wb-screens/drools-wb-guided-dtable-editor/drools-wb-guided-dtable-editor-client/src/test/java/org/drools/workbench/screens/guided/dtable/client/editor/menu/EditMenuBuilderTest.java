@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.editor.menu;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.appformer.project.datamodel.oracle.DataType;
@@ -58,35 +59,45 @@ import static org.mockito.Mockito.*;
 public class EditMenuBuilderTest {
 
     private EditMenuBuilder builder;
+
     private GuidedDecisionTable52 model;
+
     private GuidedDecisionTableUiModel uiModel;
+
     private Clipboard clipboard;
+
+    private GuidedDecisionTablePresenter.Access access = new GuidedDecisionTablePresenter.Access();
 
     @Mock
     private TranslationService ts;
 
     @Mock
     private ManagedInstance<MenuItemView> menuItemViewProducer;
-    private MenuItemFactory menuItemFactory;
 
     @Mock
     private MenuItemWithIconView menuItemWithIconView;
 
     @Mock
     private GuidedDecisionTableView.Presenter dtPresenter;
-    private GuidedDecisionTablePresenter.Access access = new GuidedDecisionTablePresenter.Access();
+
+    @Mock
+    private GridColumnRenderer<String> gridColumnRenderer;
+
+    @Mock
+    private GridColumn.HeaderMetaData headerMetaData;
 
     @Mock
     private GuidedDecisionTableView dtPresenterView;
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setup() {
         model = new GuidedDecisionTable52();
         uiModel = new GuidedDecisionTableUiModel(mock(ModelSynchronizer.class));
         clipboard = new DefaultClipboard();
-        menuItemFactory = new MenuItemFactory(menuItemViewProducer);
 
+        final MenuItemFactory menuItemFactory = new MenuItemFactory(menuItemViewProducer);
+
+        when(dtPresenter.hasEditableColumns()).thenReturn(true);
         when(dtPresenter.getView()).thenReturn(dtPresenterView);
         when(dtPresenter.getModel()).thenReturn(model);
         when(dtPresenter.getAccess()).thenReturn(access);
@@ -96,25 +107,18 @@ public class EditMenuBuilderTest {
         when(menuItemViewProducer.get()).thenReturn(menuItemWithIconView);
         when(menuItemWithIconView.getElement()).thenReturn(mock(HTMLElement.class));
 
-        uiModel.appendColumn(new BaseGridColumn<String>(mock(GridColumn.HeaderMetaData.class),
-                                                        mock(GridColumnRenderer.class),
-                                                        100));
-        uiModel.appendColumn(new BaseGridColumn<String>(mock(GridColumn.HeaderMetaData.class),
-                                                        mock(GridColumnRenderer.class),
-                                                        100));
-        uiModel.appendColumn(new BaseGridColumn<String>(mock(GridColumn.HeaderMetaData.class),
-                                                        mock(GridColumnRenderer.class),
-                                                        100));
+        uiModel.appendColumn(new BaseGridColumn<>(headerMetaData, gridColumnRenderer, 100));
+        uiModel.appendColumn(new BaseGridColumn<>(headerMetaData, gridColumnRenderer, 100));
+        uiModel.appendColumn(new BaseGridColumn<>(headerMetaData, gridColumnRenderer, 100));
         uiModel.appendRow(new BaseGridRow());
 
-        builder = new EditMenuBuilder(clipboard,
-                                      ts,
-                                      menuItemFactory);
+        builder = new EditMenuBuilder(clipboard, ts, menuItemFactory);
         builder.setup();
     }
 
     @Test
     public void testOnDecisionTableSelectedEventWithNoSelections() {
+
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
         assertFalse(builder.miCut.getMenuItem().isEnabled());
@@ -127,16 +131,11 @@ public class EditMenuBuilderTest {
     }
 
     @Test
-    public void testOnDecisionTableSelectedEventWithNonOtherwiseColumnSelected() {
-        model.getMetadataCols().add(new MetadataCol52());
-        model.getData().add(new ArrayList<DTCellValue52>() {{
-            add(new DTCellValue52(1));
-            add(new DTCellValue52("descr"));
-            add(new DTCellValue52("md"));
-        }});
+    public void testOnDecisionTableSelectedEventWithNonOtherwiseColumnSelectedAndItHasEditableColumnsAndItHasEditableColumns() {
 
-        uiModel.selectCell(0,
-                           2);
+        model.getMetadataCols().add(new MetadataCol52());
+        model.getData().add(makeDTCellValue52());
+        uiModel.selectCell(0, 2);
 
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
@@ -147,29 +146,36 @@ public class EditMenuBuilderTest {
         assertTrue(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
         assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
         assertFalse(builder.miOtherwiseCell.getMenuItem().isEnabled());
-        verify(builder.miOtherwiseCell.getMenuItemView(),
-               times(1)).setIconType(eq(null));
+        verify(builder.miOtherwiseCell.getMenuItemView(), times(1)).setIconType(eq(null));
     }
 
     @Test
-    public void testOnDecisionTableSelectedEventWithOtherwiseColumnSelected() {
-        model.getConditions().add(new Pattern52() {{
-            setFactType("Fact");
-            getChildColumns().add(new ConditionCol52() {{
-                setFactType("Fact");
-                setFactField("field1");
-                setFieldType(DataType.TYPE_STRING);
-                setOperator("==");
-            }});
-        }});
-        model.getData().add(new ArrayList<DTCellValue52>() {{
-            add(new DTCellValue52(1));
-            add(new DTCellValue52("descr"));
-            add(new DTCellValue52("md"));
-        }});
+    public void testOnDecisionTableSelectedEventWithNonOtherwiseColumnSelectedAndItHasEditableColumnsAndItDoesNotHaveEditableColumns() {
 
-        uiModel.selectCell(0,
-                           2);
+        when(dtPresenter.hasEditableColumns()).thenReturn(false);
+
+        model.getMetadataCols().add(new MetadataCol52());
+        model.getData().add(makeDTCellValue52());
+        uiModel.selectCell(0, 2);
+
+        builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
+
+        assertTrue(builder.miCut.getMenuItem().isEnabled());
+        assertTrue(builder.miCopy.getMenuItem().isEnabled());
+        assertFalse(builder.miPaste.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedCells.getMenuItem().isEnabled());
+        assertFalse(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
+        assertFalse(builder.miOtherwiseCell.getMenuItem().isEnabled());
+        verify(builder.miOtherwiseCell.getMenuItemView(), times(1)).setIconType(eq(null));
+    }
+
+    @Test
+    public void testOnDecisionTableSelectedEventWithOtherwiseColumnSelectedAndItHasEditableColumns() {
+
+        model.getConditions().add(makePattern52());
+        model.getData().add(makeDTCellValue52());
+        uiModel.selectCell(0, 2);
 
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
@@ -180,31 +186,36 @@ public class EditMenuBuilderTest {
         assertTrue(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
         assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
         assertTrue(builder.miOtherwiseCell.getMenuItem().isEnabled());
-        verify(builder.miOtherwiseCell.getMenuItemView(),
-               times(1)).setIconType(eq(null));
+        verify(builder.miOtherwiseCell.getMenuItemView(), times(1)).setIconType(eq(null));
     }
 
     @Test
-    public void testOnDecisionTableSelectedEventWithOtherwiseCellSelected() {
-        model.getConditions().add(new Pattern52() {{
-            setFactType("Fact");
-            getChildColumns().add(new ConditionCol52() {{
-                setFactType("Fact");
-                setFactField("field1");
-                setFieldType(DataType.TYPE_STRING);
-                setOperator("==");
-            }});
-        }});
-        model.getData().add(new ArrayList<DTCellValue52>() {{
-            add(new DTCellValue52(1));
-            add(new DTCellValue52("descr"));
-            add(new DTCellValue52() {{
-                setOtherwise(true);
-            }});
-        }});
+    public void testOnDecisionTableSelectedEventWithOtherwiseColumnSelectedAndItDoesNotHaveEditableColumns() {
 
-        uiModel.selectCell(0,
-                           2);
+        when(dtPresenter.hasEditableColumns()).thenReturn(false);
+
+        model.getConditions().add(makePattern52());
+        model.getData().add(makeDTCellValue52());
+        uiModel.selectCell(0, 2);
+
+        builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
+
+        assertTrue(builder.miCut.getMenuItem().isEnabled());
+        assertTrue(builder.miCopy.getMenuItem().isEnabled());
+        assertFalse(builder.miPaste.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedCells.getMenuItem().isEnabled());
+        assertFalse(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
+        assertTrue(builder.miOtherwiseCell.getMenuItem().isEnabled());
+        verify(builder.miOtherwiseCell.getMenuItemView(), times(1)).setIconType(eq(null));
+    }
+
+    @Test
+    public void testOnDecisionTableSelectedEventWithOtherwiseCellSelectedAndItHasEditableColumns() {
+
+        model.getConditions().add(makePattern52());
+        model.getData().add(makeDTCellValue52ListWithOtherwise());
+        uiModel.selectCell(0, 2);
 
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
@@ -215,26 +226,37 @@ public class EditMenuBuilderTest {
         assertTrue(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
         assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
         assertTrue(builder.miOtherwiseCell.getMenuItem().isEnabled());
-        verify(builder.miOtherwiseCell.getMenuItemView(),
-               times(1)).setIconType(eq(IconType.CHECK));
+        verify(builder.miOtherwiseCell.getMenuItemView(), times(1)).setIconType(eq(IconType.CHECK));
+    }
+
+    @Test
+    public void testOnDecisionTableSelectedEventWithOtherwiseCellSelectedAndItDoesNotHaveEditableColumns() {
+
+        when(dtPresenter.hasEditableColumns()).thenReturn(false);
+
+        model.getConditions().add(makePattern52());
+        model.getData().add(makeDTCellValue52ListWithOtherwise());
+        uiModel.selectCell(0, 2);
+
+        builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
+
+        assertTrue(builder.miCut.getMenuItem().isEnabled());
+        assertTrue(builder.miCopy.getMenuItem().isEnabled());
+        assertFalse(builder.miPaste.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedCells.getMenuItem().isEnabled());
+        assertFalse(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
+        assertTrue(builder.miOtherwiseCell.getMenuItem().isEnabled());
+        verify(builder.miOtherwiseCell.getMenuItemView(), times(1)).setIconType(eq(IconType.CHECK));
     }
 
     @Test
     public void testOnDecisionTableSelectedEventWithSelectionsWithClipboardPopulated() {
-        model.getMetadataCols().add(new MetadataCol52());
-        model.getData().add(new ArrayList<DTCellValue52>() {{
-            add(new DTCellValue52(1));
-            add(new DTCellValue52("descr"));
-            add(new DTCellValue52("md"));
-        }});
 
-        uiModel.selectCell(0,
-                           2);
-        clipboard.setData(new HashSet<Clipboard.ClipboardData>() {{
-            add(new DefaultClipboard.ClipboardDataImpl(0,
-                                                       2,
-                                                       model.getData().get(0).get(2)));
-        }});
+        model.getMetadataCols().add(new MetadataCol52());
+        model.getData().add(makeDTCellValue52());
+        uiModel.selectCell(0, 2);
+        clipboard.setData(makeClipboardHashSetData());
 
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
@@ -245,12 +267,12 @@ public class EditMenuBuilderTest {
         assertTrue(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
         assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
         assertFalse(builder.miOtherwiseCell.getMenuItem().isEnabled());
-        verify(builder.miOtherwiseCell.getMenuItemView(),
-               times(1)).setIconType(eq(null));
+        verify(builder.miOtherwiseCell.getMenuItemView(), times(1)).setIconType(eq(null));
     }
 
     @Test
     public void testOnDecisionTableSelectionsChangedEventWithNoSelections() {
+
         builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
 
         assertFalse(builder.miCut.getMenuItem().isEnabled());
@@ -263,16 +285,11 @@ public class EditMenuBuilderTest {
     }
 
     @Test
-    public void testOnDecisionTableSelectionsChangedEventWithNonOtherwiseColumnSelected() {
-        model.getMetadataCols().add(new MetadataCol52());
-        model.getData().add(new ArrayList<DTCellValue52>() {{
-            add(new DTCellValue52(1));
-            add(new DTCellValue52("descr"));
-            add(new DTCellValue52("md"));
-        }});
+    public void testOnDecisionTableSelectionsChangedEventWithNonOtherwiseColumnSelectedAndItHasEditableColumns() {
 
-        uiModel.selectCell(0,
-                           2);
+        model.getMetadataCols().add(new MetadataCol52());
+        model.getData().add(makeDTCellValue52());
+        uiModel.selectCell(0, 2);
 
         builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
 
@@ -283,94 +300,117 @@ public class EditMenuBuilderTest {
         assertTrue(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
         assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
         assertFalse(builder.miOtherwiseCell.getMenuItem().isEnabled());
-        verify(builder.miOtherwiseCell.getMenuItemView(),
-               times(1)).setIconType(eq(null));
+        verify(builder.miOtherwiseCell.getMenuItemView(), times(1)).setIconType(eq(null));
     }
 
     @Test
-    public void testOnDecisionTableSelectionsChangedEventWithOtherwiseColumnSelected() {
-        model.getConditions().add(new Pattern52() {{
-            setFactType("Fact");
-            getChildColumns().add(new ConditionCol52() {{
-                setFactType("Fact");
-                setFactField("field1");
-                setFieldType(DataType.TYPE_STRING);
-                setOperator("==");
-            }});
-        }});
-        model.getData().add(new ArrayList<DTCellValue52>() {{
-            add(new DTCellValue52(1));
-            add(new DTCellValue52("descr"));
-            add(new DTCellValue52("md"));
-        }});
+    public void testOnDecisionTableSelectionsChangedEventWithNonOtherwiseColumnSelectedAndItDoesNotHaveEditableColumns() {
 
-        uiModel.selectCell(0,
-                           2);
+        when(dtPresenter.hasEditableColumns()).thenReturn(false);
 
-        builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
-
-        assertTrue(builder.miCut.getMenuItem().isEnabled());
-        assertTrue(builder.miCopy.getMenuItem().isEnabled());
-        assertFalse(builder.miPaste.getMenuItem().isEnabled());
-        assertTrue(builder.miDeleteSelectedCells.getMenuItem().isEnabled());
-        assertTrue(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
-        assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
-        assertTrue(builder.miOtherwiseCell.getMenuItem().isEnabled());
-        verify(builder.miOtherwiseCell.getMenuItemView(),
-               times(1)).setIconType(eq(null));
-    }
-
-    @Test
-    public void testOnDecisionTableSelectionsChangedEventWithOtherwiseCellSelected() {
-        model.getConditions().add(new Pattern52() {{
-            setFactType("Fact");
-            getChildColumns().add(new ConditionCol52() {{
-                setFactType("Fact");
-                setFactField("field1");
-                setFieldType(DataType.TYPE_STRING);
-                setOperator("==");
-            }});
-        }});
-        model.getData().add(new ArrayList<DTCellValue52>() {{
-            add(new DTCellValue52(1));
-            add(new DTCellValue52("descr"));
-            add(new DTCellValue52() {{
-                setOtherwise(true);
-            }});
-        }});
-
-        uiModel.selectCell(0,
-                           2);
-
-        builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
-
-        assertTrue(builder.miCut.getMenuItem().isEnabled());
-        assertTrue(builder.miCopy.getMenuItem().isEnabled());
-        assertFalse(builder.miPaste.getMenuItem().isEnabled());
-        assertTrue(builder.miDeleteSelectedCells.getMenuItem().isEnabled());
-        assertTrue(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
-        assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
-        assertTrue(builder.miOtherwiseCell.getMenuItem().isEnabled());
-        verify(builder.miOtherwiseCell.getMenuItemView(),
-               times(1)).setIconType(eq(IconType.CHECK));
-    }
-
-    @Test
-    public void testOnDecisionTableSelectionsChangedEventWithSelectionsWithClipboardPopulated() {
         model.getMetadataCols().add(new MetadataCol52());
-        model.getData().add(new ArrayList<DTCellValue52>() {{
-            add(new DTCellValue52(1));
-            add(new DTCellValue52("descr"));
-            add(new DTCellValue52("md"));
-        }});
+        model.getData().add(makeDTCellValue52());
+        uiModel.selectCell(0, 2);
 
-        uiModel.selectCell(0,
-                           2);
-        clipboard.setData(new HashSet<Clipboard.ClipboardData>() {{
-            add(new DefaultClipboard.ClipboardDataImpl(0,
-                                                       2,
-                                                       model.getData().get(0).get(2)));
-        }});
+        builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
+
+        assertTrue(builder.miCut.getMenuItem().isEnabled());
+        assertTrue(builder.miCopy.getMenuItem().isEnabled());
+        assertFalse(builder.miPaste.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedCells.getMenuItem().isEnabled());
+        assertFalse(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
+        assertFalse(builder.miOtherwiseCell.getMenuItem().isEnabled());
+        verify(builder.miOtherwiseCell.getMenuItemView(), times(1)).setIconType(eq(null));
+    }
+
+    @Test
+    public void testOnDecisionTableSelectionsChangedEventWithOtherwiseColumnSelectedAndItHasEditableColumns() {
+
+        model.getConditions().add(makePattern52());
+        model.getData().add(makeDTCellValue52());
+        uiModel.selectCell(0, 2);
+
+        builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
+
+        assertTrue(builder.miCut.getMenuItem().isEnabled());
+        assertTrue(builder.miCopy.getMenuItem().isEnabled());
+        assertFalse(builder.miPaste.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedCells.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
+        assertTrue(builder.miOtherwiseCell.getMenuItem().isEnabled());
+        verify(builder.miOtherwiseCell.getMenuItemView(), times(1)).setIconType(eq(null));
+    }
+
+    @Test
+    public void testOnDecisionTableSelectionsChangedEventWithOtherwiseColumnSelectedAndItDoesNotHaveEditableColumns() {
+
+        when(dtPresenter.hasEditableColumns()).thenReturn(false);
+
+        model.getConditions().add(makePattern52());
+        model.getData().add(makeDTCellValue52());
+        uiModel.selectCell(0, 2);
+
+        builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
+
+        assertTrue(builder.miCut.getMenuItem().isEnabled());
+        assertTrue(builder.miCopy.getMenuItem().isEnabled());
+        assertFalse(builder.miPaste.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedCells.getMenuItem().isEnabled());
+        assertFalse(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
+        assertTrue(builder.miOtherwiseCell.getMenuItem().isEnabled());
+        verify(builder.miOtherwiseCell.getMenuItemView(), times(1)).setIconType(eq(null));
+    }
+
+    @Test
+    public void testOnDecisionTableSelectionsChangedEventWithOtherwiseCellSelectedAndItHasEditableColumns() {
+
+        model.getConditions().add(makePattern52());
+        model.getData().add(makeDTCellValue52ListWithOtherwise());
+        uiModel.selectCell(0, 2);
+
+        builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
+
+        assertTrue(builder.miCut.getMenuItem().isEnabled());
+        assertTrue(builder.miCopy.getMenuItem().isEnabled());
+        assertFalse(builder.miPaste.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedCells.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
+        assertTrue(builder.miOtherwiseCell.getMenuItem().isEnabled());
+        verify(builder.miOtherwiseCell.getMenuItemView(), times(1)).setIconType(eq(IconType.CHECK));
+    }
+
+    @Test
+    public void testOnDecisionTableSelectionsChangedEventWithOtherwiseCellSelectedAndItDoesNotHaveEditableColumns() {
+
+        when(dtPresenter.hasEditableColumns()).thenReturn(false);
+
+        model.getConditions().add(makePattern52());
+        model.getData().add(makeDTCellValue52ListWithOtherwise());
+        uiModel.selectCell(0, 2);
+
+        builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
+
+        assertTrue(builder.miCut.getMenuItem().isEnabled());
+        assertTrue(builder.miCopy.getMenuItem().isEnabled());
+        assertFalse(builder.miPaste.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedCells.getMenuItem().isEnabled());
+        assertFalse(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
+        assertTrue(builder.miOtherwiseCell.getMenuItem().isEnabled());
+        verify(builder.miOtherwiseCell.getMenuItemView(), times(1)).setIconType(eq(IconType.CHECK));
+    }
+
+    @Test
+    public void testOnDecisionTableSelectionsChangedEventWithSelectionsWithClipboardPopulatedAndItHasEditableColumns() {
+
+        model.getMetadataCols().add(new MetadataCol52());
+        model.getData().add(makeDTCellValue52());
+        uiModel.selectCell(0, 2);
+        clipboard.setData(makeClipboardHashSetData());
 
         builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
 
@@ -381,12 +421,34 @@ public class EditMenuBuilderTest {
         assertTrue(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
         assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
         assertFalse(builder.miOtherwiseCell.getMenuItem().isEnabled());
-        verify(builder.miOtherwiseCell.getMenuItemView(),
-               times(1)).setIconType(eq(null));
+        verify(builder.miOtherwiseCell.getMenuItemView(), times(1)).setIconType(eq(null));
+    }
+
+    @Test
+    public void testOnDecisionTableSelectionsChangedEventWithSelectionsWithClipboardPopulatedAndItDoesNotHaveEditableColumns() {
+
+        when(dtPresenter.hasEditableColumns()).thenReturn(false);
+
+        model.getMetadataCols().add(new MetadataCol52());
+        model.getData().add(makeDTCellValue52());
+        uiModel.selectCell(0, 2);
+        clipboard.setData(makeClipboardHashSetData());
+
+        builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
+
+        assertTrue(builder.miCut.getMenuItem().isEnabled());
+        assertTrue(builder.miCopy.getMenuItem().isEnabled());
+        assertTrue(builder.miPaste.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedCells.getMenuItem().isEnabled());
+        assertFalse(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
+        assertTrue(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
+        assertFalse(builder.miOtherwiseCell.getMenuItem().isEnabled());
+        verify(builder.miOtherwiseCell.getMenuItemView(), times(1)).setIconType(eq(null));
     }
 
     @Test
     public void testOnDecisionTableSelectedEventReadOnly() {
+
         dtPresenter.getAccess().setReadOnly(true);
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
@@ -397,5 +459,48 @@ public class EditMenuBuilderTest {
         assertFalse(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
         assertFalse(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
         assertFalse(builder.miOtherwiseCell.getMenuItem().isEnabled());
+    }
+
+    private HashSet<Clipboard.ClipboardData> makeClipboardHashSetData() {
+        return new HashSet<Clipboard.ClipboardData>() {{
+            add(makeDefaultClipboard());
+        }};
+    }
+
+    private DefaultClipboard.ClipboardDataImpl makeDefaultClipboard() {
+
+        final DTCellValue52 dtCellValue52 = model.getData().get(0).get(2);
+
+        return new DefaultClipboard.ClipboardDataImpl(0, 2, dtCellValue52);
+    }
+
+    private Pattern52 makePattern52() {
+        return new Pattern52() {{
+            setFactType("Fact");
+            getChildColumns().add(new ConditionCol52() {{
+                setFactType("Fact");
+                setFactField("field1");
+                setFieldType(DataType.TYPE_STRING);
+                setOperator("==");
+            }});
+        }};
+    }
+
+    private List<DTCellValue52> makeDTCellValue52() {
+        return new ArrayList<DTCellValue52>() {{
+            add(new DTCellValue52(1));
+            add(new DTCellValue52("descr"));
+            add(new DTCellValue52("md"));
+        }};
+    }
+
+    private List<DTCellValue52> makeDTCellValue52ListWithOtherwise() {
+        return new ArrayList<DTCellValue52>() {{
+            add(new DTCellValue52(1));
+            add(new DTCellValue52("descr"));
+            add(new DTCellValue52() {{
+                setOtherwise(true);
+            }});
+        }};
     }
 }

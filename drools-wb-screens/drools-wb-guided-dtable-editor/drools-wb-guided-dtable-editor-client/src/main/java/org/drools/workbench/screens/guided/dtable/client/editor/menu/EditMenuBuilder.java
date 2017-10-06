@@ -219,17 +219,26 @@ public class EditMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuB
     private void enableMenuItems(final List<GridData.SelectedCell> selections) {
         final boolean enabled = selections.size() > 0;
         final boolean isOtherwiseEnabled = isOtherwiseEnabled(selections);
-        final boolean isOnlyMandatoryColumnSelected = isOnlyMandatoryColumnSelected(selections);
+        final boolean isColumnDeletable = isColumnDeletable(selections);
 
         miCut.getMenuItem().setEnabled(enabled);
         miCopy.getMenuItem().setEnabled(enabled);
         miPaste.getMenuItem().setEnabled(clipboard.hasData());
         miDeleteSelectedCells.getMenuItem().setEnabled(enabled);
-        miDeleteSelectedColumns.getMenuItem().setEnabled(enabled && !isOnlyMandatoryColumnSelected);
+        miDeleteSelectedColumns.getMenuItem().setEnabled(isColumnDeletable);
         miDeleteSelectedRows.getMenuItem().setEnabled(enabled);
         miOtherwiseCell.getMenuItem().setEnabled(isOtherwiseEnabled);
         DecisionTableColumnViewUtils.enableOtherwisePopover(miOtherwiseCell.getMenuItemView().getElement(),
                                                             isOtherwiseEnabled);
+    }
+
+    private boolean isColumnDeletable(final List<GridData.SelectedCell> selections) {
+
+        final boolean enabled = selections.size() > 0;
+        final boolean isNotOnlyMandatoryColumnSelected = !isOnlyMandatoryColumnSelected(selections);
+        final boolean guidedDecisionTableHasEditableColumns = activeDecisionTable.hasEditableColumns();
+
+        return enabled && isNotOnlyMandatoryColumnSelected && guidedDecisionTableHasEditableColumns;
     }
 
     private void setupOtherwiseCellEntry(final List<GridData.SelectedCell> selections) {

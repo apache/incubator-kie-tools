@@ -28,10 +28,8 @@ import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import junit.framework.Assert;
 import org.appformer.project.datamodel.oracle.DataType;
 import org.appformer.project.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
@@ -60,10 +58,12 @@ import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableLin
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -241,6 +241,8 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         verify(dtPresenter,
                times(1)).makeView(any(Set.class));
         verify(dtPresenter,
+               times(1)).initialiseAccess(false);
+        verify(dtPresenter,
                times(1)).initialiseLockManager();
         verify(dtPresenter,
                times(1)).initialiseUtilities();
@@ -293,6 +295,8 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
                times(2)).makeUiModel();
         verify(dtPresenter,
                times(2)).makeView(any(Set.class));
+        verify(dtPresenter,
+               times(2)).initialiseAccess(false);
         verify(dtPresenter,
                times(2)).initialiseLockManager();
         verify(dtPresenter,
@@ -1683,6 +1687,46 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         verify(layer).draw();
     }
 
+    @Test
+    public void testInitialiseAccess() {
+
+        final GuidedDecisionTablePresenter.Access access = mock(GuidedDecisionTablePresenter.Access.class);
+
+        doReturn(access).when(dtPresenter).getAccess();
+        doReturn(true).when(dtPresenter).canEditColumns();
+
+        dtPresenter.initialiseAccess(true);
+
+        verify(access).setReadOnly(true);
+        verify(access).setHasEditableColumns(true);
+    }
+
+    @Test
+    public void testCanEditColumns() {
+
+        final String permission = WorkbenchFeatures.GUIDED_DECISION_TABLE_EDIT_COLUMNS;
+        final User user = mock(User.class);
+
+        doReturn(user).when(sessionInfo).getIdentity();
+
+        dtPresenter.canEditColumns();
+
+        verify(authorizationManager).authorize(permission, user);
+    }
+
+    @Test
+    public void testHasEditableColumns() {
+
+        final GuidedDecisionTablePresenter.Access access = mock(GuidedDecisionTablePresenter.Access.class);
+
+        doReturn(access).when(dtPresenter).getAccess();
+        doReturn(true).when(access).hasEditableColumns();
+
+        final boolean hasEditableColumns = dtPresenter.hasEditableColumns();
+
+        assertTrue(hasEditableColumns);
+    }
+
     /*
      * check that valid DT selections change events are fired the correct number of times for a test case
      */
@@ -1701,5 +1745,4 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
                                                                                                                             p,
                                                                                                                             dtPresenter));
     }
-
 }

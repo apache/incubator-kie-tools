@@ -43,11 +43,11 @@ import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.ColumnLabelWidget;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.ColumnManagementView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.accordion.GuidedDecisionTableAccordion;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.accordion.GuidedDecisionTableAccordionItem;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.AttributeColumnConfigRow;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.ColumnLabelWidget;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.ColumnManagementView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.DeleteColumnManagementAnchorWidget;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils;
@@ -234,22 +234,22 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     }
 
     void setupSubMenu() {
-        disableButtonMenu();
-
+        disableColumnOperationsMenu();
         getAddColumn().addClickHandler((e) -> addColumn());
         getEditColumns().addClickHandler((e) -> editColumns());
     }
 
     void addColumn() {
-        getPresenter().openNewGuidedDecisionTableColumnWizard();
+        if (getPresenter().isColumnCreationEnabledToActiveDecisionTable()) {
+            getPresenter().openNewGuidedDecisionTableColumnWizard();
+        }
     }
 
     void editColumns() {
-        toggleClassName(getAccordionContainer(),
-                        GuidedDecisionTableResources.INSTANCE.css().openedAccordion());
-
-        toggleClassName(getEditColumns(),
-                        "active");
+        if (getPresenter().isColumnCreationEnabledToActiveDecisionTable()) {
+            toggleClassName(getAccordionContainer(), GuidedDecisionTableResources.INSTANCE.css().openedAccordion());
+            toggleClassName(getEditColumns(), "active");
+        }
     }
 
     void toggleClassName(final Widget widget,
@@ -268,12 +268,14 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
         return gridPanel.addKeyDownHandler(handler);
     }
 
-    void enableButtonMenu() {
+    @Override
+    public void enableColumnOperationsMenu() {
         getAddColumn().setEnabled(true);
         getEditColumns().setEnabled(true);
     }
 
-    void disableButtonMenu() {
+    @Override
+    public void disableColumnOperationsMenu() {
         getAddColumn().setEnabled(false);
         getEditColumns().setEnabled(false);
     }
@@ -367,7 +369,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
             gridLayer.remove(gridWidget);
 
             afterRemovalCommand.execute();
-            disableButtonMenu();
+            disableColumnOperationsMenu();
 
             gridLayer.batch();
         };
@@ -595,7 +597,6 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     @Override
     public void select(final GridWidget selectedGridWidget) {
-        enableButtonMenu();
         getRuleSelector().setEnabled(true);
         getGridLayer().select(selectedGridWidget);
     }

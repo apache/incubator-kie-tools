@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.editor.menu;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
@@ -53,19 +54,27 @@ import static org.mockito.Mockito.*;
 public class InsertMenuBuilderTest {
 
     private InsertMenuBuilder builder;
+
     private GuidedDecisionTable52 model;
+
     private GuidedDecisionTableUiModel uiModel;
 
+    private GuidedDecisionTablePresenter.Access access = new GuidedDecisionTablePresenter.Access();
+
     @Mock
-    private TranslationService ts;
+    private TranslationService translationService;
 
     @Mock
     private ManagedInstance<MenuItemView> menuItemViewProducer;
-    private MenuItemFactory menuItemFactory;
 
     @Mock
     private GuidedDecisionTableView.Presenter dtPresenter;
-    private GuidedDecisionTablePresenter.Access access = new GuidedDecisionTablePresenter.Access();
+
+    @Mock
+    private GridColumnRenderer<String> gridColumnRenderer;
+
+    @Mock
+    private GridColumn.HeaderMetaData headerMetaData;
 
     @Mock
     private GuidedDecisionTableView dtPresenterView;
@@ -74,40 +83,35 @@ public class InsertMenuBuilderTest {
     private GuidedDecisionTableModellerView.Presenter modeller;
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setup() {
         model = new GuidedDecisionTable52();
         uiModel = new GuidedDecisionTableUiModel(mock(ModelSynchronizer.class));
-        menuItemFactory = new MenuItemFactory(menuItemViewProducer);
 
+        final MenuItemFactory menuItemFactory = new MenuItemFactory(menuItemViewProducer);
+
+        when(dtPresenter.hasEditableColumns()).thenReturn(true);
         when(dtPresenter.getView()).thenReturn(dtPresenterView);
         when(dtPresenter.getModel()).thenReturn(model);
         when(dtPresenter.getAccess()).thenReturn(access);
         when(dtPresenterView.getModel()).thenReturn(uiModel);
-        when(ts.getTranslation(any(String.class))).thenReturn("i18n");
+        when(translationService.getTranslation(any(String.class))).thenReturn("i18n");
         when(menuItemViewProducer.select(any(Annotation.class))).thenReturn(menuItemViewProducer);
         when(menuItemViewProducer.get()).thenReturn(mock(MenuItemWithIconView.class));
 
-        uiModel.appendColumn(new BaseGridColumn<String>(mock(GridColumn.HeaderMetaData.class),
-                                                        mock(GridColumnRenderer.class),
-                                                        100));
-        uiModel.appendColumn(new BaseGridColumn<String>(mock(GridColumn.HeaderMetaData.class),
-                                                        mock(GridColumnRenderer.class),
-                                                        100));
-        uiModel.appendColumn(new BaseGridColumn<String>(mock(GridColumn.HeaderMetaData.class),
-                                                        mock(GridColumnRenderer.class),
-                                                        100));
+        uiModel.appendColumn(new BaseGridColumn<>(headerMetaData, gridColumnRenderer, 100));
+        uiModel.appendColumn(new BaseGridColumn<>(headerMetaData, gridColumnRenderer, 100));
+        uiModel.appendColumn(new BaseGridColumn<>(headerMetaData, gridColumnRenderer, 100));
         uiModel.appendRow(new BaseGridRow());
         uiModel.appendRow(new BaseGridRow());
 
-        builder = new InsertMenuBuilder(ts,
-                                        menuItemFactory);
+        builder = new InsertMenuBuilder(translationService, menuItemFactory);
         builder.setup();
         builder.setModeller(modeller);
     }
 
     @Test
-    public void testOnDecisionTableSelectedEventWithNoSelections() {
+    public void testOnDecisionTableSelectedEventWithNoSelectionsAndItHasEditableColumns() {
+
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
         assertTrue(builder.miAppendRow.getMenuItem().isEnabled());
@@ -117,24 +121,24 @@ public class InsertMenuBuilderTest {
     }
 
     @Test
-    public void testOnDecisionTableSelectedEventWithSingleRowSelected() {
-        model.getConditions().add(new Pattern52() {{
-            setFactType("Fact");
-            getChildColumns().add(new ConditionCol52() {{
-                setFactType("Fact");
-                setFactField("field1");
-                setFieldType(DataType.TYPE_STRING);
-                setOperator("==");
-            }});
-        }});
-        model.getData().add(new ArrayList<DTCellValue52>() {{
-            add(new DTCellValue52(1));
-            add(new DTCellValue52("descr"));
-            add(new DTCellValue52("md"));
-        }});
+    public void testOnDecisionTableSelectedEventWithNoSelectionsAndItDoesNotHaveEditableColumns() {
 
-        uiModel.selectCell(0,
-                           2);
+        when(dtPresenter.hasEditableColumns()).thenReturn(false);
+
+        builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
+
+        assertTrue(builder.miAppendRow.getMenuItem().isEnabled());
+        assertFalse(builder.miInsertRowAbove.getMenuItem().isEnabled());
+        assertFalse(builder.miInsertRowBelow.getMenuItem().isEnabled());
+        assertFalse(builder.miInsertColumn.getMenuItem().isEnabled());
+    }
+
+    @Test
+    public void testOnDecisionTableSelectedEventWithSingleRowSelectedAndItHasEditableColumns() {
+
+        model.getConditions().add(makePattern52());
+        model.getData().add(makeDTCellValue52List());
+        uiModel.selectCell(0, 2);
 
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
@@ -145,31 +149,30 @@ public class InsertMenuBuilderTest {
     }
 
     @Test
-    public void testOnDecisionTableSelectedEventWithMultipleRowsSelected() {
-        model.getConditions().add(new Pattern52() {{
-            setFactType("Fact");
-            getChildColumns().add(new ConditionCol52() {{
-                setFactType("Fact");
-                setFactField("field1");
-                setFieldType(DataType.TYPE_STRING);
-                setOperator("==");
-            }});
-        }});
-        model.getData().add(new ArrayList<DTCellValue52>() {{
-            add(new DTCellValue52(1));
-            add(new DTCellValue52("descr"));
-            add(new DTCellValue52("md"));
-        }});
-        model.getData().add(new ArrayList<DTCellValue52>() {{
-            add(new DTCellValue52(1));
-            add(new DTCellValue52("descr"));
-            add(new DTCellValue52("md"));
-        }});
+    public void testOnDecisionTableSelectedEventWithSingleRowSelectedAndItDoesNotHaveEditableColumns() {
 
-        uiModel.selectCells(0,
-                            2,
-                            1,
-                            2);
+        when(dtPresenter.hasEditableColumns()).thenReturn(false);
+
+        model.getConditions().add(makePattern52());
+        model.getData().add(makeDTCellValue52List());
+        uiModel.selectCell(0, 2);
+
+        builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
+
+        assertTrue(builder.miAppendRow.getMenuItem().isEnabled());
+        assertTrue(builder.miInsertRowAbove.getMenuItem().isEnabled());
+        assertTrue(builder.miInsertRowBelow.getMenuItem().isEnabled());
+        assertFalse(builder.miInsertColumn.getMenuItem().isEnabled());
+    }
+
+    @Test
+    public void testOnDecisionTableSelectedEventWithMultipleRowsSelectedAndItHasEditableColumns() {
+
+        model.getConditions().add(makePattern52());
+        model.getData().add(makeDTCellValue52List());
+        model.getData().add(makeDTCellValue52List());
+
+        uiModel.selectCells(0, 2, 1, 2);
 
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
@@ -180,7 +183,26 @@ public class InsertMenuBuilderTest {
     }
 
     @Test
-    public void testOnDecisionTableSelectionsChangedEventWithNoSelections() {
+    public void testOnDecisionTableSelectedEventWithMultipleRowsSelectedAndItDoesNotHaveEditableColumns() {
+
+        when(dtPresenter.hasEditableColumns()).thenReturn(false);
+
+        model.getConditions().add(makePattern52());
+        model.getData().add(makeDTCellValue52List());
+        model.getData().add(makeDTCellValue52List());
+        uiModel.selectCells(0, 2, 1, 2);
+
+        builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
+
+        assertTrue(builder.miAppendRow.getMenuItem().isEnabled());
+        assertFalse(builder.miInsertRowAbove.getMenuItem().isEnabled());
+        assertFalse(builder.miInsertRowBelow.getMenuItem().isEnabled());
+        assertFalse(builder.miInsertColumn.getMenuItem().isEnabled());
+    }
+
+    @Test
+    public void testOnDecisionTableSelectionsChangedEventWithNoSelectionsAndItHasEditableColumns() {
+
         builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
 
         assertTrue(builder.miAppendRow.getMenuItem().isEnabled());
@@ -190,24 +212,24 @@ public class InsertMenuBuilderTest {
     }
 
     @Test
-    public void testOnDecisionTableSelectionsChangedEventWithSingleRowSelected() {
-        model.getConditions().add(new Pattern52() {{
-            setFactType("Fact");
-            getChildColumns().add(new ConditionCol52() {{
-                setFactType("Fact");
-                setFactField("field1");
-                setFieldType(DataType.TYPE_STRING);
-                setOperator("==");
-            }});
-        }});
-        model.getData().add(new ArrayList<DTCellValue52>() {{
-            add(new DTCellValue52(1));
-            add(new DTCellValue52("descr"));
-            add(new DTCellValue52("md"));
-        }});
+    public void testOnDecisionTableSelectionsChangedEventWithNoSelectionsAndItDoesNotHaveEditableColumns() {
 
-        uiModel.selectCell(0,
-                           2);
+        when(dtPresenter.hasEditableColumns()).thenReturn(false);
+
+        builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
+
+        assertTrue(builder.miAppendRow.getMenuItem().isEnabled());
+        assertFalse(builder.miInsertRowAbove.getMenuItem().isEnabled());
+        assertFalse(builder.miInsertRowBelow.getMenuItem().isEnabled());
+        assertFalse(builder.miInsertColumn.getMenuItem().isEnabled());
+    }
+
+    @Test
+    public void testOnDecisionTableSelectionsChangedEventWithSingleRowSelectedAndItHasEditableColumns() {
+
+        model.getConditions().add(makePattern52());
+        model.getData().add(makeDTCellValue52List());
+        uiModel.selectCell(0, 2);
 
         builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
 
@@ -218,31 +240,29 @@ public class InsertMenuBuilderTest {
     }
 
     @Test
-    public void testOnDecisionTableSelectionsChangedEventWithMultipleRowsSelected() {
-        model.getConditions().add(new Pattern52() {{
-            setFactType("Fact");
-            getChildColumns().add(new ConditionCol52() {{
-                setFactType("Fact");
-                setFactField("field1");
-                setFieldType(DataType.TYPE_STRING);
-                setOperator("==");
-            }});
-        }});
-        model.getData().add(new ArrayList<DTCellValue52>() {{
-            add(new DTCellValue52(1));
-            add(new DTCellValue52("descr"));
-            add(new DTCellValue52("md"));
-        }});
-        model.getData().add(new ArrayList<DTCellValue52>() {{
-            add(new DTCellValue52(1));
-            add(new DTCellValue52("descr"));
-            add(new DTCellValue52("md"));
-        }});
+    public void testOnDecisionTableSelectionsChangedEventWithSingleRowSelectedAndItDoesNotHaveEditableColumns() {
 
-        uiModel.selectCells(0,
-                            2,
-                            1,
-                            2);
+        when(dtPresenter.hasEditableColumns()).thenReturn(false);
+
+        model.getConditions().add(makePattern52());
+        model.getData().add(makeDTCellValue52List());
+        uiModel.selectCell(0, 2);
+
+        builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
+
+        assertTrue(builder.miAppendRow.getMenuItem().isEnabled());
+        assertTrue(builder.miInsertRowAbove.getMenuItem().isEnabled());
+        assertTrue(builder.miInsertRowBelow.getMenuItem().isEnabled());
+        assertFalse(builder.miInsertColumn.getMenuItem().isEnabled());
+    }
+
+    @Test
+    public void testOnDecisionTableSelectionsChangedEventWithMultipleRowsSelectedAndItHasEditableColumns() {
+
+        model.getConditions().add(makePattern52());
+        model.getData().add(makeDTCellValue52List());
+        model.getData().add(makeDTCellValue52List());
+        uiModel.selectCells(0, 2, 1, 2);
 
         builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
 
@@ -250,16 +270,56 @@ public class InsertMenuBuilderTest {
         assertFalse(builder.miInsertRowAbove.getMenuItem().isEnabled());
         assertFalse(builder.miInsertRowBelow.getMenuItem().isEnabled());
         assertTrue(builder.miInsertColumn.getMenuItem().isEnabled());
+    }
+
+    @Test
+    public void testOnDecisionTableSelectionsChangedEventWithMultipleRowsSelectedAndItDoesNotHaveEditableColumns() {
+
+        when(dtPresenter.hasEditableColumns()).thenReturn(false);
+
+        model.getConditions().add(makePattern52());
+        model.getData().add(makeDTCellValue52List());
+        model.getData().add(makeDTCellValue52List());
+        uiModel.selectCells(0, 2, 1, 2);
+
+        builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
+
+        assertTrue(builder.miAppendRow.getMenuItem().isEnabled());
+        assertFalse(builder.miInsertRowAbove.getMenuItem().isEnabled());
+        assertFalse(builder.miInsertRowBelow.getMenuItem().isEnabled());
+        assertFalse(builder.miInsertColumn.getMenuItem().isEnabled());
     }
 
     @Test
     public void testOnDecisionTableSelectedEventReadOnly() {
+
         dtPresenter.getAccess().setReadOnly(true);
+
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
         assertFalse(builder.miAppendRow.getMenuItem().isEnabled());
         assertFalse(builder.miInsertRowAbove.getMenuItem().isEnabled());
         assertFalse(builder.miInsertRowBelow.getMenuItem().isEnabled());
         assertFalse(builder.miInsertColumn.getMenuItem().isEnabled());
+    }
+
+    private Pattern52 makePattern52() {
+        return new Pattern52() {{
+            setFactType("Fact");
+            getChildColumns().add(new ConditionCol52() {{
+                setFactType("Fact");
+                setFactField("field1");
+                setFieldType(DataType.TYPE_STRING);
+                setOperator("==");
+            }});
+        }};
+    }
+
+    private List<DTCellValue52> makeDTCellValue52List() {
+        return new ArrayList<DTCellValue52>() {{
+            add(new DTCellValue52(1));
+            add(new DTCellValue52("descr"));
+            add(new DTCellValue52("md"));
+        }};
     }
 }

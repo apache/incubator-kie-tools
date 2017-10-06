@@ -100,6 +100,7 @@ import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.LockTarget;
@@ -114,6 +115,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowS
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter.Access.LockedBy.CURRENT_USER;
@@ -148,6 +151,8 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     private final Access access = new Access();
     private final PluginHandler pluginHandler;
+    private final AuthorizationManager authorizationManager;
+    private final SessionInfo sessionInfo;
 
     protected CellUtilities cellUtilities;
     protected ColumnUtilities columnUtilities;
@@ -196,7 +201,10 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                         final Clipboard clipboard,
                                         final DecisionTableAnalyzerProvider decisionTableAnalyzerProvider,
                                         final EnumLoaderUtilities enumLoaderUtilities,
-                                        final PluginHandler pluginHandler) {
+                                        final PluginHandler pluginHandler,
+                                        final AuthorizationManager authorizationManager,
+                                        final SessionInfo sessionInfo) {
+
         this.identity = identity;
         this.resourceType = resourceType;
         this.ruleNameService = ruleNameService;
@@ -219,6 +227,8 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         this.decisionTableAnalyzerProvider = decisionTableAnalyzerProvider;
         this.enumLoaderUtilities = enumLoaderUtilities;
         this.pluginHandler = pluginHandler;
+        this.authorizationManager = authorizationManager;
+        this.sessionInfo = sessionInfo;
 
         CellUtilities.injectDateConvertor(getDateConverter());
 
@@ -320,19 +330,32 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         this.oracle = oracleFactory.makeAsyncPackageDataModelOracle(path,
                                                                     model,
                                                                     dataModel);
-        this.access.setReadOnly(isReadOnly);
         this.rm = new BRLRuleModel(model);
 
         this.uiModel = makeUiModel();
         this.renderer = makeViewRenderer();
         this.view = makeView(workItemDefinitions);
 
+        initialiseAccess(isReadOnly);
         initialiseLockManager();
         initialiseUtilities();
         initialiseModels();
         initialiseValidationAndVerification();
         initialiseEventHandlers();
         initialiseAuditLog();
+    }
+
+    void initialiseAccess(final boolean isReadOnly) {
+        getAccess().setReadOnly(isReadOnly);
+        getAccess().setHasEditableColumns(canEditColumns());
+    }
+
+    boolean canEditColumns() {
+
+        final String permission = WorkbenchFeatures.GUIDED_DECISION_TABLE_EDIT_COLUMNS;
+        final User user = sessionInfo.getIdentity();
+
+        return authorizationManager.authorize(permission, user);
     }
 
     //Setup LockManager
@@ -1416,6 +1439,11 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
+    public boolean hasEditableColumns() {
+        return getAccess().hasEditableColumns();
+    }
+
+    @Override
     public void setReadOnly(final boolean isReadOnly) {
         this.access.setReadOnly(isReadOnly);
     }
@@ -1454,6 +1482,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
         private LockedBy lock = NOBODY;
         private boolean isReadOnly = false;
+        private boolean hasEditableColumns = false;
 
         public LockedBy getLock() {
             return lock;
@@ -1465,6 +1494,14 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
         public boolean isReadOnly() {
             return isReadOnly;
+        }
+
+        public boolean hasEditableColumns() {
+            return hasEditableColumns;
+        }
+
+        public void setHasEditableColumns(final boolean hasEditableColumns) {
+            this.hasEditableColumns = hasEditableColumns;
         }
 
         public void setReadOnly(final boolean isReadOnly) {

@@ -64,6 +64,8 @@ import org.mockito.Mockito;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -116,6 +118,12 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
     @Mock
     private PluginHandler pluginHandler;
 
+    @Mock
+    private AuthorizationManager authorizationManager;
+
+    @Mock
+    private SessionInfo sessionInfo;
+
     private GridWidgetColumnFactory gridWidgetColumnFactory = new GridWidgetColumnFactoryImpl();
     private GuidedDecisionTablePresenter dtPresenter;
     private GuidedDecisionTableEditorContent dtContent;
@@ -164,7 +172,9 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
                                                        null,
                                                        decisionTableAnalyzerProvider,
                                                        enumLoaderUtilities,
-                                                       pluginHandler) {
+                                                       pluginHandler,
+                                                       authorizationManager,
+                                                       sessionInfo) {
             @Override
             void initialiseLockManager() {
                 //Do nothing for tests
