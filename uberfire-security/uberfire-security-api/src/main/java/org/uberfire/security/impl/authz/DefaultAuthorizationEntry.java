@@ -23,10 +23,11 @@ import org.uberfire.security.authz.PermissionCollection;
 @Portable
 public class DefaultAuthorizationEntry {
 
+    public static final int DEFAULT_PRIORITY = -100;
     private String description = null;
     private Role role = null;
     private Group group = null;
-    private int priority = 0;
+    private int priority = DEFAULT_PRIORITY;
     private String homePerspective = null;
     private PermissionCollection permissions = new DefaultPermissionCollection();
 

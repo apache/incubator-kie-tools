@@ -35,6 +35,7 @@ import org.uberfire.security.impl.authz.DefaultPermissionManager;
 import org.uberfire.security.impl.authz.DefaultPermissionTypeRegistry;
 
 import static org.mockito.Mockito.*;
+import static org.uberfire.security.impl.authz.DefaultAuthorizationEntry.DEFAULT_PRIORITY;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ACLSettingsTest {
@@ -69,7 +70,7 @@ public class ACLSettingsTest {
 
         permissionManager.setAuthorizationPolicy(permissionManager.newAuthorizationPolicy()
                                                          .role("admin").home("HomeAdmin").priority(10)
-                                                         .group("group1").home("HomeGroup1").priority(0)
+                                                         .group("group1").home("HomeGroup1").priority(DEFAULT_PRIORITY)
                                                          .build()
         );
 
@@ -87,7 +88,7 @@ public class ACLSettingsTest {
         when(homePerspectiveDropDown.getItemName("HomeAdmin")).thenReturn("HomeAdmin");
         when(homePerspectiveDropDown.getItemName("HomeGroup1")).thenReturn("HomeGroup1");
         when(priorityDropDown.getPriorityName(10)).thenReturn("High");
-        when(priorityDropDown.getPriorityName(0)).thenReturn("Normal");
+        when(priorityDropDown.getPriorityName(DEFAULT_PRIORITY)).thenReturn("Very Low");
     }
 
     @Test
@@ -125,7 +126,7 @@ public class ACLSettingsTest {
         verify(view).setPrioritySelector(any());
         verify(view).setHomePerspectiveName("HomeGroup1");
         verify(view).setHomePerspectiveTitle("HomeGroup1");
-        verify(view).setPriorityName("Normal");
+        verify(view).setPriorityName("Very Low");
     }
 
     @Test
@@ -137,7 +138,7 @@ public class ACLSettingsTest {
         verify(view).setHomePerspectiveSelector(any());
         verify(view).setPrioritySelector(any());
         verify(homePerspectiveDropDown).setSelectedPerspective("HomeGroup1");
-        verify(priorityDropDown).setSelectedPriority(0);
+        verify(priorityDropDown).setSelectedPriority(DEFAULT_PRIORITY);
     }
 
     @Test
@@ -161,7 +162,7 @@ public class ACLSettingsTest {
         verify(view).setPrioritySelector(any());
         verify(view).setHomePerspectiveName("DefaultPerspective");
         verify(view).setHomePerspectiveTitle("DefaultPerspective");
-        verify(view).setPriorityName("Normal");
+        verify(view).setPriorityName("Very Low");
     }
 
     @Test
