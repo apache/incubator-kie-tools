@@ -167,7 +167,7 @@ public class OrganizationalUnitsScreen {
     public void refresh() {
         final String filterName = view.getFilterName().toUpperCase();
         final List<OrganizationalUnit> filteredOrganizationalUnits = organizationalUnits.stream()
-                .filter(ou -> ou.getName().toUpperCase().startsWith(filterName))
+                .filter(ou -> ou.getName().toUpperCase().contains(filterName))
                 .collect(Collectors.toList());
         filteredOrganizationalUnits.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
         refreshOrganizationalUnits(filteredOrganizationalUnits);

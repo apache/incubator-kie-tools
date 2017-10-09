@@ -216,7 +216,7 @@ public class OrganizationalUnitsScreenTest {
 
     @Test
     public void refreshTest() {
-        doReturn("ou3").when(view).getFilterName();
+        doReturn("u3").when(view).getFilterName();
         presenter.organizationalUnits = new ArrayList<>();
         presenter.organizationalUnits.add(organizationalUnit1);
         presenter.organizationalUnits.add(organizationalUnit2);
