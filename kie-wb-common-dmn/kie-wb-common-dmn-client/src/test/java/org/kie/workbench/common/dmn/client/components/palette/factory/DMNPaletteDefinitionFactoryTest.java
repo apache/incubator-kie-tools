@@ -15,20 +15,20 @@
  */
 package org.kie.workbench.common.dmn.client.components.palette.factory;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Categories;
-import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidget;
+import org.kie.workbench.common.dmn.client.components.palette.widget.DMNPaletteWidget;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPaletteBuilder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DMNPaletteDefinitionFactoryTest {
@@ -40,7 +40,7 @@ public class DMNPaletteDefinitionFactoryTest {
     private DefinitionsPaletteBuilder paletteBuilder;
 
     @Mock
-    private BS3PaletteWidget<DefinitionsPalette> palette;
+    private ManagedInstance<DMNPaletteWidget> palette;
 
     private DMNPaletteDefinitionFactory factory;
 

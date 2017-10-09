@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.basicset.BasicSet;
 import org.kie.workbench.common.stunner.basicset.definition.BasicConnector;
 import org.kie.workbench.common.stunner.basicset.definition.Categories;
@@ -56,7 +57,7 @@ public class BasicSetPaletteDefinitionFactory extends BindableDefSetPaletteDefin
     @Inject
     public BasicSetPaletteDefinitionFactory(final ShapeManager shapeManager,
                                             final DefinitionSetPaletteBuilder paletteBuilder,
-                                            final BS3PaletteWidget<DefinitionSetPalette> palette) {
+                                            final ManagedInstance<BS3PaletteWidget<DefinitionSetPalette>> palette) {
         super(shapeManager,
               paletteBuilder,
               palette);

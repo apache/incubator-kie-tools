@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.palette;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.AbstractPaletteDefinitionFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.DefaultDefSetPaletteDefinitionFactory;
@@ -35,7 +36,7 @@ public class DefaultDefSetPaletteDefinitionFactoryImpl extends AbstractPaletteDe
     @Inject
     public DefaultDefSetPaletteDefinitionFactoryImpl(final ShapeManager shapeManager,
                                                      final DefinitionSetPaletteBuilder paletteBuilder,
-                                                     final BS3PaletteWidget<DefinitionSetPalette> palette) {
+                                                     final ManagedInstance<BS3PaletteWidget<DefinitionSetPalette>> palette) {
         super(shapeManager,
               paletteBuilder,
               palette);

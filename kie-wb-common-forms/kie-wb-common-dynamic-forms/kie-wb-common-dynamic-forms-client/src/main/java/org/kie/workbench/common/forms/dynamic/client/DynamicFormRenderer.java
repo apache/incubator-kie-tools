@@ -209,7 +209,7 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
     }
 
     public boolean isValid() {
-        return formHandler.validate();
+        return isInitialized() && formHandler.validate();
     }
 
     public void forceModelSynchronization() {

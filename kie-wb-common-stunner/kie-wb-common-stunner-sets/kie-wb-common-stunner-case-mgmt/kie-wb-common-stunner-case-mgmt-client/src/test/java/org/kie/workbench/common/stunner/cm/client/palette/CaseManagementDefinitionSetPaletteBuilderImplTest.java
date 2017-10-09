@@ -22,6 +22,7 @@ import java.util.Set;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -114,7 +115,7 @@ public class CaseManagementDefinitionSetPaletteBuilderImplTest {
     private ShapeManager shapeManager;
 
     @Mock
-    private BS3PaletteWidget palette;
+    private ManagedInstance<BS3PaletteWidget<DefinitionSetPalette>> palette;
 
     @Mock
     private DefinitionManager definitionManager;

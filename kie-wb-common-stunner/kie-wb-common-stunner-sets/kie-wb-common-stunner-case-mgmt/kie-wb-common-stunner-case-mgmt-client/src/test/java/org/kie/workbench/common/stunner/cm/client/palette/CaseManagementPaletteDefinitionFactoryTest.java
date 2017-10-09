@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.stunner.cm.client.palette;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,7 @@ import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidget;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -50,7 +52,7 @@ public class CaseManagementPaletteDefinitionFactoryTest {
     private DefinitionSetPaletteBuilder paletteBuilder;
 
     @Mock
-    private BS3PaletteWidget palette;
+    private ManagedInstance<BS3PaletteWidget<DefinitionSetPalette>> palette;
 
     private CaseManagementPaletteDefinitionFactory factory;
 

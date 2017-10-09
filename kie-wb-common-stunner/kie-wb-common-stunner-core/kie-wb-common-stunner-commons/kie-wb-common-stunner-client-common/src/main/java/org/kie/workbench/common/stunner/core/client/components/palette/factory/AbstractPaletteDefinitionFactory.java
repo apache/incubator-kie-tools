@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette.factory;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
@@ -26,11 +27,11 @@ public abstract class AbstractPaletteDefinitionFactory<B extends PaletteDefiniti
 
     protected ShapeManager shapeManager;
     protected B paletteBuilder;
-    protected P palette;
+    protected ManagedInstance<P> palette;
 
     public AbstractPaletteDefinitionFactory(final ShapeManager shapeManager,
                                             final B paletteBuilder,
-                                            final P palette) {
+                                            ManagedInstance<P> palette) {
         this.shapeManager = shapeManager;
         this.paletteBuilder = paletteBuilder;
         this.palette = palette;
@@ -43,6 +44,7 @@ public abstract class AbstractPaletteDefinitionFactory<B extends PaletteDefiniti
 
     @Override
     public P newPalette() {
-        return palette;
+        //get a NEW instance from the CDI Bean Manager Context every time this method is called
+        return palette.get();
     }
 }

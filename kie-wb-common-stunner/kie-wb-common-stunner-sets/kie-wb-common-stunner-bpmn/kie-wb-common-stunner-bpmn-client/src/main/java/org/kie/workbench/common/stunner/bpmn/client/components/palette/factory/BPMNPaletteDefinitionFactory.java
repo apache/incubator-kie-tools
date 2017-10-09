@@ -23,6 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
@@ -85,7 +86,7 @@ public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitio
   public BPMNPaletteDefinitionFactory(final ShapeManager shapeManager,
                                       final DefinitionSetPaletteBuilder paletteBuilder,
                                       final AbstractTranslationService translationService,
-                                      final BS3PaletteWidget<DefinitionSetPalette> palette) {
+                                      final ManagedInstance<BS3PaletteWidget<DefinitionSetPalette>> palette) {
     super(shapeManager,
           paletteBuilder,
           palette);

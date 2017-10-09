@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.Categories;
@@ -65,7 +66,7 @@ public class CaseManagementPaletteDefinitionFactory extends BindableDefSetPalett
     @Inject
     public CaseManagementPaletteDefinitionFactory(final ShapeManager shapeManager,
                                                   final @CaseManagementEditor DefinitionSetPaletteBuilder paletteBuilder,
-                                                  final BS3PaletteWidget<DefinitionSetPalette> palette) {
+                                                  final ManagedInstance<BS3PaletteWidget<DefinitionSetPalette>> palette) {
         super(shapeManager,
               paletteBuilder,
               palette);

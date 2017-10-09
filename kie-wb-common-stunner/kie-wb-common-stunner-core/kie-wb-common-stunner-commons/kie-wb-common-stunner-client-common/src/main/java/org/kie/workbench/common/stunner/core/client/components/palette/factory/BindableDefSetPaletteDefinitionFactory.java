@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette.factory;
 
+import javax.enterprise.inject.Instance;
+
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
@@ -28,7 +31,7 @@ public abstract class BindableDefSetPaletteDefinitionFactory<I extends HasPalett
 
     public BindableDefSetPaletteDefinitionFactory(final ShapeManager shapeManager,
                                                   final DefinitionSetPaletteBuilder paletteBuilder,
-                                                  final P palette) {
+                                                  final ManagedInstance<P> palette) {
         super(shapeManager,
               paletteBuilder,
               palette);

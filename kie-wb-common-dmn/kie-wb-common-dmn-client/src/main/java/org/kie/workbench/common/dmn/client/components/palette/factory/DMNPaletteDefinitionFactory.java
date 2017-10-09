@@ -18,21 +18,22 @@ package org.kie.workbench.common.dmn.client.components.palette.factory;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Categories;
-import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidget;
+import org.kie.workbench.common.dmn.client.components.palette.widget.DMNPaletteWidget;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.BindablePaletteDefinitionFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPaletteBuilder;
 
 @Dependent
-public class DMNPaletteDefinitionFactory extends BindablePaletteDefinitionFactory<DefinitionsPaletteBuilder, DefinitionsPalette, BS3PaletteWidget<DefinitionsPalette>> {
+public class DMNPaletteDefinitionFactory extends BindablePaletteDefinitionFactory<DefinitionsPaletteBuilder, DefinitionsPalette, DMNPaletteWidget> {
 
     @Inject
     public DMNPaletteDefinitionFactory(final ShapeManager shapeManager,
                                        final DefinitionsPaletteBuilder paletteBuilder,
-                                       final BS3PaletteWidget<DefinitionsPalette> palette) {
+                                       final ManagedInstance<DMNPaletteWidget> palette) {
         super(shapeManager,
               paletteBuilder,
               palette);

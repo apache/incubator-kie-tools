@@ -280,7 +280,7 @@ public final class SelectionControlImpl<H extends AbstractCanvasHandler>
     }
 
     private Canvas getCanvas() {
-        return canvasHandler.getCanvas();
+        return canvasHandler != null ? canvasHandler.getCanvas() : null;
     }
 
     private String getRootUUID() {
