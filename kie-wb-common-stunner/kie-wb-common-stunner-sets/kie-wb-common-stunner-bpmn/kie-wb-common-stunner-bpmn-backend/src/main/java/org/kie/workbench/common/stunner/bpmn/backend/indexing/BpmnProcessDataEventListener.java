@@ -79,6 +79,8 @@ public class BpmnProcessDataEventListener
         return process;
     }
 
+    private Set<String> uniqueVariables;
+
     // ProcessDataEventListener methods -------------------------------------------------------------------------------------------
 
     @Override
@@ -242,25 +244,9 @@ public class BpmnProcessDataEventListener
         // process unqualified classes
         resolveUnqualifiedClasses();
 
-        // process variables
-        if (variables != null) {
-            for (Variable data : variables) {
-                String type = data.getType().getStringType();
-                String itemSubjectRef = (String) data.getMetaData("ItemSubjectRef");
-                if (itemSubjectRef != null && itemDefinitions != null) {
-                    ItemDefinition itemDef = itemDefinitions.get(itemSubjectRef);
-                    type = itemDef.getStructureRef();
-                }
-
-                resource.addPart(data.getName(),
-                                 PartType.VARIABLE);
-                if (type.contains(".")) {
-                    getReferencedClasses().add(type);
-                } else {
-                    getUnqualifiedClasses().add(type);
-                }
-            }
-        }
+        // distinct process variables (in case of duplicates)
+        addDistinctProcessVariables(variables,
+                                    resource);
 
         // process signals, messages, etc.
         visitSignals(signals);
@@ -276,6 +262,32 @@ public class BpmnProcessDataEventListener
                 if (!functionImport.endsWith("*")) {
                     addResourceReference(functionImport,
                                          ResourceType.FUNCTION);
+                }
+            }
+        }
+    }
+
+    public void addDistinctProcessVariables(List<Variable> variables,
+                                            Resource resource) {
+        if (variables != null) {
+            uniqueVariables = new HashSet<>();
+            for (Variable data : variables) {
+                String type = data.getType().getStringType();
+                String itemSubjectRef = (String) data.getMetaData("ItemSubjectRef");
+                if (itemSubjectRef != null && itemDefinitions != null) {
+                    ItemDefinition itemDef = itemDefinitions.get(itemSubjectRef);
+                    type = itemDef.getStructureRef();
+                }
+
+                // add only if unique
+                if (uniqueVariables.add(data.getName())) {
+                    resource.addPart(data.getName(),
+                                     PartType.VARIABLE);
+                }
+                if (type.contains(".")) {
+                    getReferencedClasses().add(type);
+                } else {
+                    getUnqualifiedClasses().add(type);
                 }
             }
         }
@@ -330,5 +342,9 @@ public class BpmnProcessDataEventListener
             unqualifiedClasses = new HashSet<>(4);
         }
         return unqualifiedClasses;
+    }
+
+    public Set<String> getUniqueVariables() {
+        return uniqueVariables;
     }
 }
