@@ -16,11 +16,14 @@
 
 package org.kie.workbench.common.workbench.client.error;
 
+import com.google.gwt.user.client.Window;
 import org.dashbuilder.dataset.exception.*;
+import org.jboss.errai.bus.client.api.InvalidBusContentException;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.kie.server.api.exception.KieServicesHttpException;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 
@@ -50,10 +53,23 @@ public class DefaultWorkbenchErrorCallback extends DefaultErrorCallback {
         return false;
     }
 
+    public static boolean isInvalidBusContentException(final Throwable throwable) {
+        return throwable instanceof InvalidBusContentException;
+    }
+
     @Override
     public boolean error(final Message message,
                          final Throwable throwable) {
-        if (isKieServerForbiddenException(throwable)) {
+        if (isInvalidBusContentException(throwable)) {
+            final YesNoCancelPopup result = YesNoCancelPopup.newYesNoCancelPopup(DefaultWorkbenchConstants.INSTANCE.SessionTimeout(),
+                                                                                 DefaultWorkbenchConstants.INSTANCE.InvalidBusResponseProbablySessionTimeout(),
+                                                                                 Window.Location::reload,
+                                                                                 null,
+                                                                                 () -> {});
+            result.clearScrollHeight();
+            result.show();
+            return false;
+        } else if (isKieServerForbiddenException(throwable)) {
             ErrorPopup.showMessage(DefaultWorkbenchConstants.INSTANCE.KieServerError403());
             return false;
         } else if (isKieServerUnauthorizedException(throwable)) {
@@ -68,4 +84,5 @@ public class DefaultWorkbenchErrorCallback extends DefaultErrorCallback {
                                throwable);
         }
     }
+
 }

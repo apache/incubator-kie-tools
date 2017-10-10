@@ -160,4 +160,9 @@ public interface DefaultWorkbenchConstants
     String XLSScoreCard();
 
     String StunnerDesigner();
+
+    String InvalidBusResponseProbablySessionTimeout();
+
+    String SessionTimeout();
+
 }

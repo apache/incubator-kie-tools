@@ -17,10 +17,12 @@
 package org.kie.workbench.common.workbench.client.error;
 
 import org.dashbuilder.dataset.exception.*;
+import org.jboss.errai.bus.client.api.InvalidBusContentException;
 import org.junit.Test;
 import org.kie.server.api.exception.KieServicesHttpException;
 
 import static org.junit.Assert.*;
+import static org.kie.workbench.common.workbench.client.error.DefaultWorkbenchErrorCallback.isInvalidBusContentException;
 import static org.kie.workbench.common.workbench.client.error.DefaultWorkbenchErrorCallback.isKieServerForbiddenException;
 import static org.kie.workbench.common.workbench.client.error.DefaultWorkbenchErrorCallback.isKieServerUnauthorizedException;
 
@@ -62,5 +64,12 @@ public class DefaultWorkbenchErrorCallbackTest {
                                                                                 null,
                                                                                 new Exception("Unexpected HTTP response code when requesting URI ''! Error code: 403, message: <html><head><title>Error</title></head><body>Forbidden</body></html>"))));
         assertFalse(isKieServerUnauthorizedException(new Exception("Some Unexpected HTTP response code when requesting URI")));
+    }
+
+    @Test
+    public void testInvalidBusContentException() {
+        assertTrue(isInvalidBusContentException(new InvalidBusContentException("text/html", "content")));
+
+        assertFalse(isInvalidBusContentException(new RuntimeException()));
     }
 }
