@@ -155,7 +155,7 @@ public class ProjectMetricsFactory {
                 .width(250).height(170)
                 .margins(10, 0, 10, 5)
                 .legendOn(RIGHT)
-                .filterOn(false, true, false)
+                .filterOn(false, true, true)
                 .buildSettings();
     }
 
@@ -172,7 +172,7 @@ public class ProjectMetricsFactory {
                 .width(250).height(170)
                 .margins(10, 0, 5, 5)
                 .legendOn(RIGHT)
-                .filterOn(false, true, false)
+                .filterOn(false, true, true)
                 .buildSettings();
     }
 
@@ -214,7 +214,7 @@ public class ProjectMetricsFactory {
         return DisplayerSettingsFactory.newSelectorSettings()
                 .dataset(GIT_CONTRIB)
                 .filter(createProjectFilter(projectInfo))
-                .column(COLUMN_DATE).format(translationService.getTranslation(LibraryConstants.Date), "dd MMM, yyyy")
+                .column(COLUMN_DATE).format(translationService.getTranslation(LibraryConstants.Date), "dd MMM, yyyy HH:mm")
                 .subtype(DisplayerSubType.SELECTOR_SLIDER)
                 .titleVisible(false)
                 .width(420)

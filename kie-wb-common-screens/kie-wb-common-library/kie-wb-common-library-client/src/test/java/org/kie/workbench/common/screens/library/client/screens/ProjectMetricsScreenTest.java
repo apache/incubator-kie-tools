@@ -19,6 +19,7 @@ import java.util.Date;
 
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.RawDataSet;
+import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.client.AbstractDisplayer;
 import org.dashbuilder.displayer.client.AbstractDisplayerTest;
 import org.dashbuilder.displayer.client.Displayer;
@@ -138,7 +139,6 @@ public class ProjectMetricsScreenTest extends AbstractDisplayerTest {
         Displayer displayer = presenter.getCommitsPerAuthorDisplayer();
         DataSet dataSet = displayer.getDataSetHandler().getLastDataSet();
 
-        printDataSet(dataSet);
         assertDataSetValues(dataSet, new String[][]{
                 {"user1", "2.00", "2.00", "user1", "1.00"},
                 {"user2", "2.00", "2.00", "user2", "1.00"}
@@ -260,5 +260,23 @@ public class ProjectMetricsScreenTest extends AbstractDisplayerTest {
         displayer.filterUpdate(COLUMN_DATE, 2); // "Tuesday" selected
         dataSet = presenter.getAllCommitsDisplayer().getDataSetHandler().getLastDataSet();
         assertEquals(dataSet.getRowCount(), 1);
+    }
+
+    @Test
+    public void dateSelectorFormatTest() {
+        DisplayerSettings settings = metricsFactory.buildDateSelectorSettings(projectInfo);
+        assertEquals(settings.getColumnSettings(COLUMN_DATE).getValuePattern(), "dd MMM, yyyy HH:mm");
+    }
+
+    @Test
+    public void displayersListenOthersTest() {
+        assertTrue(metricsFactory.buildAllCommitsSettings(projectInfo).isFilterListeningEnabled());
+        assertTrue(metricsFactory.buildCommitsByDayOfWeekSettings(projectInfo).isFilterListeningEnabled());
+        assertTrue(metricsFactory.buildCommitsByQuarterSettings(projectInfo).isFilterListeningEnabled());
+        assertTrue(metricsFactory.buildCommitsByYearSettings(projectInfo).isFilterListeningEnabled());
+        assertTrue(metricsFactory.buildCommitsOverTimeSettings(projectInfo).isFilterListeningEnabled());
+        assertTrue(metricsFactory.buildDateSelectorSettings(projectInfo).isFilterListeningEnabled());
+        assertTrue(metricsFactory.buildTopContributorSelectorSettings(projectInfo).isFilterListeningEnabled());
+        assertTrue(metricsFactory.buildCommitsPerAuthorSettings(projectInfo).isFilterListeningEnabled());
     }
 }

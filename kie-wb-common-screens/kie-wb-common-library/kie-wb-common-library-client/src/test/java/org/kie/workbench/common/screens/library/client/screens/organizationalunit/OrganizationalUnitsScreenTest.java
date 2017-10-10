@@ -19,7 +19,9 @@ package org.kie.workbench.common.screens.library.client.screens.organizationalun
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.client.Displayer;
+import org.dashbuilder.displayer.client.DisplayerLocator;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
 import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
@@ -28,6 +30,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,11 +39,13 @@ import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.popup.OrganizationalUnitPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.util.OrgUnitsMetricsFactory;
+import org.kie.workbench.common.screens.library.client.util.TranslationUtils;
 import org.kie.workbench.common.screens.library.client.widgets.organizationalunit.OrganizationalUnitTileWidget;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -71,11 +76,18 @@ public class OrganizationalUnitsScreenTest {
     private OrganizationalUnitTileWidget organizationalUnitTileWidget;
 
     @Mock
-    private OrgUnitsMetricsFactory orgUnitsMetricsFactory;
+    private TranslationService translationService;
+
+    @Mock
+    private TranslationUtils translationUtils;
+
+    @Mock
+    private DisplayerLocator displayerLocator;
 
     @Mock
     private Displayer commmitsDisplayer;
 
+    private OrgUnitsMetricsFactory orgUnitsMetricsFactory;
     private OrganizationalUnitsScreen presenter;
 
     private OrganizationalUnit organizationalUnit1;
@@ -84,6 +96,12 @@ public class OrganizationalUnitsScreenTest {
 
     @Before
     public void setup() {
+        when(translationService.getTranslation(anyString())).thenReturn("");
+
+        orgUnitsMetricsFactory = new OrgUnitsMetricsFactory(translationService,
+                translationUtils,
+                displayerLocator);
+
         libraryServiceCaller = new CallerMock<>(libraryService);
 
         organizationalUnit1 = new OrganizationalUnitImpl("ou1",
@@ -102,7 +120,7 @@ public class OrganizationalUnitsScreenTest {
         organizationalUnits.add(organizationalUnit3);
         doReturn(organizationalUnits).when(libraryService).getOrganizationalUnits();
 
-        when(orgUnitsMetricsFactory.lookupCommitsOverTimeDisplayer_small()).thenReturn(commmitsDisplayer);
+        when(displayerLocator.lookupDisplayer(any())).thenReturn(commmitsDisplayer);
 
         presenter = spy(new OrganizationalUnitsScreen(view,
                                                       libraryPlaces,
@@ -241,5 +259,26 @@ public class OrganizationalUnitsScreenTest {
 
         verify(view).setFilterName("name");
         verify(presenter).refresh();
+    }
+
+    @Test
+    public void dateSelectorFormatTest() {
+        DisplayerSettings settings = orgUnitsMetricsFactory.buildDateSelectorSettings();
+        assertEquals(settings.getColumnSettings(COLUMN_DATE).getValuePattern(), "dd MMM, yyyy HH:mm");
+    }
+
+    @Test
+    public void displayersListenOthersTest() {
+        assertTrue(orgUnitsMetricsFactory.buildAllCommitsSettings().isFilterListeningEnabled());
+        assertTrue(orgUnitsMetricsFactory.buildCommitsByDayOfWeekSettings().isFilterListeningEnabled());
+        assertTrue(orgUnitsMetricsFactory.buildCommitsByQuarterSettings().isFilterListeningEnabled());
+        assertTrue(orgUnitsMetricsFactory.buildCommitsByYearSettings().isFilterListeningEnabled());
+        assertTrue(orgUnitsMetricsFactory.buildCommitsOverTimeSettings().isFilterListeningEnabled());
+        assertTrue(orgUnitsMetricsFactory.buildDateSelectorSettings().isFilterListeningEnabled());
+        assertTrue(orgUnitsMetricsFactory.buildOrgUnitSelectorSettings().isFilterListeningEnabled());
+        assertTrue(orgUnitsMetricsFactory.buildProjectSelectorSettings().isFilterListeningEnabled());
+        assertTrue(orgUnitsMetricsFactory.buildTopContributorSelectorSettings().isFilterListeningEnabled());
+        assertTrue(orgUnitsMetricsFactory.buildCommitsPerProjectSettings().isFilterListeningEnabled());
+        assertTrue(orgUnitsMetricsFactory.buildCommitsPerAuthorSettings().isFilterListeningEnabled());
     }
 }
