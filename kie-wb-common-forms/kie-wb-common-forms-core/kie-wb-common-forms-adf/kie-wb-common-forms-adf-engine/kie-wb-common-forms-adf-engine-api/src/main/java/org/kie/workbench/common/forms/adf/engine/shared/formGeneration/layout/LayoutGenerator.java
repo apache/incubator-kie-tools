@@ -95,13 +95,11 @@ public class LayoutGenerator {
         }
 
         this.structure = spans.toArray(new ColSpan[spans.size()]);
-
-        newRow();
     }
 
     public void addComponent(LayoutComponent component,
                              LayoutSettings settings) {
-        if (currentRow.isFull()) {
+        if (currentRow == null || currentRow.isFull()) {
             newRow();
         }
 
@@ -116,30 +114,32 @@ public class LayoutGenerator {
     public LayoutTemplate build() {
         LayoutTemplate template = new LayoutTemplate();
 
-        rows.forEach(row -> {
-            LayoutRow layoutRow = new LayoutRow();
+        rows.stream()
+                .filter(row -> !row.cells.isEmpty())
+                .forEach(row -> {
+                    LayoutRow layoutRow = new LayoutRow();
 
-            template.addRow(layoutRow);
+                    template.addRow(layoutRow);
 
-            row.cells.forEach(cell -> {
-                LayoutColumn layoutColumn = new LayoutColumn(String.valueOf(cell.horizontalSpan));
-                layoutRow.add(layoutColumn);
+                    row.cells.forEach(cell -> {
+                        LayoutColumn layoutColumn = new LayoutColumn(String.valueOf(cell.horizontalSpan));
+                        layoutRow.add(layoutColumn);
 
-                if (cell.getComponentsCount() == 0) {
-                    return;
-                } else if (cell.getComponentsCount() == 1) {
-                    layoutColumn.add(cell.components.get(0));
-                } else {
-                    cell.components.forEach(component -> {
-                        LayoutRow nestedRow = new LayoutRow();
-                        layoutColumn.addRow(nestedRow);
-                        LayoutColumn nestedColumn = new LayoutColumn(String.valueOf(MAX_SPAN));
-                        nestedRow.add(nestedColumn);
-                        nestedColumn.add(component);
+                        if (cell.getComponentsCount() == 0) {
+                            return;
+                        } else if (cell.getComponentsCount() == 1) {
+                            layoutColumn.add(cell.components.get(0));
+                        } else {
+                            cell.components.forEach(component -> {
+                                LayoutRow nestedRow = new LayoutRow();
+                                layoutColumn.addRow(nestedRow);
+                                LayoutColumn nestedColumn = new LayoutColumn(String.valueOf(MAX_SPAN));
+                                nestedRow.add(nestedColumn);
+                                nestedColumn.add(component);
+                            });
+                        }
                     });
-                }
-            });
-        });
+                });
 
         return template;
     }

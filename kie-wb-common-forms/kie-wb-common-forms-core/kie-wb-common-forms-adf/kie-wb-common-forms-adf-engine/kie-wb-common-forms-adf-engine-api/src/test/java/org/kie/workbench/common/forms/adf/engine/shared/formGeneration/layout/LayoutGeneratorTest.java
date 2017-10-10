@@ -209,6 +209,21 @@ public class LayoutGeneratorTest {
         });
     }
 
+    @Test
+    public void testLayoutWithEmptyColumn() {
+        LayoutColumnDefinition[] structure = new LayoutColumnDefinition[]{
+                new LayoutColumnDefinition()
+        };
+
+        generator.init(structure);
+
+        LayoutTemplate template = generator.build();
+
+        assertNotNull(template);
+
+        assertTrue(template.getRows().isEmpty());
+    }
+
     protected void checkSingleColumnRow(LayoutRow row) {
         assertNotNull(row);
 
