@@ -340,7 +340,7 @@ public class FormEditorPresenter extends KieEditor {
     }
 
     public void onRemoveComponent(@Observes ComponentRemovedEvent event) {
-        if (editorHelper == null || editorHelper.getContent() == null) {
+        if (editorHelper == null || editorHelper.getContent() == null || event.getLayoutComponent() == null) {
             return;
         }
 

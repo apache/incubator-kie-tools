@@ -368,6 +368,24 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
     }
 
     @Test
+    public void testOnRemoveComponentWithoutLayoutComponent() {
+        loadContent();
+        loadAvailableFields();
+        addAllFields();
+
+        FormEditorPresenter presenterSpy = spy(presenter);
+
+        ComponentRemovedEvent event = new ComponentRemovedEvent(null);
+        presenterSpy.onRemoveComponent(event);
+
+        verify(presenterSpy,
+               never()).onSyncPalette(anyString());
+        verify(editorHelper,
+               never()).removeField(anyString(),
+                                  anyBoolean());
+    }
+
+    @Test
     public void testDestroy() {
         loadContent();
         presenter.destroy();
