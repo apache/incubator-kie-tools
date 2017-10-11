@@ -26,7 +26,6 @@ import javax.enterprise.context.ApplicationScoped;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.type.CheckBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.type.DatePickerFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.type.DecimalBoxFieldType;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.image.type.PictureFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.type.IntegerBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.type.RadioGroupFieldType;
@@ -54,7 +53,6 @@ public class EditorFieldTypesProviderImpl implements EditorFieldTypesProvider {
         paletteFieldTypes.add(new SliderFieldType());
         paletteFieldTypes.add(new ListBoxFieldType());
         paletteFieldTypes.add(new RadioGroupFieldType());
-        paletteFieldTypes.add(new PictureFieldType());
         fieldPropertiesFieldTypes.addAll(paletteFieldTypes);
         fieldPropertiesFieldTypes.add(new SubFormFieldType());
         fieldPropertiesFieldTypes.add(new MultipleSubFormFieldType());
