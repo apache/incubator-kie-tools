@@ -126,9 +126,9 @@ public interface
 
     String property0RulesFiredIn1Ms(Long numberOfRulesFired, Long executionTimeResult);
 
-    String ShowRulesFired();
+    String ShowFiredRules();
 
-    String RulesFired();
+    String HideFiredRules();
 
     String GIVEN();
 

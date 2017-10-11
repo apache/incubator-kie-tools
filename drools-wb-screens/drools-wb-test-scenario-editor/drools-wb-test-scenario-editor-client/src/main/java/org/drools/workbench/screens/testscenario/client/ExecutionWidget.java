@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
+import org.drools.workbench.screens.testscenario.client.firedrules.FiredRulesPanel;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioImages;
 import org.gwtbootstrap3.client.ui.ListBox;
@@ -72,7 +73,10 @@ public class ExecutionWidget extends Composite {
         if ( showResults && isResultNotNullAndHaveRulesFired() ) {
             VerticalPanel replacingLayout = new VerticalPanel();
 
-            replacingLayout.add( new FiredRulesPanel( executionTrace ) );
+            final FiredRulesPanel firedRulesPanel = new FiredRulesPanel(executionTrace);
+            firedRulesPanel.init();
+
+            replacingLayout.add(firedRulesPanel);
             replacingLayout.add( layout );
             initWidget( replacingLayout );
         } else {
