@@ -23,19 +23,27 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.dom.Anchor;
+import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.Input;
+import org.jboss.errai.common.client.dom.MouseEvent;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.ext.editor.commons.client.EditorTitle;
 import org.uberfire.ext.editor.commons.client.resources.i18n.Constants;
+import org.uberfire.ext.widgets.common.client.colorpicker.ColorPickerDialog;
+import org.uberfire.ext.widgets.common.client.colorpicker.ColorUtils;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 @Dependent
@@ -55,88 +63,119 @@ public class HtmlEditorView implements HtmlEditorPresenter.View,
     Div toolbar;
     @Inject
     @DataField("bold-action")
-    Anchor boldAction;
+    Button boldAction;
     @Inject
     @DataField("italic-action")
-    Anchor italicAction;
+    Button italicAction;
     @Inject
     @DataField("underline-action")
-    Anchor underlineAction;
+    Button underlineAction;
     @Inject
     @DataField("create-link-action")
-    Anchor createLinkAction;
+    Button createLinkAction;
     @Inject
     @DataField("remove-link-action")
-    Anchor removeLinkAction;
+    Button removeLinkAction;
     @Inject
     @DataField("insert-image-action")
-    Anchor insertImageAction;
+    Button insertImageAction;
     @Inject
     @DataField("insert-table-action")
-    Anchor insertTableAction;
+    Button insertTableAction;
     @Inject
     @DataField("big-title-action")
-    Anchor bigTitleAction;
+    Button bigTitleAction;
     @Inject
     @DataField("medium-title-action")
-    Anchor mediumTitleAction;
+    Button mediumTitleAction;
     @Inject
     @DataField("small-title-action")
-    Anchor smallTitleAction;
+    Button smallTitleAction;
     @Inject
     @DataField("paragraph-action")
-    Anchor paragraphAction;
+    Button paragraphAction;
     @Inject
     @DataField("pre-action")
-    Anchor preAction;
+    Button preAction;
     @Inject
     @DataField("plain-text-action")
-    Anchor plainTextAction;
+    Button plainTextAction;
     @Inject
     @DataField("quote-action")
-    Anchor quoteAction;
+    Button quoteAction;
     @Inject
     @DataField("code-action")
-    Anchor codeAction;
+    Button codeAction;
     @Inject
     @DataField("font-size-action")
-    Anchor fontSizeAction;
+    Button fontSizeAction;
+    @Inject
+    @DataField("font-size-action-x-small")
+    Anchor fontSizeActionXSmall;
+    @Inject
+    @DataField("font-size-action-small")
+    Anchor fontSizeActionSmall;
+    @Inject
+    @DataField("font-size-action-medium")
+    Anchor fontSizeActionMedium;
+    @Inject
+    @DataField("font-size-action-large")
+    Anchor fontSizeActionLarge;
+    @Inject
+    @DataField("font-size-action-x-large")
+    Anchor fontSizeActionXLarge;
+    @Inject
+    @DataField("font-size-action-xx-large")
+    Anchor fontSizeActionXXLarge;
     @Inject
     @DataField("font-color-action")
-    Anchor fontColorAction;
+    Button fontColorAction;
     @Inject
     @DataField("background-color-action")
-    Anchor backgroundColorAction;
+    Button backgroundColorAction;
     @Inject
     @DataField("unordered-list-action")
-    Anchor unorderedListAction;
+    Button unorderedListAction;
     @Inject
     @DataField("ordered-list-action")
-    Anchor orderedListAction;
+    Button orderedListAction;
     @Inject
     @DataField("outdent-list-action")
-    Anchor outdentListAction;
+    Button outdentListAction;
     @Inject
     @DataField("indent-list-action")
-    Anchor indentListAction;
+    Button indentListAction;
     @Inject
     @DataField("align-left-action")
-    Anchor alignLeftAction;
+    Button alignLeftAction;
     @Inject
     @DataField("align-right-action")
-    Anchor alignRightAction;
+    Button alignRightAction;
     @Inject
     @DataField("align-center-action")
-    Anchor alignCenterAction;
+    Button alignCenterAction;
     @Inject
     @DataField("undo-action")
-    Anchor undoAction;
+    Button undoAction;
     @Inject
     @DataField("redo-action")
-    Anchor redoAction;
+    Button redoAction;
     @Inject
     @DataField("switch-to-html-action")
-    Anchor switchToHtmlAction;
+    Button switchToHtmlAction;
+    @Inject
+    @DataField("background-color-button")
+    Button backgroundColorButton;
+    @Inject
+    @DataField("background-color-input")
+    Input backgroundColorInput;
+    @Inject
+    @DataField("font-color-button")
+    Button fontColorButton;
+    @Inject
+    @DataField("font-color-input")
+    Input fontColorInput;
+
     private TranslationService translationService;
     private HtmlEditorPresenter presenter;
     private HtmlEditorLibraryLoader libraryLoader;
@@ -162,7 +201,32 @@ public class HtmlEditorView implements HtmlEditorPresenter.View,
     public void postConstruct() {
         libraryLoader.ensureLibrariesAreAvailable();
         configureToolbarTitles();
+        setUpColorEditor(backgroundColorButton, backgroundColorInput);
+        setUpColorEditor(fontColorButton, fontColorInput);
     }
+
+    private void setUpColorEditor(final Button button,
+                                  final Input input) {
+        button.setOnclick(event -> handleColorSelection(event, button, input));
+        input.setOnclick(event -> handleColorSelection(event, button, input));
+    }
+
+    private void handleColorSelection(MouseEvent event, Button button, Input input) {
+        final ColorPickerDialog dlg = new ColorPickerDialog();
+        dlg.getElement().getStyle().setZIndex(9999);
+        dlg.addDialogClosedHandler(closedEvent -> {
+            if (!closedEvent.isCanceled()) {
+                int[] rgb = ColorUtils.getRGB(dlg.getColor());
+                String color = "#" + dlg.getColor();
+                input.setValue("rgb("+rgb[0]+","+rgb[1]+","+rgb[2]+");");
+            }
+        });
+
+        dlg.showRelativeTo(ElementWrapperWidget.getWidget(button));
+        dlg.getElement().getStyle().setBackgroundColor("white");
+    }
+
+
 
     @Override
     public void load() {
@@ -233,8 +297,6 @@ public class HtmlEditorView implements HtmlEditorPresenter.View,
         final int toolbarHeight = Integer.parseInt(toolbarHeightCss) + HTML_EDITOR_MARGIN;
         container.getStyle().setProperty("width",
                                          "calc(100% - " + HTML_EDITOR_MARGIN + "px)");
-        htmlEditor.getStyle().setProperty("height",
-                                          "calc(100% - " + toolbarHeight + "px)");
     }
 
     protected native String getOffsetHeight(HTMLElement el) /*-{

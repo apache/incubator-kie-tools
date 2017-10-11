@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.widgets.common.client.colorpicker;
 
-final class ColorUtils {
+public final class ColorUtils {
 
     private ColorUtils() {
     }
@@ -134,7 +134,7 @@ final class ColorUtils {
         return new int[]{(int) Math.round(h), Math.round(s), l};
     }
 
-    static int[] getRGB(String color) {
+    public static int[] getRGB(String color) {
         return new int[]{
                 Integer.parseInt(color.substring(0,
                                                  2),
