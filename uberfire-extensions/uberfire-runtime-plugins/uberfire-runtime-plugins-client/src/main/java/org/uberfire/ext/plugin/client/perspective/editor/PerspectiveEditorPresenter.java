@@ -28,8 +28,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -54,6 +54,7 @@ import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDragComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.components.popup.AddTag;
 import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorGenerator;
+import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.PerspectiveEditorSettings;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TargetDivList;
 import org.uberfire.ext.plugin.client.security.PluginController;
 import org.uberfire.ext.plugin.client.type.PerspectiveLayoutPluginResourceType;
@@ -65,7 +66,6 @@ import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -81,7 +81,8 @@ import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
 @WorkbenchEditor(identifier = "Perspective Editor", supportedTypes = {PerspectiveLayoutPluginResourceType.class}, priority = Integer.MAX_VALUE)
 public class PerspectiveEditorPresenter extends BaseEditor {
 
-    private final View perspectiveEditorView;
+    @Inject
+    private View perspectiveEditorView;
     @Inject
     private PerspectiveEditorGenerator perspectiveEditorGenerator;
     @Inject
@@ -96,17 +97,18 @@ public class PerspectiveEditorPresenter extends BaseEditor {
     private PluginNameValidator pluginNameValidator;
     @Inject
     private PluginController pluginController;
-    private Plugin plugin;
-
     @Inject
-    public PerspectiveEditorPresenter(final View perspectiveEditorView) {
-        super(perspectiveEditorView);
-        this.perspectiveEditorView = perspectiveEditorView;
-    }
+    private PerspectiveEditorSettings perspectiveEditorSettings;
+    @Inject
+    private SyncBeanManager beanManager;
+
+    private Plugin plugin;
 
     @OnStartup
     public void onStartup(final ObservablePath path,
                           final PlaceRequest place) {
+
+        super.baseView = perspectiveEditorView;
 
         // This is only used to define the "name" used by @WorkbenchPartTitle which is called by Uberfire after @OnStartup
         // but before the async call in "loadContent()" has returned. When the *real* plugin is loaded this is overwritten
@@ -177,8 +179,8 @@ public class PerspectiveEditorPresenter extends BaseEditor {
 
     private List<LayoutDragComponent> scanPerspectiveDragComponents() {
         List<LayoutDragComponent> result = new ArrayList<>();
-        Collection<SyncBeanDef<PerspectiveEditorDragComponent>> beanDefs = IOC
-                .getBeanManager().lookupBeans(PerspectiveEditorDragComponent.class);
+        Collection<SyncBeanDef<PerspectiveEditorDragComponent>> beanDefs = beanManager
+                .lookupBeans(PerspectiveEditorDragComponent.class);
         for (SyncBeanDef<PerspectiveEditorDragComponent> beanDef : beanDefs) {
             PerspectiveEditorDragComponent dragComponent = beanDef.getInstance();
             result.add(dragComponent);
@@ -190,16 +192,15 @@ public class PerspectiveEditorPresenter extends BaseEditor {
     protected void makeMenuBar() {
         super.makeMenuBar();
 
-        menuBuilder.addNewTopLevelMenu(MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Tags())
-                                               .respondsWith(new Command() {
-                                                   @Override
-                                                   public void execute() {
-                                                       AddTag addTag = new AddTag(PerspectiveEditorPresenter.this);
-                                                       addTag.show();
-                                                   }
-                                               })
-                                               .endMenu()
-                                               .build().getItems().get(0));
+        if (perspectiveEditorSettings.isTagsEnabled()) {
+            menuBuilder.addNewTopLevelMenu(MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Tags())
+                    .respondsWith(() -> {
+                        AddTag addTag = new AddTag(PerspectiveEditorPresenter.this);
+                        addTag.show();
+                    })
+                    .endMenu()
+                    .build().getItems().get(0));
+        }
     }
 
     @OnMayClose
@@ -226,7 +227,7 @@ public class PerspectiveEditorPresenter extends BaseEditor {
 
     @WorkbenchPartView
     public UberView<PerspectiveEditorPresenter> getWidget() {
-        return (UberView<PerspectiveEditorPresenter>) super.baseView;
+        return perspectiveEditorView;
     }
 
     @Override
@@ -318,7 +319,7 @@ public class PerspectiveEditorPresenter extends BaseEditor {
         return TargetDivList.list(layoutEditorPlugin.getLayout());
     }
 
-    public interface View extends BaseEditorView {
+    public interface View extends BaseEditorView, UberView<PerspectiveEditorPresenter> {
 
         void setupLayoutEditor(Widget widget);
     }

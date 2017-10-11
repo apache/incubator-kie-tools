@@ -29,9 +29,7 @@ import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
 
 @Dependent
 public class PerspectiveEditorView
-        extends BaseEditorViewImpl
-        implements UberView<PerspectiveEditorPresenter>,
-                   PerspectiveEditorPresenter.View {
+        extends BaseEditorViewImpl implements PerspectiveEditorPresenter.View {
 
     private static PerspectiveEditorViewBinder uiBinder = GWT.create(PerspectiveEditorViewBinder.class);
     @UiField

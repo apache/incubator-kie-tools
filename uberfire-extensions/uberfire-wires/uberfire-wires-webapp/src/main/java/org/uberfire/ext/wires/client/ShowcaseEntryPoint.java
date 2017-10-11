@@ -27,6 +27,7 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
+import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.PerspectiveEditorSettings;
 import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
 import org.uberfire.mvp.Command;
@@ -55,12 +56,16 @@ public class ShowcaseEntryPoint {
     @Inject
     private ActivityManager activityManager;
 
+    @Inject
+    private PerspectiveEditorSettings perspectiveEditorSettings;
+
     public static native void redirect(String url)/*-{
         $wnd.location = url;
     }-*/;
 
     @PostConstruct
     public void startApp() {
+        perspectiveEditorSettings.setTagsEnabled(true);
         setupMenu();
         setupSettings();
         hideLoadingPopup();

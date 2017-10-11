@@ -62,6 +62,7 @@ import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorScreenActivity;
+import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.PerspectiveEditorSettings;
 import org.uberfire.mvp.Commands;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.PluginAddedEvent;
@@ -112,6 +113,8 @@ public class ShowcaseEntryPoint {
     private ErrorPopupView errorPopupView;
     @Inject
     private PatternFlyEntryPoint pflyEntryPoint;
+    @Inject
+    private PerspectiveEditorSettings perspectiveEditorSettings;
 
     public static List<MenuItem> getScreens() {
         final List<MenuItem> screens = new ArrayList<>();
@@ -151,6 +154,7 @@ public class ShowcaseEntryPoint {
     public void startApp() {
         PatternFlyBootstrapper.ensureMomentIsAvailable();
         PatternFlyBootstrapper.ensureBootstrapDateRangePickerIsAvailable();
+        perspectiveEditorSettings.setTagsEnabled(true);
         hideLoadingPopup();
         GWT.log("PatternFly version: " + pflyEntryPoint.getPatternFlyVersion());
         GWT.log("Loaded MomentJS using locale: " + pflyEntryPoint.getMomentLocale());
