@@ -348,6 +348,10 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(3,
                      uiModel.getColumns().size());
         assertTrue(uiModel.getColumns().get(2) instanceof StringUiColumn);
+        assertEquals(editedPattern.getBoundName() + " : " + editedPattern.getFactType(),
+                     uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+        assertEquals(editedCondition.getHeader(),
+                     uiModel.getColumns().get(2).getHeaderMetaData().get(1).getTitle());
     }
 
     @Test
@@ -392,6 +396,10 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                      uiModel.getColumns().size());
         assertTrue(uiModel.getColumns().get(2) instanceof StringUiColumn);
         assertTrue(uiModel.getColumns().get(3) instanceof IntegerUiColumn);
+        assertEquals(editedPattern.getBoundName() + " : " + editedPattern.getFactType(),
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(0).getTitle());
+        assertEquals(editedCondition.getHeader(),
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(1).getTitle());
     }
 
     @Test
@@ -440,6 +448,10 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                      uiModel.getColumns().size());
         assertTrue(uiModel.getColumns().get(2) instanceof StringUiColumn);
         assertTrue(uiModel.getColumns().get(3) instanceof StringUiColumn);
+        assertEquals(editedPattern.getBoundName() + " : " + editedPattern.getFactType(),
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(0).getTitle());
+        assertEquals(editedCondition.getHeader(),
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(1).getTitle());
     }
 
     @Test
@@ -481,6 +493,10 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(3,
                      uiModel.getColumns().size());
         assertTrue(uiModel.getColumns().get(2) instanceof StringUiColumn);
+        assertEquals(editedPattern.getBoundName() + " : " + editedPattern.getFactType(),
+                     uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+        assertEquals(editedCondition.getHeader(),
+                     uiModel.getColumns().get(2).getHeaderMetaData().get(1).getTitle());
     }
 
     @Test
@@ -520,8 +536,10 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue(uiModel.getColumns().get(2) instanceof IntegerUiColumn);
         assertEquals(false,
                      uiModel.getColumns().get(2).isVisible());
-        assertEquals("updated",
+        assertEquals(editedPattern.getBoundName() + " : " + editedPattern.getFactType(),
                      uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+        assertEquals(editedCondition.getHeader(),
+                     uiModel.getColumns().get(2).getHeaderMetaData().get(1).getTitle());
     }
 
     @Test
@@ -559,6 +577,10 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(3,
                      uiModel.getColumns().size());
         assertTrue(uiModel.getColumns().get(2) instanceof IntegerUiColumn);
+        assertEquals(editedPattern.getBoundName() + " : " + editedPattern.getFactType(),
+                     uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+        assertEquals(editedCondition.getHeader(),
+                     uiModel.getColumns().get(2).getHeaderMetaData().get(1).getTitle());
     }
 
     @Test
@@ -586,6 +608,8 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
         assertEquals("not Applicant",
                      uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+        assertEquals(editedCondition.getHeader(),
+                     uiModel.getColumns().get(2).getHeaderMetaData().get(1).getTitle());
     }
 
     @Test

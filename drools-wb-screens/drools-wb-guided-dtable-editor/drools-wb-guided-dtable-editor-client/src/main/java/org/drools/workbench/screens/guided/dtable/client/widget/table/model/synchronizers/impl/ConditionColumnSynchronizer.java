@@ -233,6 +233,14 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
         }
     }
 
+    @Override
+    protected void setColumnHeader(final BaseColumn modelColumn,
+                                   final String header) {
+        modelColumn.setHeader(header);
+        final int iModelColumn = model.getExpandedColumns().indexOf(modelColumn);
+        uiModel.getColumns().get(iModelColumn).getHeaderMetaData().get(1).setTitle(header);
+    }
+
     private boolean isPattern(final List<MoveColumnToMetaData> metaData) {
         if (!metaData.stream().allMatch((c) -> c.getColumn() instanceof ConditionCol52)) {
             return false;
