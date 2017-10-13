@@ -27,6 +27,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.Add
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.OperatorPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.PatternPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.SummaryPage;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTablePopoverUtils;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ActionRetractFactPlugin;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ActionSetFactPlugin;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ActionWorkItemPlugin;
@@ -44,7 +45,16 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardView;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class NewGuidedDecisionTableColumnWizardTest {
@@ -93,13 +103,17 @@ public class NewGuidedDecisionTableColumnWizardTest {
     @Mock
     private TranslationService translationService;
 
+    @Mock
+    private DecisionTablePopoverUtils popoverUtils;
+
     private NewGuidedDecisionTableColumnWizard wizard;
 
     @Before
     public void setup() {
         wizard = spy(new NewGuidedDecisionTableColumnWizard(view,
                                                             summaryPage,
-                                                            translationService));
+                                                            translationService,
+                                                            popoverUtils));
 
         pages = spy(new ArrayList<>());
         wizard.setPages(pages);
@@ -229,6 +243,13 @@ public class NewGuidedDecisionTableColumnWizardTest {
     public void testCompleteWizardConditionColumnPlugin() {
         when(conditionColumnPlugin.editingPattern()).thenReturn(new Pattern52());
         testCompleteWizard(conditionColumnPlugin);
+    }
+
+    @Test
+    public void testClosureDestroysPopovers() {
+        wizard.close();
+
+        verify(popoverUtils).destroyPopovers();
     }
 
     private void testCompleteWizard(DecisionTableColumnPlugin plugin) {

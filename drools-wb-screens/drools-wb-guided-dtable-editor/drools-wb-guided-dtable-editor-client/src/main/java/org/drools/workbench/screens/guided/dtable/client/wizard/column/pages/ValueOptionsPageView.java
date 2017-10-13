@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
-import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTablePopoverUtils;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.api.IsElement;
@@ -73,6 +73,8 @@ public class ValueOptionsPageView implements IsElement,
 
     private TranslationService translationService;
 
+    private DecisionTablePopoverUtils popoverUtils;
+
     @Inject
     public ValueOptionsPageView(final Div valueListGroupContainer,
                                 final Div cepWindowOperatorsGroupContainer,
@@ -84,7 +86,8 @@ public class ValueOptionsPageView implements IsElement,
                                 final Div defaultValueContainer,
                                 final Div limitedValueContainer,
                                 final Div bindingContainer,
-                                final TranslationService translationService) {
+                                final TranslationService translationService,
+                                final DecisionTablePopoverUtils popoverUtils) {
         this.valueListGroupContainer = valueListGroupContainer;
         this.cepWindowOperatorsGroupContainer = cepWindowOperatorsGroupContainer;
         this.defaultValueGroupContainer = defaultValueGroupContainer;
@@ -96,16 +99,17 @@ public class ValueOptionsPageView implements IsElement,
         this.limitedValueContainer = limitedValueContainer;
         this.bindingContainer = bindingContainer;
         this.translationService = translationService;
+        this.popoverUtils = popoverUtils;
     }
 
     @PostConstruct
     public void initPopovers() {
-        DecisionTableColumnViewUtils.setupPopover(cepWindowOperatorsContainer,
-                                                  translate(GuidedDecisionTableErraiConstants.ValueOptionsPage_CEPWindowDescription));
-        DecisionTableColumnViewUtils.setupPopover(defaultValueContainer,
-                                                  translate(GuidedDecisionTableErraiConstants.ValueOptionsPage_DefaultValueDescription));
-        DecisionTableColumnViewUtils.setupPopover(bindingContainer,
-                                                  translate(GuidedDecisionTableErraiConstants.ValueOptionsPage_BindingDescription));
+        popoverUtils.setupAndRegisterPopover(cepWindowOperatorsContainer,
+                                             translate(GuidedDecisionTableErraiConstants.ValueOptionsPage_CEPWindowDescription));
+        popoverUtils.setupAndRegisterPopover(defaultValueContainer,
+                                             translate(GuidedDecisionTableErraiConstants.ValueOptionsPage_DefaultValueDescription));
+        popoverUtils.setupAndRegisterPopover(bindingContainer,
+                                             translate(GuidedDecisionTableErraiConstants.ValueOptionsPage_BindingDescription));
     }
 
     @Override

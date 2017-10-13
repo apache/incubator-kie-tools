@@ -30,6 +30,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBui
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTablePopoverUtils;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.jboss.errai.common.client.api.Caller;
@@ -86,8 +87,12 @@ import org.uberfire.workbench.model.menu.MenuItemPlain;
 import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class GuidedDecisionTableEditorMenusTest {
@@ -222,6 +227,9 @@ public class GuidedDecisionTableEditorMenusTest {
     @Mock
     protected MenuItemWithIconView menuItemWithIconView;
 
+    @Mock
+    private DecisionTablePopoverUtils popoverUtils;
+
     private GuidedDecisionTableEditorPresenter presenter;
     private GuidedDTableResourceType resourceType = new GuidedDTableResourceType();
 
@@ -282,7 +290,8 @@ public class GuidedDecisionTableEditorMenusTest {
 
         this.editMenuBuilder = new EditMenuBuilder(clipboard,
                                                    ts,
-                                                   menuItemFactory);
+                                                   menuItemFactory,
+                                                   popoverUtils);
         this.editMenuBuilder.setup();
         this.insertMenuBuilder = new InsertMenuBuilder(ts,
                                                        menuItemFactory);

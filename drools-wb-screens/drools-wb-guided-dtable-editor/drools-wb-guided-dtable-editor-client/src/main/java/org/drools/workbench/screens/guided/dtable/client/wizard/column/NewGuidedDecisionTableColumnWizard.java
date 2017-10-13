@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -28,6 +29,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.SummaryPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.BaseDecisionTableColumnPage;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTablePopoverUtils;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.DecisionTableColumnPlugin;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.client.callbacks.Callback;
@@ -52,6 +54,8 @@ public class NewGuidedDecisionTableColumnWizard extends AbstractWizard {
 
     private GuidedDecisionTableView.Presenter presenter;
 
+    private DecisionTablePopoverUtils popoverUtils;
+
     private Command onCloseCallback = () -> {
     };
 
@@ -60,10 +64,12 @@ public class NewGuidedDecisionTableColumnWizard extends AbstractWizard {
     @Inject
     public NewGuidedDecisionTableColumnWizard(final WizardView view,
                                               final SummaryPage summaryPage,
-                                              final TranslationService translationService) {
+                                              final TranslationService translationService,
+                                              final DecisionTablePopoverUtils popoverUtils) {
         this.view = view;
         this.summaryPage = summaryPage;
         this.translationService = translationService;
+        this.popoverUtils = popoverUtils;
     }
 
     @Override
@@ -187,6 +193,8 @@ public class NewGuidedDecisionTableColumnWizard extends AbstractWizard {
 
     @Override
     public void close() {
+        popoverUtils.destroyPopovers();
+
         onCloseCallback.execute();
 
         super.close();

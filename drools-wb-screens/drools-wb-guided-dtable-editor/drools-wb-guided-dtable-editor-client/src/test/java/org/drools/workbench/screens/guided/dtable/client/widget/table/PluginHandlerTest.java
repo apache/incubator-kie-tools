@@ -46,6 +46,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.Rul
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.SummaryPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.ValueOptionsPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.WorkItemPage;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTablePopoverUtils;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ActionRetractFactPlugin;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ActionSetFactPlugin;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ActionWorkItemPlugin;
@@ -66,7 +67,11 @@ import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.ext.widgets.core.client.wizards.WizardView;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PluginHandlerTest {
@@ -143,6 +148,9 @@ public class PluginHandlerTest {
     @Mock
     private EventSourceMock<WizardPageStatusChangeEvent> event;
 
+    @Mock
+    private DecisionTablePopoverUtils popoverUtils;
+
     private PluginHandler pluginHandler;
 
     private NewGuidedDecisionTableColumnWizard wizard;
@@ -161,7 +169,8 @@ public class PluginHandlerTest {
 
         wizard = spy(new NewGuidedDecisionTableColumnWizard(mock(WizardView.class),
                                                             summaryPage,
-                                                            translationService));
+                                                            translationService,
+                                                            popoverUtils));
 
         doReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY).when(model).getTableFormat();
         doReturn(model).when(presenter).getModel();

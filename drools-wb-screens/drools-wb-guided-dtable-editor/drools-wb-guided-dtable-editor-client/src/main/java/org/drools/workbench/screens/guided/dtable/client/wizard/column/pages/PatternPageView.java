@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasPatternPage;
-import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTablePopoverUtils;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -63,23 +63,27 @@ public class PatternPageView implements IsElement,
 
     private TranslationService translationService;
 
+    private DecisionTablePopoverUtils popoverUtils;
+
     @Inject
     public PatternPageView(final ListBox patternList,
                            final TextBox entryPointName,
                            final Button createANewFactPattern,
                            final Div entryPointContainer,
-                           final TranslationService translationService) {
+                           final TranslationService translationService,
+                           final DecisionTablePopoverUtils popoverUtils) {
         this.patternList = patternList;
         this.entryPointName = entryPointName;
         this.createANewFactPattern = createANewFactPattern;
         this.entryPointContainer = entryPointContainer;
         this.translationService = translationService;
+        this.popoverUtils = popoverUtils;
     }
 
     @PostConstruct
     public void initPopovers() {
-        DecisionTableColumnViewUtils.setupPopover(entryPointName.getElement(),
-                                                  translate(GuidedDecisionTableErraiConstants.PatternPageView_EntryPointDescription));
+        popoverUtils.setupAndRegisterPopover(entryPointName.getElement(),
+                                             translate(GuidedDecisionTableErraiConstants.PatternPageView_EntryPointDescription));
     }
 
     @Override

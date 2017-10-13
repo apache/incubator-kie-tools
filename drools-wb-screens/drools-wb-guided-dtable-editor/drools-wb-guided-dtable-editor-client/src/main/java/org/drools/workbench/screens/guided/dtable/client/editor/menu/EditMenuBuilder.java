@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.editor.menu;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
@@ -31,7 +32,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
-import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTablePopoverUtils;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.ext.widgets.common.client.menu.MenuItemFactory;
@@ -65,6 +66,7 @@ public class EditMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuB
     private Clipboard clipboard;
     private TranslationService ts;
     private MenuItemFactory menuItemFactory;
+    private DecisionTablePopoverUtils popoverUtils;
 
     MenuItemViewHolder<MenuItemWithIconView> miCut;
     MenuItemViewHolder<MenuItemWithIconView> miCopy;
@@ -77,10 +79,12 @@ public class EditMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuB
     @Inject
     public EditMenuBuilder(final Clipboard clipboard,
                            final TranslationService ts,
-                           final MenuItemFactory menuItemFactory) {
+                           final MenuItemFactory menuItemFactory,
+                           final DecisionTablePopoverUtils popoverUtils) {
         this.clipboard = clipboard;
         this.ts = ts;
         this.menuItemFactory = menuItemFactory;
+        this.popoverUtils = popoverUtils;
     }
 
     @PostConstruct
@@ -106,8 +110,8 @@ public class EditMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuB
     private void setupOtherwisePopover() {
         miOtherwiseCell.getMenuItemView().getElement().setAttribute("data-toggle",
                                                                     "popover");
-        DecisionTableColumnViewUtils.setupPopover(miOtherwiseCell.getMenuItemView().getElement(),
-                                                  ts.getTranslation(GuidedDecisionTableErraiConstants.EditMenu_otherwiseDescription));
+        popoverUtils.setupPopover(miOtherwiseCell.getMenuItemView().getElement(),
+                                  ts.getTranslation(GuidedDecisionTableErraiConstants.EditMenu_otherwiseDescription));
     }
 
     @Override
@@ -212,8 +216,8 @@ public class EditMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuB
         miDeleteSelectedColumns.getMenuItem().setEnabled(false);
         miDeleteSelectedRows.getMenuItem().setEnabled(false);
         miOtherwiseCell.getMenuItem().setEnabled(false);
-        DecisionTableColumnViewUtils.enableOtherwisePopover(miOtherwiseCell.getMenuItemView().getElement(),
-                                                            false);
+        popoverUtils.enableOtherwisePopover(miOtherwiseCell.getMenuItemView().getElement(),
+                                            false);
     }
 
     private void enableMenuItems(final List<GridData.SelectedCell> selections) {
@@ -228,8 +232,8 @@ public class EditMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuB
         miDeleteSelectedColumns.getMenuItem().setEnabled(isColumnDeletable);
         miDeleteSelectedRows.getMenuItem().setEnabled(enabled);
         miOtherwiseCell.getMenuItem().setEnabled(isOtherwiseEnabled);
-        DecisionTableColumnViewUtils.enableOtherwisePopover(miOtherwiseCell.getMenuItemView().getElement(),
-                                                            isOtherwiseEnabled);
+        popoverUtils.enableOtherwisePopover(miOtherwiseCell.getMenuItemView().getElement(),
+                                            isOtherwiseEnabled);
     }
 
     private boolean isColumnDeletable(final List<GridData.SelectedCell> selections) {
