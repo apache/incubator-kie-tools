@@ -62,6 +62,7 @@ import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.JavaClass;
 import org.kie.workbench.common.services.datamodeller.core.JavaEnum;
+import org.kie.workbench.common.services.datamodeller.core.JavaTypeInfo;
 import org.kie.workbench.common.services.datamodeller.core.Method;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.Parameter;
@@ -86,6 +87,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.Path;
@@ -99,6 +101,10 @@ public class JavaRoasterModelDriverTest {
 
     private static final Logger logger = LoggerFactory.getLogger(JavaRoasterModelDriverTest.class);
 
+    private static String ERROR_FILE1 = "errors/EmptyPojo.java";
+
+    private static String ERROR_FILE2 = "errors/NonJavaContentPojo.java";
+
     @Mock
     private Instance<SourceFilter> sourceFilterInstance;
 
@@ -109,22 +115,21 @@ public class JavaRoasterModelDriverTest {
     private Instance<MethodFilter> methodFilterInstance;
 
     private SimpleFileSystemProvider simpleFileSystemProvider = null;
+
     private IOService ioService = new MockIOService();
+
+    private Path rootPath;
 
     @Before
     public void initTest() throws Exception {
         simpleFileSystemProvider = new SimpleFileSystemProvider();
         simpleFileSystemProvider.forceAsDefault();
+        rootPath = getRootPath();
     }
 
     @Test
     public void modelVetoingTest() throws Exception {
         try {
-            final String uriToResource = this.getClass().getResource("projectRoot.txt").toURI().toString();
-            final URI uriToRootPath = URI.create(uriToResource.substring(0,
-                                                                         uriToResource.length() - "projectRoot.txt".length()));
-            final Path rootPath = simpleFileSystemProvider.getPath(uriToRootPath);
-
             final SourceFilter pojo1Filter = javaType -> javaType.getName().equals("Pojo1");
             final NestedClassFilter nestedClassFilter = javaType -> javaType.isClass() && javaType.getAnnotation(Generated.class) != null;
             final MethodFilter methodFilter = method -> !method.isConstructor() && method.getAnnotation(Generated.class) != null;
@@ -165,11 +170,6 @@ public class JavaRoasterModelDriverTest {
     @Test
     public void modelReadTest() {
         try {
-            String uriToResource = this.getClass().getResource("projectRoot.txt").toURI().toString();
-            URI uriToRootPath = URI.create(uriToResource.substring(0,
-                                                                   uriToResource.length() - "projectRoot.txt".length()));
-            Path rootPath = simpleFileSystemProvider.getPath(uriToRootPath);
-
             final SourceFilter pojo1Filter = javaType -> false;
             final NestedClassFilter nestedClassFilter = javaType -> javaType.isClass() && javaType.getAnnotation(Generated.class) != null;
             final MethodFilter methodFilter = method -> !method.isConstructor() && method.getAnnotation(Generated.class) != null;
@@ -203,21 +203,110 @@ public class JavaRoasterModelDriverTest {
                 DataModelerAssert.assertEqualsJavaEnum(javaEnum,
                                                        modelDriverResult.getDataModel().getJavaEnum(javaEnum.getClassName()));
             }
+
+            org.uberfire.backend.vfs.Path errorFile1 = Paths.convert(rootPath.resolve(ERROR_FILE1));
+            org.uberfire.backend.vfs.Path errorFile2 = Paths.convert(rootPath.resolve(ERROR_FILE2));
+            verifyErrorFilesWereDetected(modelDriverResult,
+                                         errorFile1,
+                                         errorFile2);
         } catch (Exception e) {
             e.printStackTrace();
             fail("Test failed: " + e.getMessage());
         }
     }
 
+    private void verifyErrorFilesWereDetected(ModelDriverResult result,
+                                              org.uberfire.backend.vfs.Path... errorFiles) {
+        assertEquals(result.getErrors().size(),
+                     errorFiles.length);
+        Arrays.stream(errorFiles).forEach(errorFile -> {
+            if (!result.getErrors().stream().filter(driverError -> errorFile.equals(driverError.getFile())).findFirst().isPresent()) {
+                fail("Error file: " + errorFile + " is not present in the result.");
+            }
+        });
+    }
+
+    @Test
+    public void loadJavaTypeInfoTest() throws ModelDriverException {
+        Path path = rootPath.resolve("package1").resolve("Pojo1.java");
+        String source = ioService.readAllString(path);
+        JavaRoasterModelDriver javaRoasterModelDriver = new JavaRoasterModelDriver();
+        TypeInfoResult typeInfoResult = javaRoasterModelDriver.loadJavaTypeInfo(source);
+        assertFalse(typeInfoResult.hasErrors());
+        JavaTypeInfo typeInfo = typeInfoResult.getTypeInfo();
+        DataObject pojo1 = createPojo1();
+        assertEquals(pojo1.getName(),
+                     typeInfo.getName());
+        assertEquals(pojo1.getPackageName(),
+                     typeInfo.getPackageName());
+        assertTrue(pojo1.isClass());
+        assertFalse(pojo1.isAbstract());
+        assertFalse(typeInfo.isAnnotation());
+        assertFalse(typeInfo.isEnum());
+        assertFalse(typeInfo.isInterface());
+        assertTrue(typeInfo.isPublic());
+        assertFalse(typeInfo.isPackagePrivate());
+        assertFalse(typeInfo.isProtected());
+        assertFalse(typeInfo.isPrivate());
+    }
+
+    @Test
+    public void loadJavaTypeInfoWithFailuresTest() throws ModelDriverException {
+        Path errorFile1 = rootPath.resolve(ERROR_FILE1);
+        Path errorFile2 = rootPath.resolve(ERROR_FILE2);
+        JavaRoasterModelDriver javaRoasterModelDriver = new JavaRoasterModelDriver();
+
+        String source = ioService.readAllString(errorFile1);
+        TypeInfoResult result = javaRoasterModelDriver.loadJavaTypeInfo(source);
+        assertTrue(result.hasErrors());
+
+        source = ioService.readAllString(errorFile2);
+        result = javaRoasterModelDriver.loadJavaTypeInfo(source);
+        assertTrue(result.hasErrors());
+    }
+
+    @Test
+    public void loadDataObjectTest() throws ModelDriverException {
+        Path path = rootPath.resolve("package1").resolve("Pojo1.java");
+        String source = ioService.readAllString(path);
+        JavaRoasterModelDriver javaRoasterModelDriver = new JavaRoasterModelDriver(ioService,
+                                                                                   rootPath,
+                                                                                   getClass().getClassLoader(),
+                                                                                   mock(FilterHolder.class));
+        ModelDriverResult result = javaRoasterModelDriver.loadDataObject(source,
+                                                                         path);
+        assertFalse(result.hasErrors());
+        DataModelerAssert.assertEqualsDataObject(createPojo1(),
+                                                 result.getDataModel().getDataObject("org.kie.workbench.common.services.datamodeller.driver.package1.Pojo1"));
+    }
+
+    @Test
+    public void loadDataObjectWithFailures() throws ModelDriverException {
+        Path errorFile1 = rootPath.resolve(ERROR_FILE1);
+        Path errorFile2 = rootPath.resolve(ERROR_FILE2);
+
+        String source = ioService.readAllString(errorFile1);
+        JavaRoasterModelDriver javaRoasterModelDriver = new JavaRoasterModelDriver(ioService,
+                                                                                   rootPath,
+                                                                                   getClass().getClassLoader(),
+                                                                                   mock(FilterHolder.class));
+        ModelDriverResult result = javaRoasterModelDriver.loadDataObject(source,
+                                                                         errorFile1);
+        assertTrue(result.hasErrors());
+        verifyErrorFilesWereDetected(result,
+                                     Paths.convert(errorFile1));
+
+        source = ioService.readAllString(errorFile2);
+        result = javaRoasterModelDriver.loadDataObject(source,
+                                                       errorFile2);
+        assertTrue(result.hasErrors());
+        verifyErrorFilesWereDetected(result,
+                                     Paths.convert(errorFile2));
+    }
+
     @Test
     public void updateAnnotationsTest() {
-
         try {
-            String uriToResource = this.getClass().getResource("projectRoot.txt").toURI().toString();
-            URI uriToRootPath = URI.create(uriToResource.substring(0,
-                                                                   uriToResource.length() - "projectRoot.txt".length()));
-            Path rootPath = simpleFileSystemProvider.getPath(uriToRootPath);
-
             //First read the AnnotationsUpdateTest
             Path annotationsUpdateTestFilePath = rootPath.resolve("package3").resolve("AnnotationsUpdateTest.java");
             String source = ioService.readAllString(annotationsUpdateTestFilePath);
@@ -415,13 +504,7 @@ public class JavaRoasterModelDriverTest {
 
     @Test
     public void nestedClassUpdateTest() {
-
         try {
-            String uriToResource = this.getClass().getResource("projectRoot.txt").toURI().toString();
-            URI uriToRootPath = URI.create(uriToResource.substring(0,
-                                                                   uriToResource.length() - "projectRoot.txt".length()));
-            Path rootPath = simpleFileSystemProvider.getPath(uriToRootPath);
-
             //First read the NestedClassUpdateTest
             Path nestedClassUpdateTestFilePath = rootPath.resolve("package5").resolve("NestedClassUpdateTest.java");
             String source = ioService.readAllString(nestedClassUpdateTestFilePath);
@@ -508,13 +591,7 @@ public class JavaRoasterModelDriverTest {
 
     @Test
     public void methodUpdateTest() {
-
         try {
-            String uriToResource = this.getClass().getResource("projectRoot.txt").toURI().toString();
-            URI uriToRootPath = URI.create(uriToResource.substring(0,
-                                                                   uriToResource.length() - "projectRoot.txt".length()));
-            Path rootPath = simpleFileSystemProvider.getPath(uriToRootPath);
-
             //First read the MethodsUpdateTest
             Path methodsUpdateTestFilePath = rootPath.resolve("package4").resolve("MethodsUpdateTest.java");
             String source = ioService.readAllString(methodsUpdateTestFilePath);
@@ -615,11 +692,6 @@ public class JavaRoasterModelDriverTest {
 
     @Test
     public void importsUpdateTest() throws Exception {
-        String uriToResource = this.getClass().getResource("projectRoot.txt").toURI().toString();
-        URI uriToRootPath = URI.create(uriToResource.substring(0,
-                                                               uriToResource.length() - "projectRoot.txt".length()));
-        Path rootPath = simpleFileSystemProvider.getPath(uriToRootPath);
-
         Path importsUpdateTestFilePath = rootPath.resolve("package6").resolve("ImportsUpdateTest.java");
         String source = ioService.readAllString(importsUpdateTestFilePath);
         JavaClassSource importsUpdateTestJavaClassSource = (JavaClassSource) Roaster.parse(source);
@@ -674,6 +746,13 @@ public class JavaRoasterModelDriverTest {
                                                  updatedResult.getDataModel().getDataObject("org.kie.workbench.common.services.datamodeller.driver.package6.ImportsUpdateTestResult"));
         DataModelerAssert.assertEqualsImports(importsUpdateTestResult.getImports(),
                                               updatedResult.getDataModel().getDataObject("org.kie.workbench.common.services.datamodeller.driver.package6.ImportsUpdateTestResult").getImports());
+    }
+
+    private Path getRootPath() throws Exception {
+        String uriToResource = this.getClass().getResource("projectRoot.txt").toURI().toString();
+        URI uriToRootPath = URI.create(uriToResource.substring(0,
+                                                               uriToResource.length() - "projectRoot.txt".length()));
+        return simpleFileSystemProvider.getPath(uriToRootPath);
     }
 
     class MockIOService extends IOServiceMock {
