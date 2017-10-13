@@ -359,7 +359,8 @@ public class DefaultWorkbenchFeaturesMenusHelper {
 
         @Override
         public void execute() {
-            perspectiveManager.savePerspectiveState(() -> authService.call((o) -> doRedirect(getRedirectURL())).logout());
+            perspectiveManager.savePerspectiveState(() -> doRedirect(getRedirectURL()));
+            // request.logout() happens as part of the redirected logout.jsp
         }
 
         void doRedirect(final String url) {

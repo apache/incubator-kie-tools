@@ -66,12 +66,6 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     private ActivityManager activityManager;
 
     @Mock
-    protected Caller<AuthenticationService> authService;
-
-    @Mock
-    protected AuthenticationService authServiceImpl;
-
-    @Mock
     protected User identity;
 
     @Mock
@@ -367,10 +361,6 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
         final ArgumentCaptor<Command> postSaveStateCommandCaptor = ArgumentCaptor.forClass(Command.class);
         final ArgumentCaptor<String> redirectURLCaptor = ArgumentCaptor.forClass(String.class);
 
-        when(authService.call(any(RemoteCallback.class))).thenAnswer((final InvocationOnMock invocation) -> {
-            ((RemoteCallback) invocation.getArguments()[0]).callback(null);
-            return authServiceImpl;
-        });
         verify(perspectiveManager).savePerspectiveState(postSaveStateCommandCaptor.capture());
 
         final Command postSaveStateCommand = postSaveStateCommandCaptor.getValue();
@@ -378,7 +368,6 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
 
         verify(logoutCommand).getRedirectURL();
         verify(logoutCommand).doRedirect(redirectURLCaptor.capture());
-        verify(authServiceImpl).logout();
 
         final String redirectURL = redirectURLCaptor.getValue();
         assertTrue(redirectURL.contains("/logout.jsp?locale=en_GB"));
