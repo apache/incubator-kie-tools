@@ -20,11 +20,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import com.google.gwtmockito.WithClassesToStub;
 import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.workitems.PortableFloatParameterDefinition;
@@ -36,7 +37,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCo
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
+import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -61,15 +62,25 @@ import org.mockito.Mock;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-@WithClassesToStub(BRLRuleModel.class)
 public class ActionWorkItemSetFieldPluginTest {
 
     @Mock
-    PatternWrapper patternWrapper;
+    private PatternWrapper patternWrapper;
 
     @Mock
     private BiConsumer<String, String> biConsumer;
@@ -323,10 +334,15 @@ public class ActionWorkItemSetFieldPluginTest {
 
         doReturn(true).when(plugin).isNewColumn();
 
-        final List<PatternWrapper> patterns = plugin.getPatterns();
+        final Set<PatternWrapper> patterns = plugin.getPatterns();
 
-        assertEquals(3,
+        assertEquals(2,
                      patterns.size());
+        assertTrue(patterns.contains(new PatternWrapper("factType",
+                                                        "boundName",
+                                                        true)));
+        assertTrue(patterns.contains(new PatternWrapper("factType",
+                                                        "boundName")));
     }
 
     @Test
@@ -336,10 +352,12 @@ public class ActionWorkItemSetFieldPluginTest {
         doReturn(false).when(plugin).isNewColumn();
         doReturn(true).when(plugin).isNewFactPattern();
 
-        final List<PatternWrapper> patterns = plugin.getPatterns();
+        final Set<PatternWrapper> patterns = plugin.getPatterns();
 
-        assertEquals(2,
+        assertEquals(1,
                      patterns.size());
+        assertTrue(patterns.contains(new PatternWrapper("factType",
+                                                        "boundName")));
     }
 
     @Test
@@ -349,7 +367,7 @@ public class ActionWorkItemSetFieldPluginTest {
         doReturn(false).when(plugin).isNewColumn();
         doReturn(false).when(plugin).isNewFactPattern();
 
-        final List<PatternWrapper> patterns = plugin.getPatterns();
+        final Set<PatternWrapper> patterns = plugin.getPatterns();
 
         assertEquals(1,
                      patterns.size());
@@ -545,7 +563,7 @@ public class ActionWorkItemSetFieldPluginTest {
     @Test
     public void testNewPatternWrapperWhenPatternIsFound() throws Exception {
         final PatternWrapper expectedWrapper = mockPatternWrapper("BoundName");
-        final ArrayList<PatternWrapper> actionWrappers = new ArrayList<PatternWrapper>() {{
+        final Set<PatternWrapper> actionWrappers = new HashSet<PatternWrapper>() {{
             add(expectedWrapper);
         }};
 
@@ -560,7 +578,7 @@ public class ActionWorkItemSetFieldPluginTest {
 
     @Test
     public void testNewPatternWrapperWhenPatternIsNotFound() throws Exception {
-        final ArrayList<PatternWrapper> actionWrappers = new ArrayList<>();
+        final Set<PatternWrapper> actionWrappers = new HashSet<>();
         final ActionWorkItemWrapper actionWrapper = mockActionWrapper("BoundName",
                                                                       "FactType");
 
@@ -632,6 +650,26 @@ public class ActionWorkItemSetFieldPluginTest {
         verify(editingWrapper).setHideColumn(hideColumn);
     }
 
+    @Test
+    public void testIsNewFactPatternWhenIsNew() throws Exception {
+        mockPatterns();
+
+        plugin.setEditingPattern(new PatternWrapper("factType",
+                                                    "bananna"));
+
+        assertTrue(plugin.isNewFactPattern());
+    }
+
+    @Test
+    public void testIsNewFactPatternWhenIsExisting() throws Exception {
+        mockPatterns();
+
+        plugin.setEditingPattern(new PatternWrapper("factType",
+                                                    "boundName"));
+
+        assertFalse(plugin.isNewFactPattern());
+    }
+
     private ActionWorkItemWrapper mockActionWrapper(final String boundName,
                                                     final String factType) {
         final ActionWorkItemWrapper wrapper = mock(ActionWorkItemWrapper.class);
@@ -689,13 +727,29 @@ public class ActionWorkItemSetFieldPluginTest {
     }
 
     private void mockPatterns() {
-        when(model.getPatterns()).thenReturn(new ArrayList<Pattern52>() {{
-            add(new Pattern52());
-        }});
-        when(model.getActionCols()).thenReturn(new ArrayList<ActionCol52>() {{
-            add(new ActionWorkItemInsertFactCol52());
-            add(new ActionWorkItemInsertFactCol52());
-        }});
+        final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
+        final List<CompositeColumn<?>> patterns = Collections.singletonList(fakePattern());
+        final List<ActionCol52> actions = Arrays.asList(fakeActionCol(),
+                                                        fakeActionCol());
+
+        when(model.getConditions()).thenReturn(patterns);
+        when(model.getActionCols()).thenReturn(actions);
+
         when(presenter.getModel()).thenReturn(model);
+    }
+
+    private Pattern52 fakePattern() {
+        return new Pattern52() {{
+            setFactType("factType");
+            setBoundName("boundName");
+            setNegated(true);
+        }};
+    }
+
+    private ActionInsertFactCol52 fakeActionCol() {
+        return new ActionWorkItemInsertFactCol52() {{
+            setFactType("factType");
+            setBoundName("boundName");
+        }};
     }
 }

@@ -17,7 +17,9 @@
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.junit.GWTMockUtilities;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -40,8 +42,14 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PatternPageTest {
@@ -201,7 +209,7 @@ public class PatternPageTest {
     public void testGetPatternsWhenCurrentPatternIsNull() {
         when(plugin.getPatterns()).thenReturn(fakePatterns());
 
-        final List<PatternWrapper> patterns = page.getPatterns();
+        final Set<PatternWrapper> patterns = page.getPatterns();
 
         assertEquals(2,
                      patterns.size());
@@ -214,7 +222,7 @@ public class PatternPageTest {
                                                             "boundName3",
                                                             true));
 
-        final List<PatternWrapper> patterns = page.getPatterns();
+        final Set<PatternWrapper> patterns = page.getPatterns();
 
         assertEquals(3,
                      patterns.size());
@@ -226,7 +234,7 @@ public class PatternPageTest {
 
         when(plugin.getPatterns()).thenReturn(fakePatterns());
 
-        final List<PatternWrapper> patterns = page.getPatterns();
+        final Set<PatternWrapper> patterns = page.getPatterns();
 
         assertEquals(1,
                      patterns.size());
@@ -340,7 +348,7 @@ public class PatternPageTest {
         final PatternWrapper pattern2 = newPattern("factType2",
                                                    "boundName2",
                                                    false);
-        final List<PatternWrapper> patterns = new ArrayList<PatternWrapper>() {{
+        final Set<PatternWrapper> patterns = new HashSet<PatternWrapper>() {{
             add(pattern1);
             add(pattern2);
         }};
@@ -369,7 +377,7 @@ public class PatternPageTest {
         final PatternWrapper pattern2 = newPattern("factType2",
                                                    "boundName2",
                                                    false);
-        final List<PatternWrapper> patterns = new ArrayList<PatternWrapper>() {{
+        final Set<PatternWrapper> patterns = new HashSet<PatternWrapper>() {{
             add(pattern1);
             add(pattern2);
         }};
@@ -390,8 +398,8 @@ public class PatternPageTest {
         verify(view).disablePatternCreation();
     }
 
-    private List<PatternWrapper> fakePatterns() {
-        return new ArrayList<PatternWrapper>() {{
+    private Set<PatternWrapper> fakePatterns() {
+        return new HashSet<PatternWrapper>() {{
             add(newPattern("factType1",
                            "boundName1",
                            false));

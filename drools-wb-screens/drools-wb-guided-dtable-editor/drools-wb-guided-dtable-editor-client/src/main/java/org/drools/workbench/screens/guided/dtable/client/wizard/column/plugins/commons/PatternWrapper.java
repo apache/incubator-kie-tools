@@ -16,8 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons;
 
-import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 
 import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils.nil;
@@ -34,35 +32,30 @@ public class PatternWrapper {
 
     private String entryPointName = "";
 
-    public PatternWrapper(final Pattern52 pattern52) {
-        this(pattern52.getFactType(),
-             pattern52.getBoundName(),
-             pattern52.isNegated());
-    }
-
-    public PatternWrapper(final ActionInsertFactCol52 actionCol52) {
-        this(actionCol52.getFactType(),
-             actionCol52.getBoundName(),
+    public PatternWrapper(final String factType,
+                          final String boundName) {
+        this(factType,
+             boundName,
              null);
     }
 
     public PatternWrapper(final String factType,
                           final String boundName,
                           final Boolean negated) {
-        this.factType = factType;
-        this.boundName = boundName;
-        this.negated = negated;
+        this(factType,
+             boundName,
+             null,
+             negated);
     }
 
     public PatternWrapper(final String factType,
                           final String boundName,
                           final String entryPointName,
                           final Boolean negated) {
-        this(factType,
-             boundName,
-             negated);
-
+        this.factType = factType;
+        this.boundName = boundName;
         this.entryPointName = entryPointName;
+        this.negated = negated;
     }
 
     public PatternWrapper() {
@@ -126,5 +119,41 @@ public class PatternWrapper {
 
     public String getBoundName() {
         return boundName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        PatternWrapper that = (PatternWrapper) o;
+
+        if (!boundName.equals(that.boundName)) {
+            return false;
+        }
+        if (!factType.equals(that.factType)) {
+            return false;
+        }
+        if (negated != null ? !negated.equals(that.negated) : that.negated != null) {
+            return false;
+        }
+        return entryPointName != null ? entryPointName.equals(that.entryPointName) : that.entryPointName == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = boundName.hashCode();
+        result = ~~result;
+        result = 31 * result + factType.hashCode();
+        result = ~~result;
+        result = 31 * result + (negated != null ? negated.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (entryPointName != null ? entryPointName.hashCode() : 0);
+        result = ~~result;
+        return result;
     }
 }

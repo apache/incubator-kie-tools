@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -761,18 +762,13 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public boolean canConditionBeDeleted(final ConditionCol52 col) {
-        Pattern52 pattern = model.getPattern(col);
-        if (pattern.getChildColumns().size() > 1) {
-            return true;
+        if (col instanceof BRLConditionColumn) {
+            return doCanConditionBeDeleted((BRLConditionColumn) col);
         }
-        if (isBindingUsed(pattern.getBoundName())) {
-            return false;
-        }
-        return true;
+        return doCanConditionBeDeleted(col);
     }
 
-    @Override
-    public boolean canConditionBeDeleted(final BRLConditionColumn col) {
+    private boolean doCanConditionBeDeleted(final BRLConditionColumn col) {
         for (IPattern p : col.getDefinition()) {
             if (p instanceof FactPattern) {
                 FactPattern fp = (FactPattern) p;
@@ -782,6 +778,17 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                     }
                 }
             }
+        }
+        return true;
+    }
+
+    private boolean doCanConditionBeDeleted(final ConditionCol52 col) {
+        Pattern52 pattern = model.getPattern(col);
+        if (pattern.getChildColumns().size() > 1) {
+            return true;
+        }
+        if (isBindingUsed(pattern.getBoundName())) {
+            return false;
         }
         return true;
     }

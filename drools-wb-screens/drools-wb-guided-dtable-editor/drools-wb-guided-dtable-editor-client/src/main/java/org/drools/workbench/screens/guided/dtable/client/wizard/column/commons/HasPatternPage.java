@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.commons;
 
-import java.util.List;
+import java.util.Set;
 
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.PatternWrapper;
 
@@ -30,5 +30,5 @@ public interface HasPatternPage {
 
     String getEntryPointName();
 
-    List<PatternWrapper> getPatterns();
+    Set<PatternWrapper> getPatterns();
 }

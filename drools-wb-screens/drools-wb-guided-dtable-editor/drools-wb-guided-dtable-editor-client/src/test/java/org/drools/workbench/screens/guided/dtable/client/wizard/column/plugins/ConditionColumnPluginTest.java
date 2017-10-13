@@ -16,12 +16,17 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -48,8 +53,20 @@ import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ConditionColumnPluginTest {
@@ -697,6 +714,32 @@ public class ConditionColumnPluginTest {
         plugin.setHideColumn(hideColumn);
 
         verify(editingCol).setHideColumn(hideColumn);
+    }
+
+    @Test
+    public void testGetPatterns() throws Exception {
+        final Pattern52 pattern = new Pattern52() {{
+            setFactType("FactType");
+            setBoundName("$fact");
+        }};
+        final BRLConditionColumn brlColumn = new BRLConditionColumn();
+        brlColumn.setDefinition(Collections.singletonList(new FactPattern("AnotherFact") {{
+            setBoundName("$another");
+        }}));
+
+        doReturn(Arrays.asList(pattern,
+                               brlColumn)).when(model).getConditions();
+
+        final Set<PatternWrapper> patterns = plugin.getPatterns();
+
+        assertEquals(2,
+                     patterns.size());
+        assertTrue(patterns.contains(new PatternWrapper("FactType",
+                                                        "$fact",
+                                                        false)));
+        assertTrue(patterns.contains(new PatternWrapper("AnotherFact",
+                                                        "$another",
+                                                        false)));
     }
 
     private ConditionCol52 makeConditionCol52(final int constraintValueType,

@@ -127,8 +127,6 @@ public interface GuidedDecisionTableView extends GridWidget,
 
         boolean canConditionBeDeleted(final ConditionCol52 col);
 
-        boolean canConditionBeDeleted(final BRLConditionColumn col);
-
         Map<String, String> getValueListLookups(final BaseColumn column);
 
         void getEnumLookups(final String factType,

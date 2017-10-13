@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -32,6 +33,7 @@ import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
@@ -222,27 +224,32 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
     }
 
     @Override
-    public List<PatternWrapper> getPatterns() {
+    public Set<PatternWrapper> getPatterns() {
         final Set<PatternWrapper> patterns = new HashSet<>();
 
         if (isNewColumn() || !isNewFactPattern()) {
-            for (Pattern52 pattern52 : presenter.getModel().getPatterns()) {
-                patterns.add(new PatternWrapper(pattern52));
-            }
+            final BRLRuleModel brlRuleModel = new BRLRuleModel(presenter.getModel());
+            final List<String> variables = brlRuleModel.getLHSPatternVariables();
+            variables.forEach(var -> {
+                final String factType = brlRuleModel.getLHSBoundFact(var).getFactType();
+                final boolean isNegated = brlRuleModel.getLHSBoundFact(var).isNegated();
+                patterns.add(new PatternWrapper(factType,
+                                                var,
+                                                isNegated));
+            });
         }
 
         if (isNewColumn() || isNewFactPattern()) {
-            for (Object o : presenter.getModel().getActionCols()) {
-                ActionCol52 col = (ActionCol52) o;
-                if (col instanceof ActionInsertFactCol52) {
-                    ActionInsertFactCol52 c = (ActionInsertFactCol52) col;
-
-                    patterns.add(new PatternWrapper(c));
-                }
-            }
+            final BRLRuleModel brlRuleModel = new BRLRuleModel(presenter.getModel());
+            final List<String> variables = brlRuleModel.getRHSBoundFacts();
+            variables.forEach(var -> {
+                final String factType = brlRuleModel.getRHSBoundFact(var).getFactType();
+                patterns.add(new PatternWrapper(factType,
+                                                var));
+            });
         }
 
-        return new ArrayList<>(patterns);
+        return patterns;
     }
 
     @Override
@@ -428,11 +435,11 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
     }
 
     boolean isNewFactPattern() {
-        return !presenter
-                .getModel()
-                .getPatterns()
+        final BRLRuleModel brlRuleModel = new BRLRuleModel(presenter.getModel());
+        final List<String> variables = brlRuleModel.getLHSPatternVariables();
+        return !variables
                 .stream()
-                .anyMatch(p -> p.getBoundName().equals(getBinding()));
+                .anyMatch(b -> b.equals(getBinding()));
     }
 
     private AsyncPackageDataModelOracle oracle() {

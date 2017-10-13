@@ -17,11 +17,11 @@
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -80,7 +80,7 @@ public class PatternPage<T extends HasPatternPage & DecisionTableColumnPlugin> e
     @Override
     public void isComplete(final Callback<Boolean> callback) {
         boolean isPatternSet = isPatternSet();
-        if(!isPatternSet) {
+        if (!isPatternSet) {
             view.showPatternWarning();
         } else {
             view.hidePatternWarning();
@@ -185,8 +185,8 @@ public class PatternPage<T extends HasPatternPage & DecisionTableColumnPlugin> e
         return currentPattern().key();
     }
 
-    List<PatternWrapper> getPatterns() {
-        final List<PatternWrapper> patterns = plugin().getPatterns();
+    Set<PatternWrapper> getPatterns() {
+        final Set<PatternWrapper> patterns = plugin().getPatterns();
 
         if (isPatternSet()) {
             patterns.add(currentPattern());
@@ -199,7 +199,7 @@ public class PatternPage<T extends HasPatternPage & DecisionTableColumnPlugin> e
         return patterns
                 .stream()
                 .filter(pattern -> !pattern.isNegated())
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     private PatternWrapper currentPattern() {

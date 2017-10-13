@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -31,6 +32,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.appformer.project.datamodel.oracle.DataType;
 import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
@@ -260,14 +262,19 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
     }
 
     @Override
-    public List<PatternWrapper> getPatterns() {
+    public Set<PatternWrapper> getPatterns() {
         final Set<PatternWrapper> patterns = new HashSet<>();
+        final BRLRuleModel brlRuleModel = new BRLRuleModel(presenter.getModel());
+        final List<String> variables = brlRuleModel.getLHSPatternVariables();
+        variables.forEach(var -> {
+            final String factType = brlRuleModel.getLHSBoundFact(var).getFactType();
+            final boolean isNegated = brlRuleModel.getLHSBoundFact(var).isNegated();
+            patterns.add(new PatternWrapper(factType,
+                                            var,
+                                            isNegated));
+        });
 
-        for (Pattern52 pattern52 : model().getPatterns()) {
-            patterns.add(new PatternWrapper(pattern52));
-        }
-
-        return new ArrayList<>(patterns);
+        return patterns;
     }
 
     @Override
