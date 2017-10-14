@@ -15,16 +15,15 @@
  */
 package org.kie.workbench.common.screens.server.management.client.wizard.container;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
 import java.util.Map;
-
+import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
@@ -47,76 +46,10 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
-import com.google.gwt.user.client.ui.Widget;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class NewContainerFormPresenter implements WizardPage {
-
-    public interface View extends UberView<NewContainerFormPresenter> {
-
-        String getTitle();
-
-        void addContentChangeHandler( final ContentChangeHandler contentChangeHandler );
-
-        void setGroupId( final String groupId );
-
-        void setArtifactId( final String artifactId );
-
-        void setVersion( final String version );
-
-        void setContainerName( final String containerName );
-
-        void setStartContainer( boolean startContainer );
-
-        String getContainerName();
-
-        String getContainerAlias();
-
-        String getGroupId();
-
-        String getArtifactId();
-
-        String getVersion();
-
-        boolean isStartContainer();
-
-        void errorOnContainerName();
-
-        void errorOnContainerName( String s );
-
-        void errorOnGroupId();
-
-        void errorOnArtifactId();
-
-        void errorOnVersion();
-
-        void setArtifactListWidgetView( ArtifactListWidgetPresenter.View view );
-
-        void clear();
-
-        void noErrors();
-
-        void noErrorOnContainerName();
-
-        void noErrorOnGroupId();
-
-        void noErrorOnArtifactId();
-
-        void noErrorOnVersion();
-
-        String getInvalidErrorMessage();
-
-        String getNewContainerWizardTitle();
-
-        String getNewContainerWizardSaveSuccess();
-
-        String getNewContainerWizardSaveError();
-
-    }
-
-    public enum Mode {
-        OPTIONAL, MANDATORY
-    }
 
     private final Logger logger;
     private final View view;
@@ -126,17 +59,16 @@ public class NewContainerFormPresenter implements WizardPage {
     private final ManagedInstance<ArtifactListWidgetPresenter> artifactListWidgetPresenterProvider;
     //lazy load due init issues
     private ArtifactListWidgetPresenter artifactListWidgetPresenter;
-
     private ServerTemplate serverTemplate;
     private Mode mode = Mode.OPTIONAL;
 
     @Inject
-    public NewContainerFormPresenter( final Logger logger,
-                                      final View view,
-                                      final ManagedInstance<ArtifactListWidgetPresenter> artifactListWidgetPresenterProvider,
-                                      final Caller<M2RepoService> m2RepoService,
-                                      final Caller<SpecManagementService> specManagementService,
-                                      final Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent ) {
+    public NewContainerFormPresenter(final Logger logger,
+                                     final View view,
+                                     final ManagedInstance<ArtifactListWidgetPresenter> artifactListWidgetPresenterProvider,
+                                     final Caller<M2RepoService> m2RepoService,
+                                     final Caller<SpecManagementService> specManagementService,
+                                     final Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent) {
         this.logger = logger;
         this.view = view;
         this.artifactListWidgetPresenterProvider = artifactListWidgetPresenterProvider;
@@ -147,17 +79,17 @@ public class NewContainerFormPresenter implements WizardPage {
 
     @PostConstruct
     public void init() {
-        view.init( this );
-        view.addContentChangeHandler( new ContentChangeHandler() {
+        view.init(this);
+        view.addContentChangeHandler(new ContentChangeHandler() {
             @Override
             public void onContentChange() {
-                wizardPageStatusChangeEvent.fire( new WizardPageStatusChangeEvent( NewContainerFormPresenter.this ) );
+                wizardPageStatusChangeEvent.fire(new WizardPageStatusChangeEvent(NewContainerFormPresenter.this));
             }
-        } );
+        });
     }
 
-    public void addContentChangeHandler( final ContentChangeHandler contentChangeHandler ) {
-        view.addContentChangeHandler( checkNotNull( "contentChangeHandler", contentChangeHandler ) );
+    public void addContentChangeHandler(final ContentChangeHandler contentChangeHandler) {
+        view.addContentChangeHandler(checkNotNull("contentChangeHandler", contentChangeHandler));
     }
 
     @Override
@@ -166,29 +98,29 @@ public class NewContainerFormPresenter implements WizardPage {
     }
 
     @Override
-    public void isComplete( final Callback<Boolean> callback ) {
-        if ( isValid() ) {
-            if ( serverTemplate == null ) {
-                callback.callback( true );
+    public void isComplete(final Callback<Boolean> callback) {
+        if (isValid()) {
+            if (serverTemplate == null) {
+                callback.callback(true);
             } else {
-                specManagementService.call( new RemoteCallback<Boolean>() {
+                specManagementService.call(new RemoteCallback<Boolean>() {
                     @Override
-                    public void callback( final Boolean result ) {
-                        if ( result.equals( Boolean.FALSE ) ) {
-                            view.errorOnContainerName( view.getInvalidErrorMessage() );
+                    public void callback(final Boolean result) {
+                        if (result.equals(Boolean.FALSE)) {
+                            view.errorOnContainerName(view.getInvalidErrorMessage());
                         }
-                        callback.callback( result );
+                        callback.callback(result);
                     }
-                } ).isContainerIdValid( serverTemplate.getId(), view.getContainerName() );
+                }).isContainerIdValid(serverTemplate.getId(), view.getContainerName());
             }
         } else {
-            callback.callback( false );
+            callback.callback(false);
         }
     }
 
     @Override
     public void initialise() {
-        if ( artifactListWidgetPresenter != null ) {
+        if (artifactListWidgetPresenter != null) {
             artifactListWidgetPresenter.clear();
         }
     }
@@ -203,16 +135,11 @@ public class NewContainerFormPresenter implements WizardPage {
 
     @Override
     public Widget asWidget() {
-        if ( artifactListWidgetPresenter == null ) {
+        if (artifactListWidgetPresenter == null) {
             artifactListWidgetPresenter = artifactListWidgetPresenterProvider.get();
-            view.setArtifactListWidgetView( artifactListWidgetPresenter.getView() );
+            view.setArtifactListWidgetView(artifactListWidgetPresenter.getView());
         }
         return view.asWidget();
-    }
-
-    public void setServerTemplate( final ServerTemplate serverTemplate ) {
-        this.serverTemplate = serverTemplate;
-        this.mode = Mode.MANDATORY;
     }
 
     public void clear() {
@@ -221,97 +148,110 @@ public class NewContainerFormPresenter implements WizardPage {
         view.clear();
     }
 
-    void onDependencyPathSelectedEvent( @Observes final DependencyPathSelectedEvent event ) {
-        if ( event != null &&
+    void onDependencyPathSelectedEvent(@Observes final DependencyPathSelectedEvent event) {
+        if (event != null &&
                 event.getContext() != null &&
-                event.getPath() != null ) {
-            if ( event.getContext().equals( artifactListWidgetPresenter ) ) {
-                m2RepoService.call( new RemoteCallback<GAV>() {
+                event.getPath() != null) {
+            if (event.getContext().equals(artifactListWidgetPresenter)) {
+                m2RepoService.call(new RemoteCallback<GAV>() {
                     @Override
-                    public void callback( GAV gav ) {
-                        setAValidContainerName( gav.toString() );
+                    public void callback(GAV gav) {
+                        setAValidContainerName(gav.toString());
 
-                        view.setGroupId( gav.getGroupId() );
-                        view.setArtifactId( gav.getArtifactId() );
-                        view.setVersion( gav.getVersion() );
+                        view.setGroupId(gav.getGroupId());
+                        view.setArtifactId(gav.getArtifactId());
+                        view.setVersion(gav.getVersion());
 
-                        wizardPageStatusChangeEvent.fire( new WizardPageStatusChangeEvent( NewContainerFormPresenter.this ) );
+                        wizardPageStatusChangeEvent.fire(new WizardPageStatusChangeEvent(NewContainerFormPresenter.this));
                     }
-                } ).loadGAVFromJar( event.getPath() );
+                }).loadGAVFromJar(event.getPath());
             }
         } else {
-            logger.warn( "Illegal event argument." );
+            logger.warn("Illegal event argument.");
         }
     }
 
-    private void setAValidContainerName( final String containerId ) {
-        if ( view.getContainerName().isEmpty() ) {
-            specManagementService
-                    .call( ( final String validContainerId ) -> {
-                        view.setContainerName( validContainerId );
+    private void setAValidContainerName(final String containerId) {
+        final boolean isContainerNameEmpty = view.getContainerName().isEmpty();
 
-                        wizardPageStatusChangeEvent.fire( new WizardPageStatusChangeEvent( NewContainerFormPresenter.this ) );
-                    } )
-                    .validContainerId( serverTemplate.getId(), containerId );
+        if (isContainerNameEmpty) {
+            setContainerName(containerId);
+        }
+    }
+
+    private void setContainerName(final String containerId) {
+
+        final Optional<ServerTemplate> serverTemplate = Optional.ofNullable(getServerTemplate());
+        final RemoteCallback<String> setContainerName = (validContainerId) -> {
+            view.setContainerName(validContainerId);
+            wizardPageStatusChangeEvent.fire(new WizardPageStatusChangeEvent(this));
+        };
+
+        if (serverTemplate.isPresent()) {
+            specManagementService
+                    .call(setContainerName)
+                    .validContainerId(serverTemplate.get().getId(), containerId);
+        } else {
+            setContainerName.callback(containerId);
         }
     }
 
     public boolean isContainerNameValid() {
-        if ( mode.equals( Mode.OPTIONAL ) && isEmpty() ) {
+        if (mode.equals(Mode.OPTIONAL) && isEmpty()) {
             return true;
         }
         return !view.getContainerName().trim().isEmpty();
     }
 
     public boolean isGroupIdValid() {
-        if ( mode.equals( Mode.OPTIONAL ) && isEmpty() ) {
+        if (mode.equals(Mode.OPTIONAL) && isEmpty()) {
             return true;
         }
         return !view.getGroupId().trim().isEmpty();
     }
 
     public boolean isArtifactIdValid() {
-        if ( mode.equals( Mode.OPTIONAL ) && isEmpty() ) {
+        if (mode.equals(Mode.OPTIONAL) && isEmpty()) {
             return true;
         }
         return !view.getArtifactId().trim().isEmpty();
     }
 
     public boolean isVersionValid() {
-        if ( mode.equals( Mode.OPTIONAL ) && isEmpty() ) {
+        if (mode.equals(Mode.OPTIONAL) && isEmpty()) {
             return true;
         }
         return !view.getVersion().trim().isEmpty();
     }
 
     public boolean isValid() {
-        if ( mode.equals( Mode.OPTIONAL ) && isEmpty() ) {
+        if (mode.equals(Mode.OPTIONAL) && isEmpty()) {
             view.noErrors();
             return true;
         }
         boolean hasError = false;
-        if ( isContainerNameValid() ) {
+        if (isContainerNameValid()) {
             view.noErrorOnContainerName();
         } else {
             view.errorOnContainerName();
             hasError = true;
         }
 
-        if ( isGroupIdValid() ) {
+        if (isGroupIdValid()) {
             view.noErrorOnGroupId();
         } else {
             view.errorOnGroupId();
             hasError = true;
         }
 
-        if ( isArtifactIdValid() ) {
+        if (isArtifactIdValid()) {
             view.noErrorOnArtifactId();
         } else {
             view.errorOnArtifactId();
             hasError = true;
         }
 
-        if ( isVersionValid() ) {
+        if (isVersionValid()) {
             view.noErrorOnVersion();
         } else {
             view.errorOnVersion();
@@ -332,18 +272,88 @@ public class NewContainerFormPresenter implements WizardPage {
         return serverTemplate;
     }
 
-    public ContainerSpec buildContainerSpec( final String serverTemplateId,
-                                             final Map<Capability, ContainerConfig> configs ) {
-        return new ContainerSpec( view.getContainerName(),
-                                  view.getContainerAlias(),
-                                  new ServerTemplateKey( serverTemplateId, null ),
-                                  new ReleaseId( view.getGroupId(), view.getArtifactId(), view.getVersion() ),
-                                  view.isStartContainer() ? KieContainerStatus.STARTED : KieContainerStatus.STOPPED,
-                                  configs );
+    public void setServerTemplate(final ServerTemplate serverTemplate) {
+        this.serverTemplate = serverTemplate;
+        this.mode = Mode.MANDATORY;
+    }
+
+    public ContainerSpec buildContainerSpec(final String serverTemplateId,
+                                            final Map<Capability, ContainerConfig> configs) {
+        return new ContainerSpec(view.getContainerName(),
+                                 view.getContainerAlias(),
+                                 new ServerTemplateKey(serverTemplateId, null),
+                                 new ReleaseId(view.getGroupId(), view.getArtifactId(), view.getVersion()),
+                                 view.isStartContainer() ? KieContainerStatus.STARTED : KieContainerStatus.STOPPED,
+                                 configs);
     }
 
     public View getView() {
         return this.view;
     }
 
+    public enum Mode {
+        OPTIONAL,
+        MANDATORY
+    }
+
+    public interface View extends UberView<NewContainerFormPresenter> {
+
+        String getTitle();
+
+        void addContentChangeHandler(final ContentChangeHandler contentChangeHandler);
+
+        String getContainerName();
+
+        void setContainerName(final String containerName);
+
+        String getContainerAlias();
+
+        String getGroupId();
+
+        void setGroupId(final String groupId);
+
+        String getArtifactId();
+
+        void setArtifactId(final String artifactId);
+
+        String getVersion();
+
+        void setVersion(final String version);
+
+        boolean isStartContainer();
+
+        void setStartContainer(boolean startContainer);
+
+        void errorOnContainerName();
+
+        void errorOnContainerName(String s);
+
+        void errorOnGroupId();
+
+        void errorOnArtifactId();
+
+        void errorOnVersion();
+
+        void setArtifactListWidgetView(ArtifactListWidgetPresenter.View view);
+
+        void clear();
+
+        void noErrors();
+
+        void noErrorOnContainerName();
+
+        void noErrorOnGroupId();
+
+        void noErrorOnArtifactId();
+
+        void noErrorOnVersion();
+
+        String getInvalidErrorMessage();
+
+        String getNewContainerWizardTitle();
+
+        String getNewContainerWizardSaveSuccess();
+
+        String getNewContainerWizardSaveError();
+    }
 }
