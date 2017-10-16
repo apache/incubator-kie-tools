@@ -23,7 +23,7 @@ import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.AbstractBasicFileAttributeView;
 import org.uberfire.java.nio.file.Path;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
 
 /**
  * This is a view that extends a Basic Attribute View and adds the "isHidden" attribute.

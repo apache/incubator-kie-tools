@@ -38,7 +38,7 @@ import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.Commands;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A modal dialog that floats above the workbench. Each instance can only be shown once.
@@ -85,7 +85,8 @@ public class Bs3Modal extends Modal {
 
     /**
      * Shows this modal dialog above the current workbench.
-     * @param afterShown the action to perform once the dialog has been shown. Not null. Use {@link Commands#DO_NOTHING} if you don't have an "after show" action.
+     *
+     * @param afterShown  the action to perform once the dialog has been shown. Not null. Use {@link Commands#DO_NOTHING} if you don't have an "after show" action.
      * @param afterClosed the action to perform once the dialog has been dismissed. Not null. Use {@link Commands#DO_NOTHING} if you don't have an "after close" action.
      */
     public void show(final Command afterShown,
@@ -124,6 +125,7 @@ public class Bs3Modal extends Modal {
 
     /**
      * Replaces the contents within the main body area of the modal. By default, the main body area is empty.
+     *
      * @param content the new content for the main body area.
      */
     public void setContent(IsWidget content) {
@@ -146,6 +148,7 @@ public class Bs3Modal extends Modal {
     /**
      * Replaces the current contents of the footer area with the given widget. By default (if you do not call this
      * method), the footer contains an OK button that dismisses the dialog when clicked.
+     *
      * @param content the new content for the footer area.
      */
     public void setFooterContent(IsWidget content) {

@@ -111,6 +111,7 @@
           <runTarget>index.html</runTarget>
           <extraJvmArgs>-Xmx712m -XX:CompileThreshold=7000</extraJvmArgs>
           <compileSourcesArtifacts>
+            <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-io</compileSourcesArtifact>

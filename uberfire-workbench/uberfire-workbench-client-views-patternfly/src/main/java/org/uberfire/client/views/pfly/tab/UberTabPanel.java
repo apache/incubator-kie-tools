@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -54,7 +55,7 @@ import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A wrapper around {@link TabPanelWithDropdowns} that adds the following capabilities:
@@ -303,6 +304,7 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget,
     /**
      * The GwtBootstrap3 TabPanel doesn't support the RequiresResize/ProvidesResize contract, and UberTabPanel fills in
      * the gap. This helper method allows us to call onResize() on the widgets that need it.
+     *
      * @param widget the widget that has just been resized
      */
     private void resizeIfNeeded(final Widget widget) {

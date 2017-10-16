@@ -19,7 +19,7 @@ package org.uberfire.java.nio.file;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 
-import static org.uberfire.commons.validation.Preconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
 
 public class SimpleFileVisitor<T> implements FileVisitor<T> {
 

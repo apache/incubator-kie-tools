@@ -17,16 +17,17 @@
 package org.uberfire.ext.editor.commons.client.history;
 
 import java.util.List;
+
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.editor.commons.client.file.RestoreUtil;
 import org.uberfire.ext.editor.commons.client.file.popups.RestorePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.event.VersionSelectedEvent;

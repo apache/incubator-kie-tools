@@ -17,7 +17,7 @@ package org.uberfire.ext.wires.bpmn.api.model.impl.roles;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.bpmn.api.model.Role;
 
 @Portable

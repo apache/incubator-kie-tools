@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.cdi.workspace.Workspace;
 import org.uberfire.backend.server.cdi.model.WorkspaceImpl;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Contains every workspace created in the application and the beans for those workspaces.
@@ -60,6 +61,7 @@ public class WorkspaceManager {
 
     /**
      * Returns a workspace, but if it does not exists, it creates a new one.
+     *
      * @param name The name of the workspace.
      * @return The existent or the new workspace.
      */
@@ -92,6 +94,7 @@ public class WorkspaceManager {
 
     /**
      * Returns a workspace. If the workspace does ont exists it throws {@link NoSuchElementException}
+     *
      * @param name Workspace name
      * @return The workspace object
      */
@@ -109,8 +112,9 @@ public class WorkspaceManager {
 
     /**
      * Returns a bean based on a workspace and a bean name. If the bean does not exist, returns null
+     *
      * @param workspace The workspace name.
-     * @param beanName The bean name for that workspace.
+     * @param beanName  The bean name for that workspace.
      * @return the bean instance
      */
     public <T> T getBean(Workspace workspace,
@@ -124,9 +128,10 @@ public class WorkspaceManager {
 
     /**
      * Put a bean instance into a Workspace.
+     *
      * @param workspace The workspace to store beans
-     * @param beanName The bean name
-     * @param instance The bean instance
+     * @param beanName  The bean name
+     * @param instance  The bean instance
      */
     public <T> void putBean(Workspace workspace,
                             String beanName,
@@ -145,6 +150,7 @@ public class WorkspaceManager {
 
     /**
      * Deletes a workspace and its beans
+     *
      * @param workspace the workspace to delete
      */
     public void delete(final Workspace workspace) {
@@ -153,6 +159,7 @@ public class WorkspaceManager {
 
     /**
      * Returns the workspace count
+     *
      * @return the number of workspaces
      */
     public int getWorkspaceCount() {
@@ -161,6 +168,7 @@ public class WorkspaceManager {
 
     /**
      * Return the beans count for a workspace
+     *
      * @param workspace The workspace to count beans
      * @return The number of beans for a workspace
      */

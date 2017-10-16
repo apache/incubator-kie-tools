@@ -16,12 +16,12 @@
 
 package org.uberfire.wbtest.selenium;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Base class for Selenium Page Objects that wrap UberFire workbench panels.

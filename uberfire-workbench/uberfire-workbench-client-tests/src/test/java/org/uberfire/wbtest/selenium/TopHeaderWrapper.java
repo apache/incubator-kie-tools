@@ -23,7 +23,7 @@ import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.workbench.model.CompassPosition;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 /**
  * A Selenium "page object" for the TopHeader, which contains facilities for adding child panels to the root panel.

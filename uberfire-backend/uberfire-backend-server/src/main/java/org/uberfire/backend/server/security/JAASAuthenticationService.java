@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.security.auth.callback.Callback;
@@ -35,8 +36,8 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.errai.security.shared.exception.FailedAuthenticationException;
 import org.jboss.errai.security.shared.service.AuthenticationService;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.backend.server.security.adapter.GroupAdapterAuthorizationSource;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Implements stateful, thread-local authentication of a user via the JAAS API (

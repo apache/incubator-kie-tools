@@ -63,7 +63,7 @@ import org.uberfire.java.nio.file.StandardOpenOption;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.java.nio.file.StandardOpenOption.CREATE_NEW;
 import static org.uberfire.java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static org.uberfire.java.nio.file.StandardOpenOption.WRITE;

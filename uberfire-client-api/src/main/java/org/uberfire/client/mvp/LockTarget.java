@@ -22,7 +22,7 @@ import jsinterop.annotations.JsType;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.PlaceRequest;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Holds information about the target of a lock.
@@ -35,6 +35,7 @@ public class LockTarget {
     private final PlaceRequest place;
     private final TitleProvider titleProvider;
     private final Runnable reloadRunnable;
+
     @JsIgnore
     public LockTarget(Path path,
                       IsWidget isWidget,

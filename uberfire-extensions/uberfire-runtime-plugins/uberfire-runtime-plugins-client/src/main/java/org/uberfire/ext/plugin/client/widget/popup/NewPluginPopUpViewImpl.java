@@ -33,7 +33,7 @@ import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class NewPluginPopUpViewImpl extends BaseModal implements NewPluginPopUpView {

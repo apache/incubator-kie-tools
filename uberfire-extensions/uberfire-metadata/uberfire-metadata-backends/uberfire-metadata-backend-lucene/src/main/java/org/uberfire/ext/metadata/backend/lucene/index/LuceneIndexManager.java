@@ -35,7 +35,7 @@ import org.uberfire.ext.metadata.model.KCluster;
 import org.uberfire.ext.metadata.model.KObjectKey;
 import org.uberfire.ext.metadata.search.ClusterSegment;
 
-import static org.uberfire.commons.validation.Preconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
 
 public class LuceneIndexManager implements IndexManager {
 

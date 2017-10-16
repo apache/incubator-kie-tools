@@ -113,30 +113,6 @@
         <classifier>sources</classifier>
       </dependency>
 
-      <!-- Project DataModel -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-project-datamodel-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-project-datamodel-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-project-datamodel-commons</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-project-datamodel-commons</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
       <!-- Showcase WebApp -->
       <dependency>
         <groupId>org.uberfire</groupId>

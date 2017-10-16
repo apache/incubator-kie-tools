@@ -36,7 +36,7 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A Workbench-centric abstraction over the browser's history mechanism. Allows the application to initiate navigation
@@ -94,11 +94,12 @@ public interface PlaceManager {
      * <li>by removing the activity's view from the DOM, either using the GWT Widget API, or by direct DOM manipulation.
      * <li>by opening another place on the same container.
      * </ol>
+     *
      * @param place
      * @param addTo The container to add the widget's view to. Its corresponding DOM element must have a CSS
-     * <tt>position</tt> setting of <tt>relative</tt> or <tt>absolute</tt> and an explicit size set. This can
-     * be accomplished through direct use of CSS, or through the
-     * {@link Layouts#setToFillParent(com.google.gwt.user.client.ui.Widget)} call.
+     *              <tt>position</tt> setting of <tt>relative</tt> or <tt>absolute</tt> and an explicit size set. This can
+     *              be accomplished through direct use of CSS, or through the
+     *              {@link Layouts#setToFillParent(com.google.gwt.user.client.ui.Widget)} call.
      */
     @JsIgnore
     void goTo(final PlaceRequest place,
@@ -112,6 +113,7 @@ public interface PlaceManager {
      * Finds the <i>currently open</i> activity that handles the given PlaceRequest by ID. No attempt is made to match
      * by path, but see {@link ActivityManagerImpl#resolveExistingParts(PlaceRequest)} for a variant that does.
      * (TODO: should this method care about paths? if not, should the other method be added to the interface?)
+     *
      * @param place the PlaceRequest whose activity to search for
      * @return the activity that currently exists in service of the given PlaceRequest's ID. Null if no current activity
      * handles the given PlaceRequest.
@@ -166,6 +168,7 @@ public interface PlaceManager {
 
     /**
      * Finds the <i>currently open</i> PlaceRequests for Activities that handle the given ResourceTypeDefinition.
+     *
      * @param type the ResourceTypeDefinition whose activity to search for
      * @return an unmodifiable collection of PlaceRequests for the <i>currently open</i> WorkbenchEditorActivities that
      * can handle the ResourceTypeDefinition. Returns an empty collection if no match was found.

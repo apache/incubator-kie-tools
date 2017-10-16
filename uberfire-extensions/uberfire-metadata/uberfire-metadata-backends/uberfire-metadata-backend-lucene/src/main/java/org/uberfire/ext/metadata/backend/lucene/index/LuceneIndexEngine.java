@@ -45,8 +45,8 @@ import org.uberfire.ext.metadata.model.schema.MetaObject;
 import org.uberfire.ext.metadata.model.schema.MetaProperty;
 import org.uberfire.ext.metadata.model.schema.MetaType;
 
-import static org.uberfire.commons.validation.Preconditions.checkCondition;
-import static org.uberfire.commons.validation.Preconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkCondition;
+import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
 
 public class LuceneIndexEngine implements MetaIndexEngine {
 

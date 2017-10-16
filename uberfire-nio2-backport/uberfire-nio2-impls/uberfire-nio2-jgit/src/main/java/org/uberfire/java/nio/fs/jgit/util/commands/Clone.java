@@ -31,8 +31,8 @@ import org.uberfire.java.nio.fs.jgit.util.Git;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class Clone {
 

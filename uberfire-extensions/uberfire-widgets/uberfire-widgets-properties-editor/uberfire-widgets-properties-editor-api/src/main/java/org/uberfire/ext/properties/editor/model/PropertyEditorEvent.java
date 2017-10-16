@@ -21,7 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Collections.sort;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A Property Editor CDI Event handled by Property Editor.
@@ -100,6 +100,7 @@ public class PropertyEditorEvent {
 
     /**
      * Get Properties from a event ordered by priority.
+     *
      * @return Categories and fields ordered by priority, lower values toward the beginning
      */
     public List<PropertyEditorCategory> getSortedProperties() {

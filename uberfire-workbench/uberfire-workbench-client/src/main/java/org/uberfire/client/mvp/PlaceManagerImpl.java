@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -73,7 +74,7 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static java.util.Collections.unmodifiableCollection;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.plugin.PluginUtil.ensureIterable;
 import static org.uberfire.plugin.PluginUtil.toInteger;
 
@@ -131,8 +132,8 @@ public class PlaceManagerImpl
     @PostConstruct
     public void initPlaceHistoryHandler() {
         getPlaceHistoryHandler().initialize(this,
-                                          produceEventBus(),
-                                          DefaultPlaceRequest.NOWHERE);
+                                            produceEventBus(),
+                                            DefaultPlaceRequest.NOWHERE);
         workbenchLayout = layoutSelection.get();
     }
 
@@ -332,8 +333,9 @@ public class PlaceManagerImpl
      * <p>
      * The behaviour of this method is affected by the boolean-valued
      * {@code org.uberfire.client.mvp.PlaceManagerImpl.ignoreUnkownPlaces} property in {@link UberfirePreferences}.
+     *
      * @param place A non-null place request that could have originated from within application code, from within the
-     * framework, or by parsing a hash fragment from a browser history event.
+     *              framework, or by parsing a hash fragment from a browser history event.
      * @return a non-null ResolvedRequest, where:
      * <ul>
      * <li>the Activity value is either the unambiguous resolved Activity instance, or null if the activity was
@@ -597,6 +599,7 @@ public class PlaceManagerImpl
      * {@link #availableSplashScreens} for lookup (for example, see {@link SplashScreenMenuPresenter}) and later disposal.
      * Internally, this method should be called every time any part or perspective is added to the workbench, and called
      * again when that part or perspective is removed.
+     *
      * @param place the place that has just been added to the workbench. Must not be null.
      */
     private void addSplashScreenFor(final PlaceRequest place) {
@@ -622,6 +625,7 @@ public class PlaceManagerImpl
      * Closes the splash screen associated with the given place request, if any. Internally, this method should be
      * invoked every time a part or perspective is removed from the workbench (cleaning up after the corresponding
      * earlier call to {@link #addSplashScreenFor(PlaceRequest)}.
+     *
      * @param place the place whose opening may have triggered a splash screen to launch. Must not be null.
      */
     private void closeSplashScreen(final PlaceRequest place) {
@@ -670,6 +674,7 @@ public class PlaceManagerImpl
     /**
      * Returns all the PlaceRequests that map to activies that are currently in the open state and accessible
      * somewhere in the current perspective.
+     *
      * @return an unmodifiable view of the current active place requests. This view may or may not update after
      * further calls into PlaceManager that modify the workbench state. It's best not to hold on to the returned
      * set; instead, call this method again for current information.
@@ -681,6 +686,7 @@ public class PlaceManagerImpl
     /**
      * Returns all the PathPlaceRequests that map to activies that are currently in the open state and accessible
      * somewhere in the current perspective.
+     *
      * @return an unmodifiable view of the current active place requests. This view may or may not update after
      * further calls into PlaceManager that modify the workbench state. It's best not to hold on to the returned
      * set; instead, call this method again for current information.
@@ -789,7 +795,6 @@ public class PlaceManagerImpl
             return;
         }
 
-
         activePopups.put(place.getIdentifier(),
                          activity);
 
@@ -808,6 +813,7 @@ public class PlaceManagerImpl
     /**
      * Before launching the perspective we check that it isn't already open by asking the
      * placeHistory service to extract the perspective encoded in the URL
+     *
      * @param place
      * @param activity
      * @param doWhenFinished

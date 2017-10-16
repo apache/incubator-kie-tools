@@ -21,8 +21,8 @@ import javax.enterprise.inject.Alternative;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Alternative
 public class SessionInfoImpl implements SessionInfo {

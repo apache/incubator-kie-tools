@@ -25,8 +25,8 @@ import org.uberfire.java.nio.base.GeneralPathImpl;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 
-import static org.uberfire.commons.validation.Preconditions.checkCondition;
-import static org.uberfire.commons.validation.Preconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkCondition;
+import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
 
 public class SimpleWindowsFileStore extends BaseSimpleFileStore {
 

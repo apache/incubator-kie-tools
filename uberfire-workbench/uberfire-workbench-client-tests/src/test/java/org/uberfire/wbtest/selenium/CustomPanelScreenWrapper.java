@@ -24,7 +24,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 /**
  * Abstraction over the state and behaviour of the stuff in the {@code org.uberfire.wbtest.client.panels.custom} package.
@@ -98,6 +98,7 @@ public class CustomPanelScreenWrapper {
 
     /**
      * Allows looking up CustomPanelContentScreen elements by their unqualified name.
+     *
      * @param shortName the name without the gwt-debug-CustomPanelMakerScreen- prefix.
      */
     private WebElement findElement(String shortName) {

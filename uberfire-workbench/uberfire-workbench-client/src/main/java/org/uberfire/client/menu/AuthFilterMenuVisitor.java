@@ -30,7 +30,7 @@ import org.uberfire.workbench.model.menu.MenuItemPlain;
 import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.plugin.PluginUtil.ensureIterable;
 
 /**
@@ -45,8 +45,9 @@ public class AuthFilterMenuVisitor implements MenuVisitor {
 
     /**
      * Wraps the given menu visitor, only forwarding calls that represent menu items the given user is allowed to see.
-     * @param authzManager The authorization manager that decides what is visible. Not null.
-     * @param user The user who will see the menus being visited. Not null.
+     *
+     * @param authzManager   The authorization manager that decides what is visible. Not null.
+     * @param user           The user who will see the menus being visited. Not null.
      * @param chainedVisitor The menu visitor that receives calls for all authorized parts of the menu tree. Not null.
      */
     public AuthFilterMenuVisitor(AuthorizationManager authzManager,

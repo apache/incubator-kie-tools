@@ -62,8 +62,8 @@ import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
 import static org.eclipse.jgit.lib.Repository.shortenRefName;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class JGitFileSystem implements FileSystem,
                                        FileSystemId,

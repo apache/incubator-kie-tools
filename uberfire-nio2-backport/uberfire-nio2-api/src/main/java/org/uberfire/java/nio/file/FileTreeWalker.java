@@ -19,10 +19,11 @@ package org.uberfire.java.nio.file;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 
-import static org.uberfire.commons.validation.Preconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
 
 /**
  * Simple file tree walker that works in a similar manner to nftw(3C).
+ *
  * @see Files#walkFileTree
  */
 

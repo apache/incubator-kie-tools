@@ -32,11 +32,12 @@ import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Back port of JSR-203 from Java Platform, Standard Edition 7.
+ *
  * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/file/spi/FileSystemProvider.html">Original JavaDoc</a>
  */
 public final class FileSystemProviders {
@@ -89,6 +90,7 @@ public final class FileSystemProviders {
 
     /**
      * Non standard method that provides access to default provider (default:// scheme).
+     *
      * @return the default file system provider
      * @throws ServiceConfigurationError
      */
@@ -101,6 +103,7 @@ public final class FileSystemProviders {
 
     /**
      * Non standard method to resolve a provider based on uri's scheme
+     *
      * @param uri the uri
      * @return the file system provider
      */

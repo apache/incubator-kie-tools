@@ -49,14 +49,15 @@ import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import static java.util.Collections.addAll;
 import static java.util.Collections.emptySet;
 import static org.uberfire.commons.regex.util.GlobToRegEx.globToRegex;
-import static org.uberfire.commons.validation.Preconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.Preconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
 import static org.uberfire.java.nio.file.AccessMode.EXECUTE;
 import static org.uberfire.java.nio.file.AccessMode.READ;
 import static org.uberfire.java.nio.file.AccessMode.WRITE;
 
 /**
  * Back port of JSR-203 from Java Platform, Standard Edition 7.
+ *
  * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/file/Files.html">Original JavaDoc</a>
  */
 public final class Files {

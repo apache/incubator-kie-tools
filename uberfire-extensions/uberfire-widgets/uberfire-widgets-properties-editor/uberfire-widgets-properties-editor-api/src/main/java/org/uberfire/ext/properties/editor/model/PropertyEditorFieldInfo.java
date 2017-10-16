@@ -22,7 +22,7 @@ import java.util.List;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Portable
 /**
@@ -50,8 +50,9 @@ public class PropertyEditorFieldInfo {
 
     /**
      * Create a PropertyEditorFieldInfo
+     *
      * @param label field descriptor
-     * @param type Property Editor Type of this field
+     * @param type  Property Editor Type of this field
      */
     public PropertyEditorFieldInfo(String label,
                                    PropertyEditorType type) {
@@ -65,8 +66,9 @@ public class PropertyEditorFieldInfo {
 
     /**
      * Create a PropertyEditorFieldInfo
-     * @param label field descriptor
-     * @param type Property Editor Type of this field
+     *
+     * @param label              field descriptor
+     * @param type               Property Editor Type of this field
      * @param currentStringValue Current value of this field
      */
     public PropertyEditorFieldInfo(String label,
@@ -85,6 +87,7 @@ public class PropertyEditorFieldInfo {
     /**
      * Key is a helper to identify a field. Sometimes labels can have complex descriptions.
      * This key is a nice way to identify a property in a PropertyEditorChangeEvent.
+     *
      * @param key
      */
     public PropertyEditorFieldInfo withKey(String key) {
@@ -95,6 +98,7 @@ public class PropertyEditorFieldInfo {
 
     /**
      * Combo values used in PropertyEditorType.COMBO fields.
+     *
      * @param comboValues a list of combo values
      */
     public PropertyEditorFieldInfo withComboValues(List<String> comboValues) {
@@ -105,6 +109,7 @@ public class PropertyEditorFieldInfo {
 
     /**
      * The priority value is used to sort the categories (lower values toward the beginning).
+     *
      * @param priority
      * @return
      */
@@ -123,6 +128,7 @@ public class PropertyEditorFieldInfo {
 
     /**
      * Add validators to a specific field. This validators are executed before the change event.
+     *
      * @param validators
      * @return
      */

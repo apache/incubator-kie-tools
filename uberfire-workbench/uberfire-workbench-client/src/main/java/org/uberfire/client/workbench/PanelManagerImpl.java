@@ -18,6 +18,7 @@ package org.uberfire.client.workbench;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -64,7 +65,7 @@ import org.uberfire.workbench.model.impl.CustomPanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.plugin.PluginUtil.ensureIterable;
 
 /**
@@ -402,6 +403,7 @@ public class PanelManagerImpl implements PanelManager {
 
     /**
      * Returns the first live (associated with an active presenter) PartDefinition whose place matches the given one.
+     *
      * @return the definition for the live part servicing the given place, or null if no such part can be found.
      */
     protected PartDefinition getPartForPlace(final PlaceRequest place) {
@@ -437,6 +439,7 @@ public class PanelManagerImpl implements PanelManager {
      * Destroys the presenter bean associated with the given part and removes the part's presenter from the panel
      * presenter that contains it (which in turn removes the part definition from the panel definition and the part view
      * from the panel view).
+     *
      * @param part the definition of the workbench part (screen or editor) to remove from the layout.
      */
     protected void removePart(final PartDefinition part) {
@@ -546,6 +549,7 @@ public class PanelManagerImpl implements PanelManager {
 
     /**
      * Cleanup handler for custom panels that are removed from the DOM before they are removed via PlaceManager.
+     *
      * @see PanelManagerImpl#addCustomPanel(HasWidgets, String)
      */
     private final class CustomPanelCleanupHandler implements AttachEvent.Handler {

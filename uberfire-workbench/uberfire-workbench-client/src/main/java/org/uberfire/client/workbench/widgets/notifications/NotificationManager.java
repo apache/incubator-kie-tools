@@ -17,6 +17,7 @@ package org.uberfire.client.workbench.widgets.notifications;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -26,13 +27,13 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.client.workbench.WorkbenchLayoutInfo;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -65,6 +66,7 @@ public class NotificationManager {
      * Adds a new notification message to the system, asking the notification presenter to display it, and storing it in
      * the list of existing notifications. This method can be invoked directly, or it can be invoked indirectly by
      * firing a CDI {@link NotificationEvent}.
+     *
      * @param event The notification to display and store in the notification system.
      */
     public void addNotification(@Observes final NotificationEvent event) {
@@ -144,6 +146,7 @@ public class NotificationManager {
          * Set the container relative to which Notifications are to be shown. This should be called before
          * either {@link #show(NotificationEvent, Command)} or {@link #hide(NotificationPopupHandle)}
          * and must be passed a non-null value.
+         *
          * @param container The container relative to which Notifications will be shown. Must not be null.
          */
         void setContainer(final IsWidget container);
@@ -152,17 +155,19 @@ public class NotificationManager {
          * Configures the initial vertical spacing for the first notifications
          * (see {@link NotificationEvent#getInitialTopOffset()}). A default value is
          * used if this method is never invoked.
+         *
          * @param spacing the vertical spacing in number of pixels
          */
         void setInitialSpacing(int spacing);
 
         /**
          * Displays a notification with the given severity and contents.
-         * @param event The notification event. Must not be null.
+         *
+         * @param event       The notification event. Must not be null.
          * @param hideCommand The command that must be called when the notification is to be closed. When this command is
-         * invoked, the notification manager will change the notification status from active to acknowledged,
-         * and it will invoke the {@link #hide(NotificationPopupHandle)} method with the notification handle
-         * that this method call returned.
+         *                    invoked, the notification manager will change the notification status from active to acknowledged,
+         *                    and it will invoke the {@link #hide(NotificationPopupHandle)} method with the notification handle
+         *                    that this method call returned.
          * @return The object to pass to {@link #hide(NotificationPopupHandle)} that will hide this notification. Must
          * not return null.
          */
@@ -174,6 +179,7 @@ public class NotificationManager {
          * changes state from "new" to "acknowledged." Once this call is made, the notification is still in the system,
          * but it should not be displayed as a new notification anymore. As an analogy, if the notification was an
          * email, this call would mark it as read.
+         *
          * @param popup The handle for the active notification that should be hidden.
          */
         void hide(final NotificationPopupHandle popup);
@@ -185,6 +191,7 @@ public class NotificationManager {
 
         /**
          * Checks whether the given event is currently being shown.
+         *
          * @param event The notification event. Must not be null.
          * @return true if shown
          */

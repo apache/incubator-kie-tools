@@ -18,8 +18,8 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.columns;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;

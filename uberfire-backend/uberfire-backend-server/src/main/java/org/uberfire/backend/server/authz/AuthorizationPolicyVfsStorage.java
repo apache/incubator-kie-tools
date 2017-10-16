@@ -20,6 +20,7 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -41,7 +42,7 @@ import org.uberfire.security.authz.AuthorizationPolicy;
 import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.security.impl.authz.AuthorizationPolicyBuilder;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.java.nio.file.Files.walkFileTree;
 
 /**

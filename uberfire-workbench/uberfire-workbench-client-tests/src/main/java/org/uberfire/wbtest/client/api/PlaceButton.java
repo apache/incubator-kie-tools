@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.Composite;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 /**
  * Convenient wrapper for a button that goes to a particular place when clicked.

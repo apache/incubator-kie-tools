@@ -41,8 +41,8 @@ import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.AttributeView;
 
 import static org.uberfire.commons.data.Pair.newPair;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.commons.validation.Preconditions.checkInstanceOf;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkInstanceOf;
 
 public abstract class AbstractPath<FS extends FileSystem>
         implements Path,

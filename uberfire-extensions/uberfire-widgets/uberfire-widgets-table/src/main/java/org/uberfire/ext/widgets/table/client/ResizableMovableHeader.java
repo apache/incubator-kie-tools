@@ -38,13 +38,14 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import org.gwtbootstrap3.client.ui.gwt.DataGrid;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 import static com.google.gwt.dom.client.Style.Unit.PX;
 
 /**
  * A column header that supports resizing and moving
  * See https://github.com/gchatelet/GwtResizableDraggableColumns/blob/master/src/fr/mikrosimage/gwt/client/ResizableHeader.java
+ *
  * @param <T>
  */
 public abstract class ResizableMovableHeader<T> extends Header<String> {

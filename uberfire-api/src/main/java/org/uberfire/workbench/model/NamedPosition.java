@@ -19,7 +19,7 @@ package org.uberfire.workbench.model;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Represents the position of a child panel by name. For example, within a templated perspective, panels are positioned
@@ -42,6 +42,7 @@ public class NamedPosition implements Position {
     /**
      * Creates a new position representing the ErraiUI {@code @DataField} with the given name.
      * If you are trying to refer to the root of the template itself, use {@link #ROOT}.
+     *
      * @param fieldName the name of the data field. Must be non-null.
      */
     public NamedPosition(@MapsTo("fieldName") String fieldName) {
@@ -51,6 +52,7 @@ public class NamedPosition implements Position {
 
     /**
      * Returns the data field name this Position refers to.
+     *
      * @return a non-null string. For the special {@link #ROOT} position constant, this is the empty string.
      */
     @Override

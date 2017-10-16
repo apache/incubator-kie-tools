@@ -24,10 +24,11 @@ import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 
 import static java.util.Collections.emptyMap;
-import static org.uberfire.commons.validation.Preconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
 
 /**
  * Back port of JSR-203 from Java Platform, Standard Edition 7.
+ *
  * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystems.html">Original JavaDoc</a>
  */
 public final class FileSystems {

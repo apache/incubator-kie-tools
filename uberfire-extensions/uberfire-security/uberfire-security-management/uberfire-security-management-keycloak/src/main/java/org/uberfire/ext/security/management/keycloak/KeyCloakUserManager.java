@@ -50,10 +50,11 @@ import org.uberfire.ext.security.management.keycloak.client.resource.UserResourc
 import org.uberfire.ext.security.management.keycloak.client.resource.UsersResource;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * <p>UsersManager Service Provider Implementation for KeyCloak.</p>
+ *
  * @since 0.8.0
  */
 public class KeyCloakUserManager extends BaseKeyCloakManager implements UserManager,

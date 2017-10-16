@@ -17,10 +17,11 @@ package org.uberfire.ext.wires.bpmn.client.rules.impl;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.commons.data.Pair;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.bpmn.api.model.BpmnEdge;
 import org.uberfire.ext.wires.bpmn.api.model.BpmnGraph;
 import org.uberfire.ext.wires.bpmn.api.model.BpmnGraphNode;

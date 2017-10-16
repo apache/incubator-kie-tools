@@ -18,6 +18,7 @@ package org.uberfire.client.workbench.panels.impl;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -42,7 +43,7 @@ import org.uberfire.workbench.model.Position;
 
 import static org.uberfire.client.util.Layouts.setToFillParent;
 import static org.uberfire.client.util.Layouts.widthOrHeight;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.plugin.PluginUtil.toInteger;
 
 /**
@@ -60,6 +61,7 @@ import static org.uberfire.plugin.PluginUtil.toInteger;
  * part view UI directly into the top-level widget of this view! It will get wiped out!</b>
  * <p>
  * This also means you must not call {@link #initWidget(Widget)}. That will always be done by this superclass.
+ *
  * @param <P> the presenter type this view binds to
  */
 public abstract class AbstractDockingWorkbenchPanelView<P extends WorkbenchPanelPresenter>
@@ -105,9 +107,10 @@ public abstract class AbstractDockingWorkbenchPanelView<P extends WorkbenchPanel
     /**
      * Retrieves the application-requested initial size for a child panel, or calculates a good default based on the
      * available space.
-     * @param position the position the panel will be added within its parent.
+     *
+     * @param position   the position the panel will be added within its parent.
      * @param definition the new panel's definition.
-     * @param parent the widget whose space will be used up by the insertion of the new panel.
+     * @param parent     the widget whose space will be used up by the insertion of the new panel.
      */
     static int initialWidthOrHeight(CompassPosition position,
                                     PanelDefinition definition,

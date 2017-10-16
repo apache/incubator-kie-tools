@@ -21,8 +21,8 @@ import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public final class PathFactory {
 
@@ -79,6 +79,7 @@ public final class PathFactory {
      * file:\\master@repo\some\path\to\file.txt =>
      * file:\\locks@system\repo\master\some\path\to\file.txt.ulock
      * </pre>
+     *
      * @param path the path of a file for which a lock should be created, must not be null.
      * @return the lock path
      */
@@ -105,6 +106,7 @@ public final class PathFactory {
      * file:\\locks@system\repo\master\some\path\to\file.txt.ulock =>
      * file:\\master@repo\some\path\to\file.txt
      * </pre>
+     *
      * @param lockPath the path of a lock, must not be null.
      * @return the locked path.
      */

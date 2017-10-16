@@ -33,9 +33,9 @@ import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
-import static org.uberfire.commons.validation.Preconditions.checkCondition;
-import static org.uberfire.commons.validation.Preconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.Preconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkCondition;
+import static org.kie.soup.commons.validation.Preconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
 
 public abstract class BaseSimpleFileSystem implements FileSystem,
                                                       FileSystemId {

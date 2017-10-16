@@ -23,8 +23,8 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileStoreAttributeView;
 
-import static org.uberfire.commons.validation.Preconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.Preconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
 
 public class JGitFileStore implements FileStore {
 

@@ -26,7 +26,7 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.user.client.Command;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.animation.GridWidgetEnterPinnedModeAnimation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.animation.GridWidgetExitPinnedModeAnimation;

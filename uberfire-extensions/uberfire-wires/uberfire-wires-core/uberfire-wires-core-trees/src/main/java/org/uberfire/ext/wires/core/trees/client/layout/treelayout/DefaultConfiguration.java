@@ -15,15 +15,16 @@
  */
 package org.uberfire.ext.wires.core.trees.client.layout.treelayout;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * Specify a {@link Configuration} through configurable parameters, or falling
  * back to some frequently used defaults.
+ *
  * @param <TreeNode> <p/>
- * <p>
- * Adapted from https://code.google.com/p/treelayout/ to be available to GWT clients
- * <p>
+ *                   <p>
+ *                   Adapted from https://code.google.com/p/treelayout/ to be available to GWT clients
+ *                   <p>
  * @author Udo Borkowski (ub@abego.org)
  */
 public class DefaultConfiguration<TreeNode> implements
@@ -39,9 +40,10 @@ public class DefaultConfiguration<TreeNode> implements
 
     /**
      * Specifies the constants to be used for this Configuration.
+     *
      * @param gapBetweenLevels
      * @param gapBetweenNodes
-     * @param location [default: {@link Configuration.Location#Top Top}]
+     * @param location         [default: {@link Configuration.Location#Top Top}]
      * @param alignmentInLevel [default: {@link Configuration.AlignmentInLevel#Center Center}]
      */
     public DefaultConfiguration(double gapBetweenLevels,

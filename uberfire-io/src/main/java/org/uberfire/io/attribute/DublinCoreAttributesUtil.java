@@ -19,7 +19,7 @@ package org.uberfire.io.attribute;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.uberfire.commons.validation.Preconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.Preconditions.checkNotEmpty;
 import static org.uberfire.io.attribute.DublinCoreView.CONTRIBUTOR;
 import static org.uberfire.io.attribute.DublinCoreView.COVERAGE;
 import static org.uberfire.io.attribute.DublinCoreView.CREATION_TIME;

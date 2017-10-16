@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
@@ -28,8 +29,8 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
@@ -375,7 +376,8 @@ public class Row {
                 .findAny();
 
         // If present let's remove it!
-        optional.ifPresent(column -> removeComponentFromColumnWihtComponents((ColumnWithComponents) column, targetColumn));
+        optional.ifPresent(column -> removeComponentFromColumnWihtComponents((ColumnWithComponents) column,
+                                                                             targetColumn));
     }
 
     private void removeComponentFromColumnWihtComponents(ColumnWithComponents parent,

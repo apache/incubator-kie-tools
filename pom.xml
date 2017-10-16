@@ -50,6 +50,7 @@
 
   <properties>
     <uberfire.version>${project.version}</uberfire.version>
+    <version.org.kie.soup>8.0.0-SNAPSHOT</version.org.kie.soup>
     <!-- Exception as it is needed for gwt-maven-plugin version-->
     <version.com.google.gwt>2.8.1</version.com.google.gwt>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
@@ -650,7 +651,6 @@
 
   <modules>
     <module>uberfire-maven-utils</module>
-    <module>uberfire-project-datamodel</module>
     <module>uberfire-archetype</module>
     <module>uberfire-bom</module>
     <module>uberfire-commons</module>
@@ -681,6 +681,14 @@
              uberfire-bom. Usage of  this property makes it possible to change version of the (sub)module
              and still use the original version of uberfire-bom. -->
         <version>${uberfire.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.soup</groupId>
+        <artifactId>kie-soup-commons</artifactId>
+        <version>${version.org.kie.soup}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

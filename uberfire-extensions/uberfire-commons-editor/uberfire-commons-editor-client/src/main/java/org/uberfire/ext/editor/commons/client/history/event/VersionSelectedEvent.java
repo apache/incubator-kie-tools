@@ -16,8 +16,8 @@
 
 package org.uberfire.ext.editor.commons.client.history.event;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.java.nio.base.version.VersionRecord;
 
 public class VersionSelectedEvent {

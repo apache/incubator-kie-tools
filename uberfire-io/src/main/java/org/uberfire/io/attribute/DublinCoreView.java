@@ -34,8 +34,8 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
 import static org.uberfire.commons.data.Pair.newPair;
-import static org.uberfire.commons.validation.PortablePreconditions.checkCondition;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkCondition;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
 import static org.uberfire.io.attribute.DublinCoreAttributesUtil.toMap;
 
 /**

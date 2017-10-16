@@ -28,7 +28,7 @@ import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentP
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.uberfire.backend.vfs.PathSupport.isVersioned;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class SavePopUpPresenter {

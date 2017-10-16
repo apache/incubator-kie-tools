@@ -22,7 +22,7 @@ import org.uberfire.workbench.model.toolbar.ToolBarItem;
 import org.uberfire.workbench.model.toolbar.ToolBarTypeIcon;
 import org.uberfire.workbench.model.toolbar.ToolBarUrlIcon;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Default implementation of ToolBarItem

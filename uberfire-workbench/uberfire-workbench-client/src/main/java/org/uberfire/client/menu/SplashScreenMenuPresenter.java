@@ -18,6 +18,7 @@ package org.uberfire.client.menu;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -30,7 +31,7 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
 import org.uberfire.mvp.Command;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A drop-down style widget that contains an up-to-date list of the available splash screens. Each currently-displayed
@@ -52,6 +53,7 @@ public class SplashScreenMenuPresenter implements IsWidget {
         this.placeManager = null;
         this.view = null;
     }
+
     @Inject
     public SplashScreenMenuPresenter(PlaceManager placeManager,
                                      View view) {

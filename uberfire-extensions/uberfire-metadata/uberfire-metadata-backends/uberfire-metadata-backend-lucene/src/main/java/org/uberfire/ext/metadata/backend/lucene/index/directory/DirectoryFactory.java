@@ -31,8 +31,8 @@ import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndexFactory;
 import org.uberfire.ext.metadata.backend.lucene.model.KClusterImpl;
 import org.uberfire.ext.metadata.model.KCluster;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkCondition;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkCondition;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class DirectoryFactory implements LuceneIndexFactory {
 

@@ -38,6 +38,10 @@
          Don't add dependencies from this module to any other UberFire or Errai module! See UF-131 and UF-135 for details. -->
 
     <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+    <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope>

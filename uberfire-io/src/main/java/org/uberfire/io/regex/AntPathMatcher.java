@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import org.uberfire.java.nio.file.Path;
 
-import static org.uberfire.commons.validation.Preconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
 
 public final class AntPathMatcher {
 

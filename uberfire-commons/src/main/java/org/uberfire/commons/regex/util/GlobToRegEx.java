@@ -16,7 +16,7 @@
 
 package org.uberfire.commons.regex.util;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * GlobToRegEx utility class for glob patterns.

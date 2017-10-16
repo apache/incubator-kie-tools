@@ -25,7 +25,7 @@ import java.util.Set;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Utilities for working with external (GWT-compiled) plugins.
@@ -42,6 +42,7 @@ public class PluginUtil {
      * This method takes a list and converts it to a new list so it can be
      * iterated over in the current script (e.g. using enhanced for loops), even
      * if the instance was provided by an external (GWT-compiled) script.
+     *
      * @param externalList A list, possibly provided by an external script. Must not be null.
      * @return an immutable list containing the original elements of the
      * provided list
@@ -63,6 +64,7 @@ public class PluginUtil {
      * This method takes a set and converts it to a new set so it can be
      * iterated over in the current script (e.g. using enhanced for loops), even
      * if the instance was provided by an external (GWT-compiled) script.
+     *
      * @param externalSet A set, possibly provided by an external script. Must not be null.
      * @return an immutable set containing the original elements of the provided
      * set
@@ -83,6 +85,7 @@ public class PluginUtil {
      * <p>
      * This method converts a regular int to an {@link Integer} using -1 as a
      * placeholder for null.
+     *
      * @param value
      * @return boxed {@link Integer}, null if provided value is -1.
      */

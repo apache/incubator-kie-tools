@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.wires.core.grids.client.model.impl;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
 public class BaseHeaderMetaData implements GridColumn.HeaderMetaData {

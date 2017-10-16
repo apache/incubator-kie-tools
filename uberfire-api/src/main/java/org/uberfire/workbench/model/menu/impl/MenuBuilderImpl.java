@@ -40,8 +40,8 @@ import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  *
@@ -58,6 +58,7 @@ public final class MenuBuilderImpl
     final List<MenuItem> menuItems = new ArrayList<MenuItem>();
     final Stack<MenuFactory.CustomMenuBuilder> context = new Stack<MenuFactory.CustomMenuBuilder>();
     int order = 0;
+
     public MenuBuilderImpl(final MenuType menuType,
                            final String caption) {
         final CurrentContext currentContext = new CurrentContext();

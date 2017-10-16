@@ -18,7 +18,7 @@ package org.uberfire.ext.widgets.common.client.callbacks;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Default Error handler for all views that support HasBusyIndicator

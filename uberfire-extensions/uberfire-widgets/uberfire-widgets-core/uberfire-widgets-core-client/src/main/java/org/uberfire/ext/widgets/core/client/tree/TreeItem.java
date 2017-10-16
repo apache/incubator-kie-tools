@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.uberfire.ext.widgets.core.client.resources.TreeNavigatorResources;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class TreeItem<I extends TreeItem> extends Composite {
 

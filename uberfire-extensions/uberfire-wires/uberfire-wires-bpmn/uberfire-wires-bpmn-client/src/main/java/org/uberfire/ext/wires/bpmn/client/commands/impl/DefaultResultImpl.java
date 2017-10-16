@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.wires.bpmn.client.commands.impl;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.bpmn.client.commands.Result;
 import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
 

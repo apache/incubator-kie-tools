@@ -167,6 +167,16 @@
       <classifier>sources</classifier>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+
     <!-- UberFire Commons (former KIE Commons) -->
     <dependency>
       <groupId>org.uberfire</groupId>

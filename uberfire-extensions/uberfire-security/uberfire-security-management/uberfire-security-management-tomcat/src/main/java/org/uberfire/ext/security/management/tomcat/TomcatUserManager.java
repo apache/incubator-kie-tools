@@ -41,10 +41,11 @@ import org.uberfire.ext.security.management.search.IdentifierRuntimeSearchEngine
 import org.uberfire.ext.security.management.search.UsersIdentifierRuntimeSearchEngine;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * <p>Users manager service provider implementation for Apache tomcat, when using default realm based on properties files.</p>
+ *
  * @since 0.8.0
  */
 public class TomcatUserManager extends BaseTomcatManager implements UserManager,

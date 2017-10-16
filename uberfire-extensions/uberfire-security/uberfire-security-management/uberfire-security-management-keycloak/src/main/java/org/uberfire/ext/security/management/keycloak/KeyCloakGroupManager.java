@@ -47,11 +47,12 @@ import org.uberfire.ext.security.management.search.GroupsRuntimeSearchEngine;
 import org.uberfire.ext.security.management.search.RuntimeSearchEngine;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * <p>GroupsManager Service Provider Implementation for KeyCloak.</p>
  * <p>Note that roles (in keycloak server) are mapped as groups (in the workbench) for the keycloak users management provider impl.</p>
+ *
  * @since 0.8.0
  */
 public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupManager,

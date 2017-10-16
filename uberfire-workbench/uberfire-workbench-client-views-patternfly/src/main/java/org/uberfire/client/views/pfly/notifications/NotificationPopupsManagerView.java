@@ -18,15 +18,16 @@ package org.uberfire.client.views.pfly.notifications;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.workbench.widgets.animations.LinearFadeOutAnimation;
-import org.uberfire.client.workbench.widgets.notifications.NotificationManager;
 import org.uberfire.client.workbench.widgets.notifications.NotificationManager.NotificationPopupHandle;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.client.workbench.widgets.notifications.NotificationManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent

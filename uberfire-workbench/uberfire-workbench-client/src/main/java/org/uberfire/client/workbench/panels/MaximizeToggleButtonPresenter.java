@@ -16,8 +16,8 @@
 
 package org.uberfire.client.workbench.panels;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
 
 /**
@@ -78,6 +78,7 @@ public class MaximizeToggleButtonPresenter {
      * Changes the maximized state of this button <i>without</i> calling the commands. This can be used to notify the
      * button that some external process has already maximized the thing in question. It is permissible but not necessary
      * to call this method from the maximizeCommand and unmaximizeCommand.
+     *
      * @param maximized the new maximized state to set.
      */
     public void setMaximized(boolean maximized) {
@@ -104,6 +105,7 @@ public class MaximizeToggleButtonPresenter {
 
     /**
      * Returns the view for this presenter.
+     *
      * @return
      */
     public View getView() {

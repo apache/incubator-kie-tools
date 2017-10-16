@@ -22,7 +22,7 @@ import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.Commands;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Shows simple text-only error messages in a modal popup dialog that sits above the workbench.
@@ -40,8 +40,9 @@ public class ErrorPopupPresenter {
 
     /**
      * Shows the given message in a modal popup that appears above all other workbench contents.
-     * @param msg The message to display as plain text. HTML tags are not interpreted, and newlines are rendered as newlines.
-     * @param afterShow The command to invoke once the dialog has been displayed. Must not be null.
+     *
+     * @param msg        The message to display as plain text. HTML tags are not interpreted, and newlines are rendered as newlines.
+     * @param afterShow  The command to invoke once the dialog has been displayed. Must not be null.
      * @param afterClose The command to invoke once the dialog has been closed. Must not be null.
      */
     public void showMessage(final String msg,
@@ -56,6 +57,7 @@ public class ErrorPopupPresenter {
 
     /**
      * Shows the given message in a modal popup that appears above all other workbench contents.
+     *
      * @param msg The message to display as plain text. HTML tags are not interpreted, and newlines are rendered as newlines.
      */
     public void showMessage(final String msg) {
@@ -73,8 +75,9 @@ public class ErrorPopupPresenter {
         /**
          * Displays the given message in a modal dialog that sits above all other workbench components. The dialog
          * should include some sort of user interface controls for dismissing itself.
-         * @param msg The message to display as plain text. Not HTML; newlines should be rendered as newlines.
-         * @param afterShow The command to invoke once the dialog has been displayed. Never null.
+         *
+         * @param msg        The message to display as plain text. Not HTML; newlines should be rendered as newlines.
+         * @param afterShow  The command to invoke once the dialog has been displayed. Never null.
          * @param afterClose The command to invoke once the dialog has been closed. Never null.
          */
         void showMessage(final String msg,

@@ -17,7 +17,7 @@ package org.uberfire.client.mvp;
 
 import org.uberfire.mvp.PlaceRequest;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Implementation of behaviour common to all activity types.

@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class FSTreeItem extends TreeItem<FSTreeItem> {
 

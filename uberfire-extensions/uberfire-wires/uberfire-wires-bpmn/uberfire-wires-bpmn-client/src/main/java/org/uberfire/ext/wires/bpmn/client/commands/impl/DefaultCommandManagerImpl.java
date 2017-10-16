@@ -16,9 +16,10 @@
 package org.uberfire.ext.wires.bpmn.client.commands.impl;
 
 import java.util.Stack;
+
 import javax.enterprise.context.ApplicationScoped;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.bpmn.client.commands.Command;
 import org.uberfire.ext.wires.bpmn.client.commands.CommandManager;
 import org.uberfire.ext.wires.bpmn.client.commands.ResultType;

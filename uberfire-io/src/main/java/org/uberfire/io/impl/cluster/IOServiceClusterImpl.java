@@ -78,8 +78,8 @@ import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.commons.validation.Preconditions.checkInstanceOf;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkInstanceOf;
 import static org.uberfire.io.impl.cluster.ClusterMessageType.NEW_FS;
 import static org.uberfire.io.impl.cluster.ClusterMessageType.QUERY_FOR_FS;
 import static org.uberfire.io.impl.cluster.ClusterMessageType.QUERY_FOR_FS_RESULT;

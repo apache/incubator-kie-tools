@@ -20,7 +20,7 @@ import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.VotingAlgorithm;
 import org.uberfire.security.authz.VotingStrategy;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.security.authz.AuthorizationResult.ACCESS_DENIED;
 import static org.uberfire.security.authz.AuthorizationResult.ACCESS_GRANTED;
 

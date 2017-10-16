@@ -34,12 +34,12 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.exporter.SingletonBeanDef;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.layout.editor.api.LayoutServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.generator.LayoutGenerator;
@@ -116,14 +116,16 @@ public class PerspectiveEditorGenerator {
         return screenActivity;
     }
 
-    private void createNewPerspective(LayoutTemplate perspective, PerspectiveEditorScreenActivity screen) {
-        final PerspectiveEditorActivity activity = new PerspectiveEditorActivity(perspective, screen);
+    private void createNewPerspective(LayoutTemplate perspective,
+                                      PerspectiveEditorScreenActivity screen) {
+        final PerspectiveEditorActivity activity = new PerspectiveEditorActivity(perspective,
+                                                                                 screen);
 
         beanManager.registerBean(new SingletonBeanDef<>(activity,
-                PerspectiveActivity.class,
-                new HashSet<>(Arrays.asList(DEFAULT_QUALIFIERS)),
-                perspective.getName(),
-                true));
+                                                        PerspectiveActivity.class,
+                                                        new HashSet<>(Arrays.asList(DEFAULT_QUALIFIERS)),
+                                                        perspective.getName(),
+                                                        true));
 
         activityBeansCache.addNewPerspectiveActivity(beanManager.lookupBeans(perspective.getName()).iterator().next());
     }
@@ -158,11 +160,11 @@ public class PerspectiveEditorGenerator {
         return activity == null;
     }
 
-
     // Sync up the activity registry with perspectives deletion
 
     private void onPlugInDeleted(@Observes final PluginDeleted event) {
-        PortablePreconditions.checkNotNull("PluginDeleted event", event);
+        PortablePreconditions.checkNotNull("PluginDeleted event",
+                                           event);
         if (PluginType.PERSPECTIVE_LAYOUT.equals(event.getPluginType())) {
             String pluginName = event.getPluginName();
             activityBeansCache.removeActivity(pluginName);

@@ -21,7 +21,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * Implements the actual tree layout algorithm.
@@ -29,10 +29,11 @@ import org.uberfire.commons.validation.PortablePreconditions;
  * The nodes with their final layout can be retrieved through
  * {@link #getNodeBounds()}.
  * <p>
+ *
  * @param <TreeNode> <p/>
- * <p>
- * Adapted from https://code.google.com/p/treelayout/ to be available to GWT clients
- * <p>
+ *                   <p>
+ *                   Adapted from https://code.google.com/p/treelayout/ to be available to GWT clients
+ *                   <p>
  * @author Udo Borkowski (ub@abego.org)
  */
 public class TreeLayout<TreeNode> {
@@ -94,9 +95,10 @@ public class TreeLayout<TreeNode> {
      * <p>
      * In addition to the tree the {@link NodeExtentProvider} and the
      * {@link Configuration} must be given.
+     *
      * @param useIdentity [default: false] when true, identity ("==") is used instead of
-     * equality ("equals(...)") when checking nodes. Within a tree
-     * each node must only be once (using this check).
+     *                    equality ("equals(...)") when checking nodes. Within a tree
+     *                    each node must only be once (using this check).
      */
     public TreeLayout(TreeForTreeLayout<TreeNode> tree,
                       NodeExtentProvider<TreeNode> nodeExtentProvider,
@@ -195,6 +197,7 @@ public class TreeLayout<TreeNode> {
      * <p>
      * The thickness of a node is used when calculating the locations of the
      * levels.
+     *
      * @param treeNode
      * @return
      */
@@ -209,6 +212,7 @@ public class TreeLayout<TreeNode> {
      * <p>
      * The size of a node is used when calculating the distance between two
      * nodes.
+     *
      * @param treeNode
      * @return
      */
@@ -263,6 +267,7 @@ public class TreeLayout<TreeNode> {
      * <p>
      * The bounds of a TreeLayout is the smallest rectangle containing the
      * bounds of all nodes in the layout. It always starts at (0,0).
+     *
      * @return the bounds of the tree layout
      */
     public Rectangle2D getBounds() {
@@ -299,6 +304,7 @@ public class TreeLayout<TreeNode> {
 
     /**
      * Returns the number of levels of the tree.
+     *
      * @return [level > 0]
      */
     public int getLevelCount() {
@@ -312,6 +318,7 @@ public class TreeLayout<TreeNode> {
      * maximal height of the nodes of that level. When the root is located at
      * the left or right the size of a level is the maximal width of the nodes
      * of that level.
+     *
      * @param level
      * @return the size of the level [level >= 0 && level < levelCount]
      */
@@ -395,6 +402,7 @@ public class TreeLayout<TreeNode> {
      * <p>
      * I.e. the distance includes the gap between the nodes and half of the
      * sizes of the nodes.
+     *
      * @param v
      * @param w
      * @return the distance between node v and w
@@ -417,7 +425,7 @@ public class TreeLayout<TreeNode> {
     }
 
     /**
-     * @param node [tree.isChildOfParent(node, parentNode)]
+     * @param node       [tree.isChildOfParent(node, parentNode)]
      * @param parentNode parent of node
      * @return
      */
@@ -509,10 +517,11 @@ public class TreeLayout<TreeNode> {
      * {@link TreeForTreeLayout} to include extra methods "getParent",
      * "getLeftSibling", or "getLeftMostSibling". This keeps the interface
      * {@link TreeForTreeLayout} small and avoids redundant implementations.
+     *
      * @param v
      * @param defaultAncestor
-     * @param leftSibling [nullable] the left sibling v, if there is any
-     * @param parentOfV the parent of v
+     * @param leftSibling     [nullable] the left sibling v, if there is any
+     * @param parentOfV       the parent of v
      * @return the (possibly changes) defaultAncestor
      */
     private TreeNode apportion(TreeNode v,
@@ -617,6 +626,7 @@ public class TreeLayout<TreeNode> {
      * In difference to the original algorithm we also pass in the leftSibling
      * (see {@link #apportion(Object, Object, Object, Object)} for a
      * motivation).
+     *
      * @param v
      * @param leftSibling [nullable] the left sibling v, if there is any
      */
@@ -670,6 +680,7 @@ public class TreeLayout<TreeNode> {
     /**
      * In difference to the original algorithm we also pass in extra level
      * information.
+     *
      * @param v
      * @param m
      * @param level
@@ -737,6 +748,7 @@ public class TreeLayout<TreeNode> {
      * <p>
      * For each rectangle x and y will be >= 0. At least one rectangle will have
      * an x == 0 and at least one rectangle will have an y == 0.
+     *
      * @return maps each node of the tree to its bounds (position and size).
      */
     public Map<TreeNode, Rectangle2D> getNodeBounds() {

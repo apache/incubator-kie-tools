@@ -18,6 +18,7 @@ package org.uberfire.client.workbench.panels.impl;
 
 import java.util.Collection;
 import java.util.IdentityHashMap;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -28,12 +29,12 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.mvp.TemplatedActivity;
 import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.workbench.model.NamedPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
@@ -46,6 +47,7 @@ import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
  * identified by a {@link NamedPosition}.
  * <p>
  * This view does not support having parts added to it directly, so it also does not support drag-and-drop of parts.
+ *
  * @see TemplatedWorkbenchPanelPresenter
  * @see WorkbenchPanel
  */

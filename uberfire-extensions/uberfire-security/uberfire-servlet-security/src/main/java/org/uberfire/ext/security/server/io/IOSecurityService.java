@@ -58,7 +58,7 @@ import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
 
 import static java.util.Arrays.asList;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class IOSecurityService implements IOService {
 

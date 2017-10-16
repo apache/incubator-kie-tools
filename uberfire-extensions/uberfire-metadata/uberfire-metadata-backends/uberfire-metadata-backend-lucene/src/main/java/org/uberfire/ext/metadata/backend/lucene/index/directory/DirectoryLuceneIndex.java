@@ -28,7 +28,7 @@ import org.apache.lucene.search.SearcherFactory;
 import org.uberfire.ext.metadata.backend.lucene.index.BaseLuceneIndex;
 import org.uberfire.ext.metadata.model.KCluster;
 
-import static org.uberfire.commons.validation.Preconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
 
 /**
  *

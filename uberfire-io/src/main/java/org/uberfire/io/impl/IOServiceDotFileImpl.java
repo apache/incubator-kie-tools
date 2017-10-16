@@ -43,8 +43,8 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.buildDotFile;
 import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.consolidate;
 import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.dot;

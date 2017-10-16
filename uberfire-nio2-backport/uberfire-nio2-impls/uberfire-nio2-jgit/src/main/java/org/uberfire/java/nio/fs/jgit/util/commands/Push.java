@@ -26,8 +26,8 @@ import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.GitImpl;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.commons.validation.Preconditions.checkInstanceOf;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkInstanceOf;
 
 public class Push {
 
