@@ -68,7 +68,7 @@ public class TextLineBreakWrap extends TextNoWrap {
     @Override
     public void drawString(final Context2D context,
                            final Attributes attr,
-                           final Text.DrawString drawCommand) {
+                           final IDrawString drawCommand) {
         final String text = attr.getText();
         if (text == null || text.isEmpty()) {
             return;

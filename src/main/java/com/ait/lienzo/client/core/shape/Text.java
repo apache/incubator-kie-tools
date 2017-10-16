@@ -29,13 +29,10 @@ import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.TextMetrics;
-import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
-import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.google.gwt.json.client.JSONObject;
 
 /**
@@ -45,7 +42,7 @@ public class Text extends Shape<Text>
 {
     private static final boolean                             GRADFILLS = LienzoCore.get().isSafariBroken();
 
-    private final DrawString STROKE = new DrawString() {
+    private final IDrawString STROKE = new IDrawString() {
         @Override
         public void draw(Context2D context, String s,
                          double xOffset, double lineNum) {
@@ -58,7 +55,7 @@ public class Text extends Shape<Text>
         }
     };
 
-    private final DrawString FILL = new DrawString() {
+    private final IDrawString FILL = new IDrawString() {
         @Override
         public void draw(Context2D context,
                          String s,
@@ -261,7 +258,7 @@ public class Text extends Shape<Text>
 
                         drawString(context,
                                    attr,
-                                   new DrawString() {
+                                   new IDrawString() {
                                        @Override
                                        public void draw(Context2D context,
                                                         String s,
@@ -277,7 +274,7 @@ public class Text extends Shape<Text>
 
                         drawString(context,
                                    attr,
-                                   new DrawString() {
+                                   new IDrawString() {
                                        @Override
                                        public void draw(Context2D context,
                                                         String s,
@@ -385,7 +382,7 @@ public class Text extends Shape<Text>
         console.log(msg);
     }-*/;
 
-    private void drawString(final Context2D context, final Attributes attr, DrawString drawCommand)
+    private void drawString(final Context2D context, final Attributes attr, IDrawString drawCommand)
     {
         wrapper.drawString(context,attr,drawCommand);
     }
@@ -665,9 +662,5 @@ public class Text extends Shape<Text>
         {
             return new Text(node, ctx);
         }
-    }
-
-    interface DrawString {
-        void draw(Context2D c, String s, double xOffset, double lineNum);
     }
 }

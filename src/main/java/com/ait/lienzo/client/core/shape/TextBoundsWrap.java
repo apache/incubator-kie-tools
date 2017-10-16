@@ -71,7 +71,7 @@ public class TextBoundsWrap extends TextNoWrap {
 
     @Override
     public BoundingBox getBoundingBox() {
-        final String[] words = textSupplier.get().split(" ");
+        final String[] words = textSupplier.get().split("\\s");
         if (words.length < 1) {
             return wrapBoundaries;
         }
@@ -98,8 +98,9 @@ public class TextBoundsWrap extends TextNoWrap {
     @Override
     public void drawString(final Context2D context,
                            final Attributes attr,
-                           final Text.DrawString drawCommand) {
-        final String[] words = attr.getText().split(" ");
+                           final IDrawString drawCommand) {
+        final String[] words = attr.getText().split("\\s");
+
         if (words.length < 1) {
             return;
         }
@@ -136,6 +137,7 @@ public class TextBoundsWrap extends TextNoWrap {
                 xOffset = wrapBoundaries.getWidth();
                 break;
         }
+        double yOffset = 0.8;
 
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
@@ -147,7 +149,7 @@ public class TextBoundsWrap extends TextNoWrap {
             drawCommand.draw(context,
                              line,
                              xOffset,
-                             i + 0.8);
+                             i + yOffset);
         }
     }
 }

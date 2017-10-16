@@ -17,14 +17,7 @@
 package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.DragBounds;
-import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.widget.DragConstraintEnforcer;
-import com.ait.lienzo.shared.core.types.DragConstraint;
-import com.ait.lienzo.shared.core.types.DragMode;
-import com.ait.lienzo.shared.core.types.EventPropagationMode;
 
 /**
  * An interface to define Text wrapping behaviour.
@@ -34,7 +27,7 @@ public interface ITextWrapper
 
     BoundingBox getBoundingBox();
 
-    void drawString(final Context2D context, final Attributes attr, final Text.DrawString drawCommand);
+    void drawString(final Context2D context, final Attributes attr, final IDrawString drawCommand);
 
     interface Supplier<T> {
 
