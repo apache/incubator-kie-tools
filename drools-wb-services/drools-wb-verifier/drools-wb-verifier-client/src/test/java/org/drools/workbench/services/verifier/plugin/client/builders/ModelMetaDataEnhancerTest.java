@@ -16,18 +16,22 @@
 package org.drools.workbench.services.verifier.plugin.client.builders;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.services.verifier.plugin.client.api.ModelMetaData;
+import org.drools.workbench.services.verifier.plugin.client.builders.ModelMetaDataEnhancer.PatternType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ModelMetaDataEnhancerTest {
@@ -37,34 +41,35 @@ public class ModelMetaDataEnhancerTest {
 
     @Test
     public void emptyTableHasEmptyHeaderMetaData() throws
-                                                   Exception {
+            Exception {
 
-        assertTrue( new ModelMetaDataEnhancer( model ).getHeaderMetaData()
-                            .getPatternsByColumnNumber()
-                            .isEmpty() );
+        assertTrue(new ModelMetaDataEnhancer(model).getHeaderMetaData()
+                           .getPatternsByColumnNumber()
+                           .isEmpty());
     }
 
     @Test
     public void conditionCol52Column() throws
-                                       Exception {
+            Exception {
 
         final ArrayList<BaseColumn> columns = new ArrayList<>();
         final ConditionCol52 conditionCol52 = new ConditionCol52();
         final Pattern52 pattern52 = new Pattern52();
 
-        columns.add( conditionCol52 );
+        columns.add(conditionCol52);
 
-        when( model.getExpandedColumns() ).thenReturn( columns );
-        when( model.getPattern( conditionCol52 ) ).thenReturn( pattern52 );
+        when(model.getExpandedColumns()).thenReturn(columns);
+        when(model.getPattern(conditionCol52)).thenReturn(pattern52);
 
-        assertEquals( 1,
-                      new ModelMetaDataEnhancer( model ).getHeaderMetaData()
-                              .getPatternsByColumnNumber()
-                              .size() );
-        assertEquals( pattern52,
-                      new ModelMetaDataEnhancer( model ).getHeaderMetaData()
-                              .getPatternsByColumnNumber()
-                              .get( 0 ) );
+        final Map<Integer, ModelMetaData> metaData = new ModelMetaDataEnhancer(model)
+                .getHeaderMetaData()
+                .getPatternsByColumnNumber();
+
+        assertEquals(1,
+                     metaData.size());
+        assertEquals(pattern52,
+                     metaData.get(0).getPattern());
+        assertEquals(PatternType.LHS,
+                     metaData.get(0).getPatternType());
     }
-
 }

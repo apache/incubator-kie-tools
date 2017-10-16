@@ -65,6 +65,18 @@ public class TestUtil {
         assertThat(resultTitles).containsOnly(expected);
     }
 
+    public static void assertResultIsEmpty(final Set<Issue> analysisReport) {
+
+        final StringBuilder foundIssues = new StringBuilder();
+
+        if (!analysisReport.isEmpty()) {
+            analysisReport.stream().forEach(i -> foundIssues.append(i.getCheckType()).append(", "));
+        }
+
+        assertTrue(foundIssues.toString(),
+                   analysisReport.isEmpty());
+    }
+
     public static void assertContains(final Set<Issue> result,
                                       final String expected,
                                       final Severity severity,

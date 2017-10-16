@@ -17,21 +17,19 @@ package org.drools.workbench.services.verifier.plugin.client.api;
 
 import java.util.Map;
 
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class HeaderMetaData {
 
-    private final Map<Integer, Pattern52> patternsByColumnNumber;
+    private final Map<Integer, ModelMetaData> patternsByColumnNumber;
 
-    public HeaderMetaData( @MapsTo("patternsByColumnNumber") final Map<Integer, Pattern52> patternsByColumnNumber ) {
+    public HeaderMetaData(@MapsTo("patternsByColumnNumber") final Map<Integer, ModelMetaData> patternsByColumnNumber) {
         this.patternsByColumnNumber = patternsByColumnNumber;
     }
 
-    public Map<Integer, Pattern52> getPatternsByColumnNumber() {
+    public Map<Integer, ModelMetaData> getPatternsByColumnNumber() {
         return patternsByColumnNumber;
     }
-
 }

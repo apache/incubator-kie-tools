@@ -30,53 +30,51 @@ public class VerifierColumnUtilities
     private final HeaderMetaData headerMetaData;
     private final FactTypes factTypes;
 
-    public VerifierColumnUtilities( final GuidedDecisionTable52 model,
-                                    final HeaderMetaData headerMetaData,
-                                    final FactTypes factTypes ) {
-        super( model );
+    public VerifierColumnUtilities(final GuidedDecisionTable52 model,
+                                   final HeaderMetaData headerMetaData,
+                                   final FactTypes factTypes) {
+        super(model);
 
-        this.headerMetaData = PortablePreconditions.checkNotNull( "headerMetaData",
-                                                                  headerMetaData );
-        this.factTypes = PortablePreconditions.checkNotNull( "fieldTypes",
-                                                             factTypes );
+        this.headerMetaData = PortablePreconditions.checkNotNull("headerMetaData",
+                                                                 headerMetaData);
+        this.factTypes = PortablePreconditions.checkNotNull("fieldTypes",
+                                                            factTypes);
     }
 
-    public String getType( final BaseColumn column,
-                           final int columnIndex ) throws
-                                                   ColumnUtilitiesException {
+    public String getType(final BaseColumn column,
+                          final int columnIndex) throws
+            ColumnUtilitiesException {
 
-        PortablePreconditions.checkNotNull( "column",
-                                            column );
+        PortablePreconditions.checkNotNull("column",
+                                           column);
 
-        if ( column instanceof BRLConditionVariableColumn ) {
-            return super.getType( column );
-        } else if ( column instanceof ConditionCol52 ) {
-            return getType( (ConditionCol52) column,
-                            columnIndex );
+        if (column instanceof BRLConditionVariableColumn) {
+            return super.getType(column);
+        } else if (column instanceof ConditionCol52) {
+            return getType((ConditionCol52) column,
+                           columnIndex);
         } else {
-            return super.getType( column );
+            return super.getType(column);
         }
     }
 
-    private String getType( final ConditionCol52 col,
-                            final int columnIndex ) {
+    private String getType(final ConditionCol52 col,
+                           final int columnIndex) {
 
-        Logger.add( "Looking for index: " + columnIndex + " from header meta data: " + ToString.toString( headerMetaData ) );
+        Logger.add("Looking for index: " + columnIndex + " from header meta data: " + ToString.toString(headerMetaData));
 
-        return getType(
-                headerMetaData.getPatternsByColumnNumber()
-                        .get( columnIndex ),
-                col );
+        return getType(headerMetaData.getPatternsByColumnNumber()
+                               .get(columnIndex)
+                               .getPattern(),
+                       col);
     }
 
-    protected String getTypeFromDataOracle( final String factType,
-                                            final String fieldName ) {
+    protected String getTypeFromDataOracle(final String factType,
+                                           final String fieldName) {
 
+        Logger.add("Calling fieldTypes: " + factTypes.toString() + " with factType: " + factType + " fieldName: " + fieldName);
 
-        Logger.add( "Calling fieldTypes: " + factTypes.toString() + " with factType: " + factType + " fieldName: " + fieldName );
-
-        return factTypes.getFieldType( factType,
-                                       fieldName );
+        return factTypes.getFieldType(factType,
+                                      fieldName);
     }
-
 }

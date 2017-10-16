@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.services.verifier.webworker.client.testutil;
+package org.drools.workbench.services.verifier.webworker.client;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,7 +26,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.core.main.Analyzer;
 import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
-import org.drools.workbench.services.verifier.webworker.client.AnalyzerUpdateTestBase;
+import org.drools.workbench.services.verifier.webworker.client.testutil.ExtendedGuidedDecisionTableBuilder;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

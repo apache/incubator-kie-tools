@@ -15,10 +15,6 @@
  */
 package org.drools.workbench.services.verifier.plugin.client.builders;
 
-import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.Index;
 import org.drools.workbench.services.verifier.api.client.index.ObjectType;
@@ -35,31 +31,30 @@ public class PatternResolver {
 
     private Rule rule;
     private int columnIndex;
-    private ActionCol52 actionCol52;
 
-    public PatternResolver( final Index index,
-                            final HeaderMetaData headerMetaData,
-                            final AnalyzerConfiguration configuration ) {
-        this.index = PortablePreconditions.checkNotNull( "index",
-                                                         index );
-        this.headerMetaData = PortablePreconditions.checkNotNull( "headerMetaData",
-                                                                  headerMetaData );
-        this.configuration = PortablePreconditions.checkNotNull( "configuration",
-                                                                 configuration );
+    public PatternResolver(final Index index,
+                           final HeaderMetaData headerMetaData,
+                           final AnalyzerConfiguration configuration) {
+        this.index = PortablePreconditions.checkNotNull("index",
+                                                        index);
+        this.headerMetaData = PortablePreconditions.checkNotNull("headerMetaData",
+                                                                 headerMetaData);
+        this.configuration = PortablePreconditions.checkNotNull("configuration",
+                                                                configuration);
     }
 
-    private ObjectType resolveObjectType( final String factType ) {
+    private ObjectType resolveObjectType(final String factType) {
         final ObjectType first = index.getObjectTypes()
-                .where( ObjectType.type()
-                                .is( factType ) )
+                .where(ObjectType.type()
+                               .is(factType))
                 .select()
                 .first();
 
-        if ( first == null ) {
-            final ObjectType objectType = new ObjectType( factType,
-                                                          configuration );
+        if (first == null) {
+            final ObjectType objectType = new ObjectType(factType,
+                                                         configuration);
             index.getObjectTypes()
-                    .add( objectType );
+                    .add(objectType);
             return objectType;
         } else {
             return first;
@@ -68,21 +63,21 @@ public class PatternResolver {
 
     public Pattern resolve() {
 
-        PortablePreconditions.checkNotNull( "rule",
-                                            rule );
+        PortablePreconditions.checkNotNull("rule",
+                                           rule);
 
         final Pattern pattern = rule.getPatterns()
-                .where( Pattern.boundName()
-                                .is( getBoundName() ) )
+                .where(Pattern.boundName()
+                               .is(getBoundName()))
                 .select()
                 .first();
 
-        if ( pattern == null ) {
-            final Pattern build = new Pattern( getBoundName(),
-                                               resolveObjectType( getFactType() ),
-                                               configuration );
-            rule.getPatterns()
-                    .add( build );
+        if (pattern == null) {
+            final Pattern build = new Pattern(getBoundName(),
+                                              resolveObjectType(getFactType()),
+                                              configuration);
+
+            rule.getPatterns().add(build);
 
             return build;
         } else {
@@ -91,43 +86,30 @@ public class PatternResolver {
     }
 
     private String getFactType() {
-        if ( actionCol52 instanceof ActionInsertFactCol52 ) {
-            return ( (ActionInsertFactCol52) actionCol52 ).getFactType();
-        } else {
-            final Pattern52 pattern52 = headerMetaData.getPatternsByColumnNumber()
-                    .get( PortablePreconditions.checkNotNull( "columnIndex",
-                                                              columnIndex ) );
-            return pattern52.getFactType();
-        }
+        final String factType = headerMetaData
+                .getPatternsByColumnNumber()
+                .get(PortablePreconditions.checkNotNull("columnIndex",
+                                                        columnIndex))
+                .getFactType();
+        return factType;
     }
-
 
     private String getBoundName() {
-
-        if ( actionCol52 instanceof ActionInsertFactCol52 ) {
-            return ( (ActionInsertFactCol52) actionCol52 ).getBoundName();
-        } else if ( actionCol52 instanceof ActionSetFieldCol52 ) {
-            return ( (ActionSetFieldCol52) actionCol52 ).getBoundName();
-        } else {
-            final Pattern52 pattern52 = headerMetaData.getPatternsByColumnNumber()
-                    .get( PortablePreconditions.checkNotNull( "columnIndex",
-                                                              columnIndex ) );
-            return pattern52.getBoundName();
-        }
+        final String boundName = headerMetaData
+                .getPatternsByColumnNumber()
+                .get(PortablePreconditions.checkNotNull("columnIndex",
+                                                        columnIndex))
+                .getBoundName();
+        return boundName;
     }
 
-    public PatternResolver with( final Rule rule ) {
+    public PatternResolver with(final Rule rule) {
         this.rule = rule;
         return this;
     }
 
-    public PatternResolver with( final int columnIndex ) {
+    public PatternResolver with(final int columnIndex) {
         this.columnIndex = columnIndex;
-        return this;
-    }
-
-    public PatternResolver with( final ActionCol52 actionCol52 ) {
-        this.actionCol52 = actionCol52;
         return this;
     }
 }

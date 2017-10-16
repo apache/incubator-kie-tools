@@ -110,7 +110,7 @@ public class FieldResolver {
 
             if ( baseColumn instanceof ActionCol52 ) {
                 return patternResolver
-                        .with( (ActionCol52) baseColumn )
+                        .with( columnIndex )
                         .resolve();
             } else {
                 return patternResolver

@@ -142,6 +142,38 @@ public class DecisionTableAnalyzerFromFileTest extends AnalyzerUpdateTestBase {
     }
 
     @Test
+    public void testLHSConflictsArePickedUpForEachFieldOfAPattern() throws
+            Exception {
+        final String xml = loadResource("GUVNOR-3513.gdst");
+
+        final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance()
+                .unmarshal(xml);
+
+        final Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
+
+        analyzer.resetChecks();
+        analyzer.analyze();
+
+        assertResultIsEmpty(analyzerProvider.getAnalysisReport());
+    }
+
+    @Test
+    public void testLHSConflictsArePickedUpForEachFieldOfAPatternTheFileFromTicket() throws
+            Exception {
+        final String xml = loadResource("GUVNOR-3513-second-version.gdst");
+
+        final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance()
+                .unmarshal(xml);
+
+        final Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
+
+        analyzer.resetChecks();
+        analyzer.analyze();
+
+        assertResultIsEmpty(analyzerProvider.getAnalysisReport());
+    }
+
+    @Test
     public void testFileScoreAchievementsGDST() throws
             Exception {
         analyzerProvider.getFactTypes()

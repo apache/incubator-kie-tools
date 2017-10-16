@@ -150,7 +150,7 @@ public class ActionBuilder {
 
         builderFactory.getPatternResolver()
                 .with( rule )
-                .with( actionCol )
+                .with( columnIndex )
                 .resolve();
 
         return addAction( actionCol,
