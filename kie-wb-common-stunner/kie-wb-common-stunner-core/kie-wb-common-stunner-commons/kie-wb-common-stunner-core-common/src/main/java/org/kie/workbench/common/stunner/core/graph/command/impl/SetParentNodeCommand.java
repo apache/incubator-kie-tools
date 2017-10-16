@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -32,7 +33,6 @@ import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.util.UUID;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Creates a parent relationship (edge + Parent content type) to the target node from the child node.

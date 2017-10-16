@@ -52,7 +52,7 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * The screen for the project context (includes the kie workbenches) which is included in a docked area

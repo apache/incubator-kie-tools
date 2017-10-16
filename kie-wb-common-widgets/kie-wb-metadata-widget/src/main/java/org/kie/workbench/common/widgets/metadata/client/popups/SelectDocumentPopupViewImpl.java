@@ -27,8 +27,8 @@ import org.jboss.errai.common.client.dom.NodeList;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.KieMultipleDocumentEditorConstants;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
@@ -43,14 +43,14 @@ public class SelectDocumentPopupViewImpl extends Composite
     private final BaseModal modal;
     private final TranslationService translationService;
 
-    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( this::onOK,
-                                                                                      this::onCancel );
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons(this::onOK,
+                                                                                     this::onCancel);
 
     private SelectDocumentPopupPresenter presenter;
 
     @Inject
-    public SelectDocumentPopupViewImpl( final Div documentsContainer,
-                                        final TranslationService translationService ) {
+    public SelectDocumentPopupViewImpl(final Div documentsContainer,
+                                       final TranslationService translationService) {
         super();
         this.documentsContainer = documentsContainer;
         this.translationService = translationService;
@@ -59,41 +59,41 @@ public class SelectDocumentPopupViewImpl extends Composite
 
     @PostConstruct
     void init() {
-        this.modal.setTitle( getSelectDocumentViewTitle() );
-        this.modal.setBody( this );
-        this.modal.add( footer );
+        this.modal.setTitle(getSelectDocumentViewTitle());
+        this.modal.setBody(this);
+        this.modal.add(footer);
 
-        this.modal.addHiddenHandler( ( e ) -> onHidden() );
+        this.modal.addHiddenHandler((e) -> onHidden());
     }
 
     @Override
-    public void init( final SelectDocumentPopupPresenter presenter ) {
+    public void init(final SelectDocumentPopupPresenter presenter) {
         this.presenter = presenter;
     }
 
     private String getSelectDocumentViewTitle() {
-        return translationService.format( KieMultipleDocumentEditorConstants.SelectDocumentPopupViewImpl_Title );
+        return translationService.format(KieMultipleDocumentEditorConstants.SelectDocumentPopupViewImpl_Title);
     }
 
     @Override
     public void clear() {
         final NodeList documents = documentsContainer.getChildNodes();
-        for ( int i = 0; i < documents.getLength(); i++ ) {
-            final Node document = documents.item( i );
-            documentsContainer.removeChild( document );
+        for (int i = 0; i < documents.getLength(); i++) {
+            final Node document = documents.item(i);
+            documentsContainer.removeChild(document);
         }
     }
 
     @Override
-    public void addDocument( final SelectableDocumentView document ) {
-        PortablePreconditions.checkNotNull( "document",
-                                            document );
-        documentsContainer.appendChild( document.getElement() );
+    public void addDocument(final SelectableDocumentView document) {
+        PortablePreconditions.checkNotNull("document",
+                                           document);
+        documentsContainer.appendChild(document.getElement());
     }
 
     @Override
-    public void enableOKButton( final boolean enabled ) {
-        footer.enableOkButton( enabled );
+    public void enableOKButton(final boolean enabled) {
+        footer.enableOkButton(enabled);
     }
 
     @Override
@@ -117,5 +117,4 @@ public class SelectDocumentPopupViewImpl extends Composite
     private void onHidden() {
         presenter.dispose();
     }
-
 }

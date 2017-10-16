@@ -26,11 +26,12 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.appformer.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
-import org.appformer.project.datamodel.oracle.TypeSource;
+import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.AbstractBPMNFormGeneratorService;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.GenerationContext;
@@ -53,9 +54,13 @@ import org.kie.workbench.common.services.datamodel.backend.server.builder.projec
 @Dependent
 public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorService<ClassLoader> {
 
+    private MVELEvaluator evaluator;
+
     @Inject
-    public BPMNRuntimeFormGeneratorService(FieldManager fieldManager) {
+    public BPMNRuntimeFormGeneratorService(FieldManager fieldManager,
+                                           MVELEvaluator evaluator) {
         super(fieldManager);
+        this.evaluator = evaluator;
     }
 
     @Override
@@ -145,7 +150,7 @@ public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorSe
 
     protected ProjectDataModelOracle getProjectOracle(Class clazz) {
         try {
-            final ProjectDataModelOracleBuilder builder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
+            final ProjectDataModelOracleBuilder builder = ProjectDataModelOracleBuilder.newProjectOracleBuilder(evaluator);
 
             final ClassFactBuilder modelFactBuilder = new ClassFactBuilder(builder,
                                                                            clazz,

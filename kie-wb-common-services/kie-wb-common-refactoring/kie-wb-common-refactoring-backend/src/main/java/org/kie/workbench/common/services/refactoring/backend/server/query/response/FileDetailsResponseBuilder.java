@@ -18,15 +18,16 @@ package org.kie.workbench.common.services.refactoring.backend.server.query.respo
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPathPageRow;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.io.IOService;
 import org.uberfire.paging.PageResponse;
@@ -42,35 +43,35 @@ public class FileDetailsResponseBuilder
     }
 
     @Inject
-    public FileDetailsResponseBuilder(@Named("ioStrategy") final IOService ioService ) {
-        this.ioService = PortablePreconditions.checkNotNull( "ioService",
-                                                             ioService );
+    public FileDetailsResponseBuilder(@Named("ioStrategy") final IOService ioService) {
+        this.ioService = PortablePreconditions.checkNotNull("ioService",
+                                                            ioService);
     }
 
     @Override
-    public PageResponse<RefactoringPageRow> buildResponse( final int pageSize,
-                                                           final int startRow,
-                                                           final List<KObject> kObjects ) {
+    public PageResponse<RefactoringPageRow> buildResponse(final int pageSize,
+                                                          final int startRow,
+                                                          final List<KObject> kObjects) {
         final int hits = kObjects.size();
         final PageResponse<RefactoringPageRow> response = new PageResponse<RefactoringPageRow>();
-        final List<RefactoringPageRow> result = buildResponse( kObjects );
-        response.setTotalRowSize( hits );
-        response.setPageRowList( result );
-        response.setTotalRowSizeExact( true );
-        response.setStartRowIndex( startRow );
-        response.setLastPage( ( pageSize * startRow + 2 ) >= hits );
+        final List<RefactoringPageRow> result = buildResponse(kObjects);
+        response.setTotalRowSize(hits);
+        response.setPageRowList(result);
+        response.setTotalRowSizeExact(true);
+        response.setStartRowIndex(startRow);
+        response.setLastPage((pageSize * startRow + 2) >= hits);
 
         return response;
     }
 
     @Override
-    public List<RefactoringPageRow> buildResponse( final List<KObject> kObjects ) {
-        final List<RefactoringPageRow> result = new ArrayList<RefactoringPageRow>( kObjects.size() );
-        for ( final KObject kObject : kObjects ) {
-            final Path path = Paths.convert( ioService.get( URI.create( kObject.getKey() ) ) );
+    public List<RefactoringPageRow> buildResponse(final List<KObject> kObjects) {
+        final List<RefactoringPageRow> result = new ArrayList<RefactoringPageRow>(kObjects.size());
+        for (final KObject kObject : kObjects) {
+            final Path path = Paths.convert(ioService.get(URI.create(kObject.getKey())));
             final RefactoringPathPageRow row = new RefactoringPathPageRow();
-            row.setValue( path );
-            result.add( row );
+            row.setValue(path);
+            result.add(row);
         }
         return result;
     }

@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.server.management.client.container;
 
 import java.util.Collection;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -53,7 +54,7 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class ContainerPresenter {

@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -32,7 +33,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * A Command to deregister a node from the graph storage.

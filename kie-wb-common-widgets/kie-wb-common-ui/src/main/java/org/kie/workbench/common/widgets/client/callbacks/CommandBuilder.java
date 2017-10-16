@@ -19,13 +19,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.client.widget.NoSuchFileWidget;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
@@ -41,146 +41,140 @@ public class CommandBuilder {
 
     private final Map<Class<? extends Throwable>, Command> commands = new HashMap<Class<? extends Throwable>, Command>();
 
-    public CommandBuilder add( final Class<? extends Throwable> throwable,
-                               final Command command ) {
-        PortablePreconditions.checkNotNull( "throwable",
-                                            throwable );
-        PortablePreconditions.checkNotNull( "command",
-                                            command );
-        commands.put( throwable,
-                      command );
+    public CommandBuilder add(final Class<? extends Throwable> throwable,
+                              final Command command) {
+        PortablePreconditions.checkNotNull("throwable",
+                                           throwable);
+        PortablePreconditions.checkNotNull("command",
+                                           command);
+        commands.put(throwable,
+                     command);
         return this;
     }
 
-    public CommandBuilder addNoSuchFileException( final HasBusyIndicator view,
-                                                  final Callback<IsWidget> callback ) {
-        add( NoSuchFileException.class,
-             new Command() {
+    public CommandBuilder addNoSuchFileException(final HasBusyIndicator view,
+                                                 final Callback<IsWidget> callback) {
+        add(NoSuchFileException.class,
+            new Command() {
 
-                 @Override
-                 public void execute() {
-                     callback.callback( new NoSuchFileWidget() );
-                     view.hideBusyIndicator();
-                 }
-             }
-           );
+                @Override
+                public void execute() {
+                    callback.callback(new NoSuchFileWidget());
+                    view.hideBusyIndicator();
+                }
+            }
+        );
         return this;
     }
 
-    public CommandBuilder addNoSuchFileException( final HasBusyIndicator view,
-                                                  final MultiPageEditor editor ) {
-        add( NoSuchFileException.class,
-             new Command() {
+    public CommandBuilder addNoSuchFileException(final HasBusyIndicator view,
+                                                 final MultiPageEditor editor) {
+        add(NoSuchFileException.class,
+            new Command() {
 
-                 @Override
-                 public void execute() {
-                     editor.clear();
-                     editor.addWidget( new NoSuchFileWidget(),
-                                       CommonConstants.INSTANCE.NoSuchFileTabTitle() );
-                     view.hideBusyIndicator();
-                 }
-             }
-           );
+                @Override
+                public void execute() {
+                    editor.clear();
+                    editor.addWidget(new NoSuchFileWidget(),
+                                     CommonConstants.INSTANCE.NoSuchFileTabTitle());
+                    view.hideBusyIndicator();
+                }
+            }
+        );
         return this;
     }
 
-    public CommandBuilder addNoSuchFileException( final HasBusyIndicator view,
-                                                  final MultiPageEditor editor,
-                                                  final Menus menus ) {
-        add( NoSuchFileException.class,
-             new Command() {
+    public CommandBuilder addNoSuchFileException(final HasBusyIndicator view,
+                                                 final MultiPageEditor editor,
+                                                 final Menus menus) {
+        add(NoSuchFileException.class,
+            new Command() {
 
-                 @Override
-                 public void execute() {
-                     editor.clear();
-                     editor.addWidget( new NoSuchFileWidget(),
-                                       CommonConstants.INSTANCE.NoSuchFileTabTitle() );
-                     disableMenuItems( menus );
-                     view.hideBusyIndicator();
-                 }
-
-             }
-           );
+                @Override
+                public void execute() {
+                    editor.clear();
+                    editor.addWidget(new NoSuchFileWidget(),
+                                     CommonConstants.INSTANCE.NoSuchFileTabTitle());
+                    disableMenuItems(menus);
+                    view.hideBusyIndicator();
+                }
+            }
+        );
         return this;
     }
 
-    public CommandBuilder addNoSuchFileException( final HasBusyIndicator view,
-                                                  final Menus menus ) {
-        add( NoSuchFileException.class,
-             new Command() {
+    public CommandBuilder addNoSuchFileException(final HasBusyIndicator view,
+                                                 final Menus menus) {
+        add(NoSuchFileException.class,
+            new Command() {
 
-                 @Override
-                 public void execute() {
-                     disableMenuItems( menus );
-                     view.hideBusyIndicator();
-                 }
-
-             }
-           );
+                @Override
+                public void execute() {
+                    disableMenuItems(menus);
+                    view.hideBusyIndicator();
+                }
+            }
+        );
         return this;
     }
 
-    public CommandBuilder addFileSystemNotFoundException( final HasBusyIndicator view,
-                                                          final MultiPageEditor editor,
-                                                          final Menus menus ) {
-        add( FileSystemNotFoundException.class,
-             new Command() {
+    public CommandBuilder addFileSystemNotFoundException(final HasBusyIndicator view,
+                                                         final MultiPageEditor editor,
+                                                         final Menus menus) {
+        add(FileSystemNotFoundException.class,
+            new Command() {
 
-                 @Override
-                 public void execute() {
-                     editor.clear();
-                     editor.addWidget( new NoSuchFileWidget(),
-                                       CommonConstants.INSTANCE.NoSuchFileTabTitle() );
-                     disableMenuItems( menus );
-                     view.hideBusyIndicator();
-                 }
-
-             }
-           );
+                @Override
+                public void execute() {
+                    editor.clear();
+                    editor.addWidget(new NoSuchFileWidget(),
+                                     CommonConstants.INSTANCE.NoSuchFileTabTitle());
+                    disableMenuItems(menus);
+                    view.hideBusyIndicator();
+                }
+            }
+        );
         return this;
     }
 
-    public CommandBuilder addFileSystemNotFoundException( final HasBusyIndicator view,
-                                                          final Menus menus ) {
-        add( FileSystemNotFoundException.class,
-             new Command() {
+    public CommandBuilder addFileSystemNotFoundException(final HasBusyIndicator view,
+                                                         final Menus menus) {
+        add(FileSystemNotFoundException.class,
+            new Command() {
 
-                 @Override
-                 public void execute() {
-                     disableMenuItems( menus );
-                     view.hideBusyIndicator();
-                 }
-
-             }
-           );
+                @Override
+                public void execute() {
+                    disableMenuItems(menus);
+                    view.hideBusyIndicator();
+                }
+            }
+        );
         return this;
     }
 
-    public CommandBuilder addSourceCodeGenerationFailedException( final HasBusyIndicator view,
-                                                                  final ViewDRLSourceWidget sourceWidget ) {
-        add( SourceGenerationFailedException.class,
-             new Command() {
+    public CommandBuilder addSourceCodeGenerationFailedException(final HasBusyIndicator view,
+                                                                 final ViewDRLSourceWidget sourceWidget) {
+        add(SourceGenerationFailedException.class,
+            new Command() {
 
-                 @Override
-                 public void execute() {
-                     sourceWidget.clearContent();
-                     view.hideBusyIndicator();
-                     ErrorPopup.showMessage( CommonConstants.INSTANCE.FailedToGenerateSource() );
-                 }
-
-             }
-           );
+                @Override
+                public void execute() {
+                    sourceWidget.clearContent();
+                    view.hideBusyIndicator();
+                    ErrorPopup.showMessage(CommonConstants.INSTANCE.FailedToGenerateSource());
+                }
+            }
+        );
         return this;
     }
 
-    private void disableMenuItems( final Menus menus ) {
-        for ( MenuItem mi : menus.getItemsMap().values() ) {
-            mi.setEnabled( false );
+    private void disableMenuItems(final Menus menus) {
+        for (MenuItem mi : menus.getItemsMap().values()) {
+            mi.setEnabled(false);
         }
     }
 
     public Map<Class<? extends Throwable>, Command> build() {
         return commands;
     }
-
 }

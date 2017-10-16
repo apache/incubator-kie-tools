@@ -23,8 +23,8 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.user.client.ui.Widget;
-import org.appformer.project.datamodel.oracle.DropDownData;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.kie.soup.project.datamodel.oracle.DropDownData;
 
 /**
  * A Popup drop-down Editor ;-)
@@ -33,73 +33,71 @@ public abstract class AbstractProxyPopupDropDownTextBox<C> implements ProxyPopup
 
     private final TextBox textBox;
 
-    public AbstractProxyPopupDropDownTextBox( final TextBox textBox,
-                                              final AbstractProxyPopupDropDownEditCell proxy ) {
+    public AbstractProxyPopupDropDownTextBox(final TextBox textBox,
+                                             final AbstractProxyPopupDropDownEditCell proxy) {
 
         this.textBox = textBox;
 
         // Tabbing out of the ListBox commits changes
-        textBox.addKeyDownHandler( new KeyDownHandler() {
+        textBox.addKeyDownHandler(new KeyDownHandler() {
 
-            public void onKeyDown( KeyDownEvent event ) {
+            public void onKeyDown(KeyDownEvent event) {
                 boolean keyTab = event.getNativeKeyCode() == KeyCodes.KEY_TAB;
                 boolean keyEnter = event.getNativeKeyCode() == KeyCodes.KEY_ENTER;
-                if ( keyEnter || keyTab ) {
+                if (keyEnter || keyTab) {
                     proxy.commit();
                 }
             }
-
-        } );
+        });
     }
 
     @Override
-    public void render( final Cell.Context context,
-                        final C value,
-                        final SafeHtmlBuilder sb,
-                        final SafeHtmlRenderer<String> renderer ) {
+    public void render(final Cell.Context context,
+                       final C value,
+                       final SafeHtmlBuilder sb,
+                       final SafeHtmlRenderer<String> renderer) {
         //Render value
-        if ( value != null ) {
-            sb.append( renderer.render( ( value == null ? "" : convertToString( value ) ) ) );
+        if (value != null) {
+            sb.append(renderer.render((value == null ? "" : convertToString(value))));
         }
     }
 
     @Override
-    public void setValue( final C value ) {
-        textBox.setValue( ( value == null ? "" : convertToString( value ) ) );
+    public void setValue(final C value) {
+        textBox.setValue((value == null ? "" : convertToString(value)));
     }
 
     @Override
-    public void setDropDownData( final DropDownData dd ) {
-        throw new UnsupportedOperationException( "Only single values are supported" );
+    public void setDropDownData(final DropDownData dd) {
+        throw new UnsupportedOperationException("Only single values are supported");
     }
 
     // Commit the change
     @Override
     public C getValue() {
         final String value = textBox.getValue();
-        if ( value.length() == 0 ) {
+        if (value.length() == 0) {
             return null;
         }
 
-        return convertFromString( value );
+        return convertFromString(value);
     }
 
     // Start editing the cell
     @Override
-    public void startEditing( final Cell.Context context,
-                              final Element parent,
-                              final C value ) {
-        textBox.setValue( ( value == null ? "" : convertToString( value ) ) );
+    public void startEditing(final Cell.Context context,
+                             final Element parent,
+                             final C value) {
+        textBox.setValue((value == null ? "" : convertToString(value)));
     }
 
     @Override
-    public void setFocus( final boolean focused ) {
-        textBox.setFocus( focused );
+    public void setFocus(final boolean focused) {
+        textBox.setFocus(focused);
     }
 
     @Override
     public Widget asWidget() {
         return textBox;
     }
-
 }

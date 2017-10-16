@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.appformer.project.datamodel.oracle.MethodInfo;
+import org.kie.soup.project.datamodel.oracle.MethodInfo;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.BlackLists;
 
 /**
@@ -36,47 +36,48 @@ public class ClassMethodInspector {
 
     private final Set<MethodInfo> methods = new HashSet<MethodInfo>();
 
-    public ClassMethodInspector( final Class<?> clazz,
-                                 final ClassToGenericClassConverter converter ) throws IOException {
+    public ClassMethodInspector(final Class<?> clazz,
+                                final ClassToGenericClassConverter converter) throws IOException {
         final Method[] methods = clazz.getDeclaredMethods();
-        for ( int i = 0; i < methods.length; i++ ) {
-            Method aMethod = methods[ i ];
-            int modifiers = methods[ i ].getModifiers();
+        for (int i = 0; i < methods.length; i++) {
+            Method aMethod = methods[i];
+            int modifiers = methods[i].getModifiers();
             String methodName = aMethod.getName();
 
-            if ( isNotGetterOrSetter( aMethod ) && !BlackLists.isClassMethodBlackListed( clazz,
-                                                                                         methodName ) && Modifier.isPublic( modifiers ) ) {
+            if (isNotGetterOrSetter(aMethod) && !BlackLists.isClassMethodBlackListed(clazz,
+                                                                                     methodName) && Modifier.isPublic(modifiers)) {
 
                 Class<?>[] listParam = aMethod.getParameterTypes();
 
-                MethodInfo info = new MethodInfo( methodName,
-                                                  convertParameterTypes( converter,
-                                                                         listParam ),
-                                                  aMethod.getReturnType(),
-                                                  obtainGenericType( aMethod.getGenericReturnType() ),
-                                                  converter.translateClassToGenericType( aMethod.getReturnType() ) );
-                this.methods.add( info );
+                MethodInfo info = new MethodInfo(methodName,
+                                                 convertParameterTypes(converter,
+                                                                       listParam),
+                                                 aMethod.getReturnType(),
+                                                 obtainGenericType(aMethod.getGenericReturnType()),
+                                                 converter.translateClassToGenericType(aMethod.getReturnType()));
+                this.methods.add(info);
             }
         }
     }
 
     /**
      * Translate Method Parameter types to the generic types used by DataModelOracle
+     *
      * @param converter
      * @param listParam
      * @return
      */
-    private List<String> convertParameterTypes( final ClassToGenericClassConverter converter,
-                                                final Class<?>[] listParam ) {
+    private List<String> convertParameterTypes(final ClassToGenericClassConverter converter,
+                                               final Class<?>[] listParam) {
         List<String> params = new ArrayList<String>();
 
-        if ( listParam.length == 0 ) {
+        if (listParam.length == 0) {
             return params;
         } else {
 
-            for ( int i = 0; i < listParam.length; i++ ) {
-                final String type = converter.translateClassToGenericType( listParam[ i ] );
-                params.add( type );
+            for (int i = 0; i < listParam.length; i++) {
+                final String type = converter.translateClassToGenericType(listParam[i]);
+                params.add(type);
             }
 
             return params;
@@ -88,69 +89,69 @@ public class ClassMethodInspector {
      * <p/>
      * If method starts with set or get and is longer than 3 characters.
      * For example java.util.List.set(int index, Object element) is considered to be a method, not a setter.
+     *
      * @param m
      */
-    private boolean isNotGetterOrSetter( final Method m ) {
-        return !( isSetter( m ) || isGetter( m ) || isBooleanGetter( m ) );
+    private boolean isNotGetterOrSetter(final Method m) {
+        return !(isSetter(m) || isGetter(m) || isBooleanGetter(m));
     }
 
-    private boolean isSetter( final Method m ) {
+    private boolean isSetter(final Method m) {
         String name = m.getName();
         int parameterCount = m.getParameterTypes().length;
-        if ( parameterCount != 1 ) {
+        if (parameterCount != 1) {
             return false;
         }
-        return ( name.length() > 3 && name.startsWith( "set" ) );
+        return (name.length() > 3 && name.startsWith("set"));
     }
 
-    private boolean isGetter( final Method m ) {
+    private boolean isGetter(final Method m) {
         String name = m.getName();
         int parameterCount = m.getParameterTypes().length;
-        if ( parameterCount != 0 ) {
+        if (parameterCount != 0) {
             return false;
         }
-        return ( name.length() > 3 && name.startsWith( "get" ) );
+        return (name.length() > 3 && name.startsWith("get"));
     }
 
-    private boolean isBooleanGetter( final Method m ) {
+    private boolean isBooleanGetter(final Method m) {
         String name = m.getName();
         int parameterCount = m.getParameterTypes().length;
-        if ( parameterCount != 0 ) {
+        if (parameterCount != 0) {
             return false;
         }
-        return ( name.length() > 2 && name.startsWith( "is" ) && ( Boolean.class.isAssignableFrom( m.getReturnType() ) || Boolean.TYPE == m.getReturnType() ) );
+        return (name.length() > 2 && name.startsWith("is") && (Boolean.class.isAssignableFrom(m.getReturnType()) || Boolean.TYPE == m.getReturnType()));
     }
 
     public List<String> getMethodNames() {
         List<String> methodList = new ArrayList<String>();
-        for ( MethodInfo info : methods ) {
-            methodList.add( info.getName() );
+        for (MethodInfo info : methods) {
+            methodList.add(info.getName());
         }
         return methodList;
     }
 
     public List<MethodInfo> getMethodInfos() {
-        return new ArrayList<MethodInfo>( this.methods );
+        return new ArrayList<MethodInfo>(this.methods);
     }
 
-    private String obtainGenericType( final Type type ) {
-        if ( type instanceof ParameterizedType ) {
+    private String obtainGenericType(final Type type) {
+        if (type instanceof ParameterizedType) {
             ParameterizedType pt = (ParameterizedType) type;
             Type goodType = null;
-            for ( Type t : pt.getActualTypeArguments() ) {
+            for (Type t : pt.getActualTypeArguments()) {
                 goodType = t;
             }
-            if ( goodType != null ) {
-                if ( goodType instanceof Class ) {
-                    return ( (Class) goodType ).getName();
+            if (goodType != null) {
+                if (goodType instanceof Class) {
+                    return ((Class) goodType).getName();
                 }
-                int index = goodType.toString().lastIndexOf( "." );
-                return goodType.toString().substring( index + 1 );
+                int index = goodType.toString().lastIndexOf(".");
+                return goodType.toString().substring(index + 1);
             } else {
                 return null;
             }
         }
         return null;
     }
-
 }

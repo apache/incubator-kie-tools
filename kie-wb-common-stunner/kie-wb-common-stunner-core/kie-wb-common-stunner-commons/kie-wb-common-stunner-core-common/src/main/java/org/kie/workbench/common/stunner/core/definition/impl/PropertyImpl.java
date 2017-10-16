@@ -18,8 +18,8 @@ package org.kie.workbench.common.stunner.core.definition.impl;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class PropertyImpl<C> {

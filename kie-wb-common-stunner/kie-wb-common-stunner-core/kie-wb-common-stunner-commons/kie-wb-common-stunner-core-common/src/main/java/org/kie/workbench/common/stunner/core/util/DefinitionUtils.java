@@ -42,7 +42,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @ApplicationScoped
 public class DefinitionUtils {

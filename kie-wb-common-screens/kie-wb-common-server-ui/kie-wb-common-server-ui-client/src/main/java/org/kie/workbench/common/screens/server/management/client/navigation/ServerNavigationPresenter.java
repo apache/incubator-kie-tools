@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.server.management.client.navigation;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -34,17 +35,17 @@ import org.kie.workbench.common.screens.server.management.client.events.ServerTe
 import org.slf4j.Logger;
 import org.uberfire.client.mvp.UberView;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @ApplicationScoped
 public class ServerNavigationPresenter {
 
     public interface View extends UberView<ServerNavigationPresenter> {
 
-        void addTemplate( final String id,
-                          final String name );
+        void addTemplate(final String id,
+                         final String name);
 
-        void select( final String id );
+        void select(final String id);
 
         void clean();
     }
@@ -59,11 +60,11 @@ public class ServerNavigationPresenter {
     private Set<String> serverTemplates = new HashSet<String>();
 
     @Inject
-    public ServerNavigationPresenter( final Logger logger,
-                                      final View view,
-                                      final Event<AddNewServerTemplate> addNewServerTemplateEvent,
-                                      final Event<ServerTemplateListRefresh> serverTemplateListRefreshEvent,
-                                      final Event<ServerTemplateSelected> serverTemplateSelectedEvent ) {
+    public ServerNavigationPresenter(final Logger logger,
+                                     final View view,
+                                     final Event<AddNewServerTemplate> addNewServerTemplateEvent,
+                                     final Event<ServerTemplateListRefresh> serverTemplateListRefreshEvent,
+                                     final Event<ServerTemplateSelected> serverTemplateSelectedEvent) {
         this.logger = logger;
         this.view = view;
         this.addNewServerTemplateEvent = addNewServerTemplateEvent;
@@ -73,55 +74,59 @@ public class ServerNavigationPresenter {
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     public View getView() {
         return view;
     }
 
-    public void setup( final ServerTemplateKey firstTemplate,
-                       final Collection<ServerTemplateKey> serverTemplateKeys ) {
+    public void setup(final ServerTemplateKey firstTemplate,
+                      final Collection<ServerTemplateKey> serverTemplateKeys) {
         view.clean();
         serverTemplates.clear();
-        addTemplate( checkNotNull( "serverTemplate2BeSelected", firstTemplate ) );
-        for ( final ServerTemplateKey serverTemplateKey : serverTemplateKeys ) {
-            if ( !serverTemplateKey.equals( firstTemplate ) ) {
-                addTemplate( serverTemplateKey );
+        addTemplate(checkNotNull("serverTemplate2BeSelected",
+                                 firstTemplate));
+        for (final ServerTemplateKey serverTemplateKey : serverTemplateKeys) {
+            if (!serverTemplateKey.equals(firstTemplate)) {
+                addTemplate(serverTemplateKey);
             }
         }
     }
 
-    private void addTemplate( final ServerTemplateKey serverTemplateKey ) {
-        checkNotNull( "serverTemplateKey", serverTemplateKey );
-        serverTemplates.add( serverTemplateKey.getId() );
-        this.view.addTemplate( serverTemplateKey.getId(), serverTemplateKey.getName() );
+    private void addTemplate(final ServerTemplateKey serverTemplateKey) {
+        checkNotNull("serverTemplateKey",
+                     serverTemplateKey);
+        serverTemplates.add(serverTemplateKey.getId());
+        this.view.addTemplate(serverTemplateKey.getId(),
+                              serverTemplateKey.getName());
     }
 
-    public void onSelect( @Observes final ServerTemplateSelected serverTemplateSelected ) {
-        if ( serverTemplateSelected != null &&
+    public void onSelect(@Observes final ServerTemplateSelected serverTemplateSelected) {
+        if (serverTemplateSelected != null &&
                 serverTemplateSelected.getServerTemplateKey() != null &&
-                serverTemplateSelected.getServerTemplateKey().getId() != null ) {
-            view.select( serverTemplateSelected.getServerTemplateKey().getId() );
+                serverTemplateSelected.getServerTemplateKey().getId() != null) {
+            view.select(serverTemplateSelected.getServerTemplateKey().getId());
         } else {
-            logger.warn( "Illegal event argument." );
+            logger.warn("Illegal event argument.");
         }
     }
 
-    public void onServerTemplateUpdated( @Observes final ServerTemplateUpdated serverTemplateUpdated ) {
-        if ( serverTemplateUpdated != null &&
-                serverTemplateUpdated.getServerTemplate() != null ) {
+    public void onServerTemplateUpdated(@Observes final ServerTemplateUpdated serverTemplateUpdated) {
+        if (serverTemplateUpdated != null &&
+                serverTemplateUpdated.getServerTemplate() != null) {
             final ServerTemplate serverTemplate = serverTemplateUpdated.getServerTemplate();
-            if ( !serverTemplates.contains( serverTemplate.getId() ) ) {
-                addTemplate( serverTemplate );
+            if (!serverTemplates.contains(serverTemplate.getId())) {
+                addTemplate(serverTemplate);
             }
         } else {
-            logger.warn( "Illegal event argument." );
+            logger.warn("Illegal event argument.");
         }
     }
 
-    public void select( final String id ) {
-        serverTemplateSelectedEvent.fire( new ServerTemplateSelected( new ServerTemplateKey( id, "" ) ) );
+    public void select(final String id) {
+        serverTemplateSelectedEvent.fire(new ServerTemplateSelected(new ServerTemplateKey(id,
+                                                                                          "")));
     }
 
     public void clear() {
@@ -129,11 +134,10 @@ public class ServerNavigationPresenter {
     }
 
     public void refresh() {
-        serverTemplateListRefreshEvent.fire( new ServerTemplateListRefresh() );
+        serverTemplateListRefreshEvent.fire(new ServerTemplateListRefresh());
     }
 
     public void newTemplate() {
-        addNewServerTemplateEvent.fire( new AddNewServerTemplate() );
+        addNewServerTemplateEvent.fire(new AddNewServerTemplate());
     }
-
 }

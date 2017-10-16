@@ -21,10 +21,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
-import org.appformer.project.datamodel.oracle.TypeSource;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
@@ -51,18 +52,18 @@ public class ProjectDataModelOracleUtilsTest {
     @Before
     public void init() {
         try {
-            ProjectDataModelOracleUtilsTest.class.getClassLoader().loadClass( ExternalPojo1.class.getName() );
-            ProjectDataModelOracleBuilder dmoBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
+            ProjectDataModelOracleUtilsTest.class.getClassLoader().loadClass(ExternalPojo1.class.getName());
+            ProjectDataModelOracleBuilder dmoBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator());
 
-            dmoBuilder.addPackage( TEST_PACKAGE );
-            dmoBuilder.addClass( ExternalPojo1.class, false, TypeSource.JAVA_DEPENDENCY );
-            dmoBuilder.addClass( ExternalPojo2.class, false, TypeSource.JAVA_DEPENDENCY );
-            dmoBuilder.addClass( ExternalEnum1.class, false, TypeSource.JAVA_DEPENDENCY );
-            dmoBuilder.addClass( ExternalEnum2.class, false, TypeSource.JAVA_DEPENDENCY );
+            dmoBuilder.addPackage(TEST_PACKAGE);
+            dmoBuilder.addClass(ExternalPojo1.class, false, TypeSource.JAVA_DEPENDENCY);
+            dmoBuilder.addClass(ExternalPojo2.class, false, TypeSource.JAVA_DEPENDENCY);
+            dmoBuilder.addClass(ExternalEnum1.class, false, TypeSource.JAVA_DEPENDENCY);
+            dmoBuilder.addClass(ExternalEnum2.class, false, TypeSource.JAVA_DEPENDENCY);
 
             dataModelOracle = dmoBuilder.build();
-        } catch ( Exception e ) {
-            fail( "Model loading failed: " + e.getMessage() );
+        } catch (Exception e) {
+            fail("Model loading failed: " + e.getMessage());
         }
     }
 
@@ -70,63 +71,63 @@ public class ProjectDataModelOracleUtilsTest {
     public void loadExternalDepsTest() {
         DataModel dataModel = new DataModelImpl();
         try {
-            ProjectDataModelOracleUtils.loadExternalDependencies( dataModel,
-                    dataModelOracle, ProjectDataModelOracleUtilsTest.class.getClassLoader() );
+            ProjectDataModelOracleUtils.loadExternalDependencies(dataModel,
+                                                                 dataModelOracle, ProjectDataModelOracleUtilsTest.class.getClassLoader());
 
             //check that the expected classes were properly loaded.
             List<DataObject> expectedExternalClasses = createExpectedExternalClasses();
-            assertEquals( expectedExternalClasses.size(), dataModel.getExternalClasses().size() );
+            assertEquals(expectedExternalClasses.size(), dataModel.getExternalClasses().size());
 
-            for ( DataObject externalClass : dataModel.getExternalClasses() ) {
+            for (DataObject externalClass : dataModel.getExternalClasses()) {
                 //properties read from DMO are not necessary sorted.
-                sortProperties( externalClass );
-                assertTrue( expectedExternalClasses.contains( externalClass ) );
+                sortProperties(externalClass);
+                assertTrue(expectedExternalClasses.contains(externalClass));
             }
 
             //check that the expected enums where properly loaded.
             List<JavaEnum> expectedExternalEnums = createExpectedExternalEnums();
-            assertEquals( expectedExternalEnums.size(), dataModel.getDependencyJavaEnums().size() );
-            for ( JavaEnum externalEnum : dataModel.getDependencyJavaEnums() ) {
-                assertTrue( expectedExternalEnums.contains( externalEnum ) );
+            assertEquals(expectedExternalEnums.size(), dataModel.getDependencyJavaEnums().size());
+            for (JavaEnum externalEnum : dataModel.getDependencyJavaEnums()) {
+                assertTrue(expectedExternalEnums.contains(externalEnum));
             }
-
-        } catch ( Exception e ) {
-            fail( "External deps loading test failed: " + e.getMessage() );
+        } catch (Exception e) {
+            fail("External deps loading test failed: " + e.getMessage());
         }
     }
 
     private List<DataObject> createExpectedExternalClasses() {
-        List<DataObject> result = new ArrayList<DataObject>();
+        List<DataObject> result = new ArrayList<>();
 
-        DataObject dataObject1 = new DataObjectImpl( TEST_PACKAGE, "ExternalPojo1" );
-        dataObject1.setSuperClassName( Object.class.getName() );
-        dataObject1.addProperty( "field1", String.class.getName() );
-        dataObject1.addProperty( "field2", String.class.getName() );
-        result.add( dataObject1 );
+        DataObject dataObject1 = new DataObjectImpl(TEST_PACKAGE, "ExternalPojo1");
+        dataObject1.setSuperClassName(Object.class.getName());
+        dataObject1.addProperty("field1", String.class.getName());
+        dataObject1.addProperty("field2", String.class.getName());
+        result.add(dataObject1);
 
-        DataObject dataObject2 = new DataObjectImpl( TEST_PACKAGE, "ExternalPojo2" );
-        dataObject2.setSuperClassName( Object.class.getName() );
-        dataObject2.addProperty( "field3", String.class.getName() );
-        dataObject2.addProperty( "field4", String.class.getName() );
-        result.add( dataObject2 );
+        DataObject dataObject2 = new DataObjectImpl(TEST_PACKAGE, "ExternalPojo2");
+        dataObject2.setSuperClassName(Object.class.getName());
+        dataObject2.addProperty("field3", String.class.getName());
+        dataObject2.addProperty("field4", String.class.getName());
+        result.add(dataObject2);
 
         return result;
     }
 
     private List<JavaEnum> createExpectedExternalEnums() {
-        List<JavaEnum> result = new ArrayList<JavaEnum>( );
+        List<JavaEnum> result = new ArrayList<>();
 
-        result.add( new JavaEnumImpl( TEST_PACKAGE, "ExternalEnum1", Visibility.PUBLIC ) );
-        result.add( new JavaEnumImpl( TEST_PACKAGE, "ExternalEnum2", Visibility.PUBLIC ) );
+        result.add(new JavaEnumImpl(TEST_PACKAGE, "ExternalEnum1", Visibility.PUBLIC));
+        result.add(new JavaEnumImpl(TEST_PACKAGE, "ExternalEnum2", Visibility.PUBLIC));
 
         return result;
     }
 
-    private void sortProperties( DataObject dataObject ) {
-        Collections.sort( dataObject.getProperties(), new Comparator<ObjectProperty>() {
-            @Override public int compare( ObjectProperty o1, ObjectProperty o2 ) {
-                return o1.getName().compareTo( o2.getName() );
+    private void sortProperties(DataObject dataObject) {
+        Collections.sort(dataObject.getProperties(), new Comparator<ObjectProperty>() {
+            @Override
+            public int compare(ObjectProperty o1, ObjectProperty o2) {
+                return o1.getName().compareTo(o2.getName());
             }
-        } );
+        });
     }
 }

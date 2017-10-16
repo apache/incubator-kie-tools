@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.commons.shared.layout.FormLayoutTemplateGenerator;
 import org.kie.workbench.common.forms.editor.model.FormModelSynchronizationResult;
 import org.kie.workbench.common.forms.editor.model.impl.TypeConflictImpl;
@@ -33,7 +34,6 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Dependent
 public class FormModelSynchronizationUtilImpl implements FormModelSynchronizationUtil {

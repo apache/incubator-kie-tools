@@ -16,16 +16,15 @@
 
 package org.kie.workbench.common.services.datamodel.backend.server.service;
 
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
 public interface DataModelService {
 
     public static final String DEFAULT_PACKAGE = "defaultpkg";
 
-    PackageDataModelOracle getDataModel( final Path resourcePath );
+    PackageDataModelOracle getDataModel(final Path resourcePath);
 
-    ProjectDataModelOracle getProjectDataModel( final Path resourcePath );
-
+    ProjectDataModelOracle getProjectDataModel(final Path resourcePath);
 }

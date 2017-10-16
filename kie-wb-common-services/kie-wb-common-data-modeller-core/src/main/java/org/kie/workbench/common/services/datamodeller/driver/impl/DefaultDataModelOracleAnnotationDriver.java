@@ -29,7 +29,7 @@ public class DefaultDataModelOracleAnnotationDriver implements AnnotationDriver 
     @Override
     public Annotation buildAnnotation(AnnotationDefinition annotationDefinition, Object annotationToken) throws ModelDriverException {
 
-        org.appformer.project.datamodel.oracle.Annotation oracleAnnotationToken = (org.appformer.project.datamodel.oracle.Annotation)annotationToken;
+        org.kie.soup.project.datamodel.oracle.Annotation oracleAnnotationToken = (org.kie.soup.project.datamodel.oracle.Annotation)annotationToken;
         AnnotationImpl annotation = new AnnotationImpl(annotationDefinition);
         if (annotationDefinition.isMarker()) {
             return annotation;

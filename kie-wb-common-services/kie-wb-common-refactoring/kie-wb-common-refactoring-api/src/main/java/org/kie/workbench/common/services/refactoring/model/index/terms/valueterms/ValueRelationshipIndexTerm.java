@@ -16,9 +16,9 @@
 package org.kie.workbench.common.services.refactoring.model.index.terms.valueterms;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RelationshipIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.RelationshipType;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class ValueRelationshipIndexTerm extends RelationshipIndexTerm implements ValueIndexTerm {
@@ -30,14 +30,21 @@ public class ValueRelationshipIndexTerm extends RelationshipIndexTerm implements
         //Errai marshalling
     }
 
-    public ValueRelationshipIndexTerm(final String relatedResOrPartName, final RelationshipType type) {
-        this(relatedResOrPartName, type, TermSearchType.NORMAL);
+    public ValueRelationshipIndexTerm(final String relatedResOrPartName,
+                                      final RelationshipType type) {
+        this(relatedResOrPartName,
+             type,
+             TermSearchType.NORMAL);
     }
 
-    public ValueRelationshipIndexTerm(final String relatedResOrPartName, final RelationshipType type, final TermSearchType searchType) {
+    public ValueRelationshipIndexTerm(final String relatedResOrPartName,
+                                      final RelationshipType type,
+                                      final TermSearchType searchType) {
         super(type);
-        this.relatedResOrPartName = PortablePreconditions.checkNotNull( "relatedResOrPartName", relatedResOrPartName );
-        this.searchType = PortablePreconditions.checkNotNull( "searchType", searchType );
+        this.relatedResOrPartName = PortablePreconditions.checkNotNull("relatedResOrPartName",
+                                                                       relatedResOrPartName);
+        this.searchType = PortablePreconditions.checkNotNull("searchType",
+                                                             searchType);
     }
 
     @Override
@@ -52,5 +59,4 @@ public class ValueRelationshipIndexTerm extends RelationshipIndexTerm implements
     public TermSearchType getSearchType() {
         return this.searchType;
     }
-
 }

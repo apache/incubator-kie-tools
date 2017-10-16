@@ -16,9 +16,9 @@
 package org.kie.workbench.common.services.refactoring.model.index.terms.valueterms;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ReferencedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.PartType;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * This index term captures information about a part referenced in a resource, specifically:
@@ -42,25 +42,36 @@ public class ValuePartReferenceIndexTerm extends ReferencedPartIndexTerm impleme
      * Constructor for (resource) part references
      *
      * @param partSignatureName The part (field/function/ruleflow-group/etc.) name
-     * @param partType The part type
-     * @param resourceFQN The resource of which the part is a part
+     * @param partType          The part type
+     * @param resourceFQN       The resource of which the part is a part
      */
-    public ValuePartReferenceIndexTerm( final String resourceFQN, final String partSignatureName, final PartType partType) {
-        this(resourceFQN, partSignatureName, partType, TermSearchType.NORMAL);
+    public ValuePartReferenceIndexTerm(final String resourceFQN,
+                                       final String partSignatureName,
+                                       final PartType partType) {
+        this(resourceFQN,
+             partSignatureName,
+             partType,
+             TermSearchType.NORMAL);
     }
 
     /**
      * Constructor for (resource) part references
      *
      * @param partSignatureName The part (field/function/ruleflow-group/etc.) name
-     * @param partType The part type
-     * @param resourceFQN The resource of which the part is a part
-     * @param termType The type of extended (term) functionality used in the term
+     * @param partType          The part type
+     * @param resourceFQN       The resource of which the part is a part
+     * @param termType          The type of extended (term) functionality used in the term
      */
-    public ValuePartReferenceIndexTerm( final String resourceFQN, final String partSignatureName, final PartType partType, final TermSearchType termType ) {
-        super(partType, resourceFQN);
-        this.partName = PortablePreconditions.checkNotNull( "partName", partSignatureName );
-        this.termType = PortablePreconditions.checkNotNull( "termType", termType );
+    public ValuePartReferenceIndexTerm(final String resourceFQN,
+                                       final String partSignatureName,
+                                       final PartType partType,
+                                       final TermSearchType termType) {
+        super(partType,
+              resourceFQN);
+        this.partName = PortablePreconditions.checkNotNull("partName",
+                                                           partSignatureName);
+        this.termType = PortablePreconditions.checkNotNull("termType",
+                                                           termType);
     }
 
     @Override

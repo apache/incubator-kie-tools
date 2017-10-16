@@ -51,7 +51,7 @@ import org.uberfire.java.nio.file.SimpleFileVisitor;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.java.nio.file.Files.walkFileTree;
 
 // TODO: Use the diagram registry cache.

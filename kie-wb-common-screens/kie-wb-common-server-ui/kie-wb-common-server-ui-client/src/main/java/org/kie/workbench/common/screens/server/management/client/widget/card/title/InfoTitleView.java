@@ -24,7 +24,7 @@ import org.gwtbootstrap3.client.ui.html.Span;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Templated
 @Dependent
@@ -40,10 +40,11 @@ public class InfoTitleView extends Composite
     Span artifactId;
 
     @Override
-    public void setup( final String groupId,
-                       final String artifactId ) {
-        this.groupId.setText( checkNotEmpty( "groupId", groupId ) );
-        this.artifactId.setText( checkNotEmpty( "artifactId", artifactId ) );
+    public void setup(final String groupId,
+                      final String artifactId) {
+        this.groupId.setText(checkNotEmpty("groupId",
+                                           groupId));
+        this.artifactId.setText(checkNotEmpty("artifactId",
+                                              artifactId));
     }
-
 }

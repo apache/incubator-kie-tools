@@ -10,7 +10,7 @@
 
   <inherits name="org.uberfire.commons.UberfireCommons"/>
 
-  <inherits name="org.appformer.project.datamodel.AFProjectDataModelAPI"/>
+  <inherits name="org.kie.soup.project.datamodel.ProjectDataModelAPI"/>
 
   <inherits name="org.uberfire.ext.layout.editor.UberfireLayoutEditorClient"/>
 

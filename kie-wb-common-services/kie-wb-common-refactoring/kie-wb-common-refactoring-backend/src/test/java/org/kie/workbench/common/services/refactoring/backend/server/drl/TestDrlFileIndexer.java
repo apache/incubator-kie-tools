@@ -19,11 +19,11 @@ import java.util.HashMap;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.appformer.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer;
@@ -40,66 +40,65 @@ public class TestDrlFileIndexer
     private TestDrlFileTypeDefinition type;
 
     @Override
-    public void setIOService( final IOService ioService ) {
+    public void setIOService(final IOService ioService) {
         this.ioService = ioService;
     }
 
     @Override
-    public void setProjectService( final KieProjectService projectService ) {
+    public void setProjectService(final KieProjectService projectService) {
         this.projectService = projectService;
     }
 
     @Override
-    public void setResourceTypeDefinition( final TestDrlFileTypeDefinition type ) {
+    public void setResourceTypeDefinition(final TestDrlFileTypeDefinition type) {
         this.type = type;
     }
 
     @Override
-    public boolean supportsPath( final Path path ) {
-        return type.accept( Paths.convert( path ) );
+    public boolean supportsPath(final Path path) {
+        return type.accept(Paths.convert(path));
     }
 
     @Override
-    protected DefaultIndexBuilder fillIndexBuilder( Path path ) throws Exception {
-        final String drl = ioService.readAllString( path );
+    protected DefaultIndexBuilder fillIndexBuilder(Path path) throws Exception {
+        final String drl = ioService.readAllString(path);
 
         return fillDrlIndexBuilder(path, drl);
     }
 
     @Override
-    protected ProjectDataModelOracle getProjectDataModelOracle( Path path ) {
+    protected ProjectDataModelOracle getProjectDataModelOracle(Path path) {
         final ProjectDataModelOracle dmo = new ProjectDataModelOracleImpl();
-        dmo.addProjectModelFields( new HashMap<String, ModelField[]>() {{
-            put( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant",
-                 new ModelField[]{ new ModelField( "age",
-                                                   "java.lang.Integer",
-                                                   ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                   ModelField.FIELD_ORIGIN.DECLARED,
-                                                   FieldAccessorsAndMutators.ACCESSOR,
-                                                   DataType.TYPE_NUMERIC_INTEGER ) } );
-            put( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Mortgage",
-                 new ModelField[]{ new ModelField( "amount",
-                                                   "java.lang.Integer",
-                                                   ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                   ModelField.FIELD_ORIGIN.DECLARED,
-                                                   FieldAccessorsAndMutators.ACCESSOR,
-                                                   DataType.TYPE_NUMERIC_INTEGER ) } );
-            put( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Mortgage",
-                 new ModelField[]{ new ModelField( "applicant",
-                                                   "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant",
-                                                   ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                   ModelField.FIELD_ORIGIN.DECLARED,
-                                                   FieldAccessorsAndMutators.ACCESSOR,
-                                                   "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant" ) } );
-            put( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Bank",
-                 new ModelField[]{ new ModelField( "mortgage",
-                                                   "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Mortgage",
-                                                   ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                   ModelField.FIELD_ORIGIN.DECLARED,
-                                                   FieldAccessorsAndMutators.ACCESSOR,
-                                                   "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Mortgage" ) } );
-        }} );
+        dmo.addProjectModelFields(new HashMap<String, ModelField[]>() {{
+            put("org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant",
+                new ModelField[]{new ModelField("age",
+                                                "java.lang.Integer",
+                                                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                ModelField.FIELD_ORIGIN.DECLARED,
+                                                FieldAccessorsAndMutators.ACCESSOR,
+                                                DataType.TYPE_NUMERIC_INTEGER)});
+            put("org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Mortgage",
+                new ModelField[]{new ModelField("amount",
+                                                "java.lang.Integer",
+                                                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                ModelField.FIELD_ORIGIN.DECLARED,
+                                                FieldAccessorsAndMutators.ACCESSOR,
+                                                DataType.TYPE_NUMERIC_INTEGER)});
+            put("org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Mortgage",
+                new ModelField[]{new ModelField("applicant",
+                                                "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant",
+                                                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                ModelField.FIELD_ORIGIN.DECLARED,
+                                                FieldAccessorsAndMutators.ACCESSOR,
+                                                "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant")});
+            put("org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Bank",
+                new ModelField[]{new ModelField("mortgage",
+                                                "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Mortgage",
+                                                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                ModelField.FIELD_ORIGIN.DECLARED,
+                                                FieldAccessorsAndMutators.ACCESSOR,
+                                                "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Mortgage")});
+        }});
         return dmo;
     }
-
 }

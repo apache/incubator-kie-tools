@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.appformer.project.datamodel.oracle.Annotation;
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
-import org.appformer.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.Annotation;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.AnnotationUtils;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.BlackLists;
 import org.slf4j.Logger;
@@ -40,163 +40,159 @@ import org.slf4j.LoggerFactory;
  */
 public class ClassFieldInspector {
 
-    private static final Logger log = LoggerFactory.getLogger( ClassFieldInspector.class );
+    private static final Logger log = LoggerFactory.getLogger(ClassFieldInspector.class);
 
     private final Map<String, FieldInfo> fieldTypesFieldInfo = new HashMap<String, FieldInfo>();
 
-    public ClassFieldInspector( final Class<?> clazz ) {
+    public ClassFieldInspector(final Class<?> clazz) {
         //Handle fields
-        final List<Field> fields = new ArrayList<Field>( getAllFields( clazz ).values() );
-        final List<Field> declaredFields = Arrays.asList( clazz.getDeclaredFields() );
+        final List<Field> fields = new ArrayList<Field>(getAllFields(clazz).values());
+        final List<Field> declaredFields = Arrays.asList(clazz.getDeclaredFields());
         final Map<String, Field> inaccessibleFields = new HashMap<>();
 
-        for ( Field field : fields ) {
-            if ( BlackLists.isClassMethodBlackListed( clazz,
-                                                      field.getName() ) ) {
+        for (Field field : fields) {
+            if (BlackLists.isClassMethodBlackListed(clazz,
+                                                    field.getName())) {
                 continue;
             }
-            if ( BlackLists.isTypeBlackListed( field.getType() ) ) {
+            if (BlackLists.isTypeBlackListed(field.getType())) {
                 continue;
             }
 
-            if ( Modifier.isPublic( field.getModifiers() ) && !Modifier.isStatic( field.getModifiers() ) ) {
+            if (Modifier.isPublic(field.getModifiers()) && !Modifier.isStatic(field.getModifiers())) {
 
-                ModelField.FIELD_ORIGIN origin = declaredFields.contains( field ) ? ModelField.FIELD_ORIGIN.DECLARED : ModelField.FIELD_ORIGIN.INHERITED;
+                ModelField.FIELD_ORIGIN origin = declaredFields.contains(field) ? ModelField.FIELD_ORIGIN.DECLARED : ModelField.FIELD_ORIGIN.INHERITED;
 
-                this.fieldTypesFieldInfo.put( field.getName(),
-                                              new FieldInfo( FieldAccessorsAndMutators.BOTH,
-                                                             field.getGenericType(),
-                                                             field.getType(),
-                                                             origin,
-                                                             AnnotationUtils.getFieldAnnotations( field,
-                                                                                                  origin.equals(
-                                                                                                          ModelField.FIELD_ORIGIN.INHERITED ) ) ) );
+                this.fieldTypesFieldInfo.put(field.getName(),
+                                             new FieldInfo(FieldAccessorsAndMutators.BOTH,
+                                                           field.getGenericType(),
+                                                           field.getType(),
+                                                           origin,
+                                                           AnnotationUtils.getFieldAnnotations(field,
+                                                                                               origin.equals(
+                                                                                                       ModelField.FIELD_ORIGIN.INHERITED))));
             } else {
-                inaccessibleFields.put( field.getName(), field );
+                inaccessibleFields.put(field.getName(), field);
             }
         }
 
         //Handle methods
-        final List<Method> methods = new ArrayList<Method>( getAllMethods( clazz ).values() );
-        for ( Method method : methods ) {
+        final List<Method> methods = new ArrayList<Method>(getAllMethods(clazz).values());
+        for (Method method : methods) {
             final int modifiers = method.getModifiers();
-            if ( Modifier.isPublic( modifiers ) && !Modifier.isStatic( method.getModifiers() ) ) {
+            if (Modifier.isPublic(modifiers) && !Modifier.isStatic(method.getModifiers())) {
                 String methodName = null;
                 FieldAccessorsAndMutators accessorsAndMutators = null;
-                if ( isGetter( method ) ) {
-                    methodName = method.getName().substring( 3 );
-                    methodName = Introspector.decapitalize( methodName );
+                if (isGetter(method)) {
+                    methodName = method.getName().substring(3);
+                    methodName = Introspector.decapitalize(methodName);
                     accessorsAndMutators = FieldAccessorsAndMutators.ACCESSOR;
-
-                } else if ( isBooleanGetter( method ) ) {
-                    methodName = method.getName().substring( 2 );
-                    methodName = Introspector.decapitalize( methodName );
+                } else if (isBooleanGetter(method)) {
+                    methodName = method.getName().substring(2);
+                    methodName = Introspector.decapitalize(methodName);
                     accessorsAndMutators = FieldAccessorsAndMutators.ACCESSOR;
-
-                } else if ( isSetter( method ) ) {
-                    methodName = method.getName().substring( 3 );
-                    methodName = Introspector.decapitalize( methodName );
+                } else if (isSetter(method)) {
+                    methodName = method.getName().substring(3);
+                    methodName = Introspector.decapitalize(methodName);
                     accessorsAndMutators = FieldAccessorsAndMutators.MUTATOR;
                 }
 
-                if ( methodName != null ) {
-                    if ( BlackLists.isClassMethodBlackListed( clazz,
-                                                              methodName ) ) {
+                if (methodName != null) {
+                    if (BlackLists.isClassMethodBlackListed(clazz,
+                                                            methodName)) {
                         continue;
                     }
-                    if ( BlackLists.isTypeBlackListed( method.getReturnType() ) ) {
+                    if (BlackLists.isTypeBlackListed(method.getReturnType())) {
                         continue;
                     }
 
                     //Correct accessor information, if a Field has already been discovered
-                    if ( this.fieldTypesFieldInfo.containsKey( methodName ) ) {
-                        final FieldInfo info = this.fieldTypesFieldInfo.get( methodName );
-                        if ( accessorsAndMutators == FieldAccessorsAndMutators.ACCESSOR ) {
-                            if ( info.accessorAndMutator == FieldAccessorsAndMutators.MUTATOR ) {
+                    if (this.fieldTypesFieldInfo.containsKey(methodName)) {
+                        final FieldInfo info = this.fieldTypesFieldInfo.get(methodName);
+                        if (accessorsAndMutators == FieldAccessorsAndMutators.ACCESSOR) {
+                            if (info.accessorAndMutator == FieldAccessorsAndMutators.MUTATOR) {
                                 info.accessorAndMutator = FieldAccessorsAndMutators.BOTH;
                             }
-                            if ( !inaccessibleFields.containsKey( methodName ) ) {
+                            if (!inaccessibleFields.containsKey(methodName)) {
                                 info.genericType = method.getGenericReturnType();
                                 info.returnType = method.getReturnType();
                             }
-
-                        } else if ( accessorsAndMutators == FieldAccessorsAndMutators.MUTATOR ) {
-                            if ( info.accessorAndMutator == FieldAccessorsAndMutators.ACCESSOR ) {
+                        } else if (accessorsAndMutators == FieldAccessorsAndMutators.MUTATOR) {
+                            if (info.accessorAndMutator == FieldAccessorsAndMutators.ACCESSOR) {
                                 info.accessorAndMutator = FieldAccessorsAndMutators.BOTH;
                             }
                         }
-
                     } else {
-                        final ModelField.FIELD_ORIGIN origin = getOrigin( methodName,
-                                                                          getNames( fields ),
-                                                                          getNames( declaredFields ) );
+                        final ModelField.FIELD_ORIGIN origin = getOrigin(methodName,
+                                                                         getNames(fields),
+                                                                         getNames(declaredFields));
 
-                        Field inaccessibleField = inaccessibleFields.get( methodName );
+                        Field inaccessibleField = inaccessibleFields.get(methodName);
 
                         Type genericType = method.getGenericReturnType();
                         Class<?> type = method.getReturnType();
 
-                        if ( inaccessibleField != null ) {
+                        if (inaccessibleField != null) {
                             genericType = inaccessibleField.getGenericType();
                             type = inaccessibleField.getType();
                         }
 
-                        this.fieldTypesFieldInfo.put( methodName,
-                                                      new FieldInfo( accessorsAndMutators,
-                                                                     genericType,
-                                                                     type,
-                                                                     origin,
-                                                                     AnnotationUtils.getFieldAnnotations(
-                                                                             inaccessibleField,
-                                                                             origin.equals( ModelField.FIELD_ORIGIN.INHERITED ) ) ) );
+                        this.fieldTypesFieldInfo.put(methodName,
+                                                     new FieldInfo(accessorsAndMutators,
+                                                                   genericType,
+                                                                   type,
+                                                                   origin,
+                                                                   AnnotationUtils.getFieldAnnotations(
+                                                                           inaccessibleField,
+                                                                           origin.equals(ModelField.FIELD_ORIGIN.INHERITED))));
                     }
                 }
             }
         }
     }
 
-    private boolean isGetter( final Method m ) {
+    private boolean isGetter(final Method m) {
         String name = m.getName();
         int parameterCount = m.getParameterTypes().length;
-        if ( parameterCount != 0 ) {
+        if (parameterCount != 0) {
             return false;
         }
-        return ( name.length() > 3 && name.startsWith( "get" ) );
+        return (name.length() > 3 && name.startsWith("get"));
     }
 
-    private boolean isBooleanGetter( final Method m ) {
+    private boolean isBooleanGetter(final Method m) {
         String name = m.getName();
         int parameterCount = m.getParameterTypes().length;
-        if ( parameterCount != 0 ) {
+        if (parameterCount != 0) {
             return false;
         }
-        return ( name.length() > 2 && name.startsWith( "is" ) && ( Boolean.class.isAssignableFrom( m.getReturnType() ) || Boolean.TYPE == m.getReturnType() ) );
+        return (name.length() > 2 && name.startsWith("is") && (Boolean.class.isAssignableFrom(m.getReturnType()) || Boolean.TYPE == m.getReturnType()));
     }
 
-    private boolean isSetter( final Method m ) {
+    private boolean isSetter(final Method m) {
         String name = m.getName();
         int parameterCount = m.getParameterTypes().length;
-        if ( parameterCount != 1 ) {
+        if (parameterCount != 1) {
             return false;
         }
-        return ( name.length() > 3 && name.startsWith( "set" ) );
+        return (name.length() > 3 && name.startsWith("set"));
     }
 
-    private List<String> getNames( final List<Field> fields ) {
+    private List<String> getNames(final List<Field> fields) {
         final List<String> names = new ArrayList<String>();
-        for ( Field field : fields ) {
-            names.add( field.getName() );
+        for (Field field : fields) {
+            names.add(field.getName());
         }
         return names;
     }
 
-    private ModelField.FIELD_ORIGIN getOrigin( final String methodName,
-                                               final List<String> fields,
-                                               final List<String> declaredFields ) {
-        if ( declaredFields.contains( methodName ) ) {
+    private ModelField.FIELD_ORIGIN getOrigin(final String methodName,
+                                              final List<String> fields,
+                                              final List<String> declaredFields) {
+        if (declaredFields.contains(methodName)) {
             return ModelField.FIELD_ORIGIN.DECLARED;
         }
-        if ( fields.contains( methodName ) ) {
+        if (fields.contains(methodName)) {
             return ModelField.FIELD_ORIGIN.INHERITED;
         }
         return ModelField.FIELD_ORIGIN.DELEGATED;
@@ -211,22 +207,22 @@ public class ClassFieldInspector {
     }
 
     //class.getDeclaredField(String) doesn't walk the inheritance tree; this does
-    private Map<String, Field> getAllFields( Class<?> type ) {
+    private Map<String, Field> getAllFields(Class<?> type) {
         Map<String, Field> fields = new HashMap<String, Field>();
-        for ( Class<?> c = type; c != null; c = c.getSuperclass() ) {
-            for ( Field f : c.getDeclaredFields() ) {
-                fields.put( f.getName(), f );
+        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
+            for (Field f : c.getDeclaredFields()) {
+                fields.put(f.getName(), f);
             }
         }
         return fields;
     }
 
     //class.getDeclaredMethods() doesn't walk the inheritance tree; this does
-    private Map<String, Method> getAllMethods( Class<?> type ) {
+    private Map<String, Method> getAllMethods(Class<?> type) {
         Map<String, Method> methods = new HashMap<String, Method>();
-        for ( Class<?> c = type; c != null; c = c.getSuperclass() ) {
-            for ( Method m : c.getDeclaredMethods() ) {
-                methods.put( m.getName(), m );
+        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
+            for (Method m : c.getDeclaredMethods()) {
+                methods.put(m.getName(), m);
             }
         }
         return methods;
@@ -240,11 +236,11 @@ public class ClassFieldInspector {
         private ModelField.FIELD_ORIGIN origin;
         private Set<Annotation> annotations;
 
-        private FieldInfo( final FieldAccessorsAndMutators accessorAndMutator,
-                           final Type genericType,
-                           final Class<?> returnType,
-                           final ModelField.FIELD_ORIGIN origin,
-                           final Set<Annotation> annotations ) {
+        private FieldInfo(final FieldAccessorsAndMutators accessorAndMutator,
+                          final Type genericType,
+                          final Class<?> returnType,
+                          final ModelField.FIELD_ORIGIN origin,
+                          final Set<Annotation> annotations) {
             this.accessorAndMutator = accessorAndMutator;
             this.genericType = genericType;
             this.returnType = returnType;
@@ -272,5 +268,4 @@ public class ClassFieldInspector {
             return annotations;
         }
     }
-
 }

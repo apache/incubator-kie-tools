@@ -18,18 +18,19 @@ package org.kie.workbench.common.widgets.configresource.client.widget.bound;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.appformer.project.datamodel.imports.Import;
-import org.appformer.project.datamodel.imports.Imports;
+import org.kie.soup.project.datamodel.imports.Import;
+import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
                                                IsWidget {

@@ -26,7 +26,7 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
 
 @Templated
@@ -64,61 +64,60 @@ public class DocumentMenuItemImpl implements RegisteredDocumentsMenuView.Documen
     }
 
     @Override
-    public void setName( final String name ) {
+    public void setName(final String name) {
         this.name = name;
-        this.kieDocumentName.setInnerHTML( getSafeHtml( name ).asString() );
+        this.kieDocumentName.setInnerHTML(getSafeHtml(name).asString());
     }
 
-    private SafeHtml getSafeHtml( final String message ) {
+    private SafeHtml getSafeHtml(final String message) {
         final SafeHtmlBuilder shb = new SafeHtmlBuilder();
-        shb.appendEscaped( message );
+        shb.appendEscaped(message);
         return shb.toSafeHtml();
     }
 
     @Override
-    public void setActivateDocumentCommand( final Command activateDocumentCommand ) {
-        this.activateDocumentCommand = PortablePreconditions.checkNotNull( "activateDocumentCommand",
-                                                                           activateDocumentCommand );
+    public void setActivateDocumentCommand(final Command activateDocumentCommand) {
+        this.activateDocumentCommand = PortablePreconditions.checkNotNull("activateDocumentCommand",
+                                                                          activateDocumentCommand);
     }
 
     @Override
-    public void setRemoveDocumentCommand( final Command removeDocumentCommand ) {
-        this.removeDocumentCommand = PortablePreconditions.checkNotNull( "removeDocumentCommand",
-                                                                         removeDocumentCommand );
+    public void setRemoveDocumentCommand(final Command removeDocumentCommand) {
+        this.removeDocumentCommand = PortablePreconditions.checkNotNull("removeDocumentCommand",
+                                                                        removeDocumentCommand);
     }
 
     @Override
-    public void setActive( final boolean isActive ) {
-        if ( isActive ) {
-            kieDocumentRegistration.setClassName( ACTIVE_CSS_CLASS );
+    public void setActive(final boolean isActive) {
+        if (isActive) {
+            kieDocumentRegistration.setClassName(ACTIVE_CSS_CLASS);
         } else {
-            kieDocumentRegistration.setClassName( INACTIVE_CSS_CLASS );
+            kieDocumentRegistration.setClassName(INACTIVE_CSS_CLASS);
         }
     }
 
     @Override
-    public void setReadOnly( final boolean isReadOnly ) {
-        if ( isReadOnly ) {
-            kieDocumentClose.setClassName( HIDDEN_CSS_CLASS );
+    public void setReadOnly(final boolean isReadOnly) {
+        if (isReadOnly) {
+            kieDocumentClose.setClassName(HIDDEN_CSS_CLASS);
         } else {
-            kieDocumentClose.setClassName( VISIBLE_CSS_CLASS );
+            kieDocumentClose.setClassName(VISIBLE_CSS_CLASS);
         }
     }
 
     @SuppressWarnings("unused")
     @EventHandler("kie-document-name")
-    public void onClickFileName( final ClickEvent e ) {
-        if ( this.activateDocumentCommand != null ) {
+    public void onClickFileName(final ClickEvent e) {
+        if (this.activateDocumentCommand != null) {
             activateDocumentCommand.execute();
         }
     }
 
     @SuppressWarnings("unused")
     @EventHandler("kie-document-close")
-    public void onClickClose( final ClickEvent e ) {
-        if ( this.removeDocumentCommand != null ) {
+    public void onClickClose(final ClickEvent e) {
+        if (this.removeDocumentCommand != null) {
             removeDocumentCommand.execute();
         }
     }
-
 }

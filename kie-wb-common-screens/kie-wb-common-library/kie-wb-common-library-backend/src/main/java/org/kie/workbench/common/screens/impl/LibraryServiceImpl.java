@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -78,7 +79,7 @@ import org.uberfire.paging.PageResponse;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Service
 @ApplicationScoped

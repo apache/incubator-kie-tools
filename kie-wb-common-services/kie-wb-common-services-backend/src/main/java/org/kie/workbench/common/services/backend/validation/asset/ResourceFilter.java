@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.services.backend.validation.asset;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.DirectoryStream;
 
@@ -30,13 +30,13 @@ public class ResourceFilter
 
     private org.uberfire.java.nio.file.Path resourcePath;
 
-    public ResourceFilter( final Path resourcePath ) {
-        this.resourcePath = Paths.convert( PortablePreconditions.checkNotNull( "resourcePath",
-                                                                               resourcePath ) );
+    public ResourceFilter(final Path resourcePath) {
+        this.resourcePath = Paths.convert(PortablePreconditions.checkNotNull("resourcePath",
+                                                                             resourcePath));
     }
 
     @Override
-    public boolean accept( final org.uberfire.java.nio.file.Path entry ) throws IOException {
-        return entry.equals( resourcePath );
+    public boolean accept(final org.uberfire.java.nio.file.Path entry) throws IOException {
+        return entry.equals(resourcePath);
     }
 }

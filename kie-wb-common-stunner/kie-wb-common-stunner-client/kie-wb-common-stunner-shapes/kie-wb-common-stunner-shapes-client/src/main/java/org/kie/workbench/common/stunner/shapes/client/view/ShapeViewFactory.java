@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.shapes.client.factory.PictureProvidersManager;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @ApplicationScoped
 public class ShapeViewFactory {

@@ -25,7 +25,7 @@ import org.kie.server.controller.api.model.spec.ContainerSpecKey;
 import org.kie.workbench.common.screens.server.management.client.events.RefreshRemoteServers;
 import org.uberfire.client.mvp.UberView;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Dependent
 public class ContainerStatusEmptyPresenter {
@@ -41,27 +41,27 @@ public class ContainerStatusEmptyPresenter {
     private ContainerSpecKey containerSpecKey;
 
     @Inject
-    public ContainerStatusEmptyPresenter( final View view,
-                                          final Event<RefreshRemoteServers> refreshRemoteServersEvent ) {
+    public ContainerStatusEmptyPresenter(final View view,
+                                         final Event<RefreshRemoteServers> refreshRemoteServersEvent) {
         this.view = view;
         this.refreshRemoteServersEvent = refreshRemoteServersEvent;
     }
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     public View getView() {
         return view;
     }
 
-    public void setup( final ContainerSpecKey containerSpecKey ) {
-        this.containerSpecKey = checkNotNull( "containerSpecKey", containerSpecKey );
+    public void setup(final ContainerSpecKey containerSpecKey) {
+        this.containerSpecKey = checkNotNull("containerSpecKey",
+                                             containerSpecKey);
     }
 
     public void refresh() {
-        refreshRemoteServersEvent.fire( new RefreshRemoteServers( containerSpecKey ) );
+        refreshRemoteServersEvent.fire(new RefreshRemoteServers(containerSpecKey));
     }
-
 }

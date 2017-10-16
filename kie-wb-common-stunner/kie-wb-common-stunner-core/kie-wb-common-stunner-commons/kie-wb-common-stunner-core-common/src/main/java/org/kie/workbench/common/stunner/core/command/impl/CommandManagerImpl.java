@@ -18,13 +18,13 @@ package org.kie.workbench.common.stunner.core.command.impl;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandListener;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.HasCommandListener;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 public class CommandManagerImpl<C, V> implements CommandManager<C, V>,
                                                  HasCommandListener<CommandListener<C, V>> {

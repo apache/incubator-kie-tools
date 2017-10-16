@@ -16,11 +16,12 @@
 package org.kie.workbench.common.services.datamodel.backend.server;
 
 import java.net.URL;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.vfs.Path;
 
@@ -34,56 +35,55 @@ public class ProjectDataModelExtendJavaTypeTest extends AbstractDataModelWeldTes
 
     @Test
     public void testProjectExtendJavaTypeWithQualifiedDRLBeanName() throws Exception {
-        final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
-        final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
-                                                                                               DataModelService.class,
-                                                                                               cc );
+        final Bean dataModelServiceBean = (Bean) beanManager.getBeans(DataModelService.class).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext(dataModelServiceBean);
+        final DataModelService dataModelService = (DataModelService) beanManager.getReference(dataModelServiceBean,
+                                                                                              DataModelService.class,
+                                                                                              cc);
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendExtendJavaTypeTest1" );
-        final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
-        final Path packagePath = paths.convert( nioPackagePath );
+        final URL packageUrl = this.getClass().getResource("/DataModelBackendExtendJavaTypeTest1");
+        final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath(packageUrl.toURI());
+        final Path packagePath = paths.convert(nioPackagePath);
 
-        final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( packagePath );
+        final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel(packagePath);
 
-        assertNotNull( oracle );
+        assertNotNull(oracle);
 
-        assertEquals( 2,
-                      oracle.getProjectModelFields().size() );
-        assertContains( "t4p1.Bean1",
-                        oracle.getProjectModelFields().keySet() );
-        assertContains( "java.lang.String",
-                        oracle.getProjectModelFields().keySet() );
+        assertEquals(2,
+                     oracle.getProjectModelFields().size());
+        assertContains("t4p1.Bean1",
+                       oracle.getProjectModelFields().keySet());
+        assertContains("java.lang.String",
+                       oracle.getProjectModelFields().keySet());
 
-        assertTrue( oracle.getProjectEventTypes().get( "t4p1.Bean1" ) );
-        assertFalse( oracle.getProjectEventTypes().get( "java.lang.String" ) );
+        assertTrue(oracle.getProjectEventTypes().get("t4p1.Bean1"));
+        assertFalse(oracle.getProjectEventTypes().get("java.lang.String"));
     }
 
     @Test
     public void testProjectExtendJavaTypeWithImport() throws Exception {
-        final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
-        final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
-                                                                                               DataModelService.class,
-                                                                                               cc );
+        final Bean dataModelServiceBean = (Bean) beanManager.getBeans(DataModelService.class).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext(dataModelServiceBean);
+        final DataModelService dataModelService = (DataModelService) beanManager.getReference(dataModelServiceBean,
+                                                                                              DataModelService.class,
+                                                                                              cc);
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendExtendJavaTypeTest2" );
-        final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
-        final Path packagePath = paths.convert( nioPackagePath );
+        final URL packageUrl = this.getClass().getResource("/DataModelBackendExtendJavaTypeTest2");
+        final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath(packageUrl.toURI());
+        final Path packagePath = paths.convert(nioPackagePath);
 
-        final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( packagePath );
+        final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel(packagePath);
 
-        assertNotNull( oracle );
+        assertNotNull(oracle);
 
-        assertEquals( 2,
-                      oracle.getProjectModelFields().size() );
-        assertContains( "t5p1.Bean1",
-                        oracle.getProjectModelFields().keySet() );
-        assertContains( "java.lang.String",
-                        oracle.getProjectModelFields().keySet() );
+        assertEquals(2,
+                     oracle.getProjectModelFields().size());
+        assertContains("t5p1.Bean1",
+                       oracle.getProjectModelFields().keySet());
+        assertContains("java.lang.String",
+                       oracle.getProjectModelFields().keySet());
 
-        assertTrue( oracle.getProjectEventTypes().get( "t5p1.Bean1" ) );
-        assertFalse( oracle.getProjectEventTypes().get( "java.lang.String" ) );
+        assertTrue(oracle.getProjectEventTypes().get("t5p1.Bean1"));
+        assertFalse(oracle.getProjectEventTypes().get("java.lang.String"));
     }
-
 }

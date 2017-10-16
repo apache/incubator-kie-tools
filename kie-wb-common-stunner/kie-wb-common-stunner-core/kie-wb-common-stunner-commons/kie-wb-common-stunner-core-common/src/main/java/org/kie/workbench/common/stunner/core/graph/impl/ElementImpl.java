@@ -21,10 +21,10 @@ import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class ElementImpl<C> implements Element<C> {

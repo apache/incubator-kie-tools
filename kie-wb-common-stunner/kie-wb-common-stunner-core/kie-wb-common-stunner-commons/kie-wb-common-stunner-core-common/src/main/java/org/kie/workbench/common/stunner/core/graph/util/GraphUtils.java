@@ -36,7 +36,7 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class GraphUtils {
 
@@ -222,6 +222,7 @@ public class GraphUtils {
 
     /**
      * Checks that the given Bounds do not exceed graph limits.
+     *
      * @return if bounds exceed graph limits it returns <code>false</code>. Otherwise returns <code>true</code>.
      */
     @SuppressWarnings("unchecked")
@@ -237,8 +238,9 @@ public class GraphUtils {
 
     /**
      * Finds the first node in the graph structure for the given type.
+     *
      * @param graph The graph structure.
-     * @param type The Definition type..
+     * @param type  The Definition type..
      */
     @SuppressWarnings("unchecked")
     public static <C> Node<Definition<C>, ?> getFirstNode(final Graph<?, Node> graph,

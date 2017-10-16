@@ -27,8 +27,8 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
-import org.appformer.project.datamodel.oracle.DropDownData;
 import org.gwtbootstrap3.client.ui.ListBox;
+import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
@@ -39,7 +39,7 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDro
 public class PopupDropDownEditCell extends
                                    AbstractPopupEditCell<String, String> {
 
-    private final ListBox listBox = GWT.create( ListBox.class );
+    private final ListBox listBox = GWT.create(ListBox.class);
     private final boolean isMultipleSelect;
 
     private final String factType;
@@ -50,93 +50,92 @@ public class PopupDropDownEditCell extends
 
     final EnumDropDownUtilities utilities = new EnumDropDownUtilities() {
         @Override
-        protected int addItems( final ListBox listBox ) {
+        protected int addItems(final ListBox listBox) {
             return 0;
         }
 
         @Override
-        protected void selectItem( final ListBox listBox ) {
+        protected void selectItem(final ListBox listBox) {
             //Nothing needed by default
         }
     };
 
-    public PopupDropDownEditCell( final String factType,
-                                  final String factField,
-                                  final AsyncPackageDataModelOracle dmo,
-                                  final CellTableDropDownDataValueMapProvider dropDownManager,
-                                  final boolean isReadOnly ) {
-        this( factType,
-              factField,
-              dmo,
-              dropDownManager,
-              false,
-              isReadOnly );
+    public PopupDropDownEditCell(final String factType,
+                                 final String factField,
+                                 final AsyncPackageDataModelOracle dmo,
+                                 final CellTableDropDownDataValueMapProvider dropDownManager,
+                                 final boolean isReadOnly) {
+        this(factType,
+             factField,
+             dmo,
+             dropDownManager,
+             false,
+             isReadOnly);
     }
 
-    public PopupDropDownEditCell( final String factType,
-                                  final String factField,
-                                  final AsyncPackageDataModelOracle dmo,
-                                  final CellTableDropDownDataValueMapProvider dropDownManager,
-                                  final boolean isMultipleSelect,
-                                  final boolean isReadOnly ) {
-        super( isReadOnly );
+    public PopupDropDownEditCell(final String factType,
+                                 final String factField,
+                                 final AsyncPackageDataModelOracle dmo,
+                                 final CellTableDropDownDataValueMapProvider dropDownManager,
+                                 final boolean isMultipleSelect,
+                                 final boolean isReadOnly) {
+        super(isReadOnly);
         this.factType = factType;
         this.factField = factField;
         this.isMultipleSelect = isMultipleSelect;
         this.dropDownManager = dropDownManager;
         this.dmo = dmo;
 
-        this.listBox.setMultipleSelect( isMultipleSelect );
+        this.listBox.setMultipleSelect(isMultipleSelect);
 
         // Tabbing out of the ListBox commits changes
-        listBox.addKeyDownHandler( new KeyDownHandler() {
+        listBox.addKeyDownHandler(new KeyDownHandler() {
 
-            public void onKeyDown( KeyDownEvent event ) {
+            public void onKeyDown(KeyDownEvent event) {
                 boolean keyTab = event.getNativeKeyCode() == KeyCodes.KEY_TAB;
                 boolean keyEnter = event.getNativeKeyCode() == KeyCodes.KEY_ENTER;
-                if ( keyEnter || keyTab ) {
+                if (keyEnter || keyTab) {
                     commit();
                 }
             }
+        });
 
-        } );
-
-        vPanel.add( listBox );
+        vPanel.add(listBox);
     }
 
     @Override
-    public void render( Context context,
-                        String value,
-                        SafeHtmlBuilder sb ) {
+    public void render(Context context,
+                       String value,
+                       SafeHtmlBuilder sb) {
 
         //We need to get the list of potential values to lookup the "Display" value from the "Stored" value.
         //Since the content of the list may be different for each cell (dependent enumerations) the list
         //has to be populated "on demand". 
-        DropDownData dd = dmo.getEnums( this.factType,
-                                        this.factField,
-                                        this.dropDownManager.getCurrentValueMap( context ) );
-        if ( dd == null ) {
+        DropDownData dd = dmo.getEnums(this.factType,
+                                       this.factField,
+                                       this.dropDownManager.getCurrentValueMap(context));
+        if (dd == null) {
             return;
         }
 
-        utilities.setDropDownData( value,
-                                   dd,
-                                   isMultipleSelect,
-                                   dmo.getResourcePath(),
-                                   listBox );
+        utilities.setDropDownData(value,
+                                  dd,
+                                  isMultipleSelect,
+                                  dmo.getResourcePath(),
+                                  listBox);
 
         //Render value
-        if ( value != null ) {
-            String label = getLabel( value );
-            sb.append( renderer.render( label ) );
+        if (value != null) {
+            String label = getLabel(value);
+            sb.append(renderer.render(label));
         }
     }
 
     // Lookup the display text based on the value
-    String getLabel( String value ) {
-        for ( int i = 0; i < this.listBox.getItemCount(); i++ ) {
-            if ( this.listBox.getValue( i ).equals( value ) ) {
-                return this.listBox.getItemText( i );
+    String getLabel(String value) {
+        for (int i = 0; i < this.listBox.getItemCount(); i++) {
+            if (this.listBox.getValue(i).equals(value)) {
+                return this.listBox.getItemText(i);
             }
         }
         return value;
@@ -148,96 +147,91 @@ public class PopupDropDownEditCell extends
 
         // Update value
         String value = null;
-        if ( listBox.isMultipleSelect() ) {
-            for ( int i = 0; i < listBox.getItemCount(); i++ ) {
-                if ( listBox.isItemSelected( i ) ) {
-                    if ( value == null ) {
-                        value = listBox.getValue( i );
+        if (listBox.isMultipleSelect()) {
+            for (int i = 0; i < listBox.getItemCount(); i++) {
+                if (listBox.isItemSelected(i)) {
+                    if (value == null) {
+                        value = listBox.getValue(i);
                     } else {
-                        value = value + "," + listBox.getValue( i );
+                        value = value + "," + listBox.getValue(i);
                     }
                 }
             }
-
         } else {
             int selectedIndex = listBox.getSelectedIndex();
-            if ( selectedIndex >= 0 ) {
-                value = listBox.getValue( selectedIndex );
+            if (selectedIndex >= 0) {
+                value = listBox.getValue(selectedIndex);
             }
         }
 
-        setValue( lastContext,
-                  lastParent,
-                  value );
-        if ( valueUpdater != null ) {
-            valueUpdater.update( value );
+        setValue(lastContext,
+                 lastParent,
+                 value);
+        if (valueUpdater != null) {
+            valueUpdater.update(value);
         }
         panel.hide();
     }
 
     // Start editing the cell
     @Override
-    protected void startEditing( final Context context,
-                                 final Element parent,
-                                 final String value ) {
+    protected void startEditing(final Context context,
+                                final Element parent,
+                                final String value) {
 
         //We need to get the list of potential values for the enumeration. Since the content 
         //of the list may be different for each cell (dependent enumerations) the list
         //has to be populated "on demand". 
-        DropDownData dd = dmo.getEnums( this.factType,
-                                        this.factField,
-                                        this.dropDownManager.getCurrentValueMap( context ) );
-        if ( dd == null ) {
+        DropDownData dd = dmo.getEnums(this.factType,
+                                       this.factField,
+                                       this.dropDownManager.getCurrentValueMap(context));
+        if (dd == null) {
             return;
         }
 
-        utilities.setDropDownData( value,
-                                   dd,
-                                   isMultipleSelect,
-                                   dmo.getResourcePath(),
-                                   listBox );
+        utilities.setDropDownData(value,
+                                  dd,
+                                  isMultipleSelect,
+                                  dmo.getResourcePath(),
+                                  listBox);
 
         // Select the appropriate item
-        boolean emptyValue = ( value == null );
-        if ( emptyValue ) {
-            listBox.setSelectedIndex( 0 );
+        boolean emptyValue = (value == null);
+        if (emptyValue) {
+            listBox.setSelectedIndex(0);
         } else {
-            if ( listBox.isMultipleSelect() ) {
-                final List<String> values = Arrays.asList( value.split( "," ) );
-                for ( int i = 0; i < listBox.getItemCount(); i++ ) {
-                    listBox.setItemSelected( i,
-                                             values.contains( listBox.getValue( i ) ) );
+            if (listBox.isMultipleSelect()) {
+                final List<String> values = Arrays.asList(value.split(","));
+                for (int i = 0; i < listBox.getItemCount(); i++) {
+                    listBox.setItemSelected(i,
+                                            values.contains(listBox.getValue(i)));
                 }
-
             } else {
-                for ( int i = 0; i < listBox.getItemCount(); i++ ) {
-                    if ( listBox.getValue( i ).equals( value ) ) {
-                        listBox.setSelectedIndex( i );
+                for (int i = 0; i < listBox.getItemCount(); i++) {
+                    if (listBox.getValue(i).equals(value)) {
+                        listBox.setSelectedIndex(i);
                         break;
                     }
                 }
             }
         }
 
-        panel.setPopupPositionAndShow( new PositionCallback() {
-            public void setPosition( int offsetWidth,
-                                     int offsetHeight ) {
-                panel.setPopupPosition( parent.getAbsoluteLeft()
-                                                + offsetX,
-                                        parent.getAbsoluteTop()
-                                                + offsetY );
+        panel.setPopupPositionAndShow(new PositionCallback() {
+            public void setPosition(int offsetWidth,
+                                    int offsetHeight) {
+                panel.setPopupPosition(parent.getAbsoluteLeft()
+                                               + offsetX,
+                                       parent.getAbsoluteTop()
+                                               + offsetY);
 
                 // Focus the first enabled control
-                Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
                     public void execute() {
-                        listBox.setFocus( true );
+                        listBox.setFocus(true);
                     }
-
-                } );
+                });
             }
-        } );
-
+        });
     }
-
 }

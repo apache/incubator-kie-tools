@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
@@ -48,7 +49,6 @@ import org.kie.workbench.common.stunner.core.graph.util.SafeDeleteNodeProcessor;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Deletes a node taking into account its ingoing / outgoing edges and safe remove all node's children as well, if any.

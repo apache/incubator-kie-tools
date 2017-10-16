@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datasource.management.backend.service;
 
 import java.sql.Connection;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -29,7 +30,7 @@ import org.kie.workbench.common.screens.datasource.management.model.DriverDeploy
 import org.kie.workbench.common.screens.datasource.management.model.TestResult;
 import org.kie.workbench.common.screens.datasource.management.service.DataSourceRuntimeManagerClientService;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Service
 @ApplicationScoped
@@ -43,79 +44,81 @@ public class DataSourceRuntimeManagerClientServiceImpl
     }
 
     @Override
-    public DataSourceDeploymentInfo getDataSourceDeploymentInfo( String uuid ) {
+    public DataSourceDeploymentInfo getDataSourceDeploymentInfo(String uuid) {
         try {
-            return runtimeManager.getDataSourceDeploymentInfo( uuid );
-        } catch ( Exception e ) {
-            throw new GenericPortableException( e.getMessage(), e );
+            return runtimeManager.getDataSourceDeploymentInfo(uuid);
+        } catch (Exception e) {
+            throw new GenericPortableException(e.getMessage(),
+                                               e);
         }
     }
 
     @Override
-    public DriverDeploymentInfo getDriverDeploymentInfo( String uuid ) {
+    public DriverDeploymentInfo getDriverDeploymentInfo(String uuid) {
         try {
-            return runtimeManager.getDriverDeploymentInfo( uuid );
-        } catch ( Exception e ) {
-            throw new GenericPortableException( e.getMessage(), e );
+            return runtimeManager.getDriverDeploymentInfo(uuid);
+        } catch (Exception e) {
+            throw new GenericPortableException(e.getMessage(),
+                                               e);
         }
     }
 
     @Override
-    public TestResult testDataSource( final String uuid ) {
+    public TestResult testDataSource(final String uuid) {
         try {
-            DataSource dataSource = runtimeManager.lookupDataSource( uuid );
-            return test( dataSource );
-        } catch ( Exception e ) {
-            StringBuilder strBuilder = new StringBuilder( );
-            TestResult testResult = new TestResult( false );
-            strBuilder.append( "Reference to datasource ds: " + uuid + " couldn't be obtained " );
-            strBuilder.append( "\n" );
-            strBuilder.append( "Test Failed" );
-            testResult.setMessage( strBuilder.toString() );
+            DataSource dataSource = runtimeManager.lookupDataSource(uuid);
+            return test(dataSource);
+        } catch (Exception e) {
+            StringBuilder strBuilder = new StringBuilder();
+            TestResult testResult = new TestResult(false);
+            strBuilder.append("Reference to datasource ds: " + uuid + " couldn't be obtained ");
+            strBuilder.append("\n");
+            strBuilder.append("Test Failed");
+            testResult.setMessage(strBuilder.toString());
             return testResult;
         }
     }
 
-    private TestResult test( final DataSource dataSource ) {
-        TestResult testResult = new TestResult( false );
+    private TestResult test(final DataSource dataSource) {
+        TestResult testResult = new TestResult(false);
         StringBuilder stringBuilder = new StringBuilder();
         try {
 
-            checkNotNull( "dataSource", dataSource );
+            checkNotNull("dataSource",
+                         dataSource);
 
-            stringBuilder.append( "Reference to datasource was successfully obtained: " + dataSource );
-            stringBuilder.append( "\n" );
+            stringBuilder.append("Reference to datasource was successfully obtained: " + dataSource);
+            stringBuilder.append("\n");
 
             Connection conn = dataSource.getConnection();
 
-            if ( conn == null ) {
-                stringBuilder.append( "It was not possible to get connection from the datasoure." );
-                stringBuilder.append( "\n" );
-                stringBuilder.append( "Test Failed" );
+            if (conn == null) {
+                stringBuilder.append("It was not possible to get connection from the datasoure.");
+                stringBuilder.append("\n");
+                stringBuilder.append("Test Failed");
             } else {
-                stringBuilder.append( "Connection was successfully obtained: " + conn );
-                stringBuilder.append( "\n" );
-                stringBuilder.append( "*** DatabaseProductName: " + conn.getMetaData().getDatabaseProductName() );
-                stringBuilder.append( "\n" );
-                stringBuilder.append( "*** DatabaseProductVersion: " + conn.getMetaData().getDatabaseProductVersion() );
-                stringBuilder.append( "\n" );
-                stringBuilder.append( "*** DriverName: " + conn.getMetaData().getDriverName() );
-                stringBuilder.append( "\n" );
-                stringBuilder.append( "*** DriverVersion: " + conn.getMetaData().getDriverVersion() );
-                stringBuilder.append( "\n" );
+                stringBuilder.append("Connection was successfully obtained: " + conn);
+                stringBuilder.append("\n");
+                stringBuilder.append("*** DatabaseProductName: " + conn.getMetaData().getDatabaseProductName());
+                stringBuilder.append("\n");
+                stringBuilder.append("*** DatabaseProductVersion: " + conn.getMetaData().getDatabaseProductVersion());
+                stringBuilder.append("\n");
+                stringBuilder.append("*** DriverName: " + conn.getMetaData().getDriverName());
+                stringBuilder.append("\n");
+                stringBuilder.append("*** DriverVersion: " + conn.getMetaData().getDriverVersion());
+                stringBuilder.append("\n");
                 conn.close();
-                stringBuilder.append( "Connection was successfully released." );
-                stringBuilder.append( "\n" );
-                stringBuilder.append( "Test Successful" );
-                testResult.setTestPassed( true );
+                stringBuilder.append("Connection was successfully released.");
+                stringBuilder.append("\n");
+                stringBuilder.append("Test Successful");
+                testResult.setTestPassed(true);
             }
-
-        } catch ( Exception e ) {
-            stringBuilder.append( e.getMessage() );
-            stringBuilder.append( "\n" );
-            stringBuilder.append( "Test Failed" );
+        } catch (Exception e) {
+            stringBuilder.append(e.getMessage());
+            stringBuilder.append("\n");
+            stringBuilder.append("Test Failed");
         }
-        testResult.setMessage( stringBuilder.toString() );
+        testResult.setMessage(stringBuilder.toString());
         return testResult;
     }
 }

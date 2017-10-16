@@ -48,8 +48,8 @@
       <artifactId>drools-workbench-models-datamodel-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-datamodel-api</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -90,6 +90,10 @@
       <artifactId>uberfire-commons</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-io</artifactId>
     </dependency>
@@ -116,8 +120,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-datamodel-commons</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-commons</artifactId>
     </dependency>
 
     <dependency>

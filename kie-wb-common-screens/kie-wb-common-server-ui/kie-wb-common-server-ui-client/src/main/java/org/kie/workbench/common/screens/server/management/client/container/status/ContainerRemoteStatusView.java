@@ -25,7 +25,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.server.management.client.widget.Div;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Dependent
 @Templated
@@ -37,13 +37,13 @@ public class ContainerRemoteStatusView extends Composite
     Div cardContainer;
 
     @Override
-    public void addCard( final IsWidget widget ) {
-        cardContainer.add( checkNotNull( "widget", widget ) );
+    public void addCard(final IsWidget widget) {
+        cardContainer.add(checkNotNull("widget",
+                                       widget));
     }
 
     @Override
     public void clear() {
         cardContainer.clear();
     }
-
 }

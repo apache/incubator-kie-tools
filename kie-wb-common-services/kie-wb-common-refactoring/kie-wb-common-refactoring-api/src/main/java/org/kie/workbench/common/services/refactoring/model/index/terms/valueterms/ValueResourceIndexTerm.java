@@ -16,9 +16,9 @@
 package org.kie.workbench.common.services.refactoring.model.index.terms.valueterms;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ResourceIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class ValueResourceIndexTerm extends ResourceIndexTerm implements ValueIndexTerm {
@@ -30,14 +30,21 @@ public class ValueResourceIndexTerm extends ResourceIndexTerm implements ValueIn
         //Errai marshalling
     }
 
-    public ValueResourceIndexTerm(final String resourceFQN, final ResourceType type) {
-        this(resourceFQN, type, TermSearchType.NORMAL);
+    public ValueResourceIndexTerm(final String resourceFQN,
+                                  final ResourceType type) {
+        this(resourceFQN,
+             type,
+             TermSearchType.NORMAL);
     }
 
-    public ValueResourceIndexTerm(final String resourceFQN, final ResourceType type, final TermSearchType searchType) {
+    public ValueResourceIndexTerm(final String resourceFQN,
+                                  final ResourceType type,
+                                  final TermSearchType searchType) {
         super(type);
-        this.resourceFQN = PortablePreconditions.checkNotNull( "resourceFQN", resourceFQN );
-        this.searchType = PortablePreconditions.checkNotNull( "searchType", searchType );
+        this.resourceFQN = PortablePreconditions.checkNotNull("resourceFQN",
+                                                              resourceFQN);
+        this.searchType = PortablePreconditions.checkNotNull("searchType",
+                                                             searchType);
     }
 
     @Override
@@ -52,5 +59,4 @@ public class ValueResourceIndexTerm extends ResourceIndexTerm implements ValueIn
     public TermSearchType getSearchType() {
         return this.searchType;
     }
-
 }

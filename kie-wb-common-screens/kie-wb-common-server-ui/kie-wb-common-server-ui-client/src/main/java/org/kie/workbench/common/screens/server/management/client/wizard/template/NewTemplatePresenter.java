@@ -31,7 +31,7 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Dependent
 public class NewTemplatePresenter implements WizardPage {
@@ -50,7 +50,7 @@ public class NewTemplatePresenter implements WizardPage {
 
         void clear();
 
-        void addContentChangeHandler( final ContentChangeHandler contentChangeHandler );
+        void addContentChangeHandler(final ContentChangeHandler contentChangeHandler);
 
         boolean getProcessCapabilityCheck();
 
@@ -64,7 +64,7 @@ public class NewTemplatePresenter implements WizardPage {
 
         void errorOnTemplateName();
 
-        void errorOnTemplateName( String s );
+        void errorOnTemplateName(String s);
 
         void noErrorOnTemplateName();
 
@@ -88,9 +88,9 @@ public class NewTemplatePresenter implements WizardPage {
     private final Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
 
     @Inject
-    public NewTemplatePresenter( final View view,
-                                 final Caller<SpecManagementService> specManagementService,
-                                 final Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent ) {
+    public NewTemplatePresenter(final View view,
+                                final Caller<SpecManagementService> specManagementService,
+                                final Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent) {
         this.view = view;
         this.specManagementService = specManagementService;
         this.wizardPageStatusChangeEvent = wizardPageStatusChangeEvent;
@@ -98,7 +98,7 @@ public class NewTemplatePresenter implements WizardPage {
 
     @PostConstruct
     public void init() {
-        this.view.init( this );
+        this.view.init(this);
     }
 
     @Override
@@ -107,33 +107,34 @@ public class NewTemplatePresenter implements WizardPage {
     }
 
     @Override
-    public void isComplete( final Callback<Boolean> callback ) {
-        if ( isValid() ) {
-            specManagementService.call( new RemoteCallback<Boolean>() {
+    public void isComplete(final Callback<Boolean> callback) {
+        if (isValid()) {
+            specManagementService.call(new RemoteCallback<Boolean>() {
                 @Override
-                public void callback( final Boolean result ) {
-                    if ( result.equals( Boolean.FALSE ) ) {
-                        view.errorOnTemplateName( view.getInvalidErrorMessage() );
-                        callback.callback( false );
+                public void callback(final Boolean result) {
+                    if (result.equals(Boolean.FALSE)) {
+                        view.errorOnTemplateName(view.getInvalidErrorMessage());
+                        callback.callback(false);
                     } else {
-                        callback.callback( true );
+                        callback.callback(true);
                     }
                 }
-            } ).isNewServerTemplateIdValid( view.getTemplateName() );
+            }).isNewServerTemplateIdValid(view.getTemplateName());
         } else {
-            callback.callback( false );
+            callback.callback(false);
         }
     }
 
-    public void addContentChangeHandler( final ContentChangeHandler contentChangeHandler ) {
-        checkNotNull( "contentChangeHandler", contentChangeHandler );
-        view.addContentChangeHandler( new ContentChangeHandler() {
+    public void addContentChangeHandler(final ContentChangeHandler contentChangeHandler) {
+        checkNotNull("contentChangeHandler",
+                     contentChangeHandler);
+        view.addContentChangeHandler(new ContentChangeHandler() {
             @Override
             public void onContentChange() {
                 contentChangeHandler.onContentChange();
-                wizardPageStatusChangeEvent.fire( new WizardPageStatusChangeEvent( NewTemplatePresenter.this ) );
+                wizardPageStatusChangeEvent.fire(new WizardPageStatusChangeEvent(NewTemplatePresenter.this));
             }
-        } );
+        });
     }
 
     @Override
@@ -153,14 +154,14 @@ public class NewTemplatePresenter implements WizardPage {
 
     public boolean isValid() {
         boolean hasError = false;
-        if ( isTemplateNameValid() ) {
+        if (isTemplateNameValid()) {
             view.noErrorOnTemplateName();
         } else {
             view.errorOnTemplateName();
             hasError = true;
         }
 
-        if ( isCapabilityValid() ) {
+        if (isCapabilityValid()) {
             view.noErrorOnCapability();
         } else {
             view.errorCapability();
@@ -176,11 +177,11 @@ public class NewTemplatePresenter implements WizardPage {
     }
 
     public boolean isCapabilityValid() {
-        if ( view.isPlanningCapabilityChecked() && view.isRuleCapabilityChecked() ) {
+        if (view.isPlanningCapabilityChecked() && view.isRuleCapabilityChecked()) {
             return true;
         }
 
-        if ( view.isProcessCapabilityChecked() || view.isRuleCapabilityChecked() ) {
+        if (view.isProcessCapabilityChecked() || view.isRuleCapabilityChecked()) {
             return true;
         }
 

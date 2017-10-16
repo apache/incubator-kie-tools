@@ -15,9 +15,9 @@
  */
 package org.kie.workbench.common.services.datamodel.model;
 
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
-import org.appformer.project.datamodel.oracle.ModelField;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.kie.soup.project.datamodel.oracle.ModelField;
 
 /**
  * A sub-class to indicate that the true ModelFields are yet to be loaded
@@ -31,26 +31,26 @@ public class LazyModelField extends ModelField {
 
     /**
      * Creates a new ModelField instance
-     * @param name field's name
-     * @param clazz the class of the field. For fields defined as a type declaration
-     * @param fieldClassType tells if this is a field for a regular POJO class or for a object type declaration
-     * this clazz should be null.
-     * @param fieldOrigin gives info about this field's origin
+     *
+     * @param name                 field's name
+     * @param clazz                the class of the field. For fields defined as a type declaration
+     * @param fieldClassType       tells if this is a field for a regular POJO class or for a object type declaration
+     *                             this clazz should be null.
+     * @param fieldOrigin          gives info about this field's origin
      * @param accessorsAndMutators Whether the field has an Accessor, Mutator or both
-     * @param type the generic type of the clazz (from ClassToGenericClassConverter).
+     * @param type                 the generic type of the clazz (from ClassToGenericClassConverter).
      */
-    public LazyModelField( final String name,
-                           final String clazz,
-                           final FIELD_CLASS_TYPE fieldClassType,
-                           final FIELD_ORIGIN fieldOrigin,
-                           final FieldAccessorsAndMutators accessorsAndMutators,
-                           final String type ) {
-        super( name,
-               clazz,
-               fieldClassType,
-               fieldOrigin,
-               accessorsAndMutators,
-               type );
+    public LazyModelField(final String name,
+                          final String clazz,
+                          final FIELD_CLASS_TYPE fieldClassType,
+                          final FIELD_ORIGIN fieldOrigin,
+                          final FieldAccessorsAndMutators accessorsAndMutators,
+                          final String type) {
+        super(name,
+              clazz,
+              fieldClassType,
+              fieldOrigin,
+              accessorsAndMutators,
+              type);
     }
-
 }

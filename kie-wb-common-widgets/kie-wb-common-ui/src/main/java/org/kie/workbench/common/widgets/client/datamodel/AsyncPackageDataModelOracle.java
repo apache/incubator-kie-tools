@@ -18,17 +18,18 @@ package org.kie.workbench.common.widgets.client.datamodel;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.validation.Constraint;
 import javax.validation.ConstraintViolation;
 
-import org.appformer.project.datamodel.imports.Imports;
-import org.appformer.project.datamodel.oracle.Annotation;
-import org.appformer.project.datamodel.oracle.DropDownData;
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
-import org.appformer.project.datamodel.oracle.MethodInfo;
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.appformer.project.datamodel.oracle.TypeSource;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
+import org.kie.soup.project.datamodel.imports.Imports;
+import org.kie.soup.project.datamodel.oracle.Annotation;
+import org.kie.soup.project.datamodel.oracle.DropDownData;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.kie.soup.project.datamodel.oracle.MethodInfo;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.TypeSource;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 
@@ -62,6 +63,7 @@ public interface AsyncPackageDataModelOracle {
 
     /**
      * Returns fact's name from class type
+     *
      * @param fqcnName for example org.test.Person
      * @return Shorter type name org.test.Person returns Person
      */
@@ -91,13 +93,14 @@ public interface AsyncPackageDataModelOracle {
      * Validates a proposed field value according to {@link Constraint} defined for the field. Annotation details for
      * the Fact Type are "lazy loaded" if the Fact Type has not been previously referenced by consumers of the DataModelOracle.
      * Consequentially validation results are provided in the callback as an asynchronouse server-round-trip may be needed.
-     * @param factType Simple class name for the Fact Type. If null an empty set is returned.
+     *
+     * @param factType  Simple class name for the Fact Type. If null an empty set is returned.
      * @param fieldName Field name. Cannot be null. If null an empty set is returned.
-     * @param value Proposed value for the field. Can be null.
-     * @param callback Callback passing an empty set if the given value is valid, or a set with
-     * one or more {@link ConstraintViolation ConstraintViolations} if the given value is invalid.
-     * If null this method does nothing.
-     * @param <T> Type of value.
+     * @param value     Proposed value for the field. Can be null.
+     * @param callback  Callback passing an empty set if the given value is valid, or a set with
+     *                  one or more {@link ConstraintViolation ConstraintViolations} if the given value is invalid.
+     *                  If null this method does nothing.
+     * @param <T>       Type of value.
      */
     <T> void validateField(final String factType,
                            final String fieldName,

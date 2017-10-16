@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.command;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 public class RemovePropertyCommand extends AbstractDataModelCommand {
 

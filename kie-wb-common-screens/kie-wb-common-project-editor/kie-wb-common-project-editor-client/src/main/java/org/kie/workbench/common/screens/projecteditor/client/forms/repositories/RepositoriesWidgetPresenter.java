@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms.repositories;
 
 import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -28,7 +29,7 @@ import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.RoleImpl;
 import org.jboss.errai.security.shared.api.identity.User;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Dependent
 public class RepositoriesWidgetPresenter
@@ -42,37 +43,36 @@ public class RepositoriesWidgetPresenter
     }
 
     @Inject
-    public RepositoriesWidgetPresenter( final User identity,
-                                        final RepositoriesWidgetView view ) {
+    public RepositoriesWidgetPresenter(final User identity,
+                                       final RepositoriesWidgetView view) {
         this.identity = identity;
         this.view = view;
-        view.init( this );
+        view.init(this);
     }
 
     @Override
-    public void setContent( final Set<ProjectRepositories.ProjectRepository> repositories,
-                            final boolean isReadOnly ) {
-        checkNotNull( "repositories",
-                      repositories );
+    public void setContent(final Set<ProjectRepositories.ProjectRepository> repositories,
+                           final boolean isReadOnly) {
+        checkNotNull("repositories",
+                     repositories);
 
-        view.setContent( repositories,
-                         isReadOnly || !isUserAdministrator() );
+        view.setContent(repositories,
+                        isReadOnly || !isUserAdministrator());
     }
 
     private boolean isUserAdministrator() {
         final Set<Role> roles = identity.getRoles();
-        return roles.contains( new RoleImpl( AppRoles.ADMIN.getName() ) );
+        return roles.contains(new RoleImpl(AppRoles.ADMIN.getName()));
     }
 
     @Override
-    public void setIncludeRepository( final ProjectRepositories.ProjectRepository repository,
-                                      final boolean include ) {
-        repository.setIncluded( include );
+    public void setIncludeRepository(final ProjectRepositories.ProjectRepository repository,
+                                     final boolean include) {
+        repository.setIncluded(include);
     }
 
     @Override
     public Widget asWidget() {
         return view.asWidget();
     }
-
 }

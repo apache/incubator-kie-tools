@@ -24,7 +24,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Portable
 public class MagnetConnection extends DiscreteConnection {

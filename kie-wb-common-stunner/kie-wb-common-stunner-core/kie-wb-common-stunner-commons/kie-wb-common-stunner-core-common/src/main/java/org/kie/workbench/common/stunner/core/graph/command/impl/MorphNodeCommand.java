@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
@@ -29,7 +30,6 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * A Command to morph a node in a graph.

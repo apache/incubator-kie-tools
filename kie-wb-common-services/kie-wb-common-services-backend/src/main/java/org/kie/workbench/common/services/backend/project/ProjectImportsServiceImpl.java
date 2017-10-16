@@ -20,14 +20,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.appformer.project.datamodel.imports.Import;
-import org.appformer.project.datamodel.imports.Imports;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.backend.server.ProjectConfigurationContentHandler;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.soup.project.datamodel.imports.Import;
+import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsContent;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;

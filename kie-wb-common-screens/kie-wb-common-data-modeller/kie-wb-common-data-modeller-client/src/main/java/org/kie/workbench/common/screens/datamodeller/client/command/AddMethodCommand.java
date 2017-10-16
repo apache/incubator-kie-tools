@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.command;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
@@ -23,35 +24,39 @@ import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEven
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.Method;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 public class AddMethodCommand extends AbstractDataModelCommand {
 
     private final Method method;
 
-    public AddMethodCommand( final DataModelerContext context, final String source,
-                             final DataObject dataObject, final Method method,
-                             final DataModelChangeNotifier notifier ) {
-        super( context, source, dataObject, notifier );
-        this.method = PortablePreconditions.checkNotNull( "method", method );
+    public AddMethodCommand(final DataModelerContext context,
+                            final String source,
+                            final DataObject dataObject,
+                            final Method method,
+                            final DataModelChangeNotifier notifier) {
+        super(context,
+              source,
+              dataObject,
+              notifier);
+        this.method = PortablePreconditions.checkNotNull("method",
+                                                         method);
     }
 
     @Override
     public void execute() {
-        if ( method != null ) {
-            dataObject.addMethod( method );
+        if (method != null) {
+            dataObject.addMethod(method);
 
             DataModelerEvent event = new DataObjectChangeEvent()
-                    .withChangeType( ChangeType.METHOD_ADD_CHANGE )
-                    .withOldValue( null )
-                    .withNewValue( method )
-                    .withContextId( getContext().getContextId() )
-                    .withSource( getSource() )
-                    .withCurrentDataObject( getDataObject() )
-                    .withCurrentMethod( method );
+                    .withChangeType(ChangeType.METHOD_ADD_CHANGE)
+                    .withOldValue(null)
+                    .withNewValue(method)
+                    .withContextId(getContext().getContextId())
+                    .withSource(getSource())
+                    .withCurrentDataObject(getDataObject())
+                    .withCurrentMethod(method);
 
-            notifyChange( event );
+            notifyChange(event);
         }
-
     }
 }

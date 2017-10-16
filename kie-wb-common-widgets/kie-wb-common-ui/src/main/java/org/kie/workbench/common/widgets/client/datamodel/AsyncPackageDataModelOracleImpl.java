@@ -26,31 +26,32 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 
-import org.appformer.project.datamodel.imports.Imports;
-import org.appformer.project.datamodel.oracle.Annotation;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.DropDownData;
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
-import org.appformer.project.datamodel.oracle.MethodInfo;
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.appformer.project.datamodel.oracle.OperatorsOracle;
-import org.appformer.project.datamodel.oracle.TypeSource;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.validation.client.dynamic.DynamicValidator;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.imports.Imports;
+import org.kie.soup.project.datamodel.oracle.Annotation;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DropDownData;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.kie.soup.project.datamodel.oracle.MethodInfo;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
+import org.kie.soup.project.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.services.datamodel.model.LazyModelField;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.kie.workbench.common.services.datamodel.util.SortHelper;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Default implementation of DataModelOracle
@@ -197,6 +198,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Returns fact types available for rule authoring, i.e. those within the same package and those that have been imported.
+     *
      * @return
      */
     @Override
@@ -207,6 +209,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Return all fact types available to the project, i.e. everything type defined within the project or externally imported
+     *
      * @return
      */
     @Override
@@ -220,6 +223,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Return all fact types that are internal to the package, i.e. they do not need to be imported to be used
+     *
      * @return
      */
     @Override
@@ -239,6 +243,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Return all fact types that are external to the package, i.e. they need to be imported to be used
+     *
      * @return
      */
     @Override
@@ -266,6 +271,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Returns fact's name from type
+     *
      * @param type for example org.test.Person or Person
      * @return Shorter type name Person, not org.test.Person
      */
@@ -295,6 +301,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Is the Fact Type known to the DataModelOracle
+     *
      * @param factType
      * @return
      */
@@ -309,6 +316,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Check whether a given FactType is an Event for CEP purposes
+     *
      * @param factType
      * @return
      */
@@ -347,6 +355,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Return where a given FactType was defined
+     *
      * @param factType
      * @return
      */
@@ -376,6 +385,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Get the Super Type for a given FactType
+     *
      * @param factType
      * @return null if no Super Type
      */
@@ -421,6 +431,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Get the Annotations for a given FactType
+     *
      * @param factType
      * @return Empty set if no annotations exist for the type
      */
@@ -455,6 +466,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Get the Fields Annotations for a given FactType
+     *
      * @param factType
      * @return Empty Map if no annotations exist for the type
      */
@@ -694,6 +706,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Get the parametric type of a Field.
+     *
      * @param factType
      * @param fieldName
      * @return
@@ -711,6 +724,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Get the Operators applicable Base Constraints
+     *
      * @param factType
      * @param fieldName
      * @return
@@ -767,6 +781,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Get the Operators applicable for Connective Constraints
+     *
      * @param factType
      * @param fieldName
      * @return
@@ -824,6 +839,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Get a list of MethodInfos for a Fact Type
+     *
      * @param factType
      * @param callback
      * @return
@@ -838,6 +854,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Get a list of MethodInfos for a Fact Type that have at least the specified number of parameters
+     *
      * @param factType
      * @param parameterCount
      * @param callback
@@ -889,6 +906,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Get a list of parameters for a Method of a Fact Type
+     *
      * @param factType
      * @param methodNameWithParams
      * @return
@@ -934,6 +952,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Get information on a Method of a Fact Type
+     *
      * @param factType
      * @param methodNameWithParams
      * @return
@@ -1120,6 +1139,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      * chain of enumeration dependencies. Both fields belong to the same Fact
      * Type. Furthermore code consuming this function should ensure both
      * parentField and childField relate to the same Fact Pattern
+     *
      * @param factType
      * @param parentField
      * @param childField

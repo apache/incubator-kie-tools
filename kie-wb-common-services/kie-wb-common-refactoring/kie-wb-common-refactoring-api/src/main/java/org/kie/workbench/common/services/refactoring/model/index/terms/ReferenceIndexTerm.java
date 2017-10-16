@@ -16,8 +16,8 @@
 package org.kie.workbench.common.services.refactoring.model.index.terms;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * For fields that describe other resources referred to in the resource being indexed.
@@ -34,7 +34,8 @@ public class ReferenceIndexTerm implements CompositeIndexTerm {
     }
 
     public ReferenceIndexTerm(ResourceType type) {
-        this.resourceType = PortablePreconditions.checkNotNull( "resourceType", type );
+        this.resourceType = PortablePreconditions.checkNotNull("resourceType",
+                                                               type);
     }
 
     @Override
@@ -46,5 +47,4 @@ public class ReferenceIndexTerm implements CompositeIndexTerm {
     public String getTermBase() {
         return TERM;
     }
-
 }

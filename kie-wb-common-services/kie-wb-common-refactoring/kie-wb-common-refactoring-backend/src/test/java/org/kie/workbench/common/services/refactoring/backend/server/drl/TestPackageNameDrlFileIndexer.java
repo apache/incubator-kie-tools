@@ -17,18 +17,19 @@ package org.kie.workbench.common.services.refactoring.backend.server.drl;
 
 import java.util.HashMap;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 
-import org.appformer.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ErrorMessageUtilities;

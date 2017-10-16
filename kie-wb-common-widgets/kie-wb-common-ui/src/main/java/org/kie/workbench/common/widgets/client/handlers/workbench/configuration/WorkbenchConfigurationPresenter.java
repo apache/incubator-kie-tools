@@ -19,8 +19,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @ApplicationScoped
 public class WorkbenchConfigurationPresenter {
@@ -31,9 +31,9 @@ public class WorkbenchConfigurationPresenter {
 
         void hide();
 
-        void setActiveHandler( final WorkbenchConfigurationHandler activeHandler );
+        void setActiveHandler(final WorkbenchConfigurationHandler activeHandler);
 
-        void setTitle( String title );
+        void setTitle(String title);
     }
 
     @Inject
@@ -43,17 +43,17 @@ public class WorkbenchConfigurationPresenter {
 
     @PostConstruct
     private void setup() {
-        view.init( this );
+        view.init(this);
     }
 
-    public void show( final WorkbenchConfigurationHandler handler ) {
-        activeHandler = PortablePreconditions.checkNotNull( "handler",
-                                                            handler );
+    public void show(final WorkbenchConfigurationHandler handler) {
+        activeHandler = PortablePreconditions.checkNotNull("handler",
+                                                           handler);
 
         activeHandler.initHandler();
-        view.setActiveHandler( activeHandler );
+        view.setActiveHandler(activeHandler);
         view.show();
-        view.setTitle( getActiveHandlerDescription() );
+        view.setTitle(getActiveHandlerDescription());
     }
 
     public void complete() {
@@ -61,7 +61,7 @@ public class WorkbenchConfigurationPresenter {
     }
 
     private String getActiveHandlerDescription() {
-        if ( activeHandler != null ) {
+        if (activeHandler != null) {
             return activeHandler.getDescription();
         } else {
             return "";

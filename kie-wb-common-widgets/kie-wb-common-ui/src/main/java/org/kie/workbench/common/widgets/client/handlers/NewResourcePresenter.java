@@ -21,8 +21,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.widgets.client.resources.i18n.KieWorkbenchWidgetsConstants;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 
 @ApplicationScoped
@@ -35,37 +35,38 @@ public class NewResourcePresenter {
     private NewResourceHandler activeHandler = null;
 
     @Inject
-    public NewResourcePresenter( NewResourceView view, TranslationService translationService ) {
+    public NewResourcePresenter(NewResourceView view,
+                                TranslationService translationService) {
         this.view = view;
         this.translationService = translationService;
     }
 
     @PostConstruct
     private void setup() {
-        view.init( this );
+        view.init(this);
     }
 
-    public void show( final NewResourceHandler handler ) {
-        activeHandler = PortablePreconditions.checkNotNull( "handler",
-                                                            handler );
+    public void show(final NewResourceHandler handler) {
+        activeHandler = PortablePreconditions.checkNotNull("handler",
+                                                           handler);
         view.show();
-        view.setActiveHandler( activeHandler );
-        view.setTitle( translationService.getTranslation( KieWorkbenchWidgetsConstants.NewResourceViewPopupTitle ) + " " + getActiveHandlerDescription() );
+        view.setActiveHandler(activeHandler);
+        view.setTitle(translationService.getTranslation(KieWorkbenchWidgetsConstants.NewResourceViewPopupTitle) + " " + getActiveHandlerDescription());
     }
 
-    public void validate( final String fileName,
-                          final ValidatorWithReasonCallback callback ) {
-        if ( activeHandler != null ) {
-            activeHandler.validate( fileName,
-                                    callback );
+    public void validate(final String fileName,
+                         final ValidatorWithReasonCallback callback) {
+        if (activeHandler != null) {
+            activeHandler.validate(fileName,
+                                   callback);
         }
     }
 
-    public void makeItem( final String fileName ) {
-        if ( activeHandler != null ) {
-            activeHandler.create( view.getSelectedPackage(),
-                                  fileName,
-                                  NewResourcePresenter.this );
+    public void makeItem(final String fileName) {
+        if (activeHandler != null) {
+            activeHandler.create(view.getSelectedPackage(),
+                                 fileName,
+                                 NewResourcePresenter.this);
         }
     }
 
@@ -74,14 +75,14 @@ public class NewResourcePresenter {
     }
 
     private String getActiveHandlerDescription() {
-        if ( activeHandler != null ) {
+        if (activeHandler != null) {
             return activeHandler.getDescription();
         } else {
             return "";
         }
     }
 
-    public void setResourceName( String resourceName ) {
-        view.setResourceName( resourceName );
+    public void setResourceName(String resourceName) {
+        view.setResourceName(resourceName);
     }
 }

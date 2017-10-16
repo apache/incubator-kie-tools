@@ -26,7 +26,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Templated
 @Dependent
@@ -40,18 +40,18 @@ public class LinkTitleView extends Composite
     Anchor link;
 
     @Override
-    public void init( final LinkTitlePresenter presenter ) {
+    public void init(final LinkTitlePresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setText( final String value ) {
-        link.setText( checkNotNull( "value", value ) );
+    public void setText(final String value) {
+        link.setText(checkNotNull("value",
+                                  value));
     }
 
     @EventHandler("link")
-    public void onClick( final ClickEvent event ) {
+    public void onClick(final ClickEvent event) {
         presenter.onSelect();
     }
-
 }

@@ -26,7 +26,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.core.util.MVELSafeHelper;
+import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -42,169 +42,172 @@ public class DataEnumLoader {
     /**
      * This is the source of the asset, which is an MVEL map (minus the outer "[") of course.
      */
-    public DataEnumLoader( final String mvelSource ) {
-        this( mvelSource,
-              Thread.currentThread().getContextClassLoader() );
+    public DataEnumLoader(final String mvelSource, final MVELEvaluator mvelEvaluator) {
+        this(mvelSource,
+             Thread.currentThread().getContextClassLoader(),
+             mvelEvaluator);
     }
 
     /**
      * This is the source of the asset, which is an MVEL map (minus the outer "[") of course.
      */
-    public DataEnumLoader( final String mvelSource,
-                           final ClassLoader classLoader ) {
-        this.errors = new ArrayList<String>();
-        this.data = loadEnum( mvelSource,
-                              classLoader );
+    public DataEnumLoader(final String mvelSource,
+                          final ClassLoader classLoader,
+                          final MVELEvaluator mvelEvaluator) {
+        this.errors = new ArrayList<>();
+        this.data = loadEnum(mvelSource,
+                             classLoader,
+                             mvelEvaluator);
     }
 
-    private Map<String, String[]> loadEnum( String mvelSource,
-                                            ClassLoader classLoader ) {
+    private Map<String, String[]> loadEnum(String mvelSource,
+                                           ClassLoader classLoader,
+                                           MVELEvaluator mvelEvaluator) {
 
-        if ( mvelSource == null || ( mvelSource.trim().equals( "" ) ) ) {
+        if (mvelSource == null || (mvelSource.trim().equals(""))) {
             return Collections.emptyMap();
         }
-        if ( mvelSource.startsWith( "=" ) ) {
-            mvelSource = mvelSource.substring( 1 );
+        if (mvelSource.startsWith("=")) {
+            mvelSource = mvelSource.substring(1);
         } else {
-            mvelSource = "[ " + addCommasForNewLines( mvelSource ) + " ]";
+            mvelSource = "[ " + addCommasForNewLines(mvelSource) + " ]";
         }
         final Object mvelData;
 
         try {
 
             final ParserConfiguration pconf = new ParserConfiguration();
-            final ParserContext pctx = new ParserContext( pconf );
-            pconf.setClassLoader( classLoader );
+            final ParserContext pctx = new ParserContext(pconf);
+            pconf.setClassLoader(classLoader);
 
-            final Serializable compiled = MVEL.compileExpression( mvelSource,
-                                                                  pctx );
+            final Serializable compiled = MVEL.compileExpression(mvelSource,
+                                                                 pctx);
 
-            mvelData = MVELSafeHelper.getEvaluator().executeExpression( compiled,
-                                                                        new HashMap<String, Object>() );
-
-        } catch ( RuntimeException e ) {
-            addError( "Unable to load enumeration data." );
-            addError( e.getMessage() );
-            addError( "Error type: " + e.getClass().getName() );
+            mvelData = mvelEvaluator.executeExpression(compiled,
+                                                       new HashMap<String, Object>());
+        } catch (RuntimeException e) {
+            addError("Unable to load enumeration data.");
+            addError(e.getMessage());
+            addError("Error type: " + e.getClass().getName());
             return Collections.emptyMap();
         }
-        if ( !( mvelData instanceof Map<?, ?> ) ) {
-            addError( "The expression is not a map, it is a " + mvelData.getClass().getName() );
+        if (!(mvelData instanceof Map<?, ?>)) {
+            addError("The expression is not a map, it is a " + mvelData.getClass().getName());
             return Collections.emptyMap();
         }
 
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) mvelData;
 
-        Map<String, String[]> newMap = new HashMap<String, String[]>();
-        for ( Map.Entry<String, Object> entry : map.entrySet() ) {
-            String key = makeEnumKey( entry.getKey() );
-            validateKey( key );
+        Map<String, String[]> newMap = new HashMap<>();
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            String key = makeEnumKey(entry.getKey());
+            validateKey(key);
             Object list = entry.getValue();
-            if ( !( list instanceof List<?> || list instanceof String ) ) {
-                if ( list == null ) {
-                    addError( "The item with " + key + " is null." );
+            if (!(list instanceof List<?> || list instanceof String)) {
+                if (list == null) {
+                    addError("The item with " + key + " is null.");
                 } else {
-                    addError( "The item with " + key + " is not a list or a string, it is a " + list.getClass().getName() );
+                    addError("The item with " + key + " is not a list or a string, it is a " + list.getClass().getName());
                 }
                 return Collections.emptyMap();
-            } else if ( list instanceof String ) {
-                newMap.put( key, new String[]{ (String) list } );
+            } else if (list instanceof String) {
+                newMap.put(key, new String[]{(String) list});
             } else {
                 List<?> items = (List<?>) list;
-                String[] newItems = new String[ items.size() ];
-                for ( int i = 0; i < items.size(); i++ ) {
-                    Object listItem = items.get( i );
-                    if ( !( listItem instanceof String ) ) {
-                        newItems[ i ] = listItem.toString();
+                String[] newItems = new String[items.size()];
+                for (int i = 0; i < items.size(); i++) {
+                    Object listItem = items.get(i);
+                    if (!(listItem instanceof String)) {
+                        newItems[i] = listItem.toString();
                     } else {
-                        newItems[ i ] = (String) listItem;
+                        newItems[i] = (String) listItem;
                     }
                 }
-                newMap.put( key, newItems );
+                newMap.put(key, newItems);
             }
         }
         return newMap;
     }
 
-    private void validateKey( final String key ) {
-        final Pattern pattern = Pattern.compile( ".*(\\[.*\\])" );
-        final Matcher matcher = pattern.matcher( key );
-        if ( !matcher.matches() ) {
+    private void validateKey(final String key) {
+        final Pattern pattern = Pattern.compile(".*(\\[.*\\])");
+        final Matcher matcher = pattern.matcher(key);
+        if (!matcher.matches()) {
             return;
         }
-        if ( matcher.groupCount() > 2 ) {
-            errors.add( "Invalid dependent definition: Only [..] accepted." );
+        if (matcher.groupCount() > 2) {
+            errors.add("Invalid dependent definition: Only [..] accepted.");
             return;
         }
-        final String dependencySegment = matcher.group( 1 );
-        if ( dependencySegment.equals( "[]" ) ) {
-            errors.add( "Invalid dependent definition: Empty [] detected." );
+        final String dependencySegment = matcher.group(1);
+        if (dependencySegment.equals("[]")) {
+            errors.add("Invalid dependent definition: Empty [] detected.");
             return;
         }
-        if ( dependencySegment.contains( "\"" ) ) {
-            errors.add( "Invalid dependent definition: Found quote literal." );
+        if (dependencySegment.contains("\"")) {
+            errors.add("Invalid dependent definition: Found quote literal.");
             return;
         }
-        if ( dependencySegment.contains( "=" ) ) {
-            validateSimpleEnumKey( dependencySegment );
+        if (dependencySegment.contains("=")) {
+            validateSimpleEnumKey(dependencySegment);
         } else {
-            validateAdvancedEnumKey( dependencySegment );
+            validateAdvancedEnumKey(dependencySegment);
         }
     }
 
-    private void validateSimpleEnumKey( final String dependencySegment ) {
-        if ( dependencySegment.matches( "\\[\\s*=\\s*\\]" ) ) {
-            errors.add( "Invalid dependent definition: No field or value detected." );
+    private void validateSimpleEnumKey(final String dependencySegment) {
+        if (dependencySegment.matches("\\[\\s*=\\s*\\]")) {
+            errors.add("Invalid dependent definition: No field or value detected.");
             return;
         }
-        if ( dependencySegment.matches( "\\[\\s*=\\S+\\]" ) ) {
-            errors.add( "Invalid dependent definition: No field detected." );
+        if (dependencySegment.matches("\\[\\s*=\\S+\\]")) {
+            errors.add("Invalid dependent definition: No field detected.");
             return;
         }
-        if ( dependencySegment.matches( "\\[\\S+=\\s*\\]" ) ) {
-            errors.add( "Invalid dependent definition: No value detected." );
-            return;
-        }
-    }
-
-    private void validateAdvancedEnumKey( final String dependencySegment ) {
-        if ( dependencySegment.matches( "\\[\\s*,\\s*\\]" ) ) {
-            errors.add( "Invalid definition: Field definitions are incomplete." );
-            return;
-        }
-        if ( dependencySegment.matches( "\\[\\s*,\\S+\\]" ) ) {
-            errors.add( "Invalid definition: Field definitions are incomplete." );
-            return;
-        }
-        if ( dependencySegment.matches( "\\[\\S+,\\s*\\]" ) ) {
-            errors.add( "Invalid definition: Field definitions are incomplete." );
+        if (dependencySegment.matches("\\[\\S+=\\s*\\]")) {
+            errors.add("Invalid dependent definition: No value detected.");
             return;
         }
     }
 
-    private String addCommasForNewLines( String mvelSource ) {
-        StringTokenizer st = new StringTokenizer( mvelSource, "\r\n" );
+    private void validateAdvancedEnumKey(final String dependencySegment) {
+        if (dependencySegment.matches("\\[\\s*,\\s*\\]")) {
+            errors.add("Invalid definition: Field definitions are incomplete.");
+            return;
+        }
+        if (dependencySegment.matches("\\[\\s*,\\S+\\]")) {
+            errors.add("Invalid definition: Field definitions are incomplete.");
+            return;
+        }
+        if (dependencySegment.matches("\\[\\S+,\\s*\\]")) {
+            errors.add("Invalid definition: Field definitions are incomplete.");
+            return;
+        }
+    }
+
+    private String addCommasForNewLines(String mvelSource) {
+        StringTokenizer st = new StringTokenizer(mvelSource, "\r\n");
         StringBuilder buf = new StringBuilder();
-        while ( st.hasMoreTokens() ) {
+        while (st.hasMoreTokens()) {
             String line = st.nextToken().trim();
-            if ( st.hasMoreTokens() && line.endsWith( "," ) ) {
-                buf.append( line );
+            if (st.hasMoreTokens() && line.endsWith(",")) {
+                buf.append(line);
             } else {
-                buf.append( line );
-                if ( st.hasMoreTokens() ) {
-                    buf.append( "," );
+                buf.append(line);
+                if (st.hasMoreTokens()) {
+                    buf.append(",");
                 }
             }
-            if ( st.hasMoreTokens() ) {
-                buf.append( "\n" );
+            if (st.hasMoreTokens()) {
+                buf.append("\n");
             }
         }
         return buf.toString();
     }
 
-    private void addError( String string ) {
-        this.errors.add( string );
+    private void addError(String string) {
+        this.errors.add(string);
     }
 
     /**
@@ -225,11 +228,10 @@ public class DataEnumLoader {
         return this.data;
     }
 
-    private String makeEnumKey( final String userDefinedKey ) {
+    private String makeEnumKey(final String userDefinedKey) {
         //Use of "." as a delimiter between Fact and Field leads to problems with fully qualified class names
-        String systemDefinedKey = userDefinedKey.replace( ".",
-                                                          "#" );
+        String systemDefinedKey = userDefinedKey.replace(".",
+                                                         "#");
         return systemDefinedKey;
     }
-
 }

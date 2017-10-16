@@ -24,7 +24,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.user.client.ui.Widget;
-import org.appformer.project.datamodel.oracle.DropDownData;
+import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.uberfire.ext.widgets.common.client.common.DatePicker;
 
@@ -37,48 +37,48 @@ public abstract class AbstractProxyPopupDropDownDatePicker implements ProxyPopup
 
     private final DatePicker datePicker;
 
-    public AbstractProxyPopupDropDownDatePicker( final AbstractProxyPopupDropDownEditCell proxy ) {
+    public AbstractProxyPopupDropDownDatePicker(final AbstractProxyPopupDropDownEditCell proxy) {
         this.datePicker = new DatePicker();
-        datePicker.setFormat( DATE_FORMAT );
+        datePicker.setFormat(DATE_FORMAT);
 
         // Hide the panel and call valueUpdater.update when a date is selected
-        datePicker.addValueChangeHandler( new ValueChangeHandler<Date>() {
+        datePicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
             @Override
-            public void onValueChange( final ValueChangeEvent<Date> event ) {
+            public void onValueChange(final ValueChangeEvent<Date> event) {
                 proxy.commit();
             }
-        } );
+        });
     }
 
     @Override
-    public void render( final Cell.Context context,
-                        final Date value,
-                        final SafeHtmlBuilder sb,
-                        final SafeHtmlRenderer<String> renderer ) {
+    public void render(final Cell.Context context,
+                       final Date value,
+                       final SafeHtmlBuilder sb,
+                       final SafeHtmlRenderer<String> renderer) {
         //Render value
-        if ( value != null ) {
-            sb.append( renderer.render( ( value == null ? "" : convertToString( value ) ) ) );
+        if (value != null) {
+            sb.append(renderer.render((value == null ? "" : convertToString(value))));
         }
     }
 
     @Override
-    public void setValue( final Date value ) {
+    public void setValue(final Date value) {
         Date date = value;
-        if ( value == null ) {
+        if (value == null) {
             Date d = new Date();
             int year = d.getYear();
             int month = d.getMonth();
             int dom = d.getDate();
-            date = new Date( year,
-                             month,
-                             dom );
+            date = new Date(year,
+                            month,
+                            dom);
         }
-        datePicker.setValue( date );
+        datePicker.setValue(date);
     }
 
     @Override
-    public void setDropDownData( final DropDownData dd ) {
-        throw new UnsupportedOperationException( "Only single values are supported" );
+    public void setDropDownData(final DropDownData dd) {
+        throw new UnsupportedOperationException("Only single values are supported");
     }
 
     // Commit the change
@@ -89,24 +89,24 @@ public abstract class AbstractProxyPopupDropDownDatePicker implements ProxyPopup
 
     // Start editing the cell
     @Override
-    public void startEditing( final Cell.Context context,
-                              final Element parent,
-                              final Date value ) {
+    public void startEditing(final Cell.Context context,
+                             final Element parent,
+                             final Date value) {
         Date date = value;
-        if ( value == null ) {
+        if (value == null) {
             Date d = new Date();
             int year = d.getYear();
             int month = d.getMonth();
             int dom = d.getDate();
-            date = new Date( year,
-                             month,
-                             dom );
+            date = new Date(year,
+                            month,
+                            dom);
         }
-        datePicker.setValue( date );
+        datePicker.setValue(date);
     }
 
     @Override
-    public void setFocus( final boolean focused ) {
+    public void setFocus(final boolean focused) {
         //DatePicker does not implement setFocus
     }
 
@@ -114,5 +114,4 @@ public abstract class AbstractProxyPopupDropDownDatePicker implements ProxyPopup
     public Widget asWidget() {
         return datePicker;
     }
-
 }

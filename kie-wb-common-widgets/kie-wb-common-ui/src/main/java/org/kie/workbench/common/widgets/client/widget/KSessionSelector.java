@@ -18,6 +18,7 @@ package org.kie.workbench.common.widgets.client.widget;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -27,6 +28,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.shared.kmodule.KBaseModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
@@ -34,7 +36,6 @@ import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
 
 public class KSessionSelector
@@ -197,12 +198,13 @@ public class KSessionSelector
     }
 
     public void onSelectionChange() {
-        if ( selectionHandler != null ) {
+        if (selectionHandler != null) {
             selectionHandler.execute();
         }
     }
 
     public void setSelectionChangeHandler(final Command handler) {
-        this.selectionHandler = PortablePreconditions.checkNotNull("handler", handler);
+        this.selectionHandler = PortablePreconditions.checkNotNull("handler",
+                                                                   handler);
     }
 }

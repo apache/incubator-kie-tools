@@ -18,7 +18,7 @@ package org.kie.workbench.common.screens.home.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
 import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceAction;

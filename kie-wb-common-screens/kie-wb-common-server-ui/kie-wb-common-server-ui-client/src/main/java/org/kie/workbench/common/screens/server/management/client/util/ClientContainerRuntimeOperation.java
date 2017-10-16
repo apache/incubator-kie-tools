@@ -20,36 +20,44 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.server.management.model.ContainerRuntimeOperation;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 public enum ClientContainerRuntimeOperation {
 
-    START_CONTAINER( Constants.ClientContainerRuntimeOperation_StartContainer, ContainerRuntimeOperation.START_CONTAINER ),
-    STOP_CONTAINER( Constants.ClientContainerRuntimeOperation_StopContainer, ContainerRuntimeOperation.STOP_CONTAINER ),
-    UPGRADE_CONTAINER( Constants.ClientContainerRuntimeOperation_UpgradeContainer, ContainerRuntimeOperation.UPGRADE_CONTAINER ),
-    SCAN( Constants.ClientContainerRuntimeOperation_Scan, ContainerRuntimeOperation.SCAN ),
-    START_SCANNER( Constants.ClientContainerRuntimeOperation_StartScanner, ContainerRuntimeOperation.START_SCANNER ),
-    STOP_SCANNER( Constants.ClientContainerRuntimeOperation_StopScanner, ContainerRuntimeOperation.STOP_SCANNER ),;
+    START_CONTAINER(Constants.ClientContainerRuntimeOperation_StartContainer,
+                    ContainerRuntimeOperation.START_CONTAINER),
+    STOP_CONTAINER(Constants.ClientContainerRuntimeOperation_StopContainer,
+                   ContainerRuntimeOperation.STOP_CONTAINER),
+    UPGRADE_CONTAINER(Constants.ClientContainerRuntimeOperation_UpgradeContainer,
+                      ContainerRuntimeOperation.UPGRADE_CONTAINER),
+    SCAN(Constants.ClientContainerRuntimeOperation_Scan,
+         ContainerRuntimeOperation.SCAN),
+    START_SCANNER(Constants.ClientContainerRuntimeOperation_StartScanner,
+                  ContainerRuntimeOperation.START_SCANNER),
+    STOP_SCANNER(Constants.ClientContainerRuntimeOperation_StopScanner,
+                 ContainerRuntimeOperation.STOP_SCANNER),;
 
     private final String valueTranslationKey;
     private final ContainerRuntimeOperation containerRuntimeOperation;
 
-    ClientContainerRuntimeOperation( final String valueTranslationKey,
-                                     final ContainerRuntimeOperation containerRuntimeOperation ) {
-        this.valueTranslationKey = checkNotEmpty( "valueTranslationKey", valueTranslationKey );
-        this.containerRuntimeOperation = checkNotNull( "containerRuntimeOperation", containerRuntimeOperation );
+    ClientContainerRuntimeOperation(final String valueTranslationKey,
+                                    final ContainerRuntimeOperation containerRuntimeOperation) {
+        this.valueTranslationKey = checkNotEmpty("valueTranslationKey",
+                                                 valueTranslationKey);
+        this.containerRuntimeOperation = checkNotNull("containerRuntimeOperation",
+                                                      containerRuntimeOperation);
     }
 
     public ContainerRuntimeOperation getContainerRuntimeOperation() {
         return containerRuntimeOperation;
     }
 
-    public String getValue( final TranslationService translationService ) {
-        return translationService.format( valueTranslationKey );
+    public String getValue(final TranslationService translationService) {
+        return translationService.format(valueTranslationKey);
     }
 
-    public static ClientContainerRuntimeOperation convert( final ContainerRuntimeOperation containerRuntimeOperation ) {
-        switch ( containerRuntimeOperation ) {
+    public static ClientContainerRuntimeOperation convert(final ContainerRuntimeOperation containerRuntimeOperation) {
+        switch (containerRuntimeOperation) {
             case START_CONTAINER:
                 return ClientContainerRuntimeOperation.START_CONTAINER;
             case STOP_CONTAINER:
@@ -63,7 +71,7 @@ public enum ClientContainerRuntimeOperation {
             case STOP_SCANNER:
                 return ClientContainerRuntimeOperation.STOP_SCANNER;
         }
-        throw new RuntimeException( "Invalid parameter" );
+        throw new RuntimeException("Invalid parameter");
     }
 
 }

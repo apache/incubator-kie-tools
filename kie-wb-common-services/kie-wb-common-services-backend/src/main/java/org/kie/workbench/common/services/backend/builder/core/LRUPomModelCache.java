@@ -25,7 +25,7 @@ import org.guvnor.common.services.backend.cache.LRUCache;
 import org.guvnor.common.services.builder.ObservablePOMFile;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Project;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 @ApplicationScoped
 @Named("LRUPomModelCache")

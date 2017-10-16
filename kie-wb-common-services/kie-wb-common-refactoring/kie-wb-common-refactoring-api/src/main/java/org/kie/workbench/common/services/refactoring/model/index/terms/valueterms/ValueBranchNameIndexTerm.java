@@ -15,7 +15,8 @@
  */
 package org.kie.workbench.common.services.refactoring.model.index.terms.valueterms;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
+
 /**
  * The "segment.id" document field defines the branch name.
  * </p>
@@ -29,9 +30,9 @@ public class ValueBranchNameIndexTerm implements ValueIndexTerm {
         // Errai marshalling
     }
 
-    public ValueBranchNameIndexTerm( final String segmentId ) {
-        this.segmentId = PortablePreconditions.checkNotNull( "segmentId",
-                                                              segmentId);
+    public ValueBranchNameIndexTerm(final String segmentId) {
+        this.segmentId = PortablePreconditions.checkNotNull("segmentId",
+                                                            segmentId);
     }
 
     @Override
@@ -43,5 +44,4 @@ public class ValueBranchNameIndexTerm implements ValueIndexTerm {
     public String getValue() {
         return segmentId;
     }
-
 }

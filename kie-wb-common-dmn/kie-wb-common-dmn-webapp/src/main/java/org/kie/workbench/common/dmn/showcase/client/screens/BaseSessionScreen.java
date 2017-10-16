@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.client.session.event.SessionDestroy
 import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public abstract class BaseSessionScreen {
 

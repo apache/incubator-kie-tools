@@ -19,8 +19,8 @@ import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.paging.PageRequest;
 
 /**
@@ -29,27 +29,26 @@ import org.uberfire.paging.PageRequest;
 @Portable
 public class RefactoringPageRequest extends PageRequest {
 
-
     private String queryName;
     private Set<ValueIndexTerm> queryTerms;
 
-    public RefactoringPageRequest( @MapsTo("queryName") final String queryName,
-                                   @MapsTo("queryTerms") final Set<ValueIndexTerm> queryTerms,
-                                   @MapsTo("startRowIndex") final int startRowIndex,
-                                   @MapsTo("pageSize") final Integer pageSize ) {
-        super( startRowIndex,
-               pageSize );
-        this.queryName = PortablePreconditions.checkNotNull( "queryName",
-                                                             queryName );
-        this.queryTerms = PortablePreconditions.checkNotNull( "queryTerms",
-                                                              queryTerms );
+    public RefactoringPageRequest(@MapsTo("queryName") final String queryName,
+                                  @MapsTo("queryTerms") final Set<ValueIndexTerm> queryTerms,
+                                  @MapsTo("startRowIndex") final int startRowIndex,
+                                  @MapsTo("pageSize") final Integer pageSize) {
+        super(startRowIndex,
+              pageSize);
+        this.queryName = PortablePreconditions.checkNotNull("queryName",
+                                                            queryName);
+        this.queryTerms = PortablePreconditions.checkNotNull("queryTerms",
+                                                             queryTerms);
     }
 
     public String getQueryName() {
         return queryName;
     }
 
-    public void setQueryName( String queryName ) {
+    public void setQueryName(String queryName) {
         this.queryName = queryName;
     }
 
@@ -57,8 +56,7 @@ public class RefactoringPageRequest extends PageRequest {
         return queryTerms;
     }
 
-    public void setQueryTerms( Set<ValueIndexTerm> queryTerms ) {
+    public void setQueryTerms(Set<ValueIndexTerm> queryTerms) {
         this.queryTerms = queryTerms;
     }
-
 }

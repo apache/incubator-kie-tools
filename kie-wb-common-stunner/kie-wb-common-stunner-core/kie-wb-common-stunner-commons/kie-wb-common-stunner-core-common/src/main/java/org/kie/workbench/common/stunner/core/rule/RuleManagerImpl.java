@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.rule.ext.RuleExtensionHandler;
 import org.kie.workbench.common.stunner.core.rule.violations.ContextOperationNotAllowedViolation;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @ApplicationScoped
 public class RuleManagerImpl implements RuleManager {

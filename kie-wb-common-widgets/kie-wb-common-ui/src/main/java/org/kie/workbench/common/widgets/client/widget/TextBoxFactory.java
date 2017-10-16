@@ -15,8 +15,8 @@
  */
 package org.kie.workbench.common.widgets.client.widget;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.uberfire.ext.widgets.common.client.common.NumericBigDecimalTextBox;
 import org.uberfire.ext.widgets.common.client.common.NumericBigIntegerTextBox;
 import org.uberfire.ext.widgets.common.client.common.NumericByteTextBox;
@@ -34,34 +34,34 @@ public class TextBoxFactory {
 
     /**
      * Get a TextBox relevant to the specified data-type
+     *
      * @param dataType
      * @return
      */
-    public static TextBox getTextBox( final String dataType ) {
+    public static TextBox getTextBox(final String dataType) {
 
-        if ( DataType.TYPE_NUMERIC.equals( dataType ) ) {
+        if (DataType.TYPE_NUMERIC.equals(dataType)) {
             return new NumericTextBox();
-        } else if ( DataType.TYPE_NUMERIC_BIGDECIMAL.equals( dataType ) ) {
+        } else if (DataType.TYPE_NUMERIC_BIGDECIMAL.equals(dataType)) {
             return new NumericBigDecimalTextBox();
-        } else if ( DataType.TYPE_NUMERIC_BIGINTEGER.equals( dataType ) ) {
+        } else if (DataType.TYPE_NUMERIC_BIGINTEGER.equals(dataType)) {
             return new NumericBigIntegerTextBox();
-        } else if ( DataType.TYPE_NUMERIC_BYTE.equals( dataType ) ) {
+        } else if (DataType.TYPE_NUMERIC_BYTE.equals(dataType)) {
             return new NumericByteTextBox();
-        } else if ( DataType.TYPE_NUMERIC_DOUBLE.equals( dataType ) ) {
+        } else if (DataType.TYPE_NUMERIC_DOUBLE.equals(dataType)) {
             return new NumericDoubleTextBox();
-        } else if ( DataType.TYPE_NUMERIC_FLOAT.equals( dataType ) ) {
+        } else if (DataType.TYPE_NUMERIC_FLOAT.equals(dataType)) {
             return new NumericFloatTextBox();
-        } else if ( DataType.TYPE_NUMERIC_INTEGER.equals( dataType ) ) {
+        } else if (DataType.TYPE_NUMERIC_INTEGER.equals(dataType)) {
             return new NumericIntegerTextBox();
-        } else if ( DataType.TYPE_NUMERIC_LONG.equals( dataType ) ) {
+        } else if (DataType.TYPE_NUMERIC_LONG.equals(dataType)) {
             return new NumericLongTextBox();
-        } else if ( DataType.TYPE_NUMERIC_SHORT.equals( dataType ) ) {
+        } else if (DataType.TYPE_NUMERIC_SHORT.equals(dataType)) {
             return new NumericShortTextBox();
-        } else if ( DataType.TYPE_STRING.equals( dataType ) ) {
+        } else if (DataType.TYPE_STRING.equals(dataType)) {
             return new LiteralTextBox();
         } else {
             return new TextBox();
         }
     }
-
 }

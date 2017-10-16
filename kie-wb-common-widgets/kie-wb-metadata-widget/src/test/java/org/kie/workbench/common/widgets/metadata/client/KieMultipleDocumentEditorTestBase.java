@@ -17,11 +17,11 @@ package org.kie.workbench.common.widgets.metadata.client;
 
 import java.lang.reflect.Field;
 
-import org.appformer.project.datamodel.imports.Imports;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Before;
+import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;

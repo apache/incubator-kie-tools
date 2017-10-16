@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.DefinitionPaletteCategoryWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteViewFactory;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
@@ -40,9 +41,8 @@ import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
-import org.uberfire.commons.validation.PortablePreconditions;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class BS3PaletteWidgetImpl extends AbstractPalette<DefinitionSetPalette>

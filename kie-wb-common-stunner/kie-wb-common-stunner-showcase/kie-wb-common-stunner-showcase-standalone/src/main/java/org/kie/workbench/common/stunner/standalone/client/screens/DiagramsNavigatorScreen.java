@@ -46,7 +46,7 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * This screen lists the first 10 diagrams found on the server.

@@ -16,9 +16,9 @@
 package org.kie.workbench.common.services.refactoring.model.index.terms.valueterms;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.index.terms.PartIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.PartType;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class ValuePartIndexTerm extends PartIndexTerm implements ValueIndexTerm {
@@ -30,14 +30,21 @@ public class ValuePartIndexTerm extends PartIndexTerm implements ValueIndexTerm 
         //Errai marshalling
     }
 
-    public ValuePartIndexTerm(final String partName, final PartType type) {
-        this(partName, type, TermSearchType.NORMAL);
+    public ValuePartIndexTerm(final String partName,
+                              final PartType type) {
+        this(partName,
+             type,
+             TermSearchType.NORMAL);
     }
 
-    public ValuePartIndexTerm(final String partName, final PartType type, final TermSearchType searchType) {
+    public ValuePartIndexTerm(final String partName,
+                              final PartType type,
+                              final TermSearchType searchType) {
         super(type);
-        this.partName = PortablePreconditions.checkNotNull( "partName", partName );
-        this.searchType = PortablePreconditions.checkNotNull( "searchType", searchType );
+        this.partName = PortablePreconditions.checkNotNull("partName",
+                                                           partName);
+        this.searchType = PortablePreconditions.checkNotNull("searchType",
+                                                             searchType);
     }
 
     @Override
@@ -52,5 +59,4 @@ public class ValuePartIndexTerm extends PartIndexTerm implements ValueIndexTerm 
     public TermSearchType getSearchType() {
         return this.searchType;
     }
-
 }

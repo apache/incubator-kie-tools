@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -28,7 +29,6 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * A Command to register and node into the graph storage.

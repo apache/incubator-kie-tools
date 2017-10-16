@@ -16,8 +16,8 @@
 package org.kie.workbench.common.services.refactoring.model.index.terms.valueterms;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class ValuePackageNameIndexTerm extends PackageNameIndexTerm implements ValueIndexTerm {
@@ -29,13 +29,17 @@ public class ValuePackageNameIndexTerm extends PackageNameIndexTerm implements V
         //Errai marshalling
     }
 
-    public ValuePackageNameIndexTerm( final String packageName ) {
-        this(packageName, TermSearchType.NORMAL );
+    public ValuePackageNameIndexTerm(final String packageName) {
+        this(packageName,
+             TermSearchType.NORMAL);
     }
 
-    public ValuePackageNameIndexTerm( final String packageName, final TermSearchType searchType ) {
-        this.packageName = PortablePreconditions.checkNotNull( "packageName", packageName );
-        this.searchType = PortablePreconditions.checkNotNull( "searchType", searchType );
+    public ValuePackageNameIndexTerm(final String packageName,
+                                     final TermSearchType searchType) {
+        this.packageName = PortablePreconditions.checkNotNull("packageName",
+                                                              packageName);
+        this.searchType = PortablePreconditions.checkNotNull("searchType",
+                                                             searchType);
     }
 
     @Override
@@ -47,5 +51,4 @@ public class ValuePackageNameIndexTerm extends PackageNameIndexTerm implements V
     public TermSearchType getSearchType() {
         return this.searchType;
     }
-
 }

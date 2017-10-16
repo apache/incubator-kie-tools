@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.graph.impl;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -28,7 +29,6 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.Tree
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStore;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class GraphImpl<C> extends ElementImpl<C> implements Graph<C, Node> {

@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public abstract class AbstractSessionViewer<S extends AbstractClientSession, H extends AbstractCanvasHandler>
         implements SessionViewer<S, H, Diagram> {

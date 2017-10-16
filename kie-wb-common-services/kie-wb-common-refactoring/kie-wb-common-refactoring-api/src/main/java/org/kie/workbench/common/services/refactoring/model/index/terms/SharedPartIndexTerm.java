@@ -16,8 +16,8 @@
 package org.kie.workbench.common.services.refactoring.model.index.terms;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.service.PartType;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * For document fields that describe shared parts referred to in the resource being indexed.
@@ -37,7 +37,8 @@ public class SharedPartIndexTerm implements CompositeIndexTerm {
     }
 
     public SharedPartIndexTerm(PartType type) {
-        this.partType = PortablePreconditions.checkNotNull( "partType", type );
+        this.partType = PortablePreconditions.checkNotNull("partType",
+                                                           type);
     }
 
     @Override
@@ -49,5 +50,4 @@ public class SharedPartIndexTerm implements CompositeIndexTerm {
     public String getTermBase() {
         return TERM;
     }
-
 }

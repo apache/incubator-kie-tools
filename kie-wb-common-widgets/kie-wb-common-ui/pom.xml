@@ -86,6 +86,10 @@
       <artifactId>uberfire-commons</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-nio2-model</artifactId>
     </dependency>
@@ -135,8 +139,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-datamodel-commons</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-commons</artifactId>
     </dependency>
 
     <dependency>
@@ -151,8 +155,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-datamodel-api</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-api</artifactId>
     </dependency>
 
     <dependency>

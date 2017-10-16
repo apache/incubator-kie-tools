@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class ValidateSessionCommand extends AbstractClientSessionCommand<AbstractClientFullSession> {

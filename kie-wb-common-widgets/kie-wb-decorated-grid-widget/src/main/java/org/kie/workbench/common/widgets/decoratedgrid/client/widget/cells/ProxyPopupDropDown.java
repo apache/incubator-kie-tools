@@ -20,7 +20,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.appformer.project.datamodel.oracle.DropDownData;
+import org.kie.soup.project.datamodel.oracle.DropDownData;
 
 /**
  * Definition of Cell that can be used by AbstractProxyPopupDropDownEditCell.
@@ -29,30 +29,34 @@ public interface ProxyPopupDropDown<C> extends IsWidget {
 
     /**
      * Set value for cell
+     *
      * @param value
      */
-    void setValue( final C value );
+    void setValue(final C value);
 
     /**
      * Set values for cell
+     *
      * @param dd
      */
-    void setDropDownData( final DropDownData dd );
+    void setDropDownData(final DropDownData dd);
 
     /**
      * Render value as safe HTML
+     *
      * @param context
      * @param value
      * @param sb
      * @param renderer
      */
-    void render( final Cell.Context context,
-                 final C value,
-                 final SafeHtmlBuilder sb,
-                 final SafeHtmlRenderer<String> renderer );
+    void render(final Cell.Context context,
+                final C value,
+                final SafeHtmlBuilder sb,
+                final SafeHtmlRenderer<String> renderer);
 
     /**
      * Return the new value entered within the cell
+     *
      * @return new value
      */
     C getValue();
@@ -61,22 +65,23 @@ public interface ProxyPopupDropDown<C> extends IsWidget {
      * Initiate editing within the "Popup". Implementations should populate the
      * child controls within the "Popup" before showing the Popup
      * <code>panel</code>
+     *
      * @param context
      * @param parent
      * @param value
      */
-    void startEditing( final Cell.Context context,
-                       final Element parent,
-                       final C value );
+    void startEditing(final Cell.Context context,
+                      final Element parent,
+                      final C value);
 
     /**
      * Set focus to widget
+     *
      * @param focused
      */
-    void setFocus( final boolean focused );
+    void setFocus(final boolean focused);
 
-    String convertToString( final C value );
+    String convertToString(final C value);
 
-    C convertFromString( final String value );
-
+    C convertFromString(final String value);
 }

@@ -46,7 +46,7 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class NewContainerFormPresenter implements WizardPage {

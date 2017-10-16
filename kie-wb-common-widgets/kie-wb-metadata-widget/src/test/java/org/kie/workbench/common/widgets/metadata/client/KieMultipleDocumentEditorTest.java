@@ -22,7 +22,6 @@ import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
-import org.appformer.project.datamodel.imports.Imports;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.structure.repositories.Repository;
@@ -31,6 +30,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.ArgumentCaptor;

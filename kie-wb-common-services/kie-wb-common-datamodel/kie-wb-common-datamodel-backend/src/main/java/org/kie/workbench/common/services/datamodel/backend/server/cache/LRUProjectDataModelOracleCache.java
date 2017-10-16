@@ -20,14 +20,14 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.backend.cache.LRUCache;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * A simple LRU cache for Project DataModelOracles
@@ -45,40 +45,39 @@ public class LRUProjectDataModelOracleCache
     }
 
     @Inject
-    public LRUProjectDataModelOracleCache( final ProjectDataModelOracleBuilderProvider builderProvider,
-                                           final KieProjectService projectService,
-                                           final BuildInfoService buildInfoService ) {
+    public LRUProjectDataModelOracleCache(final ProjectDataModelOracleBuilderProvider builderProvider,
+                                          final KieProjectService projectService,
+                                          final BuildInfoService buildInfoService) {
         this.builderProvider = builderProvider;
         this.projectService = projectService;
         this.buildInfoService = buildInfoService;
     }
 
-    public synchronized void invalidateProjectCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
-        PortablePreconditions.checkNotNull( "event",
-                                            event );
+    public synchronized void invalidateProjectCache(@Observes final InvalidateDMOProjectCacheEvent event) {
+        PortablePreconditions.checkNotNull("event",
+                                           event);
         final Path resourcePath = event.getResourcePath();
-        final KieProject project = projectService.resolveProject( resourcePath );
+        final KieProject project = projectService.resolveProject(resourcePath);
 
         //If resource was not within a Project there's nothing to invalidate
-        if ( project != null ) {
-            invalidateCache( project );
+        if (project != null) {
+            invalidateCache(project);
         }
     }
 
     //Check the ProjectOracle for the Project has been created, otherwise create one!
-    public synchronized ProjectDataModelOracle assertProjectDataModelOracle( final KieProject project ) {
-        ProjectDataModelOracle projectOracle = getEntry( project );
-        if ( projectOracle == null ) {
-            projectOracle = makeProjectOracle( project );
-            setEntry( project,
-                      projectOracle );
+    public synchronized ProjectDataModelOracle assertProjectDataModelOracle(final KieProject project) {
+        ProjectDataModelOracle projectOracle = getEntry(project);
+        if (projectOracle == null) {
+            projectOracle = makeProjectOracle(project);
+            setEntry(project,
+                     projectOracle);
         }
         return projectOracle;
     }
 
-    private ProjectDataModelOracle makeProjectOracle( final KieProject project ) {
-        return builderProvider.newBuilder( project,
-                                           buildInfoService.getBuildInfo( project ) ).build();
+    private ProjectDataModelOracle makeProjectOracle(final KieProject project) {
+        return builderProvider.newBuilder(project,
+                                          buildInfoService.getBuildInfo(project)).build();
     }
-
 }

@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
@@ -30,8 +31,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.Entity;
 
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
-import org.drools.core.base.ClassTypeResolver;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Package;
@@ -49,6 +48,8 @@ import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
+import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerCopyHelper;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerRenameHelper;
 import org.kie.workbench.common.screens.datamodeller.backend.server.handler.DomainHandler;
@@ -449,8 +450,9 @@ public class DataModelerServiceImpl
     /**
      * Updates Java code provided in the source parameter with the data object values provided in the dataObject
      * parameter. This method does not write any changes in the file system.
-     * @param source Java code to be updated.
-     * @param path Path to the java file. (used for error messages adf and project )
+     *
+     * @param source     Java code to be updated.
+     * @param path       Path to the java file. (used for error messages adf and project )
      * @param dataObject Data object definition.
      * @return returns a GenerationResult object with the updated Java code and the dataObject parameter as is.
      */
@@ -493,9 +495,10 @@ public class DataModelerServiceImpl
     /**
      * Updates data object provided in the dataObject parameter with the Java code provided in the source parameter.
      * This method does not write changes in the file system.
+     *
      * @param dataObject Data object definition to be updated.
-     * @param source Java code to use for the update.
-     * @param path Path to the java file. (used for error messages adf)
+     * @param source     Java code to use for the update.
+     * @param path       Path to the java file. (used for error messages adf)
      * @return returns a GenerationResult object with the updated data object and the source and path parameter as is.
      */
     @Override

@@ -21,11 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValuePartReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.metadata.model.KProperty;
 
 public class ResourceReference implements IndexElementsGenerator {

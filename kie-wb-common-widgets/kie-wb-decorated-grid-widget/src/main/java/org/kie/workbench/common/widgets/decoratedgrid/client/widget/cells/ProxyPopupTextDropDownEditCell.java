@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells;
 
-import org.appformer.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
@@ -29,29 +29,29 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDro
 public class ProxyPopupTextDropDownEditCell extends
                                             AbstractProxyPopupDropDownEditCell<String, String> {
 
-    public ProxyPopupTextDropDownEditCell( final String factType,
-                                           final String factField,
-                                           final AsyncPackageDataModelOracle dmo,
-                                           final CellTableDropDownDataValueMapProvider dropDownManager,
-                                           final boolean isReadOnly ) {
-        super( factType,
-               factField,
-               dmo,
-               dropDownManager,
-               isReadOnly );
+    public ProxyPopupTextDropDownEditCell(final String factType,
+                                          final String factField,
+                                          final AsyncPackageDataModelOracle dmo,
+                                          final CellTableDropDownDataValueMapProvider dropDownManager,
+                                          final boolean isReadOnly) {
+        super(factType,
+              factField,
+              dmo,
+              dropDownManager,
+              isReadOnly);
     }
 
     @Override
     protected ProxyPopupDropDown<String> getSingleValueEditor() {
-        return new AbstractProxyPopupDropDownTextBox<String>( TextBoxFactory.getTextBox( DataType.TYPE_STRING ),
-                                                              this ) {
+        return new AbstractProxyPopupDropDownTextBox<String>(TextBoxFactory.getTextBox(DataType.TYPE_STRING),
+                                                             this) {
             @Override
-            public String convertToString( final String value ) {
+            public String convertToString(final String value) {
                 return value;
             }
 
             @Override
-            public String convertFromString( final String value ) {
+            public String convertFromString(final String value) {
                 return value;
             }
         };
@@ -59,17 +59,16 @@ public class ProxyPopupTextDropDownEditCell extends
 
     @Override
     protected ProxyPopupDropDown<String> getMultipleValueEditor() {
-        return new AbstractProxyPopupDropDownListBox<String>( this ) {
+        return new AbstractProxyPopupDropDownListBox<String>(this) {
             @Override
-            public String convertToString( final String value ) {
+            public String convertToString(final String value) {
                 return value;
             }
 
             @Override
-            public String convertFromString( final String value ) {
+            public String convertFromString(final String value) {
                 return value;
             }
         };
     }
-
 }

@@ -16,9 +16,9 @@
 package org.kie.workbench.common.services.refactoring.model.index.terms.valueterms;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class ValueReferenceIndexTerm extends ReferenceIndexTerm implements ValueIndexTerm {
@@ -31,24 +31,29 @@ public class ValueReferenceIndexTerm extends ReferenceIndexTerm implements Value
     }
 
     /**
-     *
-     * @param resourceFQN The fully-qualified resource name
+     * @param resourceFQN  The fully-qualified resource name
      * @param resourceType The resource type
      */
-    public ValueReferenceIndexTerm( final String resourceFQN, final ResourceType resourceType ) {
-        this(resourceFQN, resourceType, TermSearchType.NORMAL);
+    public ValueReferenceIndexTerm(final String resourceFQN,
+                                   final ResourceType resourceType) {
+        this(resourceFQN,
+             resourceType,
+             TermSearchType.NORMAL);
     }
 
     /**
-     *
-     * @param resourceFQN The fully-qualified resource name
+     * @param resourceFQN  The fully-qualified resource name
      * @param resourceType The resource type
-     * @param termType The type of extended (term) functionality used in the term
+     * @param termType     The type of extended (term) functionality used in the term
      */
-    public ValueReferenceIndexTerm( final String resourceFQN, final ResourceType resourceType, final TermSearchType termType ) {
+    public ValueReferenceIndexTerm(final String resourceFQN,
+                                   final ResourceType resourceType,
+                                   final TermSearchType termType) {
         super(resourceType);
-        this.resourceName = PortablePreconditions.checkNotNull( "resourceName", resourceFQN );
-        this.termType = PortablePreconditions.checkNotNull( "termType", termType );
+        this.resourceName = PortablePreconditions.checkNotNull("resourceName",
+                                                               resourceFQN);
+        this.termType = PortablePreconditions.checkNotNull("termType",
+                                                           termType);
     }
 
     @Override

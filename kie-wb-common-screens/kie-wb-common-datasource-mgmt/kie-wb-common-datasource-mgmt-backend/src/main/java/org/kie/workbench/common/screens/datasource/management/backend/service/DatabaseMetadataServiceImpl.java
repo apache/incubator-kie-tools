@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datasource.management.backend.service;
 
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -31,59 +32,76 @@ import org.kie.workbench.common.screens.datasource.management.util.DatabaseMetad
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Service
 @ApplicationScoped
 public class DatabaseMetadataServiceImpl
         implements DatabaseMetadataService {
 
-    private static final Logger logger = LoggerFactory.getLogger( DatabaseMetadataServiceImpl.class );
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseMetadataServiceImpl.class);
 
     private DataSourceRuntimeManager dataSourceRuntimeManager;
 
-    public DatabaseMetadataServiceImpl( ) {
+    public DatabaseMetadataServiceImpl() {
     }
 
     @Inject
-    public DatabaseMetadataServiceImpl( DataSourceRuntimeManager dataSourceRuntimeManager ) {
+    public DatabaseMetadataServiceImpl(DataSourceRuntimeManager dataSourceRuntimeManager) {
         this.dataSourceRuntimeManager = dataSourceRuntimeManager;
     }
 
     @Override
-    public DatabaseMetadata getMetadata( String dataSourceUuid, boolean includeCatalogs, boolean includeSchemas ) {
-        checkNotNull( "dataSourceUuid", dataSourceUuid );
+    public DatabaseMetadata getMetadata(String dataSourceUuid,
+                                        boolean includeCatalogs,
+                                        boolean includeSchemas) {
+        checkNotNull("dataSourceUuid",
+                     dataSourceUuid);
         try {
-            DataSource dataSource = dataSourceRuntimeManager.lookupDataSource( dataSourceUuid );
-            return DatabaseMetadataUtil.getMetadata( dataSource.getConnection( ), includeCatalogs, includeSchemas );
-        } catch ( Exception e ) {
-            logger.error( "It was not possible to get database metadata for data source: " + dataSourceUuid, e );
-            throw new GenericPortableException( "It was not possible to get database metadata for data source: "
-                    + dataSourceUuid + ": " + e.getMessage( ), e );
+            DataSource dataSource = dataSourceRuntimeManager.lookupDataSource(dataSourceUuid);
+            return DatabaseMetadataUtil.getMetadata(dataSource.getConnection(),
+                                                    includeCatalogs,
+                                                    includeSchemas);
+        } catch (Exception e) {
+            logger.error("It was not possible to get database metadata for data source: " + dataSourceUuid,
+                         e);
+            throw new GenericPortableException("It was not possible to get database metadata for data source: "
+                                                       + dataSourceUuid + ": " + e.getMessage(),
+                                               e);
         }
     }
 
     @Override
-    public List< TableMetadata > findTables( String dataSourceUuid,
-                                             String schema,
-                                             DatabaseMetadata.TableType... types ) {
-        return findTables( dataSourceUuid, schema, "%", types );
+    public List<TableMetadata> findTables(String dataSourceUuid,
+                                          String schema,
+                                          DatabaseMetadata.TableType... types) {
+        return findTables(dataSourceUuid,
+                          schema,
+                          "%",
+                          types);
     }
 
     @Override
-    public List< TableMetadata > findTables( String dataSourceUuid,
-                                             String schema,
-                                             String tableNamePattern,
-                                             DatabaseMetadata.TableType... types ) {
-        checkNotNull( "dataSourceUuid", dataSourceUuid );
-        checkNotNull( "types", types );
+    public List<TableMetadata> findTables(String dataSourceUuid,
+                                          String schema,
+                                          String tableNamePattern,
+                                          DatabaseMetadata.TableType... types) {
+        checkNotNull("dataSourceUuid",
+                     dataSourceUuid);
+        checkNotNull("types",
+                     types);
         try {
-            DataSource dataSource = dataSourceRuntimeManager.lookupDataSource( dataSourceUuid );
-            return DatabaseMetadataUtil.findTables( dataSource.getConnection( ), schema, tableNamePattern, types );
-        } catch ( Exception e ) {
-            logger.error( "It was not possible to get database metadata for data source: " + dataSourceUuid, e );
-            throw new GenericPortableException( "It was not possible to get database metadata for data source: "
-                    + dataSourceUuid + ": " + e.getMessage( ), e );
+            DataSource dataSource = dataSourceRuntimeManager.lookupDataSource(dataSourceUuid);
+            return DatabaseMetadataUtil.findTables(dataSource.getConnection(),
+                                                   schema,
+                                                   tableNamePattern,
+                                                   types);
+        } catch (Exception e) {
+            logger.error("It was not possible to get database metadata for data source: " + dataSourceUuid,
+                         e);
+            throw new GenericPortableException("It was not possible to get database metadata for data source: "
+                                                       + dataSourceUuid + ": " + e.getMessage(),
+                                               e);
         }
     }
 }

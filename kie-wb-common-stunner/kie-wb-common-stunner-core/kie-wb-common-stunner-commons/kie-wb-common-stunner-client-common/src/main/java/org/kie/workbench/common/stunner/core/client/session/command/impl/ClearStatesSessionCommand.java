@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.AbstractClie
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Clears the state for all canvas shapes by setting each

@@ -21,6 +21,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-asset-mgmt-api</artifactId>
     </dependency>

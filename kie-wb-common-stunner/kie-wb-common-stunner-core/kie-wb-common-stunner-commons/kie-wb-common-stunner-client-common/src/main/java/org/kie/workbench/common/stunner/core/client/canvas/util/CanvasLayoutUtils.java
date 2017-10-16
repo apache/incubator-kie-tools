@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.core.rule.context.NodeContainmentContext
 import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * This class is a basic implementation for achieving a simple layout mechanism.

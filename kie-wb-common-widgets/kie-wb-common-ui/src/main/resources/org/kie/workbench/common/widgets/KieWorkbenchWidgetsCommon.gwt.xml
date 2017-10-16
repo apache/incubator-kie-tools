@@ -32,8 +32,8 @@
 
   <inherits name="org.guvnor.messageconsole.GuvnorMessageConsoleClient"/>
 
-  <inherits name="org.appformer.project.datamodel.AFProjectDataModelAPI"/>
-  <inherits name="org.appformer.project.datamodel.commons.AFProjectDataModelCommons"/>
+  <inherits name="org.kie.soup.project.datamodel.ProjectDataModelAPI"/>
+  <inherits name="org.kie.soup.project.datamodel.commons.ProjectDataModelCommons"/>
 
   <inherits name="org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon"/>
   <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>

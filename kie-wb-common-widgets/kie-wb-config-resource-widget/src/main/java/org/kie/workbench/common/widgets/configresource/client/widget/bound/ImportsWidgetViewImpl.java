@@ -18,6 +18,7 @@ package org.kie.workbench.common.widgets.configresource.client.widget.bound;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -38,7 +39,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-import org.appformer.project.datamodel.imports.Import;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
@@ -46,6 +46,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
+import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.Sorters;
 import org.uberfire.client.mvp.LockRequiredEvent;

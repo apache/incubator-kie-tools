@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.server.management.client.navigation.tem
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -38,7 +39,7 @@ import org.kie.workbench.common.screens.server.management.client.widget.CustomGr
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.mvp.Command;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Dependent
 @Templated
@@ -50,7 +51,7 @@ public class ServerTemplateView extends Composite
     private TranslationService translationService;
 
     @DataField("current-server-template-name")
-    Element serverTemplate = DOM.createElement( "strong" );
+    Element serverTemplate = DOM.createElement("strong");
 
     @Inject
     @DataField("rule-capability-checkbox")
@@ -91,20 +92,20 @@ public class ServerTemplateView extends Composite
     private String templateId;
 
     @Inject
-    public ServerTemplateView( final TranslationService translationService ) {
+    public ServerTemplateView(final TranslationService translationService) {
         super();
         this.translationService = translationService;
     }
 
     @Override
-    public void init( final ServerTemplatePresenter presenter ) {
+    public void init(final ServerTemplatePresenter presenter) {
         this.presenter = presenter;
-        ruleEnabled.setText( getRuleCheckBoxText() );
-        ruleEnabled.setEnabled( false );
-        processEnabled.setText( getProcessCheckBoxText() );
-        processEnabled.setEnabled( false );
-        planningEnabled.setText( getPlanningCheckBoxText() );
-        planningEnabled.setEnabled( false );
+        ruleEnabled.setText(getRuleCheckBoxText());
+        ruleEnabled.setEnabled(false);
+        processEnabled.setText(getProcessCheckBoxText());
+        processEnabled.setEnabled(false);
+        planningEnabled.setText(getPlanningCheckBoxText());
+        planningEnabled.setEnabled(false);
     }
 
     @Override
@@ -115,17 +116,17 @@ public class ServerTemplateView extends Composite
         containerItems.clear();
         selected = null;
         templateId = null;
-        serverTemplate.setInnerText( "" );
-        processEnabled.setValue( false );
-        ruleEnabled.setValue( false );
-        planningEnabled.setValue( false );
+        serverTemplate.setInnerText("");
+        processEnabled.setValue(false);
+        ruleEnabled.setValue(false);
+        planningEnabled.setValue(false);
     }
 
     @Override
-    public void setTemplate( final String templateId,
-                             final String templateName ) {
+    public void setTemplate(final String templateId,
+                            final String templateName) {
         this.templateId = templateId;
-        serverTemplate.setInnerText( templateName );
+        serverTemplate.setInnerText(templateName);
         serverInstanceItems.clear();
         containerItems.clear();
         containersListGroup.clear();
@@ -133,143 +134,152 @@ public class ServerTemplateView extends Composite
     }
 
     @Override
-    public void selectContainer( final String serverTemplateId,
-                                 final String id ) {
-        select( serverTemplateId, id, containerItems );
+    public void selectContainer(final String serverTemplateId,
+                                final String id) {
+        select(serverTemplateId,
+               id,
+               containerItems);
     }
 
     @Override
-    public void selectServerInstance( final String serverTemplateId,
-                                      final String id ) {
-        select( serverTemplateId, id, serverInstanceItems );
+    public void selectServerInstance(final String serverTemplateId,
+                                     final String id) {
+        select(serverTemplateId,
+               id,
+               serverInstanceItems);
     }
 
-    private void select( final String serverTemplateId,
-                         final String id,
-                         final Map<String, CustomGroupItem> map ) {
-        checkNotEmpty( "serverTemplateId", serverTemplateId );
-        checkNotEmpty( "id", id );
+    private void select(final String serverTemplateId,
+                        final String id,
+                        final Map<String, CustomGroupItem> map) {
+        checkNotEmpty("serverTemplateId",
+                      serverTemplateId);
+        checkNotEmpty("id",
+                      id);
 
-        if ( selected != null ) {
-            selected.setActive( false );
-            selected.removeStyleName( "active" );
+        if (selected != null) {
+            selected.setActive(false);
+            selected.removeStyleName("active");
         }
 
-        if ( !serverTemplateId.equals( this.templateId ) ) {
+        if (!serverTemplateId.equals(this.templateId)) {
             return;
         }
 
-        selected = map.get( id );
-        selected.setActive( true );
+        selected = map.get(id);
+        selected.setActive(true);
     }
 
     @Override
-    public void addContainer( final String serverTemplateId,
-                              final String containerSpecId,
-                              final String containerName,
-                              final Command onSelect ) {
-        if ( !serverTemplateId.equals( this.templateId ) ) {
+    public void addContainer(final String serverTemplateId,
+                             final String containerSpecId,
+                             final String containerName,
+                             final Command onSelect) {
+        if (!serverTemplateId.equals(this.templateId)) {
             return;
         }
 
-        final CustomGroupItem groupItem = new CustomGroupItem( containerSpecId,
-                                                               IconType.FOLDER_O,
-                                                               onSelect );
+        final CustomGroupItem groupItem = new CustomGroupItem(containerSpecId,
+                                                              IconType.FOLDER_O,
+                                                              onSelect);
 
-        containerItems.put( containerSpecId, groupItem );
+        containerItems.put(containerSpecId,
+                           groupItem);
 
-        containersListGroup.add( groupItem );
+        containersListGroup.add(groupItem);
     }
 
     @Override
-    public void addServerInstance( final String serverTemplateId,
-                                   final String serverInstanceId,
-                                   final String serverName,
-                                   final Command onSelect ) {
-        if ( !serverTemplateId.equals( this.templateId ) ) {
+    public void addServerInstance(final String serverTemplateId,
+                                  final String serverInstanceId,
+                                  final String serverName,
+                                  final Command onSelect) {
+        if (!serverTemplateId.equals(this.templateId)) {
             return;
         }
 
-        final CustomGroupItem groupItem = new CustomGroupItem( serverName,
-                                                               IconType.SERVER,
-                                                               onSelect );
+        final CustomGroupItem groupItem = new CustomGroupItem(serverName,
+                                                              IconType.SERVER,
+                                                              onSelect);
 
-        serverInstanceItems.put( serverInstanceId, groupItem );
+        serverInstanceItems.put(serverInstanceId,
+                                groupItem);
 
-        remoteServersListGroup.add( groupItem );
+        remoteServersListGroup.add(groupItem);
     }
 
     @Override
-    public void setRulesCapability( final boolean value ) {
-        ruleEnabled.setValue( value );
+    public void setRulesCapability(final boolean value) {
+        ruleEnabled.setValue(value);
     }
 
     @Override
-    public void setProcessCapability( final boolean value ) {
-        processEnabled.setValue( value );
+    public void setProcessCapability(final boolean value) {
+        processEnabled.setValue(value);
     }
 
     @Override
-    public void setPlanningCapability( final boolean value ) {
-        planningEnabled.setValue( value );
+    public void setPlanningCapability(final boolean value) {
+        planningEnabled.setValue(value);
     }
 
     @Override
-    public void confirmRemove( final Command command ) {
-        final YesNoCancelPopup result = YesNoCancelPopup.newYesNoCancelPopup( getTemplateRemovePopupTitle(),
-                                                                              getTemplateRemovePopupText(),
-                                                                              command,
-                                                                              new Command() {
-                                                                                  @Override
-                                                                                  public void execute() {
-                                                                                  }
-                                                                              }, null );
+    public void confirmRemove(final Command command) {
+        final YesNoCancelPopup result = YesNoCancelPopup.newYesNoCancelPopup(getTemplateRemovePopupTitle(),
+                                                                             getTemplateRemovePopupText(),
+                                                                             command,
+                                                                             new Command() {
+                                                                                 @Override
+                                                                                 public void execute() {
+                                                                                 }
+                                                                             },
+                                                                             null);
         result.clearScrollHeight();
         result.show();
     }
 
     @EventHandler("add-new-container")
-    public void addNewContainer( final ClickEvent event ) {
+    public void addNewContainer(final ClickEvent event) {
         presenter.addNewContainer();
     }
 
     @EventHandler("copy-current-server-template")
-    public void copyTemplate( final ClickEvent event ) {
+    public void copyTemplate(final ClickEvent event) {
         presenter.copyTemplate();
     }
 
     @EventHandler("remove-current-server-template")
-    public void removeTemplate( final ClickEvent event ) {
+    public void removeTemplate(final ClickEvent event) {
         presenter.removeTemplate();
     }
 
     @Override
     public String getCopyTemplateErrorMessage() {
-        return translationService.format( Constants.ServerTemplateView_CopyTemplateErrorMessage );
+        return translationService.format(Constants.ServerTemplateView_CopyTemplateErrorMessage);
     }
 
     @Override
     public String getRemoveTemplateErrorMessage() {
-        return translationService.format( Constants.ServerTemplateView_RemoveTemplateErrorMessage );
+        return translationService.format(Constants.ServerTemplateView_RemoveTemplateErrorMessage);
     }
 
     private String getRuleCheckBoxText() {
-        return translationService.format( Constants.ServerTemplateView_RuleCheckBoxText );
+        return translationService.format(Constants.ServerTemplateView_RuleCheckBoxText);
     }
 
     private String getProcessCheckBoxText() {
-        return translationService.format( Constants.ServerTemplateView_ProcessCheckBoxText );
+        return translationService.format(Constants.ServerTemplateView_ProcessCheckBoxText);
     }
 
     private String getPlanningCheckBoxText() {
-        return translationService.format( Constants.ServerTemplateView_PlanningCheckBoxText );
+        return translationService.format(Constants.ServerTemplateView_PlanningCheckBoxText);
     }
 
     private String getTemplateRemovePopupText() {
-        return translationService.format( Constants.ServerTemplateView_TemplateRemovePopupText );
+        return translationService.format(Constants.ServerTemplateView_TemplateRemovePopupText);
     }
 
     private String getTemplateRemovePopupTitle() {
-        return translationService.format( Constants.ServerTemplateView_TemplateRemovePopupTitle );
+        return translationService.format(Constants.ServerTemplateView_TemplateRemovePopupTitle);
     }
 }

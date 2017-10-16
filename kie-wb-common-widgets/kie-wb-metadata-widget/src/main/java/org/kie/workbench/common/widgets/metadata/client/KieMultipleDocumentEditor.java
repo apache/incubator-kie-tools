@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -27,7 +28,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.appformer.project.datamodel.imports.Imports;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Project;
@@ -35,6 +35,8 @@ import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -46,7 +48,6 @@ import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPre
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
@@ -72,6 +73,7 @@ import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopu
  * {@link KieDocument} documents are first registered and then activated. Registration ensures the document
  * is configured for optimistic concurrent lock handling. Activation updates the content of the editor to
  * reflect the active document.
+ *
  * @param <D> Document type
  */
 public abstract class KieMultipleDocumentEditor<D extends KieDocument> implements KieMultipleDocumentEditorPresenter<D> {
@@ -485,6 +487,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     /**
      * Get the MenuItem that should be used for "Save".
+     *
      * @return
      */
     protected MenuItem getSaveMenuItem() {
@@ -496,6 +499,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     /**
      * Get the MenuItem that should be used for listing "(Registered) documents".
+     *
      * @return
      */
     protected MenuItem getRegisteredDocumentsMenuItem() {
@@ -508,6 +512,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     /**
      * Get the MenuItem that should be used for "VersionRecordManager" drop-down.
+     *
      * @return
      */
     protected MenuItem getVersionManagerMenuItem() {
@@ -547,6 +552,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      * is detected a {@link ConcurrentChangePopup} is shown allowing the user to choose whether to abort the
      * save, force the save or refresh the view with the latest version. If no concurrent update is detected
      * the document is persisted.
+     *
      * @param document
      */
     protected void doSaveCheckForAndHandleConcurrentUpdate(final D document) {
@@ -623,6 +629,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      * Enable/disable all menus associated with the MDI container, consisting of "Save", "Copy",
      * "Rename", "Delete", "Validate" and "VersionRecordManager" drop-down. Subclasses can override
      * this to customize their Menus.
+     *
      * @param enabled
      */
     protected void enableMenus(final boolean enabled) {
@@ -641,6 +648,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     /**
      * Enable/disable a single menu associated with the MDI container.
+     *
      * @param enabled
      */
     protected void enableMenuItem(final boolean enabled,
@@ -666,6 +674,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     /**
      * Default callback for when loading a document fails.
+     *
      * @return
      */
     protected CommandDrivenErrorCallback getNoSuchFileExceptionErrorCallback() {
@@ -691,6 +700,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     /**
      * Default callback for when retrieval of a document's source fails.
+     *
      * @return
      */
     protected CommandDrivenErrorCallback getCouldNotGenerateSourceErrorCallback() {
@@ -705,6 +715,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     /**
      * Default callback for when a document has been saved. This should be used by implementations
      * of {@link #onSave(KieDocument, String)} to ensure the "isDirty" mechanism is correctly updated.
+     *
      * @param document
      * @param currentHashCode
      * @return

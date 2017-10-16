@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyDownEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyUpEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A helper class for component that listen to keyboard events.

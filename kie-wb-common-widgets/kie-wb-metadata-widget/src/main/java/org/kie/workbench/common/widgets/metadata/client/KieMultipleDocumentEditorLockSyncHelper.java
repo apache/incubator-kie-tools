@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.widgets.metadata.client;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.editor.commons.client.menu.HasLockSyncMenuStateHelper;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -29,22 +29,21 @@ public class KieMultipleDocumentEditorLockSyncHelper extends HasLockSyncMenuStat
 
     private KieMultipleDocumentEditor editor;
 
-    public KieMultipleDocumentEditorLockSyncHelper( final KieMultipleDocumentEditor editor ) {
-        this.editor = PortablePreconditions.checkNotNull( "editor",
-                                                          editor );
+    public KieMultipleDocumentEditorLockSyncHelper(final KieMultipleDocumentEditor editor) {
+        this.editor = PortablePreconditions.checkNotNull("editor",
+                                                         editor);
     }
 
     @Override
-    public Operation enable( final Path file,
-                             final boolean isLocked,
-                             final boolean isLockedByCurrentUser ) {
+    public Operation enable(final Path file,
+                            final boolean isLocked,
+                            final boolean isLockedByCurrentUser) {
         final KieDocument activeDocument = editor.getActiveDocument();
-        if ( activeDocument == null || !activeDocument.getCurrentPath().equals( file ) ) {
+        if (activeDocument == null || !activeDocument.getCurrentPath().equals(file)) {
             return Operation.VETO;
         }
-        return super.enable( file,
-                             isLocked,
-                             isLockedByCurrentUser );
+        return super.enable(file,
+                            isLocked,
+                            isLockedByCurrentUser);
     }
-
 }

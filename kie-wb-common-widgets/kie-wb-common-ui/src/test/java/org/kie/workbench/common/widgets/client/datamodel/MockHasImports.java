@@ -15,8 +15,8 @@
 
 package org.kie.workbench.common.widgets.client.datamodel;
 
-import org.appformer.project.datamodel.imports.HasImports;
-import org.appformer.project.datamodel.imports.Imports;
+import org.kie.soup.project.datamodel.imports.HasImports;
+import org.kie.soup.project.datamodel.imports.Imports;
 
 public class MockHasImports implements HasImports {
 
@@ -28,7 +28,7 @@ public class MockHasImports implements HasImports {
     }
 
     @Override
-    public void setImports( final Imports imports ) {
+    public void setImports(final Imports imports) {
         this.imports = imports;
     }
 }

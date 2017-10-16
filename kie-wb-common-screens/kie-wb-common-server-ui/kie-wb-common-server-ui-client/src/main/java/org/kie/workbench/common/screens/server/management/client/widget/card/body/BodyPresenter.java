@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.screens.server.management.client.widget.card.body;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 import java.util.Collection;
 
@@ -36,7 +36,7 @@ public class BodyPresenter {
 
     public interface View extends UberView<BodyPresenter> {
 
-        void addNotification( IsWidget view );
+        void addNotification(IsWidget view);
 
         void clear();
     }
@@ -45,41 +45,41 @@ public class BodyPresenter {
     private final ManagedInstance<NotificationPresenter> presenterProvider;
 
     @Inject
-    public BodyPresenter( final View view,
-                          final ManagedInstance<NotificationPresenter> presenterProvider         ) {
+    public BodyPresenter(final View view,
+                         final ManagedInstance<NotificationPresenter> presenterProvider) {
         this.view = view;
         this.presenterProvider = presenterProvider;
     }
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     public View getView() {
         return view;
     }
 
-    public void setup( final Collection<Message> messages ) {
-        checkNotNull( "messages", messages );
+    public void setup(final Collection<Message> messages) {
+        checkNotNull("messages",
+                     messages);
 
-        if ( messages.isEmpty() ) {
-            view.addNotification( setupNotification( null ).getView() );
+        if (messages.isEmpty()) {
+            view.addNotification(setupNotification(null).getView());
         } else {
-            for ( final Message message : messages ) {
-                view.addNotification( setupNotification( message ).getView() );
+            for (final Message message : messages) {
+                view.addNotification(setupNotification(message).getView());
             }
         }
     }
 
-    private NotificationPresenter setupNotification( final Message message ) {
+    private NotificationPresenter setupNotification(final Message message) {
         final NotificationPresenter presenter = presenterProvider.get();
-        if ( message == null ) {
+        if (message == null) {
             presenter.setupOk();
         } else {
-            presenter.setup( message );
+            presenter.setup(message);
         }
         return presenter;
     }
-
 }

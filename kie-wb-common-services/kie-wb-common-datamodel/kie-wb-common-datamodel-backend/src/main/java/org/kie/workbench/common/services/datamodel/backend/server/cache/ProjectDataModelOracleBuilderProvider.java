@@ -18,14 +18,16 @@ package org.kie.workbench.common.services.datamodel.backend.server.cache;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+
 import javax.inject.Inject;
 
-import org.appformer.project.datamodel.imports.Import;
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
-import org.appformer.project.datamodel.oracle.TypeSource;
 import org.kie.scanner.KieModuleMetaData;
-import org.kie.workbench.common.services.backend.builder.service.BuildInfo;
+import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
+import org.kie.soup.project.datamodel.imports.Import;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.services.backend.builder.core.TypeSourceResolver;
+import org.kie.workbench.common.services.backend.builder.service.BuildInfo;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
@@ -54,8 +56,8 @@ public class ProjectDataModelOracleBuilderProvider {
         this.importsService = importsService;
     }
 
-    public InnerBuilder newBuilder( final KieProject project,
-                                    final BuildInfo buildInfo ) {
+    public InnerBuilder newBuilder(final KieProject project,
+                                   final BuildInfo buildInfo) {
 
         final KieModuleMetaData kieModuleMetaData = buildInfo.getKieModuleMetaDataIgnoringErrors();
         final TypeSourceResolver typeSourceResolver = buildInfo.getTypeSourceResolver(kieModuleMetaData);
@@ -67,7 +69,7 @@ public class ProjectDataModelOracleBuilderProvider {
 
     class InnerBuilder {
 
-        private final ProjectDataModelOracleBuilder pdBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
+        private final ProjectDataModelOracleBuilder pdBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator());
 
         private final KieProject project;
         private final KieModuleMetaData kieModuleMetaData;

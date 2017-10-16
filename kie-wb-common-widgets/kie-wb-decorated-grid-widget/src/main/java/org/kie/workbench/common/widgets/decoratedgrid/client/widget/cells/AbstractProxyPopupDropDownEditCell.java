@@ -20,7 +20,7 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
-import org.appformer.project.datamodel.oracle.DropDownData;
+import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 
@@ -43,12 +43,12 @@ public abstract class AbstractProxyPopupDropDownEditCell<C, V> extends
     private final ProxyPopupDropDown<C> multipleValueEditor;
     private ProxyPopupDropDown<C> delegate;
 
-    public AbstractProxyPopupDropDownEditCell( final String factType,
-                                               final String factField,
-                                               final AsyncPackageDataModelOracle dmo,
-                                               final CellTableDropDownDataValueMapProvider dropDownManager,
-                                               final boolean isReadOnly ) {
-        super( isReadOnly );
+    public AbstractProxyPopupDropDownEditCell(final String factType,
+                                              final String factField,
+                                              final AsyncPackageDataModelOracle dmo,
+                                              final CellTableDropDownDataValueMapProvider dropDownManager,
+                                              final boolean isReadOnly) {
+        super(isReadOnly);
         this.factType = factType;
         this.factField = factField;
         this.dropDownManager = dropDownManager;
@@ -58,100 +58,96 @@ public abstract class AbstractProxyPopupDropDownEditCell<C, V> extends
     }
 
     @Override
-    public void render( final Context context,
-                        final C value,
-                        final SafeHtmlBuilder sb ) {
+    public void render(final Context context,
+                       final C value,
+                       final SafeHtmlBuilder sb) {
 
         //We need to get the list of potential values to lookup the "Display" value from the "Stored" value.
         //Since the content of the list may be different for each cell (dependent enumerations) the list
         //has to be populated "on demand". 
-        DropDownData dd = dmo.getEnums( this.factType,
-                                        this.factField,
-                                        this.dropDownManager.getCurrentValueMap( context ) );
+        DropDownData dd = dmo.getEnums(this.factType,
+                                       this.factField,
+                                       this.dropDownManager.getCurrentValueMap(context));
 
-        if ( dd == null ) {
+        if (dd == null) {
             //If no enumeration exists show a TextBox
             delegate = singleValueEditor;
-            delegate.setValue( value );
+            delegate.setValue(value);
             vPanel.clear();
-            vPanel.add( delegate.asWidget() );
-
+            vPanel.add(delegate.asWidget());
         } else {
             //Otherwise show a drop-down list box
             delegate = multipleValueEditor;
-            delegate.setDropDownData( dd );
+            delegate.setDropDownData(dd);
             vPanel.clear();
-            vPanel.add( delegate.asWidget() );
+            vPanel.add(delegate.asWidget());
         }
 
-        delegate.render( context,
-                         value,
-                         sb,
-                         renderer );
+        delegate.render(context,
+                        value,
+                        sb,
+                        renderer);
     }
 
     @Override
     protected void commit() {
         final C value = delegate.getValue();
 
-        setValue( lastContext,
-                  lastParent,
-                  value );
-        if ( valueUpdater != null ) {
-            valueUpdater.update( value );
+        setValue(lastContext,
+                 lastParent,
+                 value);
+        if (valueUpdater != null) {
+            valueUpdater.update(value);
         }
         panel.hide();
     }
 
     // Start editing the cell
     @Override
-    protected void startEditing( final Context context,
-                                 final Element parent,
-                                 final C value ) {
+    protected void startEditing(final Context context,
+                                final Element parent,
+                                final C value) {
 
         //We need to get the list of potential values for the enumeration. Since the content 
         //of the list may be different for each cell (dependent enumerations) the list
         //has to be populated "on demand". 
-        DropDownData dd = dmo.getEnums( this.factType,
-                                        this.factField,
-                                        this.dropDownManager.getCurrentValueMap( context ) );
-        if ( dd == null ) {
+        DropDownData dd = dmo.getEnums(this.factType,
+                                       this.factField,
+                                       this.dropDownManager.getCurrentValueMap(context));
+        if (dd == null) {
             //If no enumeration exists show a TextBox
             delegate = singleValueEditor;
-            delegate.setValue( value );
+            delegate.setValue(value);
             vPanel.clear();
-            vPanel.add( delegate.asWidget() );
-
+            vPanel.add(delegate.asWidget());
         } else {
             //Otherwise show a drop-down list box
             delegate = multipleValueEditor;
-            delegate.setDropDownData( dd );
+            delegate.setDropDownData(dd);
             vPanel.clear();
-            vPanel.add( delegate.asWidget() );
+            vPanel.add(delegate.asWidget());
         }
-        delegate.startEditing( context,
-                               parent,
-                               value );
+        delegate.startEditing(context,
+                              parent,
+                              value);
 
-        panel.setPopupPositionAndShow( new PositionCallback() {
-            public void setPosition( int offsetWidth,
-                                     int offsetHeight ) {
-                panel.setPopupPosition( parent.getAbsoluteLeft()
-                                                + offsetX,
-                                        parent.getAbsoluteTop()
-                                                + offsetY );
+        panel.setPopupPositionAndShow(new PositionCallback() {
+            public void setPosition(int offsetWidth,
+                                    int offsetHeight) {
+                panel.setPopupPosition(parent.getAbsoluteLeft()
+                                               + offsetX,
+                                       parent.getAbsoluteTop()
+                                               + offsetY);
 
                 // Focus the first enabled control
-                Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
                     public void execute() {
-                        delegate.setFocus( true );
+                        delegate.setFocus(true);
                     }
-
-                } );
+                });
             }
-        } );
-
+        });
     }
 
     AsyncPackageDataModelOracle getDataModelOracle() {
@@ -161,5 +157,4 @@ public abstract class AbstractProxyPopupDropDownEditCell<C, V> extends
     protected abstract ProxyPopupDropDown<C> getSingleValueEditor();
 
     protected abstract ProxyPopupDropDown<C> getMultipleValueEditor();
-
 }

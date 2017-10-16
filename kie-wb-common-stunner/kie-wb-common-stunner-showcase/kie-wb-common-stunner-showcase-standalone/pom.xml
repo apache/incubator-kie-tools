@@ -61,6 +61,10 @@
       <artifactId>uberfire-commons</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-io</artifactId>
     </dependency>
@@ -652,13 +656,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-datamodel-api</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-datamodel-commons</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-commons</artifactId>
     </dependency>
 
     <dependency>
@@ -804,8 +808,10 @@
 
           <compileSourcesArtifacts>
 
-            <compileSourcesArtifact>org.uberfire:uberfire-project-datamodel-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-project-datamodel-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.soup:kie-soup-project-datamodel-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.soup:kie-soup-project-datamodel-commons</compileSourcesArtifact>
+
+            <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
 
             <!-- UberFire, Errai & Drools. -->
             <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>

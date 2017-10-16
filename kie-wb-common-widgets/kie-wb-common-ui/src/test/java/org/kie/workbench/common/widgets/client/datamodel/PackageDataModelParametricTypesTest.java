@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -19,14 +19,16 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.enterprise.inject.Instance;
 
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFieldInspector;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
@@ -50,89 +52,91 @@ public class PackageDataModelParametricTypesTest {
 
     @Test
     public void testClassFieldInspector() throws Exception {
-        final ClassFieldInspector cfi = new ClassFieldInspector( Purchase.class );
-        final Type t1 = cfi.getFieldTypesFieldInfo().get( "customerName" ).getGenericType();
-        final Type t2 = cfi.getFieldTypesFieldInfo().get( "items" ).getGenericType();
+        final ClassFieldInspector cfi = new ClassFieldInspector(Purchase.class);
+        final Type t1 = cfi.getFieldTypesFieldInfo().get("customerName").getGenericType();
+        final Type t2 = cfi.getFieldTypesFieldInfo().get("items").getGenericType();
 
-        assertNotNull( t1 );
-        assertNotNull( t2 );
+        assertNotNull(t1);
+        assertNotNull(t2);
 
-        assertFalse( t1 instanceof ParameterizedType );
-        assertTrue( t2 instanceof ParameterizedType );
+        assertFalse(t1 instanceof ParameterizedType);
+        assertTrue(t2 instanceof ParameterizedType);
     }
 
     @Test
     public void testPackageDMOParametricReturnTypes() throws Exception {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( Purchase.class )
-                .addClass( Product.class )
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+                .addClass(Purchase.class)
+                .addClass(Product.class)
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(), "org.kie.workbench.common.widgets.client.datamodel.testclasses")
+                .setProjectOracle(projectLoader)
+                .build();
 
         //Emulate server-to-client conversions
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
-                                                                                        validatorInstance );
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl(service,
+                                                                                       validatorInstance);
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setPackageName( packageLoader.getPackageName() );
-        dataModel.setModelFields( packageLoader.getProjectModelFields() );
-        dataModel.setFieldParametersType( packageLoader.getProjectFieldParametersType() );
-        PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
-                                                                 new MockHasImports(),
-                                                                 oracle,
-                                                                 dataModel );
+        dataModel.setPackageName(packageLoader.getPackageName());
+        dataModel.setModelFields(packageLoader.getProjectModelFields());
+        dataModel.setFieldParametersType(packageLoader.getProjectFieldParametersType());
+        PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
+                                                                new MockHasImports(),
+                                                                oracle,
+                                                                dataModel);
 
-        assertNotNull( oracle );
+        assertNotNull(oracle);
 
-        assertEquals( 3,
-                      oracle.getFactTypes().length );
+        assertEquals(3,
+                     oracle.getFactTypes().length);
 
-        List<String> list = Arrays.asList( oracle.getFactTypes() );
+        List<String> list = Arrays.asList(oracle.getFactTypes());
 
-        assertTrue( list.contains( "Purchase" ) );
-        assertTrue( list.contains( "Product" ) );
+        assertTrue(list.contains("Purchase"));
+        assertTrue(list.contains("Product"));
 
-        assertEquals( "java.util.Collection",
-                      oracle.getFieldClassName( "Purchase",
-                                                "items" ) );
-        assertEquals( DataType.TYPE_COLLECTION,
-                      oracle.getFieldType( "Purchase",
-                                           "items" ) );
-        assertEquals( "Product",
-                      oracle.getParametricFieldType( "Purchase",
-                                                     "items" ) );
-
+        assertEquals("java.util.Collection",
+                     oracle.getFieldClassName("Purchase",
+                                              "items"));
+        assertEquals(DataType.TYPE_COLLECTION,
+                     oracle.getFieldType("Purchase",
+                                         "items"));
+        assertEquals("Product",
+                     oracle.getParametricFieldType("Purchase",
+                                                   "items"));
     }
 
     @Test
     public void testParametricMethod() throws Exception {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( Purchase.class )
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+                .addClass(Purchase.class)
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(), "org.kie.workbench.common.widgets.client.datamodel.testclasses")
+                .setProjectOracle(projectLoader)
+                .build();
 
         //Emulate server-to-client conversions
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
-                                                                                        validatorInstance );
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl(service,
+                                                                                       validatorInstance);
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setPackageName( packageLoader.getPackageName() );
-        dataModel.setModelFields( packageLoader.getProjectModelFields() );
-        dataModel.setFieldParametersType( packageLoader.getProjectFieldParametersType() );
-        PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
-                                                                 new MockHasImports(),
-                                                                 oracle,
-                                                                 dataModel );
+        dataModel.setPackageName(packageLoader.getPackageName());
+        dataModel.setModelFields(packageLoader.getProjectModelFields());
+        dataModel.setFieldParametersType(packageLoader.getProjectFieldParametersType());
+        PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
+                                                                new MockHasImports(),
+                                                                oracle,
+                                                                dataModel);
 
-        assertNotNull( oracle );
+        assertNotNull(oracle);
 
-        assertEquals( "Product",
-                      oracle.getParametricFieldType( "Purchase",
-                                                     "customerPurchased(Integer)" ) );
+        assertEquals("Product",
+                     oracle.getParametricFieldType("Purchase",
+                                                   "customerPurchased(Integer)"));
     }
-
 }

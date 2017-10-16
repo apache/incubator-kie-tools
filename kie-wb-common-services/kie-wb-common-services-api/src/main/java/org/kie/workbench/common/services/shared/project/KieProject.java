@@ -18,8 +18,8 @@ package org.kie.workbench.common.services.shared.project;
 
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class KieProject
@@ -34,24 +34,24 @@ public class KieProject
         //For Errai-marshalling
     }
 
-    public KieProject( final Path rootPath,
-                       final Path pomXMLPath,
-                       final Path kmoduleXMLPath,
-                       final Path importsPath,
-                       final Path repositoriesPath,
-                       final Path packageNamesWhiteListPath,
-                       final String projectName ) {
-        super( rootPath,
-               pomXMLPath,
-               projectName );
-        this.kmoduleXMLPath = PortablePreconditions.checkNotNull( "kmoduleXMLPath",
-                                                                  kmoduleXMLPath );
-        this.importsPath = PortablePreconditions.checkNotNull( "importsPath",
-                                                               importsPath );
-        this.repositoriesPath = PortablePreconditions.checkNotNull( "repositoriesPath",
-                                                                    repositoriesPath );
-        this.packageNamesWhiteListPath = PortablePreconditions.checkNotNull( "packageNamesWhiteListPath",
-                                                                             packageNamesWhiteListPath );
+    public KieProject(final Path rootPath,
+                      final Path pomXMLPath,
+                      final Path kmoduleXMLPath,
+                      final Path importsPath,
+                      final Path repositoriesPath,
+                      final Path packageNamesWhiteListPath,
+                      final String projectName) {
+        super(rootPath,
+              pomXMLPath,
+              projectName);
+        this.kmoduleXMLPath = PortablePreconditions.checkNotNull("kmoduleXMLPath",
+                                                                 kmoduleXMLPath);
+        this.importsPath = PortablePreconditions.checkNotNull("importsPath",
+                                                              importsPath);
+        this.repositoriesPath = PortablePreconditions.checkNotNull("repositoriesPath",
+                                                                   repositoriesPath);
+        this.packageNamesWhiteListPath = PortablePreconditions.checkNotNull("packageNamesWhiteListPath",
+                                                                            packageNamesWhiteListPath);
     }
 
     public Path getKModuleXMLPath() {
@@ -71,35 +71,35 @@ public class KieProject
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof KieProject ) ) {
+        if (!(o instanceof KieProject)) {
             return false;
         }
 
         KieProject project = (KieProject) o;
 
-        if ( !rootPath.equals( project.rootPath ) ) {
+        if (!rootPath.equals(project.rootPath)) {
             return false;
         }
-        if ( !pomXMLPath.equals( project.pomXMLPath ) ) {
+        if (!pomXMLPath.equals(project.pomXMLPath)) {
             return false;
         }
-        if ( !kmoduleXMLPath.equals( project.kmoduleXMLPath ) ) {
+        if (!kmoduleXMLPath.equals(project.kmoduleXMLPath)) {
             return false;
         }
-        if ( !importsPath.equals( project.importsPath ) ) {
+        if (!importsPath.equals(project.importsPath)) {
             return false;
         }
-        if ( !repositoriesPath.equals( project.repositoriesPath ) ) {
+        if (!repositoriesPath.equals(project.repositoriesPath)) {
             return false;
         }
-        if ( !packageNamesWhiteListPath.equals( project.packageNamesWhiteListPath ) ) {
+        if (!packageNamesWhiteListPath.equals(project.packageNamesWhiteListPath)) {
             return false;
         }
-        if ( !projectName.equals( project.projectName ) ) {
+        if (!projectName.equals(project.projectName)) {
             return false;
         }
 
@@ -124,5 +124,4 @@ public class KieProject
         result = ~~result;
         return result;
     }
-
 }

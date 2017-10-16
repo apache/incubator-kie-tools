@@ -16,8 +16,8 @@
 package org.kie.workbench.common.screens.library.api.index;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class LibraryValueProjectRootPathIndexTerm extends LibraryProjectRootPathIndexTerm implements ValueIndexTerm {

@@ -27,6 +27,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.editor.client.editor.changes.conflicts.ConflictsHandler;
 import org.kie.workbench.common.forms.editor.client.editor.changes.conflicts.element.ConflictElement;
 import org.kie.workbench.common.forms.editor.client.editor.changes.displayers.conflicts.ConflictsDisplayer;
@@ -36,7 +37,6 @@ import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
 
 @Dependent

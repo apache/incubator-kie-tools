@@ -25,10 +25,10 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DataBindingEditor;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.StaticFormModel;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @StaticFormModel
 @Dependent

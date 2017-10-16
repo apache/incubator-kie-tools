@@ -17,7 +17,7 @@ package org.kie.workbench.common.screens.library.client.events;
 
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 public class ProjectMetricsEvent {
 
@@ -28,7 +28,8 @@ public class ProjectMetricsEvent {
     }
 
     public ProjectMetricsEvent(final ProjectInfo projectInfo) {
-        this.projectInfo = checkNotNull("projectInfo", projectInfo);
+        this.projectInfo = checkNotNull("projectInfo",
+                                        projectInfo);
     }
 
     public ProjectInfo getProjectInfo() {
@@ -47,7 +48,6 @@ public class ProjectMetricsEvent {
         final ProjectMetricsEvent that = (ProjectMetricsEvent) o;
 
         return !(getProjectInfo() != null ? !getProjectInfo().equals(that.getProjectInfo()) : that.getProjectInfo() != null);
-
     }
 
     @Override

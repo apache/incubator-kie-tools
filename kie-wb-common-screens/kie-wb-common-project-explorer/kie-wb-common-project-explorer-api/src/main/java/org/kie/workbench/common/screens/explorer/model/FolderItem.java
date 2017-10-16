@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -36,36 +36,36 @@ public class FolderItem {
     private FolderItemType type;
     private String lockedBy;
     private boolean lockedItems;
-    private List<String> tags = new ArrayList<String>(  );
+    private List<String> tags = new ArrayList<String>();
     private List<FolderItemOperation> restrictedOperations = new ArrayList<FolderItemOperation>();
 
-    public FolderItem( @MapsTo("item") final Object item,
-                       @MapsTo("itemName") final String itemName,
-                       @MapsTo("type") final FolderItemType type,
-                       @MapsTo("lockedItems") final boolean lockedItems,
-                       @MapsTo("lockedBy") final String lockedBy,
-                       @MapsTo( "tags" ) final List<String> tags,
-                       @MapsTo( "restrictedOperations" ) final List<FolderItemOperation> restrictedOperations ) {
+    public FolderItem(@MapsTo("item") final Object item,
+                      @MapsTo("itemName") final String itemName,
+                      @MapsTo("type") final FolderItemType type,
+                      @MapsTo("lockedItems") final boolean lockedItems,
+                      @MapsTo("lockedBy") final String lockedBy,
+                      @MapsTo("tags") final List<String> tags,
+                      @MapsTo("restrictedOperations") final List<FolderItemOperation> restrictedOperations) {
 
-        this( item,
-              itemName,
-              type );
+        this(item,
+             itemName,
+             type);
         this.lockedItems = lockedItems;
         this.lockedBy = lockedBy;
         this.tags = tags;
         this.restrictedOperations = restrictedOperations;
     }
 
-    public FolderItem( final Object item,
-                       final String itemName,
-                       final FolderItemType type ) {
+    public FolderItem(final Object item,
+                      final String itemName,
+                      final FolderItemType type) {
 
-        this.item = checkNotNull( "item",
-                                  item );
-        this.itemName = checkNotNull( "itemName",
-                                      itemName );
-        this.type = checkNotNull( "type",
-                                  type );
+        this.item = checkNotNull("item",
+                                 item);
+        this.itemName = checkNotNull("itemName",
+                                     itemName);
+        this.type = checkNotNull("type",
+                                 type);
     }
 
     public Object getItem() {
@@ -92,12 +92,12 @@ public class FolderItem {
         return this.tags;
     }
 
-    public void setTags( List<String> tags ) {
+    public void setTags(List<String> tags) {
         this.tags = tags;
     }
 
-    public boolean canDoOperation( FolderItemOperation operation ) {
-        return !restrictedOperations.contains( operation );
+    public boolean canDoOperation(FolderItemOperation operation) {
+        return !restrictedOperations.contains(operation);
     }
 
     @Override
@@ -114,34 +114,33 @@ public class FolderItem {
     }
 
     @Override
-    public boolean equals( Object obj ) {
-        if ( this == obj )
+    public boolean equals(Object obj) {
+        if (this == obj)
             return true;
-        if ( obj == null )
+        if (obj == null)
             return false;
-        if ( getClass() != obj.getClass() )
+        if (getClass() != obj.getClass())
             return false;
         FolderItem other = (FolderItem) obj;
-        if ( item == null ) {
-            if ( other.item != null )
+        if (item == null) {
+            if (other.item != null)
                 return false;
-        } else if ( !item.equals( other.item ) )
+        } else if (!item.equals(other.item))
             return false;
-        if ( itemName == null ) {
-            if ( other.itemName != null )
+        if (itemName == null) {
+            if (other.itemName != null)
                 return false;
-        } else if ( !itemName.equals( other.itemName ) )
+        } else if (!itemName.equals(other.itemName))
             return false;
-        if ( lockedBy == null ) {
-            if ( other.lockedBy != null )
+        if (lockedBy == null) {
+            if (other.lockedBy != null)
                 return false;
-        } else if ( !lockedBy.equals( other.lockedBy ) )
+        } else if (!lockedBy.equals(other.lockedBy))
             return false;
-        if ( lockedItems != other.lockedItems )
+        if (lockedItems != other.lockedItems)
             return false;
-        if ( type != other.type )
+        if (type != other.type)
             return false;
         return true;
     }
-
 }

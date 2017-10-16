@@ -18,9 +18,9 @@ package org.kie.workbench.common.services.refactoring;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.PartType;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.metadata.model.KProperty;
 
 /**

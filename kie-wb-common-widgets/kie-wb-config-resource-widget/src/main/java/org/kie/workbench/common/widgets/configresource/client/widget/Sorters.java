@@ -18,7 +18,7 @@ package org.kie.workbench.common.widgets.configresource.client.widget;
 import java.util.Comparator;
 import java.util.function.Function;
 
-import org.appformer.project.datamodel.imports.Import;
+import org.kie.soup.project.datamodel.imports.Import;
 
 public class Sorters {
 

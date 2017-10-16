@@ -21,12 +21,12 @@ import java.util.Set;
 
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.IndexElementsGenerator;
 import org.kie.workbench.common.services.refactoring.KPropertyImpl;
 import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.metadata.model.KProperty;
 
 public class DefaultIndexBuilder {

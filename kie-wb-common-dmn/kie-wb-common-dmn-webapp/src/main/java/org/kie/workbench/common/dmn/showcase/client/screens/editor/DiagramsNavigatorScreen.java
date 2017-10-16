@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
@@ -42,7 +43,7 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 @WorkbenchScreen(identifier = DiagramsNavigatorScreen.SCREEN_ID)

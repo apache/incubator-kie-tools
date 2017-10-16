@@ -17,7 +17,7 @@ package org.kie.workbench.common.screens.library.client.events;
 
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 public class ProjectDetailEvent {
 
@@ -27,8 +27,9 @@ public class ProjectDetailEvent {
 
     }
 
-    public ProjectDetailEvent( final ProjectInfo projectInfo ) {
-        this.projectInfo = checkNotNull( "projectInfo", projectInfo );
+    public ProjectDetailEvent(final ProjectInfo projectInfo) {
+        this.projectInfo = checkNotNull("projectInfo",
+                                        projectInfo);
     }
 
     public ProjectInfo getProjectInfo() {
@@ -36,18 +37,17 @@ public class ProjectDetailEvent {
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof ProjectDetailEvent ) ) {
+        if (!(o instanceof ProjectDetailEvent)) {
             return false;
         }
 
         final ProjectDetailEvent that = (ProjectDetailEvent) o;
 
-        return !( getProjectInfo() != null ? !getProjectInfo().equals( that.getProjectInfo() ) : that.getProjectInfo() != null );
-
+        return !(getProjectInfo() != null ? !getProjectInfo().equals(that.getProjectInfo()) : that.getProjectInfo() != null);
     }
 
     @Override

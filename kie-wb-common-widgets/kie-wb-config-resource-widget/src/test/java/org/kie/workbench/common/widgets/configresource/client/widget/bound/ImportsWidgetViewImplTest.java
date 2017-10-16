@@ -20,10 +20,10 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.appformer.project.datamodel.imports.Import;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.imports.Import;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.mocks.EventSourceMock;

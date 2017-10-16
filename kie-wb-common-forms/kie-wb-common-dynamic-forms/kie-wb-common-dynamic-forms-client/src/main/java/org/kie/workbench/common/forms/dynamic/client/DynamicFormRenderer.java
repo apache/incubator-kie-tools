@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Assert;
 import org.jboss.errai.databinding.client.api.Converter;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.IsFormView;
 import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGeneratorManager;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
@@ -37,7 +38,6 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
 
 @Dependent

@@ -15,8 +15,8 @@
 
 package org.kie.workbench.common.widgets.client.datamodel;
 
-import org.appformer.project.datamodel.imports.Import;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.imports.Import;
 
 /**
  * An event signalling adding an import
@@ -26,12 +26,12 @@ public class ImportAddedEvent {
     private final Import item;
     private final AsyncPackageDataModelOracle dmo;
 
-    public ImportAddedEvent( final AsyncPackageDataModelOracle dmo,
-                             final Import item ) {
-        this.dmo = PortablePreconditions.checkNotNull( "dmo",
-                                                       dmo );
-        this.item = PortablePreconditions.checkNotNull( "item",
-                                                        item );
+    public ImportAddedEvent(final AsyncPackageDataModelOracle dmo,
+                            final Import item) {
+        this.dmo = PortablePreconditions.checkNotNull("dmo",
+                                                      dmo);
+        this.item = PortablePreconditions.checkNotNull("item",
+                                                       item);
     }
 
     public Import getImport() {
@@ -41,5 +41,4 @@ public class ImportAddedEvent {
     public AsyncPackageDataModelOracle getDataModelOracle() {
         return this.dmo;
     }
-
 }

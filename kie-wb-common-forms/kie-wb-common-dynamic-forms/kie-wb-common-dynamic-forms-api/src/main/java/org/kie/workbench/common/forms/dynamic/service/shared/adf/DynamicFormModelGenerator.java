@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.adf.engine.shared.FormBuildingService;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.util.PropertyValueExtractor;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFormRenderingContext;
@@ -29,7 +30,6 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.HasNest
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.IsCRUDDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableColumnMeta;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Dependent
 public class DynamicFormModelGenerator {

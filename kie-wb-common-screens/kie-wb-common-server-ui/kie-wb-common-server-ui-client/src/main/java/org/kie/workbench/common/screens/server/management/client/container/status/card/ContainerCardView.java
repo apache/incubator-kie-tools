@@ -26,7 +26,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.server.management.client.widget.Div;
 import org.kie.workbench.common.screens.server.management.client.widget.card.CardPresenter;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Templated
 @Dependent
@@ -38,8 +38,9 @@ public class ContainerCardView extends Composite
     Div container;
 
     @Override
-    public void setCard( final CardPresenter.View cardView ) {
-        container.add( checkNotNull( "cardView", cardView ).asWidget() );
+    public void setCard(final CardPresenter.View cardView) {
+        container.add(checkNotNull("cardView",
+                                   cardView).asWidget());
     }
 
     @Override

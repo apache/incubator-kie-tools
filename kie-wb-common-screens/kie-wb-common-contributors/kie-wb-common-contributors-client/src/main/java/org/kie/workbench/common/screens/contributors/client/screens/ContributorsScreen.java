@@ -1,13 +1,12 @@
-
 /**
  * Copyright (C) 2014 Red Hat, Inc. and/or its affiliates.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +32,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.workbench.events.NotificationEvent.NotificationType.*;
 
 @Dependent
@@ -63,18 +62,18 @@ public class ContributorsScreen {
                               Event<NotificationEvent> workbenchNotification) {
 
         this(view,
-                displayerLocator.lookupDisplayer(ContributorsKPIs.getCommitsPerOrganization(view.getI18nService())),
-                displayerLocator.lookupDisplayer(ContributorsKPIs.getCommitsEvolution(view.getI18nService())),
-                displayerLocator.lookupDisplayer(ContributorsKPIs.getOrgUnitSelector(view.getI18nService())),
-                displayerLocator.lookupDisplayer(ContributorsKPIs.getRepoSelector(view.getI18nService())),
-                displayerLocator.lookupDisplayer(ContributorsKPIs.getAuthorSelector(view.getI18nService())),
-                displayerLocator.lookupDisplayer(ContributorsKPIs.getTopAuthorSelector(view.getI18nService())),
-                displayerLocator.lookupDisplayer(ContributorsKPIs.getYears(view.getI18nService())),
-                displayerLocator.lookupDisplayer(ContributorsKPIs.getQuarters(view.getI18nService())),
-                displayerLocator.lookupDisplayer(ContributorsKPIs.getDaysOfWeek(view.getI18nService())),
-                displayerLocator.lookupDisplayer(ContributorsKPIs.getAllCommits(view.getI18nService())),
-                displayerCoordinator,
-                workbenchNotification);
+             displayerLocator.lookupDisplayer(ContributorsKPIs.getCommitsPerOrganization(view.getI18nService())),
+             displayerLocator.lookupDisplayer(ContributorsKPIs.getCommitsEvolution(view.getI18nService())),
+             displayerLocator.lookupDisplayer(ContributorsKPIs.getOrgUnitSelector(view.getI18nService())),
+             displayerLocator.lookupDisplayer(ContributorsKPIs.getRepoSelector(view.getI18nService())),
+             displayerLocator.lookupDisplayer(ContributorsKPIs.getAuthorSelector(view.getI18nService())),
+             displayerLocator.lookupDisplayer(ContributorsKPIs.getTopAuthorSelector(view.getI18nService())),
+             displayerLocator.lookupDisplayer(ContributorsKPIs.getYears(view.getI18nService())),
+             displayerLocator.lookupDisplayer(ContributorsKPIs.getQuarters(view.getI18nService())),
+             displayerLocator.lookupDisplayer(ContributorsKPIs.getDaysOfWeek(view.getI18nService())),
+             displayerLocator.lookupDisplayer(ContributorsKPIs.getAllCommits(view.getI18nService())),
+             displayerCoordinator,
+             workbenchNotification);
     }
 
     public ContributorsScreen(ContributorsView view,
@@ -123,16 +122,16 @@ public class ContributorsScreen {
 
         // Init the view
         view.init(this,
-                commitsPerOrganization,
-                commitsEvolutionDisplayer,
-                organizationSelectorDisplayer,
-                repositorySelectorDisplayer,
-                authorSelectorDisplayer,
-                topAuthorSelectorDisplayer,
-                yearsSelectorDisplayer,
-                quarterSelectorDisplayer,
-                dayOfWeekSelectorDisplayer,
-                allCommitsDisplayer);
+                  commitsPerOrganization,
+                  commitsEvolutionDisplayer,
+                  organizationSelectorDisplayer,
+                  repositorySelectorDisplayer,
+                  authorSelectorDisplayer,
+                  topAuthorSelectorDisplayer,
+                  yearsSelectorDisplayer,
+                  quarterSelectorDisplayer,
+                  dayOfWeekSelectorDisplayer,
+                  allCommitsDisplayer);
     }
 
     @WorkbenchPartTitle
@@ -193,11 +192,13 @@ public class ContributorsScreen {
      * Catch any changes on the contributors data set and update the dashboard properly.
      */
     private void onContributorsDataSetOutdated(@Observes DataSetModifiedEvent event) {
-        checkNotNull("event", event);
+        checkNotNull("event",
+                     event);
 
         String targetUUID = event.getDataSetDef().getUUID();
         if (ContributorsDataSets.GIT_CONTRIB.equals(targetUUID)) {
-            workbenchNotification.fire(new NotificationEvent(i18n.contributorsDataSetOutdated(), INFO));
+            workbenchNotification.fire(new NotificationEvent(i18n.contributorsDataSetOutdated(),
+                                                             INFO));
             redraw();
         }
     }

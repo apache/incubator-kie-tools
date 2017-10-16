@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells;
 
-import org.appformer.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
@@ -29,63 +29,62 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDro
 public class ProxyPopupNumericByteDropDownEditCell extends
                                                    AbstractProxyPopupDropDownEditCell<Byte, Byte> {
 
-    public ProxyPopupNumericByteDropDownEditCell( final String factType,
-                                                  final String factField,
-                                                  final AsyncPackageDataModelOracle dmo,
-                                                  final CellTableDropDownDataValueMapProvider dropDownManager,
-                                                  final boolean isReadOnly ) {
-        super( factType,
-               factField,
-               dmo,
-               dropDownManager,
-               isReadOnly );
+    public ProxyPopupNumericByteDropDownEditCell(final String factType,
+                                                 final String factField,
+                                                 final AsyncPackageDataModelOracle dmo,
+                                                 final CellTableDropDownDataValueMapProvider dropDownManager,
+                                                 final boolean isReadOnly) {
+        super(factType,
+              factField,
+              dmo,
+              dropDownManager,
+              isReadOnly);
     }
 
     @Override
     protected ProxyPopupDropDown<Byte> getSingleValueEditor() {
-        return new AbstractProxyPopupDropDownTextBox<Byte>( TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_BYTE ),
-                                                            this ) {
+        return new AbstractProxyPopupDropDownTextBox<Byte>(TextBoxFactory.getTextBox(DataType.TYPE_NUMERIC_BYTE),
+                                                           this) {
             @Override
-            public String convertToString( final Byte value ) {
-                return ProxyPopupNumericByteDropDownEditCell.this.convertToString( value );
+            public String convertToString(final Byte value) {
+                return ProxyPopupNumericByteDropDownEditCell.this.convertToString(value);
             }
 
             @Override
-            public Byte convertFromString( final String value ) {
-                return ProxyPopupNumericByteDropDownEditCell.this.convertFromString( value );
+            public Byte convertFromString(final String value) {
+                return ProxyPopupNumericByteDropDownEditCell.this.convertFromString(value);
             }
         };
     }
 
     @Override
     protected ProxyPopupDropDown<Byte> getMultipleValueEditor() {
-        return new AbstractProxyPopupDropDownListBox<Byte>( this ) {
+        return new AbstractProxyPopupDropDownListBox<Byte>(this) {
             @Override
-            public String convertToString( final Byte value ) {
-                return ProxyPopupNumericByteDropDownEditCell.this.convertToString( value );
+            public String convertToString(final Byte value) {
+                return ProxyPopupNumericByteDropDownEditCell.this.convertToString(value);
             }
 
             @Override
-            public Byte convertFromString( final String value ) {
-                return ProxyPopupNumericByteDropDownEditCell.this.convertFromString( value );
+            public Byte convertFromString(final String value) {
+                return ProxyPopupNumericByteDropDownEditCell.this.convertFromString(value);
             }
         };
     }
 
-    private String convertToString( final Byte value ) {
-        return ( value == null ? null : value.toString() );
+    private String convertToString(final Byte value) {
+        return (value == null ? null : value.toString());
     }
 
-    private Byte convertFromString( final String value ) {
+    private Byte convertFromString(final String value) {
         Byte number = null;
-        if ( value.length() > 0 ) {
+        if (value.length() > 0) {
             try {
-                number = new Byte( value );
-            } catch ( NumberFormatException e ) {
-                number = Byte.valueOf( "0" );
+                number = new Byte(value);
+            } catch (NumberFormatException e) {
+                number = Byte.valueOf("0");
             }
         }
         return number;
     }
-
 }

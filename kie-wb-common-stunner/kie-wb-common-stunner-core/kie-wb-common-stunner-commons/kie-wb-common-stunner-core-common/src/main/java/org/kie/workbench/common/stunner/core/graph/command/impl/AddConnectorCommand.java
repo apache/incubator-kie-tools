@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -25,7 +26,6 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * A Command which adds an edge into a graph and sets its target node.

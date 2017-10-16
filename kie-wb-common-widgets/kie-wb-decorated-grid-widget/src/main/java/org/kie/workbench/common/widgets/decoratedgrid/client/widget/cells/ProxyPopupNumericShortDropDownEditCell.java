@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells;
 
-import org.appformer.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
@@ -29,63 +29,62 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDro
 public class ProxyPopupNumericShortDropDownEditCell extends
                                                     AbstractProxyPopupDropDownEditCell<Short, Short> {
 
-    public ProxyPopupNumericShortDropDownEditCell( final String factType,
-                                                   final String factField,
-                                                   final AsyncPackageDataModelOracle dmo,
-                                                   final CellTableDropDownDataValueMapProvider dropDownManager,
-                                                   final boolean isReadOnly ) {
-        super( factType,
-               factField,
-               dmo,
-               dropDownManager,
-               isReadOnly );
+    public ProxyPopupNumericShortDropDownEditCell(final String factType,
+                                                  final String factField,
+                                                  final AsyncPackageDataModelOracle dmo,
+                                                  final CellTableDropDownDataValueMapProvider dropDownManager,
+                                                  final boolean isReadOnly) {
+        super(factType,
+              factField,
+              dmo,
+              dropDownManager,
+              isReadOnly);
     }
 
     @Override
     protected ProxyPopupDropDown<Short> getSingleValueEditor() {
-        return new AbstractProxyPopupDropDownTextBox<Short>( TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_SHORT ),
-                                                             this ) {
+        return new AbstractProxyPopupDropDownTextBox<Short>(TextBoxFactory.getTextBox(DataType.TYPE_NUMERIC_SHORT),
+                                                            this) {
             @Override
-            public String convertToString( final Short value ) {
-                return ProxyPopupNumericShortDropDownEditCell.this.convertToString( value );
+            public String convertToString(final Short value) {
+                return ProxyPopupNumericShortDropDownEditCell.this.convertToString(value);
             }
 
             @Override
-            public Short convertFromString( final String value ) {
-                return ProxyPopupNumericShortDropDownEditCell.this.convertFromString( value );
+            public Short convertFromString(final String value) {
+                return ProxyPopupNumericShortDropDownEditCell.this.convertFromString(value);
             }
         };
     }
 
     @Override
     protected ProxyPopupDropDown<Short> getMultipleValueEditor() {
-        return new AbstractProxyPopupDropDownListBox<Short>( this ) {
+        return new AbstractProxyPopupDropDownListBox<Short>(this) {
             @Override
-            public String convertToString( final Short value ) {
-                return ProxyPopupNumericShortDropDownEditCell.this.convertToString( value );
+            public String convertToString(final Short value) {
+                return ProxyPopupNumericShortDropDownEditCell.this.convertToString(value);
             }
 
             @Override
-            public Short convertFromString( final String value ) {
-                return ProxyPopupNumericShortDropDownEditCell.this.convertFromString( value );
+            public Short convertFromString(final String value) {
+                return ProxyPopupNumericShortDropDownEditCell.this.convertFromString(value);
             }
         };
     }
 
-    private String convertToString( final Short value ) {
-        return ( value == null ? null : value.toString() );
+    private String convertToString(final Short value) {
+        return (value == null ? null : value.toString());
     }
 
-    private Short convertFromString( final String value ) {
+    private Short convertFromString(final String value) {
         Short number = null;
-        if ( value.length() > 0 ) {
+        if (value.length() > 0) {
             try {
-                number = new Short( value );
-            } catch ( NumberFormatException e ) {
-                number = Short.valueOf( "0" );
+                number = new Short(value);
+            } catch (NumberFormatException e) {
+                number = Short.valueOf("0");
             }
         }
         return number;
     }
-
 }

@@ -65,7 +65,7 @@ import org.uberfire.workbench.model.menu.Menus;
 
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 // TODO: i18n.
 @Dependent

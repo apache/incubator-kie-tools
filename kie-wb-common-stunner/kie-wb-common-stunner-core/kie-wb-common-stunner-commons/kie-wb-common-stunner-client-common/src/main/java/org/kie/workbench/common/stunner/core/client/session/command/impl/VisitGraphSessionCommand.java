@@ -21,7 +21,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasHighlightV
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class VisitGraphSessionCommand extends AbstractClientSessionCommand<ClientSession> {

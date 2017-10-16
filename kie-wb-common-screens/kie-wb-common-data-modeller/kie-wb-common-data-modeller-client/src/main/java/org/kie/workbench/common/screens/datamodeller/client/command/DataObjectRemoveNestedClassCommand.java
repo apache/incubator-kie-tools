@@ -16,36 +16,43 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.command;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.JavaClass;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 public class DataObjectRemoveNestedClassCommand extends AbstractDataModelCommand {
 
     private final JavaClass nestedClass;
 
-    public DataObjectRemoveNestedClassCommand( DataModelerContext context, String source, DataObject dataObject,
-                                               DataModelChangeNotifier notifier, JavaClass nestedClass ) {
-        super( context, source, dataObject, notifier );
-        this.nestedClass = PortablePreconditions.checkNotNull( "nestedClass", nestedClass );
+    public DataObjectRemoveNestedClassCommand(DataModelerContext context,
+                                              String source,
+                                              DataObject dataObject,
+                                              DataModelChangeNotifier notifier,
+                                              JavaClass nestedClass) {
+        super(context,
+              source,
+              dataObject,
+              notifier);
+        this.nestedClass = PortablePreconditions.checkNotNull("nestedClass",
+                                                              nestedClass);
     }
 
     @Override
     public void execute() {
-        dataObject.removeNestedClass( nestedClass );
+        dataObject.removeNestedClass(nestedClass);
 
         DataModelerEvent event = new DataObjectChangeEvent()
-                .withChangeType( ChangeType.NESTED_CLASS_REMOVE_CHANGE )
-                .withOldValue( nestedClass )
-                .withNewValue( null )
-                .withContextId( getContext().getContextId() )
-                .withSource( getSource() )
-                .withCurrentDataObject( getDataObject() );
+                .withChangeType(ChangeType.NESTED_CLASS_REMOVE_CHANGE)
+                .withOldValue(nestedClass)
+                .withNewValue(null)
+                .withContextId(getContext().getContextId())
+                .withSource(getSource())
+                .withCurrentDataObject(getDataObject());
 
-        notifyChange( event );
+        notifyChange(event);
     }
 }

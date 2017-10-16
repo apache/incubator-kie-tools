@@ -17,7 +17,7 @@ package org.kie.workbench.common.services.datamodel.backend.server.builder.proje
 
 import java.util.Map;
 
-import org.appformer.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
 
 /**
  * Builder for Fact Types
@@ -28,7 +28,5 @@ public interface FactBuilder {
 
     public Map<String, FactBuilder> getInternalBuilders();
 
-    public void build( final ProjectDataModelOracleImpl oracle );
-
-
+    public void build(final ProjectDataModelOracleImpl oracle);
 }

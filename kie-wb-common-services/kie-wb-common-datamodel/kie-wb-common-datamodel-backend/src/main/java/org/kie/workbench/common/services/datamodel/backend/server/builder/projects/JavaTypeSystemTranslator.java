@@ -20,7 +20,7 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 
-import org.appformer.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 /**
  * Translates Java's Type System to Guvnor's Type System
@@ -29,54 +29,54 @@ public class JavaTypeSystemTranslator implements ClassToGenericClassConverter {
 
     //Convert Java's Type system into a the portable Type system used by Guvnor (that is GWT friendly)
     @Override
-    public String translateClassToGenericType( final Class<?> type ) {
+    public String translateClassToGenericType(final Class<?> type) {
         String fieldType = null; // if null, will use standard operators
-        if ( type != null ) {
-            if ( type.isPrimitive() ) {
-                if ( type == byte.class ) {
+        if (type != null) {
+            if (type.isPrimitive()) {
+                if (type == byte.class) {
                     fieldType = DataType.TYPE_NUMERIC_BYTE;
-                } else if ( type == double.class ) {
+                } else if (type == double.class) {
                     fieldType = DataType.TYPE_NUMERIC_DOUBLE;
-                } else if ( type == float.class ) {
+                } else if (type == float.class) {
                     fieldType = DataType.TYPE_NUMERIC_FLOAT;
-                } else if ( type == int.class ) {
+                } else if (type == int.class) {
                     fieldType = DataType.TYPE_NUMERIC_INTEGER;
-                } else if ( type == long.class ) {
+                } else if (type == long.class) {
                     fieldType = DataType.TYPE_NUMERIC_LONG;
-                } else if ( type == short.class ) {
+                } else if (type == short.class) {
                     fieldType = DataType.TYPE_NUMERIC_SHORT;
-                } else if ( type == boolean.class ) {
+                } else if (type == boolean.class) {
                     fieldType = DataType.TYPE_BOOLEAN;
-                } else if ( type == char.class ) {
+                } else if (type == char.class) {
                     fieldType = DataType.TYPE_STRING;
-                } else if ( type == void.class ) {
+                } else if (type == void.class) {
                     fieldType = DataType.TYPE_VOID;
                 }
-            } else if ( BigDecimal.class.isAssignableFrom( type ) ) {
+            } else if (BigDecimal.class.isAssignableFrom(type)) {
                 fieldType = DataType.TYPE_NUMERIC_BIGDECIMAL;
-            } else if ( BigInteger.class.isAssignableFrom( type ) ) {
+            } else if (BigInteger.class.isAssignableFrom(type)) {
                 fieldType = DataType.TYPE_NUMERIC_BIGINTEGER;
-            } else if ( Byte.class.isAssignableFrom( type ) ) {
+            } else if (Byte.class.isAssignableFrom(type)) {
                 fieldType = DataType.TYPE_NUMERIC_BYTE;
-            } else if ( Double.class.isAssignableFrom( type ) ) {
+            } else if (Double.class.isAssignableFrom(type)) {
                 fieldType = DataType.TYPE_NUMERIC_DOUBLE;
-            } else if ( Float.class.isAssignableFrom( type ) ) {
+            } else if (Float.class.isAssignableFrom(type)) {
                 fieldType = DataType.TYPE_NUMERIC_FLOAT;
-            } else if ( Integer.class.isAssignableFrom( type ) ) {
+            } else if (Integer.class.isAssignableFrom(type)) {
                 fieldType = DataType.TYPE_NUMERIC_INTEGER;
-            } else if ( Long.class.isAssignableFrom( type ) ) {
+            } else if (Long.class.isAssignableFrom(type)) {
                 fieldType = DataType.TYPE_NUMERIC_LONG;
-            } else if ( Short.class.isAssignableFrom( type ) ) {
+            } else if (Short.class.isAssignableFrom(type)) {
                 fieldType = DataType.TYPE_NUMERIC_SHORT;
-            } else if ( Boolean.class.isAssignableFrom( type ) ) {
+            } else if (Boolean.class.isAssignableFrom(type)) {
                 fieldType = DataType.TYPE_BOOLEAN;
-            } else if ( String.class.isAssignableFrom( type ) ) {
+            } else if (String.class.isAssignableFrom(type)) {
                 fieldType = DataType.TYPE_STRING;
-            } else if ( Collection.class.isAssignableFrom( type ) ) {
+            } else if (Collection.class.isAssignableFrom(type)) {
                 fieldType = DataType.TYPE_COLLECTION;
-            } else if ( Date.class.isAssignableFrom( type ) ) {
+            } else if (Date.class.isAssignableFrom(type)) {
                 fieldType = DataType.TYPE_DATE;
-            } else if ( Comparable.class.isAssignableFrom( type ) ) {
+            } else if (Comparable.class.isAssignableFrom(type)) {
                 fieldType = DataType.TYPE_COMPARABLE;
             } else {
                 fieldType = type.getName();
@@ -84,5 +84,4 @@ public class JavaTypeSystemTranslator implements ClassToGenericClassConverter {
         }
         return fieldType;
     }
-
 }

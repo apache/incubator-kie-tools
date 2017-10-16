@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -14,17 +14,23 @@
 */
 package org.kie.workbench.common.services.datamodel.backend.server;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.kie.workbench.common.services.datamodel.backend.server.ProjectDataModelOracleTestUtils.assertContains;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.function.Predicate;
+
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
-import org.appformer.project.datamodel.oracle.TypeSource;
 import org.guvnor.ala.pipeline.ConfigExecutor;
 import org.guvnor.ala.registry.PipelineRegistry;
 import org.guvnor.ala.registry.inmemory.InMemoryPipelineRegistry;
@@ -67,8 +73,12 @@ import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.services.backend.builder.ala.BuildPipelineInitializer;
 import org.kie.workbench.common.services.backend.builder.ala.BuildPipelineInvoker;
 import org.kie.workbench.common.services.backend.builder.ala.LocalBuildConfigExecutor;
@@ -99,6 +109,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUDataM
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUProjectDataModelOracleCache;
 import org.kie.workbench.common.services.datamodel.backend.server.cache.ProjectDataModelOracleBuilderProvider;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
+import org.kie.workbench.common.services.datamodel.spi.DataModelExtension;
 import org.kie.workbench.common.services.shared.dependencies.DependencyService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -125,11 +136,7 @@ import org.uberfire.security.impl.authz.DefaultPermissionManager;
 import org.uberfire.security.impl.authz.DefaultPermissionTypeRegistry;
 import org.uberfire.security.impl.authz.DotNamedPermissionType;
 
-import static org.junit.Assert.*;
-import static org.kie.workbench.common.services.datamodel.backend.server.ProjectDataModelOracleTestUtils.*;
-import static org.mockito.Mockito.*;
-
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DataModelServiceConstructorTest {
 
     private SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
@@ -137,7 +144,10 @@ public class DataModelServiceConstructorTest {
     private ResourceType REPOSITORY_TYPE = Repository.RESOURCE_TYPE;
 
     @Mock
-    private Instance<ProjectResourcePathResolver > resourcePathResolversInstance;
+    private Instance<ProjectResourcePathResolver> resourcePathResolversInstance;
+
+    @Mock
+    private Instance<DataModelExtension> dataModelExtensionProvider;
 
     private class HackedKModuleServiceImpl extends KModuleServiceImpl {
 
@@ -206,6 +216,11 @@ public class DataModelServiceConstructorTest {
         }
     }
 
+    @Before
+    public void setup() {
+        when(dataModelExtensionProvider.iterator()).thenReturn(Collections.emptyListIterator());
+    }
+
     @Test
     public void testConstructor()
             throws IllegalArgumentException, FileSystemNotFoundException, SecurityException, URISyntaxException {
@@ -220,8 +235,8 @@ public class DataModelServiceConstructorTest {
                                  groups);
         SessionInfo sessionInfo = new SessionInfoImpl("admin",
                                                       user);
-        Instance<User> userInstance = mock( Instance.class );
-        when( userInstance.get() ).thenReturn( user );
+        Instance<User> userInstance = mock(Instance.class);
+        when(userInstance.get()).thenReturn(user);
 
         ConfigIOServiceProducer cfiosProducer = new ConfigIOServiceProducer();
         cfiosProducer.setup();
@@ -298,7 +313,7 @@ public class DataModelServiceConstructorTest {
                                                                        commentedOptionFactory,
                                                                        backward,
                                                                        kModuleService,
-                                                                       resourcePathResolversInstance ) {
+                                                                       resourcePathResolversInstance) {
             @Override
             protected void addSecurityGroups(final KieProject project) {
                 //Do nothing. This test demonstrating DMO usage without WELD does not use permissions.
@@ -373,41 +388,43 @@ public class DataModelServiceConstructorTest {
                                                            classFilterBeans
         );
 
-        Instance< PostBuildHandler > handlerInstance = mock( Instance.class );
-        Iterator<PostBuildHandler> mockIterator = mock( Iterator.class );
-        when( handlerInstance.iterator() ).thenReturn( mockIterator );
-        when ( mockIterator.hasNext() ).thenReturn( false );
+        Instance<PostBuildHandler> handlerInstance = mock(Instance.class);
+        Iterator<PostBuildHandler> mockIterator = mock(Iterator.class);
+        when(handlerInstance.iterator()).thenReturn(mockIterator);
+        when(mockIterator.hasNext()).thenReturn(false);
 
-        DeploymentVerifier deploymentVerifier = new DeploymentVerifier( repositoryResolver, projectRepositoriesService );
-        BuildHelper buildHelper = new BuildHelper( pomService,
-                                                    m2RepoService,
-                                                    projectService,
-                                                    deploymentVerifier,
-                                                    builderCache,
-                                                    handlerInstance,
-                                                    userInstance );
+        DeploymentVerifier deploymentVerifier = new DeploymentVerifier(repositoryResolver, projectRepositoriesService);
+        BuildHelper buildHelper = new BuildHelper(pomService,
+                                                  m2RepoService,
+                                                  projectService,
+                                                  deploymentVerifier,
+                                                  builderCache,
+                                                  handlerInstance,
+                                                  userInstance);
         PipelineRegistry pipelineRegistry = new InMemoryPipelineRegistry();
-        BuildPipelineInitializer pipelineInitializer = new BuildPipelineInitializer( pipelineRegistry,
-                getConfigExecutors( projectService, buildHelper ) );
-        BuildPipelineInvoker pipelineInvoker = new BuildPipelineInvoker( pipelineInitializer.getExecutor(), pipelineRegistry  );
+        BuildPipelineInitializer pipelineInitializer = new BuildPipelineInitializer(pipelineRegistry,
+                                                                                    getConfigExecutors(projectService, buildHelper));
+        BuildPipelineInvoker pipelineInvoker = new BuildPipelineInvoker(pipelineInitializer.getExecutor(), pipelineRegistry);
 
-        BuildServiceHelper buildServiceHelper = new BuildServiceHelper( pipelineInvoker, deploymentVerifier );
-        BuildService buildService = new BuildServiceImpl( projectService, buildServiceHelper, builderCache );
-        BuildInfoService buildInfoService = new BuildInfoService( buildService, builderCache );
+        BuildServiceHelper buildServiceHelper = new BuildServiceHelper(pipelineInvoker, deploymentVerifier);
+        BuildService buildService = new BuildServiceImpl(projectService, buildServiceHelper, builderCache);
+        BuildInfoService buildInfoService = new BuildInfoService(buildService, builderCache);
 
         ProjectDataModelOracleBuilderProvider builderProvider = new ProjectDataModelOracleBuilderProvider(packageNameWhiteListService,
                                                                                                           importsService);
 
         LRUProjectDataModelOracleCache cacheProjects = new LRUProjectDataModelOracleCache(builderProvider,
                                                                                           projectService,
-                                                                                          buildInfoService );
+                                                                                          buildInfoService);
 
-        dependenciesClassLoaderCache.setBuildInfoService( buildInfoService );
+        dependenciesClassLoaderCache.setBuildInfoService(buildInfoService);
         LRUDataModelOracleCache cachePackages = new LRUDataModelOracleCache(ioService,
                                                                             fileDiscoveryService,
                                                                             cacheProjects,
                                                                             projectService,
-                                                                            buildInfoService );
+                                                                            buildInfoService,
+                                                                            dataModelExtensionProvider,
+                                                                            new RawMVELEvaluator());
         DataModelService dataModelService = new DataModelServiceImpl(cachePackages,
                                                                      cacheProjects,
                                                                      projectService);
@@ -440,12 +457,12 @@ public class DataModelServiceConstructorTest {
                      oracle.getProjectTypeSources().get("java.lang.String"));
     }
 
-    private Collection< ConfigExecutor > getConfigExecutors( KieProjectService projectService, BuildHelper buildHelper ) {
-        Collection< ConfigExecutor > configs = new ArrayList<>( );
-        configs.add( new LocalSourceConfigExecutor() );
-        configs.add( new LocalProjectConfigExecutor( projectService ) );
-        configs.add( new LocalBuildConfigExecutor() );
-        configs.add( new LocalBuildExecConfigExecutor( buildHelper ) );
+    private Collection<ConfigExecutor> getConfigExecutors(KieProjectService projectService, BuildHelper buildHelper) {
+        Collection<ConfigExecutor> configs = new ArrayList<>();
+        configs.add(new LocalSourceConfigExecutor());
+        configs.add(new LocalProjectConfigExecutor(projectService));
+        configs.add(new LocalBuildConfigExecutor());
+        configs.add(new LocalBuildExecConfigExecutor(buildHelper));
         return configs;
     }
 }

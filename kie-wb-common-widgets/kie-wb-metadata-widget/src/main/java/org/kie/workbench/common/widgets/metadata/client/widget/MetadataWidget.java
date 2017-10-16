@@ -41,7 +41,7 @@ import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.mvp.Command;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * This displays the metadata for a versionable artifact. It also captures
@@ -232,6 +232,5 @@ public class MetadataWidget
         yesNoCancelPopup.setClosable(false);
         yesNoCancelPopup.show();
     }
-
 }
 

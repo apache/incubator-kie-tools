@@ -27,10 +27,10 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.editor.client.handler.formModel.container.FormModelCreationContainer;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Dependent
 public class FormModelsPresenter implements IsWidget {

@@ -45,7 +45,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickH
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public final class SelectionControlImpl<H extends AbstractCanvasHandler>

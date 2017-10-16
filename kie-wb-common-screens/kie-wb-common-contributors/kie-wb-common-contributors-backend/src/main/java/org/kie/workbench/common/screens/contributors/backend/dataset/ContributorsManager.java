@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -61,7 +62,7 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.*;
 import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSets.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 /**
  * This class is in charge of the initialization of a data set holding all the
@@ -125,7 +126,8 @@ public class ContributorsManager implements DataSetGenerator {
     public DataSet buildDataSet(Map<String, String> params) {
         DataSetBuilder dsBuilder = DataSetFactory.newDataSetBuilder();
         for (DataColumnDef columnDef : dataSetdef.getColumns()) {
-            dsBuilder.column(columnDef.getId(), columnDef.getColumnType());
+            dsBuilder.column(columnDef.getId(),
+                             columnDef.getColumnType());
         }
 
         Collection<OrganizationalUnit> orgUnitList = organizationalUnitService.getOrganizationalUnits();
@@ -135,7 +137,8 @@ public class ContributorsManager implements DataSetGenerator {
             Collection<Repository> repoList = orgUnit.getRepositories();
             for (Repository repo : repoList) {
                 String repoAlias = repo.getAlias();
-                Set<Project> repoProjects = projectService.getAllProjects(repo, repo.getDefaultBranch());
+                Set<Project> repoProjects = projectService.getAllProjects(repo,
+                                                                          repo.getDefaultBranch());
 
                 for (Project project : repoProjects) {
                     String projectName = project.getProjectName();
@@ -143,7 +146,13 @@ public class ContributorsManager implements DataSetGenerator {
                     List<VersionRecord> recordList = recordService.loadVersionRecords(projectRoot);
 
                     if (recordList.isEmpty()) {
-                        dsBuilder.row(org, repoAlias, null, null, null, "Empty project", null);
+                        dsBuilder.row(org,
+                                      repoAlias,
+                                      null,
+                                      null,
+                                      null,
+                                      "Empty project",
+                                      null);
                     } else {
                         for (VersionRecord record : recordList) {
                             String alias = record.author();
@@ -151,7 +160,12 @@ public class ContributorsManager implements DataSetGenerator {
                             author = author == null ? alias : author;
                             String msg = record.comment();
                             Date date = record.date();
-                            dsBuilder.row(org, repoAlias, projectName, author, msg, date);
+                            dsBuilder.row(org,
+                                          repoAlias,
+                                          projectName,
+                                          author,
+                                          msg,
+                                          date);
                         }
                     }
                 }
@@ -170,52 +184,62 @@ public class ContributorsManager implements DataSetGenerator {
     // Keep synced the contributions data set with the changes made into the org>repos>commits hierarchy
 
     public void onRepoAddedToOrgUnit(@Observes final RepoAddedToOrganizationalUnitEvent event) {
-        checkNotNull("event", event);
+        checkNotNull("event",
+                     event);
         invalidateDataSet();
     }
 
     public void onRepoRemovedFromOrgUnit(@Observes final RepoRemovedFromOrganizationalUnitEvent event) {
-        checkNotNull("event", event);
+        checkNotNull("event",
+                     event);
         invalidateDataSet();
     }
 
     public void onOrganizationUnitAdded(@Observes final NewOrganizationalUnitEvent event) {
-        checkNotNull("event", event);
+        checkNotNull("event",
+                     event);
         invalidateDataSet();
     }
 
     public void onOrganizationUnitRemoved(@Observes final RemoveOrganizationalUnitEvent event) {
-        checkNotNull("event", event);
+        checkNotNull("event",
+                     event);
         invalidateDataSet();
     }
 
     public void processResourceAdd(@Observes final ResourceAddedEvent event) {
-        checkNotNull("event", event);
+        checkNotNull("event",
+                     event);
         invalidateDataSet();
     }
 
     public void processResourceDelete(@Observes final ResourceDeletedEvent event) {
-        checkNotNull("event", event);
+        checkNotNull("event",
+                     event);
         invalidateDataSet();
     }
 
     public void processResourceUpdate(@Observes final ResourceUpdatedEvent event) {
-        checkNotNull("event", event);
+        checkNotNull("event",
+                     event);
         invalidateDataSet();
     }
 
     public void processResourceCopied(@Observes final ResourceCopiedEvent event) {
-        checkNotNull("event", event);
+        checkNotNull("event",
+                     event);
         invalidateDataSet();
     }
 
     public void processResourceRenamed(@Observes final ResourceRenamedEvent event) {
-        checkNotNull("event", event);
+        checkNotNull("event",
+                     event);
         invalidateDataSet();
     }
 
     public void processBatchChanges(@Observes final ResourceBatchChangesEvent event) {
-        checkNotNull("event", event);
+        checkNotNull("event",
+                     event);
         invalidateDataSet();
     }
 }

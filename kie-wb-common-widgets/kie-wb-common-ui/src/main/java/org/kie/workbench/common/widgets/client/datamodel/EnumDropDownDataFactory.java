@@ -19,14 +19,14 @@ package org.kie.workbench.common.widgets.client.datamodel;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.appformer.project.datamodel.oracle.DropDownData;
+import org.kie.soup.project.datamodel.oracle.DropDownData;
 
 import static org.kie.workbench.common.widgets.client.datamodel.DataModelHelper.*;
 
 class EnumDropDownDataFactory {
 
     private FilteredEnumLists filteredEnumLists;
-    private CurrentValues     currentValues;
+    private CurrentValues currentValues;
 
     EnumDropDownDataFactory(FilteredEnumLists filteredEnumLists,
                             Map<String, String> currentValueMap) {

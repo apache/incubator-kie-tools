@@ -20,14 +20,15 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.core.util.MVELSafeHelper;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
+import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
 import org.kie.workbench.common.services.shared.enums.EnumDropdownService;
 import org.kie.workbench.common.services.shared.project.KieProject;
@@ -44,7 +45,7 @@ import org.uberfire.backend.vfs.Path;
 @ApplicationScoped
 public class EnumDropdownServiceImpl implements EnumDropdownService {
 
-    private static final Logger logger = LoggerFactory.getLogger( EnumDropdownServiceImpl.class );
+    private static final Logger logger = LoggerFactory.getLogger(EnumDropdownServiceImpl.class);
 
     @Inject
     private BuildInfoService buildInfoService;
@@ -52,81 +53,84 @@ public class EnumDropdownServiceImpl implements EnumDropdownService {
     @Inject
     private KieProjectService projectService;
 
+    @Inject
+    private MVELEvaluator mvelEvaluator;
+
     @Override
-    public String[] loadDropDownExpression( final Path resource,
-                                            final String[] valuePairs,
-                                            final String expression ) {
+    public String[] loadDropDownExpression(final Path resource,
+                                           final String[] valuePairs,
+                                           final String expression) {
 
         //Lookup class-loader for Project (as the helper class can be a project dependency)
-        final KieProject project = projectService.resolveProject( resource );
-        if ( project == null ) {
-            logger.error( "A Project could not be resolved for path '" + resource.toURI() + "'. No enums will be returned." );
+        final KieProject project = projectService.resolveProject(resource);
+        if (project == null) {
+            logger.error("A Project could not be resolved for path '" + resource.toURI() + "'. No enums will be returned.");
             return null;
         }
-        final KieModule module = buildInfoService.getBuildInfo( project ).getKieModuleIgnoringErrors();
-        if ( module == null ) {
-            logger.error( "A KieModule could not be resolved for path '" + resource.toURI() + "'. No enums will be returned." );
+        final KieModule module = buildInfoService.getBuildInfo(project).getKieModuleIgnoringErrors();
+        if (module == null) {
+            logger.error("A KieModule could not be resolved for path '" + resource.toURI() + "'. No enums will be returned.");
             return null;
         }
-        final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData( module ).getClassLoader();
+        final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData(module).getClassLoader();
 
-        return loadDropDownExpression( classLoader,
-                                       valuePairs,
-                                       expression );
+        return loadDropDownExpression(classLoader,
+                                      mvelEvaluator,
+                                      valuePairs,
+                                      expression);
     }
 
-    protected String[] loadDropDownExpression( final ClassLoader classLoader,
-                                               final String[] valuePairs,
-                                               String expression ) {
+    protected String[] loadDropDownExpression(final ClassLoader classLoader,
+                                              final MVELEvaluator mvelEvaluator,
+                                              final String[] valuePairs,
+                                              String expression) {
         try {
-            final Map<String, String> context = new HashMap<String, String>();
-            for ( final String valuePair : valuePairs ) {
-                if ( valuePair == null ) {
-                    return new String[ 0 ];
+            final Map<String, String> context = new HashMap<>();
+            for (final String valuePair : valuePairs) {
+                if (valuePair == null) {
+                    return new String[0];
                 }
-                String[] pair = valuePair.split( "=" );
-                if ( pair.length == 1 ) {
-                    String[] swap = new String[ 2 ];
-                    swap[ 0 ] = pair[ 0 ];
-                    swap[ 1 ] = "";
+                String[] pair = valuePair.split("=");
+                if (pair.length == 1) {
+                    String[] swap = new String[2];
+                    swap[0] = pair[0];
+                    swap[1] = "";
                     pair = swap;
                 }
-                context.put( pair[ 0 ],
-                             pair[ 1 ] );
+                context.put(pair[0],
+                            pair[1]);
             }
 
             // first interpolate the pairs
-            expression = (String) TemplateRuntime.eval( expression,
-                                                        context );
+            expression = (String) TemplateRuntime.eval(expression,
+                                                       context);
 
             // now we can eval it for real...
             final ParserConfiguration pconf = new ParserConfiguration();
-            final ParserContext pctx = new ParserContext( pconf );
-            pconf.setClassLoader( classLoader );
+            final ParserContext pctx = new ParserContext(pconf);
+            pconf.setClassLoader(classLoader);
 
-            final Serializable compiled = MVEL.compileExpression( expression,
-                                                                  pctx );
-            Object result = MVELSafeHelper.getEvaluator().executeExpression( compiled,
-                                                                             new HashMap<String, Object>() );
+            final Serializable compiled = MVEL.compileExpression(expression,
+                                                                 pctx);
+            Object result = mvelEvaluator.executeExpression(compiled,
+                                                            new HashMap<String, Object>());
 
             //Handle result of evaluation
-            if ( result instanceof String[] ) {
+            if (result instanceof String[]) {
                 return (String[]) result;
-            } else if ( result instanceof List ) {
+            } else if (result instanceof List) {
                 List l = (List) result;
-                String[] xs = new String[ l.size() ];
-                for ( int i = 0; i < xs.length; i++ ) {
-                    Object el = l.get( i );
-                    xs[ i ] = el.toString();
+                String[] xs = new String[l.size()];
+                for (int i = 0; i < xs.length; i++) {
+                    Object el = l.get(i);
+                    xs[i] = el.toString();
                 }
                 return xs;
             } else {
                 return null;
             }
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
-
 }

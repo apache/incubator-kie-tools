@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -37,7 +38,7 @@ import org.kie.workbench.common.screens.datasource.management.service.DefExplore
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Service
 @ApplicationScoped
@@ -59,61 +60,65 @@ public class DefExplorerQueryServiceImpl
     @Inject
     private User identity;
 
-    public DefExplorerQueryResult executeQuery( final DefExplorerQuery query ) {
-        checkNotNull( "query", query );
-        if ( query.isGlobalQuery() ) {
+    public DefExplorerQueryResult executeQuery(final DefExplorerQuery query) {
+        checkNotNull("query",
+                     query);
+        if (query.isGlobalQuery()) {
             DefExplorerQueryResult result = new DefExplorerQueryResult();
-            result.setDataSourceDefs( queryService.findGlobalDataSources( true ) );
-            result.setDriverDefs( queryService.findGlobalDrivers() );
+            result.setDataSourceDefs(queryService.findGlobalDataSources(true));
+            result.setDriverDefs(queryService.findGlobalDrivers());
             return result;
         } else {
-            return resolveQuery( query );
+            return resolveQuery(query);
         }
     }
 
-    private DefExplorerQueryResult resolveQuery( final DefExplorerQuery query ) {
+    private DefExplorerQueryResult resolveQuery(final DefExplorerQuery query) {
 
         DefExplorerQueryResult result = new DefExplorerQueryResult();
 
         //load the organizational units.
         Collection<OrganizationalUnit> organizationalUnits = resolveOrganizationalUnits();
         //piggyback the organizational units.
-        result.getOrganizationalUnits().addAll( organizationalUnits );
-        if ( query.getOrganizationalUnit() == null ||
-                !containsOU( organizationalUnits, query.getOrganizationalUnit() ) ) {
+        result.getOrganizationalUnits().addAll(organizationalUnits);
+        if (query.getOrganizationalUnit() == null ||
+                !containsOU(organizationalUnits,
+                            query.getOrganizationalUnit())) {
             //if no OU was set for filtering or the selected OU has been removed or has changed in backend.
             return result;
         }
 
         //set the repositories for current OU.
-        Map<String, Repository> repositories = resolveRepositories( query.getOrganizationalUnit() );
+        Map<String, Repository> repositories = resolveRepositories(query.getOrganizationalUnit());
         //piggyback the repositories.
-        result.getRepositories().addAll( repositories.values() );
-        if ( query.getRepository() == null ||
-                !repositories.containsKey( query.getRepository().getAlias() ) ) {
+        result.getRepositories().addAll(repositories.values());
+        if (query.getRepository() == null ||
+                !repositories.containsKey(query.getRepository().getAlias())) {
             //if no Repository was set for filtering or the selected Repository has been removed or has
             // changed in backend.
             return result;
         }
 
         //load the projects for current OU/Repository and the selected branch.
-        Map<String, Project> projects = resolveProjects( query.getRepository(), query.getBranch() );
-        result.getProjects().addAll( projects.values() );
-        if ( query.getProject() == null || !projects.containsKey( query.getProject().getProjectName() ) ) {
+        Map<String, Project> projects = resolveProjects(query.getRepository(),
+                                                        query.getBranch());
+        result.getProjects().addAll(projects.values());
+        if (query.getProject() == null || !projects.containsKey(query.getProject().getProjectName())) {
             //if no Project was set for filtering or the selected Project has been removed or has
             // changed in backend.
             return result;
         }
 
         //get the data sources and drivers for the selected project.
-        result.setDataSourceDefs( queryService.findProjectDataSources( query.getProject() ) );
-        result.setDriverDefs( queryService.findProjectDrivers( query.getProject() ) );
+        result.setDataSourceDefs(queryService.findProjectDataSources(query.getProject()));
+        result.setDriverDefs(queryService.findProjectDrivers(query.getProject()));
         return result;
     }
 
-    private boolean containsOU( final Collection<OrganizationalUnit> organizationalUnits, final OrganizationalUnit ou ) {
-        for ( OrganizationalUnit unit : organizationalUnits ) {
-            if ( unit.getName().equals( ou.getName() ) ) {
+    private boolean containsOU(final Collection<OrganizationalUnit> organizationalUnits,
+                               final OrganizationalUnit ou) {
+        for (OrganizationalUnit unit : organizationalUnits) {
+            if (unit.getName().equals(ou.getName())) {
                 return true;
             }
         }
@@ -126,10 +131,10 @@ public class DefExplorerQueryServiceImpl
     private Set<OrganizationalUnit> resolveOrganizationalUnits() {
         final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getOrganizationalUnits();
         final Set<OrganizationalUnit> authorizedOrganizationalUnits = new HashSet<>();
-        for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
-            if ( authorizationManager.authorize( organizationalUnit,
-                    identity ) ) {
-                authorizedOrganizationalUnits.add( organizationalUnit );
+        for (OrganizationalUnit organizationalUnit : organizationalUnits) {
+            if (authorizationManager.authorize(organizationalUnit,
+                                               identity)) {
+                authorizedOrganizationalUnits.add(organizationalUnit);
             }
         }
         return authorizedOrganizationalUnits;
@@ -138,18 +143,18 @@ public class DefExplorerQueryServiceImpl
     /**
      * Given an organizational unit, resolves the repositories accessible by current user in the given OU.
      */
-    private Map<String, Repository> resolveRepositories( final OrganizationalUnit organizationalUnit ) {
+    private Map<String, Repository> resolveRepositories(final OrganizationalUnit organizationalUnit) {
         final Map<String, Repository> authorizedRepositories = new HashMap<>();
-        if ( organizationalUnit == null ) {
+        if (organizationalUnit == null) {
             return authorizedRepositories;
         }
         //Reload OrganizationalUnit as the organizational unit's repository list might have been changed server-side
-        final Collection<Repository> repositories = organizationalUnitService.getOrganizationalUnit( organizationalUnit.getName() ).getRepositories();
-        for ( Repository repository : repositories ) {
-            if ( authorizationManager.authorize( repository,
-                    identity ) ) {
-                authorizedRepositories.put( repository.getAlias(),
-                        repository );
+        final Collection<Repository> repositories = organizationalUnitService.getOrganizationalUnit(organizationalUnit.getName()).getRepositories();
+        for (Repository repository : repositories) {
+            if (authorizationManager.authorize(repository,
+                                               identity)) {
+                authorizedRepositories.put(repository.getAlias(),
+                                           repository);
             }
         }
         return authorizedRepositories;
@@ -158,21 +163,21 @@ public class DefExplorerQueryServiceImpl
     /**
      * Given a repository and a branch resolves all the projects accessible by current user in the given repository.
      */
-    private Map<String, Project> resolveProjects( final Repository repository,
-            final String branch ) {
+    private Map<String, Project> resolveProjects(final Repository repository,
+                                                 final String branch) {
         final Map<String, Project> authorizedProjects = new HashMap<>();
 
-        if ( repository == null ) {
+        if (repository == null) {
             return authorizedProjects;
         } else {
-            Set<Project> allProjects = projectService.getProjects( repository,
-                    branch );
+            Set<Project> allProjects = projectService.getProjects(repository,
+                                                                  branch);
 
-            for ( Project project : allProjects ) {
-                if ( authorizationManager.authorize( project,
-                        identity ) ) {
-                    authorizedProjects.put( project.getProjectName(),
-                            project );
+            for (Project project : allProjects) {
+                if (authorizationManager.authorize(project,
+                                                   identity)) {
+                    authorizedProjects.put(project.getProjectName(),
+                                           project);
                 }
             }
 

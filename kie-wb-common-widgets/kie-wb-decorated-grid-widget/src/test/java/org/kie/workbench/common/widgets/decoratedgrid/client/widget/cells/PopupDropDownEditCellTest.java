@@ -22,11 +22,11 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.appformer.project.datamodel.oracle.DropDownData;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 import org.mockito.ArgumentCaptor;
@@ -34,8 +34,8 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PopupDropDownEditCellTest {
@@ -56,79 +56,78 @@ public class PopupDropDownEditCellTest {
 
     @Before
     public void setup() {
-        cell = new PopupDropDownEditCell( FACT_TYPE,
-                                          FACT_FIELD,
-                                          dmo,
-                                          dropDownManager,
-                                          false );
+        cell = new PopupDropDownEditCell(FACT_TYPE,
+                                         FACT_FIELD,
+                                         dmo,
+                                         dropDownManager,
+                                         false);
     }
 
     @Test
     public void testRender_NoDropDownData() {
-        final Cell.Context context = mock( Cell.Context.class );
-        final SafeHtmlBuilder safeHtmlBuilder = mock( SafeHtmlBuilder.class );
-        cell.render( context,
-                     "content",
-                     safeHtmlBuilder );
+        final Cell.Context context = mock(Cell.Context.class);
+        final SafeHtmlBuilder safeHtmlBuilder = mock(SafeHtmlBuilder.class);
+        cell.render(context,
+                    "content",
+                    safeHtmlBuilder);
 
-        verify( safeHtmlBuilder,
-                never() ).append( any( SafeHtml.class ) );
+        verify(safeHtmlBuilder,
+               never()).append(any(SafeHtml.class));
     }
 
     @Test
     public void testRender_SimpleDropDownData() {
-        final Cell.Context context = mock( Cell.Context.class );
-        final SafeHtmlBuilder safeHtmlBuilder = mock( SafeHtmlBuilder.class );
+        final Cell.Context context = mock(Cell.Context.class);
+        final SafeHtmlBuilder safeHtmlBuilder = mock(SafeHtmlBuilder.class);
 
-        final String[] data = new String[]{ "one", "two" };
-        final DropDownData dd = DropDownData.create( data );
+        final String[] data = new String[]{"one", "two"};
+        final DropDownData dd = DropDownData.create(data);
 
-        when( dmo.getEnums( eq( FACT_TYPE ),
-                            eq( FACT_FIELD ),
-                            any( Map.class ) ) ).thenReturn( dd );
-        when( listBox.getItemCount() ).thenReturn( data.length );
-        when( listBox.getValue( eq( 0 ) ) ).thenReturn( "one" );
-        when( listBox.getValue( eq( 1 ) ) ).thenReturn( "two" );
-        when( listBox.getItemText( eq( 0 ) ) ).thenReturn( "one" );
-        when( listBox.getItemText( eq( 1 ) ) ).thenReturn( "two" );
+        when(dmo.getEnums(eq(FACT_TYPE),
+                          eq(FACT_FIELD),
+                          any(Map.class))).thenReturn(dd);
+        when(listBox.getItemCount()).thenReturn(data.length);
+        when(listBox.getValue(eq(0))).thenReturn("one");
+        when(listBox.getValue(eq(1))).thenReturn("two");
+        when(listBox.getItemText(eq(0))).thenReturn("one");
+        when(listBox.getItemText(eq(1))).thenReturn("two");
 
-        cell.render( context,
-                     "one",
-                     safeHtmlBuilder );
+        cell.render(context,
+                    "one",
+                    safeHtmlBuilder);
 
-        final ArgumentCaptor<SafeHtml> captor = ArgumentCaptor.forClass( SafeHtml.class );
-        verify( safeHtmlBuilder,
-                times( 1 ) ).append( captor.capture() );
-        assertEquals( "one",
-                      captor.getValue().asString() );
+        final ArgumentCaptor<SafeHtml> captor = ArgumentCaptor.forClass(SafeHtml.class);
+        verify(safeHtmlBuilder,
+               times(1)).append(captor.capture());
+        assertEquals("one",
+                     captor.getValue().asString());
     }
 
     @Test
     public void testRender_LookupDropDownData() {
-        final Cell.Context context = mock( Cell.Context.class );
-        final SafeHtmlBuilder safeHtmlBuilder = mock( SafeHtmlBuilder.class );
+        final Cell.Context context = mock(Cell.Context.class);
+        final SafeHtmlBuilder safeHtmlBuilder = mock(SafeHtmlBuilder.class);
 
-        final String[] data = new String[]{ "1=one", "2=two" };
-        final DropDownData dd = DropDownData.create( data );
+        final String[] data = new String[]{"1=one", "2=two"};
+        final DropDownData dd = DropDownData.create(data);
 
-        when( dmo.getEnums( eq( FACT_TYPE ),
-                            eq( FACT_FIELD ),
-                            any( Map.class ) ) ).thenReturn( dd );
-        when( listBox.getItemCount() ).thenReturn( data.length );
-        when( listBox.getValue( eq( 0 ) ) ).thenReturn( "1" );
-        when( listBox.getValue( eq( 1 ) ) ).thenReturn( "2" );
-        when( listBox.getItemText( eq( 0 ) ) ).thenReturn( "one" );
-        when( listBox.getItemText( eq( 1 ) ) ).thenReturn( "two" );
+        when(dmo.getEnums(eq(FACT_TYPE),
+                          eq(FACT_FIELD),
+                          any(Map.class))).thenReturn(dd);
+        when(listBox.getItemCount()).thenReturn(data.length);
+        when(listBox.getValue(eq(0))).thenReturn("1");
+        when(listBox.getValue(eq(1))).thenReturn("2");
+        when(listBox.getItemText(eq(0))).thenReturn("one");
+        when(listBox.getItemText(eq(1))).thenReturn("two");
 
-        cell.render( context,
-                     "1",
-                     safeHtmlBuilder );
+        cell.render(context,
+                    "1",
+                    safeHtmlBuilder);
 
-        final ArgumentCaptor<SafeHtml> captor = ArgumentCaptor.forClass( SafeHtml.class );
-        verify( safeHtmlBuilder,
-                times( 1 ) ).append( captor.capture() );
-        assertEquals( "one",
-                      captor.getValue().asString() );
+        final ArgumentCaptor<SafeHtml> captor = ArgumentCaptor.forClass(SafeHtml.class);
+        verify(safeHtmlBuilder,
+               times(1)).append(captor.capture());
+        assertEquals("one",
+                     captor.getValue().asString());
     }
-
 }

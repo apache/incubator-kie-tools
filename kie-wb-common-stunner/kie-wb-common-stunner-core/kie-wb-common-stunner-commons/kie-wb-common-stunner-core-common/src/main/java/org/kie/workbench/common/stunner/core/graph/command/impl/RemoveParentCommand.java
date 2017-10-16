@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -27,7 +28,6 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Parent;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Removes the parent-child relationship  ( Parent ) between two nodes.

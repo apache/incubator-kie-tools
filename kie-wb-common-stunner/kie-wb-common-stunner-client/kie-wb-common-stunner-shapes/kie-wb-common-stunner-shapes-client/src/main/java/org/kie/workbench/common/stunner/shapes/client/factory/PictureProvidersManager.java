@@ -28,7 +28,7 @@ import com.google.gwt.safehtml.shared.SafeUri;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.shapes.def.picture.PictureProvider;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @ApplicationScoped
 public class PictureProvidersManager {

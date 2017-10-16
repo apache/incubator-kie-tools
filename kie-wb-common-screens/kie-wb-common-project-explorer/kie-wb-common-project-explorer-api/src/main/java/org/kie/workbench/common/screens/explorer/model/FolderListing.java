@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 /**
  * The contents of a folder
@@ -35,12 +35,14 @@ public class FolderListing {
         //For Errai-marshalling
     }
 
-    public FolderListing( final FolderItem item,
-                          final List<FolderItem> content,
-                          final List<FolderItem> segments ) {
+    public FolderListing(final FolderItem item,
+                         final List<FolderItem> content,
+                         final List<FolderItem> segments) {
         this.item = item;
-        this.content = checkNotNull( "content", content );
-        this.segments = checkNotNull( "segments", segments );
+        this.content = checkNotNull("content",
+                                    content);
+        this.segments = checkNotNull("segments",
+                                     segments);
     }
 
     public FolderItem getItem() {
@@ -56,23 +58,23 @@ public class FolderListing {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof FolderListing ) ) {
+        if (!(o instanceof FolderListing)) {
             return false;
         }
 
         FolderListing that = (FolderListing) o;
 
-        if ( content != null ? !content.equals( that.content ) : that.content != null ) {
+        if (content != null ? !content.equals(that.content) : that.content != null) {
             return false;
         }
-        if ( item != null ? !item.equals( that.item ) : that.item != null ) {
+        if (item != null ? !item.equals(that.item) : that.item != null) {
             return false;
         }
-        if ( segments != null ? !segments.equals( that.segments ) : that.segments != null ) {
+        if (segments != null ? !segments.equals(that.segments) : that.segments != null) {
             return false;
         }
 
@@ -83,9 +85,9 @@ public class FolderListing {
     public int hashCode() {
         int result = item != null ? item.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( content != null ? content.hashCode() : 0 );
+        result = 31 * result + (content != null ? content.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( segments != null ? segments.hashCode() : 0 );
+        result = 31 * result + (segments != null ? segments.hashCode() : 0);
         result = ~~result;
         return result;
     }

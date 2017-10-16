@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.HandlerRegistrationImpl;
 import org.uberfire.mvp.Command;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Floating view implementation for generic GWT Widgets.

@@ -17,47 +17,46 @@ package org.kie.workbench.common.services.backend.builder.core;
 
 import java.util.Set;
 
-import org.appformer.project.datamodel.oracle.TypeSource;
 import org.kie.scanner.KieModuleMetaData;
+import org.kie.soup.project.datamodel.oracle.TypeSource;
 
 public class TypeSourceResolver {
 
     private final Set<String> javaResources;
     private final KieModuleMetaData kieModuleMetaData;
 
-    public TypeSourceResolver( final KieModuleMetaData kieModuleMetaData,
-                               final Set<String> javaResources ) {
+    public TypeSourceResolver(final KieModuleMetaData kieModuleMetaData,
+                              final Set<String> javaResources) {
         this.kieModuleMetaData = kieModuleMetaData;
         this.javaResources = javaResources;
     }
 
-    public TypeSource getTypeSource( final Class<?> clazz ) {
-        if ( isDeclaredInDRL( clazz ) ) {
+    public TypeSource getTypeSource(final Class<?> clazz) {
+        if (isDeclaredInDRL(clazz)) {
             return TypeSource.DECLARED;
-        } else if ( isDefinedInProjectOrWithinDependency( clazz ) ) {
+        } else if (isDefinedInProjectOrWithinDependency(clazz)) {
             return TypeSource.JAVA_PROJECT;
         } else {
             return TypeSource.JAVA_DEPENDENCY;
         }
     }
 
-    private boolean isDefinedInProjectOrWithinDependency( final Class<?> clazz ) {
-        return javaResources.contains( toFQCN( clazz ) );
+    private boolean isDefinedInProjectOrWithinDependency(final Class<?> clazz) {
+        return javaResources.contains(toFQCN(clazz));
     }
 
-    private boolean isDeclaredInDRL( final Class<?> clazz ) {
-        return kieModuleMetaData.getTypeMetaInfo( clazz ).isDeclaredType();
+    private boolean isDeclaredInDRL(final Class<?> clazz) {
+        return kieModuleMetaData.getTypeMetaInfo(clazz).isDeclaredType();
     }
 
-    private String toFQCN( final Class<?> clazz ) {
+    private String toFQCN(final Class<?> clazz) {
         String fullyQualifiedClassName = clazz.getName();
-        int innerClassIdentifierIndex = fullyQualifiedClassName.indexOf( "$" );
-        if ( innerClassIdentifierIndex > 0 ) {
-            return fullyQualifiedClassName.substring( 0,
-                                                      innerClassIdentifierIndex );
+        int innerClassIdentifierIndex = fullyQualifiedClassName.indexOf("$");
+        if (innerClassIdentifierIndex > 0) {
+            return fullyQualifiedClassName.substring(0,
+                                                     innerClassIdentifierIndex);
         } else {
             return fullyQualifiedClassName;
         }
     }
-
 }

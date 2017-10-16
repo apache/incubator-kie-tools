@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells;
 
-import org.appformer.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
@@ -29,63 +29,62 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDro
 public class ProxyPopupNumericDoubleDropDownEditCell extends
                                                      AbstractProxyPopupDropDownEditCell<Double, Double> {
 
-    public ProxyPopupNumericDoubleDropDownEditCell( final String factType,
-                                                    final String factField,
-                                                    final AsyncPackageDataModelOracle dmo,
-                                                    final CellTableDropDownDataValueMapProvider dropDownManager,
-                                                    final boolean isReadOnly ) {
-        super( factType,
-               factField,
-               dmo,
-               dropDownManager,
-               isReadOnly );
+    public ProxyPopupNumericDoubleDropDownEditCell(final String factType,
+                                                   final String factField,
+                                                   final AsyncPackageDataModelOracle dmo,
+                                                   final CellTableDropDownDataValueMapProvider dropDownManager,
+                                                   final boolean isReadOnly) {
+        super(factType,
+              factField,
+              dmo,
+              dropDownManager,
+              isReadOnly);
     }
 
     @Override
     protected ProxyPopupDropDown<Double> getSingleValueEditor() {
-        return new AbstractProxyPopupDropDownTextBox<Double>( TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_DOUBLE ),
-                                                              this ) {
+        return new AbstractProxyPopupDropDownTextBox<Double>(TextBoxFactory.getTextBox(DataType.TYPE_NUMERIC_DOUBLE),
+                                                             this) {
             @Override
-            public String convertToString( final Double value ) {
-                return ProxyPopupNumericDoubleDropDownEditCell.this.convertToString( value );
+            public String convertToString(final Double value) {
+                return ProxyPopupNumericDoubleDropDownEditCell.this.convertToString(value);
             }
 
             @Override
-            public Double convertFromString( final String value ) {
-                return ProxyPopupNumericDoubleDropDownEditCell.this.convertFromString( value );
+            public Double convertFromString(final String value) {
+                return ProxyPopupNumericDoubleDropDownEditCell.this.convertFromString(value);
             }
         };
     }
 
     @Override
     protected ProxyPopupDropDown<Double> getMultipleValueEditor() {
-        return new AbstractProxyPopupDropDownListBox<Double>( this ) {
+        return new AbstractProxyPopupDropDownListBox<Double>(this) {
             @Override
-            public String convertToString( final Double value ) {
-                return ProxyPopupNumericDoubleDropDownEditCell.this.convertToString( value );
+            public String convertToString(final Double value) {
+                return ProxyPopupNumericDoubleDropDownEditCell.this.convertToString(value);
             }
 
             @Override
-            public Double convertFromString( final String value ) {
-                return ProxyPopupNumericDoubleDropDownEditCell.this.convertFromString( value );
+            public Double convertFromString(final String value) {
+                return ProxyPopupNumericDoubleDropDownEditCell.this.convertFromString(value);
             }
         };
     }
 
-    private String convertToString( final Double value ) {
-        return ( value == null ? null : value.toString() );
+    private String convertToString(final Double value) {
+        return (value == null ? null : value.toString());
     }
 
-    private Double convertFromString( final String value ) {
+    private Double convertFromString(final String value) {
         Double number = null;
-        if ( value.length() > 0 ) {
+        if (value.length() > 0) {
             try {
-                number = new Double( value );
-            } catch ( NumberFormatException e ) {
-                number = Double.valueOf( "0" );
+                number = new Double(value);
+            } catch (NumberFormatException e) {
+                number = Double.valueOf("0");
             }
         }
         return number;
     }
-
 }

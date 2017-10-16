@@ -17,7 +17,7 @@ package org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells;
 
 import java.math.BigDecimal;
 
-import org.appformer.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
@@ -31,63 +31,62 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDro
 public class ProxyPopupNumericBigDecimalDropDownEditCell extends
                                                          AbstractProxyPopupDropDownEditCell<BigDecimal, BigDecimal> {
 
-    public ProxyPopupNumericBigDecimalDropDownEditCell( final String factType,
-                                                        final String factField,
-                                                        final AsyncPackageDataModelOracle dmo,
-                                                        final CellTableDropDownDataValueMapProvider dropDownManager,
-                                                        final boolean isReadOnly ) {
-        super( factType,
-               factField,
-               dmo,
-               dropDownManager,
-               isReadOnly );
+    public ProxyPopupNumericBigDecimalDropDownEditCell(final String factType,
+                                                       final String factField,
+                                                       final AsyncPackageDataModelOracle dmo,
+                                                       final CellTableDropDownDataValueMapProvider dropDownManager,
+                                                       final boolean isReadOnly) {
+        super(factType,
+              factField,
+              dmo,
+              dropDownManager,
+              isReadOnly);
     }
 
     @Override
     protected ProxyPopupDropDown<BigDecimal> getSingleValueEditor() {
-        return new AbstractProxyPopupDropDownTextBox<BigDecimal>( TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_BIGDECIMAL ),
-                                                                  this ) {
+        return new AbstractProxyPopupDropDownTextBox<BigDecimal>(TextBoxFactory.getTextBox(DataType.TYPE_NUMERIC_BIGDECIMAL),
+                                                                 this) {
             @Override
-            public String convertToString( final BigDecimal value ) {
-                return ProxyPopupNumericBigDecimalDropDownEditCell.this.convertToString( value );
+            public String convertToString(final BigDecimal value) {
+                return ProxyPopupNumericBigDecimalDropDownEditCell.this.convertToString(value);
             }
 
             @Override
-            public BigDecimal convertFromString( final String value ) {
-                return ProxyPopupNumericBigDecimalDropDownEditCell.this.convertFromString( value );
+            public BigDecimal convertFromString(final String value) {
+                return ProxyPopupNumericBigDecimalDropDownEditCell.this.convertFromString(value);
             }
         };
     }
 
     @Override
     protected ProxyPopupDropDown<BigDecimal> getMultipleValueEditor() {
-        return new AbstractProxyPopupDropDownListBox<BigDecimal>( this ) {
+        return new AbstractProxyPopupDropDownListBox<BigDecimal>(this) {
             @Override
-            public String convertToString( final BigDecimal value ) {
-                return ProxyPopupNumericBigDecimalDropDownEditCell.this.convertToString( value );
+            public String convertToString(final BigDecimal value) {
+                return ProxyPopupNumericBigDecimalDropDownEditCell.this.convertToString(value);
             }
 
             @Override
-            public BigDecimal convertFromString( final String value ) {
-                return ProxyPopupNumericBigDecimalDropDownEditCell.this.convertFromString( value );
+            public BigDecimal convertFromString(final String value) {
+                return ProxyPopupNumericBigDecimalDropDownEditCell.this.convertFromString(value);
             }
         };
     }
 
-    private String convertToString( final BigDecimal value ) {
-        return ( value == null ? null : value.toPlainString() );
+    private String convertToString(final BigDecimal value) {
+        return (value == null ? null : value.toPlainString());
     }
 
-    private BigDecimal convertFromString( final String value ) {
+    private BigDecimal convertFromString(final String value) {
         BigDecimal number = null;
-        if ( value.length() > 0 ) {
+        if (value.length() > 0) {
             try {
-                number = new BigDecimal( value );
-            } catch ( NumberFormatException e ) {
-                number = BigDecimal.valueOf( 0 );
+                number = new BigDecimal(value);
+            } catch (NumberFormatException e) {
+                number = BigDecimal.valueOf(0);
             }
         }
         return number;
     }
-
 }

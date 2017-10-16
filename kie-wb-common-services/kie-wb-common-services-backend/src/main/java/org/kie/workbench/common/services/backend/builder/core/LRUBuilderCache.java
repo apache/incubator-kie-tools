@@ -18,6 +18,7 @@ package org.kie.workbench.common.services.backend.builder.core;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -32,12 +33,12 @@ import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCac
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.backend.builder.JavaSourceFilter;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListServiceImpl;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.io.IOService;
 
 import static java.util.stream.Collectors.toCollection;

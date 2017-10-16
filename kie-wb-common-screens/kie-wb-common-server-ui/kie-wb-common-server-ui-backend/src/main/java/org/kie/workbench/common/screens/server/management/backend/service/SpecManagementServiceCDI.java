@@ -27,7 +27,7 @@ import org.kie.server.controller.impl.KieServerInstanceManager;
 import org.kie.server.controller.rest.RestSpecManagementServiceImpl;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Service
 @ApplicationScoped

@@ -19,10 +19,10 @@ package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.renderers.TextBoxColumnDOMElementSingletonRenderer;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;

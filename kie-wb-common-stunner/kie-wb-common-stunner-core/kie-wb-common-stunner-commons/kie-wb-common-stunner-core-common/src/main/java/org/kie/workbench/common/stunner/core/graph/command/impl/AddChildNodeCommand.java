@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -32,7 +33,6 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Creates a new node on the target graph and creates/defines a new parent-child connection so new node will be added as a child of

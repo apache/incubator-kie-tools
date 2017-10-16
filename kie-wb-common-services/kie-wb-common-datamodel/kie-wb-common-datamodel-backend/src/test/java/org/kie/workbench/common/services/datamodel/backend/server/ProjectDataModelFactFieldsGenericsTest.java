@@ -15,13 +15,14 @@
 
 package org.kie.workbench.common.services.datamodel.backend.server;
 
-import org.appformer.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
-import org.appformer.project.datamodel.oracle.TypeSource;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
+import org.kie.soup.project.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFactBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
-import org.kie.workbench.common.services.datamodel.backend.server.testclasses.ProductOrder;
 import org.kie.workbench.common.services.datamodel.backend.server.testclasses.Product;
+import org.kie.workbench.common.services.datamodel.backend.server.testclasses.ProductOrder;
 
 import static org.junit.Assert.*;
 import static org.kie.workbench.common.services.datamodel.backend.server.ProjectDataModelOracleTestUtils.*;
@@ -30,25 +31,25 @@ public class ProjectDataModelFactFieldsGenericsTest {
 
     @Test
     public void testProjectDMOGenericParameters() throws Exception {
-        final ProjectDataModelOracleBuilder builder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
+        final ProjectDataModelOracleBuilder builder = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator());
         final ProjectDataModelOracleImpl oracle = new ProjectDataModelOracleImpl();
 
-        final ClassFactBuilder cb = new ClassFactBuilder( builder, ProductOrder.class, false, TypeSource.JAVA_PROJECT );
-        cb.build( oracle );
+        final ClassFactBuilder cb = new ClassFactBuilder(builder, ProductOrder.class, false, TypeSource.JAVA_PROJECT);
+        cb.build(oracle);
 
-        assertEquals( 1, oracle.getProjectModelFields().size() );
-        assertContains( ProductOrder.class.getName(), oracle.getProjectModelFields().keySet() );
+        assertEquals(1, oracle.getProjectModelFields().size());
+        assertContains(ProductOrder.class.getName(), oracle.getProjectModelFields().keySet());
 
-        assertEquals( 2, oracle.getProjectFieldParametersType().size() );
+        assertEquals(2, oracle.getProjectFieldParametersType().size());
 
-        String genericType = oracle.getProjectFieldParametersType().get( ProductOrder.class.getName() + "#products" );
-        assertNotNull( genericType );
-        assertEquals( Product.class.getName(), genericType );
+        String genericType = oracle.getProjectFieldParametersType().get(ProductOrder.class.getName() + "#products");
+        assertNotNull(genericType);
+        assertEquals(Product.class.getName(), genericType);
 
-        genericType = oracle.getProjectFieldParametersType().get( ProductOrder.class.getName() + "#productComparator" );
-        assertNotNull( genericType );
-        assertEquals( Product.class.getName(), genericType );
+        genericType = oracle.getProjectFieldParametersType().get(ProductOrder.class.getName() + "#productComparator");
+        assertNotNull(genericType);
+        assertEquals(Product.class.getName(), genericType);
 
-        assertNotNull( cb.getInternalBuilders().get( Product.class.getName() ) );
+        assertNotNull(cb.getInternalBuilders().get(Product.class.getName()));
     }
 }

@@ -20,11 +20,11 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.editor.client.handler.formModel.FormModelCreationViewManager;
 import org.kie.workbench.common.forms.editor.client.handler.formModel.SelectModelCreatorManagerCallback;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Dependent
 public class FormModelCreationContainer implements FormModelCreationContainerView.Presenter,

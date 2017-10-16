@@ -22,11 +22,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.compiler.compiler.DrlExprParser;
-import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
+import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
 import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.lang.descr.AndDescr;
@@ -82,14 +80,16 @@ import org.drools.compiler.lang.descr.VariableRestrictionDescr;
 import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.refactoring.ResourceReference;
 import org.kie.workbench.common.services.refactoring.SharedPart;
+import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.metadata.model.KProperty;
 
 public class PackageDescrIndexVisitor extends ResourceReferenceCollector {

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datasource.management.backend.service;
 
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -39,7 +40,7 @@ import org.kie.workbench.common.screens.datasource.management.service.DataManage
 import org.kie.workbench.common.screens.datasource.management.service.DatabaseMetadataService;
 import org.kie.workbench.common.screens.datasource.management.util.DataSetDefBuilder;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Service
 @ApplicationScoped

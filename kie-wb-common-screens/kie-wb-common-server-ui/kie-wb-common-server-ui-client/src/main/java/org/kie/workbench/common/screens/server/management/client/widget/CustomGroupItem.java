@@ -23,30 +23,32 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.uberfire.mvp.Command;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 public class CustomGroupItem extends Anchor {
 
-    public CustomGroupItem( final String text,
-                            final IconType icon,
-                            final Command command ) {
+    public CustomGroupItem(final String text,
+                           final IconType icon,
+                           final Command command) {
         super();
-        addStyleName( Styles.LIST_GROUP_ITEM );
-        setText( checkNotEmpty( "text", text ) );
-        setIcon( checkNotNull( "icon", icon ) );
-        addClickHandler( new ClickHandler() {
+        addStyleName(Styles.LIST_GROUP_ITEM);
+        setText(checkNotEmpty("text",
+                              text));
+        setIcon(checkNotNull("icon",
+                             icon));
+        addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( final ClickEvent event ) {
+            public void onClick(final ClickEvent event) {
                 command.execute();
             }
-        } );
+        });
     }
 
-    public void setActive( boolean active ) {
-        if ( active ) {
-            addStyleName( "active" );
+    public void setActive(boolean active) {
+        if (active) {
+            addStyleName("active");
         } else {
-            removeStyleName( "active" );
+            removeStyleName("active");
         }
     }
 }

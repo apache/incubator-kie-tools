@@ -17,7 +17,7 @@
 package org.kie.workbench.common.dmn.client.widgets.grid;
 
 import com.ait.lienzo.client.core.types.Transform;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;

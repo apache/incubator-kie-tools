@@ -16,8 +16,8 @@
 package org.kie.workbench.common.services.refactoring.model.index.terms;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.service.PartType;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class PartIndexTerm implements IndexTerm {
@@ -29,12 +29,12 @@ public class PartIndexTerm implements IndexTerm {
     }
 
     public PartIndexTerm(PartType type) {
-        this.partType = PortablePreconditions.checkNotNull( "partType", type );
+        this.partType = PortablePreconditions.checkNotNull("partType",
+                                                           type);
     }
 
     @Override
     public String getTerm() {
         return partType.toString();
     }
-
 }

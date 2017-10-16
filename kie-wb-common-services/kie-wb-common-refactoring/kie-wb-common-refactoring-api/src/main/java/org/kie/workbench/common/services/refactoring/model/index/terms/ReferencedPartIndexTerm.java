@@ -16,8 +16,8 @@
 package org.kie.workbench.common.services.refactoring.model.index.terms;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.service.PartType;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * For fields that describe parts (of other resources) referred to in the resource being indexed.
@@ -34,9 +34,12 @@ public class ReferencedPartIndexTerm implements CompositeIndexTerm {
         // default constructor (@Portable)
     }
 
-    public ReferencedPartIndexTerm(PartType type, String resourceName) {
-        this.partType = PortablePreconditions.checkNotNull( "partType", type );
-        this.resourceName = PortablePreconditions.checkNotNull( "resourceName", resourceName );
+    public ReferencedPartIndexTerm(PartType type,
+                                   String resourceName) {
+        this.partType = PortablePreconditions.checkNotNull("partType",
+                                                           type);
+        this.resourceName = PortablePreconditions.checkNotNull("resourceName",
+                                                               resourceName);
     }
 
     @Override

@@ -25,7 +25,7 @@
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.user.User"/>
 
-  <inherits name="org.appformer.project.datamodel.AFProjectDataModelAPI"/>
+  <inherits name="org.kie.soup.project.datamodel.ProjectDataModelAPI"/>
 
   <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
 

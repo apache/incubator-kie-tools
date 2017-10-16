@@ -16,9 +16,9 @@
 package org.kie.workbench.common.services.refactoring.model.index.terms.valueterms;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.index.terms.SharedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.PartType;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * This index term captures information about a part referenced in a resource, specifically:
@@ -41,9 +41,11 @@ public class ValueSharedPartIndexTerm extends SharedPartIndexTerm implements Val
      * @param partName The part (ruleflow-group/agenda-group/etc.) name
      * @param partType The part type
      */
-    public ValueSharedPartIndexTerm( final String partName, final PartType partType) {
+    public ValueSharedPartIndexTerm(final String partName,
+                                    final PartType partType) {
         super(partType);
-        this.partName = PortablePreconditions.checkNotNull( "partName", partName );
+        this.partName = PortablePreconditions.checkNotNull("partName",
+                                                           partName);
         this.termType = TermSearchType.NORMAL;
     }
 
@@ -52,10 +54,14 @@ public class ValueSharedPartIndexTerm extends SharedPartIndexTerm implements Val
      * @param partType The part type
      * @param termType The type of extended (term) functionality used in the term
      */
-    public ValueSharedPartIndexTerm( final String partName, final PartType partType, final TermSearchType termType) {
+    public ValueSharedPartIndexTerm(final String partName,
+                                    final PartType partType,
+                                    final TermSearchType termType) {
         super(partType);
-        this.partName = PortablePreconditions.checkNotNull( "partName", partName );
-        this.termType = PortablePreconditions.checkNotNull( "termType", termType );
+        this.partName = PortablePreconditions.checkNotNull("partName",
+                                                           partName);
+        this.termType = PortablePreconditions.checkNotNull("termType",
+                                                           termType);
     }
 
     @Override

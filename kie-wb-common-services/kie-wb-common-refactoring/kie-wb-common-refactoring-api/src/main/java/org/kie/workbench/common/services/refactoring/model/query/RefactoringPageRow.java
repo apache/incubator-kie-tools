@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.services.refactoring.model.query;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.paging.AbstractPageRow;
 
 /**
@@ -29,13 +29,12 @@ public abstract class RefactoringPageRow<T> extends AbstractPageRow {
         super();
     }
 
-    public void setValue( final T value ) {
-        this.value = PortablePreconditions.checkNotNull( "value",
-                                                         value );
+    public void setValue(final T value) {
+        this.value = PortablePreconditions.checkNotNull("value",
+                                                        value);
     }
 
     public T getValue() {
         return value;
     }
-
 }

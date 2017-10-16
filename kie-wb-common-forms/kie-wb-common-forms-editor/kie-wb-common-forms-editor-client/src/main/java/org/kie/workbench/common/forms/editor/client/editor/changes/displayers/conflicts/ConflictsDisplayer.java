@@ -21,8 +21,8 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.editor.client.editor.changes.conflicts.element.ConflictElement;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Dependent
 public class ConflictsDisplayer implements IsElement,

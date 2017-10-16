@@ -16,13 +16,14 @@
 package org.kie.workbench.common.widgets.configresource.client.widget.bound;
 
 import java.util.List;
+
 import javax.enterprise.event.Event;
 
-import org.appformer.project.datamodel.imports.Import;
-import org.appformer.project.datamodel.imports.Imports;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.imports.Import;
+import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;

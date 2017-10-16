@@ -30,7 +30,7 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.SimpleFileVisitor;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.java.nio.file.Files.walkFileTree;
 
 public abstract class AbstractVFSLookupManager<I, T, R extends LookupManager.LookupRequest> extends AbstractLookupManager<I, T, R> {

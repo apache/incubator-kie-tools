@@ -19,11 +19,11 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import org.apache.lucene.search.Query;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.MultipleTermQueryBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.QueryBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  *
@@ -32,7 +32,7 @@ public abstract class AbstractFindQuery {
 
     protected Query buildFromMultipleTerms(Set<ValueIndexTerm> terms) {
         final QueryBuilder builder = new MultipleTermQueryBuilder();
-        for(  ValueIndexTerm term : terms ) {
+        for (ValueIndexTerm term : terms) {
             builder.addTerm(term);
         }
         return builder.build();
@@ -47,15 +47,16 @@ public abstract class AbstractFindQuery {
         return builder.build();
     }
 
-
     protected void checkNotNullAndNotEmpty(Set<ValueIndexTerm> terms) {
-        PortablePreconditions.checkNotNull( "terms", terms );
-        if( terms.isEmpty() ) {
-           throw new IllegalArgumentException("At least 1 term must be submitted when querying referenced resources");
+        PortablePreconditions.checkNotNull("terms",
+                                           terms);
+        if (terms.isEmpty()) {
+            throw new IllegalArgumentException("At least 1 term must be submitted when querying referenced resources");
         }
     }
 
     public static interface NamedPredicate extends Predicate<ValueIndexTerm> {
+
         public String getTermName();
     }
 
@@ -64,53 +65,55 @@ public abstract class AbstractFindQuery {
      * <li>Whether all terms are valid or not (see parameter <code>validTermTests</code>)</li>
      * <li>Whether the number of terms being submitted is valid</li>
      *
-     * @param queryTerms The terms being validated
-     * @param queryName The name of the query
+     * @param queryTerms        The terms being validated
+     * @param queryName         The name of the query
      * @param requiredTermNames An array of {@link String} where each non-null value indicates that the term is required
-     * @param validTermTests {@link Predicate}s to test the terms
+     * @param validTermTests    {@link Predicate}s to test the terms
      */
     @SafeVarargs
     protected final void checkInvalidAndRequiredTerms(
             Set<ValueIndexTerm> queryTerms,
             String queryName,
-            String [] requiredTermNames,
+            String[] requiredTermNames,
             Predicate<ValueIndexTerm>... validTermTests) {
 
         // check invalid
         int found[] = new int[validTermTests.length];
-        TERMS: for( ValueIndexTerm term : queryTerms ) {
-            for( int i = 0; i < validTermTests.length; ++i ) {
-                if( validTermTests[i].test(term) ) {
+        TERMS:
+        for (ValueIndexTerm term : queryTerms) {
+            for (int i = 0; i < validTermTests.length; ++i) {
+                if (validTermTests[i].test(term)) {
                     found[i]++;
                     continue TERMS;
                 }
             }
-            throw new IllegalArgumentException( "Index term '" + term.getTerm() + "' can not be used with the " + queryName );
+            throw new IllegalArgumentException("Index term '" + term.getTerm() + "' can not be used with the " + queryName);
         }
 
         // check size
-        if( queryTerms.size() > validTermTests.length ) {
-            throw new IllegalArgumentException( "More terms submitted [" + queryTerms.size() + "] than can be accepted [" + validTermTests.length + "]" );
+        if (queryTerms.size() > validTermTests.length) {
+            throw new IllegalArgumentException("More terms submitted [" + queryTerms.size() + "] than can be accepted [" + validTermTests.length + "]");
         }
 
         // check duplicates
-        for( int i = 0; i < found.length; ++i ) {
-           if( found[i] > 1 )  {
-                throw new IllegalArgumentException( "Duplicate terms are not accepted by the " + queryName);
-           }
+        for (int i = 0; i < found.length; ++i) {
+            if (found[i] > 1) {
+                throw new IllegalArgumentException("Duplicate terms are not accepted by the " + queryName);
+            }
         }
 
         // check required
-        for( int i = 0; i < requiredTermNames.length; ++i ) {
-            if( requiredTermNames[i] != null && found[i] == 0 ) {
-                throw new IllegalArgumentException( "Expected '" + requiredTermNames[i] + "' term was not found.");
+        for (int i = 0; i < requiredTermNames.length; ++i) {
+            if (requiredTermNames[i] != null && found[i] == 0) {
+                throw new IllegalArgumentException("Expected '" + requiredTermNames[i] + "' term was not found.");
             }
         }
     }
 
-    protected void checkTermsSize(int expected, Set<ValueIndexTerm> terms) {
-        if( terms.size() > expected ) {
-            throw new IllegalArgumentException( "Expected " + expected + " terms, not " + terms.size() + " terms." );
+    protected void checkTermsSize(int expected,
+                                  Set<ValueIndexTerm> terms) {
+        if (terms.size() > expected) {
+            throw new IllegalArgumentException("Expected " + expected + " terms, not " + terms.size() + " terms.");
         }
     }
 }

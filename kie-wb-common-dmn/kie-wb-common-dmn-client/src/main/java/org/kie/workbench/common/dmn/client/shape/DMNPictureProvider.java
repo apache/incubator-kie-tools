@@ -17,13 +17,14 @@ package org.kie.workbench.common.dmn.client.shape;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.safehtml.shared.SafeUri;
 import org.kie.workbench.common.dmn.client.resources.DMNImageResources;
 import org.kie.workbench.common.stunner.shapes.def.picture.PictureProvider;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @ApplicationScoped
 public class DMNPictureProvider implements PictureProvider<DMNPictures> {

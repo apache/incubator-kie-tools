@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells;
 
-import org.appformer.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
@@ -29,63 +29,62 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDro
 public class ProxyPopupNumericFloatDropDownEditCell extends
                                                     AbstractProxyPopupDropDownEditCell<Float, Float> {
 
-    public ProxyPopupNumericFloatDropDownEditCell( final String factType,
-                                                   final String factField,
-                                                   final AsyncPackageDataModelOracle dmo,
-                                                   final CellTableDropDownDataValueMapProvider dropDownManager,
-                                                   final boolean isReadOnly ) {
-        super( factType,
-               factField,
-               dmo,
-               dropDownManager,
-               isReadOnly );
+    public ProxyPopupNumericFloatDropDownEditCell(final String factType,
+                                                  final String factField,
+                                                  final AsyncPackageDataModelOracle dmo,
+                                                  final CellTableDropDownDataValueMapProvider dropDownManager,
+                                                  final boolean isReadOnly) {
+        super(factType,
+              factField,
+              dmo,
+              dropDownManager,
+              isReadOnly);
     }
 
     @Override
     protected ProxyPopupDropDown<Float> getSingleValueEditor() {
-        return new AbstractProxyPopupDropDownTextBox<Float>( TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_FLOAT ),
-                                                             this ) {
+        return new AbstractProxyPopupDropDownTextBox<Float>(TextBoxFactory.getTextBox(DataType.TYPE_NUMERIC_FLOAT),
+                                                            this) {
             @Override
-            public String convertToString( final Float value ) {
-                return ProxyPopupNumericFloatDropDownEditCell.this.convertToString( value );
+            public String convertToString(final Float value) {
+                return ProxyPopupNumericFloatDropDownEditCell.this.convertToString(value);
             }
 
             @Override
-            public Float convertFromString( final String value ) {
-                return ProxyPopupNumericFloatDropDownEditCell.this.convertFromString( value );
+            public Float convertFromString(final String value) {
+                return ProxyPopupNumericFloatDropDownEditCell.this.convertFromString(value);
             }
         };
     }
 
     @Override
     protected ProxyPopupDropDown<Float> getMultipleValueEditor() {
-        return new AbstractProxyPopupDropDownListBox<Float>( this ) {
+        return new AbstractProxyPopupDropDownListBox<Float>(this) {
             @Override
-            public String convertToString( final Float value ) {
-                return ProxyPopupNumericFloatDropDownEditCell.this.convertToString( value );
+            public String convertToString(final Float value) {
+                return ProxyPopupNumericFloatDropDownEditCell.this.convertToString(value);
             }
 
             @Override
-            public Float convertFromString( final String value ) {
-                return ProxyPopupNumericFloatDropDownEditCell.this.convertFromString( value );
+            public Float convertFromString(final String value) {
+                return ProxyPopupNumericFloatDropDownEditCell.this.convertFromString(value);
             }
         };
     }
 
-    private String convertToString( final Float value ) {
-        return ( value == null ? null : value.toString() );
+    private String convertToString(final Float value) {
+        return (value == null ? null : value.toString());
     }
 
-    private Float convertFromString( final String value ) {
+    private Float convertFromString(final String value) {
         Float number = null;
-        if ( value.length() > 0 ) {
+        if (value.length() > 0) {
             try {
-                number = new Float( value );
-            } catch ( NumberFormatException e ) {
-                number = Float.valueOf( "0" );
+                number = new Float(value);
+            } catch (NumberFormatException e) {
+                number = Float.valueOf("0");
             }
         }
         return number;
     }
-
 }

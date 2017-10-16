@@ -23,27 +23,27 @@ import javax.inject.Inject;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Dependent
 public class LinkTitlePresenter implements TitlePresenter {
 
     public interface View extends UberView<LinkTitlePresenter> {
 
-        void setText( final String value );
+        void setText(final String value);
     }
 
     private final View view;
     private Command command;
 
     @Inject
-    public LinkTitlePresenter( final View view ) {
+    public LinkTitlePresenter(final View view) {
         this.view = view;
     }
 
     @PostConstruct
     public void init() {
-        this.view.init( this );
+        this.view.init(this);
     }
 
     @Override
@@ -51,10 +51,11 @@ public class LinkTitlePresenter implements TitlePresenter {
         return view;
     }
 
-    public void setup( final String title,
-                       final Command command ) {
-        this.command = checkNotNull( "command", command );
-        view.setText( title );
+    public void setup(final String title,
+                      final Command command) {
+        this.command = checkNotNull("command",
+                                    command);
+        view.setText(title);
     }
 
     public void onSelect() {

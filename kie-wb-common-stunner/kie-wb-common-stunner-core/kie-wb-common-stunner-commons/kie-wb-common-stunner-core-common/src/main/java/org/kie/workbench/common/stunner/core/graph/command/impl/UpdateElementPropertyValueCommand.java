@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -27,7 +28,6 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * A Command to update an element's property.
@@ -104,7 +104,8 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
 
     private Element checkElementNotNull(final GraphCommandExecutionContext context) {
         if (null == node) {
-            return super.getElementNotNull(context, elementUUID);
+            return super.getElementNotNull(context,
+                                           elementUUID);
         }
         return node;
     }

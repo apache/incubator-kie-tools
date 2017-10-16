@@ -16,8 +16,8 @@
 package org.kie.workbench.common.services.refactoring.model.index.terms.valueterms;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectNameIndexTerm;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class ValueProjectNameIndexTerm extends ProjectNameIndexTerm implements ValueIndexTerm {
@@ -28,14 +28,13 @@ public class ValueProjectNameIndexTerm extends ProjectNameIndexTerm implements V
         //Errai marshalling
     }
 
-    public ValueProjectNameIndexTerm( final String projectName ) {
-        this.projectName = PortablePreconditions.checkNotNull( "projectName",
-                                                               projectName );
+    public ValueProjectNameIndexTerm(final String projectName) {
+        this.projectName = PortablePreconditions.checkNotNull("projectName",
+                                                              projectName);
     }
 
     @Override
     public String getValue() {
         return projectName;
     }
-
 }

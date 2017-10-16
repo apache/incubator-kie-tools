@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.ProjectImports;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class ImportsWidgetPresenter
         implements ImportsWidgetView.Presenter,

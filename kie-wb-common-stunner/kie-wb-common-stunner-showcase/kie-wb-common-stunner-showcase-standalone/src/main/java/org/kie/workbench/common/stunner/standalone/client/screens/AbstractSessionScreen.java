@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedE
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public abstract class AbstractSessionScreen {
 

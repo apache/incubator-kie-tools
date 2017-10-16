@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientS
 import org.kie.workbench.common.stunner.core.command.exception.CommandException;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public abstract class AbstractClientSessionManager implements SessionManager {
 

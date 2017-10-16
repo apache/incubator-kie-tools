@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
@@ -70,14 +71,14 @@ import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
 import static java.util.Collections.emptyList;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
 
 @Service
 @Dependent
 public class ExplorerServiceImpl
         implements ExplorerService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger( ExplorerServiceImpl.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExplorerServiceImpl.class);
 
     @Inject
     @Named("ioStrategy")
@@ -153,10 +154,10 @@ public class ExplorerServiceImpl
         xs.denyTypes(voidDeny);
     }
 
-    public ExplorerServiceImpl( final IOService ioService,
-                                final KieProjectService projectService,
-                                final OrganizationalUnitService organizationalUnitService,
-                                final User identity ) {
+    public ExplorerServiceImpl(final IOService ioService,
+                               final KieProjectService projectService,
+                               final OrganizationalUnitService organizationalUnitService,
+                               final User identity) {
         this();
         this.ioService = ioService;
         this.projectService = projectService;
@@ -165,38 +166,39 @@ public class ExplorerServiceImpl
     }
 
     @Override
-    public ProjectExplorerContent getContent( final String _path,
-                                              final ActiveOptions activeOptions ) {
-        checkNotEmpty( "path", _path );
+    public ProjectExplorerContent getContent(final String _path,
+                                             final ActiveOptions activeOptions) {
+        checkNotEmpty("path",
+                      _path);
 
-        final Path path = Paths.convert( ioService.get( URI.create( _path.trim() ) ) );
-        final Project project = projectService.resolveProject( path );
+        final Path path = Paths.convert(ioService.get(URI.create(_path.trim())));
+        final Project project = projectService.resolveProject(path);
 
-        final Path convertedPath = Paths.convert( Paths.convert( path ).getRoot() );
-        final Repository repo = repositoryService.getRepository( convertedPath );
+        final Path convertedPath = Paths.convert(Paths.convert(path).getRoot());
+        final Repository repo = repositoryService.getRepository(convertedPath);
 
-        String branch = getBranchName( repo,
-                                       convertedPath );
+        String branch = getBranchName(repo,
+                                      convertedPath);
 
         OrganizationalUnit ou = null;
-        for ( final OrganizationalUnit organizationalUnit : organizationalUnitService.getOrganizationalUnits() ) {
-            if ( organizationalUnit.getRepositories().contains( repo ) ) {
+        for (final OrganizationalUnit organizationalUnit : organizationalUnitService.getOrganizationalUnits()) {
+            if (organizationalUnit.getRepositories().contains(repo)) {
                 ou = organizationalUnit;
                 break;
             }
         }
 
-        return getContent( new ProjectExplorerContentQuery( ou,
-                                                            repo,
-                                                            branch,
-                                                            project,
-                                                            activeOptions ) );
+        return getContent(new ProjectExplorerContentQuery(ou,
+                                                          repo,
+                                                          branch,
+                                                          project,
+                                                          activeOptions));
     }
 
-    private String getBranchName( final Repository repository,
-                                  final Path convertedPath ) {
-        for ( String branchName : repository.getBranches() ) {
-            if ( repository.getBranchRoot( branchName ).equals( convertedPath ) ) {
+    private String getBranchName(final Repository repository,
+                                 final Path convertedPath) {
+        for (String branchName : repository.getBranches()) {
+            if (repository.getBranchRoot(branchName).equals(convertedPath)) {
                 return branchName;
             }
         }
@@ -204,35 +206,34 @@ public class ExplorerServiceImpl
     }
 
     @Override
-    public ProjectExplorerContent getContent( final ProjectExplorerContentQuery query ) {
-        return projectExplorerContentResolver.resolve( query );
+    public ProjectExplorerContent getContent(final ProjectExplorerContentQuery query) {
+        return projectExplorerContentResolver.resolve(query);
     }
 
     @Override
-    public URIStructureExplorerModel getURIStructureExplorerModel( final Path originalURI ) {
-        final Project project = getURIProject( originalURI );
-        final Repository repository = getURIRepository( originalURI );
-        final OrganizationalUnit ou = getURIOrganizationalUnits( repository );
-        return new URIStructureExplorerModel( ou,
-                                              repository,
-                                              project );
+    public URIStructureExplorerModel getURIStructureExplorerModel(final Path originalURI) {
+        final Project project = getURIProject(originalURI);
+        final Repository repository = getURIRepository(originalURI);
+        final OrganizationalUnit ou = getURIOrganizationalUnits(repository);
+        return new URIStructureExplorerModel(ou,
+                                             repository,
+                                             project);
     }
 
-    private KieProject getURIProject( final Path originalURI ) {
-        return projectService.resolveProject( originalURI );
+    private KieProject getURIProject(final Path originalURI) {
+        return projectService.resolveProject(originalURI);
     }
 
-    private Repository getURIRepository( final Path originalURI ) {
-        org.uberfire.java.nio.file.Path ufPath = Paths.convert( originalURI );
-        return repositoryService.getRepository( Paths.convert( ufPath.getRoot() ) );
+    private Repository getURIRepository(final Path originalURI) {
+        org.uberfire.java.nio.file.Path ufPath = Paths.convert(originalURI);
+        return repositoryService.getRepository(Paths.convert(ufPath.getRoot()));
     }
 
-    private OrganizationalUnit getURIOrganizationalUnits( final Repository repository ) {
-        for ( OrganizationalUnit organizationalUnit : getOrganizationalUnits() ) {
-            if ( organizationalUnit.getRepositories().contains( repository ) ) {
+    private OrganizationalUnit getURIOrganizationalUnits(final Repository repository) {
+        for (OrganizationalUnit organizationalUnit : getOrganizationalUnits()) {
+            if (organizationalUnit.getRepositories().contains(repository)) {
                 return organizationalUnit;
             }
-
         }
         throw new OrganizationalUnitNotFoundForURI();
     }
@@ -240,31 +241,33 @@ public class ExplorerServiceImpl
     private Set<OrganizationalUnit> getOrganizationalUnits() {
         final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getOrganizationalUnits();
         final Set<OrganizationalUnit> authorizedOrganizationalUnits = new HashSet<OrganizationalUnit>();
-        for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
-            if ( authorizationManager.authorize( organizationalUnit,
-                                                 identity ) ) {
-                authorizedOrganizationalUnits.add( organizationalUnit );
+        for (OrganizationalUnit organizationalUnit : organizationalUnits) {
+            if (authorizationManager.authorize(organizationalUnit,
+                                               identity)) {
+                authorizedOrganizationalUnits.add(organizationalUnit);
             }
         }
         return authorizedOrganizationalUnits;
     }
 
     @Override
-    public FolderListing getFolderListing( final OrganizationalUnit organizationalUnit,
-                                           final Repository repository,
-                                           final String branch,
-                                           final Project project,
-                                           final FolderItem item,
-                                           final ActiveOptions options ) {
+    public FolderListing getFolderListing(final OrganizationalUnit organizationalUnit,
+                                          final Repository repository,
+                                          final String branch,
+                                          final Project project,
+                                          final FolderItem item,
+                                          final ActiveOptions options) {
         //TODO: BUSINESS_CONTENT, TECHNICAL_CONTENT
-        final FolderListing result = helper.getFolderListing( item,
-                                                              options );
+        final FolderListing result = helper.getFolderListing(item,
+                                                             options);
 
-        if ( result != null ) {
-            final org.uberfire.java.nio.file.Path userNavPath = userServices.buildPath( "explorer", "user.nav" );
-            final org.uberfire.java.nio.file.Path lastUserNavPath = userServices.buildPath( "explorer", "last.user.nav" );
+        if (result != null) {
+            final org.uberfire.java.nio.file.Path userNavPath = userServices.buildPath("explorer",
+                                                                                       "user.nav");
+            final org.uberfire.java.nio.file.Path lastUserNavPath = userServices.buildPath("explorer",
+                                                                                           "last.user.nav");
 
-            this.executorService.execute( new DescriptiveRunnable() {
+            this.executorService.execute(new DescriptiveRunnable() {
                 @Override
                 public String getDescription() {
                     return "Serialize Navigation State";
@@ -274,56 +277,63 @@ public class ExplorerServiceImpl
                 public void run() {
                     try {
                         Package pkg = null;
-                        if ( item.getItem() instanceof Package ) {
+                        if (item.getItem() instanceof Package) {
                             pkg = (Package) item.getItem();
                         }
-                        helper.store( userNavPath, lastUserNavPath, organizationalUnit,
-                                      repository, branch, project, pkg, item, options );
-                    } catch ( final Exception e ) {
-                        LOGGER.error( "Can't serialize user's state navigation", e );
+                        helper.store(userNavPath,
+                                     lastUserNavPath,
+                                     organizationalUnit,
+                                     repository,
+                                     branch,
+                                     project,
+                                     pkg,
+                                     item,
+                                     options);
+                    } catch (final Exception e) {
+                        LOGGER.error("Can't serialize user's state navigation",
+                                     e);
                     }
                 }
-            } );
+            });
         }
 
         return result;
     }
 
-    private List<Path> resolvePath( final FolderItem item ) {
-        if ( item == null ) {
+    private List<Path> resolvePath(final FolderItem item) {
+        if (item == null) {
             return emptyList();
         }
 
-        if ( item.getItem() instanceof Package ) {
-            final Package pkg = ( (Package) item.getItem() );
-            return new ArrayList<Path>( 4 ) {{
-                add( pkg.getPackageMainResourcesPath() );
-                add( pkg.getPackageMainSrcPath() );
-                add( pkg.getPackageTestResourcesPath() );
-                add( pkg.getPackageTestSrcPath() );
+        if (item.getItem() instanceof Package) {
+            final Package pkg = ((Package) item.getItem());
+            return new ArrayList<Path>(4) {{
+                add(pkg.getPackageMainResourcesPath());
+                add(pkg.getPackageMainSrcPath());
+                add(pkg.getPackageTestResourcesPath());
+                add(pkg.getPackageTestSrcPath());
             }};
         }
 
-        if ( item.getItem() instanceof Path ) {
+        if (item.getItem() instanceof Path) {
             //Path could represent a package
-            if ( item.getType() == FolderItemType.FOLDER ) {
-                final Package pkg = projectService.resolvePackage( (Path) item.getItem() );
-                if ( pkg == null ) {
-                    return new ArrayList<Path>( 1 ) {{
-                        add( (Path) item.getItem() );
+            if (item.getType() == FolderItemType.FOLDER) {
+                final Package pkg = projectService.resolvePackage((Path) item.getItem());
+                if (pkg == null) {
+                    return new ArrayList<Path>(1) {{
+                        add((Path) item.getItem());
                     }};
                 } else {
-                    return new ArrayList<Path>( 4 ) {{
-                        add( pkg.getPackageMainResourcesPath() );
-                        add( pkg.getPackageMainSrcPath() );
-                        add( pkg.getPackageTestResourcesPath() );
-                        add( pkg.getPackageTestSrcPath() );
+                    return new ArrayList<Path>(4) {{
+                        add(pkg.getPackageMainResourcesPath());
+                        add(pkg.getPackageMainSrcPath());
+                        add(pkg.getPackageTestResourcesPath());
+                        add(pkg.getPackageTestSrcPath());
                     }};
                 }
-
             } else {
-                return new ArrayList<Path>( 1 ) {{
-                    add( (Path) item.getItem() );
+                return new ArrayList<Path>(1) {{
+                    add((Path) item.getItem());
                 }};
             }
         }
@@ -332,15 +342,15 @@ public class ExplorerServiceImpl
     }
 
     @Override
-    public Package resolvePackage( final FolderItem item ) {
-        if ( item == null ) {
+    public Package resolvePackage(final FolderItem item) {
+        if (item == null) {
             return null;
         }
-        if ( item.getItem() instanceof Package ) {
+        if (item.getItem() instanceof Package) {
             return (Package) item.getItem();
         }
-        if ( item.getItem() instanceof Path ) {
-            return projectService.resolvePackage( (Path) item.getItem() );
+        if (item.getItem() instanceof Path) {
+            return projectService.resolvePackage((Path) item.getItem());
         }
 
         return null;
@@ -352,65 +362,77 @@ public class ExplorerServiceImpl
     }
 
     @Override
-    public void deleteItem( final FolderItem folderItem,
-                            final String comment ) {
+    public void deleteItem(final FolderItem folderItem,
+                           final String comment) {
 
-        final Collection<Path> paths = resolvePath( folderItem );
-        deleteService.deleteIfExists( paths, comment );
+        final Collection<Path> paths = resolvePath(folderItem);
+        deleteService.deleteIfExists(paths,
+                                     comment);
     }
 
     @Override
-    public void renameItem( final FolderItem folderItem,
-                            final String newName,
-                            final String comment ) {
-        final Collection<Path> paths = resolvePath( folderItem );
-        renameService.renameIfExists( paths, newName, comment );
+    public void renameItem(final FolderItem folderItem,
+                           final String newName,
+                           final String comment) {
+        final Collection<Path> paths = resolvePath(folderItem);
+        renameService.renameIfExists(paths,
+                                     newName,
+                                     comment);
     }
 
     @Override
-    public void copyItem( final FolderItem folderItem,
-                          final String newName,
-                          final Path targetDirectory,
-                          final String comment ) {
-        final List<Path> paths = resolvePath( folderItem );
+    public void copyItem(final FolderItem folderItem,
+                         final String newName,
+                         final Path targetDirectory,
+                         final String comment) {
+        final List<Path> paths = resolvePath(folderItem);
 
-        if ( paths != null && paths.size() == 1 ){
-            copyService.copy( paths.get( 0 ), newName, targetDirectory, comment );
+        if (paths != null && paths.size() == 1) {
+            copyService.copy(paths.get(0),
+                             newName,
+                             targetDirectory,
+                             comment);
         } else {
             // when copying packages
-            copyService.copyIfExists( paths, newName, comment );
+            copyService.copyIfExists(paths,
+                                     newName,
+                                     comment);
         }
     }
 
-    void onProjectRename( @Observes final RenameProjectEvent event ) {
-        cleanup( event.getOldProject() );
+    void onProjectRename(@Observes final RenameProjectEvent event) {
+        cleanup(event.getOldProject());
     }
 
-    void onProjectDelete( @Observes final DeleteProjectEvent event ) {
-        cleanup( event.getProject() );
+    void onProjectDelete(@Observes final DeleteProjectEvent event) {
+        cleanup(event.getProject());
     }
 
-    private void cleanup( final Project project ) {
-        final Collection<org.uberfire.java.nio.file.Path> lastNavs = userServicesBackend.getAllUsersData( "explorer", "last.user.nav" );
-        final Collection<org.uberfire.java.nio.file.Path> userNavs = userServicesBackend.getAllUsersData( "explorer", "user.nav" );
+    private void cleanup(final Project project) {
+        final Collection<org.uberfire.java.nio.file.Path> lastNavs = userServicesBackend.getAllUsersData("explorer",
+                                                                                                         "last.user.nav");
+        final Collection<org.uberfire.java.nio.file.Path> userNavs = userServicesBackend.getAllUsersData("explorer",
+                                                                                                         "user.nav");
 
         try {
-            ioServiceConfig.startBatch( fileSystem );
+            ioServiceConfig.startBatch(fileSystem);
 
-            for ( org.uberfire.java.nio.file.Path path : userNavs ) {
-                final UserExplorerData userContent = helper.loadUserContent( path );
-                if ( userContent != null ) {
-                    if ( userContent.deleteProject( project ) ) {
-                        ioServiceConfig.write( path, xs.toXML( userContent ) );
+            for (org.uberfire.java.nio.file.Path path : userNavs) {
+                final UserExplorerData userContent = helper.loadUserContent(path);
+                if (userContent != null) {
+                    if (userContent.deleteProject(project)) {
+                        ioServiceConfig.write(path,
+                                              xs.toXML(userContent));
                     }
                 }
             }
 
-            for ( org.uberfire.java.nio.file.Path lastNav : lastNavs ) {
-                final UserExplorerLastData lastUserContent = helper.getLastContent( lastNav );
-                if ( lastUserContent != null ) {
-                    if ( lastUserContent.deleteProject( project ) ) {
-                        ioServiceConfig.write( lastNav, xs.toXML( lastUserContent ) );
+            for (org.uberfire.java.nio.file.Path lastNav : lastNavs) {
+                final UserExplorerLastData lastUserContent = helper.getLastContent(lastNav);
+                if (lastUserContent != null) {
+                    if (lastUserContent.deleteProject(project)) {
+                        ioServiceConfig.write(lastNav,
+                                              xs.toXML(lastUserContent));
                     }
                 }
             }
@@ -422,5 +444,4 @@ public class ExplorerServiceImpl
     public class OrganizationalUnitNotFoundForURI extends RuntimeException {
 
     }
-
 }

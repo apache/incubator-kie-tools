@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -31,8 +32,8 @@ import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.ProjectRepositoriesService;
 import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.shared.project.KieProject;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
@@ -58,91 +59,90 @@ public class ProjectRepositoriesSynchronizer {
     }
 
     @Inject
-    public ProjectRepositoriesSynchronizer( final @Named("ioStrategy") IOService ioService,
-                                            final ProjectRepositoryResolver repositoryResolver,
-                                            final ProjectRepositoriesService projectRepositoriesService,
-                                            final ObservablePOMFile observablePOMFile,
-                                            final KieProjectFactory projectFactory ) {
-        this.ioService = PortablePreconditions.checkNotNull( "ioService",
-                                                             ioService );
-        this.repositoryResolver = PortablePreconditions.checkNotNull( "repositoryResolver",
-                                                                      repositoryResolver );
-        this.projectRepositoriesService = PortablePreconditions.checkNotNull( "projectRepositoriesService",
-                                                                              projectRepositoriesService );
-        this.observablePOMFile = PortablePreconditions.checkNotNull( "observablePOMFile",
-                                                                     observablePOMFile );
-        this.projectFactory = PortablePreconditions.checkNotNull( "projectFactory",
-                                                                  projectFactory );
+    public ProjectRepositoriesSynchronizer(final @Named("ioStrategy") IOService ioService,
+                                           final ProjectRepositoryResolver repositoryResolver,
+                                           final ProjectRepositoriesService projectRepositoriesService,
+                                           final ObservablePOMFile observablePOMFile,
+                                           final KieProjectFactory projectFactory) {
+        this.ioService = PortablePreconditions.checkNotNull("ioService",
+                                                            ioService);
+        this.repositoryResolver = PortablePreconditions.checkNotNull("repositoryResolver",
+                                                                     repositoryResolver);
+        this.projectRepositoriesService = PortablePreconditions.checkNotNull("projectRepositoriesService",
+                                                                             projectRepositoriesService);
+        this.observablePOMFile = PortablePreconditions.checkNotNull("observablePOMFile",
+                                                                    observablePOMFile);
+        this.projectFactory = PortablePreconditions.checkNotNull("projectFactory",
+                                                                 projectFactory);
     }
 
-    public void onResourceUpdated( @Observes final ResourceUpdatedEvent event ) {
-        if ( observablePOMFile.accept( event.getPath().getFileName() ) ) {
-            syncProjectRepositories( event.getPath() );
+    public void onResourceUpdated(@Observes final ResourceUpdatedEvent event) {
+        if (observablePOMFile.accept(event.getPath().getFileName())) {
+            syncProjectRepositories(event.getPath());
         }
     }
 
-    public void onBatchResourceChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
-        for ( final Map.Entry<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> entry : resourceBatchChangesEvent.getBatch().entrySet() ) {
-            if ( observablePOMFile.accept( entry.getKey().getFileName() ) && isUpdate( entry.getValue() ) ) {
-                syncProjectRepositories( entry.getKey() );
+    public void onBatchResourceChanges(@Observes final ResourceBatchChangesEvent resourceBatchChangesEvent) {
+        for (final Map.Entry<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> entry : resourceBatchChangesEvent.getBatch().entrySet()) {
+            if (observablePOMFile.accept(entry.getKey().getFileName()) && isUpdate(entry.getValue())) {
+                syncProjectRepositories(entry.getKey());
                 break;
             }
         }
     }
 
-    private boolean isUpdate( final Collection<ResourceChange> value ) {
-        for ( final ResourceChange resourceChange : value ) {
-            if ( resourceChange instanceof ResourceUpdated ) {
+    private boolean isUpdate(final Collection<ResourceChange> value) {
+        for (final ResourceChange resourceChange : value) {
+            if (resourceChange instanceof ResourceUpdated) {
                 return true;
             }
         }
         return false;
     }
 
-    private void syncProjectRepositories( final org.uberfire.backend.vfs.Path _path ) {
+    private void syncProjectRepositories(final org.uberfire.backend.vfs.Path _path) {
         //Load existing Repository definitions for Project
-        final Path path = ioService.get( URI.create( _path.toURI() ) );
-        final KieProject project = projectFactory.simpleProjectInstance( path.getParent() );
-        final ProjectRepositories projectRepositories = projectRepositoriesService.load( project.getRepositoriesPath() );
+        final Path path = ioService.get(URI.create(_path.toURI()));
+        final KieProject project = projectFactory.simpleProjectInstance(path.getParent());
+        final ProjectRepositories projectRepositories = projectRepositoriesService.load(project.getRepositoriesPath());
 
         //Load all Repository definitions resolved for the Project
-        final Set<MavenRepositoryMetadata> mavenRepositories = repositoryResolver.getRemoteRepositoriesMetaData( project );
+        final Set<MavenRepositoryMetadata> mavenRepositories = repositoryResolver.getRemoteRepositoriesMetaData(project);
 
         //Identify Project Repositories to be removed (they're not in the Repositories resolved for the Project)
         final Set<MavenRepositoryMetadata> existingMavenRepositories = new HashSet<MavenRepositoryMetadata>();
         final Set<ProjectRepositories.ProjectRepository> repositoriesToRemove = new HashSet<ProjectRepositories.ProjectRepository>();
-        for ( ProjectRepositories.ProjectRepository projectRepository : projectRepositories.getRepositories() ) {
+        for (ProjectRepositories.ProjectRepository projectRepository : projectRepositories.getRepositories()) {
             final MavenRepositoryMetadata existingMavenRepository = projectRepository.getMetadata();
-            if ( mavenRepositories.contains( existingMavenRepository ) ) {
-                existingMavenRepositories.add( existingMavenRepository );
+            if (mavenRepositories.contains(existingMavenRepository)) {
+                existingMavenRepositories.add(existingMavenRepository);
             } else {
-                repositoriesToRemove.add( projectRepository );
+                repositoriesToRemove.add(projectRepository);
             }
         }
 
         //Identify Maven Repositories to be added (they're not in the Project Repositories)
         final Set<MavenRepositoryMetadata> repositoriesToAdd = new HashSet<MavenRepositoryMetadata>();
-        for ( MavenRepositoryMetadata mavenRepository : mavenRepositories ) {
-            if ( !existingMavenRepositories.contains( mavenRepository ) ) {
-                repositoriesToAdd.add( mavenRepository );
+        for (MavenRepositoryMetadata mavenRepository : mavenRepositories) {
+            if (!existingMavenRepositories.contains(mavenRepository)) {
+                repositoriesToAdd.add(mavenRepository);
             }
         }
 
         //Delete identified Maven Repositories
-        for ( ProjectRepositories.ProjectRepository repository : repositoriesToRemove ) {
-            projectRepositories.getRepositories().remove( repository );
+        for (ProjectRepositories.ProjectRepository repository : repositoriesToRemove) {
+            projectRepositories.getRepositories().remove(repository);
         }
 
         //Add identified Maven Repositories
-        for ( MavenRepositoryMetadata repository : repositoriesToAdd ) {
-            projectRepositories.getRepositories().add( new ProjectRepositories.ProjectRepository( true,
-                                                                                                  repository ) );
+        for (MavenRepositoryMetadata repository : repositoriesToAdd) {
+            projectRepositories.getRepositories().add(new ProjectRepositories.ProjectRepository(true,
+                                                                                                repository));
         }
 
         //Update project.repositories file
-        projectRepositoriesService.save( project.getRepositoriesPath(),
-                                         projectRepositories,
-                                         "Automatic synchronization" );
+        projectRepositoriesService.save(project.getRepositoriesPath(),
+                                        projectRepositories,
+                                        "Automatic synchronization");
     }
-
 }

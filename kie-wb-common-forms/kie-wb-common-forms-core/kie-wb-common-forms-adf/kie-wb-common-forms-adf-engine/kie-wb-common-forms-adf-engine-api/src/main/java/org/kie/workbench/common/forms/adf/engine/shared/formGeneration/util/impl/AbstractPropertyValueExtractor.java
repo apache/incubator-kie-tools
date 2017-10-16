@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.adf.engine.shared.formGeneration.util.impl;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public abstract class AbstractPropertyValueExtractor implements org.kie.workbench.common.forms.adf.engine.shared.formGeneration.util.PropertyValueExtractor {
 

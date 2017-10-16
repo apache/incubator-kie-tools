@@ -34,7 +34,7 @@ import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresente
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class Explorer
         extends Composite {
@@ -125,7 +125,6 @@ public class Explorer
                 .setClear(Style.Clear.BOTH);
         container.add(divClear);
     }
-
 
     public void hideHeaderNavigator() {
     }

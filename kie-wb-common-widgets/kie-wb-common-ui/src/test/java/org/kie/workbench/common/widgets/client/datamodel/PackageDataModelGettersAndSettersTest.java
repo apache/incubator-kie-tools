@@ -18,14 +18,15 @@ package org.kie.workbench.common.widgets.client.datamodel;
 
 import javax.enterprise.inject.Instance;
 
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
@@ -45,115 +46,119 @@ public class PackageDataModelGettersAndSettersTest {
 
     @Test
     public void testGettersAndSettersOnDeclaredModel() throws Exception {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addFact( "Person" )
-                .addField( new ModelField( "age",
-                                           Integer.class.getName(),
-                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                           ModelField.FIELD_ORIGIN.DECLARED,
-                                           FieldAccessorsAndMutators.BOTH,
-                                           DataType.TYPE_NUMERIC_INTEGER ) )
-                .addField( new ModelField( "sex",
-                                           String.class.getName(),
-                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                           ModelField.FIELD_ORIGIN.DECLARED,
-                                           FieldAccessorsAndMutators.BOTH,
-                                           DataType.TYPE_STRING ) )
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+                .addFact("Person")
+                .addField(new ModelField("age",
+                                         Integer.class.getName(),
+                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                         ModelField.FIELD_ORIGIN.DECLARED,
+                                         FieldAccessorsAndMutators.BOTH,
+                                         DataType.TYPE_NUMERIC_INTEGER))
+                .addField(new ModelField("sex",
+                                         String.class.getName(),
+                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                         ModelField.FIELD_ORIGIN.DECLARED,
+                                         FieldAccessorsAndMutators.BOTH,
+                                         DataType.TYPE_STRING))
                 .end()
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
+                .setProjectOracle(projectLoader)
+                .build();
 
         //Emulate server-to-client conversions
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
-                                                                                        validatorInstance );
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl(service,
+                                                                                       validatorInstance);
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setPackageName( packageLoader.getPackageName() );
-        dataModel.setModelFields( packageLoader.getProjectModelFields() );
-        PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
-                                                                 new MockHasImports(),
-                                                                 oracle,
-                                                                 dataModel );
+        dataModel.setPackageName(packageLoader.getPackageName());
+        dataModel.setModelFields(packageLoader.getProjectModelFields());
+        PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
+                                                                new MockHasImports(),
+                                                                oracle,
+                                                                dataModel);
 
-        oracle.getFieldCompletions( "Person",
-                                    FieldAccessorsAndMutators.ACCESSOR,
-                                    new Callback<ModelField[]>() {
-                                        @Override
-                                        public void callback( final ModelField[] getters ) {
-                                            assertEquals( 3,
-                                                          getters.length );
-                                            assertEquals( "age",
-                                                          getters[ 0 ].getName() );
-                                            assertEquals( "sex",
-                                                          getters[ 1 ].getName() );
-                                            assertEquals( DataType.TYPE_THIS,
-                                                          getters[ 2 ].getName() );
-                                        }
-                                    } );
+        oracle.getFieldCompletions("Person",
+                                   FieldAccessorsAndMutators.ACCESSOR,
+                                   new Callback<ModelField[]>() {
+                                       @Override
+                                       public void callback(final ModelField[] getters) {
+                                           assertEquals(3,
+                                                        getters.length);
+                                           assertEquals("age",
+                                                        getters[0].getName());
+                                           assertEquals("sex",
+                                                        getters[1].getName());
+                                           assertEquals(DataType.TYPE_THIS,
+                                                        getters[2].getName());
+                                       }
+                                   });
 
-        oracle.getFieldCompletions( "Person",
-                                    FieldAccessorsAndMutators.MUTATOR,
-                                    new Callback<ModelField[]>() {
-                                        @Override
-                                        public void callback( final ModelField[] setters ) {
-                                            assertEquals( 2,
-                                                          setters.length );
-                                            assertEquals( "age",
-                                                          setters[ 0 ].getName() );
-                                            assertEquals( "sex",
-                                                          setters[ 1 ].getName() );
-                                        }
-                                    } );
+        oracle.getFieldCompletions("Person",
+                                   FieldAccessorsAndMutators.MUTATOR,
+                                   new Callback<ModelField[]>() {
+                                       @Override
+                                       public void callback(final ModelField[] setters) {
+                                           assertEquals(2,
+                                                        setters.length);
+                                           assertEquals("age",
+                                                        setters[0].getName());
+                                           assertEquals("sex",
+                                                        setters[1].getName());
+                                       }
+                                   });
     }
 
     @Test
     public void testGettersAndSettersOnJavaClass() throws Exception {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( Person.class )
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+                .addClass(Person.class)
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel" ).setProjectOracle( projectLoader ).build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(),
+                                                                                                           "org.kie.workbench.common.widgets.client.datamodel")
+                .setProjectOracle(projectLoader)
+                .build();
 
         //Emulate server-to-client conversions
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
-                                                                                        validatorInstance );
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl(service,
+                                                                                       validatorInstance);
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setPackageName( packageLoader.getPackageName() );
-        dataModel.setModelFields( packageLoader.getProjectModelFields() );
-        PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
-                                                                 new MockHasImports(),
-                                                                 oracle,
-                                                                 dataModel );
+        dataModel.setPackageName(packageLoader.getPackageName());
+        dataModel.setModelFields(packageLoader.getProjectModelFields());
+        PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
+                                                                new MockHasImports(),
+                                                                oracle,
+                                                                dataModel);
 
-        oracle.getFieldCompletions( "Person",
-                                    FieldAccessorsAndMutators.ACCESSOR,
-                                    new Callback<ModelField[]>() {
-                                        @Override
-                                        public void callback( final ModelField[] getters ) {
-                                            assertEquals( 2,
-                                                          getters.length );
-                                            assertEquals( "age",
-                                                          getters[ 0 ].getName() );
-                                            assertEquals( DataType.TYPE_THIS,
-                                                          getters[ 1 ].getName() );
-                                        }
-                                    } );
+        oracle.getFieldCompletions("Person",
+                                   FieldAccessorsAndMutators.ACCESSOR,
+                                   new Callback<ModelField[]>() {
+                                       @Override
+                                       public void callback(final ModelField[] getters) {
+                                           assertEquals(2,
+                                                        getters.length);
+                                           assertEquals("age",
+                                                        getters[0].getName());
+                                           assertEquals(DataType.TYPE_THIS,
+                                                        getters[1].getName());
+                                       }
+                                   });
 
-        oracle.getFieldCompletions( "Person",
-                                    FieldAccessorsAndMutators.MUTATOR,
-                                    new Callback<ModelField[]>() {
-                                        @Override
-                                        public void callback( final ModelField[] setters ) {
-                                            assertEquals( 1,
-                                                          setters.length );
-                                            assertEquals( "age",
-                                                          setters[ 0 ].getName() );
-                                        }
-                                    } );
-
+        oracle.getFieldCompletions("Person",
+                                   FieldAccessorsAndMutators.MUTATOR,
+                                   new Callback<ModelField[]>() {
+                                       @Override
+                                       public void callback(final ModelField[] setters) {
+                                           assertEquals(1,
+                                                        setters.length);
+                                           assertEquals("age",
+                                                        setters[0].getName());
+                                       }
+                                   });
     }
 }

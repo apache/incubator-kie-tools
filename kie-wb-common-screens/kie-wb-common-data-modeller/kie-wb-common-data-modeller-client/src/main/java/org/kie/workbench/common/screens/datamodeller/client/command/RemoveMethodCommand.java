@@ -16,40 +16,46 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.command;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.Method;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 public class RemoveMethodCommand extends AbstractDataModelCommand {
 
     private final Method method;
 
-    public RemoveMethodCommand( final DataModelerContext context, final String source,
-                                final DataObject dataObject, final Method method,
-                                final DataModelChangeNotifier notifier ) {
-        super( context, source, dataObject, notifier );
-        this.method = PortablePreconditions.checkNotNull( "method", method );
+    public RemoveMethodCommand(final DataModelerContext context,
+                               final String source,
+                               final DataObject dataObject,
+                               final Method method,
+                               final DataModelChangeNotifier notifier) {
+        super(context,
+              source,
+              dataObject,
+              notifier);
+        this.method = PortablePreconditions.checkNotNull("method",
+                                                         method);
     }
 
     @Override
     public void execute() {
-        if ( method != null ) {
-            dataObject.removeMethod( method );
+        if (method != null) {
+            dataObject.removeMethod(method);
 
             DataModelerEvent event = new DataObjectChangeEvent()
-                    .withChangeType( ChangeType.METHOD_REMOVE_CHANGE)
-                    .withOldValue( method )
-                    .withNewValue( null )
-                    .withContextId( getContext().getContextId() )
-                    .withSource( getSource() )
-                    .withCurrentDataObject( getDataObject() )
-                    .withCurrentMethod( method );
+                    .withChangeType(ChangeType.METHOD_REMOVE_CHANGE)
+                    .withOldValue(method)
+                    .withNewValue(null)
+                    .withContextId(getContext().getContextId())
+                    .withSource(getSource())
+                    .withCurrentDataObject(getDataObject())
+                    .withCurrentMethod(method);
 
-            notifyChange( event );
+            notifyChange(event);
         }
     }
 }

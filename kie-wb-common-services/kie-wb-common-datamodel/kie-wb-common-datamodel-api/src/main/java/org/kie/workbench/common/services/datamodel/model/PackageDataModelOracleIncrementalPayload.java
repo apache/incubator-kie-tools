@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.appformer.project.datamodel.oracle.Annotation;
-import org.appformer.project.datamodel.oracle.MethodInfo;
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.appformer.project.datamodel.oracle.TypeSource;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.project.datamodel.oracle.Annotation;
+import org.kie.soup.project.datamodel.oracle.MethodInfo;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.TypeSource;
 
 /**
  * Payload for incremental client-side Data Model Oracle content
@@ -64,7 +64,7 @@ public class PackageDataModelOracleIncrementalPayload {
         return modelFields;
     }
 
-    public void setModelFields( final Map<String, ModelField[]> modelFields ) {
+    public void setModelFields(final Map<String, ModelField[]> modelFields) {
         this.modelFields = modelFields;
     }
 
@@ -72,7 +72,7 @@ public class PackageDataModelOracleIncrementalPayload {
         return fieldParametersType;
     }
 
-    public void setFieldParametersType( final Map<String, String> fieldParametersType ) {
+    public void setFieldParametersType(final Map<String, String> fieldParametersType) {
         this.fieldParametersType = fieldParametersType;
     }
 
@@ -80,7 +80,7 @@ public class PackageDataModelOracleIncrementalPayload {
         return eventTypes;
     }
 
-    public void setEventTypes( final Map<String, Boolean> eventTypes ) {
+    public void setEventTypes(final Map<String, Boolean> eventTypes) {
         this.eventTypes = eventTypes;
     }
 
@@ -88,7 +88,7 @@ public class PackageDataModelOracleIncrementalPayload {
         return typeSources;
     }
 
-    public void setTypeSources( final Map<String, TypeSource> typeSources ) {
+    public void setTypeSources(final Map<String, TypeSource> typeSources) {
         this.typeSources = typeSources;
     }
 
@@ -96,7 +96,7 @@ public class PackageDataModelOracleIncrementalPayload {
         return superTypes;
     }
 
-    public void setSuperTypes( final Map<String, List<String>> superTypes ) {
+    public void setSuperTypes(final Map<String, List<String>> superTypes) {
         this.superTypes = superTypes;
     }
 
@@ -104,7 +104,7 @@ public class PackageDataModelOracleIncrementalPayload {
         return typeAnnotations;
     }
 
-    public void setTypeAnnotations( final Map<String, Set<Annotation>> typeAnnotations ) {
+    public void setTypeAnnotations(final Map<String, Set<Annotation>> typeAnnotations) {
         this.typeAnnotations = typeAnnotations;
     }
 
@@ -112,7 +112,7 @@ public class PackageDataModelOracleIncrementalPayload {
         return typeFieldsAnnotations;
     }
 
-    public void setTypeFieldsAnnotations( final Map<String, Map<String, Set<Annotation>>> typeFieldsAnnotations ) {
+    public void setTypeFieldsAnnotations(final Map<String, Map<String, Set<Annotation>>> typeFieldsAnnotations) {
         this.typeFieldsAnnotations = typeFieldsAnnotations;
     }
 
@@ -120,7 +120,7 @@ public class PackageDataModelOracleIncrementalPayload {
         return methodInformation;
     }
 
-    public void setMethodInformation( final Map<String, List<MethodInfo>> methodInformation ) {
+    public void setMethodInformation(final Map<String, List<MethodInfo>> methodInformation) {
         this.methodInformation = methodInformation;
     }
 
@@ -128,8 +128,7 @@ public class PackageDataModelOracleIncrementalPayload {
         return collectionTypes;
     }
 
-    public void setCollectionTypes( final Map<String, Boolean> collectionTypes ) {
+    public void setCollectionTypes(final Map<String, Boolean> collectionTypes) {
         this.collectionTypes = collectionTypes;
     }
-
 }

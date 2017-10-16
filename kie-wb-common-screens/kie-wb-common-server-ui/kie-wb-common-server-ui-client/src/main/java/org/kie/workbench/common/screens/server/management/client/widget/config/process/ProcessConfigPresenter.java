@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.server.management.client.widget.config.process;
 
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -28,17 +29,17 @@ import org.kie.workbench.common.screens.server.management.client.util.ClientMerg
 import org.kie.workbench.common.screens.server.management.client.util.ClientRuntimeStrategy;
 import org.uberfire.client.mvp.UberView;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Dependent
 public class ProcessConfigPresenter {
 
     public interface View extends UberView<ProcessConfigPresenter> {
 
-        void setContent( final String runtimeStrategy,
-                         final String kbase,
-                         final String ksession,
-                         final String mergeMode );
+        void setContent(final String runtimeStrategy,
+                        final String kbase,
+                        final String ksession,
+                        final String mergeMode);
 
         String getKBase();
 
@@ -62,24 +63,26 @@ public class ProcessConfigPresenter {
     private ProcessConfig processConfig;
 
     @Inject
-    public ProcessConfigPresenter( final View view ) {
+    public ProcessConfigPresenter(final View view) {
         this.view = view;
     }
 
     @PostConstruct
     public void init() {
-        this.view.init( this );
+        this.view.init(this);
     }
 
     public View getView() {
         return view;
     }
 
-    public void setup( final ContainerSpecKey containerSpecKey,
-                       final ProcessConfig processConfig ) {
-        this.processConfig = checkNotNull( "processConfig", processConfig );
-        this.containerSpecKey = checkNotNull( "containerSpecKey", containerSpecKey );
-        setupView( processConfig );
+    public void setup(final ContainerSpecKey containerSpecKey,
+                      final ProcessConfig processConfig) {
+        this.processConfig = checkNotNull("processConfig",
+                                          processConfig);
+        this.containerSpecKey = checkNotNull("containerSpecKey",
+                                             containerSpecKey);
+        setupView(processConfig);
     }
 
     public void clear() {
@@ -88,9 +91,9 @@ public class ProcessConfigPresenter {
         view.clear();
     }
 
-    public void setProcessConfig( final ProcessConfig processConfig ) {
+    public void setProcessConfig(final ProcessConfig processConfig) {
         this.processConfig = processConfig;
-        setupView( processConfig );
+        setupView(processConfig);
     }
 
     public ContainerSpecKey getContainerSpecKey() {
@@ -101,14 +104,14 @@ public class ProcessConfigPresenter {
         return processConfig;
     }
 
-    private void setupView( final ProcessConfig processConfig ) {
-        final String runtimeStrategy = ClientRuntimeStrategy.valueOf( processConfig.getRuntimeStrategy() ).getValue( view.getTranslationService() );
-        final String mergeMode = ClientMergeMode.valueOf( processConfig.getMergeMode() ).getValue( view.getTranslationService() );
+    private void setupView(final ProcessConfig processConfig) {
+        final String runtimeStrategy = ClientRuntimeStrategy.valueOf(processConfig.getRuntimeStrategy()).getValue(view.getTranslationService());
+        final String mergeMode = ClientMergeMode.valueOf(processConfig.getMergeMode()).getValue(view.getTranslationService());
 
-        this.view.setContent( runtimeStrategy,
-                              processConfig.getKBase(),
-                              processConfig.getKSession(),
-                              mergeMode );
+        this.view.setContent(runtimeStrategy,
+                             processConfig.getKBase(),
+                             processConfig.getKSession(),
+                             mergeMode);
     }
 
     public void disable() {
@@ -116,22 +119,23 @@ public class ProcessConfigPresenter {
     }
 
     public void cancel() {
-        setupView( this.processConfig );
+        setupView(this.processConfig);
     }
 
     public ProcessConfig buildProcessConfig() {
-        return new ProcessConfig( ClientRuntimeStrategy.convert( view.getRuntimeStrategy(), view.getTranslationService() ).getRuntimeStrategy().toString(),
-                                  view.getKBase(),
-                                  view.getKSession(),
-                                  ClientMergeMode.convert( view.getMergeMode(), view.getTranslationService() ).getMergeMode().toString() );
+        return new ProcessConfig(ClientRuntimeStrategy.convert(view.getRuntimeStrategy(),
+                                                               view.getTranslationService()).getRuntimeStrategy().toString(),
+                                 view.getKBase(),
+                                 view.getKSession(),
+                                 ClientMergeMode.convert(view.getMergeMode(),
+                                                         view.getTranslationService()).getMergeMode().toString());
     }
 
     public List<String> getRuntimeStrategies() {
-        return ClientRuntimeStrategy.listRuntimeStrategiesValues( view.getTranslationService() );
+        return ClientRuntimeStrategy.listRuntimeStrategiesValues(view.getTranslationService());
     }
 
     public List<String> getMergeModes() {
-        return ClientMergeMode.listMergeModeValues( view.getTranslationService() );
+        return ClientMergeMode.listMergeModeValues(view.getTranslationService());
     }
-
 }

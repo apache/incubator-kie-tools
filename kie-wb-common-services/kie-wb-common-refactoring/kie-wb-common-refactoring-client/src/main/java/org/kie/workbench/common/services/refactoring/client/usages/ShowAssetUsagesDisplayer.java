@@ -19,6 +19,7 @@ package org.kie.workbench.common.services.refactoring.client.usages;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -28,12 +29,12 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.client.resources.i18n.RefactoringConstants;
 import org.kie.workbench.common.services.refactoring.service.AssetsUsageService;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
@@ -84,10 +85,11 @@ public class ShowAssetUsagesDisplayer implements ShowAssetUsagesDisplayerView.Pr
 
     /**
      * Displays the usages for the asset identified by the resourceFQN
-     * @param path Path for the given asset
-     * @param resourceFQN Fully Qualified Name of the asset
-     * @param resourceType The type of asset.
-     * @param okCommand {@link Command} that is going to run when the user presses ok button. If there are no usages on the index the command will be automatically executed without opening the modal
+     *
+     * @param path          Path for the given asset
+     * @param resourceFQN   Fully Qualified Name of the asset
+     * @param resourceType  The type of asset.
+     * @param okCommand     {@link Command} that is going to run when the user presses ok button. If there are no usages on the index the command will be automatically executed without opening the modal
      * @param cancelCommand {@link Command} that is going to run when the user presses Cancel button.
      */
     public void showAssetUsages(final Path path,
@@ -107,11 +109,12 @@ public class ShowAssetUsagesDisplayer implements ShowAssetUsagesDisplayerView.Pr
 
     /**
      * Displays the usages for the asset identified by the resourceFQN using a specific message instead of the default message.
+     *
      * @param headerMessage The message that will be shown instead of the default message
-     * @param path Path for the given asset
-     * @param resourceFQN Fully Qualified Name of the asset
-     * @param resourceType The type of asset.
-     * @param okCommand {@link Command} that is going to run when the user presses ok button. If there are no usages on the index the command will be automatically executed without opening the modal
+     * @param path          Path for the given asset
+     * @param resourceFQN   Fully Qualified Name of the asset
+     * @param resourceType  The type of asset.
+     * @param okCommand     {@link Command} that is going to run when the user presses ok button. If there are no usages on the index the command will be automatically executed without opening the modal
      * @param cancelCommand {@link Command} that is going to run when the user presses Cancel button.
      */
     public void showAssetUsages(final String headerMessage,
@@ -137,11 +140,12 @@ public class ShowAssetUsagesDisplayer implements ShowAssetUsagesDisplayerView.Pr
 
     /**
      * Displays the usages for the asset identified by the resourceFQN using a specific {@link HTMLElement} on the header instead of the default message.
+     *
      * @param headerElement The element that will be shown instead of the default message
-     * @param path Path for the given asset
-     * @param resourceFQN Fully Qualified Name of the asset
-     * @param resourceType The type of asset.
-     * @param okCommand {@link Command} that is going to run when the user presses ok button. If there are no usages on the index the command will be automatically executed without opening the modal
+     * @param path          Path for the given asset
+     * @param resourceFQN   Fully Qualified Name of the asset
+     * @param resourceType  The type of asset.
+     * @param okCommand     {@link Command} that is going to run when the user presses ok button. If there are no usages on the index the command will be automatically executed without opening the modal
      * @param cancelCommand {@link Command} that is going to run when the user presses Cancel button.
      */
     public void showAssetUsages(final HTMLElement headerElement,
@@ -178,11 +182,12 @@ public class ShowAssetUsagesDisplayer implements ShowAssetUsagesDisplayerView.Pr
 
     /**
      * Displays the usages for the asset part identified by the resourPart parameter.
-     * @param path Path for the given asset
-     * @param resourceFQN Fully Qualified Name of the asset
-     * @param resourcePart The name of the part to search.
-     * @param partType The {@link PartType} that to search.
-     * @param okCommand {@link Command} that is going to run when the user presses ok button. If there are no usages on the index the command will be automatically executed without opening the modal
+     *
+     * @param path          Path for the given asset
+     * @param resourceFQN   Fully Qualified Name of the asset
+     * @param resourcePart  The name of the part to search.
+     * @param partType      The {@link PartType} that to search.
+     * @param okCommand     {@link Command} that is going to run when the user presses ok button. If there are no usages on the index the command will be automatically executed without opening the modal
      * @param cancelCommand {@link Command} that is going to run when the user presses Cancel button.
      */
     public void showAssetPartUsages(Path path,
@@ -204,12 +209,13 @@ public class ShowAssetUsagesDisplayer implements ShowAssetUsagesDisplayerView.Pr
 
     /**
      * Displays the usages for the asset part identified by the resourPart parameter using a specific message instead of the default message..
+     *
      * @param headerMessage The message that will be shown instead of the default message
-     * @param path Path for the given asset
-     * @param resourceFQN Fully Qualified Name of the asset
-     * @param resourcePart The name of the part to search.
-     * @param partType The {@link PartType} that to search.
-     * @param okCommand {@link Command} that is going to run when the user presses ok button. If there are no usages on the index the command will be automatically executed without opening the modal
+     * @param path          Path for the given asset
+     * @param resourceFQN   Fully Qualified Name of the asset
+     * @param resourcePart  The name of the part to search.
+     * @param partType      The {@link PartType} that to search.
+     * @param okCommand     {@link Command} that is going to run when the user presses ok button. If there are no usages on the index the command will be automatically executed without opening the modal
      * @param cancelCommand {@link Command} that is going to run when the user presses Cancel button.
      */
     public void showAssetPartUsages(final String headerMessage,
@@ -237,12 +243,13 @@ public class ShowAssetUsagesDisplayer implements ShowAssetUsagesDisplayerView.Pr
 
     /**
      * Displays the usages for the asset part identified by the resourPart parameter using a specific {@link HTMLElement} instead of the default message..
+     *
      * @param headerElement The element that will be shown instead of the default message
-     * @param path Path for the given asset
-     * @param resourceFQN Fully Qualified Name of the asset
-     * @param resourcePart The name of the part to search.
-     * @param partType The {@link PartType} that to search.
-     * @param okCommand {@link Command} that is going to run when the user presses ok button. If there are no usages on the index the command will be automatically executed without opening the modal
+     * @param path          Path for the given asset
+     * @param resourceFQN   Fully Qualified Name of the asset
+     * @param resourcePart  The name of the part to search.
+     * @param partType      The {@link PartType} that to search.
+     * @param okCommand     {@link Command} that is going to run when the user presses ok button. If there are no usages on the index the command will be automatically executed without opening the modal
      * @param cancelCommand {@link Command} that is going to run when the user presses Cancel button.
      */
     public void showAssetPartUsages(final HTMLElement headerElement,

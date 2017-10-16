@@ -18,27 +18,27 @@ package org.kie.workbench.common.services.datamodel.backend.server.builder.proje
 import java.util.Collections;
 import java.util.Map;
 
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.appformer.project.datamodel.oracle.TypeSource;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.TypeSource;
 
 /**
  * Simple builder for Fact Types
  */
 public class SimpleFactBuilder extends BaseFactBuilder {
 
-    public SimpleFactBuilder( final ProjectDataModelOracleBuilder builder,
-                              final String factType,
-                              final boolean isEvent,
-                              final TypeSource typeSource ) {
-        super( builder,
-               factType,
-               false,
-               isEvent,
-               typeSource );
+    public SimpleFactBuilder(final ProjectDataModelOracleBuilder builder,
+                             final String factType,
+                             final boolean isEvent,
+                             final TypeSource typeSource) {
+        super(builder,
+              factType,
+              false,
+              isEvent,
+              typeSource);
     }
 
-    public SimpleFactBuilder addField( final ModelField field ) {
-        super.addField( field );
+    public SimpleFactBuilder addField(final ModelField field) {
+        super.addField(field);
         return this;
     }
 

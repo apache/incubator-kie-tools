@@ -58,7 +58,7 @@ import org.kie.workbench.common.stunner.forms.context.PathAwareFormContext;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class FormPropertiesWidget implements IsWidget {

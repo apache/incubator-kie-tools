@@ -17,7 +17,7 @@ package org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells;
 
 import java.math.BigInteger;
 
-import org.appformer.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
@@ -31,63 +31,62 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDro
 public class ProxyPopupNumericBigIntegerDropDownEditCell extends
                                                          AbstractProxyPopupDropDownEditCell<BigInteger, BigInteger> {
 
-    public ProxyPopupNumericBigIntegerDropDownEditCell( final String factType,
-                                                        final String factField,
-                                                        final AsyncPackageDataModelOracle dmo,
-                                                        final CellTableDropDownDataValueMapProvider dropDownManager,
-                                                        final boolean isReadOnly ) {
-        super( factType,
-               factField,
-               dmo,
-               dropDownManager,
-               isReadOnly );
+    public ProxyPopupNumericBigIntegerDropDownEditCell(final String factType,
+                                                       final String factField,
+                                                       final AsyncPackageDataModelOracle dmo,
+                                                       final CellTableDropDownDataValueMapProvider dropDownManager,
+                                                       final boolean isReadOnly) {
+        super(factType,
+              factField,
+              dmo,
+              dropDownManager,
+              isReadOnly);
     }
 
     @Override
     protected ProxyPopupDropDown<BigInteger> getSingleValueEditor() {
-        return new AbstractProxyPopupDropDownTextBox<BigInteger>( TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_BIGINTEGER ),
-                                                                  this ) {
+        return new AbstractProxyPopupDropDownTextBox<BigInteger>(TextBoxFactory.getTextBox(DataType.TYPE_NUMERIC_BIGINTEGER),
+                                                                 this) {
             @Override
-            public String convertToString( final BigInteger value ) {
-                return ProxyPopupNumericBigIntegerDropDownEditCell.this.convertToString( value );
+            public String convertToString(final BigInteger value) {
+                return ProxyPopupNumericBigIntegerDropDownEditCell.this.convertToString(value);
             }
 
             @Override
-            public BigInteger convertFromString( final String value ) {
-                return ProxyPopupNumericBigIntegerDropDownEditCell.this.convertFromString( value );
+            public BigInteger convertFromString(final String value) {
+                return ProxyPopupNumericBigIntegerDropDownEditCell.this.convertFromString(value);
             }
         };
     }
 
     @Override
     protected ProxyPopupDropDown<BigInteger> getMultipleValueEditor() {
-        return new AbstractProxyPopupDropDownListBox<BigInteger>( this ) {
+        return new AbstractProxyPopupDropDownListBox<BigInteger>(this) {
             @Override
-            public String convertToString( final BigInteger value ) {
-                return ProxyPopupNumericBigIntegerDropDownEditCell.this.convertToString( value );
+            public String convertToString(final BigInteger value) {
+                return ProxyPopupNumericBigIntegerDropDownEditCell.this.convertToString(value);
             }
 
             @Override
-            public BigInteger convertFromString( final String value ) {
-                return ProxyPopupNumericBigIntegerDropDownEditCell.this.convertFromString( value );
+            public BigInteger convertFromString(final String value) {
+                return ProxyPopupNumericBigIntegerDropDownEditCell.this.convertFromString(value);
             }
         };
     }
 
-    private String convertToString( final BigInteger value ) {
-        return ( value == null ? null : value.toString() );
+    private String convertToString(final BigInteger value) {
+        return (value == null ? null : value.toString());
     }
 
-    private BigInteger convertFromString( final String value ) {
+    private BigInteger convertFromString(final String value) {
         BigInteger number = null;
-        if ( value.length() > 0 ) {
+        if (value.length() > 0) {
             try {
-                number = new BigInteger( value );
-            } catch ( NumberFormatException e ) {
-                number = BigInteger.valueOf( 0 );
+                number = new BigInteger(value);
+            } catch (NumberFormatException e) {
+                number = BigInteger.valueOf(0);
             }
         }
         return number;
     }
-
 }

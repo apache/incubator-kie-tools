@@ -20,16 +20,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.widgets.metadata.client.KieMultipleDocumentEditorPresenter;
 import org.kie.workbench.common.widgets.metadata.client.popups.SelectDocumentPopupView.SelectableDocumentView;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Dependent
 public class SelectDocumentPopup implements SelectDocumentPopupPresenter {
@@ -43,15 +44,15 @@ public class SelectDocumentPopup implements SelectDocumentPopupPresenter {
     private final List<SelectableDocumentView> selectableDocuments = new ArrayList<>();
 
     @Inject
-    public SelectDocumentPopup( final SelectDocumentPopupView view,
-                                final ManagedInstance<SelectableDocumentView> selectableDocumentProvider ) {
+    public SelectDocumentPopup(final SelectDocumentPopupView view,
+                               final ManagedInstance<SelectableDocumentView> selectableDocumentProvider) {
         this.view = view;
         this.selectableDocumentProvider = selectableDocumentProvider;
     }
 
     @PostConstruct
     void init() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
@@ -63,22 +64,22 @@ public class SelectDocumentPopup implements SelectDocumentPopupPresenter {
     }
 
     @Override
-    public void setEditorPresenter( final KieMultipleDocumentEditorPresenter presenter ) {
-        this.presenter = PortablePreconditions.checkNotNull( "presenter",
-                                                             presenter );
+    public void setEditorPresenter(final KieMultipleDocumentEditorPresenter presenter) {
+        this.presenter = PortablePreconditions.checkNotNull("presenter",
+                                                            presenter);
     }
 
     @Override
-    public void setDocuments( final List<Path> paths ) {
-        PortablePreconditions.checkNotNull( "paths",
-                                            paths );
+    public void setDocuments(final List<Path> paths) {
+        PortablePreconditions.checkNotNull("paths",
+                                           paths);
         dispose();
-        for ( Path path : paths ) {
-            final SelectableDocumentView document = makeSelectableDocument( path );
-            selectableDocuments.add( document );
-            view.addDocument( document );
+        for (Path path : paths) {
+            final SelectableDocumentView document = makeSelectableDocument(path);
+            selectableDocuments.add(document);
+            view.addDocument(document);
         }
-        view.enableOKButton( false );
+        view.enableOKButton(false);
     }
 
     @Override
@@ -88,15 +89,15 @@ public class SelectDocumentPopup implements SelectDocumentPopupPresenter {
 
     @Override
     public void onOK() {
-        if ( !selectedDocuments.isEmpty() ) {
+        if (!selectedDocuments.isEmpty()) {
             final List<Path> selectedDocumentPaths = new ArrayList<>();
-            for ( SelectableDocumentView selectableDocument : selectableDocuments ) {
-                if ( selectedDocuments.contains( selectableDocument ) ) {
+            for (SelectableDocumentView selectableDocument : selectableDocuments) {
+                if (selectedDocuments.contains(selectableDocument)) {
                     final Path path = selectableDocument.getPath();
-                    selectedDocumentPaths.add( path );
+                    selectedDocumentPaths.add(path);
                 }
             }
-            presenter.onOpenDocumentsInEditor( selectedDocumentPaths );
+            presenter.onOpenDocumentsInEditor(selectedDocumentPaths);
         }
         view.hide();
         dispose();
@@ -108,26 +109,25 @@ public class SelectDocumentPopup implements SelectDocumentPopupPresenter {
         dispose();
     }
 
-    SelectableDocumentView makeSelectableDocument( final Path path ) {
+    SelectableDocumentView makeSelectableDocument(final Path path) {
         final SelectableDocumentView selectableDocument = selectableDocumentProvider.get();
-        selectableDocument.setPath( path );
-        selectableDocument.setDocumentSelectedCommand( ( Boolean selected ) -> selectDocument( selectableDocument,
-                                                                                               selected ) );
+        selectableDocument.setPath(path);
+        selectableDocument.setDocumentSelectedCommand((Boolean selected) -> selectDocument(selectableDocument,
+                                                                                           selected));
         return selectableDocument;
     }
 
-    void selectDocument( final SelectableDocumentView document,
-                         final boolean selected ) {
-        if ( selected ) {
-            selectedDocuments.add( document );
+    void selectDocument(final SelectableDocumentView document,
+                        final boolean selected) {
+        if (selected) {
+            selectedDocuments.add(document);
         } else {
-            selectedDocuments.remove( document );
+            selectedDocuments.remove(document);
         }
 
-        view.enableOKButton( !selectedDocuments.isEmpty() );
-        for ( SelectableDocumentView d : selectableDocuments ) {
-            d.setSelected( selectedDocuments.contains( d ) );
+        view.enableOKButton(!selectedDocuments.isEmpty());
+        for (SelectableDocumentView d : selectableDocuments) {
+            d.setSelected(selectedDocuments.contains(d));
         }
     }
-
 }

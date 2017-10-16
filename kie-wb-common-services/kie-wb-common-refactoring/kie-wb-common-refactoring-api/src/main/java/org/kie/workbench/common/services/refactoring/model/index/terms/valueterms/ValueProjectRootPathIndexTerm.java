@@ -16,9 +16,9 @@
 package org.kie.workbench.common.services.refactoring.model.index.terms.valueterms;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class ValueProjectRootPathIndexTerm extends ProjectRootPathIndexTerm implements ValueIndexTerm {
@@ -30,15 +30,18 @@ public class ValueProjectRootPathIndexTerm extends ProjectRootPathIndexTerm impl
         //Errai marshalling
     }
 
-    public ValueProjectRootPathIndexTerm( final String projectPath ) {
-        this(projectPath, TermSearchType.NORMAL);
+    public ValueProjectRootPathIndexTerm(final String projectPath) {
+        this(projectPath,
+             TermSearchType.NORMAL);
     }
 
-    public ValueProjectRootPathIndexTerm( final String projectPath, final TermSearchType searchType ) {
-        this.projectPath = PortablePreconditions.checkNotNull( "projectPath", projectPath );
-        this.searchType = PortablePreconditions.checkNotNull( "searchType", searchType );
+    public ValueProjectRootPathIndexTerm(final String projectPath,
+                                         final TermSearchType searchType) {
+        this.projectPath = PortablePreconditions.checkNotNull("projectPath",
+                                                              projectPath);
+        this.searchType = PortablePreconditions.checkNotNull("searchType",
+                                                             searchType);
     }
-
 
     @Override
     public String getValue() {
@@ -49,5 +52,4 @@ public class ValueProjectRootPathIndexTerm extends ProjectRootPathIndexTerm impl
     public TermSearchType getSearchType() {
         return searchType;
     }
-
 }

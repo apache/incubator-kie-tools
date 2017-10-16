@@ -31,7 +31,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Templated
 @Dependent
@@ -49,41 +49,44 @@ public class NotificationView extends Composite
     Span icon;
 
     @Inject
-    public NotificationView( final TranslationService translationService ) {
+    public NotificationView(final TranslationService translationService) {
         super();
         this.translationService = translationService;
     }
 
     @Override
     public void setupOk() {
-        icon.addStyleName( NotificationType.OK.getStyleName() );
-        size.setVisible( false );
+        icon.addStyleName(NotificationType.OK.getStyleName());
+        size.setVisible(false);
     }
 
     @Override
-    public void setup( final NotificationType type,
-                       final String size ) {
-        icon.addStyleName( checkNotNull( "type", type ).getStyleName() );
-        this.size.setVisible( true );
-        this.size.setText( size );
+    public void setup(final NotificationType type,
+                      final String size) {
+        icon.addStyleName(checkNotNull("type",
+                                       type).getStyleName());
+        this.size.setVisible(true);
+        this.size.setText(size);
     }
 
     @Override
-    public void setup( final NotificationType type,
-                       final String size,
-                       final String popOverMessage ) {
-        setup( type, size );
+    public void setup(final NotificationType type,
+                      final String size,
+                      final String popOverMessage) {
+        setup(type,
+              size);
         final Widget parent = this.size.getParent();
-        final Popover popover = new Popover( this.size );
-        popover.setTrigger( Trigger.CLICK );
-        popover.setPlacement( Placement.RIGHT );
-        popover.setTitle( getTitleText() );
-        popover.setContent( popOverMessage );
-        parent.getElement().insertAfter( popover.asWidget().getElement(), icon.getElement() );
+        final Popover popover = new Popover(this.size);
+        popover.setTrigger(Trigger.CLICK);
+        popover.setPlacement(Placement.RIGHT);
+        popover.setTitle(getTitleText());
+        popover.setContent(popOverMessage);
+        parent.getElement().insertAfter(popover.asWidget().getElement(),
+                                        icon.getElement());
         popover.reconfigure();
     }
 
     private String getTitleText() {
-        return translationService.format( Constants.NotificationView_TitleText );
+        return translationService.format(Constants.NotificationView_TitleText);
     }
 }

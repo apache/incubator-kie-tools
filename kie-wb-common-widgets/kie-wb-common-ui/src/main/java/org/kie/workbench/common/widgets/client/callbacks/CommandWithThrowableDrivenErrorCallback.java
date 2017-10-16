@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.errai.bus.client.api.messaging.Message;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -36,26 +36,25 @@ public class CommandWithThrowableDrivenErrorCallback extends HasBusyIndicatorDef
 
     private final Map<Class<? extends Throwable>, CommandWithThrowable> commands = new HashMap<Class<? extends Throwable>, CommandWithThrowable>();
 
-    public CommandWithThrowableDrivenErrorCallback( final HasBusyIndicator view,
-                                                    final Map<Class<? extends Throwable>, CommandWithThrowable> commands ) {
-        super( view );
-        this.commands.putAll( PortablePreconditions.checkNotNull( "commands",
-                                                                  commands ) );
+    public CommandWithThrowableDrivenErrorCallback(final HasBusyIndicator view,
+                                                   final Map<Class<? extends Throwable>, CommandWithThrowable> commands) {
+        super(view);
+        this.commands.putAll(PortablePreconditions.checkNotNull("commands",
+                                                                commands));
     }
 
     @Override
-    public boolean error( final Message message,
-                          final Throwable throwable ) {
+    public boolean error(final Message message,
+                         final Throwable throwable) {
         // The *real* Throwable is wrapped in an InvocationTargetException when ran as a Unit Test and invoked with Reflection.
-        final Throwable _throwable = ( throwable.getCause() == null ? throwable : throwable.getCause() );
-        for ( Map.Entry<Class<? extends Throwable>, CommandWithThrowable> e : commands.entrySet() ) {
-            if ( e.getKey().getName().equals( _throwable.getClass().getName() ) ) {
-                e.getValue().execute( _throwable );
+        final Throwable _throwable = (throwable.getCause() == null ? throwable : throwable.getCause());
+        for (Map.Entry<Class<? extends Throwable>, CommandWithThrowable> e : commands.entrySet()) {
+            if (e.getKey().getName().equals(_throwable.getClass().getName())) {
+                e.getValue().execute(_throwable);
                 return false;
             }
         }
-        return super.error( message,
-                            throwable );
+        return super.error(message,
+                           throwable);
     }
-
 }

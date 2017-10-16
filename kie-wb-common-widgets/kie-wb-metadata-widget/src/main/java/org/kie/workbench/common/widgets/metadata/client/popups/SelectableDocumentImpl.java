@@ -29,8 +29,8 @@ import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
@@ -66,39 +66,38 @@ public class SelectableDocumentImpl implements SelectDocumentPopupView.Selectabl
     }
 
     @Override
-    public void setPath( final Path path ) {
-        this.path = PortablePreconditions.checkNotNull( "path",
-                                                        path );
-        this.kieSelectableDocumentName.setInnerHTML( getSafeHtml( path.getFileName() ).asString() );
+    public void setPath(final Path path) {
+        this.path = PortablePreconditions.checkNotNull("path",
+                                                       path);
+        this.kieSelectableDocumentName.setInnerHTML(getSafeHtml(path.getFileName()).asString());
     }
 
-    private SafeHtml getSafeHtml( final String message ) {
+    private SafeHtml getSafeHtml(final String message) {
         final SafeHtmlBuilder shb = new SafeHtmlBuilder();
-        shb.appendEscaped( message );
+        shb.appendEscaped(message);
         return shb.toSafeHtml();
     }
 
     @Override
-    public void setDocumentSelectedCommand( final ParameterizedCommand<Boolean> documentSelectedCommand ) {
-        this.documentSelectedCommand = PortablePreconditions.checkNotNull( "documentSelectedCommand",
-                                                                           documentSelectedCommand );
+    public void setDocumentSelectedCommand(final ParameterizedCommand<Boolean> documentSelectedCommand) {
+        this.documentSelectedCommand = PortablePreconditions.checkNotNull("documentSelectedCommand",
+                                                                          documentSelectedCommand);
     }
 
     @Override
-    public void setSelected( final boolean isSelected ) {
-        if ( isSelected ) {
-            kieSelectableDocument.setClassName( ACTIVE_CSS_CLASS );
+    public void setSelected(final boolean isSelected) {
+        if (isSelected) {
+            kieSelectableDocument.setClassName(ACTIVE_CSS_CLASS);
         } else {
-            kieSelectableDocument.setClassName( INACTIVE_CSS_CLASS );
+            kieSelectableDocument.setClassName(INACTIVE_CSS_CLASS);
         }
     }
 
     @SuppressWarnings("unused")
     @EventHandler("kie-document-select")
-    public void onClickFileNameCheckbox( final ClickEvent e ) {
-        if ( this.documentSelectedCommand != null ) {
-            documentSelectedCommand.execute( kieDocumentSelect.getChecked() );
+    public void onClickFileNameCheckbox(final ClickEvent e) {
+        if (this.documentSelectedCommand != null) {
+            documentSelectedCommand.execute(kieDocumentSelect.getChecked());
         }
     }
-
 }

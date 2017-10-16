@@ -24,7 +24,7 @@ import java.util.Set;
 import org.kie.workbench.common.services.backend.file.AntPathMatcher;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 public class PackageNameWhiteListFilter {
 
@@ -33,23 +33,24 @@ public class PackageNameWhiteListFilter {
     private final Collection<String> packageNames;
     private final Set<String> patterns;
 
-    public PackageNameWhiteListFilter( final Collection<String> packageNames,
-                                       final WhiteList whiteList ) {
+    public PackageNameWhiteListFilter(final Collection<String> packageNames,
+                                      final WhiteList whiteList) {
 
-
-        this.packageNames = checkNotNull( "packageNames", packageNames );
-        checkNotNull( "whitelist", whiteList );
-        this.patterns = makePatterns( whiteList );
+        this.packageNames = checkNotNull("packageNames",
+                                         packageNames);
+        checkNotNull("whitelist",
+                     whiteList);
+        this.patterns = makePatterns(whiteList);
     }
 
-    private Set<String> makePatterns( final WhiteList whiteList ) {
+    private Set<String> makePatterns(final WhiteList whiteList) {
         Set<String> patterns = new HashSet<String>();
 
         //Convert to Paths as we're delegating to an Ant-style pattern matcher.
         //Convert once outside of the nested loops for performance reasons.
-        for ( String packageName : whiteList ) {
-            patterns.add( packageName.replaceAll( "\\.",
-                                                  AntPathMatcher.DEFAULT_PATH_SEPARATOR ) );
+        for (String packageName : whiteList) {
+            patterns.add(packageName.replaceAll("\\.",
+                                                AntPathMatcher.DEFAULT_PATH_SEPARATOR));
         }
         return patterns;
     }
@@ -63,10 +64,10 @@ public class PackageNameWhiteListFilter {
         final Map<String, String> packageNamePatterns = getPatterns();
 
         for (String pattern : patterns) {
-            for ( Map.Entry<String, String> packageNamePath : packageNamePatterns.entrySet() ) {
-                if ( ANT_PATH_MATCHER.match( pattern,
-                                             packageNamePath.getValue() ) ) {
-                    whiteList.add( packageNamePath.getKey() );
+            for (Map.Entry<String, String> packageNamePath : packageNamePatterns.entrySet()) {
+                if (ANT_PATH_MATCHER.match(pattern,
+                                           packageNamePath.getValue())) {
+                    whiteList.add(packageNamePath.getKey());
                 }
             }
         }
@@ -76,16 +77,16 @@ public class PackageNameWhiteListFilter {
 
     /**
      * Fetching the paths to a map to avoid loops inside loops
+     *
      * @return
      */
     private HashMap<String, String> getPatterns() {
         final HashMap<String, String> packageNamePaths = new HashMap<String, String>();
-        for ( String packageName : packageNames ) {
-            packageNamePaths.put( packageName,
-                                  packageName.replaceAll( "\\.",
-                                                          AntPathMatcher.DEFAULT_PATH_SEPARATOR ) );
+        for (String packageName : packageNames) {
+            packageNamePaths.put(packageName,
+                                 packageName.replaceAll("\\.",
+                                                        AntPathMatcher.DEFAULT_PATH_SEPARATOR));
         }
         return packageNamePaths;
     }
-
 }

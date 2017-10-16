@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells;
 
-import org.appformer.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
@@ -29,63 +29,62 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDro
 public class ProxyPopupNumericIntegerDropDownEditCell extends
                                                       AbstractProxyPopupDropDownEditCell<Integer, Integer> {
 
-    public ProxyPopupNumericIntegerDropDownEditCell( final String factType,
-                                                     final String factField,
-                                                     final AsyncPackageDataModelOracle dmo,
-                                                     final CellTableDropDownDataValueMapProvider dropDownManager,
-                                                     final boolean isReadOnly ) {
-        super( factType,
-               factField,
-               dmo,
-               dropDownManager,
-               isReadOnly );
+    public ProxyPopupNumericIntegerDropDownEditCell(final String factType,
+                                                    final String factField,
+                                                    final AsyncPackageDataModelOracle dmo,
+                                                    final CellTableDropDownDataValueMapProvider dropDownManager,
+                                                    final boolean isReadOnly) {
+        super(factType,
+              factField,
+              dmo,
+              dropDownManager,
+              isReadOnly);
     }
 
     @Override
     protected ProxyPopupDropDown<Integer> getSingleValueEditor() {
-        return new AbstractProxyPopupDropDownTextBox<Integer>( TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_INTEGER ),
-                                                               this ) {
+        return new AbstractProxyPopupDropDownTextBox<Integer>(TextBoxFactory.getTextBox(DataType.TYPE_NUMERIC_INTEGER),
+                                                              this) {
             @Override
-            public String convertToString( final Integer value ) {
-                return ProxyPopupNumericIntegerDropDownEditCell.this.convertToString( value );
+            public String convertToString(final Integer value) {
+                return ProxyPopupNumericIntegerDropDownEditCell.this.convertToString(value);
             }
 
             @Override
-            public Integer convertFromString( final String value ) {
-                return ProxyPopupNumericIntegerDropDownEditCell.this.convertFromString( value );
+            public Integer convertFromString(final String value) {
+                return ProxyPopupNumericIntegerDropDownEditCell.this.convertFromString(value);
             }
         };
     }
 
     @Override
     protected ProxyPopupDropDown<Integer> getMultipleValueEditor() {
-        return new AbstractProxyPopupDropDownListBox<Integer>( this ) {
+        return new AbstractProxyPopupDropDownListBox<Integer>(this) {
             @Override
-            public String convertToString( final Integer value ) {
-                return ProxyPopupNumericIntegerDropDownEditCell.this.convertToString( value );
+            public String convertToString(final Integer value) {
+                return ProxyPopupNumericIntegerDropDownEditCell.this.convertToString(value);
             }
 
             @Override
-            public Integer convertFromString( final String value ) {
-                return ProxyPopupNumericIntegerDropDownEditCell.this.convertFromString( value );
+            public Integer convertFromString(final String value) {
+                return ProxyPopupNumericIntegerDropDownEditCell.this.convertFromString(value);
             }
         };
     }
 
-    private String convertToString( final Integer value ) {
-        return ( value == null ? null : value.toString() );
+    private String convertToString(final Integer value) {
+        return (value == null ? null : value.toString());
     }
 
-    private Integer convertFromString( final String value ) {
+    private Integer convertFromString(final String value) {
         Integer number = null;
-        if ( value.length() > 0 ) {
+        if (value.length() > 0) {
             try {
-                number = new Integer( value );
-            } catch ( NumberFormatException e ) {
-                number = new Integer( 0 );
+                number = new Integer(value);
+            } catch (NumberFormatException e) {
+                number = new Integer(0);
             }
         }
         return number;
     }
-
 }

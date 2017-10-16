@@ -18,8 +18,8 @@ package org.kie.workbench.common.stunner.core.i18n;
 
 import java.util.Optional;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 public abstract class AbstractTranslationService implements StunnerTranslationService {
 

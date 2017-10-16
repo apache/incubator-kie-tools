@@ -16,11 +16,12 @@
 package org.kie.workbench.common.services.datamodel.backend.server;
 
 import java.net.URL;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.vfs.Path;
 
@@ -34,33 +35,32 @@ public class ProjectDataModelRecursionTest extends AbstractDataModelWeldTest {
 
     @Test
     public void testProjectDataModelOracle() throws Exception {
-        final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
-        final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
-                                                                                               DataModelService.class,
-                                                                                               cc );
+        final Bean dataModelServiceBean = (Bean) beanManager.getBeans(DataModelService.class).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext(dataModelServiceBean);
+        final DataModelService dataModelService = (DataModelService) beanManager.getReference(dataModelServiceBean,
+                                                                                              DataModelService.class,
+                                                                                              cc);
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendRecursionTest1/src/main/java/t6p1" );
-        final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
-        final Path packagePath = paths.convert( nioPackagePath );
+        final URL packageUrl = this.getClass().getResource("/DataModelBackendRecursionTest1/src/main/java/t6p1");
+        final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath(packageUrl.toURI());
+        final Path packagePath = paths.convert(nioPackagePath);
 
-        final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( packagePath );
+        final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel(packagePath);
 
-        assertNotNull( oracle );
+        assertNotNull(oracle);
 
-        assertEquals( 1,
-                      oracle.getProjectModelFields().size() );
-        assertContains( "t6p1.Bean1",
-                        oracle.getProjectModelFields().keySet() );
+        assertEquals(1,
+                     oracle.getProjectModelFields().size());
+        assertContains("t6p1.Bean1",
+                       oracle.getProjectModelFields().keySet());
 
-        assertFalse( oracle.getProjectEventTypes().get( "t6p1.Bean1" ) );
+        assertFalse(oracle.getProjectEventTypes().get("t6p1.Bean1"));
 
-        assertEquals( 2,
-                      oracle.getProjectModelFields().get( "t6p1.Bean1" ).length );
-        assertContains( "this",
-                        oracle.getProjectModelFields().get( "t6p1.Bean1" ) );
-        assertContains( "field1",
-                        oracle.getProjectModelFields().get( "t6p1.Bean1" ) );
+        assertEquals(2,
+                     oracle.getProjectModelFields().get("t6p1.Bean1").length);
+        assertContains("this",
+                       oracle.getProjectModelFields().get("t6p1.Bean1"));
+        assertContains("field1",
+                       oracle.getProjectModelFields().get("t6p1.Bean1"));
     }
-
 }

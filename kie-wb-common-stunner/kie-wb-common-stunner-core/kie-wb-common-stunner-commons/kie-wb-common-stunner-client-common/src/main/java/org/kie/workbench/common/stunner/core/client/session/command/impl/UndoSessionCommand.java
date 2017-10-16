@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.AbstractClie
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class UndoSessionCommand extends AbstractClientSessionCommand<ClientFullSession> {

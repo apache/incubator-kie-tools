@@ -37,7 +37,7 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.kie.workbench.common.screens.server.management.client.util.State.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Dependent
 public class ContainerRulesConfigPresenter {
@@ -152,13 +152,13 @@ public class ContainerRulesConfigPresenter {
 
         view.disableActions();
         ruleCapabilitiesService.call(new RemoteCallback<Void>() {
-            @Override
-            public void callback(final Void response) {
-                scannerStatus = KieScannerStatus.STARTED;
-                setScannerStatus();
-                updateViewState();
-            }
-        },
+                                         @Override
+                                         public void callback(final Void response) {
+                                             scannerStatus = KieScannerStatus.STARTED;
+                                             setScannerStatus();
+                                             updateViewState();
+                                         }
+                                     },
                                      new ErrorCallback<Object>() {
                                          @Override
                                          public boolean error(final Object o,
@@ -211,13 +211,13 @@ public class ContainerRulesConfigPresenter {
     public void stopScanner() {
         view.disableActions();
         ruleCapabilitiesService.call(new RemoteCallback<Void>() {
-            @Override
-            public void callback(final Void response) {
-                scannerStatus = KieScannerStatus.STOPPED;
-                setScannerStatus();
-                updateViewState();
-            }
-        },
+                                         @Override
+                                         public void callback(final Void response) {
+                                             scannerStatus = KieScannerStatus.STOPPED;
+                                             setScannerStatus();
+                                             updateViewState();
+                                         }
+                                     },
                                      new ErrorCallback<Object>() {
                                          @Override
                                          public boolean error(final Object o,
@@ -233,13 +233,13 @@ public class ContainerRulesConfigPresenter {
     public void scanNow() {
         view.disableActions();
         ruleCapabilitiesService.call(new RemoteCallback<Void>() {
-            @Override
-            public void callback(final Void response) {
-                scannerStatus = KieScannerStatus.STOPPED;
-                setScannerStatus();
-                updateViewState();
-            }
-        },
+                                         @Override
+                                         public void callback(final Void response) {
+                                             scannerStatus = KieScannerStatus.STOPPED;
+                                             setScannerStatus();
+                                             updateViewState();
+                                         }
+                                     },
                                      new ErrorCallback<Object>() {
                                          @Override
                                          public boolean error(final Object o,
@@ -255,17 +255,17 @@ public class ContainerRulesConfigPresenter {
     public void upgrade(final String version) {
         view.disableActions();
         ruleCapabilitiesService.call(new RemoteCallback<Void>() {
-            @Override
-            public void callback(final Void response) {
-                if (version != null && !version.isEmpty() &&
-                        version.compareTo(containerSpec.getReleasedId().getVersion()) == 0) {
-                    notification.fire(new NotificationEvent(view.getUpgradeSuccessMessage(),
-                                                            NotificationEvent.NotificationType.SUCCESS));
-                }
+                                         @Override
+                                         public void callback(final Void response) {
+                                             if (version != null && !version.isEmpty() &&
+                                                     version.compareTo(containerSpec.getReleasedId().getVersion()) == 0) {
+                                                 notification.fire(new NotificationEvent(view.getUpgradeSuccessMessage(),
+                                                                                         NotificationEvent.NotificationType.SUCCESS));
+                                             }
 
-                updateViewState();
-            }
-        },
+                                             updateViewState();
+                                         }
+                                     },
                                      new ErrorCallback<Object>() {
                                          @Override
                                          public boolean error(final Object o,

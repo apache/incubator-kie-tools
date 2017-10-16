@@ -16,8 +16,8 @@
 package org.kie.workbench.common.services.refactoring.model.index.terms;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.service.RelationshipType;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class RelationshipIndexTerm implements IndexTerm {
@@ -29,12 +29,12 @@ public class RelationshipIndexTerm implements IndexTerm {
     }
 
     public RelationshipIndexTerm(RelationshipType relationshipType) {
-        this.relType = PortablePreconditions.checkNotNull( "relationshipType", relationshipType );
+        this.relType = PortablePreconditions.checkNotNull("relationshipType",
+                                                          relationshipType);
     }
 
     @Override
     public String getTerm() {
         return relType.toString();
     }
-
 }

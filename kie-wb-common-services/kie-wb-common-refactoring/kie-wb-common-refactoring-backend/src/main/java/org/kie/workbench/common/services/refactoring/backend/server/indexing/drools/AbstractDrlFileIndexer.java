@@ -17,11 +17,11 @@ package org.kie.workbench.common.services.refactoring.backend.server.indexing.dr
 
 import java.util.List;
 
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.api.io.ResourceType;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ErrorMessageUtilities;
@@ -37,49 +37,50 @@ import org.uberfire.java.nio.file.Path;
  */
 public abstract class AbstractDrlFileIndexer extends AbstractFileIndexer {
 
-    private static final Logger logger = LoggerFactory.getLogger( AbstractDrlFileIndexer.class );
+    private static final Logger logger = LoggerFactory.getLogger(AbstractDrlFileIndexer.class);
 
     /**
      * All Drools-related {@link Indexer} implemenations end up extracting the DRL from the related Rule representation
      * (see {@link ResourceType}).
      * </p>
      * The following method then parses the DRL and returns all relevant reference information.
+     *
      * @param path The {@link Path} of the asset/resource, necessary for extracting reference information.
-     * @param drl A {@link String} representation of the DRL.
+     * @param drl  A {@link String} representation of the DRL.
      * @return The {@link DefaultIndexBuilder}
      * @throws Exception
      */
-    public DefaultIndexBuilder fillDrlIndexBuilder( final Path path, final String drl ) throws Exception {
+    public DefaultIndexBuilder fillDrlIndexBuilder(final Path path, final String drl) throws Exception {
 
-            final DrlParser drlParser = new DrlParser();
-            final PackageDescr packageDescr = drlParser.parse( true, drl );
+        final DrlParser drlParser = new DrlParser();
+        final PackageDescr packageDescr = drlParser.parse(true, drl);
 
-            if ( drlParser.hasErrors() ) {
-                final List<DroolsError> errors = drlParser.getErrors();
-                logger.warn( ErrorMessageUtilities.makeErrorMessage( path,
-                                                                         errors.toArray( new DroolsError[ errors.size() ] ) ) );
-                return null;
-            }
-            if ( packageDescr == null ) {
-                    logger.warn( ErrorMessageUtilities.makeErrorMessage( path ) );
-                    return null;
-            }
+        if (drlParser.hasErrors()) {
+            final List<DroolsError> errors = drlParser.getErrors();
+            logger.warn(ErrorMessageUtilities.makeErrorMessage(path,
+                                                               errors.toArray(new DroolsError[errors.size()])));
+            return null;
+        }
+        if (packageDescr == null) {
+            logger.warn(ErrorMessageUtilities.makeErrorMessage(path));
+            return null;
+        }
 
-            final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
+        final ProjectDataModelOracle dmo = getProjectDataModelOracle(path);
 
-            // responsible for basic index info: project name, branch, etc
-            final DefaultIndexBuilder builder = getIndexBuilder(path);
-            if( builder == null ) {
-                return null;
-            }
-            builder.setPackageName(packageDescr.getName());
+        // responsible for basic index info: project name, branch, etc
+        final DefaultIndexBuilder builder = getIndexBuilder(path);
+        if (builder == null) {
+            return null;
+        }
+        builder.setPackageName(packageDescr.getName());
 
-            // Retrieves info from the parsed syntac tree (PackageDescr)
-            final PackageDescrIndexVisitor visitor = new PackageDescrIndexVisitor( dmo, builder, packageDescr );
-            visitor.visit();
-            addReferencedResourcesToIndexBuilder(builder, visitor);
+        // Retrieves info from the parsed syntac tree (PackageDescr)
+        final PackageDescrIndexVisitor visitor = new PackageDescrIndexVisitor(dmo, builder, packageDescr);
+        visitor.visit();
+        addReferencedResourcesToIndexBuilder(builder, visitor);
 
-            return builder;
+        return builder;
     }
 
     /**
@@ -88,8 +89,8 @@ public abstract class AbstractDrlFileIndexer extends AbstractFileIndexer {
      * @param path The {@link Path} of the file being indexed
      * @return The package name, as a {@link String}
      */
-    protected String getPackageName( final Path path ) {
-        return projectService.resolvePackage( Paths.convert( path ) ).getPackageName();
+    protected String getPackageName(final Path path) {
+        return projectService.resolvePackage(Paths.convert(path)).getPackageName();
     }
 
     /**
@@ -98,6 +99,5 @@ public abstract class AbstractDrlFileIndexer extends AbstractFileIndexer {
      * @param path The {@link Path} of the file being indexed
      * @return The all-seeing, all-knowing {@link ProjectDataModelOracle}
      */
-    protected abstract ProjectDataModelOracle getProjectDataModelOracle( final Path path );
-
+    protected abstract ProjectDataModelOracle getProjectDataModelOracle(final Path path);
 }

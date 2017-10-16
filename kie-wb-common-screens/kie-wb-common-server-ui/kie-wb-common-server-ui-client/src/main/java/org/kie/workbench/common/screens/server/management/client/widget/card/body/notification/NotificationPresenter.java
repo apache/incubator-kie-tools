@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.server.api.model.Message;
 import org.kie.server.api.model.Severity;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Dependent
 public class NotificationPresenter {
@@ -32,18 +32,18 @@ public class NotificationPresenter {
 
         void setupOk();
 
-        void setup( final NotificationType type,
-                    final String size );
+        void setup(final NotificationType type,
+                   final String size);
 
-        void setup( final NotificationType type,
-                    final String size,
-                    final String popOverContent );
+        void setup(final NotificationType type,
+                   final String size,
+                   final String popOverContent);
     }
 
     private final View view;
 
     @Inject
-    public NotificationPresenter( final View view ) {
+    public NotificationPresenter(final View view) {
         this.view = view;
     }
 
@@ -55,43 +55,49 @@ public class NotificationPresenter {
         view.setupOk();
     }
 
-    public void setup( final Message message ) {
-        checkNotNull( "message", message );
+    public void setup(final Message message) {
+        checkNotNull("message",
+                     message);
 
-        final NotificationType notificationType = toNotificationType( message.getSeverity() );
-        if ( notificationType.equals( NotificationType.OK ) ) {
+        final NotificationType notificationType = toNotificationType(message.getSeverity());
+        if (notificationType.equals(NotificationType.OK)) {
             view.setupOk();
         } else {
-            if ( message.getMessages().isEmpty() ) {
-                view.setup( notificationType, "0" );
+            if (message.getMessages().isEmpty()) {
+                view.setup(notificationType,
+                           "0");
             } else {
                 final StringBuilder sb = new StringBuilder();
                 int i = 0;
-                for ( final String msg : message.getMessages() ) {
-                    if ( !msg.trim().isEmpty() ) {
+                for (final String msg : message.getMessages()) {
+                    if (!msg.trim().isEmpty()) {
                         i++;
-                        sb.append( i ).append( ": " ).append( msg ).append( '\n' );
+                        sb.append(i).append(": ").append(msg).append('\n');
                     }
                 }
-                view.setup( notificationType, String.valueOf( i ), clean( sb ) );
+                view.setup(notificationType,
+                           String.valueOf(i),
+                           clean(sb));
             }
         }
     }
 
-    private String clean( StringBuilder str ) {
+    private String clean(StringBuilder str) {
         final String result;
-        if ( str.length() > 0 ) {
-            result = str.substring( 0, str.length() - 1 );
+        if (str.length() > 0) {
+            result = str.substring(0,
+                                   str.length() - 1);
         } else {
             result = "";
         }
         return result;
     }
 
-    private NotificationType toNotificationType( final Severity severity ) {
-        checkNotNull( "severity", severity );
+    private NotificationType toNotificationType(final Severity severity) {
+        checkNotNull("severity",
+                     severity);
 
-        switch ( severity ) {
+        switch (severity) {
             case WARN:
                 return NotificationType.WARNING;
 
@@ -105,5 +111,4 @@ public class NotificationPresenter {
                 return NotificationType.OK;
         }
     }
-
 }

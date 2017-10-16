@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.screens.examples.client.wizard.model;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ExamplesModel;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 public class ExamplesWizardModel extends ExamplesModel {
 

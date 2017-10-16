@@ -17,11 +17,11 @@ package org.kie.workbench.common.widgets.configresource.client.widget.unbound;
 
 import java.util.List;
 
-import org.appformer.project.datamodel.imports.Import;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.imports.Import;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;

@@ -56,7 +56,7 @@ import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilde
 import org.kie.workbench.common.stunner.core.rule.impl.CanConnect;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * An utils class that provides common used look-ups and other logic for querying the domain model and the rules model,
@@ -335,6 +335,7 @@ public class CommonLookups {
     /**
      * Returns the allowed edge identifiers that satisfy connection rules for the given
      * source definition.
+     *
      * @oaram sourceDefinition The domain model object ( not a graph element ).
      */
     private <T> Set<String> getConnectionRulesAllowedEdges(final String defSetId,

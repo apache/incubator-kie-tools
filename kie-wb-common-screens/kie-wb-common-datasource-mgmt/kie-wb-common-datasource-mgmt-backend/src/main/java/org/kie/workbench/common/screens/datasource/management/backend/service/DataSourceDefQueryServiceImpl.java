@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -49,14 +50,14 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 @Service
 @ApplicationScoped
 public class DataSourceDefQueryServiceImpl
         implements DataSourceDefQueryService {
 
-    private static final Logger logger = LoggerFactory.getLogger( DataSourceDefQueryServiceImpl.class );
+    private static final Logger logger = LoggerFactory.getLogger(DataSourceDefQueryServiceImpl.class);
 
     private static String DS_FILE_TYPE = ".datasource";
 
@@ -76,11 +77,11 @@ public class DataSourceDefQueryServiceImpl
     }
 
     @Inject
-    public DataSourceDefQueryServiceImpl( @Named( "ioStrategy" ) IOService ioService,
-            KieProjectService projectService,
-            DataSourceServicesHelper serviceHelper,
-            DataSourceProviderFactory providerFactory,
-            DataSourceRuntimeManager runtimeManager ) {
+    public DataSourceDefQueryServiceImpl(@Named("ioStrategy") IOService ioService,
+                                         KieProjectService projectService,
+                                         DataSourceServicesHelper serviceHelper,
+                                         DataSourceProviderFactory providerFactory,
+                                         DataSourceRuntimeManager runtimeManager) {
         this.ioService = ioService;
         this.projectService = projectService;
         this.serviceHelper = serviceHelper;
@@ -89,75 +90,82 @@ public class DataSourceDefQueryServiceImpl
     }
 
     @Override
-    public Collection<DataSourceDefInfo> findGlobalDataSources( boolean includeUnManaged ) {
-        Collection<DataSourceDefInfo> result = resolveDataSources( serviceHelper.getGlobalDataSourcesContext() );
-        if ( includeUnManaged ) {
+    public Collection<DataSourceDefInfo> findGlobalDataSources(boolean includeUnManaged) {
+        Collection<DataSourceDefInfo> result = resolveDataSources(serviceHelper.getGlobalDataSourcesContext());
+        if (includeUnManaged) {
             Map<String, DataSourceDefInfo> managedDataSources = new HashMap<>();
-            for ( DataSourceDefInfo dataSourceDefInfo : result ) {
-                managedDataSources.put( dataSourceDefInfo.getUuid(), dataSourceDefInfo );
+            for (DataSourceDefInfo dataSourceDefInfo : result) {
+                managedDataSources.put(dataSourceDefInfo.getUuid(),
+                                       dataSourceDefInfo);
             }
             try {
                 List<DataSourceDef> allDeployments = providerFactory.getDataSourceProvider().getDeployments();
                 DeploymentInfo deploymentInfo;
-                for ( DataSourceDef dataSourceDef : allDeployments ) {
-                    deploymentInfo = runtimeManager.getDataSourceDeploymentInfo( dataSourceDef.getUuid() );
-                    if ( !managedDataSources.containsKey( dataSourceDef.getUuid() ) &&
-                            ( deploymentInfo != null && !deploymentInfo.isManaged() ) ) {
-                        result.add( new DataSourceDefInfo( dataSourceDef.getUuid(),
-                                dataSourceDef.getName(),
-                                runtimeManager.getDataSourceDeploymentInfo( dataSourceDef.getUuid() ) ) );
+                for (DataSourceDef dataSourceDef : allDeployments) {
+                    deploymentInfo = runtimeManager.getDataSourceDeploymentInfo(dataSourceDef.getUuid());
+                    if (!managedDataSources.containsKey(dataSourceDef.getUuid()) &&
+                            (deploymentInfo != null && !deploymentInfo.isManaged())) {
+                        result.add(new DataSourceDefInfo(dataSourceDef.getUuid(),
+                                                         dataSourceDef.getName(),
+                                                         runtimeManager.getDataSourceDeploymentInfo(dataSourceDef.getUuid())));
                     }
                 }
-            } catch ( Exception e ) {
-                logger.warn( "It was not possible to read all deployed data sources. ", e );
+            } catch (Exception e) {
+                logger.warn("It was not possible to read all deployed data sources. ",
+                            e);
             }
         }
         return result;
     }
 
     @Override
-    public Collection<DataSourceDefInfo> findProjectDataSources( final Path path ) {
-        checkNotNull( "path", path );
-        Project project = projectService.resolveProject( path );
-        if ( project == null ) {
-            return new ArrayList<>( );
+    public Collection<DataSourceDefInfo> findProjectDataSources(final Path path) {
+        checkNotNull("path",
+                     path);
+        Project project = projectService.resolveProject(path);
+        if (project == null) {
+            return new ArrayList<>();
         } else {
-            return resolveDataSources( serviceHelper.getProjectDataSourcesContext( project ) );
+            return resolveDataSources(serviceHelper.getProjectDataSourcesContext(project));
         }
     }
 
     @Override
-    public Collection<DataSourceDefInfo> findProjectDataSources( final Project project ) {
-        if ( project != null ) {
-            return resolveDataSources( serviceHelper.getProjectDataSourcesContext( project ) );
+    public Collection<DataSourceDefInfo> findProjectDataSources(final Project project) {
+        if (project != null) {
+            return resolveDataSources(serviceHelper.getProjectDataSourcesContext(project));
         } else {
-            return new ArrayList<>( );
+            return new ArrayList<>();
         }
     }
 
     @Override
     public Collection<DriverDefInfo> findGlobalDrivers() {
-        return resolveDrivers( serviceHelper.getGlobalDataSourcesContext() );
+        return resolveDrivers(serviceHelper.getGlobalDataSourcesContext());
     }
 
     @Override
-    public Collection<DriverDefInfo> findProjectDrivers( final Path path ) {
-        checkNotNull( "path", path );
-        Project project = projectService.resolveProject( path );
-        if ( project == null ) {
-            return new ArrayList<>( );
+    public Collection<DriverDefInfo> findProjectDrivers(final Path path) {
+        checkNotNull("path",
+                     path);
+        Project project = projectService.resolveProject(path);
+        if (project == null) {
+            return new ArrayList<>();
         } else {
-            return resolveDrivers( serviceHelper.getProjectDataSourcesContext( project ) );
+            return resolveDrivers(serviceHelper.getProjectDataSourcesContext(project));
         }
     }
 
     @Override
-    public DriverDefInfo findProjectDriver( final String uuid, final Path path ) {
-        checkNotNull( "uuid", uuid );
-        checkNotNull( "path", path );
+    public DriverDefInfo findProjectDriver(final String uuid,
+                                           final Path path) {
+        checkNotNull("uuid",
+                     uuid);
+        checkNotNull("path",
+                     path);
 
-        for ( DriverDefInfo driverDefInfo : findProjectDrivers( path ) ) {
-            if ( uuid.equals( driverDefInfo.getUuid() ) ) {
+        for (DriverDefInfo driverDefInfo : findProjectDrivers(path)) {
+            if (uuid.equals(driverDefInfo.getUuid())) {
                 return driverDefInfo;
             }
         }
@@ -165,98 +173,106 @@ public class DataSourceDefQueryServiceImpl
     }
 
     @Override
-    public Collection<DriverDefInfo> findProjectDrivers( final Project project ) {
-        if ( project != null ) {
-            return resolveDrivers( serviceHelper.getProjectDataSourcesContext( project ) );
+    public Collection<DriverDefInfo> findProjectDrivers(final Project project) {
+        if (project != null) {
+            return resolveDrivers(serviceHelper.getProjectDataSourcesContext(project));
         } else {
-            return new ArrayList<>( );
+            return new ArrayList<>();
         }
     }
 
     @Override
-    public DriverDefInfo findGlobalDriver( String uuid ) {
-        checkNotNull( "uuid", uuid );
+    public DriverDefInfo findGlobalDriver(String uuid) {
+        checkNotNull("uuid",
+                     uuid);
 
-        for ( DriverDefInfo driverDefInfo : findGlobalDrivers() ) {
-            if ( uuid.equals( driverDefInfo.getUuid() ) ) {
+        for (DriverDefInfo driverDefInfo : findGlobalDrivers()) {
+            if (uuid.equals(driverDefInfo.getUuid())) {
                 return driverDefInfo;
             }
         }
         return null;
     }
 
-    private Collection<DriverDefInfo> resolveDrivers( final Path path ) {
+    private Collection<DriverDefInfo> resolveDrivers(final Path path) {
 
-        final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
-        final List<DriverDefInfo> result = new ArrayList<>( );
+        final org.uberfire.java.nio.file.Path nioPath = Paths.convert(path);
+        final List<DriverDefInfo> result = new ArrayList<>();
 
         try {
-            final DirectoryStream<org.uberfire.java.nio.file.Path> stream = ioService.newDirectoryStream( nioPath,
-                    entry -> Files.isRegularFile( entry ) &&
-                            !entry.getFileName().toString().startsWith( "." ) &&
-                            entry.getFileName().toString().endsWith( DRIVER_FILE_TYPE ) );
+            final DirectoryStream<org.uberfire.java.nio.file.Path> stream = ioService.newDirectoryStream(nioPath,
+                                                                                                         entry -> Files.isRegularFile(entry) &&
+                                                                                                                 !entry.getFileName().toString().startsWith(".") &&
+                                                                                                                 entry.getFileName().toString().endsWith(DRIVER_FILE_TYPE));
 
-            stream.forEach( file -> {
-                result.add( createDriverInfo( file ) );
-            } );
+            stream.forEach(file -> {
+                result.add(createDriverInfo(file));
+            });
             stream.close();
 
             return result;
-        } catch ( Exception e ) {
-            logger.error( "It was not possible read drivers info from: " + path, e );
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            logger.error("It was not possible read drivers info from: " + path,
+                         e);
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    private Collection<DataSourceDefInfo> resolveDataSources( final Path path ) {
+    private Collection<DataSourceDefInfo> resolveDataSources(final Path path) {
 
-        final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
-        final List<DataSourceDefInfo> result = new ArrayList<>( );
+        final org.uberfire.java.nio.file.Path nioPath = Paths.convert(path);
+        final List<DataSourceDefInfo> result = new ArrayList<>();
 
         try {
-            final DirectoryStream<org.uberfire.java.nio.file.Path> stream = ioService.newDirectoryStream( nioPath,
-                    entry -> Files.isRegularFile( entry ) &&
-                            !entry.getFileName().toString().startsWith( "." ) &&
-                            entry.getFileName().toString().endsWith( DS_FILE_TYPE ) );
+            final DirectoryStream<org.uberfire.java.nio.file.Path> stream = ioService.newDirectoryStream(nioPath,
+                                                                                                         entry -> Files.isRegularFile(entry) &&
+                                                                                                                 !entry.getFileName().toString().startsWith(".") &&
+                                                                                                                 entry.getFileName().toString().endsWith(DS_FILE_TYPE));
 
-            stream.forEach( file -> {
-                result.add( createDataSourceDefInfo( file ) );
-            } );
+            stream.forEach(file -> {
+                result.add(createDataSourceDefInfo(file));
+            });
             stream.close();
 
             return result;
-        } catch ( Exception e ) {
-            logger.error( "It was not possible read data sources info from: " + path, e );
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            logger.error("It was not possible read data sources info from: " + path,
+                         e);
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    private DataSourceDefInfo createDataSourceDefInfo( final org.uberfire.java.nio.file.Path path ) {
-        String content = ioService.readAllString( path );
-        DataSourceDef dataSourceDef = DataSourceDefSerializer.deserialize( content );
+    private DataSourceDefInfo createDataSourceDefInfo(final org.uberfire.java.nio.file.Path path) {
+        String content = ioService.readAllString(path);
+        DataSourceDef dataSourceDef = DataSourceDefSerializer.deserialize(content);
         DataSourceDeploymentInfo deploymentInfo = null;
         try {
-            deploymentInfo = runtimeManager.getDataSourceDeploymentInfo( dataSourceDef.getUuid() );
-        } catch ( Exception e ) {
-            logger.warn( "It was not possible to read deployment info when building DataSourceDefInfo for data source: "
-                    + dataSourceDef.getUuid(), e );
+            deploymentInfo = runtimeManager.getDataSourceDeploymentInfo(dataSourceDef.getUuid());
+        } catch (Exception e) {
+            logger.warn("It was not possible to read deployment info when building DataSourceDefInfo for data source: "
+                                + dataSourceDef.getUuid(),
+                        e);
         }
-        return new DataSourceDefInfo( dataSourceDef.getUuid(),
-                dataSourceDef.getName(),
-                Paths.convert( path ),
-                deploymentInfo );
+        return new DataSourceDefInfo(dataSourceDef.getUuid(),
+                                     dataSourceDef.getName(),
+                                     Paths.convert(path),
+                                     deploymentInfo);
     }
 
-    private DriverDefInfo createDriverInfo( final org.uberfire.java.nio.file.Path path ) {
-        String content = ioService.readAllString( path );
-        DriverDef driverDef = DriverDefSerializer.deserialize( content );
+    private DriverDefInfo createDriverInfo(final org.uberfire.java.nio.file.Path path) {
+        String content = ioService.readAllString(path);
+        DriverDef driverDef = DriverDefSerializer.deserialize(content);
         DriverDeploymentInfo deploymentInfo = null;
         try {
-            deploymentInfo = runtimeManager.getDriverDeploymentInfo( driverDef.getUuid() );
-        } catch ( Exception e ) {
-            logger.warn( "It was not possible to read deployment info when building DriverDefInfo for driver: "
-                    + driverDef.getUuid(), e );
+            deploymentInfo = runtimeManager.getDriverDeploymentInfo(driverDef.getUuid());
+        } catch (Exception e) {
+            logger.warn("It was not possible to read deployment info when building DriverDefInfo for driver: "
+                                + driverDef.getUuid(),
+                        e);
         }
-        return new DriverDefInfo( driverDef.getUuid(), driverDef.getName(), Paths.convert( path ), deploymentInfo );
+        return new DriverDefInfo(driverDef.getUuid(),
+                                 driverDef.getName(),
+                                 Paths.convert(path),
+                                 deploymentInfo);
     }
 }

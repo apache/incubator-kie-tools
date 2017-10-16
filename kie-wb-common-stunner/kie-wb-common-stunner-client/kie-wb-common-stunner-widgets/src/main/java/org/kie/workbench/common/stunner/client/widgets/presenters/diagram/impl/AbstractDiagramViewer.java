@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public abstract class AbstractDiagramViewer<D extends Diagram, H extends AbstractCanvasHandler>
         extends AbstractCanvasViewer<D, H, WidgetWrapperView, DiagramViewer.DiagramViewerCallback<D>>
